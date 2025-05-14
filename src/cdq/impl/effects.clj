@@ -9,6 +9,7 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
+            [cdq.tx :as tx]
             [cdq.utils :refer [defcomponent]]
             [cdq.world :as world]))
 
@@ -247,7 +248,7 @@
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (world/spawn-audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage))
-         (entity/send-event! target (if (zero? new-hp-val) :kill :alert))
+         (tx/send-event! target (if (zero? new-hp-val) :kill :alert))
          (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
@@ -256,7 +257,7 @@
          (:entity/fsm @target)))
 
   (effect/handle [_ {:keys [effect/target]}]
-    (entity/send-event! target :kill)))
+    (tx/send-event! target :kill)))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -292,4 +293,4 @@
          (:entity/fsm @target)))
 
   (effect/handle [[_ duration] {:keys [effect/target]}]
-    (entity/send-event! target :stun duration)))
+    (tx/send-event! target :stun duration)))

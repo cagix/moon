@@ -1,11 +1,9 @@
 (ns cdq.entity
-  (:require [cdq.entity.state :as state]
-            [cdq.entity.stats.op :as op]
+  (:require [cdq.entity.stats.op :as op]
             [cdq.math :as math]
             [cdq.math.vector2 :as v]
             [cdq.val-max :as val-max]
-            [malli.core :as m]
-            [reduce-fsm :as fsm]))
+            [malli.core :as m]))
 
 (defmulti create (fn [[k]]
                    k))
@@ -150,28 +148,6 @@
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
-
-(defn send-event!
-  ([eid event]
-   (send-event! eid event nil))
-  ([eid event params]
-   (when-let [fsm (:entity/fsm @eid)]
-     (let [old-state-k (:state fsm)
-           new-fsm (fsm/fsm-event fsm event)
-           new-state-k (:state new-fsm)]
-       (when-not (= old-state-k new-state-k)
-         (let [old-state-obj (state-obj @eid)
-               new-state-obj [new-state-k (create (if params
-                                                    [new-state-k eid params]
-                                                    [new-state-k eid]))]]
-           (when (:entity/player? @eid)
-             ((:state-changed! (:entity/player? @eid)) new-state-obj))
-           (swap! eid #(-> %
-                           (assoc :entity/fsm new-fsm
-                                  new-state-k (new-state-obj 1))
-                           (dissoc old-state-k)))
-           (state/exit!  old-state-obj)
-           (state/enter! new-state-obj)))))))
 
 ; we cannot just set/unset movement direction
 ; because it is handled by the state enter/exit for npc/player movement state ...

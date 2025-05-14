@@ -34,7 +34,7 @@
      (do
       (sound/play! "bfxr_takeit")
       (entity/mark-destroyed eid)
-      (entity/send-event! ctx/player-eid :pickup-item item))
+      (tx/send-event! ctx/player-eid :pickup-item item))
 
      (inventory/can-pickup-item? (:entity/inventory @ctx/player-eid) item)
      (do
@@ -106,7 +106,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               (entity/send-event! eid :start-action [skill effect-ctx]))])
+               (tx/send-event! eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -132,7 +132,7 @@
 
   (state/manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (input/player-movement-vector)]
-      (entity/send-event! eid :movement-input movement-vector)
+      (tx/send-event! eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
         (graphics/set-cursor! ctx/graphics cursor)
         (when (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
@@ -142,7 +142,7 @@
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (sound/play! "bfxr_takeit")
-      (entity/send-event! eid :pickup-item item)
+      (tx/send-event! eid :pickup-item item)
       (tx/remove-item eid cell))))
 
 (defn- clicked-cell [eid cell]
@@ -158,7 +158,7 @@
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (tx/set-item eid cell item-on-cursor)
-      (entity/send-event! eid :dropped-item))
+      (tx/send-event! eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -167,7 +167,7 @@
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (tx/stack-item eid cell item-on-cursor)
-      (entity/send-event! eid :dropped-item))
+      (tx/send-event! eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -179,8 +179,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (tx/remove-item eid cell)
       (tx/set-item eid cell item-on-cursor)
-      (entity/send-event! eid :dropped-item)
-      (entity/send-event! eid :pickup-item item-in-cell)))))
+      (tx/send-event! eid :dropped-item)
+      (tx/send-event! eid :pickup-item item-in-cell)))))
 
 (defn- world-item? []
   (not (stage/mouse-on-actor? ctx/stage)))
@@ -233,7 +233,7 @@
   (state/manual-tick [[_ {:keys [eid]}]]
     (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
                (world-item?))
-      (entity/send-event! eid :drop-item)))
+      (tx/send-event! eid :drop-item)))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     (clicked-cell eid cell))
@@ -387,14 +387,14 @@
    (not (effect/some-applicable? (update-effect-ctx effect-ctx)
                                  (:skill/effects skill)))
    (do
-    (entity/send-event! eid :action-done)
+    (tx/send-event! eid :action-done)
     ; TODO some sound ?
     )
 
    (timer/stopped? ctx/elapsed-time counter)
    (do
     (effect/do-all! effect-ctx (:skill/effects skill))
-    (entity/send-event! eid :action-done))))
+    (tx/send-event! eid :action-done))))
 
 (defn- npc-choose-skill [entity ctx]
   (->> entity
@@ -420,34 +420,34 @@
 (defmethod entity/tick! :npc-idle [_ eid]
   (let [effect-ctx (npc-effect-context eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
-      (entity/send-event! eid :start-action [skill effect-ctx])
-      (entity/send-event! eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid) [0 0])))))
+      (tx/send-event! eid :start-action [skill effect-ctx])
+      (tx/send-event! eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (entity/send-event! eid :timer-finished)))
+    (tx/send-event! eid :timer-finished)))
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
   (let [entity @eid
         cell ((:grid ctx/world) (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
-        (entity/send-event! eid :alert)))))
+        (tx/send-event! eid :alert)))))
 
 (defmethod entity/tick! :player-moving [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (input/player-movement-vector)]
     (entity/set-movement eid movement-vector)
-    (entity/send-event! eid :no-movement-input)))
+    (tx/send-event! eid :no-movement-input)))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (entity/send-event! eid :effect-wears-off)))
+    (tx/send-event! eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
     (entity/mark-destroyed eid)
     (doseq [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
-      (entity/send-event! friendly-eid :alert))))
+      (tx/send-event! friendly-eid :alert))))
 
 (defmethod entity/tick! :entity/animation [[k animation] eid]
   (swap! eid #(-> %
