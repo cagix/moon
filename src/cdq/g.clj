@@ -5,12 +5,10 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera] ; -> graphics ?
             [cdq.stage :as stage] ; -> protocolize
-            [cdq.tiled :as tiled]
             [cdq.math :refer [circle->outer-rectangle]]
             [cdq.math.raycaster :as raycaster]
             [cdq.property :as property]
             [cdq.utils :as utils :refer [sort-by-order
-                                         tile->middle
                                          pretty-pst
                                          bind-root]]
             [cdq.world :as world] ; -> protocolize
@@ -25,42 +23,12 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
-(defn- spawn-enemies! []
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
-                  {:position position
-                   :creature-id (keyword creature-id)
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}})]
-    (world/spawn-creature (update props :position tile->middle))))
-
-(defn- player-entity-props [start-position]
-  {:position (tile->middle start-position)
-   :creature-id :creatures/vampire
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? {:state-changed! (fn [new-state-obj]
-                                                   (when-let [cursor-key (state/cursor new-state-obj)]
-                                                     (graphics/set-cursor! ctx/graphics cursor-key)))
-                                 :skill-added! (fn [skill]
-                                                 (stage/add-skill! ctx/stage skill))
-                                 :skill-removed! (fn [skill]
-                                                   (stage/remove-skill! ctx/stage skill))
-                                 :item-set! (fn [inventory-cell item]
-                                              (stage/set-item! ctx/stage inventory-cell item))
-                                 :item-removed! (fn [inventory-cell]
-                                                  (stage/remove-item! ctx/stage inventory-cell))}
-                :entity/free-skill-points 3
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles 1.5}})
-
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (bind-root #'ctx/stage ((requiring-resolve 'cdq.impl.stage/create!)))
   (bind-root #'ctx/world ((requiring-resolve 'cdq.impl.world/create) ((requiring-resolve world-fn))))
-  (spawn-enemies!)
-  (bind-root #'ctx/player-eid (world/spawn-creature (player-entity-props (:start-position ctx/world)))))
+  ((requiring-resolve 'cdq.game.spawn-enemies/do!))
+  ((requiring-resolve 'cdq.game.spawn-player/do!)))
 
 (bind-root #'ctx/reset-game! reset-game!)
 
@@ -266,14 +234,10 @@
     (when (.isKeyPressed Gdx/input Input$Keys/MINUS)  (camera/inc-zoom camera    zoom-speed))
     (when (.isKeyPressed Gdx/input Input$Keys/EQUALS) (camera/inc-zoom camera (- zoom-speed)))))
 
-(defn- io-read-edn [path]
-  (-> path io/resource slurp edn/read-string))
-
 (defn -main []
-  (let [config (io-read-edn "cdq.application.edn")]
-    (doseq [ns-sym (:requires config)]
-      (require ns-sym))
-    (bind-root #'ctx/schemas (io-read-edn "schema.edn"))
+  (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
+    (run! require (:requires config))
+    ((requiring-resolve 'cdq.game.load-schemas/do!) "schema.edn")
     (bind-root #'ctx/db ((requiring-resolve (:db config)) "properties.edn"))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
