@@ -141,7 +141,14 @@
   ; for projectiles inside projectile update !?
   (set-movement [entity movement-vector]
     (assoc entity :entity/movement {:direction movement-vector
-                                    :speed (or (entity/stat entity :entity/movement-speed) 0)})))
+                                    :speed (or (entity/stat entity :entity/movement-speed) 0)}))
+
+  (in-range? [entity target* maxrange] ; == circle-collides?
+    (< (- (float (v/distance (:position entity)
+                             (:position target*)))
+          (float (:radius entity))
+          (float (:radius target*)))
+       (float maxrange))))
 
 (defn- create-body [{[x y] :position
                      :keys [position

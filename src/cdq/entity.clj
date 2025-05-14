@@ -139,14 +139,8 @@
          (v/scale (direction entity target*)
                   maxrange)))
 
-(defn in-range? [entity target* maxrange] ; == circle-collides?
-  (< (- (float (v/distance (:position entity)
-                           (:position target*)))
-        (float (:radius entity))
-        (float (:radius target*)))
-     (float maxrange)))
-
 (defprotocol Entity
   (mark-destroyed [_])
   (add-text-effect [_ text])
-  (set-movement [_ movement-vector]))
+  (set-movement [_ movement-vector])
+  (in-range? [_ target maxrange]))
