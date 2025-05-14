@@ -250,7 +250,7 @@
 
   (entity/tick! [[_ counter] eid]
     (when (timer/stopped? ctx/elapsed-time counter)
-      (swap! eid entity/mark-destroyed))))
+      [[:tx/mark-destroyed eid]])))
 
 (defmethod entity/create :entity/hp [[_ v]]
   [v v])
@@ -384,17 +384,15 @@
 
 (defmethod entity/tick! :active-skill [[_ {:keys [skill effect-ctx counter]}] eid]
   (cond
-   (not (effect/some-applicable? (update-effect-ctx effect-ctx)
+   (not (effect/some-applicable? (update-effect-ctx effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
-   (do
-    (tx/send-event! eid :action-done)
+   [[:tx/event eid :action-done]
     ; TODO some sound ?
-    )
+    ]
 
    (timer/stopped? ctx/elapsed-time counter)
-   (do
-    (effect/do-all! effect-ctx (:skill/effects skill))
-    (tx/send-event! eid :action-done))))
+   [[:tx/effect effect-ctx (:skill/effects skill)]
+    [:tx/event eid :action-done]]))
 
 (defn- npc-choose-skill [entity ctx]
   (->> entity
@@ -420,39 +418,38 @@
 (defmethod entity/tick! :npc-idle [_ eid]
   (let [effect-ctx (npc-effect-context eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
-      (tx/send-event! eid :start-action [skill effect-ctx])
-      (tx/send-event! eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid) [0 0])))))
+      [[:tx/event eid :start-action [skill effect-ctx]]]
+      [[:tx/event eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid)
+                                              [0 0])]])))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (tx/send-event! eid :timer-finished)))
+    [[:tx/event eid :timer-finished]]))
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
   (let [entity @eid
         cell ((:grid ctx/world) (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
-        (tx/send-event! eid :alert)))))
+        [[:tx/event eid :alert]]))))
 
 (defmethod entity/tick! :player-moving [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (input/player-movement-vector)]
-    (swap! eid entity/set-movement movement-vector)
-    (tx/send-event! eid :no-movement-input)))
+    [[:tx/set-movement eid movement-vector]]
+    [[:tx/event eid :no-movement-input]]))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (tx/send-event! eid :effect-wears-off)))
+    [[:tx/event eid :effect-wears-off]]))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (swap! eid entity/mark-destroyed)
-    (doseq [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
-      (tx/send-event! friendly-eid :alert))))
+    (cons [:tx/mark-destroyed eid]
+          (for [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
+            [:tx/event friendly-eid :alert]))))
 
-(defmethod entity/tick! :entity/animation [[k animation] eid]
-  (swap! eid #(-> %
-                  (assoc :entity/image (animation/current-frame animation))
-                  (assoc k (animation/tick animation ctx/delta-time)))))
+(defmethod entity/tick! :entity/animation [[_ animation] eid]
+  [[:tx/update-animation eid animation]])
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -511,12 +508,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body (:grid ctx/world) body movement)
                         (move-body body movement))]
-        (world/position-changed! ctx/world eid)
-        (swap! eid assoc
-               :position (:position body)
-               :left-bottom (:left-bottom body))
-        (when rotate-in-movement-direction?
-          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
+        [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))
 
 (defmethod entity/tick! :entity/projectile-collision
   [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
@@ -534,33 +526,32 @@
                                (grid/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
                      (some #(grid/blocked? % (:z-order entity)) cells*))]
-    (when destroy?
-      (swap! eid entity/mark-destroyed))
-    (when hit-entity
-      (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
-    (when hit-entity
-      (effect/do-all! {:effect/source eid
-                       :effect/target hit-entity}
-                      entity-effects))))
+    [(when destroy?
+       [:tx/mark-destroyed eid])
+     (when hit-entity
+       [:tx/assoc-in eid [k :already-hit-bodies] (conj already-hit-bodies hit-entity)] ; this is only necessary in case of not piercing ...
+       )
+     (when hit-entity
+       [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
 
 (defmethod entity/tick! :entity/delete-after-animation-stopped? [_ eid]
   (when (animation/stopped? (:entity/animation @eid))
-    (swap! eid entity/mark-destroyed)))
+    [[:tx/mark-destroyed eid]]))
 
 (defmethod entity/tick! :entity/skills [[k skills] eid]
-  (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
-          :when (and cooling-down?
-                     (timer/stopped? ctx/elapsed-time cooling-down?))]
-    (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
+  (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
+        :when (and cooling-down?
+                   (timer/stopped? ctx/elapsed-time cooling-down?))]
+    [:tx/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false]))
 
 (defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (swap! eid dissoc k)))
+    [[:tx/dissoc eid k]]))
 
 (defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (swap! eid dissoc k)
-    (swap! eid entity/mod-remove modifiers)))
+    [[:tx/dissoc eid k]
+     [:tx/mod-remove eid modifiers]]))
 
 (defcomponent :active-skill
   (state/cursor [_] :cursors/sandclock)
