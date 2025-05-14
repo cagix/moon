@@ -12,8 +12,7 @@
             [cdq.world.grid :as grid]))
 
 (defprotocol World
-  (cell [_ position])
-  (update-potential-fields! [_]))
+  (cell [_ position]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
@@ -64,7 +63,7 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
-(defn- remove-entity! [{:keys [entity-ids content-grid grid]} eid]
+(defn remove-entity! [{:keys [entity-ids content-grid grid]} eid]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -83,13 +82,6 @@
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
-
-(defn remove-destroyed-entities! [{:keys [entity-ids] :as world}]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @entity-ids))]
-    (remove-entity! world eid)
-    (doseq [component @eid]
-      (entity/destroy! component eid))))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement

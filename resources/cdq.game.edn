@@ -1,0 +1,45 @@
+[[require [cdq.impl.effects
+           cdq.impl.entity
+           cdq.impl.info
+           cdq.impl.schemas]]
+ [load-schemas "schema.edn"]
+ [load-db "properties.edn"]
+ [when-macos [[set-dock-icon "moon.png"]
+              set-glfw-async]]
+ [lwjgl3-application {:title "Cyber Dungeon Quest"
+                      :window-width 1440
+                      :window-height 900
+                      :fps 60
+                      :create [load-assets
+                               load-graphics
+                               [reset cdq.level.modules/create]]
+                      :dispose [dispose-context]
+                      :render [cache-active-entities
+                               set-camera-on-player
+                               clear-screen
+                               draw-tiled-map
+                               [draw-on-world-view [debug-draw-before-entities
+                                                    render-entities
+                                                    ; geom-test
+                                                    highlight-mouseover-tile]]
+                               draw-stage
+                               update-stage
+                               player-state-handle-click
+                               update-mouseover-entity
+                               check-paused
+                               [when-not-paused [update-time
+                                                 update-potential-fields
+                                                 tick-entities]]
+                               remove-destroyed-entities ; do not pause as pickup item should be destroyed
+                               camera-controls
+                               check-window-controls]
+                      :resize [update-viewports]}]]
+
+{
+
+ :db cdq.impl.db/create
+ :assets cdq.impl.assets/create
+ :graphics* cdq.impl.graphics/create
+ :graphics
+ ;:vis-ui {:skin-scale :x1}
+ }

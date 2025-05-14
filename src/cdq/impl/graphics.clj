@@ -319,10 +319,6 @@
   (set-cursor! [_ cursor-key]
     (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
-  (resize! [_ width height]
-    (Viewport/.update ui-viewport    width height true)
-    (Viewport/.update world-viewport width height false))
-
   (sub-sprite [_ sprite [x y w h]]
     (sprite* (TextureRegion. ^TextureRegion (:texture-region sprite)
                              (int x)

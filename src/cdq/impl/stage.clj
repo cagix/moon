@@ -1167,7 +1167,7 @@
     (.setName "player-message-actor")))
 
 (defn show-message! [stage text]
-  (Actor/.setUserObject (Group/.findActor (Stage/.getRoot stage) "player-message-actor")
+  (Actor/.setUserObject (Group/.findActor (Stage/.getRoot stage) "player-message-actor") ; TODO FIXME no getRoot
                         (atom {:text text
                                :counter 0})))
 
@@ -1203,20 +1203,8 @@
                                            (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
                          :pack? true})))
 
-(defn- toggle-visible! [^Actor actor]
+(defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
-
-(defn check-window-controls! [stage]
-  (let [window-hotkeys {:inventory-window   Input$Keys/I
-                        :entity-info-window Input$Keys/E}]
-    (doseq [window-id [:inventory-window
-                       :entity-info-window]
-            :when (.isKeyJustPressed Gdx/input (get window-hotkeys window-id))]
-      (toggle-visible! (get (:windows stage) window-id))))
-  (when (.isKeyJustPressed Gdx/input Input$Keys/ESCAPE)
-    (let [windows (Group/.getChildren (:windows stage))]
-      (when (some Actor/.isVisible windows)
-        (run! #(Actor/.setVisible % false) windows)))))
 
 (defn inventory-visible? [stage]
   (-> stage :windows :inventory-window Actor/.isVisible))
@@ -1310,9 +1298,6 @@
 
   (show-modal! [stage opts]
     (show-modal! stage opts))
-
-  (check-window-controls! [stage]
-    (check-window-controls! stage))
 
   (inventory-visible? [stage]
     (inventory-visible? stage))

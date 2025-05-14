@@ -1,0 +1,13 @@
+(ns cdq.game.highlight-mouseover-tile
+  (:require [cdq.ctx :as ctx]
+            [cdq.graphics :as graphics]))
+
+(defn do! []
+  (let [g ctx/graphics
+        [x y] (mapv int (graphics/world-mouse-position g))
+        cell ((:grid ctx/world) [x y])]
+    (when (and cell (#{:air :none} (:movement @cell)))
+      (graphics/draw-rectangle g x y 1 1
+                               (case (:movement @cell)
+                                 :air  [1 1 0 0.5]
+                                 :none [1 0 0 0.5])))))

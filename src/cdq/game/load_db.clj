@@ -1,4 +1,4 @@
-(ns cdq.impl.db
+(ns cdq.game.load-db
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]
@@ -110,7 +110,7 @@
   (build-all [this property-type]
     (map #(schema/transform ctx/schemas %) (db/all-raw this property-type))))
 
-(defn create [path]
+(defn- create [path]
   (let [properties-file (io/resource path) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
@@ -118,3 +118,6 @@
     (run! validate! properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file})))
+
+(defn do! [file]
+  (utils/bind-root #'ctx/db (create file)))

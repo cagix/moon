@@ -13,7 +13,6 @@
   (remove-skill! [stage skill])
   (show-message! [stage text])
   (show-modal! [stage opts])
-  (check-window-controls! [stage])
   (inventory-visible? [stage])
   (toggle-inventory-visible! [stage])
   (inventory-cell-with-item? [_ actor])

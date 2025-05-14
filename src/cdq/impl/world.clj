@@ -4,8 +4,7 @@
             [cdq.utils :as utils]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
-            cdq.world.potential-fields))
+            [cdq.world.grid :as grid]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -79,14 +78,7 @@
   world/World
   (cell [_ position]
     ; assert/document integer ?
-    (grid position))
-  (update-potential-fields! [_]
-    (doseq [[faction max-iterations] {:good 15 :evil 5}]
-      (cdq.world.potential-fields/tick potential-field-cache
-                                       grid
-                                       faction
-                                       active-entities
-                                       max-iterations))))
+    (grid position)))
 
 (defn create [{:keys [tiled-map start-position]}]
   (let [width  (tiled/tm-width  tiled-map)

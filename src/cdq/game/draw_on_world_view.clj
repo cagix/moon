@@ -1,5 +1,6 @@
 (ns cdq.game.draw-on-world-view
   (:require [cdq.ctx :as ctx]
+            [cdq.game :as game]
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera])
   (:import (com.badlogic.gdx.graphics Color)
@@ -14,7 +15,6 @@
       ; could pass new 'g' with assoc :unit-scale -> but using ctx/graphics accidentally
       ; -> icon is drawn at too big ! => mutable field.
       (reset! (:unit-scale ctx/graphics) (:world-unit-scale ctx/graphics))
-      (doseq [f draw-fns]
-        (f))
+      (game/execute! draw-fns)
       (reset! (:unit-scale ctx/graphics) 1)))
   (Batch/.end (:batch ctx/graphics)))
