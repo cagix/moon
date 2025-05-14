@@ -22,8 +22,8 @@
                         (render []
                           (game/execute! render))
 
-                        (resize [width height]
-                          #_(game/execute! resize #_width #_height)))
+                        (resize [_width _height]
+                          (game/execute! resize)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)
                         (.setWindowedMode window-width window-height)

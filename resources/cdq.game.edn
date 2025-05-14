@@ -33,4 +33,4 @@
                                remove-destroyed-entities ; do not pause as pickup item should be destroyed
                                camera-controls
                                check-window-controls]
-                      :resize [update-viewports]}]] ; TODO resize not available
+                      :resize [update-viewports]}]]
