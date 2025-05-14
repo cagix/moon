@@ -1,6 +1,7 @@
 (ns cdq.db.schema
   (:refer-clojure :exclude [type])
-  (:require [cdq.val-max :as val-max]
+  (:require [cdq.utils :as utils]
+            [cdq.val-max :as val-max]
             [clojure.set :as set]))
 
 (defn type [schema]
@@ -11,10 +12,6 @@
 
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
-
-(defn schema-of [schemas k]
-  (assert (contains? schemas k) (pr-str k))
-  (get schemas k))
 
 (defn map-keys [schema schemas]
   (let [[_m _p & ks] (malli-form schema schemas)]
@@ -98,7 +95,7 @@
 
 (defn- map-form [ks schemas]
   (map-schema ks (fn [k]
-                   (malli-form (schema-of schemas k)
+                   (malli-form (utils/safe-get schemas k)
                                schemas))))
 
 (defmethod malli-form :s/map [[_ ks] schemas]

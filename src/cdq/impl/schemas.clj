@@ -1,6 +1,7 @@
 (ns cdq.impl.schemas
   (:require [cdq.db.schema :as schema]
             [cdq.schemas :as schemas]
+            [cdq.utils :as utils]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -24,11 +25,14 @@
 
 (defrecord Schemas [schemas]
   schemas/Schemas
+  (schema [_ k]
+    (utils/safe-get schemas k))
+
   (property-types [_]
     (filter #(= "properties" (namespace %)) (keys schemas)))
 
-  (validate! [_ schema-k property]
-    (let [malli-schema (m/schema (schema/malli-form (schema/schema-of schemas schema-k)
+  (validate! [this schema-k property]
+    (let [malli-schema (m/schema (schema/malli-form (schemas/schema this schema-k)
                                                     schemas))]
       (when-not (m/validate malli-schema property)
         (throw (ex-info (str (me/humanize (m/explain malli-schema property)))
@@ -38,7 +42,7 @@
   (transform [this property]
     (apply-kvs property
                (fn [k v]
-                 (let [schema (try (schema/schema-of schemas k)
+                 (let [schema (try (schemas/schema this k)
                                    (catch Throwable _t
                                      #_(swap! undefined-data-ks conj k)
                                      nil))

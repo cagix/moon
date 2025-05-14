@@ -400,7 +400,7 @@
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (schema/schema-of (:schemas ctx/schemas) (property/type props))
+  (let [schema (schemas/schema ctx/schemas (property/type props))
         window (->window {:title (str "[SKY]Property[]")
                           :id :property-editor-window
                           :modal? true
@@ -656,8 +656,7 @@
     (add-actor! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (schema/schema-of (:schemas ctx/schemas) k)
-                               v)]
+  (let [widget (schema->widget (schemas/schema ctx/schemas k) v)]
     (Actor/.setUserObject widget [k v])
     widget))
 
@@ -694,15 +693,15 @@
   [(horizontal-separator-cell component-row-cols)])
 
 (defn- k->default-value [k]
-  (let [schema (schema/schema-of (:schemas ctx/schemas) k)]
+  (let [schema (schemas/schema ctx/schemas k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (mg/generate
-            (schema/malli-form schema (:schemas ctx/schemas))
-            {:size 3}))))
+     :else (mg/generate (schema/malli-form schema
+                                           (:schemas ctx/schemas))
+                        {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (->window {:title "Choose"
@@ -771,7 +770,7 @@
   (into {}
         (for [widget (filter value-widget? (Group/.getChildren table))
               :let [[k _] (Actor/.getUserObject widget)]]
-          [k (->value (schema/schema-of (:schemas ctx/schemas) k) widget)])))
+          [k (->value (schemas/schema ctx/schemas k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
