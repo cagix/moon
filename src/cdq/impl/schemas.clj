@@ -148,32 +148,29 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defmulti malli-form (fn [schema _schemas] (schema/type schema)))
-(defmethod malli-form :default [schema _schemas] schema)
-
 (defrecord Schemas [schemas]
   schemas/Schemas
   (schema [_ k]
     (utils/safe-get schemas k))
 
   (optional-k? [_ schema k]
-    (optional? k (malli-form schema schemas)))
+    (optional? k (schema/malli-form schema schemas)))
 
   (generate [_ schema {:keys [size]}]
-    (mg/generate (malli-form schema schemas)
+    (mg/generate (schema/malli-form schema schemas)
                  {:size size}))
 
   (map-keys [_ schema]
-    (map-keys (malli-form schema schemas)))
+    (map-keys (schema/malli-form schema schemas)))
 
   (optional-keyset [_ schema]
-    (optional-keyset (malli-form schema schemas)))
+    (optional-keyset (schema/malli-form schema schemas)))
 
   (property-types [_]
     (filter #(= "properties" (namespace %)) (keys schemas)))
 
   (validate! [this k value]
-    (validate! (malli-form (schemas/schema this k) schemas)
+    (validate! (schema/malli-form (schemas/schema this k) schemas)
                value))
 
   (transform [this property]
@@ -193,21 +190,21 @@
 (defn create [data]
   (->Schemas data))
 
-(defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
-(defmethod malli-form :s/number  [_ _schemas] number?)
-(defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
-(defmethod malli-form :s/int     [_ _schemas] int?)
-(defmethod malli-form :s/pos     [_ _schemas] pos?)
-(defmethod malli-form :s/pos-int [_ _schemas] pos-int?)
+(defmethod schema/malli-form :s/val-max [_ _schemas] val-max/schema)
+(defmethod schema/malli-form :s/number  [_ _schemas] number?)
+(defmethod schema/malli-form :s/nat-int [_ _schemas] nat-int?)
+(defmethod schema/malli-form :s/int     [_ _schemas] int?)
+(defmethod schema/malli-form :s/pos     [_ _schemas] pos?)
+(defmethod schema/malli-form :s/pos-int [_ _schemas] pos-int?)
 
-(defmethod malli-form :s/sound [_ _schemas] :string)
+(defmethod schema/malli-form :s/sound [_ _schemas] :string)
 
-(defmethod malli-form :s/image [_ _schemas]
+(defmethod schema/malli-form :s/image [_ _schemas]
   [:map {:closed true}
    [:file :string]
    [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
 
-(defmethod malli-form :s/animation [_ _schemas]
+(defmethod schema/malli-form :s/animation [_ _schemas]
   [:map {:closed true}
    [:frames :some] ; FIXME actually images
    [:frame-duration pos?]
@@ -216,10 +213,10 @@
 (defn- type->id-namespace [property-type]
   (keyword (name property-type)))
 
-(defmethod malli-form :s/one-to-one [[_ property-type] _schemas]
+(defmethod schema/malli-form :s/one-to-one [[_ property-type] _schemas]
   [:qualified-keyword {:namespace (type->id-namespace property-type)}])
 
-(defmethod malli-form :s/one-to-many [[_ property-type] _schemas]
+(defmethod schema/malli-form :s/one-to-many [[_ property-type] _schemas]
   [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
 
 (defn- map-schema
@@ -237,13 +234,13 @@
 
 (defn- map-form [ks schemas]
   (map-schema ks (fn [k]
-                   (malli-form (utils/safe-get schemas k)
-                               schemas))))
+                   (schema/malli-form (utils/safe-get schemas k)
+                                      schemas))))
 
-(defmethod malli-form :s/map [[_ ks] schemas]
+(defmethod schema/malli-form :s/map [[_ ks] schemas]
   (map-form ks schemas))
 
-(defmethod malli-form :s/map-optional [[_ ks] schemas]
+(defmethod schema/malli-form :s/map-optional [[_ ks] schemas]
   (map-form (map (fn [k] [k {:optional true}]) ks)
             schemas))
 
@@ -251,6 +248,6 @@
   (filter #(= (name ns-name-k) (namespace %))
           (keys schemas)))
 
-(defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
-  (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
-              schemas))
+(defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
+  (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
+                     schemas))

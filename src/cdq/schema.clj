@@ -13,3 +13,6 @@
 
 (defmethod edn->value :default [_schema v]
   v)
+
+(defmulti malli-form (fn [schema _schemas] (type schema)))
+(defmethod malli-form :default [schema _schemas] schema)
