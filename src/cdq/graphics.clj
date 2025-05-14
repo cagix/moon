@@ -6,7 +6,6 @@
   (pixels->world-units [_ pixels])
   (draw-image [_ image position])
   (draw-rotated-centered [_ image rotation [x y]])
-  (set-camera-position! [_ position])
 
   (draw-text [_ {:keys [font scale x y text h-align up?]}]
              "font, h-align, up? and scale are optional.
@@ -39,15 +38,6 @@
   (draw-on-world-view! [_ f])
 
   (set-cursor! [_ cursor-key])
-
-  (draw-tiled-map [_ tiled-map color-setter]
-                  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-                  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-                  Can be used for lights & shadows.
-
-                  Renders only visible layers.")
 
   (resize! [_ width height])
 

@@ -215,9 +215,6 @@
                            rotation
                            color)))
 
-  (set-camera-position! [_ position]
-    (camera/set-position! (:camera world-viewport) position))
-
   (draw-text [_ {:keys [font scale x y text h-align up?]}]
     (draw-text! {:font (or font default-font)
                  :scale (* (float @unit-scale)
@@ -334,12 +331,6 @@
 
   (set-cursor! [_ cursor-key]
     (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
-
-  (draw-tiled-map [_ tiled-map color-setter]
-    (tiled/draw! (get-tiled-map-renderer tiled-map)
-                 tiled-map
-                 color-setter
-                 (:camera world-viewport)))
 
   (resize! [_ width height]
     (Viewport/.update ui-viewport    width height true)
