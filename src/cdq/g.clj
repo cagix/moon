@@ -152,7 +152,7 @@
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (stage/create!))
+  (bind-root #'ctx/stage ((requiring-resolve 'cdq.impl.stage/create!)))
   (bind-root #'ctx/world (create-world ((requiring-resolve world-fn))))
   (spawn-enemies!)
   (bind-root #'ctx/player-eid (world/spawn-creature (player-entity-props (:start-position ctx/world)))))

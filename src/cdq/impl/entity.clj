@@ -68,10 +68,10 @@
 
 (defn- mouseover-actor->cursor [actor]
   (cond
-   (stage/inventory-cell-with-item? actor) :cursors/hand-before-grab
-   (stage/window-title-bar? actor)         :cursors/move-window
-   (stage/button? actor)                   :cursors/over-button
-   :else                                   :cursors/default))
+   (stage/inventory-cell-with-item? ctx/stage actor) :cursors/hand-before-grab
+   (stage/window-title-bar? ctx/stage actor) :cursors/move-window
+   (stage/button? ctx/stage actor) :cursors/over-button
+   :else :cursors/default))
 
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and ctx/mouseover-eid
