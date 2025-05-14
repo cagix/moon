@@ -12,6 +12,7 @@
             [cdq.impl.assets]
             [cdq.impl.db]
             [cdq.impl.graphics]
+            [cdq.impl.schemas]
             [cdq.stage :as stage]
             [cdq.tiled :as tiled]
             [cdq.math :refer [circle->outer-rectangle]]
@@ -402,11 +403,15 @@
     (when (.isKeyPressed Gdx/input Input$Keys/MINUS)  (camera/inc-zoom camera    zoom-speed))
     (when (.isKeyPressed Gdx/input Input$Keys/EQUALS) (camera/inc-zoom camera (- zoom-speed)))))
 
+(defn- io-read-edn [path]
+  (-> path io/resource slurp edn/read-string))
+
 (defn -main []
-  (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
+  (let [config (io-read-edn "cdq.application.edn")]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
-    (bind-root #'ctx/db (cdq.impl.db/create))
+    (bind-root #'ctx/schemas (cdq.impl.schemas/create (io-read-edn "schema.edn")))
+    (bind-root #'ctx/db (cdq.impl.db/create "properties.edn"))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)

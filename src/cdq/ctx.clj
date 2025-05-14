@@ -1,9 +1,10 @@
 (ns cdq.ctx)
 
-(declare assets
+(declare schemas
+         db
+         assets
          graphics
          stage
-         db
          world
          elapsed-time
          delta-time

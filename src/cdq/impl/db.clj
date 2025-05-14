@@ -1,20 +1,12 @@
 (ns cdq.impl.db
-  (:require [cdq.db :as db]
-            [cdq.db.schema :as schema]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
             [cdq.db.property :as property]
+            [cdq.schemas :as schemas]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]))
-
-; reduce-kv?
-(defn- apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)
@@ -34,34 +26,6 @@
              with-out-str
              (spit file)))))))
 
-(defn- validate-properties! [properties schemas]
-  (assert (or (empty? properties)
-              (apply distinct? (map :property/id properties))))
-  (run! #(schema/validate! schemas (property/type %) %) properties))
-
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defn- build* [schemas property]
-  (apply-kvs property
-             (fn [k v]
-               (let [schema (try (schema/schema-of schemas k)
-                                 (catch Throwable _t
-                                   #_(swap! undefined-data-ks conj k)
-                                   nil))
-                     v (if (map? v)
-                         (build* schemas v)
-                         v)]
-                 (try (schema/edn->value schema v)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t))))))))
-
 (defn- async-write-to-file! [{:keys [data file]}]
   ; TODO validate them again!?
   (->> data
@@ -71,12 +35,12 @@
        doall
        (async-pprint-spit! file)))
 
-(defrecord DB [data file schemas]
+(defrecord DB [data file]
   db/DB
   (update [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (schema/validate! schemas (property/type property) property)
+    (schemas/validate! ctx/schemas (property/type property) property)
     (update this :data assoc id property))
 
   (delete [this property-id]
@@ -94,16 +58,18 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id]
-    (build* schemas (db/get-raw this property-id)))
+    (schemas/transform ctx/schemas
+                       (db/get-raw this property-id)))
 
   (build-all [this property-type]
-    (map #(build* schemas %) (db/all-raw this property-type))))
+    (map #(schemas/transform ctx/schemas %)
+         (db/all-raw this property-type))))
 
-(defn create []
-  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
-        properties-file (io/resource "properties.edn")
+(defn create [path]
+  (let [properties-file (io/resource path) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
-    (validate-properties! properties schemas)
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (run! #(schemas/validate! ctx/schemas (property/type %) %) properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
-              :file properties-file
-              :schemas schemas})))
+              :file properties-file})))
