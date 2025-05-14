@@ -33,13 +33,4 @@
                                remove-destroyed-entities ; do not pause as pickup item should be destroyed
                                camera-controls
                                check-window-controls]
-                      :resize [update-viewports]}]]
-
-{
-
- :db cdq.impl.db/create
- :assets cdq.impl.assets/create
- :graphics* cdq.impl.graphics/create
- :graphics
- ;:vis-ui {:skin-scale :x1}
- }
+                      :resize [update-viewports]}]] ; TODO resize not available
