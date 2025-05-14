@@ -1,5 +1,5 @@
 (ns cdq.impl.schemas
-  (:require [cdq.db.schema :as schema]
+  (:require [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.utils :as utils]
             [malli.core :as m]

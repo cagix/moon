@@ -1,4 +1,4 @@
-(ns cdq.db.schema
+(ns cdq.schema
   (:refer-clojure :exclude [type])
   (:require [cdq.utils :as utils]
             [cdq.val-max :as val-max]

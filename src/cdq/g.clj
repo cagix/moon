@@ -1,7 +1,7 @@
 (ns cdq.g
   (:require [cdq.animation :as animation]
             [cdq.db :as db]
-            [cdq.db.schema :as schema]
+            [cdq.schema :as schema]
             [cdq.db.property :as property]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
