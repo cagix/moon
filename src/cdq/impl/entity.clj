@@ -33,13 +33,13 @@
      (stage/inventory-visible? ctx/stage)
      (do
       (sound/play! "bfxr_takeit")
-      (entity/mark-destroyed eid)
+      (swap! eid entity/mark-destroyed)
       (tx/send-event! ctx/player-eid :pickup-item item))
 
      (inventory/can-pickup-item? (:entity/inventory @ctx/player-eid) item)
      (do
       (sound/play! "bfxr_pickup")
-      (entity/mark-destroyed eid)
+      (swap! eid entity/mark-destroyed)
       (tx/pickup-item ctx/player-eid item))
 
      :else
@@ -250,7 +250,7 @@
 
   (entity/tick! [[_ counter] eid]
     (when (timer/stopped? ctx/elapsed-time counter)
-      (entity/mark-destroyed eid))))
+      (swap! eid entity/mark-destroyed))))
 
 (defmethod entity/create :entity/hp [[_ v]]
   [v v])
@@ -445,7 +445,7 @@
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
-    (entity/mark-destroyed eid)
+    (swap! eid entity/mark-destroyed)
     (doseq [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
       (tx/send-event! friendly-eid :alert))))
 
@@ -535,7 +535,7 @@
         destroy? (or (and hit-entity (not piercing?))
                      (some #(grid/blocked? % (:z-order entity)) cells*))]
     (when destroy?
-      (entity/mark-destroyed eid))
+      (swap! eid entity/mark-destroyed))
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
@@ -545,7 +545,7 @@
 
 (defmethod entity/tick! :entity/delete-after-animation-stopped? [_ eid]
   (when (animation/stopped? (:entity/animation @eid))
-    (entity/mark-destroyed eid)))
+    (swap! eid entity/mark-destroyed)))
 
 (defmethod entity/tick! :entity/skills [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
@@ -603,7 +603,7 @@
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]
-    (entity/mark-destroyed eid)))
+    (swap! eid entity/mark-destroyed)))
 
 (defcomponent :npc-moving
   (state/enter! [[_ {:keys [eid movement-vector]}]]

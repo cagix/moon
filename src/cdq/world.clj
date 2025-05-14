@@ -121,6 +121,9 @@
                  z-order
                  rotation-angle]
   entity/Entity
+  (mark-destroyed [entity]
+    (assoc entity :entity/destroyed? true))
+
   (add-text-effect [entity text]
     (assoc entity
            :entity/string-effect

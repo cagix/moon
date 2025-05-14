@@ -158,8 +158,6 @@
   (swap! eid assoc :entity/movement {:direction movement-vector
                                      :speed (or (stat @eid :entity/movement-speed) 0)}))
 
-(defn mark-destroyed [eid]
-  (swap! eid assoc :entity/destroyed? true))
-
 (defprotocol Entity
+  (mark-destroyed [_])
   (add-text-effect [_ text]))
