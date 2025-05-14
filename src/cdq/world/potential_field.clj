@@ -2,13 +2,13 @@
   (:require [cdq.entity :as entity] ; just entity/faction
             [cdq.math.vector2 :as v]
             [cdq.utils :refer [utils-positions when-seq]]
-            [cdq.world.grid :refer [rectangle->cells
-                                    cached-adjacent-cells
-                                    blocked?
-                                    occupied-by-other?
-                                    nearest-entity
-                                    nearest-entity-distance
-                                    get-8-neighbour-positions]]))
+            [cdq.world.grid :as grid :refer [rectangle->cells
+                                             cached-adjacent-cells
+                                             blocked?
+                                             occupied-by-other?
+                                             nearest-entity
+                                             nearest-entity-distance
+                                             get-8-neighbour-positions]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
@@ -31,15 +31,12 @@
                 cell))
             adjacent-cells)))
 
-(defn pf-cell-blocked? [cell*]
-  (blocked? cell* :z-order/ground))
-
 ; not using filter because nil cells considered @ remove-not-allowed-diagonals
 ; TODO only non-nil cells check
 ; TODO always called with cached-adjacent-cells ...
 (defn- filter-viable-cells [eid adjacent-cells]
   (remove-not-allowed-diagonals
-    (mapv #(when-not (or (pf-cell-blocked? @%)
+    (mapv #(when-not (or (grid/pf-cell-blocked? @%)
                          (occupied-by-other? @% eid))
              %)
           adjacent-cells)))

@@ -69,3 +69,6 @@
                       or a multiple-cell-size body which touches this cell.")
   (nearest-entity          [cell faction])
   (nearest-entity-distance [cell faction]))
+
+(defn pf-cell-blocked? [cell*]
+  (blocked? cell* :z-order/ground))

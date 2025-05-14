@@ -1,8 +1,6 @@
 (ns cdq.game.update-potential-fields
   (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
-            [cdq.world.grid :as grid]
-            [cdq.world.potential-field :refer [pf-cell-blocked?]]))
+            [cdq.world.grid :as grid]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.
@@ -45,7 +43,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(entity/tile @%) entities)
+            (zipmap (map #(mapv int (:position @%)) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -88,7 +86,7 @@
             adjacent-cell (grid/cached-adjacent-cells grid cell)
             :let [cell* @cell
                   adjacent-cell* @adjacent-cell]
-            :when (not (or (pf-cell-blocked? adjacent-cell*)
+            :when (not (or (grid/pf-cell-blocked? adjacent-cell*)
                            (marked? adjacent-cell*)))
             :let [distance-value (+ (float (distance cell*))
                                     (float (if (diagonal-cells? cell* adjacent-cell*)
@@ -119,7 +117,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(entity/tile @%) entities)
+    (zipmap (map #(mapv int (:position @%)) entities)
             entities)))
 
 (defn- tick! [pf-cache grid faction entities max-iterations]
