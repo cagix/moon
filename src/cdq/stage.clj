@@ -9,7 +9,6 @@
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
-            [cdq.malli :as malli]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.utils :as utils]
@@ -672,7 +671,7 @@
 (defn- attribute-label [k schema table]
   (let [label (->label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                        (name k))
-        delete-button (when (malli/optional? k (schema/malli-form schema (:schemas ctx/schemas)))
+        delete-button (when (schemas/optional-k? ctx/schemas schema k)
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
@@ -700,8 +699,7 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (malli/generate (schema/malli-form schema (:schemas ctx/schemas))
-                           :size 3))))
+     :else (schemas/generate ctx/schemas schema {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (->window {:title "Choose"
@@ -711,7 +709,7 @@
                           :close-on-escape? true
                           :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (malli/map-keys (schema/malli-form schema (:schemas ctx/schemas)))))]
+                                   (schemas/map-keys ctx/schemas schema)))]
     (add-rows!
      window
      (for [k remaining-ks]
@@ -755,7 +753,7 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (malli/optional-keyset (schema/malli-form schema (:schemas ctx/schemas)))
+        opt? (seq (set/difference (schemas/optional-keyset ctx/schemas schema)
                                   (set (keys m))))]
     (add-rows!
      table

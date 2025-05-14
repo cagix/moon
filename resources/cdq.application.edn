@@ -1,7 +1,6 @@
 {:requires [cdq.impl.effects
             cdq.impl.entity
-            cdq.impl.info
-            cdq.impl.schema]
+            cdq.impl.info]
  :graphics {:cursors {:cursors/bag                   ["bag001"       [0   0]]
                       :cursors/black-x               ["black_x"      [0   0]]
                       :cursors/default               ["default"      [0   0]]

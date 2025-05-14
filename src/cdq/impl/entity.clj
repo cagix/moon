@@ -10,7 +10,6 @@
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-            [cdq.malli :as m]
             [cdq.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.timer :as timer]
@@ -19,6 +18,7 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
+            [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
 
