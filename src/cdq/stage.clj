@@ -10,6 +10,7 @@
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
+            [cdq.schemas :as schemas]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
@@ -349,9 +350,6 @@
   (or image
       (first (:frames animation))))
 
-(defn- get-schemas []
-  (:schemas ctx/db))
-
 (defn- info-text [property]
   (binding [*print-level* 3]
     (with-out-str
@@ -401,8 +399,7 @@
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schemas (get-schemas)
-        schema (schema/schema-of schemas (property/type props))
+  (let [schema (schema/schema-of (:schemas ctx/schemas) (property/type props))
         window (->window {:title (str "[SKY]Property[]")
                           :id :property-editor-window
                           :modal? true
@@ -658,7 +655,7 @@
     (add-actor! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (schema/schema-of (get-schemas) k)
+  (let [widget (schema->widget (schema/schema-of (:schemas ctx/schemas) k)
                                v)]
     (Actor/.setUserObject widget [k v])
     widget))
@@ -674,7 +671,7 @@
 (defn- attribute-label [k schema table]
   (let [label (->label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                        (name k))
-        delete-button (when (schema/optional-k? k schema (get-schemas))
+        delete-button (when (schema/optional-k? k schema (:schemas ctx/schemas))
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
@@ -696,13 +693,13 @@
   [(horizontal-separator-cell component-row-cols)])
 
 (defn- k->default-value [k]
-  (let [schema (schema/schema-of (get-schemas) k)]
+  (let [schema (schema/schema-of (:schemas ctx/schemas) k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (schema/generate schema {:size 3} (get-schemas)))))
+     :else (schema/generate schema {:size 3} (:schemas ctx/schemas)))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (->window {:title "Choose"
@@ -712,7 +709,7 @@
                           :close-on-escape? true
                           :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (schema/map-keys schema (get-schemas))))]
+                                   (schema/map-keys schema (:schemas ctx/schemas))))]
     (add-rows!
      window
      (for [k remaining-ks]
@@ -756,7 +753,7 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (schema/optional-keys-left schema m (get-schemas))]
+        opt? (schema/optional-keys-left schema m (:schemas ctx/schemas))]
     (add-rows!
      table
      (concat [(when opt?
@@ -771,7 +768,7 @@
   (into {}
         (for [widget (filter value-widget? (Group/.getChildren table))
               :let [[k _] (Actor/.getUserObject widget)]]
-          [k (->value (schema/schema-of (get-schemas) k) widget)])))
+          [k (->value (schema/schema-of (:schemas ctx/schemas) k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -804,12 +801,8 @@
 
 (import '(com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter))
 
-(defn- property-types [schemas]
-  (filter #(= "properties" (namespace %))
-          (keys schemas)))
-
 (defn- property-type-tabs []
-  (for [property-type (sort (property-types (get-schemas)))]
+  (for [property-type (sort (schemas/property-types ctx/schemas))]
     {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
@@ -1134,8 +1127,7 @@
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
-            :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys (:schemas ctx/db))))]
+            :items (for [property-type (sort (schemas/property-types ctx/schemas))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn []
                                   (open-editor-window! property-type))})}]

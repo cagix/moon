@@ -58,12 +58,10 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id]
-    (schemas/transform ctx/schemas
-                       (db/get-raw this property-id)))
+    (schemas/transform ctx/schemas (db/get-raw this property-id)))
 
   (build-all [this property-type]
-    (map #(schemas/transform ctx/schemas %)
-         (db/all-raw this property-type))))
+    (map #(schemas/transform ctx/schemas %) (db/all-raw this property-type))))
 
 (defn create [path]
   (let [properties-file (io/resource path) ; TODO required from existing?

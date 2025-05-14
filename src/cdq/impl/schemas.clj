@@ -22,8 +22,12 @@
 
 (defrecord Schemas [schemas]
   schemas/Schemas
+  (property-types [_]
+    (filter #(= "properties" (namespace %)) (keys schemas)))
+
   (validate! [_ property-type property]
     (schema/validate! schemas property-type property))
+
   (transform [this property]
     (apply-kvs property
                (fn [k v]
