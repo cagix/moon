@@ -1213,6 +1213,7 @@
   (-> stage :windows :inventory-window toggle-visible!))
 
 (defn inventory-cell-with-item? [actor]
+  {:pre [actor]}
   (and (Actor/.getParent actor)
        (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
        (get-in (:entity/inventory @ctx/player-eid)
