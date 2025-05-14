@@ -130,8 +130,8 @@
 (def ^:private zoom-speed 0.025)
 
 #_(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
-  (when (gdx/key-pressed? input :minus)  (camera/inc-zoom camera    zoom-speed))
-  (when (gdx/key-pressed? input :equals) (camera/inc-zoom camera (- zoom-speed))))
+  (when (gdx/key-pressed? input :minus)  (camera/inc-zoom! camera    zoom-speed))
+  (when (gdx/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))

@@ -72,5 +72,5 @@
   [camera]
   (set-zoom camera 1))
 
-(defn inc-zoom [camera by]
+(defn inc-zoom! [camera by]
   (set-zoom camera (max 0.1 (+ (.zoom ^OrthographicCamera camera) by))))
