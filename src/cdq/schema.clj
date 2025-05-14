@@ -25,21 +25,6 @@
 (defn optional-k? [k schema schemas]
   (malli/optional? k (malli-form schema schemas)))
 
-(defn- optional-keyset [m-schema schemas]
-  (set (filter #(optional? % m-schema) (map-keys m-schema schemas))))
-
-(comment
- (= (optional-keyset
-     [:map {:closed true}
-      [:foo]
-      [:bar]
-      [:baz {:optional true}]
-      [:boz {:optional false}]
-      [:asdf {:optional true}]])
-    [:baz :asdf])
- )
-
 (defn optional-keys-left [schema m schemas]
-  (seq (set/difference (optional-keyset (malli-form schema schemas)
-                                        schemas)
+  (seq (set/difference (malli/optional-keyset (malli-form schema schemas))
                        (set (keys m)))))

@@ -67,3 +67,18 @@
                 [:asdf {:optional true}]])
     true)
  )
+
+(defn optional-keyset [map-schema]
+  (set (filter #(optional? % map-schema)
+               (map-keys map-schema))))
+
+(comment
+ (= (optional-keyset
+     [:map {:closed true}
+      [:foo]
+      [:bar]
+      [:baz {:optional true}]
+      [:boz {:optional false}]
+      [:asdf {:optional true}]])
+    #{:baz :asdf})
+ )
