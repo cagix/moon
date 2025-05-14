@@ -1,6 +1,5 @@
 (ns cdq.impl.effects
-  (:require [cdq.audio.sound :as sound]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -9,7 +8,6 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
-            [cdq.tx :as tx]
             [cdq.utils :refer [defcomponent]]
             [cdq.world :as world]))
 
@@ -34,7 +32,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target-position]}]
-    (world/spawn-audiovisual target-position audiovisual)))
+    [[:tx/audiovisual target-position audiovisual]]))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)
@@ -62,12 +60,13 @@
               max-range))))
 
   (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
-    (world/spawn-projectile {:position (projectile-start-point @source
-                                                               target-direction
-                                                               (world/projectile-size projectile))
-                         :direction target-direction
-                         :faction (:entity/faction @source)}
-                        projectile)))
+    [[:tx/spawn-projectile
+      {:position (projectile-start-point @source
+                                         target-direction
+                                         (world/projectile-size projectile))
+       :direction target-direction
+       :faction (:entity/faction @source)}
+      projectile]]))
 
 (comment
  ; mass shooting
@@ -92,7 +91,7 @@
     false)
 
   (effect/handle [[_ sound] _ctx]
-    (sound/play! sound)))
+    [[:tx/sound sound]]))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]
@@ -101,11 +100,11 @@
 
   (effect/handle [[_ {:keys [property/id]}]
                   {:keys [effect/source effect/target-position]}]
-    (world/spawn-creature {:position target-position
-                           :creature-id id ; already properties/get called through one-to-one, now called again.
-                           :components {:entity/fsm {:fsm :fsms/npc
-                                                     :initial-state :npc-idle}
-                                        :entity/faction (:entity/faction @source)}})))
+    [[:tx/spawn-creature {:position target-position
+                          :creature-id id ; already properties/get called through one-to-one, now called again.
+                          :components {:entity/fsm {:fsm :fsms/npc
+                                                    :initial-state :npc-idle}
+                                       :entity/faction (:entity/faction @source)}}]]))
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -131,20 +130,20 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target (world/creatures-in-los-of-player ctx/world)]
-        (world/line-render {:start (:position source*) #_(start-point source* target*)
-                            :end (:position @target)
-                            :duration 0.05
-                            :color [1 0 0 0.75]
-                            :thick? true})
-        ; some sound .... or repeat smae sound???
-        ; skill do sound  / skill start sound >?
-        ; problem : nested effect/do-all! , we are still having direction/target-position
-        ; at sub-effects
-        ; and no more safe - merge
-        ; find a way to pass ctx / effect-ctx separate ?
-        (effect/do-all! {:effect/source source :effect/target target}
-                        entity-effects))))
+      (apply concat
+             (for [target (world/creatures-in-los-of-player ctx/world)]
+               [[:tx/spawn-line {:start (:position source*) #_(start-point source* target*)
+                                 :end (:position @target)
+                                 :duration 0.05
+                                 :color [1 0 0 0.75]
+                                 :thick? true}]
+                ; some sound .... or repeat smae sound???
+                ; skill do sound  / skill start sound >?
+                ; problem : nested effect/do-all! , we are still having direction/target-position
+                ; at sub-effects
+                ; and no more safe - merge
+                ; find a way to pass ctx / effect-ctx separate ?
+                [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
   (effect/render [_ {:keys [effect/source]} g]
     (let [source* @source]
@@ -177,15 +176,15 @@
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
-        (do
-         (world/line-render {:start (start-point source* target*)
-                             :end (:position target*)
-                             :duration 0.05
-                             :color [1 0 0 0.75]
-                             :thick? true})
-         (effect/do-all! effect-ctx entity-effects))
-        (world/spawn-audiovisual (end-point source* target* maxrange)
-                                 (db/build ctx/db :audiovisuals/hit-ground)))))
+        [[:tx/spawn-line {:start (start-point source* target*)
+                          :end (:position target*)
+                          :duration 0.05
+                          :color [1 0 0 0.75]
+                          :thick? true}]
+         [:tx/effect effect-ctx entity-effects]]
+        [[:tx/audiovisual
+          (end-point source* target* maxrange)
+          (db/build ctx/db :audiovisuals/hit-ground)]])))
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}
@@ -208,8 +207,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target]}]
-    (world/spawn-audiovisual (:position @target)
-                             audiovisual)))
+    [[:tx/audiovisual (:position @target) audiovisual]]))
 
 (defcomponent :effects.target/convert
   (effect/applicable? [_ {:keys [effect/source effect/target]}]
@@ -218,7 +216,7 @@
             (entity/enemy @source))))
 
   (effect/handle [_ {:keys [effect/source effect/target]}]
-    (swap! target assoc :entity/faction (:entity/faction @source))))
+    [[:tx/assoc target :entity/faction (:entity/faction @source)]]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (entity/stat target* :entity/armor-save) 0)
@@ -250,17 +248,17 @@
        (zero? (hp 0))
        nil
 
-       (armor-saves? source* target*)
-       (swap! target entity/add-text-effect "[WHITE]ARMOR")
+       (armor-saves? source* target*) ; TODO BUG ALWAYS ARMOR ?
+       [[:tx/add-text-effect target "[WHITE]ARMOR"]]
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
-         (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (world/spawn-audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage))
-         (tx/send-event! target (if (zero? new-hp-val) :kill :alert))
-         (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]")))))))
+         [[:tx/assoc-in target [:entity/hp 0] new-hp-val]
+          [:tx/audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage)]
+          [:tx/event target (if (zero? new-hp-val) :kill :alert)]
+          [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -268,7 +266,7 @@
          (:entity/fsm @target)))
 
   (effect/handle [_ {:keys [effect/target]}]
-    (tx/send-event! target :kill)))
+    [[:tx/event target :kill]]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -294,9 +292,9 @@
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
     (effect/handle [_ {:keys [effect/target]}]
       (when-not (:entity/temp-modifier @target)
-        (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (timer/create ctx/elapsed-time duration)})
-        (swap! target entity/mod-add modifiers)))))
+        [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
+                                                  :counter (timer/create ctx/elapsed-time duration)}]
+         [:tx/mod-add target modifiers]]))))
 
 (defcomponent :effects.target/stun
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -304,4 +302,4 @@
          (:entity/fsm @target)))
 
   (effect/handle [[_ duration] {:keys [effect/target]}]
-    (tx/send-event! target :stun duration)))
+    [[:tx/event target :stun duration]]))

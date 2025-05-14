@@ -4,16 +4,6 @@
             [cdq.stage :as stage]
             [cdq.utils :as utils]))
 
-(defn- handle-txs! [transactions]
-  (doseq [transaction transactions
-          :when transaction]
-    (try (apply (requiring-resolve (symbol (str "cdq.tx." (name (first transaction)) "/do!")))
-                (rest transaction))
-         (catch Throwable t
-           (throw (ex-info ""
-                           {:transaction transaction}
-                           t))))))
-
 (defn do! []
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
@@ -25,7 +15,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (handle-txs! (entity/tick! [k v] eid)))
+               (utils/handle-txs! (entity/tick! [k v] eid)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
