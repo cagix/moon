@@ -146,9 +146,6 @@
         (float (:radius target*)))
      (float maxrange)))
 
-(defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
-  (contains? skills id))
-
 (defprotocol Entity
   (mark-destroyed [_])
   (add-text-effect [_ text])
