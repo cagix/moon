@@ -31,6 +31,12 @@
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator Menu MenuBar MenuItem PopupMenu VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
 
+(defprotocol PStage
+  (add-actor! [_ actor])
+  (draw! [_])
+  (act! [_])
+  (mouse-on-actor? [_]))
+
 (defn- find-actor-with-id [^Group group id]
   (let [actors (.getChildren group)
         ids (keep Actor/.getUserObject actors)]
@@ -297,9 +303,6 @@
 
 (defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
-
-(defn- add-actor! [^Stage stage actor]
-  (.addActor stage actor))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh
@@ -1200,31 +1203,32 @@
 
 (defn create! []
   (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (proxy [Stage ILookup] [(:ui-viewport ctx/graphics)
-                                      (:batch       ctx/graphics)]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! (partial add-actor! stage) (create-actors))
+  (let [stage (Stage. (:ui-viewport ctx/graphics)
+                      (:batch       ctx/graphics))]
+    (run! #(.addActor stage %) (create-actors))
     (.setInputProcessor Gdx/input stage)
-    stage))
+    (reify
+      ILookup
+      (valAt [_ id]
+        (find-actor-with-id (.getRoot stage) id))
 
-(defn draw! [^Stage stage]
-  (.draw stage))
+      (valAt [_ id not-found]
+        (or (find-actor-with-id (.getRoot stage) id)
+            not-found))
 
-(defn act! [^Stage stage]
-  (.act stage))
+      PStage
+      (add-actor! [_ actor]
+        (.addActor stage actor))
 
-; (viewport/unproject-mouse-position (stage/viewport stage))
-; => move ui-viewport inside stage?
-; => viewport/unproject-mouse-position ? -> already exists!
-; => stage/resize-viewport! need to add (for viewport)
-(defn mouse-on-actor? [^Stage stage]
-  (let [[x y] (graphics/mouse-position ctx/graphics)]
-    (.hit stage x y true)))
+      (draw! [_]
+        (.draw stage))
+
+      (act! [_]
+        (.act stage))
+
+      (mouse-on-actor? [_]
+        (let [[x y] (graphics/mouse-position ctx/graphics)]
+          (.hit stage x y true))))))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
