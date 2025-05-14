@@ -225,11 +225,9 @@
                             ((requiring-resolve 'cdq.game.set-camera-on-player/do!))
                             ((requiring-resolve 'cdq.game.clear-screen/do!))
                             ((requiring-resolve 'cdq.game.draw-tiled-map/do!))
-                            (graphics/draw-on-world-view! ctx/graphics
-                                                          (fn []
-                                                            (draw-before-entities!)
-                                                            (render-entities!)
-                                                            (draw-after-entities!)))
+                            ((requiring-resolve 'cdq.game.draw-on-world-view/do!) [draw-before-entities!
+                                                                                   render-entities!
+                                                                                   draw-after-entities!])
                             (stage/draw! ctx/stage)
                             (stage/act! ctx/stage)
                             (state/manual-tick (entity/state-obj @ctx/player-eid))

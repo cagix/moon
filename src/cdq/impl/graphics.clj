@@ -316,19 +316,6 @@
               :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
         (graphics/draw-line this [leftx liney] [rightx liney] color))))
 
-  (draw-on-world-view! [this f]
-    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
-    (.begin batch)
-    (graphics/with-line-width this world-unit-scale
-      (fn []
-        ; could pass new 'g' with assoc :unit-scale -> but using ctx/graphics accidentally
-        ; -> icon is drawn at too big ! => mutable field.
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
-    (.end batch))
-
   (set-cursor! [_ cursor-key]
     (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 

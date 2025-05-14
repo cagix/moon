@@ -35,8 +35,6 @@
 
   (draw-grid [_ leftx bottomy gridw gridh cellw cellh color])
 
-  (draw-on-world-view! [_ f])
-
   (set-cursor! [_ cursor-key])
 
   (resize! [_ width height])
