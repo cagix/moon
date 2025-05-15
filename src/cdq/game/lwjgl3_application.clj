@@ -1,30 +1,22 @@
 (ns cdq.game.lwjgl3-application
-  (:require [cdq.utils :as utils])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)))
+  (:require [cdq.utils :as utils]
+            [clojure.application :as application]))
 
-(defn do! [{:keys [title
-                   window-width
-                   window-height
-                   fps
-                   create
+(defn do! [{:keys [create
                    dispose
                    render
-                   resize]}]
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create []
+                   resize]
+            :as opts}]
+  (application/start! (reify application/Listener
+                        (create! [_]
                           (utils/execute! create))
 
-                        (dispose []
+                        (dispose! [_]
                           (utils/execute! dispose))
 
-                        (render []
+                        (render! [_]
                           (utils/execute! render))
 
-                        (resize [_width _height]
+                        (resize! [_]
                           (utils/execute! resize)))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setWindowedMode window-width window-height)
-                        (.setForegroundFPS fps))))
+                      opts))

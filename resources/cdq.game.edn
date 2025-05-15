@@ -4,12 +4,11 @@
            cdq.impl.schemas]]
  [load-schemas "schema.edn"]
  [load-db "properties.edn"]
- [when-macos [[set-dock-icon "moon.png"]
-              set-glfw-async]]
  [lwjgl3-application {:title "Cyber Dungeon Quest"
                       :window-width 1440
                       :window-height 900
                       :fps 60
+                      :dock-icon "moon.png"
                       :create [load-assets
                                create-sprite-batch
                                create-shape-drawer-texture

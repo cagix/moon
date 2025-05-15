@@ -7,12 +7,9 @@
             [cdq.tx.spawn-item]
             [cdq.viewport :as viewport]
             [cdq.world :as world]
+            [clojure.application :refer [post-runnable!]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defmacro post-runnable! [& exprs]
-  (.postRunnable Gdx/app (fn [] ~@exprs)))
+            [clojure.pprint :refer [pprint]]))
 
 (comment
 
