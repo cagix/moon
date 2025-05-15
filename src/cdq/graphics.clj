@@ -64,6 +64,16 @@
          rotation)
   (if color (.setColor batch Color/WHITE)))
 
+(defn- k->viewport-field [^Viewport vp k]
+  (case k
+    :width             (.getWorldWidth      vp)
+    :height            (.getWorldHeight     vp)
+    :camera            (.getCamera          vp)
+    :left-gutter-width (.getLeftGutterWidth vp)
+    :right-gutter-x    (.getRightGutterX    vp)
+    :top-gutter-height (.getTopGutterHeight vp)
+    :top-gutter-y      (.getTopGutterY      vp)))
+
 (defn fit-viewport
   ([width height]
    (fit-viewport width height (OrthographicCamera.)))
@@ -71,9 +81,9 @@
    (proxy [FitViewport clojure.lang.ILookup] [width height camera]
      (valAt
        ([key]
-        (interop/k->viewport-field this key))
+        (k->viewport-field this key))
        ([key _not-found]
-        (interop/k->viewport-field this key))))))
+        (k->viewport-field this key))))))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
