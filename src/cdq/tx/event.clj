@@ -18,7 +18,7 @@
                                                            [new-state-k eid params]
                                                            [new-state-k eid]))]]
            (when (:entity/player? @eid)
-             ((:state-changed! (:entity/player? @eid)) new-state-obj))
+             (utils/handle-txs! ((:state-changed! (:entity/player? @eid)) new-state-obj)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))

@@ -316,9 +316,6 @@
               :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
         (graphics/draw-line this [leftx liney] [rightx liney] color))))
 
-  (set-cursor! [_ cursor-key]
-    (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
-
   (sub-sprite [_ sprite [x y w h]]
     (sprite* (TextureRegion. ^TextureRegion (:texture-region sprite)
                              (int x)

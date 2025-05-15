@@ -1,7 +1,6 @@
 (ns cdq.game.spawn-player
   (:require [cdq.ctx :as ctx]
             [cdq.entity.state :as state]
-            [cdq.graphics :as graphics]
             [cdq.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]))
@@ -13,8 +12,8 @@
                              :initial-state :player-idle}
                 :entity/faction :good
                 :entity/player? {:state-changed! (fn [new-state-obj]
-                                                   (when-let [cursor-key (state/cursor new-state-obj)]
-                                                     (graphics/set-cursor! ctx/graphics cursor-key)))
+                                                   (when-let [cursor (state/cursor new-state-obj)]
+                                                     [[:tx/set-cursor cursor]]))
                                  :skill-added! (fn [skill]
                                                  (stage/add-skill! ctx/stage skill))
                                  :skill-removed! (fn [skill]

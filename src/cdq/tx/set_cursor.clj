@@ -1,6 +1,7 @@
 (ns cdq.tx.set-cursor
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics :as graphics]))
+            [cdq.utils :as utils])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn do! [cursor]
-  (graphics/set-cursor! ctx/graphics cursor))
+  (.setCursor Gdx/graphics (utils/safe-get (:cursors ctx/graphics) cursor)))

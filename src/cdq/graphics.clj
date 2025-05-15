@@ -35,8 +35,6 @@
 
   (draw-grid [_ leftx bottomy gridw gridh cellw cellh color])
 
-  (set-cursor! [_ cursor-key])
-
   (sprite [_ texture])
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture tilew tileh])
