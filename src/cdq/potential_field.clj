@@ -1,14 +1,14 @@
-(ns cdq.world.potential-field
+(ns cdq.potential-field
   (:require [cdq.entity :as entity] ; just entity/faction
+            [cdq.grid :as grid :refer [rectangle->cells
+                                       cached-adjacent-cells
+                                       blocked?
+                                       occupied-by-other?
+                                       nearest-entity
+                                       nearest-entity-distance
+                                       get-8-neighbour-positions]]
             [cdq.utils :refer [utils-positions when-seq]]
-            [cdq.vector2 :as v]
-            [cdq.world.grid :as grid :refer [rectangle->cells
-                                             cached-adjacent-cells
-                                             blocked?
-                                             occupied-by-other?
-                                             nearest-entity
-                                             nearest-entity-distance
-                                             get-8-neighbour-positions]]))
+            [cdq.vector2 :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

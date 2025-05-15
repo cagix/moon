@@ -1,10 +1,10 @@
 (ns cdq.impl.world
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.content-grid :as content-grid]
+            [cdq.grid :as grid]
+            [cdq.grid2d :as g2d]
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]
-            [cdq.world :as world]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]))
+            [cdq.world :as world]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.

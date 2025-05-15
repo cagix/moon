@@ -1,10 +1,10 @@
 (ns cdq.game.update-mouseover-entity
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
+            [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.world :as world]
-            [cdq.world.grid :as grid]))
+            [cdq.world :as world]))
 
 (defn do! []
   (let [new-eid (if (stage/mouse-on-actor? ctx/stage)

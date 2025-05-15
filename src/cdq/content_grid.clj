@@ -1,4 +1,4 @@
-(ns cdq.world.content-grid
+(ns cdq.content-grid
   (:require [cdq.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]

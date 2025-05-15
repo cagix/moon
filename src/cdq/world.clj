@@ -1,12 +1,12 @@
 (ns cdq.world
   (:require [cdq.camera :as camera]
+            [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
-            [cdq.vector2 :as v]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]))
+            [cdq.vector2 :as v]))
 
 (defprotocol World
   (cell [_ position]))

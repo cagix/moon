@@ -5,6 +5,7 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
+            [cdq.grid :as grid]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.stage :as stage]
@@ -14,8 +15,7 @@
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
             [cdq.world :as world]
-            [cdq.world.grid :as grid]
-            [cdq.world.potential-field :as potential-field]
+            [cdq.potential-field :as potential-field]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
