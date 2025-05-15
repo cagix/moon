@@ -12,6 +12,7 @@
                       :fps 60
                       :create [load-assets
                                create-sprite-batch
+                               create-shape-drawer-texture
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

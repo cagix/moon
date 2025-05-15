@@ -4,6 +4,7 @@
          db
          assets
          batch
+         shape-drawer-texture
          graphics
          stage
          world
