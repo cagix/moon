@@ -2,50 +2,16 @@
   (:require [cdq.batch :as batch]
             [cdq.camera :as camera]
             [cdq.ctx :as ctx]
-            [cdq.interop :as interop]
+            [cdq.font :as font]
             [cdq.shape-drawer :as sd]
-            [cdq.viewport :as viewport]
-            [clojure.string :as str])
+            [cdq.viewport :as viewport])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)))
-
-(defn- clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- draw-text! [{:keys [^BitmapFont font
-                           scale
-                           batch
-                           x
-                           y
-                           text
-                           h-align
-                           up?]}]
-  (let [data (.getData font)
-        old-scale (float (.scaleX data))
-        new-scale (float (* old-scale (float scale)))
-        target-width (float 0)
-        wrap? false]
-    (.setScale data new-scale)
-    (.draw font
-           batch
-           text
-           (float x)
-           (float (+ y (if up? (text-height font text) 0)))
-           target-width
-           (interop/k->align (or h-align :center))
-           wrap?)
-    (.setScale data old-scale)))
 
 (defn sprite-batch []
   (let [this (SpriteBatch.)]
@@ -81,6 +47,9 @@
       (valAt [_ key]
         (case key
           :java-object this)))))
+
+(defn- clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
@@ -192,15 +161,15 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font scale x y text h-align up?]}]
-  (draw-text! {:font (or font ctx/default-font)
-               :scale (* (float @ctx/unit-scale)
-                         (float (or scale 1)))
-               :batch (:java-object ctx/batch)
-               :x x
-               :y y
-               :text text
-               :h-align h-align
-               :up? up?}))
+  (font/draw-text! (or font ctx/default-font)
+                   ctx/batch
+                   {:scale (* (float @ctx/unit-scale)
+                              (float (or scale 1)))
+                    :x x
+                    :y y
+                    :text text
+                    :h-align h-align
+                    :up? up?}))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
   (sd/set-color! ctx/shape-drawer color)
