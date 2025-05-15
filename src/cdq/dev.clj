@@ -3,7 +3,6 @@
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
-            [cdq.tx :as tx]
             [cdq.tx.add-skill]
             [cdq.tx.spawn-creature]
             [cdq.tx.spawn-item]
