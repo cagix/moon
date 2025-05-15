@@ -1,7 +1,7 @@
 (ns cdq.game.create-sprite-batch
   (:require [cdq.ctx :as ctx]
-            [cdq.utils :as utils])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+            [cdq.graphics :as graphics]
+            [cdq.utils :as utils]))
 
 (defn do! []
-  (utils/bind-root #'ctx/batch (SpriteBatch.)))
+  (utils/bind-root #'ctx/batch (graphics/sprite-batch)))

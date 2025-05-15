@@ -2,10 +2,11 @@
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.grid :as grid]
-            [cdq.math :as math]))
+            [cdq.math :as math]
+            [cdq.viewport :as viewport]))
 
 (defn do! []
-  (let [position (graphics/world-mouse-position)
+  (let [position (viewport/mouse-position ctx/world-viewport)
         radius 0.8
         circle {:position position :radius radius}]
     (graphics/draw-circle position radius [1 0 0 0.5])

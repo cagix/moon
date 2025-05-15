@@ -8,4 +8,4 @@
                    (memoize (fn [tiled-map]
                               (tiled/renderer tiled-map
                                               ctx/world-unit-scale
-                                              ctx/batch)))))
+                                              (:java-object ctx/batch))))))

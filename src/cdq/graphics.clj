@@ -1,12 +1,14 @@
 (ns cdq.graphics
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.batch :as batch]
+            [cdq.camera :as camera]
+            [cdq.ctx :as ctx]
             [cdq.interop :as interop]
             [cdq.viewport :as viewport]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
@@ -51,20 +53,40 @@
            wrap?)
     (.setScale data old-scale)))
 
-(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
+(defn sprite-batch []
+  (let [this (SpriteBatch.)]
+    (reify
+      batch/Batch
+      (draw-on-viewport! [_ viewport draw-fn]
+        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
+        (.setProjectionMatrix this (camera/combined (:camera viewport)))
+        (.begin this)
+        (draw-fn)
+        (.end this))
+
+      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
+        (if color (.setColor this color))
+        (.draw this
+               texture-region
+               x
+               y
+               (/ (float w) 2) ; rotation origin
+               (/ (float h) 2)
+               w
+               h
+               1 ; scale-x
+               1 ; scale-y
+               rotation)
+        (if color (.setColor this Color/WHITE)))
+
+      Disposable
+      (dispose [_]
+        (.dispose this))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this)))))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
@@ -153,22 +175,22 @@
   (* (int pixels) ctx/world-unit-scale))
 
 (defn draw-image [{:keys [texture-region color] :as image} position]
-  (draw-texture-region ctx/batch
-                       texture-region
-                       position
-                       (unit-dimensions image @ctx/unit-scale)
-                       0 ; rotation
-                       color))
+  (batch/draw-texture-region! ctx/batch
+                              texture-region
+                              position
+                              (unit-dimensions image @ctx/unit-scale)
+                              0 ; rotation
+                              color))
 
 (defn draw-rotated-centered [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image @ctx/unit-scale)]
-    (draw-texture-region ctx/batch
-                         texture-region
-                         [(- (float x) (/ (float w) 2))
-                          (- (float y) (/ (float h) 2))]
-                         [w h]
-                         rotation
-                         color)))
+    (batch/draw-texture-region! ctx/batch
+                                texture-region
+                                [(- (float x) (/ (float w) 2))
+                                 (- (float y) (/ (float h) 2))]
+                                [w h]
+                                rotation
+                                color)))
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
@@ -179,7 +201,7 @@
   (draw-text! {:font (or font ctx/default-font)
                :scale (* (float @ctx/unit-scale)
                          (float (or scale 1)))
-               :batch ctx/batch
+               :batch (:java-object ctx/batch)
                :x x
                :y y
                :text text

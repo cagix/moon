@@ -1235,7 +1235,8 @@
 
 (defn create! []
   (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (Stage. (:java-object ctx/ui-viewport) ctx/batch)]
+  (let [stage (Stage. (:java-object ctx/ui-viewport)
+                      (:java-object ctx/batch))]
     (run! #(.addActor stage %) (create-actors))
     (.setInputProcessor Gdx/input stage)
     (reify
