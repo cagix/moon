@@ -11,19 +11,6 @@
             [cdq.utils :refer [defcomponent]]
             [cdq.world :as world]))
 
-(comment
- (ns cdq.components.effects.audiovisual)
-
- (defn applicable? [_ {:keys [effect/target-position]}]
-   target-position)
-
- (defn useful? [_ _ _c]
-   false)
-
- (defn handle [[_ audiovisual] {:keys [effect/target-position]} c]
-   (world/spawn-audiovisual target-position audiovisual))
- )
-
 (defcomponent :effects/audiovisual
   (effect/applicable? [_ {:keys [effect/target-position]}]
     target-position)

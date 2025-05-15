@@ -6,7 +6,6 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
-            [cdq.tx.sound :as tx.sound]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
@@ -163,7 +162,7 @@
 
 (def id-counter (atom 0))
 
-(defn- spawn-entity [position body components]
+(defn spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -177,19 +176,11 @@
       (utils/handle-txs! (entity/create! component eid)))
     eid))
 
-(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
-       :private true}
+(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."}
   effect-body-props
   {:width 0.5
    :height 0.5
    :z-order :z-order/effect})
-
-(defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (tx.sound/do! sound)
-  (spawn-entity position
-                effect-body-props
-                {:entity/animation animation
-                 :entity/delete-after-animation-stopped? true}))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)

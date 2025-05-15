@@ -1,5 +1,10 @@
 (ns cdq.tx.audiovisual
-  (:require [cdq.world :as world]))
+  (:require [cdq.tx.sound :as tx.sound]
+            [cdq.world :as world]))
 
-(defn do! [position audiovisual]
-  (world/spawn-audiovisual position audiovisual))
+(defn do! [position {:keys [tx/sound entity/animation]}]
+  (tx.sound/do! sound)
+  (world/spawn-entity position
+                      world/effect-body-props
+                      {:entity/animation animation
+                       :entity/delete-after-animation-stopped? true}))
