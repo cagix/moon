@@ -4,5 +4,4 @@
             [cdq.utils :as utils]))
 
 (defn do! []
-  (utils/bind-root #'ctx/graphics (graphics/create {:world-viewport {:width 1440 :height 900}
-                                                    :ui-viewport {:width 1440 :height 900}})))
+  (utils/bind-root #'ctx/graphics (graphics/create {:ui-viewport {:width 1440 :height 900}})))

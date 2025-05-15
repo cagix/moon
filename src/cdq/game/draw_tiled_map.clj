@@ -49,5 +49,5 @@
                (:tiled-map ctx/world)
                (tile-color-setter (:raycaster ctx/world)
                                   (:explored-tile-corners ctx/world)
-                                  (camera/position (:camera (:world-viewport ctx/graphics))))
-               (:camera (:world-viewport ctx/graphics))))
+                                  (camera/position (:camera ctx/world-viewport)))
+               (:camera ctx/world-viewport)))

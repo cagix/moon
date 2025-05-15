@@ -16,6 +16,7 @@
                                shape-drawer
                                cursors
                                default-font
+                               world-viewport
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

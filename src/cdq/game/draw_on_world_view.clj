@@ -8,7 +8,7 @@
 
 (defn do! [draw-fns]
   (Batch/.setColor ctx/batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-  (Batch/.setProjectionMatrix ctx/batch (camera/combined (:camera (:world-viewport ctx/graphics))))
+  (Batch/.setProjectionMatrix ctx/batch (camera/combined (:camera ctx/world-viewport)))
   (Batch/.begin ctx/batch)
   (graphics/with-line-width ctx/graphics ctx/world-unit-scale
     (fn []

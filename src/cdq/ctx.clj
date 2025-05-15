@@ -10,6 +10,7 @@
          shape-drawer
          cursors
          default-font
+         world-viewport
          graphics
          stage
          world

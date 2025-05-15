@@ -1138,7 +1138,7 @@
                    {:label "World"
                     :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
                    {:label "Zoom"
-                    :update-fn (fn [] (.zoom ^OrthographicCamera (:camera (:world-viewport ctx/graphics))))
+                    :update-fn (fn [] (.zoom ^OrthographicCamera (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))

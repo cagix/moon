@@ -12,14 +12,14 @@
 
 (defn do! []
   (let [g ctx/graphics
-        cam (:camera (:world-viewport g))
+        cam (:camera ctx/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
     (when tile-grid?
       (graphics/draw-grid g
                           (int left-x) (int bottom-y)
-                          (inc (int (:width  (:world-viewport g))))
-                          (+ 2 (int (:height (:world-viewport g))))
+                          (inc (int (:width  ctx/world-viewport)))
+                          (+ 2 (int (:height ctx/world-viewport)))
                           1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)

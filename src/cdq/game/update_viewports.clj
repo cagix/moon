@@ -7,4 +7,4 @@
   (let [width  (.getWidth  Gdx/graphics)
         height (.getHeight Gdx/graphics)]
     (Viewport/.update (:ui-viewport    ctx/graphics) width height true)
-    (Viewport/.update (:world-viewport ctx/graphics) width height false)))
+    (Viewport/.update ctx/world-viewport width height false)))

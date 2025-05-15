@@ -3,5 +3,5 @@
             [cdq.ctx :as ctx]))
 
 (defn do! []
-  (camera/set-position! (:camera (:world-viewport ctx/graphics))
+  (camera/set-position! (:camera ctx/world-viewport)
                         (:position @ctx/player-eid)))

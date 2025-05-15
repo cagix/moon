@@ -67,7 +67,7 @@
          rotation)
   (if color (.setColor batch Color/WHITE)))
 
-(defn- fit-viewport
+(defn fit-viewport
   ([width height]
    (fit-viewport width height (OrthographicCamera.)))
   ([width height camera]
@@ -77,14 +77,6 @@
         (interop/k->viewport-field this key))
        ([key _not-found]
         (interop/k->viewport-field this key))))))
-
-(defn- ->world-viewport [world-unit-scale {:keys [width height]}]
-  (let [camera (OrthographicCamera.)
-        world-width  (* width world-unit-scale)
-        world-height (* height world-unit-scale)
-        y-down? false]
-    (.setToOrtho camera y-down? world-width world-height)
-    (fit-viewport world-width world-height camera)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -134,8 +126,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [world-viewport
-                     get-tiled-map-renderer
+(defrecord Graphics [get-tiled-map-renderer
                      unit-scale
                      ui-viewport]
   graphics/Graphics
@@ -146,7 +137,7 @@
   (world-mouse-position [_]
     ; TODO clamping only works for gui-viewport ? check. comment if true
     ; TODO ? "Can be negative coordinates, undefined cells."
-    (unproject-mouse-position world-viewport))
+    (unproject-mouse-position ctx/world-viewport))
 
   (pixels->world-units [_ pixels]
     (* (int pixels) ctx/world-unit-scale))
@@ -297,11 +288,9 @@
              ctx/world-unit-scale)))
 
 (defn create [{:keys [tile-size
-                      world-viewport
                       ui-viewport]}]
   (map->Graphics
-   {:world-viewport (->world-viewport ctx/world-unit-scale world-viewport)
-    :get-tiled-map-renderer (memoize (fn [tiled-map]
+   {:get-tiled-map-renderer (memoize (fn [tiled-map]
                                        (tiled/renderer tiled-map
                                                        ctx/world-unit-scale
                                                        ctx/batch)))

@@ -206,7 +206,7 @@
 ; => assert bodies <1 width then
 (defn line-of-sight? [source target]
   (and (or (not (:entity/player? source))
-           (on-screen? (:world-viewport ctx/graphics) target))
+           (on-screen? ctx/world-viewport target))
        (not (and los-checks?
                  (raycaster/blocked? (:raycaster ctx/world) (:position source) (:position target))))))
 
