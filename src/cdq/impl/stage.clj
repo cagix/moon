@@ -958,7 +958,10 @@
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
                       (clicked [_event _x _y]
-                        (state/clicked-inventory-cell (entity/state-obj @ctx/player-eid) cell)))))))
+                        (-> @ctx/player-eid
+                            entity/state-obj
+                            (state/clicked-inventory-cell cell)
+                            utils/handle-txs!)))))))
 
 (defn- inventory-table []
   (->table {:id ::table

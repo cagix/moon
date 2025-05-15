@@ -13,7 +13,6 @@
             [cdq.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.timer :as timer]
-            [cdq.tx :as tx]
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
@@ -131,9 +130,9 @@
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (sound/play! "bfxr_takeit")
-      (tx/send-event! eid :pickup-item item)
-      (tx/remove-item eid cell))))
+      [[:tx/sound "bfxr_takeit"]
+       [:tx/event eid :pickup-item item]
+       [:tx/remove-item eid cell]])))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -144,33 +143,30 @@
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (sound/play! "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (tx/set-item eid cell item-on-cursor)
-      (tx/send-event! eid :dropped-item))
+     [[:tx/sound "bfxr_itemput"]
+      [:tx/dissoc eid :entity/item-on-cursor]
+      [:tx/set-item eid cell item-on-cursor]
+      [:tx/event eid :dropped-item]]
 
      ; STACK ITEMS
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
-     (do
-      (sound/play! "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (tx/stack-item eid cell item-on-cursor)
-      (tx/send-event! eid :dropped-item))
+     [[:tx/sound "bfxr_itemput"]
+      [:tx/dissoc eid :entity/item-on-cursor]
+      [:tx/stack-item eid cell item-on-cursor]
+      [:tx/event eid :dropped-item]]
 
      ; SWAP ITEMS
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (sound/play! "bfxr_itemput")
+     [[:tx/sound "bfxr_itemput"]
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
-      (swap! eid dissoc :entity/item-on-cursor)
-      (tx/remove-item eid cell)
-      (tx/set-item eid cell item-on-cursor)
-      (tx/send-event! eid :dropped-item)
-      (tx/send-event! eid :pickup-item item-in-cell)))))
+      [:tx/dissoc eid :entity/item-on-cursor]
+      [:tx/remove-item eid cell]
+      [:tx/set-item eid cell item-on-cursor]
+      [:tx/event eid :dropped-item]
+      [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn- world-item? []
   (not (stage/mouse-on-actor? ctx/stage)))
