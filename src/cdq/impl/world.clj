@@ -1,6 +1,5 @@
 (ns cdq.impl.world
-  (:require [cdq.camera :as camera]
-            [cdq.cell :as cell]
+  (:require [cdq.cell :as cell]
             [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
@@ -10,7 +9,8 @@
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
-            [cdq.world :as world]))
+            [cdq.world :as world]
+            [clojure.graphics.camera :as camera]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

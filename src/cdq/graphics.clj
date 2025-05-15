@@ -1,8 +1,8 @@
 (ns cdq.graphics
   (:require [cdq.batch :as batch]
-            [cdq.camera :as camera]
             [cdq.ctx :as ctx]
-            [cdq.viewport :as viewport])
+            [cdq.viewport :as viewport]
+            [clojure.graphics.camera :as camera])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)

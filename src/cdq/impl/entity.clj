@@ -18,9 +18,9 @@
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [cdq.potential-field :as potential-field]
+            [clojure.input]
             [malli.core :as m]
-            [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx Input$Buttons)))
+            [reduce-fsm :as fsm]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
@@ -145,7 +145,7 @@
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (interaction-state eid)]
         (cons [:tx/set-cursor cursor]
-              (when (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
+              (when (clojure.input/button-just-pressed? :left)
                 on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
@@ -236,7 +236,7 @@
          [:tx/spawn-item (item-place-position entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [[_ {:keys [eid]}]]
-    (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
+    (when (and (clojure.input/button-just-pressed? :left)
                (world-item?))
       [[:tx/event eid :drop-item]]))
 

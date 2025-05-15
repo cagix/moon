@@ -1,12 +1,12 @@
 (ns cdq.input
-  (:require [cdq.vector2 :as v])
-  (:import (com.badlogic.gdx Gdx Input$Keys)))
+  (:require [cdq.vector2 :as v]
+            [clojure.input :as input]))
 
 (defn player-movement-vector []
-  (let [r (when (.isKeyPressed Gdx/input Input$Keys/D) [1  0])
-        l (when (.isKeyPressed Gdx/input Input$Keys/A) [-1 0])
-        u (when (.isKeyPressed Gdx/input Input$Keys/W) [0  1])
-        d (when (.isKeyPressed Gdx/input Input$Keys/S) [0 -1])]
+  (let [r (when (input/key-pressed? :d) [1  0])
+        l (when (input/key-pressed? :a) [-1 0])
+        u (when (input/key-pressed? :w) [0  1])
+        d (when (input/key-pressed? :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))

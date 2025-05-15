@@ -17,11 +17,12 @@
             [cdq.val-max :as val-max]
             [cdq.viewport :as viewport]
             [clojure.edn :as edn]
+            [clojure.graphics]
+            [clojure.input :as input]
             [clojure.set :as set]
             [clojure.string :as str]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
@@ -414,7 +415,7 @@
                                              :center? true}]])]])
     (.addActor window (proxy [Actor] []
                         (act [_delta]
-                          (when (.isKeyJustPressed Gdx/input Input$Keys/ENTER)
+                          (when (input/key-just-pressed? :enter)
                             (save!)))))
     (.pack window)
     window))
@@ -1141,7 +1142,7 @@
                     :update-fn (fn [] (.zoom ^OrthographicCamera (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
+                    :update-fn (fn [] (clojure.graphics/frames-per-second))
                     :icon (ctx/assets "images/fps.png")}]})
 
 (defn- player-state-actor []
@@ -1174,15 +1175,15 @@
                                :counter 0})))
 
 (defn- check-escape-close-windows [windows]
-  (when (.isKeyJustPressed Gdx/input Input$Keys/ESCAPE)
+  (when (input/key-just-pressed? :escape)
     (run! #(Actor/.setVisible % false) (Group/.getChildren windows))))
 
-(def window-hotkeys {:inventory-window   Input$Keys/I
-                     :entity-info-window Input$Keys/E})
+(def window-hotkeys {:inventory-window  :i
+                     :entity-info-window :e})
 
 (defn- check-window-hotkeys [windows]
   (doseq [[id input-key] window-hotkeys
-          :when (.isKeyJustPressed Gdx/input input-key)]
+          :when (input/key-just-pressed? input-key)]
     (toggle-visible! (get windows id))))
 
 (defn- create-actors []
@@ -1255,7 +1256,7 @@
   (let [stage (Stage. (:java-object ctx/ui-viewport)
                       (:java-object ctx/batch))]
     (run! #(.addActor stage %) (create-actors))
-    (.setInputProcessor Gdx/input stage)
+    (input/set-processor! stage)
     (reify
       ILookup
       (valAt [_ id]

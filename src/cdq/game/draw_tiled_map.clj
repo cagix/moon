@@ -1,8 +1,8 @@
 (ns cdq.game.draw-tiled-map
-  (:require [cdq.camera :as camera]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.raycaster :as raycaster]
-            [cdq.tiled :as tiled])
+            [cdq.tiled :as tiled]
+            [clojure.graphics.camera :as camera])
   (:import (com.badlogic.gdx.graphics Color)))
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
