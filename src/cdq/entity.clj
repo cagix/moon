@@ -1,5 +1,5 @@
 (ns cdq.entity
-  (:require [cdq.entity.stats.op :as op]
+  (:require [cdq.op :as op]
             [cdq.math :as math]
             [cdq.math.vector2 :as v]
             [cdq.val-max :as val-max]

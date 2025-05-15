@@ -1,4 +1,4 @@
-(ns cdq.entity.stats.op
+(ns cdq.op
   (:refer-clojure :exclude [apply remove]))
 
 (defmulti -apply (fn [[k] base-value]
