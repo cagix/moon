@@ -1,5 +1,5 @@
 (ns cdq.tx.pickup-item
-  (:require [cdq.entity.inventory :as inventory]
+  (:require [cdq.inventory :as inventory]
             [cdq.tx.set-item]))
 
 (defn do! [eid item]

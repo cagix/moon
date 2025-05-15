@@ -1,6 +1,6 @@
 (ns cdq.tx.set-item
   (:require [cdq.entity :as entity]
-            [cdq.entity.inventory :as inventory]))
+            [cdq.inventory :as inventory]))
 
 (defn do! [eid cell item]
   (let [entity @eid
