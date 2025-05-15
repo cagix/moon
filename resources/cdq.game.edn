@@ -15,6 +15,7 @@
                                create-shape-drawer-texture
                                shape-drawer
                                cursors
+                               default-font
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

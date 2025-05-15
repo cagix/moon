@@ -7,6 +7,7 @@
          shape-drawer-texture
          shape-drawer
          cursors
+         default-font
          graphics
          stage
          world

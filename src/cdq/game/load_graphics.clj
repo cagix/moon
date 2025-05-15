@@ -4,9 +4,6 @@
             [cdq.utils :as utils]))
 
 (defn do! []
-  (utils/bind-root #'ctx/graphics (graphics/create {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                                                   :size 16
-                                                                   :quality-scaling 2}
-                                                    :tile-size 48
+  (utils/bind-root #'ctx/graphics (graphics/create {:tile-size 48
                                                     :world-viewport {:width 1440 :height 900}
                                                     :ui-viewport {:width 1440 :height 900}})))

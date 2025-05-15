@@ -6,9 +6,8 @@
             [cdq.tiled :as tiled]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
@@ -87,30 +86,6 @@
     (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
 
-(defn- font-params [{:keys [size]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- generate-font [file-handle params]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator (font-params params))]
-    (.dispose generator)
-    font))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
-                                        {:size (* size quality-scaling)})]
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
-
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
@@ -159,16 +134,11 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [default-font
-                     world-unit-scale
+(defrecord Graphics [world-unit-scale
                      world-viewport
                      get-tiled-map-renderer
                      unit-scale
                      ui-viewport]
-  Disposable
-  (dispose [_]
-    (Disposable/.dispose default-font))
-
   graphics/Graphics
   (mouse-position [_]
     ; TODO mapv int needed?
@@ -201,7 +171,7 @@
                            color)))
 
   (draw-text [_ {:keys [font scale x y text h-align up?]}]
-    (draw-text! {:font (or font default-font)
+    (draw-text! {:font (or font ctx/default-font)
                  :scale (* (float @unit-scale)
                            (float (or scale 1)))
                  :batch ctx/batch
@@ -325,14 +295,12 @@
   (sprite [_ texture]
     (sprite* (TextureRegion. ^Texture texture) world-unit-scale)))
 
-(defn create [{:keys [default-font
-                      tile-size
+(defn create [{:keys [tile-size
                       world-viewport
                       ui-viewport]}]
   (let [world-unit-scale (float (/ tile-size))]
     (map->Graphics
-     {:default-font (truetype-font default-font)
-      :world-unit-scale  world-unit-scale
+     {:world-unit-scale  world-unit-scale
       :world-viewport (->world-viewport world-unit-scale world-viewport)
       :get-tiled-map-renderer (memoize (fn [tiled-map]
                                          (tiled/renderer tiled-map
