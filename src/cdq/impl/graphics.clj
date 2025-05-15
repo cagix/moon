@@ -126,7 +126,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [unit-scale]
+(defrecord Graphics []
   graphics/Graphics
   (mouse-position [_]
     ; TODO mapv int needed?
@@ -144,12 +144,12 @@
     (draw-texture-region ctx/batch
                          texture-region
                          position
-                         (unit-dimensions image @unit-scale)
+                         (unit-dimensions image @ctx/unit-scale)
                          0 ; rotation
                          color))
 
   (draw-rotated-centered [_ {:keys [texture-region color] :as image} rotation [x y]]
-    (let [[w h] (unit-dimensions image @unit-scale)]
+    (let [[w h] (unit-dimensions image @ctx/unit-scale)]
       (draw-texture-region ctx/batch
                            texture-region
                            [(- (float x) (/ (float w) 2))
@@ -160,7 +160,7 @@
 
   (draw-text [_ {:keys [font scale x y text h-align up?]}]
     (draw-text! {:font (or font ctx/default-font)
-                 :scale (* (float @unit-scale)
+                 :scale (* (float @ctx/unit-scale)
                            (float (or scale 1)))
                  :batch ctx/batch
                  :x x
@@ -286,5 +286,4 @@
              ctx/world-unit-scale)))
 
 (defn create []
-  (map->Graphics
-   {:unit-scale (atom 1)}))
+  (->Graphics))

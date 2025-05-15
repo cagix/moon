@@ -2,6 +2,8 @@
 
 (def world-unit-scale (float (/ 48)))
 
+(def unit-scale (atom 1))
+
 (declare schemas
          db
          assets

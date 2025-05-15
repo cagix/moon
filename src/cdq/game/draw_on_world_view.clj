@@ -14,7 +14,7 @@
     (fn []
       ; could pass new 'g' with assoc :unit-scale -> but using ctx/graphics accidentally
       ; -> icon is drawn at too big ! => mutable field.
-      (reset! (:unit-scale ctx/graphics) ctx/world-unit-scale)
+      (reset! ctx/unit-scale ctx/world-unit-scale)
       (utils/execute! draw-fns)
-      (reset! (:unit-scale ctx/graphics) 1)))
+      (reset! ctx/unit-scale 1)))
   (Batch/.end ctx/batch))
