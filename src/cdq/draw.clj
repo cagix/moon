@@ -1,8 +1,8 @@
 (ns cdq.draw
   (:require [cdq.batch :as batch]
             [cdq.ctx :as ctx]
-            [cdq.font :as font]
-            [cdq.shape-drawer :as sd]))
+            [cdq.shape-drawer :as sd]
+            [clojure.graphics :as graphics]))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -33,15 +33,15 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font scale x y text h-align up?]}]
-  (font/draw-text! (or font ctx/default-font)
-                   ctx/batch
-                   {:scale (* (float @ctx/unit-scale)
-                              (float (or scale 1)))
-                    :x x
-                    :y y
-                    :text text
-                    :h-align h-align
-                    :up? up?}))
+  (graphics/draw-text! (or font ctx/default-font)
+                       ctx/batch
+                       {:scale (* (float @ctx/unit-scale)
+                                  (float (or scale 1)))
+                        :x x
+                        :y y
+                        :text text
+                        :h-align h-align
+                        :up? up?}))
 
 (defn ellipse [[x y] radius-x radius-y color]
   (sd/set-color! ctx/shape-drawer color)
