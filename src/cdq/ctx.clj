@@ -5,6 +5,7 @@
          assets
          batch
          shape-drawer-texture
+         shape-drawer
          graphics
          stage
          world

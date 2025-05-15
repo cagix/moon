@@ -13,6 +13,7 @@
                       :create [load-assets
                                create-sprite-batch
                                create-shape-drawer-texture
+                               shape-drawer
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

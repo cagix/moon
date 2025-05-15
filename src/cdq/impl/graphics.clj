@@ -160,8 +160,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [^ShapeDrawer shape-drawer
-                     cursors
+(defrecord Graphics [cursors
                      default-font
                      world-unit-scale
                      world-viewport
@@ -216,38 +215,38 @@
                  :up? up?}))
 
   (draw-ellipse [_ [x y] radius-x radius-y color]
-    (set-color! shape-drawer color)
-    (.ellipse shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.ellipse ctx/shape-drawer
               (float x)
               (float y)
               (float radius-x)
               (float radius-y)))
 
   (draw-filled-ellipse [_ [x y] radius-x radius-y color]
-    (set-color! shape-drawer color)
-    (.filledEllipse shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.filledEllipse ctx/shape-drawer
                     (float x)
                     (float y)
                     (float radius-x)
                     (float radius-y)))
 
   (draw-circle [_ [x y] radius color]
-    (set-color! shape-drawer color)
-    (.circle shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.circle ctx/shape-drawer
              (float x)
              (float y)
              (float radius)))
 
   (draw-filled-circle [_ [x y] radius color]
-    (set-color! shape-drawer color)
-    (.filledCircle shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.filledCircle ctx/shape-drawer
                    (float x)
                    (float y)
                    (float radius)))
 
   (draw-arc [_ [center-x center-y] radius start-angle degree color]
-    (set-color! shape-drawer color)
-    (.arc shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.arc ctx/shape-drawer
           (float center-x)
           (float center-y)
           (float radius)
@@ -255,8 +254,8 @@
           (float (degree->radians degree))))
 
   (draw-sector [_ [center-x center-y] radius start-angle degree color]
-    (set-color! shape-drawer color)
-    (.sector shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.sector ctx/shape-drawer
              (float center-x)
              (float center-y)
              (float radius)
@@ -264,34 +263,34 @@
              (float (degree->radians degree))))
 
   (draw-rectangle [_ x y w h color]
-    (set-color! shape-drawer color)
-    (.rectangle shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.rectangle ctx/shape-drawer
                 (float x)
                 (float y)
                 (float w)
                 (float h)))
 
   (draw-filled-rectangle [_ x y w h color]
-    (set-color! shape-drawer color)
-    (.filledRectangle shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.filledRectangle ctx/shape-drawer
                       (float x)
                       (float y)
                       (float w)
                       (float h)))
 
   (draw-line [_ [sx sy] [ex ey] color]
-    (set-color! shape-drawer color)
-    (.line shape-drawer
+    (set-color! ctx/shape-drawer color)
+    (ShapeDrawer/.line ctx/shape-drawer
            (float sx)
            (float sy)
            (float ex)
            (float ey)))
 
   (with-line-width [_ width draw-fn]
-    (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-      (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
+    (let [old-line-width (ShapeDrawer/.getDefaultLineWidth ctx/shape-drawer)]
+      (ShapeDrawer/.setDefaultLineWidth ctx/shape-drawer (float (* width old-line-width)))
       (draw-fn)
-      (.setDefaultLineWidth shape-drawer (float old-line-width))))
+      (ShapeDrawer/.setDefaultLineWidth ctx/shape-drawer (float old-line-width))))
 
   (draw-grid [this leftx bottomy gridw gridh cellw cellh color]
     (let [w (* (float gridw) (float cellw))
@@ -336,8 +335,7 @@
                       ui-viewport]}]
   (let [world-unit-scale (float (/ tile-size))]
     (map->Graphics
-     {:shape-drawer (ShapeDrawer. ctx/batch ctx/shape-drawer-texture)
-      :cursors (utils/mapvals
+     {:cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
