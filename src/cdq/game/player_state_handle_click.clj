@@ -1,7 +1,11 @@
 (ns cdq.game.player-state-handle-click
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.entity.state :as state]))
+            [cdq.entity.state :as state]
+            [cdq.utils :as utils]))
 
 (defn do! []
-  (state/manual-tick (entity/state-obj @ctx/player-eid)))
+  (-> @ctx/player-eid
+      entity/state-obj
+      state/manual-tick
+      utils/handle-txs!))

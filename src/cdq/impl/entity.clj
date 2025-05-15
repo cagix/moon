@@ -31,24 +31,21 @@
   (let [item (:entity/item @eid)]
     (cond
      (stage/inventory-visible? ctx/stage)
-     (do
-      (sound/play! "bfxr_takeit")
-      (swap! eid entity/mark-destroyed)
-      (tx/send-event! ctx/player-eid :pickup-item item))
+     [[:tx/sound "bfxr_takeit"]
+      [:tx/mark-destroyed eid]
+      [:tx/event ctx/player-eid :pickup-item item]]
 
      (inventory/can-pickup-item? (:entity/inventory @ctx/player-eid) item)
-     (do
-      (sound/play! "bfxr_pickup")
-      (swap! eid entity/mark-destroyed)
-      (tx/pickup-item ctx/player-eid item))
+     [[:tx/sound "bfxr_pickup"]
+      [:tx/mark-destroyed eid]
+      [:tx/pickup-item ctx/player-eid item]]
 
      :else
-     (do
-      (sound/play! "bfxr_denied")
-      (stage/show-message! ctx/stage "Your Inventory is full")))))
+     [[:tx/sound "bfxr_denied"]
+      [:tx/show-message "Your Inventory is full"]])))
 
 (defmethod on-clicked :clickable/player [_]
-  (stage/toggle-inventory-visible! ctx/stage))
+  [[:tx/toggle-inventory-visible]]) ; TODO every 'transaction' should have a sound or effect with it?
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -61,11 +58,9 @@
   (if (< (v/distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
-    [(clickable->cursor @clicked-eid false) (fn []
-                                              (on-clicked clicked-eid))]
-    [(clickable->cursor @clicked-eid true)  (fn []
-                                              (sound/play! "bfxr_denied")
-                                              (stage/show-message! ctx/stage "Too far away"))]))
+    [(clickable->cursor @clicked-eid false) (on-clicked clicked-eid)]
+    [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]
+                                             [:tx/show-message "Too far away"]]]))
 
 (defn- mouseover-actor->cursor [actor]
   (cond
@@ -88,7 +83,7 @@
     (cond
      (stage/mouse-on-actor? ctx/stage)
      [(mouseover-actor->cursor (stage/mouse-on-actor? ctx/stage))
-      (fn [] nil)] ; handled by actors themself, they check player state
+      nil] ; handled by actors themself, they check player state
 
      (and ctx/mouseover-eid
           (:entity/clickable @ctx/mouseover-eid))
@@ -100,29 +95,24 @@
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
          (if (= state :usable)
-           (do
-            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
-            ; different color ?
-            ; => e.g. meditation no TARGET .. etc.
-            [:cursors/use-skill
-             (fn []
-               (tx/send-event! eid :start-action [skill effect-ctx]))])
-           (do
-            ; TODO cursor as of usable state
-            ; cooldown -> sanduhr kleine
-            ; not-enough-mana x mit kreis?
-            ; invalid-params -> depends on params ...
-            [:cursors/skill-not-usable
-             (fn []
-               (sound/play! "bfxr_denied")
-               (stage/show-message! ctx/stage (case state
-                                                :cooldown "Skill is still on cooldown"
-                                                :not-enough-mana "Not enough mana"
-                                                :invalid-params "Cannot use this here")))])))
+           ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
+           ; different color ?
+           ; => e.g. meditation no TARGET .. etc.
+           [:cursors/use-skill
+            [[:tx/event eid :start-action [skill effect-ctx]]]]
+           ; TODO cursor as of usable state
+           ; cooldown -> sanduhr kleine
+           ; not-enough-mana x mit kreis?
+           ; invalid-params -> depends on params ...
+           [:cursors/skill-not-usable
+            [[:tx/sound "bfxr_denied"]
+             [:tx/show-message (case state
+                                 :cooldown "Skill is still on cooldown"
+                                 :not-enough-mana "Not enough mana"
+                                 :invalid-params "Cannot use this here")]]]))
        [:cursors/no-skill-selected
-        (fn []
-          (sound/play! "bfxr_denied")
-          (stage/show-message! ctx/stage "No selected skill"))]))))
+        [[:tx/sound "bfxr_denied"]
+         [:tx/show-message "No selected skill"]]]))))
 
 (defcomponent :player-idle
   (entity/create [[_ eid]]
@@ -132,11 +122,11 @@
 
   (state/manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (input/player-movement-vector)]
-      (tx/send-event! eid :movement-input movement-vector)
+      [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (interaction-state eid)]
-        (graphics/set-cursor! ctx/graphics cursor)
-        (when (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
-          (on-click)))))
+        (cons [:tx/set-cursor cursor]
+              (when (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
+                on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     ; TODO no else case
@@ -233,7 +223,7 @@
   (state/manual-tick [[_ {:keys [eid]}]]
     (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
                (world-item?))
-      (tx/send-event! eid :drop-item)))
+      [[:tx/event eid :drop-item]]))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     (clicked-cell eid cell))
