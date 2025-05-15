@@ -2,10 +2,11 @@
   (:require [cdq.ctx :as ctx]
             [cdq.raycaster :as raycaster]
             [cdq.tiled :as tiled]
+            [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera])
   (:import (com.badlogic.gdx.graphics Color)))
 
-(def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
+(def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 

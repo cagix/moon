@@ -12,6 +12,12 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils ScreenUtils)))
 
+(defn color [r g b a]
+  (Color. (float r)
+          (float g)
+          (float b)
+          (float a)))
+
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
 
