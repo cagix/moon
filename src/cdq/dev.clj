@@ -6,6 +6,7 @@
             [cdq.tx :as tx]
             [cdq.tx.add-skill]
             [cdq.tx.spawn-creature]
+            [cdq.tx.spawn-item]
             [cdq.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -79,7 +80,7 @@
   (cdq.tx.add-skill/do! ctx/player-eid (db/build ctx/db skill-id)))
 
 (defn- create-item! [_context item-id]
-  (world/spawn-item (:position @ctx/player-eid) (db/build ctx/db item-id)))
+  (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
   @(world/cell ctx/world (mapv int (graphics/world-mouse-position ctx/graphics))))

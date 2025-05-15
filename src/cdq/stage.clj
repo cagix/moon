@@ -15,7 +15,6 @@
   (show-message! [stage text])
   (show-modal! [stage opts])
   (inventory-visible? [stage])
-  (toggle-inventory-visible! [stage])
   (inventory-cell-with-item? [_ actor])
   (window-title-bar? [_ actor])
   (button? [_ actor]))

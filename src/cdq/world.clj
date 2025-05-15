@@ -167,46 +167,9 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn spawn-item [position item]
-  (spawn-entity position
-                {:width 0.75
-                 :height 0.75
-                 :z-order :z-order/on-ground}
-                {:entity/image (:entity/image item)
-                 :entity/item item
-                 :entity/clickable {:type :clickable/item
-                                    :text (:property/pretty-name item)}}))
-
-(defn line-render [{:keys [start end duration color thick?]}]
-  (spawn-entity start
-                effect-body-props
-                #:entity {:line-render {:thick? thick? :end end :color color}
-                          :delete-after-duration duration}))
-
 (defn projectile-size [projectile]
   {:pre [(:entity/image projectile)]}
   (first (:world-unit-dimensions (:entity/image projectile))))
-
-(defn spawn-projectile [{:keys [position direction faction]}
-                        {:keys [entity/image
-                                projectile/max-range
-                                projectile/speed
-                                entity-effects
-                                projectile/piercing?] :as projectile}]
-  (let [size (projectile-size projectile)]
-    (spawn-entity position
-                  {:width size
-                   :height size
-                   :z-order :z-order/flying
-                   :rotation-angle (v/angle-from-vector direction)}
-                  {:entity/movement {:direction direction
-                                     :speed speed}
-                   :entity/image image
-                   :entity/faction faction
-                   :entity/delete-after-duration (/ max-range speed)
-                   :entity/destroy-audiovisual :audiovisuals/hit-wall
-                   :entity/projectile-collision {:entity-effects entity-effects
-                                                 :piercing? piercing?}})))
 
 (def ^:private shout-radius 4)
 

@@ -1212,9 +1212,6 @@
 (defn inventory-visible? [stage]
   (-> stage :windows :inventory-window Actor/.isVisible))
 
-(defn toggle-inventory-visible! [stage]
-  (-> stage :windows :inventory-window toggle-visible!))
-
 (defn inventory-cell-with-item? [actor]
   {:pre [actor]}
   (and (Actor/.getParent actor)
@@ -1308,9 +1305,6 @@
 
   (inventory-visible? [stage]
     (inventory-visible? stage))
-
-  (toggle-inventory-visible! [stage]
-    (toggle-inventory-visible! stage))
 
   (inventory-cell-with-item? [_ actor]
     (inventory-cell-with-item? actor))
