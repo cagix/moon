@@ -202,6 +202,9 @@
                   active-entities
                   id-counter]
   world/World
+  (cache-active-entities [this]
+    (assoc this :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
+
   (spawn-entity! [this position body components]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))

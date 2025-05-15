@@ -1,10 +1,6 @@
 (ns cdq.game.cache-active-entities
   (:require [cdq.ctx :as ctx]
-            [cdq.content-grid :as content-grid]))
+            [cdq.world :as world]))
 
 (defn do! []
-  (alter-var-root #'ctx/world
-                  assoc
-                  :active-entities
-                  (content-grid/active-entities (:content-grid ctx/world)
-                                                @ctx/player-eid)))
+  (alter-var-root #'ctx/world world/cache-active-entities))
