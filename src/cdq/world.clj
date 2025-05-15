@@ -2,9 +2,9 @@
   (:require [cdq.camera :as camera]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.math.raycaster :as raycaster]
-            [cdq.math.vector2 :as v]
+            [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
+            [cdq.vector2 :as v]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
 

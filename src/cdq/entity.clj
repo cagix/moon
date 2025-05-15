@@ -1,8 +1,8 @@
 (ns cdq.entity
   (:require [cdq.op :as op]
             [cdq.math :as math]
-            [cdq.math.vector2 :as v]
             [cdq.val-max :as val-max]
+            [cdq.vector2 :as v]
             [malli.core :as m]))
 
 (defmulti create (fn [[k]]

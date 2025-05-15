@@ -1,6 +1,6 @@
 (ns cdq.tx.move-entity
   (:require [cdq.ctx :as ctx]
-            [cdq.math.vector2 :as v]
+            [cdq.vector2 :as v]
             [cdq.world :as world]))
 
 (defn do! [eid body direction rotate-in-movement-direction?]

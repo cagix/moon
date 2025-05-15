@@ -1,5 +1,5 @@
 (ns cdq.input
-  (:require [cdq.math.vector2 :as v])
+  (:require [cdq.vector2 :as v])
   (:import (com.badlogic.gdx Gdx Input$Keys)))
 
 (defn player-movement-vector []

@@ -5,10 +5,10 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.math.raycaster :as raycaster]
-            [cdq.math.vector2 :as v]
+            [cdq.raycaster :as raycaster]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]
+            [cdq.vector2 :as v]
             [cdq.world :as world]))
 
 (defcomponent :effects/audiovisual

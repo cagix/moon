@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-projectile
-  (:require [cdq.math.vector2 :as v]
+  (:require [cdq.vector2 :as v]
             [cdq.world :as world]))
 
 (defn do! [{:keys [position direction faction]}

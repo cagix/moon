@@ -1,7 +1,7 @@
 (ns cdq.game.draw-tiled-map
   (:require [cdq.camera :as camera]
             [cdq.ctx :as ctx]
-            [cdq.math.raycaster :as raycaster]
+            [cdq.raycaster :as raycaster]
             [cdq.tiled :as tiled])
   (:import (com.badlogic.gdx.graphics Color)))
 
