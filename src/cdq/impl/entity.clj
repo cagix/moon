@@ -298,20 +298,21 @@
    :counter (timer/create ctx/elapsed-time duration)})
 
 (defmethod entity/create! :entity/inventory [[k items] eid]
-  (swap! eid assoc k inventory/empty-inventory)
-  (doseq [item items]
-    (tx/pickup-item eid item)))
+  (cons [:tx/assoc eid k inventory/empty-inventory]
+        (for [item items]
+          [:tx/pickup-item eid item])))
 
 (defmethod entity/create! :entity/skills [[k skills] eid]
-  (swap! eid assoc k nil)
-  (doseq [skill skills]
-    (tx/add-skill eid skill)))
+  (cons [:tx/assoc eid k nil]
+        (for [skill skills]
+          [:tx/add-skill eid skill])))
 
 (defmethod entity/create! :entity/animation [[_ animation] eid]
-  (swap! eid assoc :entity/image (animation/current-frame animation)))
+  [[:tx/assoc eid :entity/image (animation/current-frame animation)]])
 
 (defmethod entity/create! :entity/delete-after-animation-stopped? [_ eid]
-  (-> @eid :entity/animation :looping? not assert))
+  (-> @eid :entity/animation :looping? not assert)
+  nil)
 
 (def ^:private npc-fsm
   (fsm/fsm-inc
@@ -364,13 +365,12 @@
     [:player-dead]]))
 
 (defmethod entity/create! :entity/fsm [[k {:keys [fsm initial-state]}] eid]
-  (swap! eid assoc
-         ; fsm throws when initial-state is not part of states, so no need to assert initial-state
-         ; initial state is nil, so associng it. make bug report at reduce-fsm?
-         k (assoc ((case fsm
-                     :fsms/player player-fsm
-                     :fsms/npc npc-fsm) initial-state nil) :state initial-state)
-         initial-state (entity/create [initial-state eid])))
+  ; fsm throws when initial-state is not part of states, so no need to assert initial-state
+  ; initial state is nil, so associng it. make bug report at reduce-fsm?
+  [[:tx/assoc eid k (assoc ((case fsm
+                              :fsms/player player-fsm
+                              :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
+   [:tx/assoc eid initial-state (entity/create [initial-state eid])]])
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -590,7 +590,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid]
-    (world/spawn-audiovisual (:position @eid) (db/build ctx/db audiovisuals-id))))
+    [[:tx/audiovisual (:position @eid) (db/build ctx/db audiovisuals-id)]]))
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]

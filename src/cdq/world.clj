@@ -184,7 +184,7 @@
                                             create-vs))))]
     (add-entity! ctx/world eid)
     (doseq [component @eid]
-      (entity/create! component eid))
+      (utils/handle-txs! (entity/create! component eid)))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
