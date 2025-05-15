@@ -1,5 +1,7 @@
 (ns cdq.ctx)
 
+(def world-unit-scale (float (/ 48)))
+
 (declare schemas
          db
          assets

@@ -134,8 +134,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [world-unit-scale
-                     world-viewport
+(defrecord Graphics [world-viewport
                      get-tiled-map-renderer
                      unit-scale
                      ui-viewport]
@@ -150,7 +149,7 @@
     (unproject-mouse-position world-viewport))
 
   (pixels->world-units [_ pixels]
-    (* (int pixels) world-unit-scale))
+    (* (int pixels) ctx/world-unit-scale))
 
   (draw-image [_ {:keys [texture-region color] :as image} position]
     (draw-texture-region ctx/batch
@@ -277,10 +276,11 @@
                              (int y)
                              (int w)
                              (int h))
-             world-unit-scale))
+             ctx/world-unit-scale))
 
   (sprite-sheet [_ texture tilew tileh]
-    {:image (sprite* (TextureRegion. ^Texture texture) world-unit-scale)
+    {:image (sprite* (TextureRegion. ^Texture texture)
+                     ctx/world-unit-scale)
      :tilew tilew
      :tileh tileh})
 
@@ -293,19 +293,18 @@
                           tileh]))
 
   (sprite [_ texture]
-    (sprite* (TextureRegion. ^Texture texture) world-unit-scale)))
+    (sprite* (TextureRegion. ^Texture texture)
+             ctx/world-unit-scale)))
 
 (defn create [{:keys [tile-size
                       world-viewport
                       ui-viewport]}]
-  (let [world-unit-scale (float (/ tile-size))]
-    (map->Graphics
-     {:world-unit-scale  world-unit-scale
-      :world-viewport (->world-viewport world-unit-scale world-viewport)
-      :get-tiled-map-renderer (memoize (fn [tiled-map]
-                                         (tiled/renderer tiled-map
-                                                         world-unit-scale
-                                                         ctx/batch)))
-      :ui-viewport (fit-viewport (:width  ui-viewport)
-                                 (:height ui-viewport))
-      :unit-scale (atom 1)})))
+  (map->Graphics
+   {:world-viewport (->world-viewport ctx/world-unit-scale world-viewport)
+    :get-tiled-map-renderer (memoize (fn [tiled-map]
+                                       (tiled/renderer tiled-map
+                                                       ctx/world-unit-scale
+                                                       ctx/batch)))
+    :ui-viewport (fit-viewport (:width  ui-viewport)
+                               (:height ui-viewport))
+    :unit-scale (atom 1)}))
