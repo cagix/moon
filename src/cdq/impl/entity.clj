@@ -4,7 +4,6 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.entity.skill :as skill]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
@@ -20,6 +19,24 @@
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (and cost (> cost (entity/mana-val entity))))
+
+(defn- skill-usable-state
+  [entity {:keys [skill/cooling-down? skill/effects] :as skill} effect-ctx]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effect/some-applicable? effect-ctx effects))
+   :invalid-params
+
+   :else
+   :usable))
 
 (defmethod entity/create! :entity/player? [_ eid]
   (utils/bind-root #'ctx/player-eid eid))
