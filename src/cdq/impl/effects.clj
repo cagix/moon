@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
+            [cdq.draw :as draw]
             [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
             [cdq.timer :as timer]
@@ -135,9 +135,9 @@
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (world/creatures-in-los-of-player ctx/world))]
-        (graphics/draw-line (:position source*) #_(start-point source* target*)
-                            (:position target*)
-                            [1 0 0 0.5])))))
+        (draw/line (:position source*) #_(start-point source* target*)
+                   (:position target*)
+                   [1 0 0 0.5])))))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
@@ -177,11 +177,11 @@
     (when target
       (let [source* @source
             target* @target]
-        (graphics/draw-line (start-point source* target*)
-                            (end-point source* target* maxrange)
-                            (if (entity/in-range? source* target* maxrange)
-                              [1 0 0 0.5]
-                              [1 1 0 0.5]))))))
+        (draw/line (start-point source* target*)
+                   (end-point source* target* maxrange)
+                   (if (entity/in-range? source* target* maxrange)
+                     [1 0 0 0.5]
+                     [1 1 0 0.5]))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]

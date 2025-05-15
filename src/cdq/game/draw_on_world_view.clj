@@ -1,14 +1,14 @@
 (ns cdq.game.draw-on-world-view
   (:require [cdq.batch :as batch]
+            [cdq.draw :as draw]
             [cdq.ctx :as ctx]
-            [cdq.utils :as utils]
-            [cdq.graphics :as graphics]))
+            [cdq.utils :as utils]))
 
 (defn do! [draw-fns]
   (batch/draw-on-viewport! ctx/batch
                            ctx/world-viewport
                            (fn []
-                             (graphics/with-line-width ctx/world-unit-scale
+                             (draw/with-line-width ctx/world-unit-scale
                                (fn []
                                  (reset! ctx/unit-scale ctx/world-unit-scale)
                                  (utils/execute! draw-fns)

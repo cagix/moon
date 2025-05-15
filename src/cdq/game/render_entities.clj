@@ -1,7 +1,7 @@
 (ns cdq.game.render-entities
   (:require [cdq.ctx :as ctx]
+            [cdq.draw :as draw]
             [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
             [cdq.utils :as utils]
             [cdq.world :as world]))
 
@@ -9,7 +9,7 @@
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (graphics/draw-rectangle x y (:width entity) (:height entity) color)))
+    (draw/rectangle x y (:width entity) (:height entity) color)))
 
 (defn do! []
   (let [entities (map deref (:active-entities ctx/world))
