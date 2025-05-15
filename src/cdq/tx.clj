@@ -2,6 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
+            [cdq.utils :as utils]
             [reduce-fsm :as fsm]))
 
 (defn set-item [eid cell item]
@@ -74,8 +75,8 @@
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (state/exit!  old-state-obj)
-           (state/enter! new-state-obj)))))))
+           (utils/handle-txs! (state/exit!  old-state-obj))
+           (utils/handle-txs! (state/enter! new-state-obj))))))))
 
 (defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (contains? (:entity/skills @eid) id))]}

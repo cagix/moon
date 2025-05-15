@@ -1,6 +1,5 @@
 (ns cdq.impl.entity
-  (:require [cdq.audio.sound :as sound]
-            [cdq.animation :as animation]
+  (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
@@ -202,7 +201,7 @@
   (state/pause-game? [_] true)
 
   (state/enter! [[_ {:keys [eid item]}]]
-    (swap! eid assoc :entity/item-on-cursor item))
+    [[:tx/assoc eid :entity/item-on-cursor item]])
 
   (state/exit! [[_ {:keys [eid]}]]
     ; at clicked-cell when we put it into a inventory-cell
@@ -211,10 +210,9 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (sound/play! "bfxr_itemputground")
-        (swap! eid dissoc :entity/item-on-cursor)
-        (world/spawn-item (item-place-position entity)
-                          (:entity/item-on-cursor entity)))))
+        [[:tx/sound "bfxr_itemputground"]
+         [:tx/dissoc eid :entity/item-on-cursor]
+         [:tx/spawn-item (item-place-position entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [[_ {:keys [eid]}]]
     (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
@@ -543,32 +541,30 @@
   (state/cursor [_] :cursors/sandclock)
   (state/pause-game? [_] false)
   (state/enter! [[_ {:keys [eid skill]}]]
-    (sound/play! (:skill/start-action-sound skill))
-    (when (:skill/cooldown skill)
-      (swap! eid assoc-in
-             [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer/create ctx/elapsed-time (:skill/cooldown skill))))
-    (when (and (:skill/cost skill)
-               (not (zero? (:skill/cost skill))))
-      (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
+    [[:tx/sound (:skill/start-action-sound skill)]
+     (when (:skill/cooldown skill)
+       [:tx/set-cooldown eid skill])
+     (when (and (:skill/cost skill)
+                (not (zero? (:skill/cost skill))))
+       [:tx/pay-mana-cost eid (:skill/cost skill)])]))
 
 (defcomponent :player-dead
   (state/cursor [_] :cursors/black-x)
   (state/pause-game? [_] true)
   (state/enter! [_]
-    (sound/play! "bfxr_playerdeath")
-    (stage/show-modal! ctx/stage {:title "YOU DIED - again!"
-                                  :text "Good luck next time!"
-                                  :button-text "OK"
-                                  :on-click (fn [])})))
+    [[:tx/sound "bfxr_playerdeath"]
+     [:tx/show-modal {:title "YOU DIED - again!"
+                      :text "Good luck next time!"
+                      :button-text "OK"
+                      :on-click (fn [])}]]))
 
 (defcomponent :player-moving
   (state/cursor [_] :cursors/walking)
   (state/pause-game? [_] false)
   (state/enter! [[_ {:keys [eid movement-vector]}]]
-    (swap! eid entity/set-movement movement-vector))
+    [[:tx/set-movement eid movement-vector]])
   (state/exit! [[_ {:keys [eid]}]]
-    (swap! eid dissoc :entity/movement)))
+    [[:tx/dissoc eid :entity/movement]]))
 
 (defcomponent :stunned
   (state/cursor [_] :cursors/denied)
@@ -580,20 +576,18 @@
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]
-    (swap! eid entity/mark-destroyed)))
+    [[:tx/mark-destroyed eid]]))
 
 (defcomponent :npc-moving
   (state/enter! [[_ {:keys [eid movement-vector]}]]
-    (swap! eid entity/set-movement movement-vector))
+    [[:tx/set-movement eid movement-vector]])
   (state/exit! [[_ {:keys [eid]}]]
-    (swap! eid dissoc :entity/movement)))
+    [[:tx/dissoc eid :entity/movement]]))
 
 (defcomponent :npc-sleeping
   (state/exit! [[_ {:keys [eid]}]]
-    (world/delayed-alert (:position       @eid)
-                         (:entity/faction @eid)
-                         0.2)
-    (swap! eid entity/add-text-effect "[WHITE]!")))
+    [[:tx/spawn-alert (:position @eid) (:entity/faction @eid) 0.2]
+     [:tx/add-text-effect eid "[WHITE]!"]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio g]
   (let [[width height] (:world-unit-dimensions image)
