@@ -1,6 +1,5 @@
 (ns cdq.world
   (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]
@@ -160,37 +159,13 @@
                                             create-vs))))]
     (add-entity! ctx/world eid)
     (doseq [component @eid]
-      (utils/handle-txs! (entity/create! component eid)))
-    eid))
+      (utils/handle-txs! (entity/create! component eid)))))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."}
   effect-body-props
   {:width 0.5
    :height 0.5
    :z-order :z-order/effect})
-
-; # :z-order/flying has no effect for now
-; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-; because using potential-field for z-order/ground
-; -> would have to add one more potential-field for each faction for z-order/flying
-; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-; * they could also go over ground units and not collide with them
-; ( a test showed then flying OVER player entity )
-; -> so no flying units for now
-(defn- ->body [{:keys [body/width body/height #_body/flying?]}]
-  {:width  width
-   :height height
-   :collides? true
-   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
-
-(defn spawn-creature [{:keys [position creature-id components]}]
-  (let [props (db/build ctx/db creature-id)]
-    (spawn-entity position
-                  (->body (:entity/body props))
-                  (-> props
-                      (dissoc :entity/body)
-                      (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                      (utils/safe-merge components)))))
 
 (defn spawn-item [position item]
   (spawn-entity position

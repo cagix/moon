@@ -2,8 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity.state :as state]
             [cdq.stage :as stage]
-            [cdq.utils :as utils]
-            [cdq.world :as world]))
+            [cdq.utils :as utils]))
 
 (defn- player-entity-props [start-position]
   {:position (utils/tile->middle start-position)
@@ -27,4 +26,4 @@
                 :entity/click-distance-tiles 1.5}})
 
 (defn do! []
-  (utils/bind-root #'ctx/player-eid (world/spawn-creature (player-entity-props (:start-position ctx/world)))))
+  (utils/handle-txs! [[:tx/spawn-creature (player-entity-props (:start-position ctx/world))]]))

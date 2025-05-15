@@ -12,7 +12,7 @@
             [cdq.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent find-first]]
+            [cdq.utils :as utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
@@ -20,6 +20,9 @@
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
+
+(defmethod entity/create! :entity/player? [_ eid]
+  (utils/bind-root #'ctx/player-eid eid))
 
 (defmulti ^:private on-clicked
   (fn [eid]

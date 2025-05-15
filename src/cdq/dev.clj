@@ -5,6 +5,7 @@
             [cdq.graphics :as graphics]
             [cdq.tx :as tx]
             [cdq.tx.add-skill]
+            [cdq.tx.spawn-creature]
             [cdq.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -54,11 +55,11 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable!
-  (world/spawn-creature {:position [35 73]
-                         :creature-id :creatures/dragon-red
-                         :components {:entity/fsm {:fsm :fsms/npc
-                                                   :initial-state :npc-sleeping}
-                                      :entity/faction :evil}}))
+  (cdq.tx.spawn-creature/do! {:position [35 73]
+                              :creature-id :creatures/dragon-red
+                              :components {:entity/fsm {:fsm :fsms/npc
+                                                        :initial-state :npc-sleeping}
+                                           :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
