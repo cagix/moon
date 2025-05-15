@@ -4,6 +4,7 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.tx :as tx]
+            [cdq.tx.add-skill]
             [cdq.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -74,7 +75,7 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (tx/add-skill ctx/player-eid (db/build ctx/db skill-id)))
+  (cdq.tx.add-skill/do! ctx/player-eid (db/build ctx/db skill-id)))
 
 (defn- create-item! [_context item-id]
   (world/spawn-item (:position @ctx/player-eid) (db/build ctx/db item-id)))

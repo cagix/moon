@@ -77,15 +77,3 @@
                            (dissoc old-state-k)))
            (utils/handle-txs! (state/exit!  old-state-obj))
            (utils/handle-txs! (state/enter! new-state-obj))))))))
-
-(defn add-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(not (contains? (:entity/skills @eid) id))]}
-  (when (:entity/player? @eid)
-    ((:skill-added! (:entity/player? @eid)) skill))
-  (swap! eid assoc-in [:entity/skills id] skill))
-
-(defn remove-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(contains? (:entity/skills @eid) id)]}
-  (when (:entity/player? @eid)
-    ((:skill-removed! (:entity/player? @eid)) skill))
-  (swap! eid update :entity/skills dissoc id))
