@@ -6,7 +6,7 @@
 (defn do! [position faction duration]
   (world/spawn-entity! ctx/world
                        position
-                       world/effect-body-props
+                       ctx/effect-body-props
                        {:entity/alert-friendlies-after-duration
                         {:counter (timer/create ctx/elapsed-time duration)
                          :faction faction}}))

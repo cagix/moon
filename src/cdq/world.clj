@@ -11,16 +11,6 @@
   (position-changed! [_ eid])
   (cell [_ position]))
 
-(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."}
-  effect-body-props
-  {:width 0.5
-   :height 0.5
-   :z-order :z-order/effect})
-
-(defn projectile-size [projectile]
-  {:pre [(:entity/image projectile)]}
-  (first (:world-unit-dimensions (:entity/image projectile))))
-
 (def ^:private shout-radius 4)
 
 (defn friendlies-in-radius [grid position faction]

@@ -39,3 +39,9 @@
                :z-order/effect])
 
 (def render-z-order (utils/define-order z-orders))
+
+(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."}
+  effect-body-props
+  {:width 0.5
+   :height 0.5
+   :z-order :z-order/effect})

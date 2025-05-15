@@ -7,6 +7,7 @@
             [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
             [cdq.timer :as timer]
+            [cdq.projectile :as projectile]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
             [cdq.world :as world]))
@@ -40,7 +41,7 @@
       (and (not (raycaster/path-blocked? (:raycaster ctx/world) ; TODO test
                                          source-p
                                          target-p
-                                         (world/projectile-size projectile)))
+                                         (projectile/size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
@@ -50,7 +51,7 @@
     [[:tx/spawn-projectile
       {:position (projectile-start-point @source
                                          target-direction
-                                         (world/projectile-size projectile))
+                                         (projectile/size projectile))
        :direction target-direction
        :faction (:entity/faction @source)}
       projectile]]))

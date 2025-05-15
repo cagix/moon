@@ -7,6 +7,6 @@
   (tx.sound/do! sound)
   (world/spawn-entity! ctx/world
                        position
-                       world/effect-body-props
+                       ctx/effect-body-props
                        {:entity/animation animation
                         :entity/delete-after-animation-stopped? true}))

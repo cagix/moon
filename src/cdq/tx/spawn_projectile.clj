@@ -1,5 +1,6 @@
 (ns cdq.tx.spawn-projectile
   (:require [cdq.ctx :as ctx]
+            [cdq.projectile :as projectile]
             [cdq.vector2 :as v]
             [cdq.world :as world]))
 
@@ -9,7 +10,7 @@
                    projectile/speed
                    entity-effects
                    projectile/piercing?] :as projectile}]
-  (let [size (world/projectile-size projectile)]
+  (let [size (projectile/size projectile)]
     (world/spawn-entity! ctx/world
                          position
                          {:width size
