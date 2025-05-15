@@ -3,7 +3,9 @@
             [cdq.interop :as interop]
             [cdq.shape-drawer :as sd]
             [cdq.utils :as utils])
-  (:import (com.badlogic.gdx.math MathUtils)
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.math MathUtils)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- degree->radians [degree]
@@ -11,7 +13,7 @@
 
 (defn create []
   (let [this (ShapeDrawer. (:java-object ctx/batch)
-                           ctx/shape-drawer-texture)]
+                           (TextureRegion. ^Texture ctx/shape-drawer-texture 1 0 1 1))]
     (reify
       sd/ShapeDrawer
       (set-color! [_ color]
