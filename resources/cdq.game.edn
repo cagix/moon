@@ -11,6 +11,7 @@
                       :window-height 900
                       :fps 60
                       :create [load-assets
+                               create-sprite-batch
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

@@ -1240,8 +1240,7 @@
 
 (defn create! []
   (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (Stage. (:ui-viewport ctx/graphics)
-                      (:batch       ctx/graphics))]
+  (let [stage (Stage. (:ui-viewport ctx/graphics) ctx/batch)]
     (run! #(.addActor stage %) (create-actors))
     (.setInputProcessor Gdx/input stage)
     (reify

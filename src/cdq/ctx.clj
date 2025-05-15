@@ -3,6 +3,7 @@
 (declare schemas
          db
          assets
+         batch
          graphics
          stage
          world

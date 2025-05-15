@@ -4,6 +4,7 @@
 
 (defn do! []
   (Disposable/.dispose ctx/assets)
+  (Disposable/.dispose ctx/batch)
   (Disposable/.dispose ctx/graphics)
   ; TODO vis-ui dispose
   ; TODO dispose world tiled-map/level resources?

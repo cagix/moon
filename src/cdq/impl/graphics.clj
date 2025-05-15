@@ -1,5 +1,6 @@
 (ns cdq.impl.graphics
-  (:require [cdq.camera :as camera]
+  (:require [cdq.ctx :as ctx]
+            [cdq.camera :as camera]
             [cdq.graphics :as graphics]
             [cdq.interop :as interop]
             [cdq.tiled :as tiled]
@@ -7,7 +8,7 @@
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
@@ -167,8 +168,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [^Batch batch
-                     ^Texture shape-drawer-texture
+(defrecord Graphics [^Texture shape-drawer-texture
                      ^ShapeDrawer shape-drawer
                      cursors
                      default-font
@@ -179,7 +179,6 @@
                      ui-viewport]
   Disposable
   (dispose [_]
-    (.dispose batch)
     (.dispose shape-drawer-texture)
     (run! Disposable/.dispose (vals cursors))
     (Disposable/.dispose default-font))
@@ -198,7 +197,7 @@
     (* (int pixels) world-unit-scale))
 
   (draw-image [_ {:keys [texture-region color] :as image} position]
-    (draw-texture-region batch
+    (draw-texture-region ctx/batch
                          texture-region
                          position
                          (unit-dimensions image @unit-scale)
@@ -207,7 +206,7 @@
 
   (draw-rotated-centered [_ {:keys [texture-region color] :as image} rotation [x y]]
     (let [[w h] (unit-dimensions image @unit-scale)]
-      (draw-texture-region batch
+      (draw-texture-region ctx/batch
                            texture-region
                            [(- (float x) (/ (float w) 2))
                             (- (float y) (/ (float h) 2))]
@@ -219,7 +218,7 @@
     (draw-text! {:font (or font default-font)
                  :scale (* (float @unit-scale)
                            (float (or scale 1)))
-                 :batch batch
+                 :batch ctx/batch
                  :x x
                  :y y
                  :text text
@@ -345,13 +344,11 @@
                       tile-size
                       world-viewport
                       ui-viewport]}]
-  (let [batch (SpriteBatch.)
-        shape-drawer-texture (white-pixel-texture)
+  (let [shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))]
     (map->Graphics
-     {:batch batch
-      :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+     {:shape-drawer-texture shape-drawer-texture
+      :shape-drawer (ShapeDrawer. ctx/batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
@@ -365,7 +362,7 @@
       :get-tiled-map-renderer (memoize (fn [tiled-map]
                                          (tiled/renderer tiled-map
                                                          world-unit-scale
-                                                         batch)))
+                                                         ctx/batch)))
       :ui-viewport (fit-viewport (:width  ui-viewport)
                                  (:height ui-viewport))
       :unit-scale (atom 1)})))
