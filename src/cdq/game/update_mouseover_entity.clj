@@ -16,7 +16,7 @@
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(world/line-of-sight? player @%))
+                         (filter #(world/line-of-sight? ctx/world player @%))
                          first)))]
     (when-let [eid ctx/mouseover-eid]
       (swap! eid dissoc :entity/mouseover?))

@@ -100,12 +100,18 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (world/creatures-in-los-of-player ctx/world)]
+ (let [targets (creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
 
  )
+
+(defn- creatures-in-los-of-player []
+  (->> (:active-entities ctx/world)
+       (filter #(:entity/species @%))
+       (filter #(world/line-of-sight? ctx/world @ctx/player-eid @%))
+       (remove #(:entity/player? @%))))
 
 (defcomponent :effects/target-all
   ; TODO targets projectiles with -50% hp !!
@@ -119,7 +125,7 @@
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
       (apply concat
-             (for [target (world/creatures-in-los-of-player ctx/world)]
+             (for [target (creatures-in-los-of-player)]
                [[:tx/spawn-line {:start (:position source*) #_(start-point source* target*)
                                  :end (:position @target)
                                  :duration 0.05
@@ -135,7 +141,7 @@
 
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target* (map deref (world/creatures-in-los-of-player ctx/world))]
+      (doseq [target* (map deref (creatures-in-los-of-player))]
         (draw/line (:position source*) #_(start-point source* target*)
                    (:position target*)
                    [1 0 0 0.5])))))

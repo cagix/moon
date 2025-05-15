@@ -1,13 +1,34 @@
 (ns cdq.impl.world
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.camera :as camera]
+            [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
+            [cdq.raycaster :as raycaster]
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [cdq.world :as world]))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [viewport entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (camera/position (:camera viewport))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (:width viewport))  2)))
+     (<= ydist (inc (/ (float (:height viewport)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -212,7 +233,18 @@
 
   (cell [_ position]
     ; assert/document integer ?
-    (grid position)))
+    (grid position))
+
+
+  ; does not take into account size of entity ...
+  ; => assert bodies <1 width then
+  (line-of-sight? [_ source target]
+    (and (or (not (:entity/player? source))
+             (on-screen? ctx/world-viewport target))
+         (not (and los-checks?
+                   (raycaster/blocked? raycaster
+                                       (:position source)
+                                       (:position target)))))))
 
 (defn create [{:keys [tiled-map start-position]}]
   (let [width  (tiled/tm-width  tiled-map)

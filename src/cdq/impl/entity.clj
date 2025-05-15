@@ -381,7 +381,7 @@
   [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? @source @target))
+           (world/line-of-sight? ctx/world @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -409,9 +409,10 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (world/nearest-enemy ctx/world entity)
+        target (grid/nearest-entity @((:grid ctx/world) (entity/tile entity))
+                                    (entity/enemy entity))
         target (when (and target
-                          (world/line-of-sight? entity @target))
+                          (world/line-of-sight? ctx/world entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -448,7 +449,10 @@
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
     (cons [:tx/mark-destroyed eid]
-          (for [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
+          (for [friendly-eid (->> {:position (:position @eid)
+                                   :radius 4}
+                                  (grid/circle->entities (:grid ctx/world))
+                                  (filter #(= (:entity/faction @%) faction)))]
             [:tx/event friendly-eid :alert]))))
 
 (defmethod entity/tick! :entity/animation [[_ animation] eid]
