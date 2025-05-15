@@ -20,9 +20,10 @@
 
 (defn do! [{:keys [position creature-id components]}]
   (let [props (db/build ctx/db creature-id)]
-    (world/spawn-entity position
-                        (->body (:entity/body props))
-                        (-> props
-                            (dissoc :entity/body)
-                            (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                            (utils/safe-merge components)))))
+    (world/spawn-entity! ctx/world
+                         position
+                         (->body (:entity/body props))
+                         (-> props
+                             (dissoc :entity/body)
+                             (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                             (utils/safe-merge components)))))

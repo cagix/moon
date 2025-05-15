@@ -4,8 +4,9 @@
             [cdq.world :as world]))
 
 (defn do! [position faction duration]
-  (world/spawn-entity position
-                      world/effect-body-props
-                      {:entity/alert-friendlies-after-duration
-                       {:counter (timer/create ctx/elapsed-time duration)
-                        :faction faction}}))
+  (world/spawn-entity! ctx/world
+                       position
+                       world/effect-body-props
+                       {:entity/alert-friendlies-after-duration
+                        {:counter (timer/create ctx/elapsed-time duration)
+                         :faction faction}}))
