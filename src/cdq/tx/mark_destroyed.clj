@@ -1,5 +1,4 @@
-(ns cdq.tx.mark-destroyed
-  (:require [cdq.entity :as entity]))
+(ns cdq.tx.mark-destroyed)
 
 (defn do! [eid]
-  (swap! eid entity/mark-destroyed))
+  (swap! eid assoc :entity/destroyed? true))

@@ -105,9 +105,6 @@
                  z-order
                  rotation-angle]
   entity/Entity
-  (mark-destroyed [entity]
-    (assoc entity :entity/destroyed? true))
-
   ; we cannot just set/unset movement direction
   ; because it is handled by the state enter/exit for npc/player movement state ...
   ; so we cannot expose it as a 'transaction'
