@@ -124,5 +124,4 @@
            :modifier/damage-receive-max)))
 
 (defprotocol Entity
-  (set-movement [_ movement-vector])
   (in-range? [_ target maxrange]))

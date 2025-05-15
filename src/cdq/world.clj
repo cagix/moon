@@ -5,7 +5,6 @@
             [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
-            [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
@@ -105,15 +104,6 @@
                  z-order
                  rotation-angle]
   entity/Entity
-  ; we cannot just set/unset movement direction
-  ; because it is handled by the state enter/exit for npc/player movement state ...
-  ; so we cannot expose it as a 'transaction'
-  ; so the movement should be updated in the respective npc/player movement 'state' and no movement 'component' necessary !
-  ; for projectiles inside projectile update !?
-  (set-movement [entity movement-vector]
-    (assoc entity :entity/movement {:direction movement-vector
-                                    :speed (or (entity/stat entity :entity/movement-speed) 0)}))
-
   (in-range? [entity target* maxrange] ; == circle-collides?
     (< (- (float (v/distance (:position entity)
                              (:position target*)))
@@ -211,13 +201,6 @@
                  :entity/item item
                  :entity/clickable {:type :clickable/item
                                     :text (:property/pretty-name item)}}))
-
-(defn delayed-alert [position faction duration]
-  (spawn-entity position
-                effect-body-props
-                {:entity/alert-friendlies-after-duration
-                 {:counter (timer/create ctx/elapsed-time duration)
-                  :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
   (spawn-entity start
