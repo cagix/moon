@@ -13,21 +13,6 @@
   (position-changed! [_ eid])
   (cell [_ position]))
 
-; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
-(def max-delta 0.04)
-
-; setting a min-size for colliding bodies so movement can set a max-speed for not
-; skipping bodies at too fast movement
-; TODO assert at properties load
-(def minimum-size 0.39) ; == spider smallest creature size.
-
-(def z-orders [:z-order/on-ground
-               :z-order/ground
-               :z-order/flying
-               :z-order/effect])
-
-(def render-z-order (utils/define-order z-orders))
-
 (defrecord Body [position
                  left-bottom
 
@@ -58,10 +43,10 @@
   (assert position)
   (assert width)
   (assert height)
-  (assert (>= width  (if collides? minimum-size 0)))
-  (assert (>= height (if collides? minimum-size 0)))
+  (assert (>= width  (if collides? ctx/minimum-size 0)))
+  (assert (>= height (if collides? ctx/minimum-size 0)))
   (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set z-orders) z-order))
+  (assert ((set ctx/z-orders) z-order))
   (assert (or (nil? rotation-angle)
               (<= 0 rotation-angle 360)))
   (map->Body

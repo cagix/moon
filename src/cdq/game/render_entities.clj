@@ -16,7 +16,7 @@
         player @ctx/player-eid]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
-                                                    world/render-z-order)
+                                                    ctx/render-z-order)
             render! [entity/render-below!
                      entity/render-default!
                      entity/render-above!

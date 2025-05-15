@@ -492,7 +492,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ world/minimum-size world/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
+(def ^:private max-speed (/ ctx/minimum-size ctx/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
 (def ^:private speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
