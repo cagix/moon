@@ -248,7 +248,13 @@
          (not (and los-checks?
                    (raycaster/blocked? raycaster
                                        (:position source)
-                                       (:position target)))))))
+                                       (:position target))))))
+
+  (path-blocked? [_ start end width]
+    (raycaster/path-blocked? raycaster ; TODO test
+                             start
+                             end
+                             width)))
 
 (defn create [{:keys [tiled-map start-position]}]
   (let [width  (tiled/tm-width  tiled-map)
