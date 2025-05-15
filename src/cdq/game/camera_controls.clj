@@ -1,6 +1,6 @@
 (ns cdq.game.camera-controls
-  (:require [cdq.ctx :as ctx]
-            [cdq.graphics.camera :as camera])
+  (:require [cdq.camera :as camera]
+            [cdq.ctx :as ctx])
   (:import (com.badlogic.gdx Gdx Input$Keys)))
 
 (defn do! []

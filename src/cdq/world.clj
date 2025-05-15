@@ -1,7 +1,7 @@
 (ns cdq.world
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.camera :as camera]
+            [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.utils :as utils]

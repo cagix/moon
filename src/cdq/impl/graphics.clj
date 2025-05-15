@@ -1,6 +1,6 @@
 (ns cdq.impl.graphics
-  (:require [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]
+  (:require [cdq.camera :as camera]
+            [cdq.graphics :as graphics]
             [cdq.interop :as interop]
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]

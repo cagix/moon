@@ -1,7 +1,7 @@
 (ns cdq.game.debug-draw-before-entities
-  (:require [cdq.ctx :as ctx]
-            [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]))
+  (:require [cdq.camera :as camera]
+            [cdq.ctx :as ctx]
+            [cdq.graphics :as graphics]))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)

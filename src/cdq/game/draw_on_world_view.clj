@@ -1,8 +1,8 @@
 (ns cdq.game.draw-on-world-view
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.camera :as camera]
+            [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera])
+            [cdq.graphics :as graphics])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)))
 
