@@ -4,4 +4,4 @@
   (:import (com.badlogic.gdx Gdx)))
 
 (defn do! [cursor]
-  (.setCursor Gdx/graphics (utils/safe-get (:cursors ctx/graphics) cursor)))
+  (.setCursor Gdx/graphics (utils/safe-get ctx/cursors cursor)))

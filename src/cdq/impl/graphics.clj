@@ -4,10 +4,9 @@
             [cdq.graphics :as graphics]
             [cdq.interop :as interop]
             [cdq.tiled :as tiled]
-            [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Pixmap Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
@@ -160,8 +159,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [cursors
-                     default-font
+(defrecord Graphics [default-font
                      world-unit-scale
                      world-viewport
                      get-tiled-map-renderer
@@ -169,7 +167,6 @@
                      ui-viewport]
   Disposable
   (dispose [_]
-    (run! Disposable/.dispose (vals cursors))
     (Disposable/.dispose default-font))
 
   graphics/Graphics
@@ -328,21 +325,13 @@
   (sprite [_ texture]
     (sprite* (TextureRegion. ^Texture texture) world-unit-scale)))
 
-(defn create [{:keys [cursors
-                      default-font
+(defn create [{:keys [default-font
                       tile-size
                       world-viewport
                       ui-viewport]}]
   (let [world-unit-scale (float (/ tile-size))]
     (map->Graphics
-     {:cursors (utils/mapvals
-                (fn [[file [hotspot-x hotspot-y]]]
-                  (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                    (.dispose pixmap)
-                    cursor))
-                cursors)
-      :default-font (truetype-font default-font)
+     {:default-font (truetype-font default-font)
       :world-unit-scale  world-unit-scale
       :world-viewport (->world-viewport world-unit-scale world-viewport)
       :get-tiled-map-renderer (memoize (fn [tiled-map]

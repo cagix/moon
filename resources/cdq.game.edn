@@ -14,6 +14,7 @@
                                create-sprite-batch
                                create-shape-drawer-texture
                                shape-drawer
+                               cursors
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

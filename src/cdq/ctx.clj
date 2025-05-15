@@ -6,6 +6,7 @@
          batch
          shape-drawer-texture
          shape-drawer
+         cursors
          graphics
          stage
          world
