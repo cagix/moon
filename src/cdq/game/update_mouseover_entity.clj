@@ -1,9 +1,9 @@
 (ns cdq.game.update-mouseover-entity
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics :as graphics]
             [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.utils :as utils]
+            [cdq.viewport :as viewport]
             [cdq.world :as world]))
 
 (defn do! []
@@ -12,7 +12,7 @@
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (grid/point->entities (:grid ctx/world)
-                                                           (graphics/world-mouse-position)))]
+                                                           (viewport/mouse-position ctx/world-viewport)))]
                     (->> world/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse

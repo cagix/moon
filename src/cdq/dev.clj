@@ -2,10 +2,10 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
             [cdq.tx.add-skill]
             [cdq.tx.spawn-creature]
             [cdq.tx.spawn-item]
+            [cdq.viewport :as viewport]
             [cdq.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -82,7 +82,7 @@
   (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
-  @(world/cell ctx/world (mapv int (graphics/world-mouse-position))))
+  @(world/cell ctx/world (mapv int (viewport/mouse-position ctx/world-viewport))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

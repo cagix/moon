@@ -1,13 +1,15 @@
 (ns cdq.graphics
   (:require [cdq.ctx :as ctx]
             [cdq.interop :as interop]
+            [cdq.viewport :as viewport]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- set-color! [^ShapeDrawer shape-drawer color]
@@ -64,40 +66,54 @@
          rotation)
   (if color (.setColor batch Color/WHITE)))
 
-(defn- k->viewport-field [^Viewport vp k]
-  (case k
-    :width             (.getWorldWidth      vp)
-    :height            (.getWorldHeight     vp)
-    :camera            (.getCamera          vp)
-    :left-gutter-width (.getLeftGutterWidth vp)
-    :right-gutter-x    (.getRightGutterX    vp)
-    :top-gutter-height (.getTopGutterHeight vp)
-    :top-gutter-y      (.getTopGutterY      vp)))
+(defn- fit-viewport [width height camera {:keys [center-camera?]}]
+  (let [this (FitViewport. width height camera)]
+    (reify
+      viewport/Viewport
+      (update! [_]
+        (.update this
+                 (.getWidth  Gdx/graphics)
+                 (.getHeight Gdx/graphics)
+                 center-camera?))
 
-(defn fit-viewport
-  ([width height]
-   (fit-viewport width height (OrthographicCamera.)))
-  ([width height camera]
-   (proxy [FitViewport clojure.lang.ILookup] [width height camera]
-     (valAt
-       ([key]
-        (k->viewport-field this key))
-       ([key _not-found]
-        (k->viewport-field this key))))))
+      ; touch coordinates are y-down, while screen coordinates are y-up
+      ; so the clamping of y is reverse, but as black bars are equal it does not matter
+      ; TODO clamping only works for gui-viewport ?
+      ; TODO ? "Can be negative coordinates, undefined cells."
+      (mouse-position [_]
+        (let [mouse-x (clamp (.getX Gdx/input)
+                             (.getLeftGutterWidth this)
+                             (.getRightGutterX    this))
+              mouse-y (clamp (.getY Gdx/input)
+                             (.getTopGutterHeight this)
+                             (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. mouse-x mouse-y))]
+            [(.x v2) (.y v2)])))
 
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-(defn- unproject-mouse-position
-  "Returns vector of [x y]."
-  [viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
-                       (:left-gutter-width viewport)
-                       (:right-gutter-x    viewport))
-        mouse-y (clamp (.getY Gdx/input)
-                       (:top-gutter-height viewport)
-                       (:top-gutter-y      viewport))]
-    (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
-      [(.x v2) (.y v2)])))
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this
+          :width  (.getWorldWidth  this)
+          :height (.getWorldHeight this)
+          :camera (.getCamera      this))))))
+
+(defn ui-viewport [width height]
+  (fit-viewport width
+                height
+                (OrthographicCamera.)
+                {:center-camera? true}))
+
+(defn world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width
+                  world-height
+                  camera
+                  {:center-camera? false})))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -132,15 +148,6 @@
   (-> {:texture-region texture-region}
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
-
-(defn mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position ctx/ui-viewport)))
-
-(defn world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position ctx/world-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) ctx/world-unit-scale))

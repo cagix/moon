@@ -13,6 +13,7 @@
             [cdq.timer :as timer]
             [cdq.utils :as utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
+            [cdq.viewport :as viewport]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [cdq.potential-field :as potential-field]
@@ -90,7 +91,7 @@
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and ctx/mouseover-eid
                                  (:position @ctx/mouseover-eid))
-                            (graphics/world-mouse-position))]
+                            (viewport/mouse-position ctx/world-viewport))]
     {:effect/source eid
      :effect/target ctx/mouseover-eid
      :effect/target-position target-position
@@ -201,7 +202,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (graphics/world-mouse-position)
+                   (viewport/mouse-position ctx/world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -244,7 +245,7 @@
   (state/draw-gui-view [[_ {:keys [eid]}]]
     (when (not (world-item?))
       (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                              (graphics/mouse-position)))))
+                              (viewport/mouse-position ctx/ui-viewport)))))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]

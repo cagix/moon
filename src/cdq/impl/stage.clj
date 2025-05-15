@@ -14,6 +14,7 @@
             [cdq.malli :as malli]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
+            [cdq.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
@@ -917,7 +918,7 @@
         (draw-cell-rect! @ctx/player-eid
                          (.getX actor)
                          (.getY actor)
-                         (let [[x y] (graphics/mouse-position)
+                         (let [[x y] (viewport/mouse-position ctx/ui-viewport)
                                v (.stageToLocalCoordinates actor (Vector2. x y))]
                            (Actor/.hit actor (.x v) (.y v) true))
                          (Actor/.getUserObject (.getParent actor)))))))
@@ -1129,9 +1130,9 @@
                    {:label "paused?"
                     :update-fn (fn [] ctx/paused?)}
                    {:label "GUI"
-                    :update-fn (fn [] (graphics/mouse-position))}
+                    :update-fn (fn [] (mapv int (viewport/mouse-position ctx/ui-viewport)))}
                    {:label "World"
-                    :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
+                    :update-fn (fn [] (mapv int (viewport/mouse-position ctx/world-viewport)))}
                    {:label "Zoom"
                     :update-fn (fn [] (.zoom ^OrthographicCamera (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
@@ -1234,7 +1235,7 @@
 
 (defn create! []
   (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (Stage. ctx/ui-viewport ctx/batch)]
+  (let [stage (Stage. (:java-object ctx/ui-viewport) ctx/batch)]
     (run! #(.addActor stage %) (create-actors))
     (.setInputProcessor Gdx/input stage)
     (reify
@@ -1257,7 +1258,7 @@
         (.act stage))
 
       (mouse-on-actor? [_]
-        (let [[x y] (graphics/mouse-position)]
+        (let [[x y] (viewport/mouse-position ctx/ui-viewport)]
           (.hit stage x y true)))
 
       (root [_]
