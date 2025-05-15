@@ -3,6 +3,7 @@
             [cdq.camera :as camera]
             [cdq.ctx :as ctx]
             [cdq.interop :as interop]
+            [cdq.shape-drawer :as sd]
             [cdq.viewport :as viewport]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
@@ -11,14 +12,7 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- set-color! [^ShapeDrawer shape-drawer color]
-  (.setColor shape-drawer (interop/->color color)))
-
-(defn- degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
@@ -209,82 +203,43 @@
                :up? up?}))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.ellipse ctx/shape-drawer
-                        (float x)
-                        (float y)
-                        (float radius-x)
-                        (float radius-y)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/ellipse! ctx/shape-drawer x y radius-x radius-y))
 
 (defn draw-filled-ellipse [[x y] radius-x radius-y color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.filledEllipse ctx/shape-drawer
-                              (float x)
-                              (float y)
-                              (float radius-x)
-                              (float radius-y)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/filled-ellipse! ctx/shape-drawer x y radius-x radius-y))
 
 (defn draw-circle [[x y] radius color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.circle ctx/shape-drawer
-                       (float x)
-                       (float y)
-                       (float radius)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/circle! ctx/shape-drawer x y radius))
 
 (defn draw-filled-circle [[x y] radius color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.filledCircle ctx/shape-drawer
-                             (float x)
-                             (float y)
-                             (float radius)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/filled-circle! ctx/shape-drawer x y radius))
 
 (defn draw-arc [[center-x center-y] radius start-angle degree color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.arc ctx/shape-drawer
-                    (float center-x)
-                    (float center-y)
-                    (float radius)
-                    (float (degree->radians start-angle))
-                    (float (degree->radians degree))))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/arc! ctx/shape-drawer center-x center-y radius start-angle degree))
 
 (defn draw-sector [[center-x center-y] radius start-angle degree color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.sector ctx/shape-drawer
-                       (float center-x)
-                       (float center-y)
-                       (float radius)
-                       (float (degree->radians start-angle))
-                       (float (degree->radians degree))))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/sector! ctx/shape-drawer center-x center-y radius start-angle degree))
 
 (defn draw-rectangle [x y w h color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.rectangle ctx/shape-drawer
-                          (float x)
-                          (float y)
-                          (float w)
-                          (float h)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/rectangle! ctx/shape-drawer x y w h))
 
 (defn draw-filled-rectangle [x y w h color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.filledRectangle ctx/shape-drawer
-                                (float x)
-                                (float y)
-                                (float w)
-                                (float h)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/filled-rectangle! ctx/shape-drawer x y w h))
 
 (defn draw-line [[sx sy] [ex ey] color]
-  (set-color! ctx/shape-drawer color)
-  (ShapeDrawer/.line ctx/shape-drawer
-                     (float sx)
-                     (float sy)
-                     (float ex)
-                     (float ey)))
+  (sd/set-color! ctx/shape-drawer color)
+  (sd/line! ctx/shape-drawer sx sy ex ey))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (ShapeDrawer/.getDefaultLineWidth ctx/shape-drawer)]
-    (ShapeDrawer/.setDefaultLineWidth ctx/shape-drawer (float (* width old-line-width)))
-    (draw-fn)
-    (ShapeDrawer/.setDefaultLineWidth ctx/shape-drawer (float old-line-width))))
+  (sd/with-line-width ctx/shape-drawer width draw-fn))
 
 (defn draw-grid [leftx bottomy gridw gridh cellw cellh color]
   (let [w (* (float gridw) (float cellw))
