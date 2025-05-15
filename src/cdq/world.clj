@@ -1,6 +1,5 @@
 (ns cdq.world
   (:require [cdq.camera :as camera]
-            [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
@@ -9,76 +8,13 @@
             [cdq.vector2 :as v]))
 
 (defprotocol World
+  (add-entity! [_ eid])
+  (remove-entity! [_ eid])
+  (position-changed! [_ eid])
   (cell [_ position]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
-
-(defn- set-cells! [grid eid]
-  (let [cells (grid/rectangle->cells grid @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [grid {:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (grid/rectangle->cells grid rectangle)
-    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [grid eid]
-  (let [cells (rectangle->occupied-cells grid @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
-(defn- add-entity! [{:keys [entity-ids content-grid grid]} eid]
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (swap! entity-ids assoc id eid))
-
-  (content-grid/update-entity! content-grid eid)
-
-  ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (set-cells! grid eid)
-  (when (:collides? @eid)
-    (set-occupied-cells! grid eid)))
-
-(defn remove-entity! [{:keys [entity-ids content-grid grid]} eid]
-  (let [id (:entity/id @eid)]
-    (assert (contains? @entity-ids id))
-    (swap! entity-ids dissoc id))
-
-  (content-grid/remove-entity! eid)
-
-  (remove-from-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)))
-
-(defn position-changed! [{:keys [content-grid grid]} eid]
-  (content-grid/update-entity! content-grid eid)
-
-  (remove-from-cells! eid)
-  (set-cells! grid eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)
-    (set-occupied-cells! grid eid)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
