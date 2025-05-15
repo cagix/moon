@@ -1,4 +1,4 @@
-(ns cdq.entity.state)
+(ns cdq.state)
 
 (defmulti cursor (fn [[k]]
                    k))

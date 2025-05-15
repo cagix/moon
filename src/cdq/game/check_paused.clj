@@ -1,7 +1,7 @@
 (ns cdq.game.check-paused
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.entity.state :as state]
+            [cdq.state :as state]
             [cdq.utils :as utils])
   (:import (com.badlogic.gdx Gdx Input$Keys)))
 

@@ -1,7 +1,7 @@
 (ns cdq.game.spawn-player
   (:require [cdq.ctx :as ctx]
-            [cdq.entity.state :as state]
             [cdq.stage :as stage]
+            [cdq.state :as state]
             [cdq.utils :as utils]))
 
 (defn- player-entity-props [start-position]
