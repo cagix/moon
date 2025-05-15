@@ -1,5 +1,6 @@
 (ns cdq.impl.world
   (:require [cdq.camera :as camera]
+            [cdq.cell :as cell]
             [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
@@ -38,7 +39,7 @@
                   occupied
                   good
                   evil]
-  grid/Cell
+  cell/Cell
   (blocked? [_ z-order]
     (case movement
       :none true ; wall
@@ -121,7 +122,7 @@
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell grid/blocks-vision?))
+      (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
 
 (defn- add-entity! [{:keys [entity-ids content-grid grid]} eid]

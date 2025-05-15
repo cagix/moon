@@ -1,6 +1,7 @@
 (ns cdq.impl.entity
   (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -409,7 +410,7 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (grid/nearest-entity @((:grid ctx/world) (entity/tile entity))
+        target (cell/nearest-entity @((:grid ctx/world) (entity/tile entity))
                                     (entity/enemy entity))
         target (when (and target
                           (world/line-of-sight? ctx/world entity @target))
@@ -433,7 +434,7 @@
 (defmethod entity/tick! :npc-sleeping [_ eid]
   (let [entity @eid
         cell ((:grid ctx/world) (entity/tile entity))]
-    (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
+    (when-let [distance (cell/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
         [[:tx/event eid :alert]]))))
 
@@ -469,7 +470,7 @@
 (defn- valid-position? [grid {:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
   (let [cells* (into [] (map deref) (grid/rectangle->cells grid body))]
-    (and (not-any? #(grid/blocked? % z-order) cells*)
+    (and (not-any? #(cell/blocked? % z-order) cells*)
          (->> cells*
               grid/cells->entities
               (not-any? (fn [other-entity]
@@ -532,7 +533,7 @@
                                      (entity/collides? entity @%))
                                (grid/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(grid/blocked? % (:z-order entity)) cells*))]
+                     (some #(cell/blocked? % (:z-order entity)) cells*))]
     [(when destroy?
        [:tx/mark-destroyed eid])
      (when hit-entity

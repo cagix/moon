@@ -60,15 +60,3 @@
   (when-let [cell (grid (mapv int position))]
     (filter #(rect-contains? @% position)
             (:entities @cell))))
-
-(defprotocol Cell
-  (blocked? [cell z-order])
-  (blocks-vision? [cell])
-  (occupied-by-other? [cell eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell faction])
-  (nearest-entity-distance [cell faction]))
-
-(defn pf-cell-blocked? [cell*]
-  (blocked? cell* :z-order/ground))

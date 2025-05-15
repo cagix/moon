@@ -1,11 +1,8 @@
 (ns cdq.potential-field
-  (:require [cdq.entity :as entity] ; just entity/faction
+  (:require [cdq.cell :as cell]
+            [cdq.entity :as entity] ; just entity/faction
             [cdq.grid :as grid :refer [rectangle->cells
                                        cached-adjacent-cells
-                                       blocked?
-                                       occupied-by-other?
-                                       nearest-entity
-                                       nearest-entity-distance
                                        get-8-neighbour-positions]]
             [cdq.utils :refer [utils-positions when-seq]]
             [cdq.vector2 :as v]))
@@ -36,8 +33,8 @@
 ; TODO always called with cached-adjacent-cells ...
 (defn- filter-viable-cells [eid adjacent-cells]
   (remove-not-allowed-diagonals
-    (mapv #(when-not (or (grid/pf-cell-blocked? @%)
-                         (occupied-by-other? @% eid))
+    (mapv #(when-not (or (cell/pf-blocked? @%)
+                         (cell/occupied-by-other? @% eid))
              %)
           adjacent-cells)))
 
@@ -57,8 +54,8 @@
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [grid eid own-cell]
   (let [faction (entity/enemy @eid)
-        distance-to    #(nearest-entity-distance @% faction)
-        nearest-entity #(nearest-entity          @% faction)
+        distance-to    #(cell/nearest-entity-distance @% faction)
+        nearest-entity #(cell/nearest-entity          @% faction)
         own-dist (distance-to own-cell)
         adjacent-cells (cached-adjacent-cells grid own-cell)]
     (if (and own-dist (zero? (float own-dist)))
@@ -106,6 +103,6 @@
 
      :else
      (when-not (and (= target-cell own-cell)
-                    (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
+                    (cell/occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
        (when-not (inside-cell? grid @eid target-cell)
          (v/direction position (:middle @target-cell)))))))
