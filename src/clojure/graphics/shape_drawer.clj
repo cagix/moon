@@ -1,4 +1,4 @@
-(ns cdq.shape-drawer)
+(ns clojure.graphics.shape-drawer)
 
 (defprotocol ShapeDrawer
   (set-color! [_ color])
