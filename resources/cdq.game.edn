@@ -17,6 +17,7 @@
                                cursors
                                default-font
                                world-viewport
+                               tiled-map-renderer
                                load-graphics
                                [reset
                                 ;cdq.level.vampire/create

@@ -126,8 +126,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [get-tiled-map-renderer
-                     unit-scale
+(defrecord Graphics [unit-scale
                      ui-viewport]
   graphics/Graphics
   (mouse-position [_]
@@ -287,13 +286,8 @@
     (sprite* (TextureRegion. ^Texture texture)
              ctx/world-unit-scale)))
 
-(defn create [{:keys [tile-size
-                      ui-viewport]}]
+(defn create [{:keys [ui-viewport]}]
   (map->Graphics
-   {:get-tiled-map-renderer (memoize (fn [tiled-map]
-                                       (tiled/renderer tiled-map
-                                                       ctx/world-unit-scale
-                                                       ctx/batch)))
-    :ui-viewport (fit-viewport (:width  ui-viewport)
+   {:ui-viewport (fit-viewport (:width  ui-viewport)
                                (:height ui-viewport))
     :unit-scale (atom 1)}))

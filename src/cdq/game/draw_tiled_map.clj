@@ -45,7 +45,7 @@
               Color/WHITE))))))
 
 (defn do! []
-  (tiled/draw! ((:get-tiled-map-renderer ctx/graphics) (:tiled-map ctx/world))
+  (tiled/draw! (ctx/get-tiled-map-renderer (:tiled-map ctx/world))
                (:tiled-map ctx/world)
                (tile-color-setter (:raycaster ctx/world)
                                   (:explored-tile-corners ctx/world)
