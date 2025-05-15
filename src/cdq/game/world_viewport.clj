@@ -1,6 +1,6 @@
 (ns cdq.game.world-viewport
   (:require [cdq.ctx :as ctx]
-            [cdq.impl.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.utils :as utils])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 

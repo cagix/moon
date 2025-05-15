@@ -1,6 +1,6 @@
 (ns cdq.game.ui-viewport
   (:require [cdq.ctx :as ctx]
-            [cdq.impl.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.utils :as utils]))
 
 (defn do! []

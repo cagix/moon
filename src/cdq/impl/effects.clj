@@ -132,10 +132,10 @@
                 ; find a way to pass ctx / effect-ctx separate ?
                 [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
-  (effect/render [_ {:keys [effect/source]} g]
+  (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (world/creatures-in-los-of-player ctx/world))]
-        (graphics/draw-line g (:position source*) #_(start-point source* target*)
+        (graphics/draw-line (:position source*) #_(start-point source* target*)
                             (:position target*)
                             [1 0 0 0.5])))))
 
@@ -173,14 +173,11 @@
           (end-point source* target* maxrange)
           (db/build ctx/db :audiovisuals/hit-ground)]])))
 
-  (effect/render [[_ {:keys [maxrange]}]
-                  {:keys [effect/source effect/target]}
-                  g]
+  (effect/render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (when target
       (let [source* @source
             target* @target]
-        (graphics/draw-line g
-                            (start-point source* target*)
+        (graphics/draw-line (start-point source* target*)
                             (end-point source* target* maxrange)
                             (if (entity/in-range? source* target* maxrange)
                               [1 0 0 0.5]

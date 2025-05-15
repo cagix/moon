@@ -90,7 +90,7 @@
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and ctx/mouseover-eid
                                  (:position @ctx/mouseover-eid))
-                            (graphics/world-mouse-position ctx/graphics))]
+                            (graphics/world-mouse-position))]
     {:effect/source eid
      :effect/target ctx/mouseover-eid
      :effect/target-position target-position
@@ -201,7 +201,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (graphics/world-mouse-position ctx/graphics)
+                   (graphics/world-mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -210,10 +210,9 @@
     {:eid eid
      :item item})
 
-  (entity/render-below! [[_ {:keys [item]}] entity g]
+  (entity/render-below! [[_ {:keys [item]}] entity]
     (when (world-item?)
-      (graphics/draw-centered g
-                              (:entity/image item)
+      (graphics/draw-centered (:entity/image item)
                               (item-place-position entity))))
 
   (state/cursor [_] :cursors/hand-grab)
@@ -244,9 +243,8 @@
 
   (state/draw-gui-view [[_ {:keys [eid]}]]
     (when (not (world-item?))
-      (graphics/draw-centered ctx/graphics
-                              (:entity/image (:entity/item-on-cursor @eid))
-                              (graphics/mouse-position ctx/graphics)))))
+      (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
+                              (graphics/mouse-position)))))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
@@ -609,19 +607,19 @@
     [[:tx/spawn-alert (:position @eid) (:entity/faction @eid) 0.2]
      [:tx/add-text-effect eid "[WHITE]!"]]))
 
-(defn- draw-skill-image [image entity [x y] action-counter-ratio g]
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (graphics/draw-filled-circle g center radius [1 1 1 0.125])
-    (graphics/draw-sector g center
+    (graphics/draw-filled-circle center radius [1 1 1 0.125])
+    (graphics/draw-sector center
                           radius
                           90 ; start-angle
                           (* (float action-counter-ratio) 360) ; degree
                           [1 1 1 0.5])
-    (graphics/draw-image g image [(- (float x) radius) y])))
+    (graphics/draw-image image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -640,49 +638,45 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [position width half-width half-height]} ratio g]
+(defn- draw-hpbar [{:keys [position width half-width half-height]} ratio]
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (graphics/pixels->world-units g 5)
-          border (graphics/pixels->world-units g borders-px)]
-      (graphics/draw-filled-rectangle g x y width height :black)
-      (graphics/draw-filled-rectangle g
-                                      (+ x border)
+          height (graphics/pixels->world-units 5)
+          border (graphics/pixels->world-units borders-px)]
+      (graphics/draw-filled-rectangle x y width height :black)
+      (graphics/draw-filled-rectangle (+ x border)
                                       (+ y border)
                                       (- (* width ratio) (* 2 border))
                                       (- height          (* 2 border))
                                       (hpbar-color ratio)))))
 
 (defmethod entity/render-default! :entity/clickable
-  [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity} g]
+  [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
-      (graphics/draw-text g
-                          {:text text
+      (graphics/draw-text {:text text
                            :x x
                            :y (+ y (:half-height entity))
                            :up? true}))))
 
-(defmethod entity/render-info! :entity/hp [_ entity g]
+(defmethod entity/render-info! :entity/hp [_ entity]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar entity ratio g))))
+      (draw-hpbar entity ratio))))
 
-(defmethod entity/render-default! :entity/image
-  [[_ image] entity g]
-  (graphics/draw-rotated-centered g
-                                  image
+(defmethod entity/render-default! :entity/image [[_ image] entity]
+  (graphics/draw-rotated-centered image
                                   (or (:rotation-angle entity) 0)
                                   (:position entity)))
 
 (defmethod entity/render-default! :entity/line-render
-  [[_ {:keys [thick? end color]}] entity g]
+  [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
-      (graphics/with-line-width g 4
-        #(graphics/draw-line g position end color))
-      (graphics/draw-line g position end color))))
+      (graphics/with-line-width 4
+        #(graphics/draw-line position end color))
+      (graphics/draw-line position end color))))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -690,11 +684,10 @@
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
 (defmethod entity/render-below! :entity/mouseover?
-  [_ {:keys [entity/faction] :as entity} g]
+  [_ {:keys [entity/faction] :as entity}]
   (let [player @ctx/player-eid]
-    (graphics/with-line-width g 3
-      #(graphics/draw-ellipse g
-                              (:position entity)
+    (graphics/with-line-width 3
+      #(graphics/draw-ellipse (:position entity)
                               (:half-width entity)
                               (:half-height entity)
                               (cond (= faction (entity/enemy player))
@@ -704,44 +697,42 @@
                                     :else
                                     neutral-color)))))
 
-(defn- render-active-effect [effect-ctx effect g]
-  (run! #(effect/render % effect-ctx g) effect))
+(defn- render-active-effect [effect-ctx effect]
+  (run! #(effect/render % effect-ctx) effect))
 
 (defmethod entity/render-info! :active-skill
-  [[_ {:keys [skill effect-ctx counter]}] entity g]
+  [[_ {:keys [skill effect-ctx counter]}] entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image
                       entity
                       (:position entity)
-                      (timer/ratio ctx/elapsed-time counter)
-                      g)
+                      (timer/ratio ctx/elapsed-time counter))
     (render-active-effect effect-ctx ; TODO !!!
                           ; !! FIXME !!
                           ; (update-effect-ctx effect-ctx)
                           ; - render does not need to update .. update inside active-skill
-                          effects
-                          g)))
+                          effects)))
 
-(defmethod entity/render-above! :npc-sleeping [_ entity g]
+(defmethod entity/render-above! :npc-sleeping [_ entity]
   (let [[x y] (:position entity)]
-    (graphics/draw-text g {:text "zzz"
-                           :x x
-                           :y (+ y (:half-height entity))
-                           :up? true})))
+    (graphics/draw-text {:text "zzz"
+                         :x x
+                         :y (+ y (:half-height entity))
+                         :up? true})))
 
-(defmethod entity/render-below! :stunned [_ entity g]
-  (graphics/draw-circle g (:position entity) 0.5 [1 1 1 0.6]))
+(defmethod entity/render-below! :stunned [_ entity]
+  (graphics/draw-circle (:position entity) 0.5 [1 1 1 0.6]))
 
-(defmethod entity/render-above! :entity/string-effect [[_ {:keys [text]}] entity g]
+(defmethod entity/render-above! :entity/string-effect [[_ {:keys [text]}] entity]
   (let [[x y] (:position entity)]
-    (graphics/draw-text g {:text text
-                           :x x
-                           :y (+ y
-                                 (:half-height entity)
-                                 (graphics/pixels->world-units g 5))
-                           :scale 2
-                           :up? true})))
+    (graphics/draw-text {:text text
+                         :x x
+                         :y (+ y
+                               (:half-height entity)
+                               (graphics/pixels->world-units 5))
+                         :scale 2
+                         :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defmethod entity/render-above! :entity/temp-modifier [_ entity g]
-  (graphics/draw-filled-circle g (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+(defmethod entity/render-above! :entity/temp-modifier [_ entity]
+  (graphics/draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))

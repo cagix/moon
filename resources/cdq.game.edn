@@ -19,7 +19,6 @@
                                world-viewport
                                tiled-map-renderer
                                ui-viewport
-                               load-graphics
                                [reset
                                 ;cdq.level.vampire/create
                                 ;cdq.level.uf-caves/create

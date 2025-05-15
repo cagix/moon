@@ -897,15 +897,15 @@
 (def ^:private droppable-color   [0   0.6 0 0.8])
 (def ^:private not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-cell-rect! [g player-entity x y mouseover? cell]
-  (graphics/draw-rectangle g x y cell-size cell-size :gray)
+(defn- draw-cell-rect! [player-entity x y mouseover? cell]
+  (graphics/draw-rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (graphics/draw-filled-rectangle g (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (graphics/draw-filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
@@ -913,13 +913,11 @@
 (defn- draw-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [g ctx/graphics
-            ^Actor actor this]
-        (draw-cell-rect! g
-                         @ctx/player-eid
+      (let [^Actor actor this]
+        (draw-cell-rect! @ctx/player-eid
                          (.getX actor)
                          (.getY actor)
-                         (let [[x y] (graphics/mouse-position g)
+                         (let [[x y] (graphics/mouse-position)
                                v (.stageToLocalCoordinates actor (Vector2. x y))]
                            (Actor/.hit actor (.x v) (.y v) true))
                          (Actor/.getUserObject (.getParent actor)))))))
@@ -941,8 +939,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (graphics/from-sheet ctx/graphics
-                       (graphics/sprite-sheet ctx/graphics (ctx/assets "images/items.png") 48 48)
+  (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png") 48 48)
                        (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]
@@ -1077,32 +1074,30 @@
                           (.pack window))))
     window))
 
-(defn- render-infostr-on-bar [g infostr x y h]
-  (graphics/draw-text g {:text infostr
-                         :x (+ x 75)
-                         :y (+ y 2)
-                         :up? true}))
+(defn- render-infostr-on-bar [infostr x y h]
+  (graphics/draw-text {:text infostr
+                       :x (+ x 75)
+                       :y (+ y 2)
+                       :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (graphics/sprite ctx/graphics (ctx/assets "images/rahmen.png"))
-        hpcontent   (graphics/sprite ctx/graphics (ctx/assets "images/hp.png"))
-        manacontent (graphics/sprite ctx/graphics (ctx/assets "images/mana.png"))
+  (let [rahmen      (graphics/sprite (ctx/assets "images/rahmen.png"))
+        hpcontent   (graphics/sprite (ctx/assets "images/hp.png"))
+        manacontent (graphics/sprite (ctx/assets "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [g x y contentimage minmaxval name]
-                            (graphics/draw-image g rahmen [x y])
-                            (graphics/draw-image g (graphics/sub-sprite g
-                                                                        contentimage
-                                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+        render-hpmana-bar (fn [x y contentimage minmaxval name]
+                            (graphics/draw-image rahmen [x y])
+                            (graphics/draw-image (graphics/sub-sprite contentimage
+                                                                      [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
-                            (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+                            (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (proxy [Actor] []
       (draw [_batch _parent-alpha]
         (let [player-entity @ctx/player-eid
-              x (- x (/ rahmenw 2))
-              g ctx/graphics]
-          (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-          (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP"))))))
+              x (- x (/ rahmenw 2))]
+          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP"))))))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]
@@ -1134,9 +1129,9 @@
                    {:label "paused?"
                     :update-fn (fn [] ctx/paused?)}
                    {:label "GUI"
-                    :update-fn (fn [] (graphics/mouse-position ctx/graphics))}
+                    :update-fn (fn [] (graphics/mouse-position))}
                    {:label "World"
-                    :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
+                    :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"
                     :update-fn (fn [] (.zoom ^OrthographicCamera (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
@@ -1152,14 +1147,13 @@
 (defn- player-message []
   (doto (proxy [Actor] []
           (draw [_batch _parent-alpha]
-            (let [g ctx/graphics
-                  state (Actor/.getUserObject this)]
+            (let [state (Actor/.getUserObject this)]
               (when-let [text (:text @state)]
-                (graphics/draw-text g {:x (/ (:width     ctx/ui-viewport) 2)
-                                       :y (+ (/ (:height ctx/ui-viewport) 2) 200)
-                                       :text text
-                                       :scale 2.5
-                                       :up? true}))))
+                (graphics/draw-text {:x (/ (:width     ctx/ui-viewport) 2)
+                                     :y (+ (/ (:height ctx/ui-viewport) 2) 200)
+                                     :text text
+                                     :scale 2.5
+                                     :up? true}))))
           (act [delta]
             (let [state (Actor/.getUserObject this)]
               (when (:text @state)
@@ -1263,7 +1257,7 @@
         (.act stage))
 
       (mouse-on-actor? [_]
-        (let [[x y] (graphics/mouse-position ctx/graphics)]
+        (let [[x y] (graphics/mouse-position)]
           (.hit stage x y true)))
 
       (root [_]

@@ -5,12 +5,11 @@
             [cdq.math :as math]))
 
 (defn do! []
-  (let [g ctx/graphics
-        position (graphics/world-mouse-position g)
+  (let [position (graphics/world-mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
-    (graphics/draw-circle g position radius [1 0 0 0.5])
+    (graphics/draw-circle position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (grid/circle->cells (:grid ctx/world) circle))]
-      (graphics/draw-rectangle g x y 1 1 [1 0 0 0.5]))
+      (graphics/draw-rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (math/circle->outer-rectangle circle)]
-      (graphics/draw-rectangle g x y width height [0 0 1 1]))))
+      (graphics/draw-rectangle x y width height [0 0 1 1]))))

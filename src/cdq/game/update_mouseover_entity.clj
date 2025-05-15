@@ -12,7 +12,7 @@
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (grid/point->entities (:grid ctx/world)
-                                                           (graphics/world-mouse-position ctx/graphics)))]
+                                                           (graphics/world-mouse-position)))]
                     (->> world/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse

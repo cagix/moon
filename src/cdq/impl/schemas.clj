@@ -71,11 +71,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet ctx/graphics
-                           (graphics/sprite-sheet ctx/graphics (ctx/assets file) tilew tileh)
+      (graphics/from-sheet (graphics/sprite-sheet (ctx/assets file) tilew tileh)
                            [(int (/ sprite-x tilew))
                             (int (/ sprite-y tileh))]))
-    (graphics/sprite ctx/graphics (ctx/assets file))))
+    (graphics/sprite (ctx/assets file))))
 
 (defmethod schema/edn->value :s/image [_ edn]
   (edn->sprite edn))

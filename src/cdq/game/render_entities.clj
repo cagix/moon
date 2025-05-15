@@ -7,14 +7,13 @@
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
-(defn- draw-body-rect [g entity color]
+(defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (graphics/draw-rectangle g x y (:width entity) (:height entity) color)))
+    (graphics/draw-rectangle x y (:width entity) (:height entity) color)))
 
 (defn do! []
   (let [entities (map deref (:active-entities ctx/world))
-        player @ctx/player-eid
-        g ctx/graphics]
+        player @ctx/player-eid]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
                                                     world/render-z-order)
@@ -27,11 +26,11 @@
                       (world/line-of-sight? player entity))]
       (try
        (when show-body-bounds
-         (draw-body-rect g entity (if (:collides? entity) :white :gray)))
+         (draw-body-rect entity (if (:collides? entity) :white :gray)))
        (doseq [component entity]
-         (render! component entity g))
+         (render! component entity))
        (catch Throwable t
-         (draw-body-rect g entity :red)
+         (draw-body-rect entity :red)
          (utils/pretty-pst t))))))
 
 ; I can create this later after loading all the component namespaces

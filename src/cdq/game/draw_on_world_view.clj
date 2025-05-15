@@ -10,10 +10,8 @@
   (Batch/.setColor ctx/batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (Batch/.setProjectionMatrix ctx/batch (camera/combined (:camera ctx/world-viewport)))
   (Batch/.begin ctx/batch)
-  (graphics/with-line-width ctx/graphics ctx/world-unit-scale
+  (graphics/with-line-width ctx/world-unit-scale
     (fn []
-      ; could pass new 'g' with assoc :unit-scale -> but using ctx/graphics accidentally
-      ; -> icon is drawn at too big ! => mutable field.
       (reset! ctx/unit-scale ctx/world-unit-scale)
       (utils/execute! draw-fns)
       (reset! ctx/unit-scale 1)))

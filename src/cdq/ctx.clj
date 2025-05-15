@@ -15,7 +15,6 @@
          world-viewport
          ui-viewport
          get-tiled-map-renderer
-         graphics
          stage
          world
          elapsed-time

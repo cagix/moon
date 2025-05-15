@@ -31,14 +31,14 @@
   direction keys: move")
 
 #_(defn- map-infos ^String [c]
-  (let [tile (mapv int (graphics/world-mouse-position ctx/graphics))
+  (let [tile (mapv int (graphics/world-mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (graphics/world-mouse-position ctx/graphics)
+                                 (graphics/world-mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -83,7 +83,7 @@
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (camera/visible-tiles (:camera ctx/world-viewport))
-        [x y] (mapv int (graphics/world-mouse-position ctx/graphics))]
+        [x y] (mapv int (graphics/world-mouse-position))]
     (graphics/rectangle x y 1 1 :white)
     (when start-position
       (graphics/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
