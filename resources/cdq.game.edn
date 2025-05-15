@@ -41,6 +41,5 @@
                                                  update-potential-fields
                                                  tick-entities]]
                                remove-destroyed-entities ; do not pause as pickup item should be destroyed
-                               camera-controls
-                               check-window-controls]
+                               camera-controls]
                       :resize [update-viewports]}]]

@@ -34,6 +34,9 @@
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator Menu MenuBar MenuItem PopupMenu VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
 
+(defn toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
 (defn- find-actor-with-id [^Group group id]
   (let [actors (.getChildren group)
         ids (keep Actor/.getUserObject actors)]
@@ -1170,6 +1173,18 @@
                         (atom {:text text
                                :counter 0})))
 
+(defn- check-escape-close-windows [windows]
+  (when (.isKeyJustPressed Gdx/input Input$Keys/ESCAPE)
+    (run! #(Actor/.setVisible % false) (Group/.getChildren windows))))
+
+(def window-hotkeys {:inventory-window   Input$Keys/I
+                     :entity-info-window Input$Keys/E})
+
+(defn- check-window-hotkeys [windows]
+  (doseq [[id input-key] window-hotkeys
+          :when (.isKeyJustPressed Gdx/input input-key)]
+    (toggle-visible! (get windows id))))
+
 (defn- create-actors []
   [(create-menu (dev-menu-config))
    (action-bar)
@@ -1177,7 +1192,11 @@
                  80 ; action-bar-icon-size
                  ])
    (->group {:id :windows
-             :actors [(entity-info-window [(:width ctx/ui-viewport) 0])
+             :actors [(proxy [Actor] []
+                        (act [_delta]
+                          (check-window-hotkeys       (Actor/.getParent this))
+                          (check-escape-close-windows (Actor/.getParent this))))
+                      (entity-info-window [(:width ctx/ui-viewport) 0])
                       (inventory-window [(:width  ctx/ui-viewport)
                                          (:height ctx/ui-viewport)])]})
    (player-state-actor)
@@ -1201,9 +1220,6 @@
                          :center-position [(/ (:width  ctx/ui-viewport) 2)
                                            (* (:height ctx/ui-viewport) (/ 3 4))]
                          :pack? true})))
-
-(defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
 
 (defn inventory-visible? [stage]
   (-> stage :windows :inventory-window Actor/.isVisible))
