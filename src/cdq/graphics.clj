@@ -123,7 +123,6 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-
 (defn mouse-position []
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position ctx/ui-viewport)))
@@ -153,7 +152,6 @@
                          [w h]
                          rotation
                          color)))
-
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
