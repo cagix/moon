@@ -43,12 +43,3 @@
     ; first remove and then place, just update directly  item ...
     (concat (remove-item eid cell)
             (set-item eid cell (update cell-item :count + (:count item))))))
-
-(defn pickup-item [eid item]
-  (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
-    (assert cell)
-    (assert (or (inventory/stackable? item cell-item)
-                (nil? cell-item)))
-    (if (inventory/stackable? item cell-item)
-      (stack-item eid cell item)
-      (set-item eid cell item))))

@@ -101,11 +101,6 @@
     ((mana entity) 0)
     0))
 
-(defn pay-mana-cost [entity cost]
-  (let [mana-val ((mana entity) 0)]
-    (assert (<= cost mana-val))
-    (assoc-in entity [:entity/mana 0] (- mana-val cost))))
-
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
   Current-hp is capped by max-hp."

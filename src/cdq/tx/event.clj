@@ -6,7 +6,7 @@
 
 (defn do!
   ([eid event]
-   (send-event! eid event nil))
+   (do! eid event nil))
   ([eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
