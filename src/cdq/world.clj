@@ -1,12 +1,12 @@
 (ns cdq.world
-  (:require [cdq.audio.sound :as sound]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
+            [cdq.tx.sound :as tx.sound]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
@@ -195,7 +195,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (sound/play! sound)
+  (tx.sound/do! sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation

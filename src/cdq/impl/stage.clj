@@ -1,6 +1,5 @@
 (ns cdq.impl.stage
-  (:require [cdq.audio.sound :as sound]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
@@ -10,6 +9,7 @@
             [cdq.info :as info]
             [cdq.schema :as schema]
             [cdq.stage :refer [add-actor!] :as stage]
+            [cdq.tx.sound :as tx.sound]
             [cdq.property :as property]
             [cdq.malli :as malli]
             [cdq.utils :as utils]
@@ -458,7 +458,7 @@
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(sound/play! sound-name)))
+  (text-button "play!" #(tx.sound/do! sound-name)))
 
 (declare columns)
 
