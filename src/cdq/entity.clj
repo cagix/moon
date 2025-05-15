@@ -130,6 +130,5 @@
 
 (defprotocol Entity
   (mark-destroyed [_])
-  (add-text-effect [_ text])
   (set-movement [_ movement-vector])
   (in-range? [_ target maxrange]))

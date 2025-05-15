@@ -109,16 +109,6 @@
   (mark-destroyed [entity]
     (assoc entity :entity/destroyed? true))
 
-  (add-text-effect [entity text]
-    (assoc entity
-           :entity/string-effect
-           (if-let [string-effect (:entity/string-effect entity)]
-             (-> string-effect
-                 (update :text str "\n" text)
-                 (update :counter #(timer/reset ctx/elapsed-time %)))
-             {:text text
-              :counter (timer/create ctx/elapsed-time 0.4)})))
-
   ; we cannot just set/unset movement direction
   ; because it is handled by the state enter/exit for npc/player movement state ...
   ; so we cannot expose it as a 'transaction'
