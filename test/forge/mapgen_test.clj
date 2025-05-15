@@ -1,5 +1,5 @@
 (ns forge.mapgen-test
-  (:require [cdq.graphics.camera :as camera]
+  (:require [cdq.camera :as camera]
             [cdq.level.modules-core :as modules]
             [cdq.tiled :as tiled]
             [clojure.string :as str]

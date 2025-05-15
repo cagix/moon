@@ -111,7 +111,7 @@
      (if-let [skill-id (stage/selected-skill ctx/stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
-             state (skill/usable-state entity skill effect-ctx)]
+             state (skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
            ; different color ?
@@ -404,7 +404,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
+       (filter #(and (= :usable (skill-usable-state entity % ctx))
                      (effect/applicable-and-useful? ctx (:skill/effects %))))
        first))
 
