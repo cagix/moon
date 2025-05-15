@@ -26,3 +26,12 @@
   (-> @eid
       :cdq.content-grid/content-cell
       (swap! update :entities disj eid)))
+
+(defn active-entities [{:keys [grid]} center-entity]
+  (->> (let [idx (-> center-entity
+                     :cdq.content-grid/content-cell
+                     deref
+                     :idx)]
+         (cons idx (g2d/get-8-neighbour-positions idx)))
+       (keep grid)
+       (mapcat (comp :entities deref))))
