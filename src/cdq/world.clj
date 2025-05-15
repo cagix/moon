@@ -94,11 +94,13 @@
 
 (defrecord Body [position
                  left-bottom
+
                  width
                  height
                  half-width
                  half-height
                  radius
+
                  collides?
                  z-order
                  rotation-angle]
