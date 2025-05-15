@@ -6,5 +6,5 @@
 (defn do! []
   (let [width  (.getWidth  Gdx/graphics)
         height (.getHeight Gdx/graphics)]
-    (Viewport/.update (:ui-viewport    ctx/graphics) width height true)
+    (Viewport/.update ctx/ui-viewport    width height true)
     (Viewport/.update ctx/world-viewport width height false)))

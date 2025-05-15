@@ -59,7 +59,7 @@
                           (do
                            (.setText label (map-infos %))
                            (.pack window)))))
-    (.setPosition window 0 (:height graphics/ui-viewport)) window))
+    (.setPosition window 0 (:height ctx/ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)
 

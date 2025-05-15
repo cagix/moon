@@ -126,12 +126,11 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defrecord Graphics [unit-scale
-                     ui-viewport]
+(defrecord Graphics [unit-scale]
   graphics/Graphics
   (mouse-position [_]
     ; TODO mapv int needed?
-    (mapv int (unproject-mouse-position ui-viewport)))
+    (mapv int (unproject-mouse-position ctx/ui-viewport)))
 
   (world-mouse-position [_]
     ; TODO clamping only works for gui-viewport ? check. comment if true
@@ -286,8 +285,6 @@
     (sprite* (TextureRegion. ^Texture texture)
              ctx/world-unit-scale)))
 
-(defn create [{:keys [ui-viewport]}]
+(defn create []
   (map->Graphics
-   {:ui-viewport (fit-viewport (:width  ui-viewport)
-                               (:height ui-viewport))
-    :unit-scale (atom 1)}))
+   {:unit-scale (atom 1)}))

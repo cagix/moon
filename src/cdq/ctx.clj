@@ -11,6 +11,7 @@
          cursors
          default-font
          world-viewport
+         ui-viewport
          get-tiled-map-renderer
          graphics
          stage

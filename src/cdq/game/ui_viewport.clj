@@ -1,7 +1,7 @@
-(ns cdq.game.load-graphics
+(ns cdq.game.ui-viewport
   (:require [cdq.ctx :as ctx]
             [cdq.impl.graphics :as graphics]
             [cdq.utils :as utils]))
 
 (defn do! []
-  (utils/bind-root #'ctx/graphics (graphics/create)))
+  (utils/bind-root #'ctx/ui-viewport (graphics/fit-viewport 1440 900)))

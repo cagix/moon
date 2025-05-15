@@ -364,7 +364,7 @@
                         :pack? true})]
     {:actor (scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:ui-viewport ctx/graphics)) 50)
+     :height (min (- (:height ctx/ui-viewport) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -1155,8 +1155,8 @@
             (let [g ctx/graphics
                   state (Actor/.getUserObject this)]
               (when-let [text (:text @state)]
-                (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
-                                       :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                (graphics/draw-text g {:x (/ (:width     ctx/ui-viewport) 2)
+                                       :y (+ (/ (:height ctx/ui-viewport) 2) 200)
                                        :text text
                                        :scale 2.5
                                        :up? true}))))
@@ -1177,13 +1177,13 @@
 (defn- create-actors []
   [(create-menu (dev-menu-config))
    (action-bar)
-   (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
+   (hp-mana-bar [(/ (:width ctx/ui-viewport) 2)
                  80 ; action-bar-icon-size
                  ])
    (->group {:id :windows
-             :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
-                      (inventory-window [(:width  (:ui-viewport ctx/graphics))
-                                         (:height (:ui-viewport ctx/graphics))])]})
+             :actors [(entity-info-window [(:width ctx/ui-viewport) 0])
+                      (inventory-window [(:width  ctx/ui-viewport)
+                                         (:height ctx/ui-viewport)])]})
    (player-state-actor)
    (player-message)])
 
@@ -1202,8 +1202,8 @@
                                                 (on-click)))]]
                          :id ::modal
                          :modal? true
-                         :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
-                                           (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
+                         :center-position [(/ (:width  ctx/ui-viewport) 2)
+                                           (* (:height ctx/ui-viewport) (/ 3 4))]
                          :pack? true})))
 
 (defn toggle-visible! [^Actor actor]
@@ -1240,7 +1240,7 @@
 
 (defn create! []
   (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (Stage. (:ui-viewport ctx/graphics) ctx/batch)]
+  (let [stage (Stage. ctx/ui-viewport ctx/batch)]
     (run! #(.addActor stage %) (create-actors))
     (.setInputProcessor Gdx/input stage)
     (reify
