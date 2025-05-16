@@ -7,10 +7,12 @@
             [cdq.state :as state]
             [cdq.ui]
             [cdq.ui.action-bar]
-            [cdq.ui.entity-info]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory]
+            [cdq.ui.player-state-draw]
+            [cdq.ui.message]
             [cdq.dev-menu-config]
+            [cdq.ui.windows]
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.ui :as ui]
@@ -24,46 +26,6 @@
                                                Window)
            (com.kotcrab.vis.ui.widget VisWindow)))
 
-(defn- player-state-actor []
-  (proxy [Actor] []
-    (draw [_batch _parent-alpha]
-      (state/draw-gui-view (entity/state-obj @ctx/player-eid)))))
-
-(defn- player-message []
-  (doto (proxy [Actor] []
-          (draw [_batch _parent-alpha]
-            (let [state (Actor/.getUserObject this)]
-              (when-let [text (:text @state)]
-                (draw/text {:x (/ (:width     ctx/ui-viewport) 2)
-                            :y (+ (/ (:height ctx/ui-viewport) 2) 200)
-                            :text text
-                            :scale 2.5
-                            :up? true}))))
-          (act [delta]
-            (let [state (Actor/.getUserObject this)]
-              (when (:text @state)
-                (swap! state update :counter + delta)
-                (when (>= (:counter @state) 1.5)
-                  (reset! state nil))))))
-    (.setUserObject (atom nil))
-    (.setName "player-message-actor")))
-
-(defn show-message! [stage text]
-  (Actor/.setUserObject (Group/.findActor (stage/root stage) "player-message-actor")
-                        (atom {:text text
-                               :counter 0})))
-
-(defn- check-escape-close-windows [windows]
-  (when (input/key-just-pressed? :escape)
-    (run! #(Actor/.setVisible % false) (Group/.getChildren windows))))
-
-(def window-hotkeys {:inventory-window  :i
-                     :entity-info-window :e})
-
-(defn- check-window-hotkeys [windows]
-  (doseq [[id input-key] window-hotkeys
-          :when (input/key-just-pressed? input-key)]
-    (actor/toggle-visible! (get windows id))))
 
 (defn- create-actors []
   [(cdq.ui/menu (cdq.dev-menu-config/create))
@@ -71,16 +33,9 @@
    (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                80 ; action-bar-icon-size
                                ])
-   (ui/group {:id :windows
-              :actors [(proxy [Actor] []
-                         (act [_delta]
-                           (check-window-hotkeys       (Actor/.getParent this))
-                           (check-escape-close-windows (Actor/.getParent this))))
-                       (cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
-                       (cdq.ui.inventory/create [(:width  ctx/ui-viewport)
-                                                 (:height ctx/ui-viewport)])]})
-   (player-state-actor)
-   (player-message)])
+   (cdq.ui.windows/create)
+   (cdq.ui.player-state-draw/create)
+   (cdq.ui.message/create)])
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -178,7 +133,7 @@
     (cdq.ui.action-bar/remove-skill! stage skill))
 
   (show-message! [stage text]
-    (show-message! stage text))
+    (cdq.ui.message/show! stage text))
 
   (show-modal! [stage opts]
     (show-modal! stage opts))
