@@ -1,7 +1,6 @@
 (ns cdq.game.debug-draw-before-entities
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
-            [cdq.world :as world]
             [gdl.graphics.camera :as camera]))
 
 (defn do! []
@@ -15,7 +14,7 @@
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell (world/cell ctx/world [x y])]
+            :let [cell (ctx/grid [x y])]
             :when cell
             :let [cell* @cell]]
 

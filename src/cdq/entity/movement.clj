@@ -66,6 +66,6 @@
       (let [movement (assoc movement :delta-time ctx/delta-time)
             body @eid]
         (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                          (try-move-solid-body (:grid ctx/world) body movement)
+                          (try-move-solid-body ctx/grid body movement)
                           (move-body body movement))]
           [[:tx/move-entity eid body direction rotate-in-movement-direction?]])))))

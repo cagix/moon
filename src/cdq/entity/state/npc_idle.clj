@@ -5,6 +5,7 @@
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]
             [cdq.world :as world]
+            [cdq.world.potential-field :as potential-field]
             [cdq.world.grid.cell :as cell]))
 
 (defn- npc-choose-skill [entity ctx]
@@ -19,7 +20,7 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (cell/nearest-entity @((:grid ctx/world) (entity/tile entity))
+        target (cell/nearest-entity @(ctx/grid (entity/tile entity))
                                     (entity/enemy entity))
         target (when (and target
                           (world/line-of-sight? ctx/world entity @target))
@@ -37,5 +38,5 @@
     (let [effect-ctx (npc-effect-context eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (or (world/potential-field-direction ctx/world eid)
+        [[:tx/event eid :movement-direction (or (potential-field/find-direction ctx/grid eid)
                                                 [0 0])]]))))

@@ -11,6 +11,6 @@
       (cons [:tx/mark-destroyed eid]
             (for [friendly-eid (->> {:position (:position @eid)
                                      :radius 4}
-                                    (grid/circle->entities (:grid ctx/world))
+                                    (grid/circle->entities ctx/grid)
                                     (filter #(= (:entity/faction @%) faction)))]
               [:tx/event friendly-eid :alert])))))

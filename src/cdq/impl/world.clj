@@ -110,7 +110,7 @@
     :entities #{}
     :occupied #{}}))
 
-(defn- create-grid [tiled-map]
+(defn create-grid [tiled-map]
   (g2d/create-grid
    (tiled/tm-width tiled-map)
    (tiled/tm-height tiled-map)
@@ -166,16 +166,16 @@
       (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
 
-(defn- add-entity! [{:keys [entity-ids content-grid grid]} eid]
+(defn- add-entity! [{:keys [entity-ids content-grid]} eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
   (content-grid/add-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (set-cells! grid eid)
+  (set-cells! ctx/grid eid)
   (when (:collides? @eid)
-    (set-occupied-cells! grid eid)))
+    (set-occupied-cells! ctx/grid eid)))
 
 (defn- remove-entity! [{:keys [entity-ids]} eid]
   (let [id (:entity/id @eid)]
@@ -242,8 +242,7 @@
           {}
           components))
 
-(defrecord World [grid
-                  raycaster
+(defrecord World [raycaster
                   content-grid
                   explored-tile-corners
                   entity-ids
@@ -257,13 +256,10 @@
   (update-potential-fields! [_]
     (doseq [[faction max-iterations] ctx/factions-iterations]
       (potential-field/tick! potential-field-cache
-                             grid
+                             ctx/grid
                              faction
                              active-entities
                              max-iterations)))
-
-  (potential-field-direction [_ eid]
-    (potential-field/find-direction grid eid))
 
   (draw-tiled-map! [_]
     (tiled/draw! (ctx/get-tiled-map-renderer ctx/tiled-map)
@@ -295,15 +291,10 @@
   (position-changed! [_ eid]
     (content-grid/position-changed! content-grid eid)
     (remove-from-cells! eid)
-    (set-cells! grid eid)
+    (set-cells! ctx/grid eid)
     (when (:collides? @eid)
       (remove-from-occupied-cells! eid)
-      (set-occupied-cells! grid eid)))
-
-  (cell [_ position]
-    ; assert/document integer ?
-    (grid position))
-
+      (set-occupied-cells! ctx/grid eid)))
 
   ; does not take into account size of entity ...
   ; => assert bodies <1 width then
@@ -323,10 +314,8 @@
 
 (defn create [tiled-map]
   (let [width  (tiled/tm-width  tiled-map)
-        height (tiled/tm-height tiled-map)
-        grid (create-grid tiled-map)]
-    (map->World {:grid grid
-                 :raycaster (create-raycaster grid)
+        height (tiled/tm-height tiled-map)]
+    (map->World {:raycaster (create-raycaster ctx/grid)
                  :content-grid (content-grid/create {:cell-size 16
                                                      :width  width
                                                      :height height})

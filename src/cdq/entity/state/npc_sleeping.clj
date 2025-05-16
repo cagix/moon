@@ -12,7 +12,7 @@
 
   (entity/tick! [_ eid]
     (let [entity @eid
-          cell ((:grid ctx/world) (entity/tile entity))]
+          cell (ctx/grid (entity/tile entity))]
       (when-let [distance (cell/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           [[:tx/event eid :alert]]))))

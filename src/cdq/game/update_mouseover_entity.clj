@@ -11,7 +11,7 @@
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities (:grid ctx/world)
+                                     (grid/point->entities ctx/grid
                                                            (viewport/mouse-position ctx/world-viewport)))]
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))

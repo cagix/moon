@@ -60,6 +60,7 @@
          get-tiled-map-renderer
          stage
          tiled-map
+         grid
          world
          elapsed-time
          delta-time

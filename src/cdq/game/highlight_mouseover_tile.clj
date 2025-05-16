@@ -5,7 +5,7 @@
 
 (defn do! []
   (let [[x y] (mapv int (viewport/mouse-position ctx/world-viewport))
-        cell ((:grid ctx/world) [x y])]
+        cell (ctx/grid [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       (draw/rectangle x y 1 1
                       (case (:movement @cell)
