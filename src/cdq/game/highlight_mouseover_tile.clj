@@ -1,7 +1,7 @@
 (ns cdq.game.highlight-mouseover-tile
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
-            [clojure.graphics.viewport :as viewport]))
+            [gdl.graphics.viewport :as viewport]))
 
 (defn do! []
   (let [[x y] (mapv int (viewport/mouse-position ctx/world-viewport))

@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
             [cdq.world :as world]
-            [clojure.graphics.camera :as camera]))
+            [gdl.graphics.camera :as camera]))
 
 (defn do! []
   (let [cam (:camera ctx/world-viewport)

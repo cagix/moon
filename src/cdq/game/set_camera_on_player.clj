@@ -1,6 +1,6 @@
 (ns cdq.game.set-camera-on-player
   (:require [cdq.ctx :as ctx]
-            [clojure.graphics.camera :as camera]))
+            [gdl.graphics.camera :as camera]))
 
 (defn do! []
   (camera/set-position! (:camera ctx/world-viewport)

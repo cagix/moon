@@ -1,7 +1,7 @@
 (ns cdq.game.camera-controls
   (:require [cdq.ctx :as ctx]
-            [clojure.graphics.camera :as camera]
-            [clojure.input :as input]))
+            [gdl.graphics.camera :as camera]
+            [gdl.input :as input]))
 
 (defn do! []
   (when (input/key-pressed? (get ctx/controls :zoom-in))

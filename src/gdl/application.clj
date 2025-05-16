@@ -1,4 +1,4 @@
-(ns clojure.application
+(ns gdl.application
   (:require [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter
                              Gdx)

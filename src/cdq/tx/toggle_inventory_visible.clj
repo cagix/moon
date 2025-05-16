@@ -1,6 +1,6 @@
 (ns cdq.tx.toggle-inventory-visible
   (:require [cdq.ctx :as ctx]
-            [clojure.ui.actor :as actor]))
+            [gdl.ui.actor :as actor]))
 
 (defn do! []
   (-> ctx/stage

@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.utils :as utils]
-            [clojure.input :as input]))
+            [gdl.input :as input]))
 
 (defn do! []
   (utils/bind-root #'ctx/paused? (or #_error

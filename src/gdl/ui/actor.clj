@@ -1,4 +1,4 @@
-(ns clojure.ui.actor
+(ns gdl.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget Tooltip VisLabel)))

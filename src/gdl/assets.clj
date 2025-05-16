@@ -1,4 +1,4 @@
-(ns clojure.assets
+(ns gdl.assets
   (:require [clojure.string :as str])
   (:import (clojure.lang IFn)
            (com.badlogic.gdx Gdx)

@@ -11,8 +11,8 @@
             [cdq.world.grid.cell :as cell]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-field :as potential-field]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.camera :as camera]))
+            [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as camera]))
 
 (def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
 

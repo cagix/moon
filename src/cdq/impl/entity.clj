@@ -16,8 +16,8 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [clojure.graphics.viewport :as viewport]
-            [clojure.input]
+            [gdl.graphics.viewport :as viewport]
+            [gdl.input]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
 
@@ -144,7 +144,7 @@
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (interaction-state eid)]
         (cons [:tx/set-cursor cursor]
-              (when (clojure.input/button-just-pressed? :left)
+              (when (gdl.input/button-just-pressed? :left)
                 on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
@@ -235,7 +235,7 @@
          [:tx/spawn-item (item-place-position entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [[_ {:keys [eid]}]]
-    (when (and (clojure.input/button-just-pressed? :left)
+    (when (and (gdl.input/button-just-pressed? :left)
                (world-item?))
       [[:tx/event eid :drop-item]]))
 

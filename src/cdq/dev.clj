@@ -6,8 +6,8 @@
             [cdq.tx.spawn-creature]
             [cdq.tx.spawn-item]
             [cdq.world :as world]
-            [clojure.application :refer [post-runnable!]]
-            [clojure.graphics.viewport :as viewport]
+            [gdl.application :refer [post-runnable!]]
+            [gdl.graphics.viewport :as viewport]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 

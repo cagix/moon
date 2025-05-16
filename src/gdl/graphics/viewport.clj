@@ -1,4 +1,4 @@
-(ns clojure.graphics.viewport)
+(ns gdl.graphics.viewport)
 
 (defprotocol Viewport
   (update! [_])

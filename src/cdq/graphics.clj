@@ -1,6 +1,6 @@
 (ns cdq.graphics
   (:require [cdq.ctx :as ctx]
-            [clojure.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))

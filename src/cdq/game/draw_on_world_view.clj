@@ -2,7 +2,7 @@
   (:require [cdq.draw :as draw]
             [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [clojure.graphics.batch :as batch]))
+            [gdl.graphics.batch :as batch]))
 
 (defn do! [draw-fns]
   (batch/draw-on-viewport! ctx/batch

@@ -1,4 +1,4 @@
-(ns clojure.ui
+(ns gdl.ui
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

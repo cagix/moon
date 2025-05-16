@@ -5,7 +5,7 @@
             [cdq.op :as op]
             [cdq.timer :as timer]
             [cdq.utils :refer [readable-number]]
-            [clojure.graphics :as graphics]
+            [gdl.graphics :as graphics]
             [clojure.math :as math]
             [clojure.string :as str]))
 

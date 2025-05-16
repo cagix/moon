@@ -4,7 +4,7 @@
             [cdq.utils :as utils]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
-            [clojure.graphics.viewport :as viewport]))
+            [gdl.graphics.viewport :as viewport]))
 
 (defn do! []
   (let [new-eid (if (stage/mouse-on-actor? ctx/stage)

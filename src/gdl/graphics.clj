@@ -1,9 +1,9 @@
-(ns clojure.graphics
+(ns gdl.graphics
   (:require [cdq.interop :as interop]
-            [clojure.graphics.batch :as batch]
-            [clojure.graphics.camera :as camera]
-            [clojure.graphics.shape-drawer :as sd]
-            [clojure.graphics.viewport :as viewport]
+            [gdl.graphics.batch :as batch]
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.viewport :as viewport]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)

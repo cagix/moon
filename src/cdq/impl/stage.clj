@@ -16,15 +16,15 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
-            [clojure.assets :as assets]
-            [clojure.graphics]
-            [clojure.graphics.camera :as camera]
-            [clojure.graphics.viewport :as viewport]
-            [clojure.input :as input]
+            [gdl.assets :as assets]
+            [gdl.graphics]
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.viewport :as viewport]
+            [gdl.input :as input]
             [clojure.set :as set]
             [clojure.string :as str]
-            [clojure.ui :as ui]
-            [clojure.ui.actor :as actor]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -665,7 +665,7 @@
 (defn- slot->background [slot]
   (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (clojure.graphics/color 1 1 1 0.4))))
+    (TextureRegionDrawable/.tint drawable (gdl.graphics/color 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
@@ -861,7 +861,7 @@
                     :update-fn (fn [] (camera/zoom (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn (fn [] (clojure.graphics/frames-per-second))
+                    :update-fn (fn [] (gdl.graphics/frames-per-second))
                     :icon (ctx/assets "images/fps.png")}]})
 
 (defn- player-state-actor []

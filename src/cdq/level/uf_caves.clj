@@ -5,7 +5,7 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [cdq.tiled :as tiled]
-            [clojure.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (def ^:private scaling 4)
 

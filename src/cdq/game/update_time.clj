@@ -1,7 +1,7 @@
 (ns cdq.game.update-time
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [clojure.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (defn do! []
   (let [delta-ms (min (graphics/delta-time) ctx/max-delta)]

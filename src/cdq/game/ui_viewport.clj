@@ -1,7 +1,7 @@
 (ns cdq.game.ui-viewport
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [clojure.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (defn do! []
   (utils/bind-root #'ctx/ui-viewport (graphics/ui-viewport ctx/ui-viewport-config)))

@@ -1,6 +1,6 @@
 (ns cdq.game.dispose-context
   (:require [cdq.ctx :as ctx]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (defn do! []
   (utils/dispose! ctx/assets)

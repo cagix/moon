@@ -1,6 +1,6 @@
 (ns cdq.game.lwjgl3-application
   (:require [cdq.utils :as utils]
-            [clojure.application :as application]))
+            [gdl.application :as application]))
 
 (defn do! [{:keys [create
                    dispose
