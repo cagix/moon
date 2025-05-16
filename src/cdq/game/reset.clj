@@ -28,22 +28,22 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles (:click-distance-tiles ctx/player-entity-config)}})
 
-(defn- spawn-player! []
-  (utils/handle-txs! [[:tx/spawn-creature (player-entity-props (:start-position ctx/world))]]))
+(defn- spawn-player [start-position]
+  [[:tx/spawn-creature (player-entity-props start-position)]])
 
-(defn- spawn-enemies! []
-  (utils/handle-txs!
-   (for [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
-                 {:position position
-                  :creature-id (keyword creature-id)
-                  :components {:entity/fsm {:fsm :fsms/npc
-                                            :initial-state :npc-sleeping}
-                               :entity/faction :evil}})]
-     [:tx/spawn-creature (update props :position utils/tile->middle)])))
+(defn- spawn-enemies [tiled-map]
+  (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                {:position position
+                 :creature-id (keyword creature-id)
+                 :components {:entity/fsm {:fsm :fsms/npc
+                                           :initial-state :npc-sleeping}
+                              :entity/faction :evil}})]
+    [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
 (defn do! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (bind-root #'ctx/stage (cdq.impl.stage/create!))
-  (bind-root #'ctx/world (cdq.impl.world/create ((requiring-resolve world-fn))))
-  (spawn-enemies!)
-  (spawn-player!))
+  (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))]
+    (bind-root #'ctx/world (cdq.impl.world/create level))
+    (utils/handle-txs! (spawn-enemies tiled-map))
+    (utils/handle-txs! (spawn-player start-position))))
