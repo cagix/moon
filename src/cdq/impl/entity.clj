@@ -16,7 +16,6 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [cdq.potential-field :as potential-field]
             [clojure.graphics.viewport :as viewport]
             [clojure.input]
             [malli.core :as m]
@@ -424,7 +423,7 @@
   (let [effect-ctx (npc-effect-context eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
-      [[:tx/event eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid)
+      [[:tx/event eid :movement-direction (or (world/potential-field-direction ctx/world eid)
                                               [0 0])]])))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]

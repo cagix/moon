@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
-            [cdq.raycaster :as raycaster]
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
@@ -10,6 +9,7 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
+            [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-field :as potential-field]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]))
@@ -262,6 +262,9 @@
                              faction
                              active-entities
                              max-iterations)))
+
+  (potential-field-direction [_ eid]
+    (potential-field/find-direction grid eid))
 
   (draw-tiled-map! [_]
     (tiled/draw! (ctx/get-tiled-map-renderer tiled-map)
