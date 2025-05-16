@@ -1,4 +1,4 @@
-(ns cdq.game.shape-drawer
+(ns cdq.game.bind-shape-drawer
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [gdl.graphics :as graphics]))

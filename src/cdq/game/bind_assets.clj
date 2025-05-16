@@ -1,4 +1,4 @@
-(ns cdq.game.load-assets
+(ns cdq.game.bind-assets
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [gdl.assets :as assets]))

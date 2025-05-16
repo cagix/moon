@@ -1,4 +1,4 @@
-(ns cdq.game.load-schemas
+(ns cdq.game.bind-schemas
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [clojure.edn :as edn]

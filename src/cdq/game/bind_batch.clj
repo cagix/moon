@@ -1,4 +1,4 @@
-(ns cdq.game.create-sprite-batch
+(ns cdq.game.bind-batch
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [gdl.graphics :as graphics]))

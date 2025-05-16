@@ -1,4 +1,4 @@
-(ns cdq.game.load-db
+(ns cdq.game.bind-db
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]

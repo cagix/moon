@@ -1,4 +1,4 @@
-(ns cdq.game.lwjgl3-application
+(ns cdq.game.application
   (:require [cdq.utils :as utils]
             [gdl.application :as application]))
 

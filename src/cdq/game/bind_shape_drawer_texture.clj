@@ -1,4 +1,4 @@
-(ns cdq.game.create-shape-drawer-texture
+(ns cdq.game.bind-shape-drawer-texture
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [gdl.graphics :as graphics]))
