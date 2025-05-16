@@ -6,7 +6,7 @@
             [cdq.world :as world]))
 
 (defn- creatures-in-los-of-player []
-  (->> (:active-entities ctx/world)
+  (->> ctx/active-entities
        (filter #(:entity/species @%))
        (filter #(world/line-of-sight? ctx/world @ctx/player-eid @%))
        (remove #(:entity/player? @%))))

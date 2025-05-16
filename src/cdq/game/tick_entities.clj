@@ -12,7 +12,7 @@
   ; but then the 'order' is important? in such case dependent components
   ; should be moved together?
   (try
-   (doseq [eid (:active-entities ctx/world)]
+   (doseq [eid ctx/active-entities]
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]

@@ -10,7 +10,7 @@
     (draw/rectangle x y (:width entity) (:height entity) color)))
 
 (defn do! []
-  (let [entities (map deref (:active-entities ctx/world))
+  (let [entities (map deref ctx/active-entities)
         player @ctx/player-eid]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
