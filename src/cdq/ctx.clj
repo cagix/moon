@@ -66,6 +66,7 @@
          explored-tile-corners
          id-counter
          entity-ids
+         potential-field-cache
          world
          elapsed-time
          delta-time

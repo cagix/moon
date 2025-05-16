@@ -242,15 +242,14 @@
           {}
           components))
 
-(defrecord World [potential-field-cache
-                  active-entities]
+(defrecord World [active-entities]
   world/World
   (cache-active-entities [this]
     (assoc this :active-entities (content-grid/active-entities ctx/content-grid @ctx/player-eid)))
 
   (update-potential-fields! [_]
     (doseq [[faction max-iterations] ctx/factions-iterations]
-      (potential-field/tick! potential-field-cache
+      (potential-field/tick! ctx/potential-field-cache
                              ctx/grid
                              faction
                              active-entities
@@ -303,5 +302,4 @@
                                        (:position target)))))))
 
 (defn create []
-  (map->World {:potential-field-cache (atom nil)
-               :active-entities nil}))
+  (map->World {:active-entities nil}))
