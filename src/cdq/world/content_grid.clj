@@ -1,4 +1,4 @@
-(ns cdq.content-grid
+(ns cdq.world.content-grid
   (:require [cdq.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]
@@ -11,7 +11,7 @@
    :cell-w cell-size
    :cell-h cell-size})
 
-(defn update-entity! [{:keys [grid cell-w cell-h]} eid]
+(defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
         [x y] (:position entity)
         new-cell (get grid [(int (/ x cell-w))
@@ -22,10 +22,14 @@
       (when content-cell
         (swap! content-cell update :entities disj eid)))))
 
+(def add-entity! update-entity!)
+
 (defn remove-entity! [eid]
   (-> @eid
       :cdq.content-grid/content-cell
       (swap! update :entities disj eid)))
+
+(def position-changed! update-entity!)
 
 (defn active-entities [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity

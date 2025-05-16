@@ -1,7 +1,6 @@
 (ns cdq.impl.world
   (:require [cdq.cell :as cell]
             [cdq.ctx :as ctx]
-            [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
@@ -10,6 +9,7 @@
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [cdq.world :as world]
+            [cdq.world.content-grid :as content-grid]
             [clojure.graphics.camera :as camera]))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -129,7 +129,7 @@
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
-  (content-grid/update-entity! content-grid eid)
+  (content-grid/add-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (set-cells! grid eid)
@@ -228,7 +228,7 @@
       (remove-from-occupied-cells! eid)))
 
   (position-changed! [_ eid]
-    (content-grid/update-entity! content-grid eid)
+    (content-grid/position-changed! content-grid eid)
     (remove-from-cells! eid)
     (set-cells! grid eid)
     (when (:collides? @eid)
