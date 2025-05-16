@@ -10,6 +10,7 @@
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
+            [cdq.world.potential-field :as potential-field]
             [clojure.graphics.camera :as camera]))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -204,6 +205,14 @@
   world/World
   (cache-active-entities [this]
     (assoc this :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
+
+  (update-potential-fields! [_]
+    (doseq [[faction max-iterations] {:good 15 :evil 5}]
+      (potential-field/tick! potential-field-cache
+                             grid
+                             faction
+                             active-entities
+                             max-iterations)))
 
   (spawn-entity! [this position body components]
     (assert (and (not (contains? components :position))
