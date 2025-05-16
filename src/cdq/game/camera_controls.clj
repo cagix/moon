@@ -4,7 +4,7 @@
             [clojure.input :as input]))
 
 (defn do! []
-  (let [camera (:camera ctx/world-viewport)
-        zoom-speed 0.025]
-    (when (input/key-pressed? :minus)  (camera/inc-zoom! camera    zoom-speed))
-    (when (input/key-pressed? :equals) (camera/inc-zoom! camera (- zoom-speed)))))
+  (when (input/key-pressed? (get ctx/controls :zoom-in))
+    (camera/inc-zoom! (:camera ctx/world-viewport) ctx/zoom-speed))
+  (when (input/key-pressed? (get ctx/controls :zoom-out))
+    (camera/inc-zoom! (:camera ctx/world-viewport) (- ctx/zoom-speed))))

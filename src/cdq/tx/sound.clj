@@ -4,6 +4,6 @@
 
 (defn do! [sound-name]
   (->> sound-name
-       (format "sounds/%s.wav")
+       (format ctx/sound-path-format)
        ctx/assets
        Sound/.play))

@@ -1,6 +1,36 @@
 (ns cdq.ctx
   (:require [cdq.utils :as utils]))
 
+(def pausing? true)
+
+(def zoom-speed 0.025)
+
+(def controls {:zoom-in :minus
+               :zoom-out :equals
+               :unpause-once :p
+               :unpause-continously :space
+               })
+
+(def sound-path-format "sounds/%s.wav")
+
+(def cursor-path-format "cursors/%s.png")
+
+(def cursor-config
+  {:cursors/bag                   ["bag001"       [0   0]]
+   :cursors/black-x               ["black_x"      [0   0]]
+   :cursors/default               ["default"      [0   0]]
+   :cursors/denied                ["denied"       [16 16]]
+   :cursors/hand-before-grab      ["hand004"      [4  16]]
+   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+   :cursors/hand-grab             ["hand003"      [4  16]]
+   :cursors/move-window           ["move002"      [16 16]]
+   :cursors/no-skill-selected     ["denied003"    [0   0]]
+   :cursors/over-button           ["hand002"      [0   0]]
+   :cursors/sandclock             ["sandclock"    [16 16]]
+   :cursors/skill-not-usable      ["x007"         [0   0]]
+   :cursors/use-skill             ["pointer004"   [0   0]]
+   :cursors/walking               ["walking"      [16 16]]})
+
 (def world-unit-scale (float (/ 48)))
 
 (def unit-scale (atom 1))
