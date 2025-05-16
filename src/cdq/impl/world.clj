@@ -322,12 +322,11 @@
                              end
                              width)))
 
-(defn create [{:keys [tiled-map start-position]}]
+(defn create [tiled-map]
   (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)
         grid (create-grid tiled-map)]
     (map->World {:tiled-map tiled-map
-                 :start-position start-position
                  :grid grid
                  :raycaster (create-raycaster grid)
                  :content-grid (content-grid/create {:cell-size 16
