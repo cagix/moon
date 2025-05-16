@@ -1,4 +1,4 @@
-(ns cdq.batch)
+(ns clojure.graphics.batch)
 
 (defprotocol Batch
   (draw-on-viewport! [_ viewport draw-fn])

@@ -1,19 +1,57 @@
 (ns clojure.graphics
   (:require [cdq.interop :as interop]
+            [clojure.graphics.batch :as batch]
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d BitmapFont)
+           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils)
-           (com.badlogic.gdx.utils ScreenUtils)
+           (com.badlogic.gdx.utils Disposable ScreenUtils)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn sprite-batch []
+  (let [this (SpriteBatch.)]
+    (reify
+      batch/Batch
+      (draw-on-viewport! [_ viewport draw-fn]
+        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
+        (.setProjectionMatrix this (camera/combined (:camera viewport)))
+        (.begin this)
+        (draw-fn)
+        (.end this))
+
+      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
+        (if color (.setColor this color))
+        (.draw this
+               texture-region
+               x
+               y
+               (/ (float w) 2) ; rotation origin
+               (/ (float h) 2)
+               w
+               h
+               1 ; scale-x
+               1 ; scale-y
+               rotation)
+        (if color (.setColor this Color/WHITE)))
+
+      Disposable
+      (dispose [_]
+        (.dispose this))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this)))))
 
 (defn- degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))

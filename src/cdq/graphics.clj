@@ -1,50 +1,12 @@
 (ns cdq.graphics
-  (:require [cdq.batch :as batch]
-            [cdq.ctx :as ctx]
-            [cdq.viewport :as viewport]
-            [clojure.graphics.camera :as camera])
+  (:require [cdq.ctx :as ctx]
+            [cdq.viewport :as viewport])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
-           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)))
-
-(defn sprite-batch []
-  (let [this (SpriteBatch.)]
-    (reify
-      batch/Batch
-      (draw-on-viewport! [_ viewport draw-fn]
-        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
-        (.setProjectionMatrix this (camera/combined (:camera viewport)))
-        (.begin this)
-        (draw-fn)
-        (.end this))
-
-      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
-        (if color (.setColor this color))
-        (.draw this
-               texture-region
-               x
-               y
-               (/ (float w) 2) ; rotation origin
-               (/ (float h) 2)
-               w
-               h
-               1 ; scale-x
-               1 ; scale-y
-               rotation)
-        (if color (.setColor this Color/WHITE)))
-
-      Disposable
-      (dispose [_]
-        (.dispose this))
-
-      ILookup
-      (valAt [_ key]
-        (case key
-          :java-object this)))))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))

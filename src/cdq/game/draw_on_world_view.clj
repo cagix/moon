@@ -1,8 +1,8 @@
 (ns cdq.game.draw-on-world-view
-  (:require [cdq.batch :as batch]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.ctx :as ctx]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [clojure.graphics.batch :as batch]))
 
 (defn do! [draw-fns]
   (batch/draw-on-viewport! ctx/batch

@@ -1,7 +1,7 @@
 (ns cdq.draw
-  (:require [cdq.batch :as batch]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [clojure.graphics :as graphics]
+            [clojure.graphics.batch :as batch]
             [clojure.graphics.shape-drawer :as sd]))
 
 (defn- unit-dimensions [image unit-scale]
