@@ -1,0 +1,13 @@
+(ns cdq.entity.delete-after-duration
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
+            [cdq.timer :as timer]
+            [cdq.utils :refer [defcomponent]]))
+
+(defcomponent :entity/delete-after-duration
+  (entity/create [[_ duration]]
+    (timer/create ctx/elapsed-time duration))
+
+  (entity/tick! [[_ counter] eid]
+    (when (timer/stopped? ctx/elapsed-time counter)
+      [[:tx/mark-destroyed eid]])))
