@@ -10,6 +10,7 @@
             [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.timer :as timer]
+            [cdq.ui.inventory]
             [cdq.utils :as utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
@@ -18,6 +19,7 @@
             [cdq.world.grid.cell :as cell]
             [gdl.graphics.viewport :as viewport]
             [gdl.input]
+            [gdl.ui :as ui]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
