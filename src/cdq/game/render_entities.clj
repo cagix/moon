@@ -5,8 +5,6 @@
             [cdq.utils :as utils]
             [cdq.world :as world]))
 
-(def ^:private ^:dbg-flag show-body-bounds false)
-
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
     (draw/rectangle x y (:width entity) (:height entity) color)))
@@ -25,7 +23,7 @@
             :when (or (= z-order :z-order/effect)
                       (world/line-of-sight? ctx/world player entity))]
       (try
-       (when show-body-bounds
+       (when ctx/show-body-bounds?
          (draw-body-rect entity (if (:collides? entity) :white :gray)))
        (doseq [component entity]
          (render! component entity))

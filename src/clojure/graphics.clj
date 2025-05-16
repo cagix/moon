@@ -281,7 +281,7 @@
           :height (.getWorldHeight this)
           :camera (.getCamera      this))))))
 
-(defn ui-viewport [width height]
+(defn ui-viewport [{:keys [width height]}]
   (fit-viewport width
                 height
                 (OrthographicCamera.)

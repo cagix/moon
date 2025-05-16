@@ -6,7 +6,7 @@
 
 (defn- player-entity-props [start-position]
   {:position (utils/tile->middle start-position)
-   :creature-id :creatures/vampire
+   :creature-id (:creature-id ctx/player-entity-config)
    :components {:entity/fsm {:fsm :fsms/player
                              :initial-state :player-idle}
                 :entity/faction :good
@@ -21,9 +21,9 @@
                                               (stage/set-item! ctx/stage inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
                                                   (stage/remove-item! ctx/stage inventory-cell))}
-                :entity/free-skill-points 3
+                :entity/free-skill-points (:free-skill-points ctx/player-entity-config)
                 :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles 1.5}})
+                :entity/click-distance-tiles (:click-distance-tiles ctx/player-entity-config)}})
 
 (defn do! []
   (utils/handle-txs! [[:tx/spawn-creature (player-entity-props (:start-position ctx/world))]]))

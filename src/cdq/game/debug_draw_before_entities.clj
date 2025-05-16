@@ -4,18 +4,11 @@
             [cdq.world :as world]
             [clojure.graphics.camera :as camera]))
 
-(def ^:private ^:dbg-flag tile-grid? false)
-(def ^:private ^:dbg-flag potential-field-colors? false)
-(def ^:private ^:dbg-flag cell-entities? false)
-(def ^:private ^:dbg-flag cell-occupied? false)
-
-(def ^:private factions-iterations {:good 15 :evil 5})
-
 (defn do! []
   (let [cam (:camera ctx/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
-    (when tile-grid?
+    (when ctx/show-tile-grid?
       (draw/grid (int left-x) (int bottom-y)
                  (inc (int (:width  ctx/world-viewport)))
                  (+ 2 (int (:height ctx/world-viewport)))
@@ -26,15 +19,14 @@
             :when cell
             :let [cell* @cell]]
 
-      (when (and cell-entities? (seq (:entities cell*)))
+      (when (and ctx/show-cell-entities? (seq (:entities cell*)))
         (draw/filled-rectangle x y 1 1 [1 0 0 0.6]))
 
-      (when (and cell-occupied? (seq (:occupied cell*)))
+      (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
         (draw/filled-rectangle x y 1 1 [0 0 1 0.6]))
 
-      (when potential-field-colors?
-        (let [faction :good
-              {:keys [distance]} (faction cell*)]
+      (when-let [faction ctx/show-potential-field-colors?]
+        (let [{:keys [distance]} (faction cell*)]
           (when distance
-            (let [ratio (/ distance (factions-iterations faction))]
+            (let [ratio (/ distance (ctx/factions-iterations faction))]
               (draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))

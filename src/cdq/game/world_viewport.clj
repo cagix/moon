@@ -6,5 +6,4 @@
 (defn do! []
   (utils/bind-root #'ctx/world-viewport
                    (graphics/world-viewport ctx/world-unit-scale
-                                            {:width 1440
-                                             :height 900})))
+                                            ctx/world-viewport-config)))

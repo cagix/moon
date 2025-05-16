@@ -2,11 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]))
 
-; Could be in config
-; or remove on click change world
-; but then what I would like to change at the context?
-; -> change the world inside the game
-
 (defn do! [world-fn]
   (utils/bind-root #'ctx/elapsed-time 0)
   (utils/bind-root #'ctx/stage ((requiring-resolve 'cdq.impl.stage/create!)))

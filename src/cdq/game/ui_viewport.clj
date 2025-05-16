@@ -4,4 +4,4 @@
             [clojure.graphics :as graphics]))
 
 (defn do! []
-  (utils/bind-root #'ctx/ui-viewport (graphics/ui-viewport 1440 900)))
+  (utils/bind-root #'ctx/ui-viewport (graphics/ui-viewport ctx/ui-viewport-config)))

@@ -256,7 +256,7 @@
     (assoc this :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
 
   (update-potential-fields! [_]
-    (doseq [[faction max-iterations] {:good 15 :evil 5}]
+    (doseq [[faction max-iterations] ctx/factions-iterations]
       (potential-field/tick! potential-field-cache
                              grid
                              faction

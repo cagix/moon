@@ -4,6 +4,4 @@
             [clojure.graphics :as graphics]))
 
 (defn do! []
-  (utils/bind-root #'ctx/default-font (graphics/truetype-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                                               :size 16
-                                                               :quality-scaling 2})))
+  (utils/bind-root #'ctx/default-font (graphics/truetype-font ctx/font-config)))

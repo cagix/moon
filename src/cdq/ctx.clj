@@ -31,9 +31,19 @@
    :cursors/use-skill             ["pointer004"   [0   0]]
    :cursors/walking               ["walking"      [16 16]]})
 
+(def font-config {:file "fonts/exocet/films.EXL_____.ttf"
+                  :size 16
+                  :quality-scaling 2})
+
 (def world-unit-scale (float (/ 48)))
 
 (def unit-scale (atom 1))
+
+(def ui-viewport-config {:width 1440
+                         :height 900})
+
+(def world-viewport-config {:width 1440
+                            :height 900})
 
 (declare schemas
          db
@@ -75,3 +85,16 @@
   {:width 0.5
    :height 0.5
    :z-order :z-order/effect})
+
+(def factions-iterations {:good 15 :evil 5})
+
+(def ^:dbg-flag show-tile-grid? false)
+(def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
+(def ^:dbg-flag show-cell-entities? false)
+(def ^:dbg-flag show-cell-occupied? false)
+
+(def ^:dbg-flag show-body-bounds? false)
+
+(def player-entity-config {:creature-id :creatures/vampire
+                           :free-skill-points 3
+                           :click-distance-tiles 1.5})
