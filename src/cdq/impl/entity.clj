@@ -1,7 +1,6 @@
 (ns cdq.impl.entity
   (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
-            [cdq.cell :as cell]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -16,6 +15,7 @@
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
+            [cdq.world.grid.cell :as cell]
             [cdq.potential-field :as potential-field]
             [clojure.graphics.viewport :as viewport]
             [clojure.input]

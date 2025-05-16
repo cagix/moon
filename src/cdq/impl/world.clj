@@ -1,6 +1,5 @@
 (ns cdq.impl.world
-  (:require [cdq.cell :as cell]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
@@ -10,6 +9,7 @@
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
+            [cdq.world.grid.cell :as cell]
             [cdq.world.potential-field :as potential-field]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]))

@@ -1,4 +1,4 @@
-(ns cdq.cell)
+(ns cdq.world.grid.cell)
 
 (defprotocol Cell
   (blocked? [_ z-order])
