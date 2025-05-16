@@ -177,6 +177,15 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
+(defn- remove-entity! [{:keys [entity-ids]} eid]
+  (let [id (:entity/id @eid)]
+    (assert (contains? @entity-ids id))
+    (swap! entity-ids dissoc id))
+  (content-grid/remove-entity! eid)
+  (remove-from-cells! eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)))
+
 (defrecord Body [position
                  left-bottom
 
@@ -262,6 +271,12 @@
                                     (camera/position (:camera ctx/world-viewport)))
                  (:camera ctx/world-viewport)))
 
+  (remove-destroyed-entities! [this]
+    (doseq [eid (filter (comp :entity/destroyed? deref) (vals @entity-ids))]
+      (remove-entity! this eid)
+      (doseq [component @eid]
+        (utils/handle-txs! (entity/destroy! component eid)))))
+
   (spawn-entity! [this position body components]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
@@ -274,15 +289,6 @@
       (add-entity! this eid)
       (doseq [component @eid]
         (utils/handle-txs! (entity/create! component eid)))))
-
-  (remove-entity! [_ eid]
-    (let [id (:entity/id @eid)]
-      (assert (contains? @entity-ids id))
-      (swap! entity-ids dissoc id))
-    (content-grid/remove-entity! eid)
-    (remove-from-cells! eid)
-    (when (:collides? @eid)
-      (remove-from-occupied-cells! eid)))
 
   (position-changed! [_ eid]
     (content-grid/position-changed! content-grid eid)
