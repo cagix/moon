@@ -7,5 +7,4 @@
   (remove-destroyed-entities! [_])
   (spawn-entity! [_ position body components])
   (position-changed! [_ eid])
-  (line-of-sight? [_ source target])
-  (path-blocked? [_ start end width]))
+  (line-of-sight? [_ source target]))

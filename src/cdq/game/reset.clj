@@ -46,6 +46,7 @@
   (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))]
     (bind-root #'ctx/tiled-map tiled-map)
     (bind-root #'ctx/grid (cdq.impl.world/create-grid tiled-map))
+    (bind-root #'ctx/raycaster (cdq.impl.world/create-raycaster ctx/grid))
     (bind-root #'ctx/world (cdq.impl.world/create tiled-map))
     (utils/handle-txs! (spawn-enemies tiled-map))
     (utils/handle-txs! (spawn-player start-position))))

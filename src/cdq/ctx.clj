@@ -61,6 +61,7 @@
          stage
          tiled-map
          grid
+         raycaster
          world
          elapsed-time
          delta-time

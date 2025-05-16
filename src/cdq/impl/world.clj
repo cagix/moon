@@ -158,7 +158,7 @@
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn- create-raycaster [grid]
+(defn create-raycaster [grid]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
@@ -242,8 +242,7 @@
           {}
           components))
 
-(defrecord World [raycaster
-                  content-grid
+(defrecord World [content-grid
                   explored-tile-corners
                   entity-ids
                   potential-field-cache
@@ -264,7 +263,7 @@
   (draw-tiled-map! [_]
     (tiled/draw! (ctx/get-tiled-map-renderer ctx/tiled-map)
                  ctx/tiled-map
-                 (tile-color-setter raycaster
+                 (tile-color-setter ctx/raycaster
                                     explored-tile-corners
                                     (camera/position (:camera ctx/world-viewport)))
                  (:camera ctx/world-viewport)))
@@ -302,21 +301,14 @@
     (and (or (not (:entity/player? source))
              (on-screen? ctx/world-viewport target))
          (not (and los-checks?
-                   (raycaster/blocked? raycaster
+                   (raycaster/blocked? ctx/raycaster
                                        (:position source)
-                                       (:position target))))))
-
-  (path-blocked? [_ start end width]
-    (raycaster/path-blocked? raycaster ; TODO test
-                             start
-                             end
-                             width)))
+                                       (:position target)))))))
 
 (defn create [tiled-map]
   (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
-    (map->World {:raycaster (create-raycaster ctx/grid)
-                 :content-grid (content-grid/create {:cell-size 16
+    (map->World {:content-grid (content-grid/create {:cell-size 16
                                                      :width  width
                                                      :height height})
                  :explored-tile-corners (atom (g2d/create-grid width
