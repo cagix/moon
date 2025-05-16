@@ -22,6 +22,6 @@
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (utils/pretty-pst t)
-     (stage/show-error-window! ctx/stage t)
+     (stage/add-actor! ctx/stage (cdq.ui/error-window t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )

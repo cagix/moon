@@ -13,6 +13,7 @@
             [cdq.tx.sound :as tx.sound]
             [cdq.property :as property]
             [cdq.malli :as malli]
+            [cdq.ui]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
@@ -47,16 +48,6 @@
            (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu
                                       VisCheckBox VisSelectBox VisTextField
                                       VisWindow)))
-
-(defmacro ^:private with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))
 
 (defn- property->image [{:keys [entity/image entity/animation]}]
   (or image
@@ -105,7 +96,7 @@
         (Actor/.remove window)
         (catch Throwable t
           (utils/pretty-pst t)
-          (stage/show-error-window! ctx/stage t))))
+          (stage/add-actor! ctx/stage (cdq.ui/error-window t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -1001,18 +992,6 @@
 
       (root [_]
         (.getRoot stage))
-
-  (show-error-window! [stage throwable]
-    (add-actor! stage
-                (ui/window {:title "Error"
-                            :rows [[(ui/label (binding [*print-level* 3]
-                                                (with-err-str
-                                                  (clojure.repl/pst throwable))))]]
-                            :modal? true
-                            :close-button? true
-                            :close-on-escape? true
-                            :center? true
-                            :pack? true})))
 
   (set-item! [stage cell item]
     (set-item! stage cell item))

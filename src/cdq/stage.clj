@@ -6,7 +6,6 @@
   (act! [_])
   (mouse-on-actor? [_])
   (root [_])
-  (show-error-window! [stage throwable])
   (set-item! [stage cell item])
   (remove-item! [stage cell])
   (selected-skill [stage])
