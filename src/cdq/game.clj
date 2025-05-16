@@ -23,6 +23,7 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
             [gdl.utils :refer [dispose!]]))
 
 (defn- geom-test! []
@@ -290,6 +291,7 @@
 (defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (bind-root #'ctx/stage (stage/create!))
+  (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
@@ -384,6 +386,7 @@
                                                                 ctx/world-unit-scale
                                                                 (:java-object ctx/batch)))))
                           (bind-root #'ctx/ui-viewport (graphics/ui-viewport ctx/ui-viewport-config))
+                          (ui/load! ctx/ui-config)
                           (reset-game! 'cdq.level.vampire/create
                                       ; 'cdq.level.uf-caves/create
                                       ; 'cdq.level.modules/create

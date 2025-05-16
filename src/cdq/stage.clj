@@ -10,7 +10,6 @@
             [cdq.dev-menu-config]
             [cdq.ui.windows]
             [gdl.graphics.viewport :as viewport]
-            [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor])
   (:import (clojure.lang ILookup)
@@ -40,11 +39,9 @@
   (show-message! [stage text]))
 
 (defn create! []
-  (ui/load! ctx/ui-config)
   (let [stage (Stage. (:java-object ctx/ui-viewport)
                       (:java-object ctx/batch))]
     (run! #(.addActor stage %) (create-actors))
-    (input/set-processor! stage)
     (reify
       ILookup
       (valAt [_ id]
