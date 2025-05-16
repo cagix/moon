@@ -34,6 +34,11 @@
     (.finishLoading manager)
     manager))
 
+(defn- asset-type->class [asset-type]
+  (case asset-type
+    :sound Sound
+    :texture Texture))
+
 (defn create []
   (create*
    {:folder "resources/"
@@ -41,5 +46,5 @@
                             Texture #{"png" "bmp"}}}))
 
 (defn all-of-type [^AssetManager assets asset-type]
-  (filter #(= (.getAssetType assets %) asset-type)
+  (filter #(= (.getAssetType assets %) (asset-type->class asset-type))
           (.getAssetNames assets)))
