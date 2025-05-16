@@ -18,6 +18,7 @@
             [clojure.edn :as edn]
             [clojure.assets :as assets]
             [clojure.graphics]
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
             [clojure.set :as set]
@@ -26,7 +27,6 @@
             [clojure.ui.actor :as actor]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Color OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
@@ -665,7 +665,7 @@
 (defn- slot->background [slot]
   (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (Color. (float 1) (float 1) (float 1) (float 0.4)))))
+    (TextureRegionDrawable/.tint drawable (clojure.graphics/color 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
@@ -858,7 +858,7 @@
                    {:label "World"
                     :update-fn (fn [] (mapv int (viewport/mouse-position ctx/world-viewport)))}
                    {:label "Zoom"
-                    :update-fn (fn [] (.zoom ^OrthographicCamera (:camera ctx/world-viewport)))
+                    :update-fn (fn [] (camera/zoom (:camera ctx/world-viewport)))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (clojure.graphics/frames-per-second))

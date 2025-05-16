@@ -2,6 +2,9 @@
   (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
            (com.badlogic.gdx.math Frustum Vector3)))
 
+(defn zoom [^OrthographicCamera camera]
+  (.zoom camera))
+
 (defn position
   "Returns camera position as [x y] vector."
   [^Camera camera]
