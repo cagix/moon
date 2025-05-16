@@ -39,12 +39,17 @@
     :sound Sound
     :texture Texture))
 
-(defn create []
+(defn create
+  "Loads all assets in `resources/` folder and matching all `.wav` files to `gdl.audio.sound/Sound`
+  and `.png` and `.bmp` files to `gdl.graphics/texture`."
+  []
   (create*
    {:folder "resources/"
     :asset-type-extensions {Sound   #{"wav"}
                             Texture #{"png" "bmp"}}}))
 
-(defn all-of-type [^AssetManager assets asset-type]
+(defn all-of-type
+  "Return what? paths ? and type is :sound or :texture"
+  [^AssetManager assets asset-type]
   (filter #(= (.getAssetType assets %) (asset-type->class asset-type))
           (.getAssetNames assets)))
