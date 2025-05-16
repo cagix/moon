@@ -1,9 +1,9 @@
 (ns cdq.game.update-mouseover-entity
   (:require [cdq.ctx :as ctx]
-            [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
+            [cdq.world.grid :as grid]
             [clojure.graphics.viewport :as viewport]))
 
 (defn do! []

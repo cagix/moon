@@ -1,4 +1,4 @@
-(ns cdq.grid
+(ns cdq.world.grid
   (:require [cdq.math :refer [circle->outer-rectangle
                               overlaps?
                               rect-contains?]]))

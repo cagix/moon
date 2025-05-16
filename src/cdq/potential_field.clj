@@ -1,11 +1,11 @@
 (ns cdq.potential-field
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity] ; just entity/faction
-            [cdq.grid :as grid :refer [rectangle->cells
-                                       cached-adjacent-cells
-                                       get-8-neighbour-positions]]
             [cdq.utils :refer [utils-positions when-seq]]
-            [cdq.vector2 :as v]))
+            [cdq.vector2 :as v]
+            [cdq.world.grid :as grid :refer [rectangle->cells
+                                             cached-adjacent-cells
+                                             get-8-neighbour-positions]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

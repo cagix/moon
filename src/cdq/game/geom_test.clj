@@ -1,8 +1,8 @@
 (ns cdq.game.geom-test
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
-            [cdq.grid :as grid]
             [cdq.math :as math]
+            [cdq.world.grid :as grid]
             [clojure.graphics.viewport :as viewport]))
 
 (defn do! []
