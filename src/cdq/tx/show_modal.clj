@@ -4,4 +4,4 @@
             [cdq.ui.modal]))
 
 (defn do! [opts]
-  (stage/add-actor! ctx/stage (cdq.ui.modal/create)))
+  (stage/add-actor! ctx/stage (cdq.ui.modal/create opts)))
