@@ -1,8 +1,8 @@
 (ns cdq.level.helper
   (:require [cdq.grid2d :as g2d]
             [cdq.rand :refer [sshuffle srand srand-int]]
-            [cdq.tiled :as tiled]
-            [cdq.utils :refer [assoc-ks]]))
+            [cdq.utils :refer [assoc-ks]]
+            [gdl.tiled :as tiled]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

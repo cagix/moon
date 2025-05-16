@@ -4,8 +4,8 @@
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [cdq.tiled :as tiled]
-            [gdl.graphics :as graphics]))
+            [gdl.graphics :as graphics]
+            [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
 

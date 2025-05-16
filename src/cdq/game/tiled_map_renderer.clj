@@ -1,7 +1,7 @@
 (ns cdq.game.tiled-map-renderer
   (:require [cdq.ctx :as ctx]
-            [cdq.tiled :as tiled]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [gdl.tiled :as tiled]))
 
 (defn do! []
   (utils/bind-root #'ctx/get-tiled-map-renderer

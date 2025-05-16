@@ -1,9 +1,9 @@
 (ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
-            [cdq.tiled :as tiled]
-            [gdl.graphics.camera :as camera]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]]
+            [gdl.graphics.camera :as camera]
+            [gdl.tiled :as tiled]))
 
 (def state (atom nil))
 

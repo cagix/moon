@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
-            [cdq.tiled :as tiled]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [cdq.world :as world]
@@ -12,7 +11,8 @@
             [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-field :as potential-field]
             [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]))
+            [gdl.graphics.camera :as camera]
+            [gdl.tiled :as tiled]))
 
 (def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
 

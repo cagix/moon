@@ -1,4 +1,4 @@
-(ns cdq.tiled
+(ns gdl.tiled
   (:import (cdq OrthogonalTiledMapRenderer ColorSetter)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
