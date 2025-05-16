@@ -1,10 +1,49 @@
 (ns cdq.game.reset
   (:require [cdq.ctx :as ctx]
-            [cdq.utils :as utils]))
+            [cdq.impl.stage]
+            [cdq.impl.world]
+            [cdq.stage :as stage]
+            [cdq.state :as state]
+            [cdq.utils :as utils :refer [bind-root]]
+            [gdl.tiled :as tiled]))
+
+(defn- player-entity-props [start-position]
+  {:position (utils/tile->middle start-position)
+   :creature-id (:creature-id ctx/player-entity-config)
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? {:state-changed! (fn [new-state-obj]
+                                                   (when-let [cursor (state/cursor new-state-obj)]
+                                                     [[:tx/set-cursor cursor]]))
+                                 :skill-added! (fn [skill]
+                                                 (stage/add-skill! ctx/stage skill))
+                                 :skill-removed! (fn [skill]
+                                                   (stage/remove-skill! ctx/stage skill))
+                                 :item-set! (fn [inventory-cell item]
+                                              (stage/set-item! ctx/stage inventory-cell item))
+                                 :item-removed! (fn [inventory-cell]
+                                                  (stage/remove-item! ctx/stage inventory-cell))}
+                :entity/free-skill-points (:free-skill-points ctx/player-entity-config)
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles (:click-distance-tiles ctx/player-entity-config)}})
+
+(defn- spawn-player! []
+  (utils/handle-txs! [[:tx/spawn-creature (player-entity-props (:start-position ctx/world))]]))
+
+(defn- spawn-enemies! []
+  (utils/handle-txs!
+   (for [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
+                 {:position position
+                  :creature-id (keyword creature-id)
+                  :components {:entity/fsm {:fsm :fsms/npc
+                                            :initial-state :npc-sleeping}
+                               :entity/faction :evil}})]
+     [:tx/spawn-creature (update props :position utils/tile->middle)])))
 
 (defn do! [world-fn]
-  (utils/bind-root #'ctx/elapsed-time 0)
-  (utils/bind-root #'ctx/stage ((requiring-resolve 'cdq.impl.stage/create!)))
-  (utils/bind-root #'ctx/world ((requiring-resolve 'cdq.impl.world/create) ((requiring-resolve world-fn))))
-  ((requiring-resolve 'cdq.game.spawn-enemies/do!))
-  ((requiring-resolve 'cdq.game.spawn-player/do!)))
+  (bind-root #'ctx/elapsed-time 0)
+  (bind-root #'ctx/stage (cdq.impl.stage/create!))
+  (bind-root #'ctx/world (cdq.impl.world/create ((requiring-resolve world-fn))))
+  (spawn-enemies!)
+  (spawn-player!))
