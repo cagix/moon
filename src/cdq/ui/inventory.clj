@@ -139,3 +139,10 @@
         image-widget (get cell-widget :image)]
     (Image/.setDrawable image-widget (slot->background (cell 0)))
     (actor/remove-tooltip! cell-widget)))
+
+(defn cell-with-item? [actor]
+  {:pre [actor]}
+  (and (Actor/.getParent actor)
+       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
+       (get-in (:entity/inventory @ctx/player-eid)
+               (Actor/.getUserObject (Actor/.getParent actor)))))
