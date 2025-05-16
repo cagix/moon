@@ -26,6 +26,9 @@
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
+(def white Color/WHITE)
+(def black Color/BLACK)
+
 (defn def-markdown-color [name color]
   (Colors/put name color))
 

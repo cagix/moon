@@ -3,8 +3,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.tiled :as tiled]
             [clojure.graphics :as graphics]
-            [clojure.graphics.camera :as camera])
-  (:import (com.badlogic.gdx.graphics Color)))
+            [clojure.graphics.camera :as camera]))
 
 (def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
 
@@ -30,7 +29,7 @@
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
-            base-color (if explored? explored-tile-color Color/BLACK)
+            base-color (if explored? explored-tile-color graphics/black)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
                        (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -40,10 +39,10 @@
         #_(when @do-once
             (swap! ray-positions conj position))
         (if blocked?
-          (if see-all-tiles? Color/WHITE base-color)
+          (if see-all-tiles? graphics/white base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              Color/WHITE))))))
+              graphics/white))))))
 
 (defn do! []
   (tiled/draw! (ctx/get-tiled-map-renderer (:tiled-map ctx/world))
