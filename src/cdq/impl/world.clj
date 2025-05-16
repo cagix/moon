@@ -242,8 +242,7 @@
           {}
           components))
 
-(defrecord World [tiled-map
-                  grid
+(defrecord World [grid
                   raycaster
                   content-grid
                   explored-tile-corners
@@ -267,8 +266,8 @@
     (potential-field/find-direction grid eid))
 
   (draw-tiled-map! [_]
-    (tiled/draw! (ctx/get-tiled-map-renderer tiled-map)
-                 tiled-map
+    (tiled/draw! (ctx/get-tiled-map-renderer ctx/tiled-map)
+                 ctx/tiled-map
                  (tile-color-setter raycaster
                                     explored-tile-corners
                                     (camera/position (:camera ctx/world-viewport)))
@@ -326,8 +325,7 @@
   (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)
         grid (create-grid tiled-map)]
-    (map->World {:tiled-map tiled-map
-                 :grid grid
+    (map->World {:grid grid
                  :raycaster (create-raycaster grid)
                  :content-grid (content-grid/create {:cell-size 16
                                                      :width  width

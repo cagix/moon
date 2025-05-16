@@ -44,6 +44,7 @@
   (bind-root #'ctx/elapsed-time 0)
   (bind-root #'ctx/stage (cdq.impl.stage/create!))
   (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))]
+    (bind-root #'ctx/tiled-map tiled-map)
     (bind-root #'ctx/world (cdq.impl.world/create tiled-map))
     (utils/handle-txs! (spawn-enemies tiled-map))
     (utils/handle-txs! (spawn-player start-position))))

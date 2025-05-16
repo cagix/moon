@@ -59,6 +59,7 @@
          ui-viewport
          get-tiled-map-renderer
          stage
+         tiled-map
          world
          elapsed-time
          delta-time
