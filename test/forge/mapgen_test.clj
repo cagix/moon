@@ -11,12 +11,12 @@
   (camera/set-position! camera
                         [(/ (tiled/tm-width  tiled-map) 2)
                          (/ (tiled/tm-height tiled-map) 2)])
-  (camera/set-zoom camera
-                   (camera/calculate-zoom camera
-                                          :left [0 0]
-                                          :top [0 (tiled/tm-height tiled-map)]
-                                          :right [(tiled/tm-width tiled-map) 0]
-                                          :bottom [0 0])))
+  (camera/set-zoom! camera
+                    (camera/calculate-zoom camera
+                                           :left [0 0]
+                                           :top [0 (tiled/tm-height tiled-map)]
+                                           :right [(tiled/tm-width tiled-map) 0]
+                                           :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
   #_(-> (screen/current)

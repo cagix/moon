@@ -39,7 +39,7 @@
   (set! (.y (.position camera)) (float y))
   (.update camera))
 
-(defn set-zoom
+(defn set-zoom!
   "Sets the zoom value and updates."
   [^OrthographicCamera camera amount]
   (set! (.zoom camera) amount)
@@ -73,7 +73,7 @@
 (defn reset-zoom!
   "Sets the zoom value to 1."
   [camera]
-  (set-zoom camera 1))
+  (set-zoom! camera 1))
 
 (defn inc-zoom! [camera by]
-  (set-zoom camera (max 0.1 (+ (.zoom ^OrthographicCamera camera) by))))
+  (set-zoom! camera (max 0.1 (+ (.zoom ^OrthographicCamera camera) by))))
