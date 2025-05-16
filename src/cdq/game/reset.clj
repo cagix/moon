@@ -5,6 +5,7 @@
             [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.utils :as utils :refer [bind-root]]
+            [cdq.world.content-grid :as content-grid]
             [gdl.tiled :as tiled]))
 
 (defn- player-entity-props [start-position]
@@ -43,10 +44,15 @@
 (defn do! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (bind-root #'ctx/stage (cdq.impl.stage/create!))
-  (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))]
+  (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))
+        width  (tiled/tm-width  tiled-map)
+        height (tiled/tm-height tiled-map)]
     (bind-root #'ctx/tiled-map tiled-map)
     (bind-root #'ctx/grid (cdq.impl.world/create-grid tiled-map))
     (bind-root #'ctx/raycaster (cdq.impl.world/create-raycaster ctx/grid))
+    (bind-root #'ctx/content-grid (content-grid/create {:cell-size 16
+                                                        :width  width
+                                                        :height height}))
     (bind-root #'ctx/world (cdq.impl.world/create tiled-map))
     (utils/handle-txs! (spawn-enemies tiled-map))
     (utils/handle-txs! (spawn-player start-position))))

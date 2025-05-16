@@ -166,11 +166,11 @@
       (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
 
-(defn- add-entity! [{:keys [entity-ids content-grid]} eid]
+(defn- add-entity! [{:keys [entity-ids]} eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
-  (content-grid/add-entity! content-grid eid)
+  (content-grid/add-entity! ctx/content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (set-cells! ctx/grid eid)
@@ -242,15 +242,14 @@
           {}
           components))
 
-(defrecord World [content-grid
-                  explored-tile-corners
+(defrecord World [explored-tile-corners
                   entity-ids
                   potential-field-cache
                   active-entities
                   id-counter]
   world/World
   (cache-active-entities [this]
-    (assoc this :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
+    (assoc this :active-entities (content-grid/active-entities ctx/content-grid @ctx/player-eid)))
 
   (update-potential-fields! [_]
     (doseq [[faction max-iterations] ctx/factions-iterations]
@@ -288,7 +287,7 @@
         (utils/handle-txs! (entity/create! component eid)))))
 
   (position-changed! [_ eid]
-    (content-grid/position-changed! content-grid eid)
+    (content-grid/position-changed! ctx/content-grid eid)
     (remove-from-cells! eid)
     (set-cells! ctx/grid eid)
     (when (:collides? @eid)
@@ -308,10 +307,7 @@
 (defn create [tiled-map]
   (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
-    (map->World {:content-grid (content-grid/create {:cell-size 16
-                                                     :width  width
-                                                     :height height})
-                 :explored-tile-corners (atom (g2d/create-grid width
+    (map->World {:explored-tile-corners (atom (g2d/create-grid width
                                                                height
                                                                (constantly false)))
                  :id-counter (atom 0)

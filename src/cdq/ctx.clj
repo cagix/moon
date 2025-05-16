@@ -62,6 +62,7 @@
          tiled-map
          grid
          raycaster
+         content-grid
          world
          elapsed-time
          delta-time
