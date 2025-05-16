@@ -2,13 +2,13 @@
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
             [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.world :as world]))
+            [cdq.entity :as entity]
+            [cdq.utils :refer [defcomponent]]))
 
 (defn- creatures-in-los-of-player []
   (->> ctx/active-entities
        (filter #(:entity/species @%))
-       (filter #(world/line-of-sight? ctx/world @ctx/player-eid @%))
+       (filter #(entity/line-of-sight? @ctx/player-eid @%))
        (remove #(:entity/player? @%))))
 
 (defcomponent :effects/target-all

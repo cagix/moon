@@ -1,10 +1,10 @@
 (ns cdq.tx.move-entity
   (:require [cdq.ctx :as ctx]
             [cdq.vector2 :as v]
-            [cdq.world :as world]))
+            [cdq.impl.world]))
 
 (defn do! [eid body direction rotate-in-movement-direction?]
-  (world/position-changed! ctx/world eid)
+  (cdq.impl.world/position-changed! eid)
   (swap! eid assoc
          :position (:position body)
          :left-bottom (:left-bottom body))

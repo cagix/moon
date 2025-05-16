@@ -4,7 +4,6 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]
-            [cdq.world :as world]
             [cdq.world.potential-field :as potential-field]
             [cdq.world.grid.cell :as cell]))
 
@@ -23,7 +22,7 @@
         target (cell/nearest-entity @(ctx/grid (entity/tile entity))
                                     (entity/enemy entity))
         target (when (and target
-                          (world/line-of-sight? ctx/world entity @target))
+                          (entity/line-of-sight? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

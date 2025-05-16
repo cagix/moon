@@ -4,73 +4,10 @@
             [cdq.grid2d :as g2d]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
-            [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [cdq.world.raycaster :as raycaster]
-            [cdq.world.potential-field :as potential-field]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]
             [gdl.tiled :as tiled]))
-
-(def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
-
-(def ^:private ^:dbg-flag see-all-tiles? false)
-
-(comment
- (def ^:private count-rays? false)
-
- (def ray-positions (atom []))
- (def do-once (atom true))
-
- (count @ray-positions)
- 2256
- (count (distinct @ray-positions))
- 608
- (* 608 4)
- 2432
- )
-
-(defn- tile-color-setter [raycaster explored-tile-corners light-position]
-  #_(reset! do-once false)
-  (let [light-cache (atom {})]
-    (fn tile-color-setter [_color x y]
-      (let [position [(int x) (int y)]
-            explored? (get @explored-tile-corners position) ; TODO needs int call ?
-            base-color (if explored? explored-tile-color graphics/black)
-            cache-entry (get @light-cache position :not-found)
-            blocked? (if (= cache-entry :not-found)
-                       (let [blocked? (raycaster/blocked? raycaster light-position position)]
-                         (swap! light-cache assoc position blocked?)
-                         blocked?)
-                       cache-entry)]
-        #_(when @do-once
-            (swap! ray-positions conj position))
-        (if blocked?
-          (if see-all-tiles? graphics/white base-color)
-          (do (when-not explored?
-                (swap! explored-tile-corners assoc (mapv int position) true))
-              graphics/white))))))
-
-; does not take into account zoom - but zoom is only for debug ???
-; vision range?
-(defn- on-screen? [viewport entity]
-  (let [[x y] (:position entity)
-        x (float x)
-        y (float y)
-        [cx cy] (camera/position (:camera viewport))
-        px (float cx)
-        py (float cy)
-        xdist (Math/abs (- x px))
-        ydist (Math/abs (- y py))]
-    (and
-     (<= xdist (inc (/ (float (:width viewport))  2)))
-     (<= ydist (inc (/ (float (:height viewport)) 2))))))
-
-; TODO at wrong point , this affects targeting logic of npcs
-; move the debug flag to either render or mouseover or lets see
-(def ^:private ^:dbg-flag los-checks? true)
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -177,7 +114,7 @@
   (when (:collides? @eid)
     (set-occupied-cells! ctx/grid eid)))
 
-(defn- remove-entity! [eid]
+(defn remove-entity! [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? @ctx/entity-ids id))
     (swap! ctx/entity-ids dissoc id))
@@ -185,6 +122,14 @@
   (remove-from-cells! eid)
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
+
+(defn position-changed! [eid]
+  (content-grid/position-changed! ctx/content-grid eid)
+  (remove-from-cells! eid)
+  (set-cells! ctx/grid eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)
+    (set-occupied-cells! ctx/grid eid)))
 
 (defrecord Body [position
                  left-bottom
@@ -242,61 +187,15 @@
           {}
           components))
 
-(defrecord World []
-  world/World
-  (update-potential-fields! [_]
-    (doseq [[faction max-iterations] ctx/factions-iterations]
-      (potential-field/tick! ctx/potential-field-cache
-                             ctx/grid
-                             faction
-                             ctx/active-entities
-                             max-iterations)))
-
-  (draw-tiled-map! [_]
-    (tiled/draw! (ctx/get-tiled-map-renderer ctx/tiled-map)
-                 ctx/tiled-map
-                 (tile-color-setter ctx/raycaster
-                                    ctx/explored-tile-corners
-                                    (camera/position (:camera ctx/world-viewport)))
-                 (:camera ctx/world-viewport)))
-
-  (remove-destroyed-entities! [this]
-    (doseq [eid (filter (comp :entity/destroyed? deref)
-                        (vals @ctx/entity-ids))]
-      (remove-entity! eid)
-      (doseq [component @eid]
-        (utils/handle-txs! (entity/destroy! component eid)))))
-
-  (spawn-entity! [this position body components]
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        create-body
-                        (utils/safe-merge (-> components
-                                              (assoc :entity/id (swap! ctx/id-counter inc))
-                                              create-vs))))]
-      (add-entity! eid)
-      (doseq [component @eid]
-        (utils/handle-txs! (entity/create! component eid)))))
-
-  (position-changed! [_ eid]
-    (content-grid/position-changed! ctx/content-grid eid)
-    (remove-from-cells! eid)
-    (set-cells! ctx/grid eid)
-    (when (:collides? @eid)
-      (remove-from-occupied-cells! eid)
-      (set-occupied-cells! ctx/grid eid)))
-
-  ; does not take into account size of entity ...
-  ; => assert bodies <1 width then
-  (line-of-sight? [_ source target]
-    (and (or (not (:entity/player? source))
-             (on-screen? ctx/world-viewport target))
-         (not (and los-checks?
-                   (raycaster/blocked? ctx/raycaster
-                                       (:position source)
-                                       (:position target)))))))
-
-(defn create []
-  (map->World {}))
+(defn spawn-entity! [position body components]
+  (assert (and (not (contains? components :position))
+               (not (contains? components :entity/id))))
+  (let [eid (atom (-> body
+                      (assoc :position position)
+                      create-body
+                      (utils/safe-merge (-> components
+                                            (assoc :entity/id (swap! ctx/id-counter inc))
+                                            create-vs))))]
+    (add-entity! eid)
+    (doseq [component @eid]
+      (utils/handle-txs! (entity/create! component eid)))))

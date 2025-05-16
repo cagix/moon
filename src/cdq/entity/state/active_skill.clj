@@ -5,8 +5,7 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.world :as world]))
+            [cdq.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
@@ -28,7 +27,7 @@
   [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? ctx/world @source @target))
+           (entity/line-of-sight? @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 

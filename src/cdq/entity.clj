@@ -1,9 +1,12 @@
 (ns cdq.entity
-  (:require [cdq.effect :as effect]
+  (:require [cdq.ctx :as ctx]
+            [cdq.effect :as effect]
             [cdq.op :as op]
             [cdq.math :as math]
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
+            [cdq.world.raycaster :as raycaster]
+            [gdl.graphics.camera :as camera]
             [malli.core :as m]))
 
 (defmulti create (fn [[k]]
@@ -144,3 +147,32 @@
 
    :else
    :usable))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [viewport entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (camera/position (:camera viewport))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (:width viewport))  2)))
+     (<= ydist (inc (/ (float (:height viewport)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
+; does not take into account size of entity ...
+; => assert bodies <1 width then
+(defn line-of-sight? [source target]
+  (and (or (not (:entity/player? source))
+           (on-screen? ctx/world-viewport target))
+       (not (and los-checks?
+                 (raycaster/blocked? ctx/raycaster
+                                     (:position source)
+                                     (:position target))))))

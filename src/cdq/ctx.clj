@@ -68,7 +68,6 @@
          entity-ids
          potential-field-cache
          active-entities
-         world
          elapsed-time
          delta-time
          player-eid

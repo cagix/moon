@@ -2,8 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
             [cdq.entity :as entity]
-            [cdq.utils :as utils]
-            [cdq.world :as world]))
+            [cdq.utils :as utils]))
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
@@ -21,7 +20,7 @@
                      entity/render-info!]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (world/line-of-sight? ctx/world player entity))]
+                      (entity/line-of-sight? player entity))]
       (try
        (when ctx/show-body-bounds?
          (draw-body-rect entity (if (:collides? entity) :white :gray)))

@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.projectile :as projectile]
             [cdq.vector2 :as v]
-            [cdq.world :as world]))
+            [cdq.impl.world :as world]))
 
 (defn do! [{:keys [position direction faction]}
            {:keys [entity/image
@@ -11,8 +11,7 @@
                    entity-effects
                    projectile/piercing?] :as projectile}]
   (let [size (projectile/size projectile)]
-    (world/spawn-entity! ctx/world
-                         position
+    (world/spawn-entity! position
                          {:width size
                           :height size
                           :z-order :z-order/flying
