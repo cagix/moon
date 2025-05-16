@@ -1,7 +1,6 @@
 (ns cdq.ui.message
   (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
-            [cdq.stage :as stage])
+            [cdq.draw :as draw])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
@@ -24,7 +23,7 @@
     (.setUserObject (atom nil))
     (.setName "player-message-actor")))
 
-(defn show! [stage text]
-  (Actor/.setUserObject (Group/.findActor (stage/root stage) "player-message-actor")
+(defn show! [root-group text]
+  (Actor/.setUserObject (Group/.findActor root-group "player-message-actor")
                         (atom {:text text
                                :counter 0})))

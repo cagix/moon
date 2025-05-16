@@ -1,12 +1,12 @@
 (ns cdq.impl.world
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
+            [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]
             [gdl.tiled :as tiled]))
 
 (defrecord RCell [position

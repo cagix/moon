@@ -1,8 +1,8 @@
 (ns cdq.entity.alert-friendlies-after-duration
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.timer :as timer]
-            [cdq.world.grid :as grid]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/alert-friendlies-after-duration

@@ -3,9 +3,9 @@
             [cdq.effect :as effect]
             [cdq.op :as op]
             [cdq.math :as math]
+            [cdq.raycaster :as raycaster]
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
-            [cdq.world.raycaster :as raycaster]
             [gdl.graphics.camera :as camera]
             [malli.core :as m]))
 

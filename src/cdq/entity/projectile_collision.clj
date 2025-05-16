@@ -1,10 +1,9 @@
 (ns cdq.entity.projectile-collision
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]
-            [cdq.utils :refer [defcomponent
-                               find-first]]))
+            [cdq.grid :as grid]
+            [cdq.utils :refer [defcomponent find-first]]))
 
 (defcomponent :entity/projectile-collision
   (entity/create [[_ v]]

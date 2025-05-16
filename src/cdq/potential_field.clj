@@ -1,9 +1,9 @@
-(ns cdq.world.potential-field
-  (:require [cdq.entity :as entity] ; just entity/faction
+(ns cdq.potential-field
+  (:require [cdq.cell :as cell]
+            [cdq.entity :as entity] ; just entity/faction
+            [cdq.grid :as grid]
             [cdq.utils :refer [utils-positions when-seq]]
-            [cdq.vector2 :as v]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]))
+            [cdq.vector2 :as v]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.

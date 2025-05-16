@@ -3,8 +3,8 @@
             [cdq.effect :as effect]
             [cdq.projectile :as projectile]
             [cdq.utils :refer [defcomponent]]
-            [cdq.vector2 :as v]
-            [cdq.world.raycaster :as raycaster]))
+            [cdq.raycaster :as raycaster]
+            [cdq.vector2 :as v]))
 
 (defn- start-point [entity direction size]
   (v/add (:position entity)

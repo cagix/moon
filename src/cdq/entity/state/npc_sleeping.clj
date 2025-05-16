@@ -1,10 +1,10 @@
 (ns cdq.entity.state.npc-sleeping
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.world.grid.cell :as cell]))
+            [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :npc-sleeping
   (entity/create [[_ eid]]

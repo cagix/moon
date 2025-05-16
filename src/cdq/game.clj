@@ -1,21 +1,20 @@
 (ns cdq.game
   (:require [cdq.ctx :as ctx]
+            [cdq.content-grid :as content-grid]
             [cdq.draw :as draw]
             [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.impl.db :as db]
             [cdq.impl.world]
-            [cdq.impl.stage]
+            [cdq.raycaster :as raycaster]
             [cdq.schemas :as schemas]
             [cdq.state :as state]
             [cdq.stage :as stage]
+            [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
             [cdq.utils :as utils :refer [bind-root]]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
-            [cdq.world.raycaster :as raycaster]
-            [cdq.world.potential-field :as potential-field]
             [gdl.application :as application]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]
@@ -290,8 +289,8 @@
 
 (defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (cdq.impl.stage/create!))
-  (let [{:keys [tiled-map start-position] :as level} ((requiring-resolve world-fn))
+  (bind-root #'ctx/stage (stage/create!))
+  (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
     (bind-root #'ctx/tiled-map tiled-map)

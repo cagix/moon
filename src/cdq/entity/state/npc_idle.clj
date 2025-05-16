@@ -1,11 +1,11 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.world.potential-field :as potential-field]
-            [cdq.world.grid.cell :as cell]))
+            [cdq.potential-field :as potential-field]
+            [cdq.utils :refer [defcomponent]]))
 
 (defn- npc-choose-skill [entity ctx]
   (->> entity

@@ -1,10 +1,10 @@
 (ns cdq.entity.movement
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]
             [malli.core :as m]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]

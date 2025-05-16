@@ -1,4 +1,4 @@
-(ns cdq.world.raycaster
+(ns cdq.raycaster
   (:require [cdq.vector2 :as v])
   (:import (cdq RayCaster)))
 
