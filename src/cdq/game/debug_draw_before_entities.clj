@@ -1,6 +1,7 @@
 (ns cdq.game.debug-draw-before-entities
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
+            [cdq.world :as world]
             [clojure.graphics.camera :as camera]))
 
 (def ^:private ^:dbg-flag tile-grid? false)
@@ -21,7 +22,7 @@
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell ((:grid ctx/world) [x y])]
+            :let [cell (world/cell ctx/world [x y])]
             :when cell
             :let [cell* @cell]]
 

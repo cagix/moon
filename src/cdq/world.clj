@@ -3,6 +3,7 @@
 (defprotocol World
   (cache-active-entities [_])
   (update-potential-fields! [_])
+  (draw-tiled-map! [_])
   (spawn-entity! [_ position body components])
   (remove-entity! [_ eid])
   (position-changed! [_ eid])

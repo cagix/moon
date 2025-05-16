@@ -11,7 +11,47 @@
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.potential-field :as potential-field]
+            [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]))
+
+(def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
+
+(def ^:private ^:dbg-flag see-all-tiles? false)
+
+(comment
+ (def ^:private count-rays? false)
+
+ (def ray-positions (atom []))
+ (def do-once (atom true))
+
+ (count @ray-positions)
+ 2256
+ (count (distinct @ray-positions))
+ 608
+ (* 608 4)
+ 2432
+ )
+
+(defn- tile-color-setter [raycaster explored-tile-corners light-position]
+  #_(reset! do-once false)
+  (let [light-cache (atom {})]
+    (fn tile-color-setter [_color x y]
+      (let [position [(int x) (int y)]
+            explored? (get @explored-tile-corners position) ; TODO needs int call ?
+            base-color (if explored? explored-tile-color graphics/black)
+            cache-entry (get @light-cache position :not-found)
+            blocked? (if (= cache-entry :not-found)
+                       (let [blocked? (raycaster/blocked? raycaster light-position position)]
+                         (swap! light-cache assoc position blocked?)
+                         blocked?)
+                       cache-entry)]
+        #_(when @do-once
+            (swap! ray-positions conj position))
+        (if blocked?
+          (if see-all-tiles? graphics/white base-color)
+          (do (when-not explored?
+                (swap! explored-tile-corners assoc (mapv int position) true))
+              graphics/white))))))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -213,6 +253,14 @@
                              faction
                              active-entities
                              max-iterations)))
+
+  (draw-tiled-map! [_]
+    (tiled/draw! (ctx/get-tiled-map-renderer tiled-map)
+                 tiled-map
+                 (tile-color-setter raycaster
+                                    explored-tile-corners
+                                    (camera/position (:camera ctx/world-viewport)))
+                 (:camera ctx/world-viewport)))
 
   (spawn-entity! [this position body components]
     (assert (and (not (contains? components :position))
