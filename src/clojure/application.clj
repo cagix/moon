@@ -1,6 +1,7 @@
 (ns clojure.application
   (:require [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader
