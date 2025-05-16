@@ -1,11 +1,11 @@
 (ns cdq.game
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
+            [cdq.db :as db]
             [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
-            [cdq.impl.db :as db]
             [cdq.impl.world]
             [cdq.raycaster :as raycaster]
             [cdq.schemas :as schemas]
