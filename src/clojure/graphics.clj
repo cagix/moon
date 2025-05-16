@@ -3,6 +3,7 @@
             [clojure.graphics.batch :as batch]
             [clojure.graphics.camera :as camera]
             [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.viewport :as viewport]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
@@ -10,13 +11,24 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture
-                                      Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch)
+                                      Texture$TextureFilter
+                                      OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math MathUtils)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)
+           (com.badlogic.gdx.math MathUtils
+                                  Vector2)
+           (com.badlogic.gdx.utils Disposable
+                                   ScreenUtils)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
+
+(defn- clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
 
 (defn sprite-batch []
   (let [this (SpriteBatch.)]
@@ -52,9 +64,6 @@
       (valAt [_ key]
         (case key
           :java-object this)))))
-
-(defn- degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
 
 (defn color [r g b a]
   (Color. (float r)
@@ -204,3 +213,52 @@
           (.setDefaultLineWidth this (float (* width old-line-width)))
           (draw-fn)
           (.setDefaultLineWidth this (float old-line-width)))))))
+
+(defn- fit-viewport [width height camera {:keys [center-camera?]}]
+  (let [this (FitViewport. width height camera)]
+    (reify
+      viewport/Viewport
+      (update! [_]
+        (.update this
+                 (.getWidth  Gdx/graphics)
+                 (.getHeight Gdx/graphics)
+                 center-camera?))
+
+      ; touch coordinates are y-down, while screen coordinates are y-up
+      ; so the clamping of y is reverse, but as black bars are equal it does not matter
+      ; TODO clamping only works for gui-viewport ?
+      ; TODO ? "Can be negative coordinates, undefined cells."
+      (mouse-position [_]
+        (let [mouse-x (clamp (.getX Gdx/input)
+                             (.getLeftGutterWidth this)
+                             (.getRightGutterX    this))
+              mouse-y (clamp (.getY Gdx/input)
+                             (.getTopGutterHeight this)
+                             (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. mouse-x mouse-y))]
+            [(.x v2) (.y v2)])))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this
+          :width  (.getWorldWidth  this)
+          :height (.getWorldHeight this)
+          :camera (.getCamera      this))))))
+
+(defn ui-viewport [width height]
+  (fit-viewport width
+                height
+                (OrthographicCamera.)
+                {:center-camera? true}))
+
+(defn world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width
+                  world-height
+                  camera
+                  {:center-camera? false})))

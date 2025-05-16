@@ -3,7 +3,7 @@
             [cdq.draw :as draw]
             [cdq.grid :as grid]
             [cdq.math :as math]
-            [cdq.viewport :as viewport]))
+            [clojure.graphics.viewport :as viewport]))
 
 (defn do! []
   (let [position (viewport/mouse-position ctx/world-viewport)

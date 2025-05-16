@@ -3,8 +3,8 @@
             [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.viewport :as viewport]
-            [cdq.world :as world]))
+            [cdq.world :as world]
+            [clojure.graphics.viewport :as viewport]))
 
 (defn do! []
   (let [new-eid (if (stage/mouse-on-actor? ctx/stage)

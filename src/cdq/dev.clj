@@ -5,9 +5,9 @@
             [cdq.tx.add-skill]
             [cdq.tx.spawn-creature]
             [cdq.tx.spawn-item]
-            [cdq.viewport :as viewport]
             [cdq.world :as world]
             [clojure.application :refer [post-runnable!]]
+            [clojure.graphics.viewport :as viewport]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 

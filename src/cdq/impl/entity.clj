@@ -14,10 +14,10 @@
             [cdq.timer :as timer]
             [cdq.utils :as utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
-            [cdq.viewport :as viewport]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [cdq.potential-field :as potential-field]
+            [clojure.graphics.viewport :as viewport]
             [clojure.input]
             [malli.core :as m]
             [reduce-fsm :as fsm]))

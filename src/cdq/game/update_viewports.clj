@@ -1,6 +1,6 @@
 (ns cdq.game.update-viewports
   (:require [cdq.ctx :as ctx]
-            [cdq.viewport :as viewport]))
+            [clojure.graphics.viewport :as viewport]))
 
 (defn do! []
   (viewport/update! ctx/ui-viewport)
