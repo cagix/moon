@@ -166,10 +166,10 @@
       (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
 
-(defn- add-entity! [{:keys [entity-ids]} eid]
+(defn- add-entity! [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
-    (swap! entity-ids assoc id eid))
+    (swap! ctx/entity-ids assoc id eid))
   (content-grid/add-entity! ctx/content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
@@ -177,10 +177,10 @@
   (when (:collides? @eid)
     (set-occupied-cells! ctx/grid eid)))
 
-(defn- remove-entity! [{:keys [entity-ids]} eid]
+(defn- remove-entity! [eid]
   (let [id (:entity/id @eid)]
-    (assert (contains? @entity-ids id))
-    (swap! entity-ids dissoc id))
+    (assert (contains? @ctx/entity-ids id))
+    (swap! ctx/entity-ids dissoc id))
   (content-grid/remove-entity! eid)
   (remove-from-cells! eid)
   (when (:collides? @eid)
@@ -242,10 +242,8 @@
           {}
           components))
 
-(defrecord World [entity-ids
-                  potential-field-cache
-                  active-entities
-                  id-counter]
+(defrecord World [potential-field-cache
+                  active-entities]
   world/World
   (cache-active-entities [this]
     (assoc this :active-entities (content-grid/active-entities ctx/content-grid @ctx/player-eid)))
@@ -267,8 +265,9 @@
                  (:camera ctx/world-viewport)))
 
   (remove-destroyed-entities! [this]
-    (doseq [eid (filter (comp :entity/destroyed? deref) (vals @entity-ids))]
-      (remove-entity! this eid)
+    (doseq [eid (filter (comp :entity/destroyed? deref)
+                        (vals @ctx/entity-ids))]
+      (remove-entity! eid)
       (doseq [component @eid]
         (utils/handle-txs! (entity/destroy! component eid)))))
 
@@ -279,9 +278,9 @@
                         (assoc :position position)
                         create-body
                         (utils/safe-merge (-> components
-                                              (assoc :entity/id (swap! id-counter inc))
+                                              (assoc :entity/id (swap! ctx/id-counter inc))
                                               create-vs))))]
-      (add-entity! this eid)
+      (add-entity! eid)
       (doseq [component @eid]
         (utils/handle-txs! (entity/create! component eid)))))
 
@@ -304,7 +303,5 @@
                                        (:position target)))))))
 
 (defn create []
-  (map->World {:id-counter (atom 0)
-               :entity-ids (atom {})
-               :potential-field-cache (atom nil)
+  (map->World {:potential-field-cache (atom nil)
                :active-entities nil}))

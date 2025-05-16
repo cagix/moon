@@ -57,6 +57,8 @@
     (bind-root #'ctx/explored-tile-corners (atom (g2d/create-grid width
                                                                   height
                                                                   (constantly false))))
+    (bind-root #'ctx/id-counter (atom 0))
+    (bind-root #'ctx/entity-ids (atom {}))
     (bind-root #'ctx/world (cdq.impl.world/create))
     (utils/handle-txs! (spawn-enemies tiled-map))
     (utils/handle-txs! (spawn-player start-position))))

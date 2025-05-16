@@ -64,6 +64,8 @@
          raycaster
          content-grid
          explored-tile-corners
+         id-counter
+         entity-ids
          world
          elapsed-time
          delta-time
