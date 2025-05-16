@@ -5,11 +5,11 @@
             [cdq.op :as op]
             [cdq.timer :as timer]
             [cdq.utils :refer [readable-number]]
+            [clojure.graphics :as graphics]
             [clojure.math :as math]
-            [clojure.string :as str])
-  (:import (com.badlogic.gdx.graphics Color Colors)))
+            [clojure.string :as str]))
 
-(Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
+(graphics/def-markdown-color "PRETTY_NAME" (graphics/color 0.84 0.8 0.52 1))
 
 (defmulti ^:private op-value-text (fn [[k]]
                                     k))

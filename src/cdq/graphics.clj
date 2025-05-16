@@ -1,21 +1,19 @@
 (ns cdq.graphics
-  (:require [cdq.ctx :as ctx])
-  (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+  (:require [cdq.ctx :as ctx]
+            [clojure.graphics :as graphics]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
 
 (defn- assoc-dimensions
   "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [^TextureRegion texture-region] :as image} scale world-unit-scale]
+  [{:keys [texture-region] :as image} scale world-unit-scale]
   {:pre [(or (number? scale)
              (and (vector? scale)
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions [(.getRegionWidth  texture-region)
-                                              (.getRegionHeight texture-region)]
+                           (scale-dimensions (graphics/dimensions texture-region)
                                              scale)
                            scale)]
     (assoc image
@@ -32,19 +30,12 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defn pixels->world-units [pixels]
-  (* (int pixels) ctx/world-unit-scale))
-
 (defn sub-sprite [sprite [x y w h]]
-  (sprite* (TextureRegion. ^TextureRegion (:texture-region sprite)
-                           (int x)
-                           (int y)
-                           (int w)
-                           (int h))
+  (sprite* (graphics/sub-region (:texture-region sprite) x y w h)
            ctx/world-unit-scale))
 
 (defn sprite-sheet [texture tilew tileh]
-  {:image (sprite* (TextureRegion. ^Texture texture)
+  {:image (sprite* (graphics/texture-region texture)
                    ctx/world-unit-scale)
    :tilew tilew
    :tileh tileh})
@@ -53,5 +44,5 @@
   (sub-sprite image [(* x tilew) (* y tileh) tilew tileh]))
 
 (defn sprite [texture]
-  (sprite* (TextureRegion. ^Texture texture)
+  (sprite* (graphics/texture-region texture)
            ctx/world-unit-scale))

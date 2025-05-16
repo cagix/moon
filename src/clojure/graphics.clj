@@ -8,13 +8,15 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
+                                      Colors
                                       Pixmap
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch)
+                                          SpriteBatch
+                                          TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils
@@ -23,6 +25,30 @@
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn def-markdown-color [name color]
+  (Colors/put name color))
+
+(defn texture-region
+  ([^Texture texture]
+   (TextureRegion. texture))
+  ([^Texture texture x y w h]
+   (TextureRegion. texture
+                   (int x)
+                   (int y)
+                   (int w)
+                   (int h))))
+
+(defn sub-region [^TextureRegion texture-region x y w h]
+  (TextureRegion. texture-region
+                  (int x)
+                  (int y)
+                  (int w)
+                  (int h)) )
+
+(defn dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])
 
 (defn- degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))
@@ -71,8 +97,14 @@
           (float b)
           (float a)))
 
+(defn set-cursor! [cursor]
+  (.setCursor Gdx/graphics cursor))
+
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
+
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
 
 (defn clear-screen! []
   (ScreenUtils/clear Color/BLACK))
