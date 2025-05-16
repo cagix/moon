@@ -3,12 +3,11 @@
             [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
-            [cdq.grid2d :as g2d]
             [cdq.info :as info]
-            [cdq.inventory :as inventory]
             [cdq.stage :refer [add-actor!] :as stage]
             [cdq.state :as state]
             [cdq.ui]
+            [cdq.ui.inventory]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.string :as str]
@@ -19,189 +18,14 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
-                                            Stage
-                                            Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table
-                                               Image
-                                               Label
+                                            Stage)
+           (com.badlogic.gdx.scenes.scene2d.ui Label
                                                Button
                                                ButtonGroup
-                                               Widget
                                                Window)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  TextureRegionDrawable
-                                                  ClickListener
-                                                  Drawable)
-           (com.badlogic.gdx.math Vector2)
-           (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu VisWindow)))
-
-(defn- set-label-text-actor [label text-fn]
-  (proxy [Actor] []
-    (act [_delta]
-      (Label/.setText label (str (text-fn))))))
-
-(defn- add-upd-label!
-  ([table text-fn icon]
-   (let [icon (ui/image-widget icon {})
-         label (ui/label "")
-         sub-table (ui/table {:rows [[icon label]]})]
-     (Group/.addActor table (set-label-text-actor label text-fn))
-     (.expandX (.right (Table/.add table sub-table)))))
-  ([table text-fn]
-   (let [label (ui/label "")]
-     (Group/.addActor table (set-label-text-actor label text-fn))
-     (.expandX (.right (Table/.add table label))))))
-
-(defn- add-update-labels! [menu-bar update-labels]
-  (let [table (MenuBar/.getTable menu-bar)]
-    (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn))]
-        (if icon
-          (add-upd-label! table update-fn icon)
-          (add-upd-label! table update-fn))))))
-
-(defn- add-menu! [menu-bar {:keys [label items]}]
-  (let [app-menu (Menu. label)]
-    (doseq [{:keys [label on-click]} items]
-      (PopupMenu/.addItem app-menu (doto (MenuItem. label)
-                                     (.addListener (ui/change-listener (or on-click (fn [])))))))
-    (MenuBar/.addMenu menu-bar app-menu)))
-
-(defn- create-menu [{:keys [menus update-labels]}]
-  (ui/table {:rows [[{:actor (let [menu-bar (MenuBar.)]
-                               (run! #(add-menu! menu-bar %) menus)
-                               (add-update-labels! menu-bar update-labels)
-                               (MenuBar/.getTable menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (Actor/.setTouchable Touchable/disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
-
-; Items are also smaller than 48x48 all of them
-; so wasting space ...
-; can maybe make a smaller textureatlas or something...
-
-(def ^:private cell-size 48)
-(def ^:private droppable-color   [0   0.6 0 0.8])
-(def ^:private not-allowed-color [0.6 0   0 0.8])
-
-(defn- draw-cell-rect! [player-entity x y mouseover? cell]
-  (draw/rectangle x y cell-size cell-size :gray)
-  (when (and mouseover?
-             (= :player-item-on-cursor (entity/state-k player-entity)))
-    (let [item (:entity/item-on-cursor player-entity)
-          color (if (inventory/valid-slot? cell item)
-                  droppable-color
-                  not-allowed-color)]
-      (draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
-
-; TODO why do I need to call getX ?
-; is not layouted automatically to cell , use 0/0 ??
-; (maybe (.setTransform stack true) ? , but docs say it should work anyway
-(defn- draw-rect-actor []
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (let [^Actor actor this]
-        (draw-cell-rect! @ctx/player-eid
-                         (.getX actor)
-                         (.getY actor)
-                         (let [[x y] (viewport/mouse-position ctx/ui-viewport)
-                               v (.stageToLocalCoordinates actor (Vector2. x y))]
-                           (Actor/.hit actor (.x v) (.y v) true))
-                         (Actor/.getUserObject (.getParent actor)))))))
-
-(def ^:private slot->y-sprite-idx
-  #:inventory.slot {:weapon   0
-                    :shield   1
-                    :rings    2
-                    :necklace 3
-                    :helm     4
-                    :cloak    5
-                    :chest    6
-                    :leg      7
-                    :glove    8
-                    :boot     9
-                    :bag      10}) ; transparent
-
-(defn- slot->sprite-idx [slot]
-  [21 (+ (slot->y-sprite-idx slot) 2)])
-
-(defn- slot->sprite [slot]
-  (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png") 48 48)
-                       (slot->sprite-idx slot)))
-
-(defn- slot->background [slot]
-  (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
-    (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (gdl.graphics/color 1 1 1 0.4))))
-
-(defn- ->cell [slot & {:keys [position]}]
-  (let [cell [slot (or position [0 0])]]
-    (doto (ui/stack [(draw-rect-actor)
-                     (ui/image-widget (slot->background slot) {:id :image})])
-      (.setName "inventory-cell")
-      (.setUserObject cell)
-      (.addListener (proxy [ClickListener] []
-                      (clicked [_event _x _y]
-                        (-> @ctx/player-eid
-                            entity/state-obj
-                            (state/clicked-inventory-cell cell)
-                            utils/handle-txs!)))))))
-
-(defn- inventory-table []
-  (ui/table {:id ::table
-             :rows (concat [[nil nil
-                             (->cell :inventory.slot/helm)
-                             (->cell :inventory.slot/necklace)]
-                            [nil
-                             (->cell :inventory.slot/weapon)
-                             (->cell :inventory.slot/chest)
-                             (->cell :inventory.slot/cloak)
-                             (->cell :inventory.slot/shield)]
-                            [nil nil
-                             (->cell :inventory.slot/leg)]
-                            [nil
-                             (->cell :inventory.slot/glove)
-                             (->cell :inventory.slot/rings :position [0 0])
-                             (->cell :inventory.slot/rings :position [1 0])
-                             (->cell :inventory.slot/boot)]]
-                           (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                             (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->cell :inventory.slot/bag :position [x y]))))}))
-
-(defn- inventory-window [position]
-  (ui/window {:title "Inventory"
-              :id :inventory-window
-              :visible? false
-              :pack? true
-              :position position
-              :rows [[{:actor (inventory-table)
-                       :pad 4}]]}))
-
-(defn- get-cell-widget [stage cell]
-  (get (::table (-> stage :windows :inventory-window)) cell))
-
-(defn set-item! [stage cell item]
-  (let [cell-widget (get-cell-widget stage cell)
-        image-widget (get cell-widget :image)
-        drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
-    (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (Image/.setDrawable image-widget drawable)
-    (actor/add-tooltip! cell-widget #(info/text item))))
-
-(defn remove-item! [stage cell]
-  (let [cell-widget (get-cell-widget stage cell)
-        image-widget (get cell-widget :image)]
-    (Image/.setDrawable image-widget (slot->background (cell 0)))
-    (actor/remove-tooltip! cell-widget)))
+           (com.kotcrab.vis.ui.widget VisWindow)))
 
 (defn- button-group [{:keys [max-check-count min-check-count]}]
   (doto (ButtonGroup.)
@@ -382,7 +206,7 @@
     (actor/toggle-visible! (get windows id))))
 
 (defn- create-actors []
-  [(create-menu (dev-menu-config))
+  [(cdq.ui/menu (dev-menu-config))
    (action-bar)
    (hp-mana-bar [(/ (:width ctx/ui-viewport) 2)
                  80 ; action-bar-icon-size
@@ -393,8 +217,8 @@
                            (check-window-hotkeys       (Actor/.getParent this))
                            (check-escape-close-windows (Actor/.getParent this))))
                        (entity-info-window [(:width ctx/ui-viewport) 0])
-                       (inventory-window [(:width  ctx/ui-viewport)
-                                          (:height ctx/ui-viewport)])]})
+                       (cdq.ui.inventory/create [(:width  ctx/ui-viewport)
+                                                 (:height ctx/ui-viewport)])]})
    (player-state-actor)
    (player-message)])
 
@@ -479,10 +303,10 @@
         (.getRoot stage))
 
   (set-item! [stage cell item]
-    (set-item! stage cell item))
+    (cdq.ui.inventory/set-item! stage cell item))
 
   (remove-item! [stage cell]
-    (remove-item! stage cell))
+    (cdq.ui.inventory/remove-item! stage cell))
 
   (selected-skill [stage]
     (selected-skill stage))
