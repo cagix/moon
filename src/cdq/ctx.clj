@@ -45,6 +45,8 @@
 (def world-viewport-config {:width 1440
                             :height 900})
 
+(def ui-config {:skin-scale :x1})
+
 (declare schemas
          db
          assets

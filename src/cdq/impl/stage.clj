@@ -23,6 +23,7 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.ui :as ui]
+            [clojure.ui.actor :as actor]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
@@ -32,31 +33,7 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.math Vector2)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator Menu MenuBar MenuItem PopupMenu VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
-
-(defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
-
-(defn- load-vis-ui! [{:keys [skin-scale]}]
-  ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose))
-  (VisUI/load (case skin-scale
-                :x1 VisUI$SkinScale/X1
-                :x2 VisUI$SkinScale/X2))
-  (-> (VisUI/getSkin)
-      (.getFont "default-font")
-      .getData
-      .markupEnabled
-      (set! true))
-  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-  ;Controls whether to fade out tooltip when mouse was moved. (default false)
-  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
-
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -1162,7 +1139,7 @@
 (defn- check-window-hotkeys [windows]
   (doseq [[id input-key] window-hotkeys
           :when (input/key-just-pressed? input-key)]
-    (toggle-visible! (get windows id))))
+    (actor/toggle-visible! (get windows id))))
 
 (defn- create-actors []
   [(create-menu (dev-menu-config))
@@ -1230,7 +1207,7 @@
            (button-class? (.getParent actor)))))
 
 (defn create! []
-  (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
+  (ui/load! ctx/ui-config)
   (let [stage (Stage. (:java-object ctx/ui-viewport)
                       (:java-object ctx/batch))]
     (run! #(.addActor stage %) (create-actors))
