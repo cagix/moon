@@ -22,6 +22,7 @@
             [clojure.input :as input]
             [clojure.set :as set]
             [clojure.string :as str]
+            [clojure.ui :as ui]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
@@ -36,24 +37,6 @@
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
-
-(defn- find-actor-with-id [^Group group id]
-  (let [actors (.getChildren group)
-        ids (keep Actor/.getUserObject actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
-
-(defmacro ^:private proxy-ILookup
-  "For actors inheriting from Group."
-  [class args]
-  `(proxy [~class clojure.lang.ILookup] ~args
-     (valAt
-       ([id#]
-        (find-actor-with-id ~'this id#))
-       ([id# not-found#]
-        (or (find-actor-with-id ~'this id#) not-found#)))))
 
 (defn- load-vis-ui! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -154,18 +137,18 @@
   actor)
 
 (defn- ->group [{:keys [actors] :as opts}]
-  (let [group (proxy-ILookup Group [])]
+  (let [group (ui/proxy-ILookup Group [])]
     (run! #(Group/.addActor group %) actors)
     (set-opts! group opts)))
 
 (defn- horizontal-group ^HorizontalGroup [{:keys [space pad]}]
-  (let [group (proxy-ILookup HorizontalGroup [])]
+  (let [group (ui/proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     group))
 
 (defn- vertical-group [actors]
-  (let [group (proxy-ILookup VerticalGroup [])]
+  (let [group (ui/proxy-ILookup VerticalGroup [])]
     (run! #(Group/.addActor group %) actors)
     group))
 
@@ -215,11 +198,11 @@
     (.setSelected selected)))
 
 (defn- ->table ^Table [opts]
-  (-> (proxy-ILookup VisTable [])
+  (-> (ui/proxy-ILookup VisTable [])
       (set-opts! opts)))
 
 (defn- ->window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+  (-> (let [window (doto (ui/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
         (when close-button?    (.addCloseButton window))
         (when center?          (.centerWindow   window))
@@ -235,7 +218,7 @@
       (set-opts! opts)))
 
 (defn- ->stack ^Stack [actors]
-  (proxy-ILookup Stack [(into-array Actor actors)]))
+  (ui/proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private image* type)
 
@@ -1255,10 +1238,10 @@
     (reify
       ILookup
       (valAt [_ id]
-        (find-actor-with-id (.getRoot stage) id))
+        (ui/find-actor-with-id (.getRoot stage) id))
 
       (valAt [_ id not-found]
-        (or (find-actor-with-id (.getRoot stage) id)
+        (or (ui/find-actor-with-id (.getRoot stage) id)
             not-found))
 
       cdq.stage/Stage
