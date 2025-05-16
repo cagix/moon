@@ -242,8 +242,7 @@
           {}
           components))
 
-(defrecord World [explored-tile-corners
-                  entity-ids
+(defrecord World [entity-ids
                   potential-field-cache
                   active-entities
                   id-counter]
@@ -263,7 +262,7 @@
     (tiled/draw! (ctx/get-tiled-map-renderer ctx/tiled-map)
                  ctx/tiled-map
                  (tile-color-setter ctx/raycaster
-                                    explored-tile-corners
+                                    ctx/explored-tile-corners
                                     (camera/position (:camera ctx/world-viewport)))
                  (:camera ctx/world-viewport)))
 
@@ -304,13 +303,8 @@
                                        (:position source)
                                        (:position target)))))))
 
-(defn create [tiled-map]
-  (let [width  (tiled/tm-width  tiled-map)
-        height (tiled/tm-height tiled-map)]
-    (map->World {:explored-tile-corners (atom (g2d/create-grid width
-                                                               height
-                                                               (constantly false)))
-                 :id-counter (atom 0)
-                 :entity-ids (atom {})
-                 :potential-field-cache (atom nil)
-                 :active-entities nil})))
+(defn create []
+  (map->World {:id-counter (atom 0)
+               :entity-ids (atom {})
+               :potential-field-cache (atom nil)
+               :active-entities nil}))

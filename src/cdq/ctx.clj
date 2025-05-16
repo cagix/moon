@@ -63,6 +63,7 @@
          grid
          raycaster
          content-grid
+         explored-tile-corners
          world
          elapsed-time
          delta-time

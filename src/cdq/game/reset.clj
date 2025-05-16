@@ -1,5 +1,6 @@
 (ns cdq.game.reset
   (:require [cdq.ctx :as ctx]
+            [cdq.grid2d :as g2d]
             [cdq.impl.stage]
             [cdq.impl.world]
             [cdq.stage :as stage]
@@ -53,6 +54,9 @@
     (bind-root #'ctx/content-grid (content-grid/create {:cell-size 16
                                                         :width  width
                                                         :height height}))
-    (bind-root #'ctx/world (cdq.impl.world/create tiled-map))
+    (bind-root #'ctx/explored-tile-corners (atom (g2d/create-grid width
+                                                                  height
+                                                                  (constantly false))))
+    (bind-root #'ctx/world (cdq.impl.world/create))
     (utils/handle-txs! (spawn-enemies tiled-map))
     (utils/handle-txs! (spawn-player start-position))))
