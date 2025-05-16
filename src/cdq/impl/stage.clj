@@ -16,6 +16,7 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
+            [clojure.assets :as assets]
             [clojure.graphics]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
@@ -23,7 +24,6 @@
             [clojure.string :as str]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -473,12 +473,8 @@
       (str/replace-first "sounds/" "")
       (str/replace ".wav" "")))
 
-(defn- assets-of-type [asset-type]
-  (filter #(= (AssetManager/.getAssetType ctx/assets %) asset-type)
-          (AssetManager/.getAssetNames ctx/assets)))
-
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (assets-of-type Sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets Sound))]
                [(text-button sound-name
                              (fn []
                                (Group/.clearChildren table)
@@ -768,7 +764,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets-of-type Texture))]
+  (for [file (sort (assets/all-of-type ctx/assets Texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 

@@ -39,3 +39,7 @@
    {:folder "resources/"
     :asset-type-extensions {Sound   #{"wav"}
                             Texture #{"png" "bmp"}}}))
+
+(defn all-of-type [^AssetManager assets asset-type]
+  (filter #(= (.getAssetType assets %) asset-type)
+          (.getAssetNames assets)))

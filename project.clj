@@ -29,7 +29,9 @@
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
-          :metadata {:doc/format :markdown}}
+          :metadata {:doc/format :markdown}
+          :namespaces [#"^clojure\."]
+          }
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
   :global-vars {*warn-on-reflection* true
