@@ -14,7 +14,7 @@
 (defn- horizontal-group []
   (ui/horizontal-group {:pad 2
                         :space 2
-                        :user-object ::horizontal-group
+                        :user-object :horizontal-group
                         :actors [(button-group-container)]}))
 
 (defn create []
@@ -26,7 +26,7 @@
              :fill-parent? true}))
 
 (defn- get-data [action-bar]
-  (let [group (::horizontal-group action-bar)]
+  (let [group (:horizontal-group action-bar)]
     {:horizontal-group group
      :button-group (Actor/.getUserObject (Group/.findActor group "button-group-container"))}))
 
