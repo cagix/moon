@@ -34,33 +34,6 @@
                                        ctx/schemas)
                     property))
 
-(defn- recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-(defn- async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint/pprint
-             with-out-str
-             (spit file)))))))
-
-(defn- async-write-to-file! [{:keys [data file]}]
-  ; TODO validate them again!?
-  (->> data
-       vals
-       (sort-by property/type)
-       (map recur-sort-map)
-       doall
-       (async-pprint-spit! file)))
-
 (defrecord DB [data file]
   PDB
   (update [this {:keys [property/id] :as property}]
@@ -73,8 +46,14 @@
     (assert (contains? data property-id))
     (clojure.core/update this :data dissoc property-id))
 
-  (save! [this]
-    (async-write-to-file! this))
+  (save! [_]
+    ; TODO validate them again!?
+    (->> data
+         vals
+         (sort-by property/type)
+         (map utils/recur-sort-map)
+         doall
+         (utils/async-pprint-spit! file)))
 
   (get-raw [_ property-id]
     (utils/safe-get data property-id))

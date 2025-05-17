@@ -161,3 +161,21 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
+
+(defn recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
+
+(defn async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint/pprint
+             with-out-str
+             (spit file)))))))

@@ -20,36 +20,39 @@
                        :schema (m/form schema)})))))
 
 (comment
- (form->validate [:map {:closed true}
-                  [:foo pos?]
-                  [:bar pos?]
-                  [:baz {:optional true} :some]
-                  [:boz {:optional false} :some]
-                  [:asdf {:optional true} :some]]
-                 {:foo 1
-                  :bar 2
-                  :boz :a
-                  :asdf :b
-                  :baz :asdf})
+ (nil? (form->validate [:map {:closed true}
+                        [:foo pos?]
+                        [:bar pos?]
+                        [:baz {:optional true} :some]
+                        [:boz {:optional false} :some]
+                        [:asdf {:optional true} :some]]
+                       {:foo 1
+                        :bar 2
+                        :boz :a
+                        :asdf :b
+                        :baz :asdf}))
 
- (form->validate [:map {:closed true}
-                  [:foo pos?]
-                  [:bar pos?]
-                  [:baz {:optional true} :some]
-                  [:boz {:optional false} :some]
-                  [:asdf {:optional true} :some]]
-                 {:foo 1
-                  :bar 2
-                  :boz :a})
+ (nil? (form->validate [:map {:closed true}
+                        [:foo pos?]
+                        [:bar pos?]
+                        [:baz {:optional true} :some]
+                        [:boz {:optional false} :some]
+                        [:asdf {:optional true} :some]]
+                       {:foo 1
+                        :bar 2
+                        :boz :a}))
 
- (form->validate [:map {:closed true}
-                  [:foo pos?]
-                  [:bar pos?]
-                  [:baz {:optional true} :some]
-                  [:boz {:optional false} :some]
-                  [:asdf {:optional true} :some]]
-                 {:bar 2
-                  :boz :a})
+ (require 'clojure.test)
+ (clojure.test/is (thrown?
+                   clojure.lang.ExceptionInfo
+                   (form->validate [:map {:closed true}
+                                    [:foo pos?]
+                                    [:bar pos?]
+                                    [:baz {:optional true} :some]
+                                    [:boz {:optional false} :some]
+                                    [:asdf {:optional true} :some]]
+                                   {:bar 2
+                                    :boz :a})))
  )
 
 (defn map-keys [map-schema]
