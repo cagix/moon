@@ -20,8 +20,8 @@
           :when (input/key-just-pressed? input-key)]
     (actor/toggle-visible! (get windows id))))
 
-(defn create []
-  (ui/group {:id :windows
+(defn create [& {:keys [id]}]
+  (ui/group {:id id
              :actors [(proxy [Actor] []
                         (act [_delta]
                           (check-window-hotkeys       (Actor/.getParent this))

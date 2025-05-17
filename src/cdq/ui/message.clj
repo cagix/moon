@@ -4,7 +4,7 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
-(defn create []
+(defn create [& {:keys [name]}]
   (doto (proxy [Actor] []
           (draw [_batch _parent-alpha]
             (let [state (Actor/.getUserObject this)]
@@ -21,7 +21,7 @@
                 (when (>= (:counter @state) 1.5)
                   (reset! state nil))))))
     (.setUserObject (atom nil))
-    (.setName "player-message")))
+    (.setName name)))
 
 (defn show! [message-actor text]
   (Actor/.setUserObject message-actor (atom {:text text

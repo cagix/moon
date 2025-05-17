@@ -17,11 +17,11 @@
                         :user-object :horizontal-group
                         :actors [(button-group-container)]}))
 
-(defn create []
+(defn create [& {:keys [id]}]
   (ui/table {:rows [[{:actor (horizontal-group)
                       :expand? true
                       :bottom? true}]]
-             :id :action-bar
+             :id id
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
