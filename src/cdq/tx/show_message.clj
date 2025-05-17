@@ -1,6 +1,11 @@
 (ns cdq.tx.show-message
   (:require [cdq.ctx :as ctx]
-            [cdq.stage :as stage]))
+            [cdq.ui.message :as message]
+            [gdl.ui.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn do! [message]
-  (stage/show-message! ctx/stage message))
+  (-> ctx/stage
+      stage/root
+      (Group/.findActor "player-message")
+      (message/show! message)))

@@ -21,9 +21,8 @@
                 (when (>= (:counter @state) 1.5)
                   (reset! state nil))))))
     (.setUserObject (atom nil))
-    (.setName "player-message-actor")))
+    (.setName "player-message")))
 
-(defn show! [root-group text]
-  (Actor/.setUserObject (Group/.findActor root-group "player-message-actor")
-                        (atom {:text text
-                               :counter 0})))
+(defn show! [message-actor text]
+  (Actor/.setUserObject message-actor (atom {:text text
+                                             :counter 0})))

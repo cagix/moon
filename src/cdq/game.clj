@@ -8,13 +8,16 @@
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
-            [cdq.stage]
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu :as dev-menu]
+            [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
+            [cdq.ui.player-state-draw]
+            [cdq.ui.message]
+            [cdq.ui.windows]
             [cdq.utils :refer [bind-root
                                io-slurp-edn
                                create-config
@@ -312,11 +315,23 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position tile->middle)]))
 
+(defn- create-stage [{:keys [dev-menu]}]
+  (stage/create (:java-object ctx/ui-viewport)
+                (:java-object ctx/batch)
+                [dev-menu
+                 (action-bar/create)
+                 (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
+                                             80 ; action-bar-icon-size
+                                             ])
+                 (cdq.ui.windows/create)
+                 (cdq.ui.player-state-draw/create)
+                 (cdq.ui.message/create)]))
+
 (declare reset-game!)
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (cdq.stage/create {:dev-menu (dev-menu/create #'reset-game!)}))
+  (bind-root #'ctx/stage (create-stage {:dev-menu (dev-menu/create #'reset-game!)}))
   (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
