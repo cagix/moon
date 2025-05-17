@@ -317,7 +317,7 @@
   (bind-root #'ctx/db (db/create (::db ctx/config)))
   (application/start! (reify application/Listener
                         (create! [_]
-                          (bind-root #'ctx/assets (assets/create))
+                          (bind-root #'ctx/assets (assets/create (::assets ctx/config)))
                           (bind-root #'ctx/batch (graphics/sprite-batch))
                           (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
                           (bind-root #'ctx/shape-drawer

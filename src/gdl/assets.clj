@@ -7,8 +7,13 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
 
-(defn- create* [{:keys [folder
-                        asset-type-extensions]}]
+(defn- asset-type->class ^Class [asset-type]
+  (case asset-type
+    :sound Sound
+    :texture Texture))
+
+(defn create [{:keys [folder
+                      asset-type-extensions]}]
   (let [manager (proxy [AssetManager IFn] []
                   (invoke [path]
                     (if (AssetManager/.contains this path)
@@ -30,26 +35,10 @@
                                                       :else
                                                       (recur remaining result))))]
                                 [file asset-type])]
-      (.load manager ^String file ^Class asset-type))
+      (.load manager ^String file (asset-type->class asset-type)))
     (.finishLoading manager)
     manager))
 
-(defn- asset-type->class [asset-type]
-  (case asset-type
-    :sound Sound
-    :texture Texture))
-
-(defn create
-  "Loads all assets in `resources/` folder and matching all `.wav` files to `gdl.audio.sound/Sound`
-  and `.png` and `.bmp` files to `gdl.graphics/texture`."
-  []
-  (create*
-   {:folder "resources/"
-    :asset-type-extensions {Sound   #{"wav"}
-                            Texture #{"png" "bmp"}}}))
-
-(defn all-of-type
-  "Return what? paths ? and type is :sound or :texture"
-  [^AssetManager assets asset-type]
+(defn all-of-type [^AssetManager assets asset-type]
   (filter #(= (.getAssetType assets %) (asset-type->class asset-type))
           (.getAssetNames assets)))

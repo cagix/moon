@@ -48,4 +48,7 @@
                      cdq.impl.schemas]
  :cdq.game/schemas "schema.edn"
  :cdq.game/db "properties.edn"
+ :cdq.game/assets {:folder "resources/"
+                   :asset-type-extensions {:sound   #{"wav"}
+                                           :texture #{"png" "bmp"}}}
  }
