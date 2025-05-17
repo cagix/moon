@@ -1,11 +1,11 @@
 (ns cdq.tx.spawn-alert
   (:require [cdq.ctx :as ctx]
             [cdq.timer :as timer]
-            [cdq.impl.world :as world]))
+            [cdq.tx.spawn-entity]))
 
 (defn do! [position faction duration]
-  (world/spawn-entity! position
-                       ctx/effect-body-props
-                       {:entity/alert-friendlies-after-duration
-                        {:counter (timer/create ctx/elapsed-time duration)
-                         :faction faction}}))
+  (cdq.tx.spawn-entity/do! position
+                           ctx/effect-body-props
+                           {:entity/alert-friendlies-after-duration
+                            {:counter (timer/create ctx/elapsed-time duration)
+                             :faction faction}}))

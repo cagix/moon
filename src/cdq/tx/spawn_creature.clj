@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [cdq.impl.world :as world]))
+            [cdq.tx.spawn-entity]))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
@@ -20,9 +20,9 @@
 
 (defn do! [{:keys [position creature-id components]}]
   (let [props (db/build ctx/db creature-id)]
-    (world/spawn-entity! position
-                         (->body (:entity/body props))
-                         (-> props
-                             (dissoc :entity/body)
-                             (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                             (utils/safe-merge components)))))
+    (cdq.tx.spawn-entity/do! position
+                             (->body (:entity/body props))
+                             (-> props
+                                 (dissoc :entity/body)
+                                 (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                                 (utils/safe-merge components)))))
