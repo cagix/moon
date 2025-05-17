@@ -1,7 +1,5 @@
 (ns cdq.ui.windows
   (:require [cdq.ctx :as ctx]
-            [cdq.ui.entity-info]
-            [cdq.ui.inventory]
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor])
@@ -20,12 +18,10 @@
           :when (input/key-just-pressed? input-key)]
     (actor/toggle-visible! (get windows id))))
 
-(defn create [& {:keys [id]}]
+(defn create [& {:keys [id actors]}]
   (ui/group {:id id
-             :actors [(proxy [Actor] []
-                        (act [_delta]
-                          (check-window-hotkeys       (Actor/.getParent this))
-                          (check-escape-close-windows (Actor/.getParent this))))
-                      (cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
-                      (cdq.ui.inventory/create [(:width  ctx/ui-viewport)
-                                                (:height ctx/ui-viewport)])]}))
+             :actors (cons (proxy [Actor] []
+                             (act [_delta]
+                               (check-window-hotkeys       (Actor/.getParent this))
+                               (check-escape-close-windows (Actor/.getParent this))))
+                           actors)}))
