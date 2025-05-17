@@ -12,6 +12,7 @@
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
+            [cdq.ui.dev-menu :as dev-menu]
             [cdq.utils :refer [bind-root
                                io-slurp-edn
                                create-config
@@ -298,9 +299,11 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position tile->middle)]))
 
-(defn reset-game! [world-fn]
+(declare reset-game!)
+
+(defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (stage/create!))
+  (bind-root #'ctx/stage (stage/create {:dev-menu (dev-menu/create #'reset-game!)}))
   (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)

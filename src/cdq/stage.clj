@@ -6,12 +6,10 @@
             [cdq.ui.inventory]
             [cdq.ui.player-state-draw]
             [cdq.ui.message]
-            [cdq.dev-menu-config]
             [cdq.ui.windows]
             [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.menu :as menu])
+            [gdl.ui.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
@@ -49,12 +47,12 @@
 (defn show-message! [stage text]
   (cdq.ui.message/show! (root stage) text))
 
-(defn create! []
+(defn create [{:keys [dev-menu]}]
   (let [stage (proxy [Stage ILookup] [(:java-object ctx/ui-viewport)
                                       (:java-object ctx/batch)]
                 (valAt [id]
                   (ui/find-actor-with-id (Stage/.getRoot this) id)))]
-    (run! #(Stage/.addActor stage %) [(menu/create (cdq.dev-menu-config/create))
+    (run! #(Stage/.addActor stage %) [dev-menu
                                       (cdq.ui.action-bar/create)
                                       (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                                                   80 ; action-bar-icon-size
