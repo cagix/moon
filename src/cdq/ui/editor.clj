@@ -4,6 +4,7 @@
             [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.tx.sound :as tx.sound]
+            [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
@@ -27,20 +28,6 @@
   (binding [*print-level* 3]
     (with-out-str
      (clojure.pprint/pprint property))))
-
-(defn- widget-type [schema _]
-  (let [stype (schema/type schema)]
-    (cond
-     (#{:s/map-optional :s/components-ns} stype)
-     :s/map
-
-     (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
-     :widget/edn
-
-     :else stype)))
-
-(defmulti ^:private schema->widget widget-type)
-(defmulti ^:private ->value        widget-type)
 
 (defn- scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows
@@ -80,9 +67,9 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (schema->widget schema props)
+        widget (widget/create schema props)
         save!   (apply-context-fn window #(do
-                                           (alter-var-root #'ctx/db db/update (->value schema widget))
+                                           (alter-var-root #'ctx/db db/update (widget/value schema widget))
                                            (db/save! ctx/db)))
         delete! (apply-context-fn window #(do
                                            (alter-var-root #'ctx/db db/delete (:property/id props))
@@ -108,38 +95,38 @@
     (str (subs s 0 limit) "...")
     s))
 
-(defmethod schema->widget :default [_ v]
+(defmethod widget/create :default [_ v]
   (ui/label (truncate (->edn-str v) 60)))
 
-(defmethod ->value :default [_ widget]
+(defmethod widget/value :default [_ widget]
   ((Actor/.getUserObject widget) 1))
 
-(defmethod schema->widget :widget/edn [schema v]
+(defmethod widget/create :widget/edn [schema v]
   (actor/add-tooltip! (ui/text-field (->edn-str v) {})
                       (str schema)))
 
-(defmethod ->value :widget/edn [_ widget]
+(defmethod widget/value :widget/edn [_ widget]
   (edn/read-string (VisTextField/.getText widget)))
 
-(defmethod schema->widget :string [schema v]
+(defmethod widget/create :string [schema v]
   (actor/add-tooltip! (ui/text-field v {})
                       (str schema)))
 
-(defmethod ->value :string [_ widget]
+(defmethod widget/value :string [_ widget]
   (VisTextField/.getText widget))
 
-(defmethod schema->widget :boolean [_ checked?]
+(defmethod widget/create :boolean [_ checked?]
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 
-(defmethod ->value :boolean [_ widget]
+(defmethod widget/value :boolean [_ widget]
   (VisCheckBox/.isChecked widget))
 
-(defmethod schema->widget :enum [schema v]
+(defmethod widget/create :enum [schema v]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
-(defmethod ->value :enum [_ widget]
+(defmethod widget/value :enum [_ widget]
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-name]
@@ -170,7 +157,7 @@
                    #(choose-window table))
    (play-button sound-name)])
 
-(defmethod schema->widget :s/sound [_ sound-name]
+(defmethod widget/create :s/sound [_ sound-name]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-name
                            (columns table sound-name)
@@ -258,12 +245,12 @@
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
 
-(defmethod schema->widget :s/one-to-many [[_ property-type] property-ids]
+(defmethod widget/create :s/one-to-many [[_ property-type] property-ids]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
 
-(defmethod ->value :s/one-to-many [_ widget]
+(defmethod widget/value :s/one-to-many [_ widget]
   (->> (Group/.getChildren widget)
        (keep Actor/.getUserObject)
        set))
@@ -298,12 +285,12 @@
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))
 
-(defmethod schema->widget :s/one-to-one [[_ property-type] property-id]
+(defmethod widget/create :s/one-to-one [[_ property-type] property-id]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
 
-(defmethod ->value :s/one-to-one [_ widget]
+(defmethod widget/value :s/one-to-one [_ widget]
   (->> (Group/.getChildren widget)
        (keep Actor/.getUserObject)
        first))
@@ -316,7 +303,7 @@
        scroll-pane-table (Group/.findActor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
-   (->value [:s/map] table)))
+   (widget/value [:s/map] table)))
 
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
@@ -324,7 +311,7 @@
     (stage/add-actor! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (get ctx/schemas k) v)]
+  (let [widget (widget/create (get ctx/schemas k) v)]
     (Actor/.setUserObject widget [k v])
     widget))
 
@@ -377,7 +364,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
+        remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table)))
                                    (m/map-keys (schema/malli-form schema ctx/schemas))))]
     (ui/add-rows!
      window
@@ -414,7 +401,7 @@
    :skill/cost
    :skill/cooldown])
 
-(defmethod schema->widget :s/map [schema m]
+(defmethod widget/create :s/map [schema m]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -434,11 +421,11 @@
              component-rows))
     table))
 
-(defmethod ->value :s/map [_ table]
+(defmethod widget/value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (Group/.getChildren table))
               :let [[k _] (Actor/.getUserObject widget)]]
-          [k (->value (get ctx/schemas k) widget)])))
+          [k (widget/value (get ctx/schemas k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -447,7 +434,7 @@
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
-(defmethod schema->widget :s/image [schema image]
+(defmethod widget/create :s/image [schema image]
   (ui/image-button (schema/edn->value schema image)
                    (fn on-clicked [])
                    {:scale 2})
@@ -455,7 +442,7 @@
                      #(stage/add-actor! ctx/stage (scrollable-choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
 
-(defmethod schema->widget :s/animation [_ animation]
+(defmethod widget/create :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
                       (ui/image-button (schema/edn->value :s/image image)
                                        (fn on-clicked [])
