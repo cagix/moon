@@ -315,23 +315,20 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position tile->middle)]))
 
-(defn- create-stage [{:keys [dev-menu]}]
-  (stage/create (:java-object ctx/ui-viewport)
-                (:java-object ctx/batch)
-                [dev-menu
-                 (action-bar/create)
-                 (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
-                                             80 ; action-bar-icon-size
-                                             ])
-                 (cdq.ui.windows/create)
-                 (cdq.ui.player-state-draw/create)
-                 (cdq.ui.message/create)]))
-
 (declare reset-game!)
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (create-stage {:dev-menu (dev-menu/create #'reset-game!)}))
+  (bind-root #'ctx/stage (stage/create (:java-object ctx/ui-viewport)
+                                       (:java-object ctx/batch)
+                                       [(dev-menu/create #'reset-game!)
+                                        (action-bar/create)
+                                        (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
+                                                                    80 ; action-bar-icon-size
+                                                                    ])
+                                        (cdq.ui.windows/create)
+                                        (cdq.ui.player-state-draw/create)
+                                        (cdq.ui.message/create)]))
   (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
