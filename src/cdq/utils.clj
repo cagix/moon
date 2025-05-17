@@ -1,7 +1,9 @@
 (ns cdq.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io])
+  (:import (clojure.lang PersistentVector
+                         Var)))
 
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
@@ -17,13 +19,11 @@
     (try (apply do! (rest transaction))
          (catch Throwable t
            (throw (ex-info ""
-                           {:transaction transaction
-                            :sym sym
-                            }
+                           {:transaction transaction:sym sym}
                            t))))))
 
 (defn bind-root [var value]
-  (clojure.lang.Var/.bindRoot var value))
+  (Var/.bindRoot var value))
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]
@@ -86,7 +86,7 @@
   {:pre [(not-any? #(contains? m1 %) (keys m2))]}
   (merge m1 m2))
 
-(defn index-of [k ^clojure.lang.PersistentVector v]
+(defn index-of [k ^PersistentVector v]
   (let [idx (.indexOf v k)]
     (if (= -1 idx)
       nil

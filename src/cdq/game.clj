@@ -13,8 +13,14 @@
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
-            [cdq.utils :as utils :refer [bind-root
-                                         io-slurp-edn]]
+            [cdq.utils :refer [bind-root
+                               io-slurp-edn
+                               sort-by-order
+                               pretty-pst
+                               handle-txs!
+                               tile->middle
+                               safe-get
+                               mapvals]]
             [gdl.application :as application]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]
@@ -52,9 +58,9 @@
 (defn- render-entities! []
   (let [entities (map deref ctx/active-entities)
         player @ctx/player-eid]
-    (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
-                                                    first
-                                                    ctx/render-z-order)
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              ctx/render-z-order)
             render! [entity/render-below!
                      entity/render-default!
                      entity/render-above!
@@ -69,7 +75,7 @@
          (render! component entity))
        (catch Throwable t
          (draw-body-rect entity :red)
-         (utils/pretty-pst t))))))
+         (pretty-pst t))))))
 
 ; I can create this later after loading all the component namespaces
 ; just go through the systems
@@ -126,13 +132,13 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (utils/handle-txs! (entity/tick! [k v] eid)))
+               (handle-txs! (entity/tick! [k v] eid)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
-     (utils/pretty-pst t)
+     (pretty-pst t)
      (stage/add-actor! ctx/stage (cdq.ui/error-window t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
@@ -148,7 +154,7 @@
 (defn- update-time! []
   (let [delta-ms (min (graphics/delta-time) ctx/max-delta)]
     (alter-var-root #'ctx/elapsed-time + delta-ms)
-    (utils/bind-root #'ctx/delta-time delta-ms)))
+    (bind-root #'ctx/delta-time delta-ms)))
 
 (defn- camera-controls! []
   (when (input/key-pressed? (get ctx/controls :zoom-in))
@@ -161,7 +167,7 @@
                       (vals @ctx/entity-ids))]
     (cdq.impl.world/remove-entity! eid)
     (doseq [component @eid]
-      (utils/handle-txs! (entity/destroy! component eid)))))
+      (handle-txs! (entity/destroy! component eid)))))
 
 (defn- pause-game? []
   (or #_error
@@ -178,7 +184,7 @@
                                      (grid/point->entities ctx/grid
                                                            (viewport/mouse-position ctx/world-viewport)))]
                     (->> ctx/render-z-order
-                         (utils/sort-by-order hits #(:z-order @%))
+                         (sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(entity/line-of-sight? player @%))
                          first)))]
@@ -186,13 +192,13 @@
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (utils/bind-root #'ctx/mouseover-eid new-eid)))
+    (bind-root #'ctx/mouseover-eid new-eid)))
 
 (defn- player-state-handle-click []
   (-> @ctx/player-eid
       entity/state-obj
       state/manual-tick
-      utils/handle-txs!))
+      handle-txs!))
 
 (defn- draw-on-world-view! [draw-fns]
   (batch/draw-on-viewport! ctx/batch
@@ -256,7 +262,7 @@
   (content-grid/active-entities ctx/content-grid @ctx/player-eid))
 
 (defn- player-entity-props [start-position]
-  {:position (utils/tile->middle start-position)
+  {:position (tile->middle start-position)
    :creature-id (:creature-id ctx/player-entity-config)
    :components {:entity/fsm {:fsm :fsms/player
                              :initial-state :player-idle}
@@ -286,7 +292,7 @@
                  :components {:entity/fsm {:fsm :fsms/npc
                                            :initial-state :npc-sleeping}
                               :entity/faction :evil}})]
-    [:tx/spawn-creature (update props :position utils/tile->middle)]))
+    [:tx/spawn-creature (update props :position tile->middle)]))
 
 (defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
@@ -307,14 +313,14 @@
     (bind-root #'ctx/id-counter (atom 0))
     (bind-root #'ctx/entity-ids (atom {}))
     (bind-root #'ctx/potential-field-cache (atom nil))
-    (utils/handle-txs! (spawn-enemies tiled-map))
-    (utils/handle-txs! (spawn-player start-position))))
+    (handle-txs! (spawn-enemies tiled-map))
+    (handle-txs! (spawn-player start-position))))
 
 (defn- create-config [path]
   (let [m (io-slurp-edn path)]
     (reify clojure.lang.ILookup
       (valAt [_ k]
-        (utils/safe-get m k)))))
+        (safe-get m k)))))
 
 (defn -main []
   (bind-root #'ctx/config (create-config "config.edn"))
@@ -328,7 +334,7 @@
                           (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
                           (bind-root #'ctx/shape-drawer (graphics/shape-drawer ctx/batch
                                                                                (graphics/texture-region ctx/shape-drawer-texture 1 0 1 1)))
-                          (bind-root #'ctx/cursors (utils/mapvals
+                          (bind-root #'ctx/cursors (mapvals
                                                     (fn [[file [hotspot-x hotspot-y]]]
                                                       (graphics/cursor (format (::cursor-path-format ctx/config) file)
                                                                        hotspot-x
