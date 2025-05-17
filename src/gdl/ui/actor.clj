@@ -29,3 +29,29 @@
 
 (defn remove-tooltip! [^Actor actor]
   (Tooltip/removeTooltip actor))
+
+(defn set-opts! [^Actor actor {:keys [id
+                                      name
+                                      user-object
+                                      visible?
+                                      center-position
+                                      position] :as opts}]
+  (when id
+    (.setUserObject actor id))
+  (when name
+    (.setName actor name))
+  (when user-object
+    (.setUserObject actor user-object))
+  (when (contains? opts :visible?)
+    (.setVisible actor (boolean visible?)))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  actor)
+
+(defn create [opts]
+  (doto (proxy [Actor] [])
+    (set-opts! opts)))

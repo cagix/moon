@@ -6,13 +6,19 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
+(defn- button-group-container []
+  (actor/create {:name "button-group-container"
+                 :user-object (button-group/create {:max-check-count 1
+                                                    :min-check-count 0})}))
+
+(defn- horizontal-group []
+  (ui/horizontal-group {:pad 2
+                        :space 2
+                        :user-object ::horizontal-group
+                        :actors [(button-group-container)]}))
+
 (defn create []
-  (ui/table {:rows [[{:actor (doto (ui/horizontal-group {:pad 2 :space 2})
-                               (Actor/.setUserObject ::horizontal-group)
-                               (Group/.addActor (doto (proxy [Actor] [])
-                                                  (Actor/.setName "button-group")
-                                                  (Actor/.setUserObject (button-group/create {:max-check-count 1
-                                                                                              :min-check-count 0})))))
+  (ui/table {:rows [[{:actor (horizontal-group)
                       :expand? true
                       :bottom? true}]]
              :id ::action-bar-table
@@ -22,7 +28,7 @@
 (defn- get-data [stage]
   (let [group (::horizontal-group (::action-bar-table stage))]
     {:horizontal-group group
-     :button-group (Actor/.getUserObject (Group/.findActor group "button-group"))}))
+     :button-group (Actor/.getUserObject (Group/.findActor group "button-group-container"))}))
 
 (defn selected-skill [stage]
   (when-let [skill-button (button-group/checked (:button-group (get-data stage)))]
@@ -43,3 +49,8 @@
     (Actor/.remove button)
     (button-group/remove! button-group button)
     nil))
+
+(comment
+ (keys (:entity/skills @cdq.ctx/player-eid))
+
+ (remove-skill! cdq.ctx/stage {:property/id :skills/spawn}))

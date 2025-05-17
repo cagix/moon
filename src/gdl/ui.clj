@@ -1,4 +1,5 @@
 (ns gdl.ui
+  (:require [gdl.ui.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -123,32 +124,14 @@
   (set-cell-opts! (.defaults table) cell-defaults)
   (add-rows! table rows))
 
-(defn- set-actor-opts! [^Actor actor {:keys [id
-                                             name
-                                             visible?
-                                             touchable
-                                             center-position
-                                             position] :as opts}]
-  (when id
-    (.setUserObject actor id))
-  (when name
-    (.setName actor name))
-  (when (contains? opts :visible?)
-    (.setVisible actor (boolean visible?)))
-  (when-let [[x y] center-position]
-    (.setPosition actor
-                  (- x (/ (.getWidth  actor) 2))
-                  (- y (/ (.getHeight actor) 2))))
-  (when-let [[x y] position]
-    (.setPosition actor x y))
-  actor)
-
 (defn- set-opts! [actor opts]
-  (set-actor-opts! actor opts)
+  (actor/set-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
     (set-widget-group-opts actor opts))
+  (when (instance? Group actor)
+    (run! #(Group/.addActor actor %) (:actors opts)))
   actor)
 
 (defn group [{:keys [actors] :as opts}]
@@ -156,11 +139,11 @@
     (run! #(Group/.addActor group %) actors)
     (set-opts! group opts)))
 
-(defn horizontal-group ^HorizontalGroup [{:keys [space pad]}]
+(defn horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
   (let [group (proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
-    group))
+    (set-opts! group opts)))
 
 (defn vertical-group [actors]
   (let [group (proxy-ILookup VerticalGroup [])]
