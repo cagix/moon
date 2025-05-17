@@ -7,7 +7,7 @@
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
             [gdl.graphics.camera :as camera]
-            [malli.core :as m]))
+            [gdl.malli :as m]))
 
 (defmulti create (fn [[k]]
                    k))

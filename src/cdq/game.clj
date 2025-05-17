@@ -15,6 +15,7 @@
             [cdq.ui]
             [cdq.utils :refer [bind-root
                                io-slurp-edn
+                               create-config
                                sort-by-order
                                pretty-pst
                                handle-txs!
@@ -315,12 +316,6 @@
     (bind-root #'ctx/potential-field-cache (atom nil))
     (handle-txs! (spawn-enemies tiled-map))
     (handle-txs! (spawn-player start-position))))
-
-(defn- create-config [path]
-  (let [m (io-slurp-edn path)]
-    (reify clojure.lang.ILookup
-      (valAt [_ k]
-        (safe-get m k)))))
 
 (defn -main []
   (bind-root #'ctx/config (create-config "config.edn"))

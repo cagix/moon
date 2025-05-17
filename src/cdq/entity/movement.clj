@@ -5,7 +5,7 @@
             [cdq.grid :as grid]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
-            [malli.core :as m]))
+            [gdl.malli :as m]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

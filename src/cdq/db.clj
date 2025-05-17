@@ -7,8 +7,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [malli.core :as m]
-            [malli.error :as me]))
+            [gdl.malli :as m]))
 
 (defprotocol PDB
   (update [_ property]
@@ -30,50 +29,10 @@
   (build-all [_ property-type]
              "Returns all properties with type with schema-based transformations."))
 
-(defn- validate!* [form value]
-  (let [schema (m/schema form)]
-    (when-not (m/validate schema value)
-      (throw (ex-info (str (me/humanize (m/explain schema value)))
-                      {:value value
-                       :schema (m/form schema)})))))
-
-(comment
- (validate!* [:map {:closed true}
-              [:foo pos?]
-              [:bar pos?]
-              [:baz {:optional true} :some]
-              [:boz {:optional false} :some]
-              [:asdf {:optional true} :some]]
-             {:foo 1
-              :bar 2
-              :boz :a
-              :asdf :b
-              :baz :asdf})
-
- (validate!* [:map {:closed true}
-              [:foo pos?]
-              [:bar pos?]
-              [:baz {:optional true} :some]
-              [:boz {:optional false} :some]
-              [:asdf {:optional true} :some]]
-             {:foo 1
-              :bar 2
-              :boz :a})
-
- (validate!* [:map {:closed true}
-              [:foo pos?]
-              [:bar pos?]
-              [:baz {:optional true} :some]
-              [:boz {:optional false} :some]
-              [:asdf {:optional true} :some]]
-             {:bar 2
-              :boz :a})
- )
-
 (defn- validate! [property]
-  (validate!* (schema/malli-form (get ctx/schemas (property/type property))
-                                 ctx/schemas)
-              property))
+  (m/form->validate (schema/malli-form (get ctx/schemas (property/type property))
+                                       ctx/schemas)
+                    property))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)

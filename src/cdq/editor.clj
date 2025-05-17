@@ -5,7 +5,6 @@
             [cdq.stage :as stage]
             [cdq.property :as property]
             [cdq.tx.sound :as tx.sound]
-            [cdq.malli :as malli]
             [cdq.ui]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
@@ -15,7 +14,7 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [malli.generator :as mg])
+            [gdl.malli :as m])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)
@@ -344,7 +343,7 @@
 (defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (malli/optional? k (schema/malli-form schema ctx/schemas))
+        delete-button (when (m/optional? k (schema/malli-form schema ctx/schemas))
                         (ui/text-button "-"
                                         (fn []
                                           (Actor/.remove (find-kv-widget table k))
@@ -372,8 +371,8 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (mg/generate (schema/malli-form schema ctx/schemas)
-                        {:size 3}))))
+     :else (m/generate (schema/malli-form schema ctx/schemas)
+                       {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -383,7 +382,7 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (malli/map-keys (schema/malli-form schema ctx/schemas))))]
+                                   (m/map-keys (schema/malli-form schema ctx/schemas))))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
@@ -427,7 +426,7 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (malli/optional-keyset (schema/malli-form schema ctx/schemas))
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema ctx/schemas))
                                   (set (keys m))))]
     (ui/add-rows!
      table

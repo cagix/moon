@@ -2,7 +2,8 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.java.io :as io])
-  (:import (clojure.lang PersistentVector
+  (:import (clojure.lang ILookup
+                         PersistentVector
                          Var)))
 
 (defn io-slurp-edn [path]
@@ -19,7 +20,8 @@
     (try (apply do! (rest transaction))
          (catch Throwable t
            (throw (ex-info ""
-                           {:transaction transaction:sym sym}
+                           {:transaction transaction
+                            :sym sym}
                            t))))))
 
 (defn bind-root [var value]
@@ -48,6 +50,12 @@
     (if (= result ::not-found)
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
+
+(defn create-config [path]
+  (let [m (io-slurp-edn path)]
+    (reify ILookup
+      (valAt [_ k]
+        (safe-get m k)))))
 
 (defn mapvals [f m]
   (into {} (for [[k v] m]
