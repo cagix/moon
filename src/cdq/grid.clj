@@ -1,7 +1,8 @@
 (ns cdq.grid
-  (:require [cdq.math :refer [circle->outer-rectangle
-                              overlaps?
-                              rect-contains?]]))
+  (:require [cdq.cell :as cell]
+            [cdq.grid2d :as g2d]
+            [cdq.math :as math]
+            [gdl.tiled :as tiled]))
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]
@@ -26,7 +27,7 @@
 
 (defn circle->cells [grid circle]
   (->> circle
-       circle->outer-rectangle
+       math/circle->outer-rectangle
        (rectangle->cells grid)))
 
 (defn cells->entities [cells]
@@ -36,7 +37,7 @@
   (->> (circle->cells grid circle)
        (map deref)
        cells->entities
-       (filter #(overlaps? circle @%))))
+       (filter #(math/overlaps? circle @%))))
 
 ; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
 (let [offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]]
@@ -58,5 +59,65 @@
 
 (defn point->entities [grid position]
   (when-let [cell (grid (mapv int position))]
-    (filter #(rect-contains? @% position)
+    (filter #(math/rect-contains? @% position)
             (:entities @cell))))
+
+(defn create [tiled-map]
+  (g2d/create-grid (tiled/tm-width  tiled-map)
+                   (tiled/tm-height tiled-map)
+                   (fn [position]
+                     (cell/create position
+                                  (case (tiled/movement-property tiled-map position)
+                                    "none" :none
+                                    "air"  :air
+                                    "all"  :all)))))
+
+(defn- set-cells! [grid eid]
+  (let [cells (rectangle->cells grid @eid)]
+    (assert (not-any? nil? cells))
+    (swap! eid assoc ::touched-cells cells)
+    (doseq [cell cells]
+      (assert (not (get (:entities @cell) eid)))
+      (swap! cell update :entities conj eid))))
+
+(defn- remove-from-cells! [eid]
+  (doseq [cell (::touched-cells @eid)]
+    (assert (get (:entities @cell) eid))
+    (swap! cell update :entities disj eid)))
+
+; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
+; => only now there are no >1 tile entities anyway
+(defn- rectangle->occupied-cells [grid {:keys [left-bottom width height] :as rectangle}]
+  (if (or (> (float width) 1) (> (float height) 1))
+    (rectangle->cells grid rectangle)
+    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
+            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
+
+(defn- set-occupied-cells! [grid eid]
+  (let [cells (rectangle->occupied-cells grid @eid)]
+    (doseq [cell cells]
+      (assert (not (get (:occupied @cell) eid)))
+      (swap! cell update :occupied conj eid))
+    (swap! eid assoc ::occupied-cells cells)))
+
+(defn- remove-from-occupied-cells! [eid]
+  (doseq [cell (::occupied-cells @eid)]
+    (assert (get (:occupied @cell) eid))
+    (swap! cell update :occupied disj eid)))
+
+(defn add-entity! [grid eid]
+  (set-cells! grid eid)
+  (when (:collides? @eid)
+    (set-occupied-cells! grid eid)))
+
+(defn remove-entity! [eid]
+  (remove-from-cells! eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)))
+
+(defn position-changed! [grid eid]
+  (remove-from-cells! eid)
+  (set-cells! grid eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)
+    (set-occupied-cells! grid eid)))

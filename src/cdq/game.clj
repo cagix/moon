@@ -6,7 +6,6 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
-            [cdq.impl.world]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.stage :as stage]
@@ -166,7 +165,11 @@
 (defn- remove-destroyed-entities! []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @ctx/entity-ids))]
-    (cdq.impl.world/remove-entity! eid)
+    (let [id (:entity/id @eid)]
+      (assert (contains? @ctx/entity-ids id))
+      (swap! ctx/entity-ids dissoc id))
+    (content-grid/remove-entity! eid)
+    (grid/remove-entity! eid)
     (doseq [component @eid]
       (handle-txs! (entity/destroy! component eid)))))
 
@@ -303,8 +306,8 @@
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
     (bind-root #'ctx/tiled-map tiled-map)
-    (bind-root #'ctx/grid (cdq.impl.world/create-grid tiled-map))
-    (bind-root #'ctx/raycaster (cdq.impl.world/create-raycaster ctx/grid))
+    (bind-root #'ctx/grid (grid/create tiled-map))
+    (bind-root #'ctx/raycaster (raycaster/create ctx/grid))
     (bind-root #'ctx/content-grid (content-grid/create {:cell-size (::content-grid-cells-size ctx/config)
                                                         :width  width
                                                         :height height}))

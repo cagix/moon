@@ -1,135 +1,10 @@
 (ns cdq.impl.world
   (:require [cdq.ctx :as ctx]
-            [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.grid2d :as g2d]
             [cdq.utils :as utils]
-            [cdq.vector2 :as v]
-            [gdl.tiled :as tiled]))
-
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  cell/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance)))
-
-(defn- ->grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (utils/tile->middle position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
-(defn create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/tm-width tiled-map)
-   (tiled/tm-height tiled-map)
-   (fn [position]
-     (atom (->grid-cell position
-                        (case (tiled/movement-property tiled-map position)
-                          "none" :none
-                          "air"  :air
-                          "all"  :all))))))
-
-(defn- set-cells! [grid eid]
-  (let [cells (grid/rectangle->cells grid @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [grid {:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (grid/rectangle->cells grid rectangle)
-    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [grid eid]
-  (let [cells (rectangle->occupied-cells grid @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn create-raycaster [grid]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell cell/blocks-vision?))
-    [arr width height]))
-
-(defn- add-entity! [eid]
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (swap! ctx/entity-ids assoc id eid))
-  (content-grid/add-entity! ctx/content-grid eid)
-  ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (set-cells! ctx/grid eid)
-  (when (:collides? @eid)
-    (set-occupied-cells! ctx/grid eid)))
-
-(defn remove-entity! [eid]
-  (let [id (:entity/id @eid)]
-    (assert (contains? @ctx/entity-ids id))
-    (swap! ctx/entity-ids dissoc id))
-  (content-grid/remove-entity! eid)
-  (remove-from-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)))
-
-(defn position-changed! [eid]
-  (content-grid/position-changed! ctx/content-grid eid)
-  (remove-from-cells! eid)
-  (set-cells! ctx/grid eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)
-    (set-occupied-cells! ctx/grid eid)))
+            [cdq.vector2 :as v]))
 
 (defrecord Body [position
                  left-bottom
@@ -196,6 +71,12 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! ctx/id-counter inc))
                                             create-vs))))]
-    (add-entity! eid)
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (swap! ctx/entity-ids assoc id eid))
+    (content-grid/add-entity! ctx/content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+    (grid/add-entity! ctx/grid eid)
     (doseq [component @eid]
       (utils/handle-txs! (entity/create! component eid)))))

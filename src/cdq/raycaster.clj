@@ -1,6 +1,20 @@
 (ns cdq.raycaster
-  (:require [cdq.vector2 :as v])
+  (:require [cdq.cell :as cell]
+            [cdq.grid2d :as g2d]
+            [cdq.vector2 :as v])
   (:import (cdq RayCaster)))
+
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defn create [grid]
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells grid)]
+      (set-arr arr @cell cell/blocks-vision?))
+    [arr width height]))
 
 ; boolean array used because 10x faster than access to cdq grid data structure
 
