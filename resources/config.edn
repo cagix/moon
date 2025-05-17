@@ -45,7 +45,17 @@
                      cdq.entity.temp-modifier
 
                      cdq.impl.info
-                     cdq.impl.schemas]
+                     cdq.impl.schemas
+
+                     cdq.ui.editor.widget.default
+                     cdq.ui.editor.widget.edn
+                     cdq.ui.editor.widget.string
+                     cdq.ui.editor.widget.boolean
+                     cdq.ui.editor.widget.enum
+                     cdq.ui.editor.widget.sound
+                     cdq.ui.editor.widget.one-to-one
+                     cdq.ui.editor.widget.one-to-many
+                     ]
  :cdq.game/schemas "schema.edn"
  :cdq.game/db "properties.edn"
  :cdq.game/application {:title "Cyber Dungeon Quest"
