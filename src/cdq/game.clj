@@ -12,6 +12,7 @@
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu :as dev-menu]
             [cdq.ui.inventory :as inventory-window]
             [cdq.utils :refer [bind-root
@@ -278,9 +279,13 @@
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
                                  :skill-added! (fn [skill]
-                                                 (cdq.stage/add-skill! ctx/stage skill))
+                                                 (-> ctx/stage
+                                                     :action-bar
+                                                     (action-bar/add-skill! skill)))
                                  :skill-removed! (fn [skill]
-                                                   (cdq.stage/remove-skill! ctx/stage skill))
+                                                   (-> ctx/stage
+                                                       :action-bar
+                                                       (action-bar/remove-skill! skill)))
                                  :item-set! (fn [inventory-cell item]
                                               (-> ctx/stage
                                                   :windows

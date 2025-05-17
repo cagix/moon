@@ -4,7 +4,7 @@
             [cdq.inventory :as inventory]
             [cdq.input :as input]
             [cdq.state :as state]
-            [cdq.stage]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
@@ -82,7 +82,7 @@
      (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
-     (if-let [skill-id (cdq.stage/selected-skill ctx/stage)]
+     (if-let [skill-id (action-bar/selected-skill (:action-bar ctx/stage))]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]

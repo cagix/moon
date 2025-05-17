@@ -7,15 +7,6 @@
             [cdq.ui.windows]
             [gdl.ui.stage :as stage]))
 
-(defn selected-skill [stage]
-  (cdq.ui.action-bar/selected-skill stage))
-
-(defn add-skill! [stage skill]
-  (cdq.ui.action-bar/add-skill! stage skill))
-
-(defn remove-skill! [stage skill]
-  (cdq.ui.action-bar/remove-skill! stage skill))
-
 (defn show-message! [stage text]
   (cdq.ui.message/show! (stage/root stage) text))
 

@@ -21,21 +21,21 @@
   (ui/table {:rows [[{:actor (horizontal-group)
                       :expand? true
                       :bottom? true}]]
-             :id ::action-bar-table
+             :id :action-bar
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
-(defn- get-data [stage]
-  (let [group (::horizontal-group (::action-bar-table stage))]
+(defn- get-data [action-bar]
+  (let [group (::horizontal-group action-bar)]
     {:horizontal-group group
      :button-group (Actor/.getUserObject (Group/.findActor group "button-group-container"))}))
 
-(defn selected-skill [stage]
-  (when-let [skill-button (button-group/checked (:button-group (get-data stage)))]
+(defn selected-skill [action-bar]
+  (when-let [skill-button (button-group/checked (:button-group (get-data action-bar)))]
     (Actor/.getUserObject skill-button)))
 
-(defn add-skill! [stage {:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (get-data stage)
+(defn add-skill! [action-bar {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (get-data action-bar)
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
     (actor/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
@@ -43,8 +43,8 @@
     (button-group/add! button-group button)
     nil))
 
-(defn remove-skill! [stage {:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (get-data stage)
+(defn remove-skill! [action-bar {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (get-data action-bar)
         button (get horizontal-group id)]
     (Actor/.remove button)
     (button-group/remove! button-group button)
@@ -53,4 +53,4 @@
 (comment
  (keys (:entity/skills @cdq.ctx/player-eid))
 
- (remove-skill! cdq.ctx/stage {:property/id :skills/spawn}))
+ (remove-skill! (:action-bar cdq.ctx/stage) {:property/id :skills/spawn}))
