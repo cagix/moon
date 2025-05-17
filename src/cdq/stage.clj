@@ -15,16 +15,6 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
-(defn- create-actors []
-  [(menu/create (cdq.dev-menu-config/create))
-   (cdq.ui.action-bar/create)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ])
-   (cdq.ui.windows/create)
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create)])
-
 (defn add-actor! [stage actor]
   (Stage/.addActor stage actor))
 
@@ -64,5 +54,12 @@
                                       (:java-object ctx/batch)]
                 (valAt [id]
                   (ui/find-actor-with-id (Stage/.getRoot this) id)))]
-    (run! #(Stage/.addActor stage %) (create-actors))
+    (run! #(Stage/.addActor stage %) [(menu/create (cdq.dev-menu-config/create))
+                                      (cdq.ui.action-bar/create)
+                                      (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
+                                                                  80 ; action-bar-icon-size
+                                                                  ])
+                                      (cdq.ui.windows/create)
+                                      (cdq.ui.player-state-draw/create)
+                                      (cdq.ui.message/create)])
     stage))
