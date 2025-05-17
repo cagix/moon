@@ -1,6 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.ctx :as ctx]
-            [cdq.editor :as editor]
+            [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.graphics :as graphics]

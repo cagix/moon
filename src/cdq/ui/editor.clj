@@ -1,4 +1,4 @@
-(ns cdq.editor
+(ns cdq.ui.editor
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]
