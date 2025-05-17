@@ -1,5 +1,10 @@
 (ns cdq.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]))
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]))
+
+(defn io-slurp-edn [path]
+  (->> path io/resource slurp edn/read-string))
 
 (defn handle-txs! [transactions]
   (doseq [transaction transactions

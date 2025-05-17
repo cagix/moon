@@ -1,0 +1,51 @@
+{:cdq.game/requires [cdq.effects.target.audiovisual
+                     cdq.effects.target.convert
+                     cdq.effects.target.damage
+                     cdq.effects.target.kill
+                     cdq.effects.target.melee-damage
+                     cdq.effects.target.spiderweb
+                     cdq.effects.target.stun
+
+                     cdq.effects.audiovisual
+                     cdq.effects.projectile
+                     cdq.effects.sound
+                     cdq.effects.spawn
+                     cdq.effects.target-all
+                     cdq.effects.target-entity
+
+                     cdq.entity.state.active-skill
+                     cdq.entity.state.npc-dead
+                     cdq.entity.state.npc-idle
+                     cdq.entity.state.npc-moving
+                     cdq.entity.state.npc-sleeping
+                     cdq.entity.state.player-dead
+                     cdq.entity.state.player-idle
+                     cdq.entity.state.player-item-on-cursor
+                     cdq.entity.state.player-moving
+                     cdq.entity.state.stunned
+
+                     cdq.entity.alert-friendlies-after-duration
+                     cdq.entity.animation
+                     cdq.entity.clickable
+                     cdq.entity.delete-after-animation-stopped
+                     cdq.entity.delete-after-duration
+                     cdq.entity.destroy-audiovisual
+                     cdq.entity.fsm
+                     cdq.entity.hp
+                     cdq.entity.image
+                     cdq.entity.inventory
+                     cdq.entity.line-render
+                     cdq.entity.mana
+                     cdq.entity.mouseover
+                     cdq.entity.movement
+                     cdq.entity.player ; TODO no tx, binds-root!
+                     cdq.entity.projectile-collision
+                     cdq.entity.skills
+                     cdq.entity.string-effect
+                     cdq.entity.temp-modifier
+
+                     cdq.impl.info
+                     cdq.impl.schemas]
+ :cdq.game/schemas "schema.edn"
+ :cdq.game/db "properties.edn"
+ }

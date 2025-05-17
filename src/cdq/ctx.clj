@@ -1,6 +1,8 @@
 (ns cdq.ctx
   (:require [cdq.utils :as utils]))
 
+(declare config)
+
 (def pausing? true)
 
 (def zoom-speed 0.025)

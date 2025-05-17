@@ -8,13 +8,13 @@
             [cdq.grid2d :as g2d]
             [cdq.impl.world]
             [cdq.raycaster :as raycaster]
-            [cdq.schemas :as schemas]
             [cdq.state :as state]
             [cdq.stage :as stage]
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
-            [cdq.utils :as utils :refer [bind-root]]
+            [cdq.utils :as utils :refer [bind-root
+                                         io-slurp-edn]]
             [gdl.application :as application]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]
@@ -311,57 +311,10 @@
     (utils/handle-txs! (spawn-player start-position))))
 
 (defn -main []
-  (run! require
-        '[cdq.effects.target.audiovisual
-          cdq.effects.target.convert
-          cdq.effects.target.damage
-          cdq.effects.target.kill
-          cdq.effects.target.melee-damage
-          cdq.effects.target.spiderweb
-          cdq.effects.target.stun
-
-          cdq.effects.audiovisual
-          cdq.effects.projectile
-          cdq.effects.sound
-          cdq.effects.spawn
-          cdq.effects.target-all
-          cdq.effects.target-entity
-
-          cdq.entity.state.active-skill
-          cdq.entity.state.npc-dead
-          cdq.entity.state.npc-idle
-          cdq.entity.state.npc-moving
-          cdq.entity.state.npc-sleeping
-          cdq.entity.state.player-dead
-          cdq.entity.state.player-idle
-          cdq.entity.state.player-item-on-cursor
-          cdq.entity.state.player-moving
-          cdq.entity.state.stunned
-
-          cdq.entity.alert-friendlies-after-duration
-          cdq.entity.animation
-          cdq.entity.clickable
-          cdq.entity.delete-after-animation-stopped
-          cdq.entity.delete-after-duration
-          cdq.entity.destroy-audiovisual
-          cdq.entity.fsm
-          cdq.entity.hp
-          cdq.entity.image
-          cdq.entity.inventory
-          cdq.entity.line-render
-          cdq.entity.mana
-          cdq.entity.mouseover
-          cdq.entity.movement
-          cdq.entity.player ; TODO no tx, binds-root!
-          cdq.entity.projectile-collision
-          cdq.entity.skills
-          cdq.entity.string-effect
-          cdq.entity.temp-modifier
-
-          cdq.impl.info
-          cdq.impl.schemas])
-  (bind-root #'ctx/schemas (schemas/create "schema.edn"))
-  (bind-root #'ctx/db (db/create "properties.edn"))
+  (bind-root #'ctx/config (io-slurp-edn "config.edn"))
+  (run! require (::requires ctx/config))
+  (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
+  (bind-root #'ctx/db (db/create (::db ctx/config)))
   (application/start! (reify application/Listener
                         (create! [_]
                           (bind-root #'ctx/assets (assets/create))
