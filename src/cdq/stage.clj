@@ -1,7 +1,6 @@
 (ns cdq.stage
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.ui]
             [cdq.ui.action-bar]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory]
@@ -11,12 +10,13 @@
             [cdq.ui.windows]
             [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as actor])
+            [gdl.ui.actor :as actor]
+            [gdl.ui.menu :as menu])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defn- create-actors []
-  [(cdq.ui/menu (cdq.dev-menu-config/create))
+  [(menu/create (cdq.dev-menu-config/create))
    (cdq.ui.action-bar/create)
    (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                80 ; action-bar-icon-size
