@@ -84,4 +84,8 @@
  ; cdq.level.uf-caves/create
  ; cdq.level.modules/create
  :cdq.game/content-grid-cells-size 16
+ :cdq.ui.dev-menu/world-fns [cdq.level.vampire/create
+                             cdq.level.uf-caves/create
+                             cdq.level.modules/create]
+ :cdq.ui.dev-menu/info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
  }

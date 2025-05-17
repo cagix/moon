@@ -8,21 +8,14 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui.menu :as menu]))
 
-;"Mouseover-Actor: "
-#_(when-let [actor (mouse-on-actor? ctx/stage)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (user-object actor)))
-
 (defn create [reset-game-function-var]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn '[cdq.level.vampire/create
-                                     cdq.level.uf-caves/create
-                                     cdq.level.modules/create]]
+             :items (for [world-fn (::world-fns ctx/config)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [] (@reset-game-function-var world-fn))})}
             {:label "Help"
-             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
+             :items [{:label (::info ctx/config)}]}
             {:label "Objects"
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys ctx/schemas)))]
                       {:label (str/capitalize (name property-type))
@@ -48,3 +41,8 @@
                     {:label "FPS"
                      :update-fn (fn [] (graphics/frames-per-second))
                      :icon (ctx/assets "images/fps.png")}]}))
+
+;"Mouseover-Actor: "
+#_(when-let [actor (mouse-on-actor? ctx/stage)]
+    (str "TRUE - name:" (.getName actor)
+         "id: " (user-object actor)))
