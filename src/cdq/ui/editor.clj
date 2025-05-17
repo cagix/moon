@@ -23,10 +23,6 @@
                                       VisSelectBox
                                       VisCheckBox)))
 
-(defn- property->image [{:keys [entity/image entity/animation]}]
-  (or image
-      (first (:frames animation))))
-
 (defn- info-text [property]
   (binding [*print-level* 3]
     (with-out-str
@@ -183,7 +179,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (property->image props)]
+        button (if-let [image (property/image props)]
                  (ui/image-button image on-clicked {:scale scale})
                  (ui/text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
@@ -256,7 +252,7 @@
                            (stage/add-actor! ctx/stage window))))]
       (for [property-id property-ids]
         (let [property (db/build ctx/db property-id)
-              image-widget (ui/image->widget (property->image property)
+              image-widget (ui/image->widget (property/image property)
                                              {:id property-id})]
           (actor/add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
@@ -295,7 +291,7 @@
                              (stage/add-actor! ctx/stage window)))))]
       [(when property-id
          (let [property (db/build ctx/db property-id)
-               image-widget (ui/image->widget (property->image property)
+               image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
            (actor/add-tooltip! image-widget #(info-text property))
            image-widget))]
