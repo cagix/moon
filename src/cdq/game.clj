@@ -401,7 +401,7 @@
                           (draw-tiled-map!)
                           (draw-on-world-view! [debug-draw-before-entities!
                                                 render-entities!
-                                                ; geom-test
+                                                ; geom-test!
                                                 highlight-mouseover-tile!])
                           (stage/draw! ctx/stage)
                           (stage/act! ctx/stage)
