@@ -48,7 +48,40 @@
                      cdq.impl.schemas]
  :cdq.game/schemas "schema.edn"
  :cdq.game/db "properties.edn"
+ :cdq.game/application {:title "Cyber Dungeon Quest"
+                        :window-width 1440
+                        :window-height 900
+                        :fps 60
+                        :dock-icon "moon.png"}
  :cdq.game/assets {:folder "resources/"
                    :asset-type-extensions {:sound   #{"wav"}
                                            :texture #{"png" "bmp"}}}
+ :cdq.game/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                    :cursors/black-x               ["black_x"      [0   0]]
+                    :cursors/default               ["default"      [0   0]]
+                    :cursors/denied                ["denied"       [16 16]]
+                    :cursors/hand-before-grab      ["hand004"      [4  16]]
+                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                    :cursors/hand-grab             ["hand003"      [4  16]]
+                    :cursors/move-window           ["move002"      [16 16]]
+                    :cursors/no-skill-selected     ["denied003"    [0   0]]
+                    :cursors/over-button           ["hand002"      [0   0]]
+                    :cursors/sandclock             ["sandclock"    [16 16]]
+                    :cursors/skill-not-usable      ["x007"         [0   0]]
+                    :cursors/use-skill             ["pointer004"   [0   0]]
+                    :cursors/walking               ["walking"      [16 16]]}
+ :cdq.game/cursor-path-format "cursors/%s.png"
+ :cdq.game/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                         :size 16
+                         :quality-scaling 2}
+ :cdq.game/tile-size 48
+ :cdq.game/world-viewport {:width 1440
+                           :height 900}
+ :cdq.game/ui-viewport {:width 1440
+                        :height 900}
+ :cdq.game/ui {:skin-scale :x1}
+ :cdq.game/tiled-map cdq.level.vampire/create
+ ; cdq.level.uf-caves/create
+ ; cdq.level.modules/create
+ :cdq.game/content-grid-cells-size 16
  }

@@ -15,39 +15,9 @@
 
 (def sound-path-format "sounds/%s.wav")
 
-(def cursor-path-format "cursors/%s.png")
-
-(def cursor-config
-  {:cursors/bag                   ["bag001"       [0   0]]
-   :cursors/black-x               ["black_x"      [0   0]]
-   :cursors/default               ["default"      [0   0]]
-   :cursors/denied                ["denied"       [16 16]]
-   :cursors/hand-before-grab      ["hand004"      [4  16]]
-   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-   :cursors/hand-grab             ["hand003"      [4  16]]
-   :cursors/move-window           ["move002"      [16 16]]
-   :cursors/no-skill-selected     ["denied003"    [0   0]]
-   :cursors/over-button           ["hand002"      [0   0]]
-   :cursors/sandclock             ["sandclock"    [16 16]]
-   :cursors/skill-not-usable      ["x007"         [0   0]]
-   :cursors/use-skill             ["pointer004"   [0   0]]
-   :cursors/walking               ["walking"      [16 16]]})
-
-(def font-config {:file "fonts/exocet/films.EXL_____.ttf"
-                  :size 16
-                  :quality-scaling 2})
-
-(def world-unit-scale (float (/ 48)))
+(declare world-unit-scale)
 
 (def unit-scale (atom 1))
-
-(def ui-viewport-config {:width 1440
-                         :height 900})
-
-(def world-viewport-config {:width 1440
-                            :height 900})
-
-(def ui-config {:skin-scale :x1})
 
 (declare schemas
          db
