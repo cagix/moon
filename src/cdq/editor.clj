@@ -4,7 +4,7 @@
             [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.tx.sound :as tx.sound]
-            [cdq.ui]
+            [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.set :as set]
@@ -70,7 +70,7 @@
         (Actor/.remove window)
         (catch Throwable t
           (utils/pretty-pst t)
-          (stage/add-actor! ctx/stage (cdq.ui/error-window t)))))
+          (stage/add-actor! ctx/stage (error-window/create t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn

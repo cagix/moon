@@ -10,10 +10,10 @@
             [cdq.state :as state]
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
-            [cdq.ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu :as dev-menu]
             [cdq.ui.entity-info]
+            [cdq.ui.error-window :as error-window]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.player-state-draw]
@@ -147,7 +147,7 @@
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (pretty-pst t)
-     (stage/add-actor! ctx/stage (cdq.ui/error-window t))
+     (stage/add-actor! ctx/stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
