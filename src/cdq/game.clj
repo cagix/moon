@@ -13,6 +13,7 @@
             [cdq.math :as math]
             [cdq.ui]
             [cdq.ui.dev-menu :as dev-menu]
+            [cdq.ui.inventory :as inventory-window]
             [cdq.utils :refer [bind-root
                                io-slurp-edn
                                create-config
@@ -281,9 +282,15 @@
                                  :skill-removed! (fn [skill]
                                                    (cdq.stage/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (cdq.stage/set-item! ctx/stage inventory-cell item))
+                                              (-> ctx/stage
+                                                  :windows
+                                                  :inventory-window
+                                                  (inventory-window/set-item! inventory-cell item)))
                                  :item-removed! (fn [inventory-cell]
-                                                  (cdq.stage/remove-item! ctx/stage inventory-cell))}
+                                                  (-> ctx/stage
+                                                      :windows
+                                                      :inventory-window
+                                                      (inventory-window/remove-item! inventory-cell)))}
                 :entity/free-skill-points (:free-skill-points ctx/player-entity-config)
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles (:click-distance-tiles ctx/player-entity-config)}})

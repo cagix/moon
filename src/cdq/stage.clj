@@ -2,17 +2,10 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ui.action-bar]
             [cdq.ui.hp-mana-bar]
-            [cdq.ui.inventory]
             [cdq.ui.player-state-draw]
             [cdq.ui.message]
             [cdq.ui.windows]
             [gdl.ui.stage :as stage]))
-
-(defn set-item! [stage cell item]
-  (cdq.ui.inventory/set-item! stage cell item))
-
-(defn remove-item! [stage cell]
-  (cdq.ui.inventory/remove-item! stage cell))
 
 (defn selected-skill [stage]
   (cdq.ui.action-bar/selected-skill stage))
