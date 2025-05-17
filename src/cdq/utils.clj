@@ -1,7 +1,8 @@
 (ns cdq.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.pprint :as pprint])
   (:import (clojure.lang ILookup
                          PersistentVector
                          Var)))

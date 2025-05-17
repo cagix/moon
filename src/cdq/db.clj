@@ -6,7 +6,6 @@
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.pprint :as pprint]
             [gdl.malli :as m]))
 
 (defprotocol PDB
