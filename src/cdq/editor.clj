@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]
-            [cdq.stage :as stage]
             [cdq.property :as property]
             [cdq.tx.sound :as tx.sound]
             [cdq.ui]
@@ -14,6 +13,7 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.stage :as stage]
             [gdl.malli :as m])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group

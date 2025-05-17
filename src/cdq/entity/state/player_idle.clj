@@ -4,13 +4,14 @@
             [cdq.inventory :as inventory]
             [cdq.input :as input]
             [cdq.state :as state]
-            [cdq.stage :as stage]
+            [cdq.stage]
             [cdq.ui.inventory]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
             [gdl.graphics.viewport :as viewport]
             [gdl.input]
-            [gdl.ui :as ui])
+            [gdl.ui :as ui]
+            [gdl.ui.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defmulti ^:private on-clicked
@@ -69,10 +70,11 @@
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
 (defn- interaction-state [eid]
-  (let [entity @eid]
+  (let [entity @eid
+        mouseover-actor (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))]
     (cond
-     (stage/mouse-on-actor? ctx/stage)
-     [(mouseover-actor->cursor (stage/mouse-on-actor? ctx/stage))
+     mouseover-actor
+     [(mouseover-actor->cursor mouseover-actor)
       nil] ; handled by actors themself, they check player state
 
      (and ctx/mouseover-eid
@@ -80,7 +82,7 @@
      (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
-     (if-let [skill-id (stage/selected-skill ctx/stage)]
+     (if-let [skill-id (cdq.stage/selected-skill ctx/stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]

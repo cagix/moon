@@ -3,12 +3,12 @@
             [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
             [gdl.input :as input]
-            [gdl.graphics.viewport :as viewport]))
+            [gdl.graphics.viewport :as viewport]
+            [gdl.ui.stage :as stage]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -45,7 +45,7 @@
       [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn- world-item? []
-  (not (stage/mouse-on-actor? ctx/stage)))
+  (not (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners

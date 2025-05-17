@@ -8,7 +8,7 @@
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
-            [cdq.stage :as stage]
+            [cdq.stage]
             [cdq.potential-field :as potential-field]
             [cdq.math :as math]
             [cdq.ui]
@@ -31,6 +31,7 @@
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose!]]))
 
 (defn- geom-test! []
@@ -182,7 +183,7 @@
                     (input/key-pressed? (get ctx/controls :unpause-continously)))))))
 
 (defn- update-mouseover-entity! []
-  (let [new-eid (if (stage/mouse-on-actor? ctx/stage)
+  (let [new-eid (if (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -276,13 +277,13 @@
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
                                  :skill-added! (fn [skill]
-                                                 (stage/add-skill! ctx/stage skill))
+                                                 (cdq.stage/add-skill! ctx/stage skill))
                                  :skill-removed! (fn [skill]
-                                                   (stage/remove-skill! ctx/stage skill))
+                                                   (cdq.stage/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (stage/set-item! ctx/stage inventory-cell item))
+                                              (cdq.stage/set-item! ctx/stage inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
-                                                  (stage/remove-item! ctx/stage inventory-cell))}
+                                                  (cdq.stage/remove-item! ctx/stage inventory-cell))}
                 :entity/free-skill-points (:free-skill-points ctx/player-entity-config)
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles (:click-distance-tiles ctx/player-entity-config)}})
@@ -303,7 +304,7 @@
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (stage/create {:dev-menu (dev-menu/create #'reset-game!)}))
+  (bind-root #'ctx/stage (cdq.stage/create {:dev-menu (dev-menu/create #'reset-game!)}))
   (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
