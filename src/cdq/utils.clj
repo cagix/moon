@@ -3,8 +3,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint])
-  (:import (clojure.lang ILookup
-                         PersistentVector
+  (:import (clojure.lang PersistentVector
                          Var)))
 
 (defn io-slurp-edn [path]
@@ -51,12 +50,6 @@
     (if (= result ::not-found)
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
-
-(defn create-config [path]
-  (let [m (io-slurp-edn path)]
-    (reify ILookup
-      (valAt [_ k]
-        (safe-get m k)))))
 
 (defn mapvals [f m]
   (into {} (for [[k v] m]

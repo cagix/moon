@@ -1,96 +1,96 @@
-{:cdq.application.create/requires [cdq.effects.target.audiovisual
-                     cdq.effects.target.convert
-                     cdq.effects.target.damage
-                     cdq.effects.target.kill
-                     cdq.effects.target.melee-damage
-                     cdq.effects.target.spiderweb
-                     cdq.effects.target.stun
+{:requires [cdq.effects.target.audiovisual
+            cdq.effects.target.convert
+            cdq.effects.target.damage
+            cdq.effects.target.kill
+            cdq.effects.target.melee-damage
+            cdq.effects.target.spiderweb
+            cdq.effects.target.stun
 
-                     cdq.effects.audiovisual
-                     cdq.effects.projectile
-                     cdq.effects.sound
-                     cdq.effects.spawn
-                     cdq.effects.target-all
-                     cdq.effects.target-entity
+            cdq.effects.audiovisual
+            cdq.effects.projectile
+            cdq.effects.sound
+            cdq.effects.spawn
+            cdq.effects.target-all
+            cdq.effects.target-entity
 
-                     cdq.entity.state.active-skill
-                     cdq.entity.state.npc-dead
-                     cdq.entity.state.npc-idle
-                     cdq.entity.state.npc-moving
-                     cdq.entity.state.npc-sleeping
-                     cdq.entity.state.player-dead
-                     cdq.entity.state.player-idle
-                     cdq.entity.state.player-item-on-cursor
-                     cdq.entity.state.player-moving
-                     cdq.entity.state.stunned
+            cdq.entity.state.active-skill
+            cdq.entity.state.npc-dead
+            cdq.entity.state.npc-idle
+            cdq.entity.state.npc-moving
+            cdq.entity.state.npc-sleeping
+            cdq.entity.state.player-dead
+            cdq.entity.state.player-idle
+            cdq.entity.state.player-item-on-cursor
+            cdq.entity.state.player-moving
+            cdq.entity.state.stunned
 
-                     cdq.entity.alert-friendlies-after-duration
-                     cdq.entity.animation
-                     cdq.entity.clickable
-                     cdq.entity.delete-after-animation-stopped
-                     cdq.entity.delete-after-duration
-                     cdq.entity.destroy-audiovisual
-                     cdq.entity.fsm
-                     cdq.entity.hp
-                     cdq.entity.image
-                     cdq.entity.inventory
-                     cdq.entity.line-render
-                     cdq.entity.mana
-                     cdq.entity.mouseover
-                     cdq.entity.movement
-                     cdq.entity.player ; TODO no tx, binds-root!
-                     cdq.entity.projectile-collision
-                     cdq.entity.skills
-                     cdq.entity.string-effect
-                     cdq.entity.temp-modifier
+            cdq.entity.alert-friendlies-after-duration
+            cdq.entity.animation
+            cdq.entity.clickable
+            cdq.entity.delete-after-animation-stopped
+            cdq.entity.delete-after-duration
+            cdq.entity.destroy-audiovisual
+            cdq.entity.fsm
+            cdq.entity.hp
+            cdq.entity.image
+            cdq.entity.inventory
+            cdq.entity.line-render
+            cdq.entity.mana
+            cdq.entity.mouseover
+            cdq.entity.movement
+            cdq.entity.player ; TODO no tx, binds-root!
+            cdq.entity.projectile-collision
+            cdq.entity.skills
+            cdq.entity.string-effect
+            cdq.entity.temp-modifier
 
-                     cdq.impl.info
-                     cdq.impl.schemas
+            cdq.impl.info
+            cdq.impl.schemas
 
-                     cdq.ui.editor.widget.default
-                     cdq.ui.editor.widget.edn
-                     cdq.ui.editor.widget.string
-                     cdq.ui.editor.widget.boolean
-                     cdq.ui.editor.widget.enum
-                     cdq.ui.editor.widget.sound
-                     cdq.ui.editor.widget.one-to-one
-                     cdq.ui.editor.widget.one-to-many
-                     ]
- :cdq.application.create/schemas "schema.edn"
- :cdq.application.create/db "properties.edn"
- :cdq.application.create/assets {:folder "resources/"
-                   :asset-type-extensions {:sound   #{"wav"}
-                                           :texture #{"png" "bmp"}}}
- :cdq.application.create/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                    :cursors/black-x               ["black_x"      [0   0]]
-                    :cursors/default               ["default"      [0   0]]
-                    :cursors/denied                ["denied"       [16 16]]
-                    :cursors/hand-before-grab      ["hand004"      [4  16]]
-                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                    :cursors/hand-grab             ["hand003"      [4  16]]
-                    :cursors/move-window           ["move002"      [16 16]]
-                    :cursors/no-skill-selected     ["denied003"    [0   0]]
-                    :cursors/over-button           ["hand002"      [0   0]]
-                    :cursors/sandclock             ["sandclock"    [16 16]]
-                    :cursors/skill-not-usable      ["x007"         [0   0]]
-                    :cursors/use-skill             ["pointer004"   [0   0]]
-                    :cursors/walking               ["walking"      [16 16]]}
- :cdq.application.create/cursor-path-format "cursors/%s.png"
- :cdq.application.create/default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                         :size 16
-                         :quality-scaling 2}
- :cdq.application.create/tile-size 48
- :cdq.application.create/world-viewport {:width 1440
-                           :height 900}
- :cdq.application.create/ui-viewport {:width 1440
-                        :height 900}
- :cdq.application.create/ui {:skin-scale :x1}
- :cdq.application.create/tiled-map cdq.level.vampire/create
+            cdq.ui.editor.widget.default
+            cdq.ui.editor.widget.edn
+            cdq.ui.editor.widget.string
+            cdq.ui.editor.widget.boolean
+            cdq.ui.editor.widget.enum
+            cdq.ui.editor.widget.sound
+            cdq.ui.editor.widget.one-to-one
+            cdq.ui.editor.widget.one-to-many
+            ]
+ :schemas "schema.edn"
+ :db "properties.edn"
+ :assets {:folder "resources/"
+          :asset-type-extensions {:sound   #{"wav"}
+                                  :texture #{"png" "bmp"}}}
+ :cursors {:cursors/bag                   ["bag001"       [0   0]]
+           :cursors/black-x               ["black_x"      [0   0]]
+           :cursors/default               ["default"      [0   0]]
+           :cursors/denied                ["denied"       [16 16]]
+           :cursors/hand-before-grab      ["hand004"      [4  16]]
+           :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+           :cursors/hand-grab             ["hand003"      [4  16]]
+           :cursors/move-window           ["move002"      [16 16]]
+           :cursors/no-skill-selected     ["denied003"    [0   0]]
+           :cursors/over-button           ["hand002"      [0   0]]
+           :cursors/sandclock             ["sandclock"    [16 16]]
+           :cursors/skill-not-usable      ["x007"         [0   0]]
+           :cursors/use-skill             ["pointer004"   [0   0]]
+           :cursors/walking               ["walking"      [16 16]]}
+ :cursor-path-format "cursors/%s.png"
+ :default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                :size 16
+                :quality-scaling 2}
+ :tile-size 48
+ :world-viewport {:width 1440
+                  :height 900}
+ :ui-viewport {:width 1440
+               :height 900}
+ :ui {:skin-scale :x1}
+ :tiled-map cdq.level.vampire/create
  ; cdq.level.uf-caves/create
  ; cdq.level.modules/create
- :cdq.application.create/content-grid-cells-size 16
- :cdq.ui.dev-menu/world-fns [cdq.level.vampire/create
-                             cdq.level.uf-caves/create
-                             cdq.level.modules/create]
- :cdq.ui.dev-menu/info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
+ :content-grid-cells-size 16
+ :world-fns [cdq.level.vampire/create
+             cdq.level.uf-caves/create
+             cdq.level.modules/create]
+ :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
  }

@@ -11,11 +11,11 @@
 (defn create [reset-game-function-var]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn (::world-fns ctx/config)]
+             :items (for [world-fn (:world-fns ctx/config)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [] (@reset-game-function-var world-fn))})}
             {:label "Help"
-             :items [{:label (::info ctx/config)}]}
+             :items [{:label (:info ctx/config)}]}
             {:label "Objects"
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys ctx/schemas)))]
                       {:label (str/capitalize (name property-type))

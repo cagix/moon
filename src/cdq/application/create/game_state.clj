@@ -1,7 +1,6 @@
-(ns cdq.application.create
+(ns cdq.application.create.game-state
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
-            [cdq.db :as db]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
@@ -15,13 +14,8 @@
             [cdq.ui.windows]
             [cdq.ui.message]
             [cdq.utils :refer [bind-root
-                               create-config
                                handle-txs!
-                               io-slurp-edn
-                               mapvals
                                tile->middle]]
-            [gdl.assets :as assets]
-            [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]))
@@ -94,7 +88,7 @@
     (bind-root #'ctx/tiled-map tiled-map)
     (bind-root #'ctx/grid (grid/create tiled-map))
     (bind-root #'ctx/raycaster (raycaster/create ctx/grid))
-    (bind-root #'ctx/content-grid (content-grid/create {:cell-size (::content-grid-cells-size ctx/config)
+    (bind-root #'ctx/content-grid (content-grid/create {:cell-size (:content-grid-cells-size ctx/config)
                                                         :width  width
                                                         :height height}))
     (bind-root #'ctx/explored-tile-corners (atom (g2d/create-grid width
@@ -107,29 +101,4 @@
     (handle-txs! (spawn-player start-position))))
 
 (defn do! []
-  (bind-root #'ctx/config (create-config "config.edn"))
-  (run! require (::requires ctx/config))
-  (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
-  (bind-root #'ctx/db (db/create (::db ctx/config)))
-  (bind-root #'ctx/assets (assets/create (::assets ctx/config)))
-  (bind-root #'ctx/batch (graphics/sprite-batch))
-  (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
-  (bind-root #'ctx/shape-drawer (graphics/shape-drawer ctx/batch
-                                                       (graphics/texture-region ctx/shape-drawer-texture 1 0 1 1)))
-  (bind-root #'ctx/cursors (mapvals
-                            (fn [[file [hotspot-x hotspot-y]]]
-                              (graphics/cursor (format (::cursor-path-format ctx/config) file)
-                                               hotspot-x
-                                               hotspot-y))
-                            (::cursors ctx/config)))
-  (bind-root #'ctx/default-font (graphics/truetype-font (::default-font ctx/config)))
-  (bind-root #'ctx/world-unit-scale (float (/ (::tile-size ctx/config))))
-  (bind-root #'ctx/world-viewport (graphics/world-viewport ctx/world-unit-scale
-                                                           (::world-viewport ctx/config)))
-  (bind-root #'ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                     (tiled/renderer tiled-map
-                                                                     ctx/world-unit-scale
-                                                                     (:java-object ctx/batch)))))
-  (bind-root #'ctx/ui-viewport (graphics/ui-viewport (::ui-viewport ctx/config)))
-  (ui/load! (::ui ctx/config))
-  (reset-game! (::tiled-map ctx/config)))
+  (reset-game! (:tiled-map ctx/config)))

@@ -7,7 +7,22 @@
    :window-height 900
    :fps 60
    :dock-icon "moon.png"
-   :create!  'cdq.application.create/do!
+   :create!  '[cdq.application.create.config/do!
+               cdq.application.create.requires/do!
+               cdq.application.create.schemas/do!
+               cdq.application.create.db/do!
+               cdq.application.create.assets/do!
+               cdq.application.create.batch/do!
+               cdq.application.create.shape-drawer-texture/do!
+               cdq.application.create.shape-drawer/do!
+               cdq.application.create.cursors/do!
+               cdq.application.create.default-font/do!
+               cdq.application.create.world-unit-scale/do!
+               cdq.application.create.world-viewport/do!
+               cdq.application.create.tiled-map-renderer/do!
+               cdq.application.create.ui-viewport/do!
+               cdq.application.create.ui/do!
+               cdq.application.create.game-state/do!]
    :dispose! 'cdq.application.dispose/do!
    :render!  '[cdq.application.render.bind-active-entities/do!
                cdq.application.render.set-camera-on-player/do!
@@ -27,7 +42,8 @@
 (defn -main []
   (application/start! (reify application/Listener
                         (create! [_]
-                          ((requiring-resolve (:create! config))))
+                          (doseq [f (:create! config)]
+                            ((requiring-resolve f))))
 
                         (dispose! [_]
                           ((requiring-resolve (:dispose! config))))
