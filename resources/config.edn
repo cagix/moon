@@ -1,4 +1,4 @@
-{:cdq.game/requires [cdq.effects.target.audiovisual
+{:cdq.application.create/requires [cdq.effects.target.audiovisual
                      cdq.effects.target.convert
                      cdq.effects.target.damage
                      cdq.effects.target.kill
@@ -56,12 +56,12 @@
                      cdq.ui.editor.widget.one-to-one
                      cdq.ui.editor.widget.one-to-many
                      ]
- :cdq.game/schemas "schema.edn"
- :cdq.game/db "properties.edn"
- :cdq.game/assets {:folder "resources/"
+ :cdq.application.create/schemas "schema.edn"
+ :cdq.application.create/db "properties.edn"
+ :cdq.application.create/assets {:folder "resources/"
                    :asset-type-extensions {:sound   #{"wav"}
                                            :texture #{"png" "bmp"}}}
- :cdq.game/cursors {:cursors/bag                   ["bag001"       [0   0]]
+ :cdq.application.create/cursors {:cursors/bag                   ["bag001"       [0   0]]
                     :cursors/black-x               ["black_x"      [0   0]]
                     :cursors/default               ["default"      [0   0]]
                     :cursors/denied                ["denied"       [16 16]]
@@ -75,20 +75,20 @@
                     :cursors/skill-not-usable      ["x007"         [0   0]]
                     :cursors/use-skill             ["pointer004"   [0   0]]
                     :cursors/walking               ["walking"      [16 16]]}
- :cdq.game/cursor-path-format "cursors/%s.png"
- :cdq.game/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+ :cdq.application.create/cursor-path-format "cursors/%s.png"
+ :cdq.application.create/default-font {:file "fonts/exocet/films.EXL_____.ttf"
                          :size 16
                          :quality-scaling 2}
- :cdq.game/tile-size 48
- :cdq.game/world-viewport {:width 1440
+ :cdq.application.create/tile-size 48
+ :cdq.application.create/world-viewport {:width 1440
                            :height 900}
- :cdq.game/ui-viewport {:width 1440
+ :cdq.application.create/ui-viewport {:width 1440
                         :height 900}
- :cdq.game/ui {:skin-scale :x1}
- :cdq.game/tiled-map cdq.level.vampire/create
+ :cdq.application.create/ui {:skin-scale :x1}
+ :cdq.application.create/tiled-map cdq.level.vampire/create
  ; cdq.level.uf-caves/create
  ; cdq.level.modules/create
- :cdq.game/content-grid-cells-size 16
+ :cdq.application.create/content-grid-cells-size 16
  :cdq.ui.dev-menu/world-fns [cdq.level.vampire/create
                              cdq.level.uf-caves/create
                              cdq.level.modules/create]

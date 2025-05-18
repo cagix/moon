@@ -7,7 +7,7 @@
    :window-height 900
    :fps 60
    :dock-icon "moon.png"
-   :create! 'cdq.game/create!
+   :create! 'cdq.application.create/do!
    :dispose! 'cdq.game/dispose
    :render! 'cdq.game/render!
    :resize! 'cdq.game/resize!})
