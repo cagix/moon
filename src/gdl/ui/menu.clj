@@ -11,20 +11,19 @@
                                       PopupMenu)))
 
 (defn- set-label-text-actor [label text-fn]
-  (proxy [Actor] []
-    (act [_delta]
-      (Label/.setText label (str (text-fn))))))
+  (ui/actor {:act (fn [_this _delta]
+                    (Label/.setText label (str (text-fn))))}))
 
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (ui/image-widget icon {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
-     (Group/.addActor table (set-label-text-actor label text-fn))
+     (ui/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (ui/label "")]
-     (Group/.addActor table (set-label-text-actor label text-fn))
+     (ui/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
