@@ -6,10 +6,8 @@
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!" #(tx.sound/do! sound-name)))
@@ -25,7 +23,7 @@
   (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets :sound))]
                [(ui/text-button sound-name
                                 (fn []
-                                  (Group/.clearChildren table)
+                                  (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-name)])
                                   (.remove (ui/find-ancestor-window ui/*on-clicked-actor*))
                                   (ui/pack-ancestor-window! table)

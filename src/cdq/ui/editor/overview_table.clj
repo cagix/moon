@@ -3,8 +3,7 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor])
+            [gdl.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)))
 
@@ -38,7 +37,7 @@
                  (ui/text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui/stack [button top-widget])]
-    (actor/add-tooltip! button #(pprint-to-str props))
+    (ui/add-tooltip! button #(pprint-to-str props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 

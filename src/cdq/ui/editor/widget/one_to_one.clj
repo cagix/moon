@@ -7,15 +7,13 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
-                    (Group/.clearChildren table)
+                    (ui/clear-children! table)
                     (add-one-to-one-rows table property-type id)
                     (ui/pack-ancestor-window! table))]
     (ui/add-rows!
@@ -38,7 +36,7 @@
          (let [property (db/build ctx/db property-id)
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
-           (actor/add-tooltip! image-widget #(pprint-to-str property))
+           (ui/add-tooltip! image-widget #(pprint-to-str property))
            image-widget))]
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))
@@ -49,6 +47,6 @@
     table))
 
 (defmethod widget/value :s/one-to-one [_ widget]
-  (->> (Group/.getChildren widget)
+  (->> (ui/children widget)
        (keep Actor/.getUserObject)
        first))

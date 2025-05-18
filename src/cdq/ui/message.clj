@@ -1,8 +1,7 @@
 (ns cdq.ui.message
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn create [& {:keys [name]}]
   (doto (proxy [Actor] []

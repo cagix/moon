@@ -15,8 +15,7 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- apply-context-fn [window f]
@@ -62,7 +61,7 @@
 
 (defn- window->property-value []
  (let [window (get-editor-window)
-       scroll-pane-table (Group/.findActor (:scroll-pane window) "scroll-pane-table")
+       scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table)))
@@ -83,7 +82,7 @@
   (utils/find-first (fn [actor]
                       (and (Actor/.getUserObject actor)
                            (= k ((Actor/.getUserObject actor) 0))))
-                    (Group/.getChildren table)))
+                    (ui/children table)))
 
 (defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -185,7 +184,7 @@
 
 (defmethod widget/value :s/map [_ table]
   (into {}
-        (for [widget (filter value-widget? (Group/.getChildren table))
+        (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (Actor/.getUserObject widget)]]
           [k (widget/value (get ctx/schemas k) widget)])))
 
@@ -238,7 +237,7 @@
     (.addListener tabbed-pane
                   (proxy [TabbedPaneAdapter] []
                     (switchedTab [^Tab tab]
-                      (Group/.getChildren container)
+                      (ui/children container)
                       (.fill (.expand (.add container (.getContentTable tab)))))))
     (.fillX (.expandX (.add table (.getTable tabbed-pane))))
     (.row table)

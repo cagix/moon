@@ -1,5 +1,4 @@
 (ns gdl.ui
-  (:require [gdl.ui.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -35,6 +34,74 @@
                                       VisTextField
                                       VisScrollPane
                                       VisWindow)))
+
+(defn visible? [^Actor actor]
+  (.isVisible actor))
+
+(defn toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
+(defn add-tooltip!
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
+  Returns the actor."
+  [^Actor actor tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip actor)
+    (.setContent tooltip label))
+  actor)
+
+(defn remove-tooltip! [^Actor actor]
+  (Tooltip/removeTooltip actor))
+
+(defn- set-actor-opts! [^Actor actor {:keys [id
+                                             name
+                                             user-object
+                                             visible?
+                                             center-position
+                                             position] :as opts}]
+  (when id
+    (.setUserObject actor id))
+  (when name
+    (.setName actor name))
+  (when user-object
+    (.setUserObject actor user-object))
+  (when (contains? opts :visible?)
+    (.setVisible actor (boolean visible?)))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  actor)
+
+(defn actor [opts]
+  (doto (proxy [Actor] [])
+    (set-actor-opts! opts)))
+
+(defn find-actor [^Group group name]
+  (.findActor group name))
+
+(defn add-actor! [^Group group actor]
+  (.addActor group actor))
+
+(defn clear-children! [^Group group]
+  (.clearChildren group))
+
+(defn children [^Group group]
+  (.getChildren group))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -125,7 +192,7 @@
   (add-rows! table rows))
 
 (defn- set-opts! [actor opts]
-  (actor/set-opts! actor opts)
+  (set-actor-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)

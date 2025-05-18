@@ -10,8 +10,7 @@
             [cdq.utils :as utils]
             [gdl.graphics]
             [gdl.graphics.viewport :as viewport]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor])
+            [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Image
@@ -132,13 +131,13 @@
         drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
-    (actor/add-tooltip! cell-widget #(info/text item))))
+    (ui/add-tooltip! cell-widget #(info/text item))))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)
         image-widget (get cell-widget :image)]
     (Image/.setDrawable image-widget (slot->background (cell 0)))
-    (actor/remove-tooltip! cell-widget)))
+    (ui/remove-tooltip! cell-widget)))
 
 (defn cell-with-item? [actor]
   {:pre [actor]}

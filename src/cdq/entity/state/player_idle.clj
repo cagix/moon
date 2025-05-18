@@ -11,8 +11,7 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.input]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [gdl.ui.stage :as stage]))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -21,7 +20,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> ctx/stage :windows :inventory-window Actor/.isVisible)
+     (-> ctx/stage :windows :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event ctx/player-eid :pickup-item item]]
