@@ -1,7 +1,7 @@
 (ns cdq.application.render.when-not-paused
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.potential-field :as potential-field]
+            [cdq.potential-field.update :as potential-field]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :refer [bind-root
                                pretty-pst

@@ -4,7 +4,7 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.potential-field :as potential-field]
+            [cdq.potential-field.movement :as potential-field]
             [cdq.utils :refer [defcomponent]]))
 
 (defn- npc-choose-skill [entity ctx]
