@@ -3,7 +3,6 @@
             [cdq.effect :as effect]
             [cdq.op :as op]
             [cdq.malli :as m]
-            [cdq.math :as math]
             [cdq.raycaster :as raycaster]
             [cdq.val-max :as val-max]
             [gdl.graphics.camera :as camera]))
@@ -47,9 +46,6 @@
     (mod-value base-value
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
-
-(defn collides? [entity other-entity]
-  (math/overlaps? entity other-entity))
 
 (defn tile [entity]
   (mapv int (:position entity)))

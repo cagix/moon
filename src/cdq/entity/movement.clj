@@ -4,6 +4,7 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.malli :as m]
+            [cdq.math :as math]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
 
@@ -25,7 +26,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (entity/collides? other-entity body)))))))))
+                                 (math/overlaps? other-entity body)))))))))
 
 (defn- try-move [grid body movement]
   (let [new-body (move-body body movement)]

@@ -3,6 +3,7 @@
             [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
+            [cdq.math :as math]
             [cdq.utils :refer [defcomponent find-first]]))
 
 (defcomponent :entity/projectile-collision
@@ -20,7 +21,7 @@
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))
                                        (:collides? @%)
-                                       (entity/collides? entity @%))
+                                       (math/overlaps? entity @%))
                                  (grid/cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
                        (some #(cell/blocked? % (:z-order entity)) cells*))]
