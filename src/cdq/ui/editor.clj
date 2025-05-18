@@ -10,7 +10,6 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [clojure.set :as set]
-            [clojure.string :as str]
             [gdl.input :as input]
             [gdl.ui :as ui]))
 
@@ -187,52 +186,6 @@
 
 (defn- edit-property [id]
   (ui/add! ctx/stage (editor-window (db/get-raw ctx/db id))))
-
-; TODO unused code below
-
-(import '(com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter))
-
-(defn- property-type-tabs []
-  (for [property-type (sort (filter #(= "properties" (namespace %)) (keys ctx/schemas)))]
-    {:title (str/capitalize (name property-type))
-     :content (overview-table/create property-type edit-property)}))
-
-(defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
-  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
-    (getTabTitle [] title)
-    (getContentTable [] content)))
-
-#_(defn tabs-table []
-  (let [label-str "foobar"
-        table (ui/table {:fill-parent? true})
-        container (ui/table {})
-        tabbed-pane (TabbedPane.)]
-    (.addListener tabbed-pane
-                  (proxy [TabbedPaneAdapter] []
-                    (switchedTab [^Tab tab]
-                      (ui/children container)
-                      (.fill (.expand (.add container (.getContentTable tab)))))))
-    (.fillX (.expandX (.add table (.getTable tabbed-pane))))
-    (.row table)
-    (.fill (.expand (.add table container)))
-    (.row table)
-    (.pad (.left (.add table (ui/label label-str))) (float 10))
-    (doseq [tab-data (property-type-tabs)]
-      (.add tabbed-pane (tab-widget tab-data)))
-    table))
-
-#_(defn- background-image [path]
-    (ui/image-widget (ctx/assets path)
-                     {:fill-parent? true
-                      :scaling :fill
-                      :align :center}))
-
-#_(defn create []
-  ; TODO cannot find asset when starting from 'moon' ...
-  ; because assets are searhed and loaded differently ...
-  (doseq [actor [(background-image "images/moon_background.png")
-                 (tabs-table       "custom label text here")]]
-    (ui/add! ctx/stage actor)))
 
 (defn open-editor-window! [property-type]
   (let [window (ui/window {:title "Edit"

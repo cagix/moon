@@ -5,6 +5,8 @@
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]))
 
+; FIXME not refreshed after changes in properties
+
 (def ^:private overview {:properties/audiovisuals {:columns 10
                                                    :image/scale 2}
                          :properties/creatures {:columns 15
