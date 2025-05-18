@@ -1,11 +1,10 @@
 (ns cdq.ui.editor.widget.string
   (:require [cdq.ui.editor.widget :as widget]
-            [gdl.ui :as ui])
-  (:import (com.kotcrab.vis.ui.widget VisTextField)))
+            [gdl.ui :as ui]))
 
 (defmethod widget/create :string [schema v]
   (ui/add-tooltip! (ui/text-field v {})
                    (str schema)))
 
 (defmethod widget/value :string [_ widget]
-  (VisTextField/.getText widget))
+  (ui/get-text widget))

@@ -7,9 +7,7 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+            [gdl.ui.stage :as stage]))
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
@@ -29,7 +27,7 @@
                                  clicked-id-fn (fn [id]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (Table/.add window ^Actor (overview-table/create property-type clicked-id-fn))
+                             (ui/table-add! window (overview-table/create property-type clicked-id-fn))
                              (.pack window)
                              (stage/add-actor! ctx/stage window)))))]
       [(when property-id
@@ -48,5 +46,5 @@
 
 (defmethod widget/value :s/one-to-one [_ widget]
   (->> (ui/children widget)
-       (keep Actor/.getUserObject)
+       (keep ui/user-object)
        first))

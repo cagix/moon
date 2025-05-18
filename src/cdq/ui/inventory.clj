@@ -18,8 +18,7 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   TextureRegionDrawable
                                                   ClickListener
-                                                  Drawable)
-           (com.badlogic.gdx.math Vector2)))
+                                                  Drawable)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -49,10 +48,8 @@
         (draw-cell-rect! @ctx/player-eid
                          (.getX actor)
                          (.getY actor)
-                         (let [[x y] (viewport/mouse-position ctx/ui-viewport)
-                               v (.stageToLocalCoordinates actor (Vector2. x y))]
-                           (Actor/.hit actor (.x v) (.y v) true))
-                         (Actor/.getUserObject (.getParent actor)))))))
+                         (ui/hit actor (viewport/mouse-position ctx/ui-viewport))
+                         (ui/user-object (ui/parent actor)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -141,7 +138,7 @@
 
 (defn cell-with-item? [actor]
   {:pre [actor]}
-  (and (Actor/.getParent actor)
-       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
+  (and (ui/parent actor)
+       (= "inventory-cell" (Actor/.getName (ui/parent actor)))
        (get-in (:entity/inventory @ctx/player-eid)
-               (Actor/.getUserObject (Actor/.getParent actor)))))
+               (ui/user-object (ui/parent actor)))))

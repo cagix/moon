@@ -1,8 +1,7 @@
 (ns cdq.ui.entity-info
   (:require [cdq.ctx :as ctx]
             [cdq.info :as info]
-            [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [gdl.ui :as ui]))
 
 (let [disallowed-keys [:entity/skills
                        #_:entity/fsm
@@ -27,8 +26,7 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (proxy [Actor] []
-                        (act [_delta]
-                          (.setText label (str (->label-text)))
-                          (.pack window))))
+    (.addActor window (ui/actor {:act (fn [_this _delta]
+                                        (.setText label (str (->label-text)))
+                                        (.pack window))}))
     window))

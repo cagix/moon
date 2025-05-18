@@ -4,8 +4,8 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.utils :as utils]
-            [cdq.val-max :as val-max])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [cdq.val-max :as val-max]
+            [gdl.ui :as ui]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (draw/text {:text infostr
@@ -25,9 +25,9 @@
                                                              [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                         [x y])
                             (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (proxy [Actor] []
-      (draw [_batch _parent-alpha]
-        (let [player-entity @ctx/player-eid
-              x (- x (/ rahmenw 2))]
-          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP"))))))
+    (ui/actor
+     {:draw (fn [_this]
+              (let [player-entity @ctx/player-eid
+                    x (- x (/ rahmenw 2))]
+                (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))

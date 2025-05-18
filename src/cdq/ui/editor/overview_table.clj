@@ -3,9 +3,7 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Touchable)))
+            [gdl.ui :as ui]))
 
 (def ^:private overview {:properties/audiovisuals {:columns 10
                                                    :image/scale 2}
@@ -38,7 +36,7 @@
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui/stack [button top-widget])]
     (ui/add-tooltip! button #(pprint-to-str props))
-    (Actor/.setTouchable top-widget Touchable/disabled)
+    (ui/set-touchable! top-widget :disabled)
     stack))
 
 (defn create [property-type clicked-id-fn]

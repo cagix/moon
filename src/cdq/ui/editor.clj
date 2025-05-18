@@ -14,13 +14,11 @@
             [gdl.assets :as assets]
             [gdl.input :as input]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+            [gdl.ui.stage :as stage]))
 
 (defn- apply-context-fn [window f]
   #(try (f)
-        (Actor/.remove window)
+        (ui/remove! window)
         (catch Throwable t
           (utils/pretty-pst t)
           (stage/add-actor! ctx/stage (error-window/create t)))))
@@ -49,10 +47,9 @@
                                                       :center? true}
                                                      {:actor (ui/text-button "Delete" delete!)
                                                       :center? true}]])]])
-    (.addActor window (proxy [Actor] []
-                        (act [_delta]
-                          (when (input/key-just-pressed? :enter)
-                            (save!)))))
+    (.addActor window (ui/actor {:act (fn [_this _delta]
+                                        (when (input/key-just-pressed? :enter)
+                                          (save!)))}))
     (.pack window)
     window))
 
@@ -62,26 +59,26 @@
 (defn- window->property-value []
  (let [window (get-editor-window)
        scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
+       m-widget-cell (first (seq (ui/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table)))
 
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
-    (Actor/.remove (get-editor-window))
+    (ui/remove! (get-editor-window))
     (stage/add-actor! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (widget/create (get ctx/schemas k) v)]
-    (Actor/.setUserObject widget [k v])
+    (ui/set-user-object! widget [k v])
     widget))
 
-(def ^:private value-widget? (comp vector? Actor/.getUserObject))
+(def ^:private value-widget? (comp vector? ui/user-object))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
-                      (and (Actor/.getUserObject actor)
-                           (= k ((Actor/.getUserObject actor) 0))))
+                      (and (ui/user-object actor)
+                           (= k ((ui/user-object actor) 0))))
                     (ui/children table)))
 
 (defn- attribute-label [k schema table]
@@ -90,7 +87,7 @@
         delete-button (when (m/optional? k (schema/malli-form schema ctx/schemas))
                         (ui/text-button "-"
                                         (fn []
-                                          (Actor/.remove (find-kv-widget table k))
+                                          (ui/remove! (find-kv-widget table k))
                                           (rebuild-editor-window))))]
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
@@ -185,7 +182,7 @@
 (defmethod widget/value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
-              :let [[k _] (Actor/.getUserObject widget)]]
+              :let [[k _] (ui/user-object widget)]]
           [k (widget/value (get ctx/schemas k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
@@ -267,6 +264,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (Table/.add window ^Actor (overview-table/create property-type edit-property))
+    (ui/table-add! window (overview-table/create property-type edit-property))
     (.pack window)
     (stage/add-actor! ctx/stage window)))

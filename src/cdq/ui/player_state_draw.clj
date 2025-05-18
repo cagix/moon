@@ -1,10 +1,10 @@
 (ns cdq.ui.player-state-draw
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.state :as state])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [cdq.state :as state]
+            [gdl.ui :as ui]))
 
 (defn create []
-  (proxy [Actor] []
-    (draw [_batch _parent-alpha]
-      (state/draw-gui-view (entity/state-obj @ctx/player-eid)))))
+  (ui/actor
+   {:draw (fn [_this]
+            (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))

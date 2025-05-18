@@ -3,7 +3,8 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+                                            Group
+                                            Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Cell
                                                Table
@@ -19,7 +20,9 @@
                                                   Drawable
                                                   TextureRegionDrawable
                                                   ChangeListener)
-           (com.badlogic.gdx.utils Align Scaling)
+           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils Align
+                                   Scaling)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip
@@ -35,35 +38,34 @@
                                       VisScrollPane
                                       VisWindow)))
 
+(defn user-object [^Actor actor]
+  (.getUserObject actor))
+
+(defn set-user-object! [^Actor actor object]
+  (.setUserObject actor object))
+
 (defn visible? [^Actor actor]
   (.isVisible actor))
 
-(defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
+(defn set-visible! [^Actor actor visible?]
+  (.setVisible actor visible?))
 
-(defn add-tooltip!
-  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
-  Returns the actor."
-  [^Actor actor tooltip-text]
-  (let [text? (string? tooltip-text)
-        label (VisLabel. (if text? tooltip-text ""))
-        tooltip (proxy [Tooltip] []
-                  ; hooking into getWidth because at
-                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                  ; when tooltip position gets calculated we setText (which calls pack) before that
-                  ; so that the size is correct for the newly calculated text.
-                  (getWidth []
-                    (let [^Tooltip this this]
-                      (when-not text?
-                        (.setText this (str (tooltip-text))))
-                      (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
-    (.setTarget  tooltip actor)
-    (.setContent tooltip label))
-  actor)
+(defn toggle-visible! [actor]
+  (set-visible! actor (not (visible? actor))))
 
-(defn remove-tooltip! [^Actor actor]
-  (Tooltip/removeTooltip actor))
+(defn set-touchable! [^Actor actor touchable]
+  (.setTouchable actor (case touchable
+                         :disabled Touchable/disabled)))
+
+(defn remove! [^Actor actor]
+  (.remove actor))
+
+(defn parent [^Actor actor]
+  (.getParent actor))
+
+(defn hit [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
 
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
@@ -72,13 +74,13 @@
                                              center-position
                                              position] :as opts}]
   (when id
-    (.setUserObject actor id))
+    (set-user-object! actor id))
   (when name
     (.setName actor name))
   (when user-object
-    (.setUserObject actor user-object))
+    (set-user-object! actor user-object))
   (when (contains? opts :visible?)
-    (.setVisible actor (boolean visible?)))
+    (set-visible! actor visible?))
   (when-let [[x y] center-position]
     (.setPosition actor
                   (- x (/ (.getWidth  actor) 2))
@@ -88,7 +90,13 @@
   actor)
 
 (defn actor [opts]
-  (doto (proxy [Actor] [])
+  (doto (proxy [Actor] []
+          (act [delta]
+            (when-let [f (:act opts)]
+              (f this delta)))
+          (draw [_batch _parent-alpha]
+            (when-let [f (:draw opts)]
+              (f this))))
     (set-actor-opts! opts)))
 
 (defn find-actor [^Group group name]
@@ -122,13 +130,13 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defn find-actor-with-id [^Group group id]
-  (let [actors (.getChildren group)
-        ids (keep Actor/.getUserObject actors)]
+(defn find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep user-object actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+    (first (filter #(= id (user-object %)) actors))))
 
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
@@ -228,14 +236,24 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
+(def checked? VisCheckBox/.isChecked)
+
 (defn select-box [{:keys [items selected]}]
   (doto (VisSelectBox.)
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
 
+(def get-selected VisSelectBox/.getSelected)
+
 (defn table ^Table [opts]
   (-> (proxy-ILookup VisTable [])
       (set-opts! opts)))
+
+(defn table-add! [^Table table ^Actor actor]
+  (.add table actor))
+
+(defn cells [^Table table]
+  (.getCells table))
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
   (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
@@ -252,6 +270,8 @@
 (defn text-field [text opts]
   (-> (VisTextField. (str text))
       (set-opts! opts)))
+
+(def get-text VisTextField/.getText)
 
 (defn stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
@@ -287,7 +307,7 @@
 
 (defn scroll-pane [actor]
   (let [scroll-pane (VisScrollPane. actor)]
-    (.setUserObject scroll-pane :scroll-pane)
+    (set-user-object! scroll-pane :scroll-pane)
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
     scroll-pane))
@@ -324,7 +344,7 @@
   (proxy [Tree$Node] [actor]))
 
 (defn find-ancestor-window ^Window [actor]
-  (if-let [p (Actor/.getParent actor)]
+  (if-let [p (parent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))
@@ -355,14 +375,38 @@
   "Returns true if the actor or its parent is a button."
   [^Actor actor]
   (or (button-class? actor)
-      (and (.getParent actor)
-           (button-class? (.getParent actor)))))
+      (and (parent actor)
+           (button-class? (parent actor)))))
 
 (defn window-title-bar? ; TODO buggy FIXME
   "Returns true if the actor is a window title bar."
   [^Actor actor]
   (when (instance? Label actor)
-    (when-let [p (.getParent actor)]
-      (when-let [p (.getParent p)]
+    (when-let [p (parent actor)]
+      (when-let [p (parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
+
+(defn add-tooltip!
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
+  Returns the actor."
+  [^Actor actor tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip actor)
+    (.setContent tooltip label))
+  actor)
+
+(defn remove-tooltip! [^Actor actor]
+  (Tooltip/removeTooltip actor))

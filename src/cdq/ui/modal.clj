@@ -1,7 +1,6 @@
 (ns cdq.ui.modal
   (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [gdl.ui :as ui]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -13,7 +12,7 @@
               :rows [[(ui/label text)]
                      [(ui/text-button button-text
                                       (fn []
-                                        (Actor/.remove (::modal ctx/stage))
+                                        (ui/remove! (::modal ctx/stage))
                                         (on-click)))]]
               :id ::modal
               :modal? true
