@@ -354,11 +354,11 @@
 
 (defn -main []
   (bind-root #'ctx/config (create-config "config.edn"))
-  (run! require (::requires ctx/config))
-  (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
-  (bind-root #'ctx/db (db/create (::db ctx/config)))
   (application/start! (reify application/Listener
                         (create! [_]
+                          (run! require (::requires ctx/config))
+                          (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
+                          (bind-root #'ctx/db (db/create (::db ctx/config)))
                           (bind-root #'ctx/assets (assets/create (::assets ctx/config)))
                           (bind-root #'ctx/batch (graphics/sprite-batch))
                           (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
