@@ -1,6 +1,18 @@
 (ns cdq.ctx
   (:require [cdq.utils :as utils]))
 
+(comment
+ (spit "asset_diagnostics" (.getDiagnostics assets))
+
+ (count (seq (.getAssetNames assets)))
+
+ (spit "assets"
+       (with-out-str
+        (clojure.pprint/pprint
+         (for [asset-name (.getAssetNames assets)]
+           [asset-name (.get assets asset-name)]))))
+ )
+
 (declare config)
 
 (def pausing? true)
