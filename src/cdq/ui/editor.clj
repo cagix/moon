@@ -13,15 +13,14 @@
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.input :as input]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
   #(try (f)
         (ui/remove! window)
         (catch Throwable t
           (utils/pretty-pst t)
-          (stage/add-actor! ctx/stage (error-window/create t)))))
+          (ui/add! ctx/stage (error-window/create t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -66,7 +65,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (ui/remove! (get-editor-window))
-    (stage/add-actor! ctx/stage (editor-window prop-value))))
+    (ui/add! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (widget/create (get ctx/schemas k) v)]
@@ -136,7 +135,7 @@
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
     (.pack window)
-    (stage/add-actor! ctx/stage window)))
+    (ui/add! ctx/stage window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -197,7 +196,7 @@
                    (fn on-clicked [])
                    {:scale 2})
   #_(ui/image-button image
-                     #(stage/add-actor! ctx/stage (scroll-pane/choose-window (texture-rows)))
+                     #(ui/add! ctx/stage (scroll-pane/choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod widget/create :s/animation [_ animation]
@@ -210,7 +209,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add-actor! ctx/stage (editor-window (db/get-raw ctx/db id))))
+  (ui/add! ctx/stage (editor-window (db/get-raw ctx/db id))))
 
 ; TODO unused code below
 
@@ -256,7 +255,7 @@
   ; because assets are searhed and loaded differently ...
   (doseq [actor [(background-image "images/moon_background.png")
                  (tabs-table       "custom label text here")]]
-    (stage/add-actor! ctx/stage actor)))
+    (ui/add! ctx/stage actor)))
 
 (defn open-editor-window! [property-type]
   (let [window (ui/window {:title "Edit"
@@ -264,6 +263,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (ui/table-add! window (overview-table/create property-type edit-property))
+    (ui/add! window (overview-table/create property-type edit-property))
     (.pack window)
-    (stage/add-actor! ctx/stage window)))
+    (ui/add! ctx/stage window)))

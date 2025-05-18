@@ -10,8 +10,7 @@
             [cdq.vector2 :as v]
             [gdl.graphics.viewport :as viewport]
             [gdl.input]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -70,7 +69,7 @@
 
 (defn- interaction-state [eid]
   (let [entity @eid
-        mouseover-actor (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))]
+        mouseover-actor (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))]
     (cond
      mouseover-actor
      [(mouseover-actor->cursor mouseover-actor)

@@ -8,7 +8,7 @@
             [cdq.vector2 :as v]
             [gdl.input :as input]
             [gdl.graphics.viewport :as viewport]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui :as ui]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -45,7 +45,7 @@
       [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn- world-item? []
-  (not (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))))
+  (not (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners

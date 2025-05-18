@@ -37,7 +37,6 @@
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose!]]))
 
 (defn- geom-test! []
@@ -147,7 +146,7 @@
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (pretty-pst t)
-     (stage/add-actor! ctx/stage (error-window/create t))
+     (ui/add! ctx/stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
@@ -189,7 +188,7 @@
                     (input/key-pressed? (get ctx/controls :unpause-continously)))))))
 
 (defn- update-mouseover-entity! []
-  (let [new-eid (if (stage/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
+  (let [new-eid (if (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -320,20 +319,20 @@
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (stage/create (:java-object ctx/ui-viewport)
-                                       (:java-object ctx/batch)
-                                       [(dev-menu/create #'reset-game!)
-                                        (action-bar/create :id :action-bar)
-                                        (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
-                                                                    80 ; action-bar-icon-size
-                                                                    ])
-                                        (cdq.ui.windows/create :id :windows
-                                                               :actors [(cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
-                                                                        (cdq.ui.inventory/create :id :inventory-window
-                                                                                                 :position [(:width  ctx/ui-viewport)
-                                                                                                            (:height ctx/ui-viewport)])])
-                                        (cdq.ui.player-state-draw/create)
-                                        (cdq.ui.message/create :name "player-message")]))
+  (bind-root #'ctx/stage (ui/stage (:java-object ctx/ui-viewport)
+                                   (:java-object ctx/batch)
+                                   [(dev-menu/create #'reset-game!)
+                                    (action-bar/create :id :action-bar)
+                                    (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
+                                                                80 ; action-bar-icon-size
+                                                                ])
+                                    (cdq.ui.windows/create :id :windows
+                                                           :actors [(cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
+                                                                    (cdq.ui.inventory/create :id :inventory-window
+                                                                                             :position [(:width  ctx/ui-viewport)
+                                                                                                        (:height ctx/ui-viewport)])])
+                                    (cdq.ui.player-state-draw/create)
+                                    (cdq.ui.message/create :name "player-message")]))
   (input/set-processor! ctx/stage)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
@@ -403,8 +402,8 @@
                                                 render-entities!
                                                 ; geom-test!
                                                 highlight-mouseover-tile!])
-                          (stage/draw! ctx/stage)
-                          (stage/act! ctx/stage)
+                          (ui/draw! ctx/stage)
+                          (ui/act! ctx/stage)
                           (player-state-handle-click)
                           (update-mouseover-entity!)
                           (bind-root #'ctx/paused? (pause-game?))

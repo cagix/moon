@@ -36,7 +36,7 @@
         button (ui/image-button image (fn []) {:scale 2})]
     (ui/set-user-object! button id)
     (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (ui/add-actor! horizontal-group button)
+    (ui/add! horizontal-group button)
     (button-group/add! button-group button)
     nil))
 

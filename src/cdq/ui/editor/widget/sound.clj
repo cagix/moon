@@ -5,8 +5,7 @@
             [cdq.ui.editor.widget :as widget]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui :as ui]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!" #(tx.sound/do! sound-name)))
@@ -29,7 +28,7 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage/add-actor! ctx/stage (scroll-pane/choose-window rows))))
+    (ui/add! ctx/stage (scroll-pane/choose-window rows))))
 
 (defn- columns [table sound-name]
   [(ui/text-button sound-name #(choose-window table))

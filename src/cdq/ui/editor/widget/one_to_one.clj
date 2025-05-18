@@ -6,8 +6,7 @@
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui :as ui]))
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
@@ -27,9 +26,9 @@
                                  clicked-id-fn (fn [id]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (ui/table-add! window (overview-table/create property-type clicked-id-fn))
+                             (ui/add! window (overview-table/create property-type clicked-id-fn))
                              (.pack window)
-                             (stage/add-actor! ctx/stage window)))))]
+                             (ui/add! ctx/stage window)))))]
       [(when property-id
          (let [property (db/build ctx/db property-id)
                image-widget (ui/image->widget (property/image property)

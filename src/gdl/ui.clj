@@ -4,6 +4,7 @@
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
+                                            Stage
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Cell
@@ -63,10 +64,6 @@
 (defn parent [^Actor actor]
   (.getParent actor))
 
-(defn hit [^Actor actor [x y]]
-  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-    (.hit actor (.x v) (.y v) true)))
-
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
                                              user-object
@@ -102,14 +99,61 @@
 (defn find-actor [^Group group name]
   (.findActor group name))
 
-(defn add-actor! [^Group group actor]
-  (.addActor group actor))
+(defprotocol CanAddActor
+  (add! [_ actor]))
+
+(extend-protocol CanAddActor
+  Group
+  (add! [group actor]
+    (.addActor group actor))
+  Stage
+  (add! [stage actor]
+    (.addActor stage actor))
+  Table
+  (add! [table actor]
+    (.add table actor)))
+
+(defprotocol CanHit
+  (hit [_ [x y]]))
+
+(extend-protocol CanHit
+  Actor
+  (hit [actor [x y]]
+    (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+      (.hit actor (.x v) (.y v) true)))
+  Stage
+  (hit [stage [x y]]
+    (.hit stage x y true)))
 
 (defn clear-children! [^Group group]
   (.clearChildren group))
 
 (defn children [^Group group]
   (.getChildren group))
+
+(defn- find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep user-object actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (user-object %)) actors))))
+
+(defn draw! [stage]
+  (Stage/.draw stage))
+
+(defn act! [stage]
+  (Stage/.act stage))
+
+(defn root [stage]
+  (Stage/.getRoot stage))
+
+(defn stage [viewport batch actors]
+  (let [stage (proxy [Stage ILookup] [viewport batch]
+                (valAt [id]
+                  (find-actor-with-id (root this) id)))]
+    (run! (partial add! stage) actors)
+    stage))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -129,14 +173,6 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
-
-(defn find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (user-object %)) actors))))
 
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
@@ -248,9 +284,6 @@
 (defn table ^Table [opts]
   (-> (proxy-ILookup VisTable [])
       (set-opts! opts)))
-
-(defn table-add! [^Table table ^Actor actor]
-  (.add table actor))
 
 (defn cells [^Table table]
   (.getCells table))
