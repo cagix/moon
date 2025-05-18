@@ -182,8 +182,6 @@
               :let [[k _] (ui/user-object widget)]]
           [k (widget/value (get ctx/schemas k) widget)])))
 
-; FIXME overview table not refreshed after changes in properties
-
 (defn- edit-property [id]
   (ui/add! ctx/stage (editor-window (db/get-raw ctx/db id))))
 
