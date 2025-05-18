@@ -9,4 +9,3 @@
 
 (defmethod widget/value :boolean [_ widget]
   (VisCheckBox/.isChecked widget))
-
