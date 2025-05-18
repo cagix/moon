@@ -31,7 +31,7 @@
                                  clicked-id-fn (fn [id]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (Table/.add table window ^Actor (overview-table/create property-type clicked-id-fn))
+                             (Table/.add window ^Actor (overview-table/create property-type clicked-id-fn))
                              (.pack window)
                              (stage/add-actor! ctx/stage window)))))]
       [(when property-id
