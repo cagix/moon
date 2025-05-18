@@ -2,12 +2,12 @@
   (:require [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.op :as op]
+            [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.raycaster :as raycaster]
             [cdq.val-max :as val-max]
             [cdq.vector2 :as v]
-            [gdl.graphics.camera :as camera]
-            [gdl.malli :as m]))
+            [gdl.graphics.camera :as camera]))
 
 (defmulti create (fn [[k]]
                    k))

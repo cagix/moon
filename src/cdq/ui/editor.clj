@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.property :as property]
+            [cdq.malli :as m]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
@@ -13,8 +14,7 @@
             [gdl.assets :as assets]
             [gdl.input :as input]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
-            [gdl.malli :as m])
+            [gdl.ui.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

@@ -3,10 +3,10 @@
   (:require [cdq.ctx :as ctx]
             [cdq.schema :as schema]
             [cdq.property :as property]
+            [cdq.malli :as m]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [gdl.malli :as m]))
+            [clojure.java.io :as io]))
 
 (defprotocol PDB
   (update [_ property]

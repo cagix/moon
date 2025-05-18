@@ -1,4 +1,4 @@
-(ns gdl.malli
+(ns cdq.malli
   (:require [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
