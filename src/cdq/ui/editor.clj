@@ -11,7 +11,6 @@
             [cdq.utils :as utils]
             [clojure.set :as set]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.input :as input]
             [gdl.ui :as ui]))
 
@@ -183,28 +182,6 @@
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (ui/user-object widget)]]
           [k (widget/value (get ctx/schemas k) widget)])))
-
-; too many ! too big ! scroll ... only show files first & preview?
-; make tree view from folders, etc. .. !! all creatures animations showing...
-#_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type ctx/assets :texture))]
-    [(ui/image-button (image file) (fn []))]
-    #_[(ui/text-button file (fn []))]))
-
-(defmethod widget/create :s/image [schema image]
-  (ui/image-button (schema/edn->value schema image)
-                   (fn on-clicked [])
-                   {:scale 2})
-  #_(ui/image-button image
-                     #(ui/add! ctx/stage (scroll-pane/choose-window (texture-rows)))
-                     {:dimensions [96 96]})) ; x2  , not hardcoded here
-
-(defmethod widget/create :s/animation [_ animation]
-  (ui/table {:rows [(for [image (:frames animation)]
-                      (ui/image-button (schema/edn->value :s/image image)
-                                       (fn on-clicked [])
-                                       {:scale 2}))]
-             :cell-defaults {:pad 1}}))
 
 ; FIXME overview table not refreshed after changes in properties
 

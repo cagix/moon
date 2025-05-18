@@ -55,6 +55,8 @@
             cdq.ui.editor.widget.sound
             cdq.ui.editor.widget.one-to-one
             cdq.ui.editor.widget.one-to-many
+            cdq.ui.editor.widget.image
+            cdq.ui.editor.widget.animation
             ]
  :schemas "schema.edn"
  :db "properties.edn"
