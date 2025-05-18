@@ -111,7 +111,7 @@
     (.addActor stage actor))
   Table
   (add! [table actor]
-    (.add table actor)))
+    (.add table ^Actor actor)))
 
 (defprotocol CanHit
   (hit [_ [x y]]))
