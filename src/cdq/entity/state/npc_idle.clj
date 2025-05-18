@@ -20,7 +20,7 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (cell/nearest-entity @(ctx/grid (entity/tile entity))
+        target (cell/nearest-entity @(ctx/grid (mapv int (:position entity)))
                                     (entity/enemy entity))
         target (when (and target
                           (entity/line-of-sight? entity @target))

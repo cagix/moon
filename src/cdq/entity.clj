@@ -47,9 +47,6 @@
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
-(defn tile [entity]
-  (mapv int (:position entity)))
-
 (defn enemy [{:keys [entity/faction]}]
   (case faction
     :evil :good
