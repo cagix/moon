@@ -58,11 +58,6 @@
                      ]
  :cdq.game/schemas "schema.edn"
  :cdq.game/db "properties.edn"
- :cdq.game/application {:title "Cyber Dungeon Quest"
-                        :window-width 1440
-                        :window-height 900
-                        :fps 60
-                        :dock-icon "moon.png"}
  :cdq.game/assets {:folder "resources/"
                    :asset-type-extensions {:sound   #{"wav"}
                                            :texture #{"png" "bmp"}}}

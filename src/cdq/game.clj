@@ -28,7 +28,6 @@
                                tile->middle
                                safe-get
                                mapvals]]
-            [gdl.application :as application]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
@@ -352,69 +351,66 @@
     (handle-txs! (spawn-enemies tiled-map))
     (handle-txs! (spawn-player start-position))))
 
-(defn -main []
+(defn create! []
   (bind-root #'ctx/config (create-config "config.edn"))
-  (application/start! (reify application/Listener
-                        (create! [_]
-                          (run! require (::requires ctx/config))
-                          (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
-                          (bind-root #'ctx/db (db/create (::db ctx/config)))
-                          (bind-root #'ctx/assets (assets/create (::assets ctx/config)))
-                          (bind-root #'ctx/batch (graphics/sprite-batch))
-                          (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
-                          (bind-root #'ctx/shape-drawer (graphics/shape-drawer ctx/batch
-                                                                               (graphics/texture-region ctx/shape-drawer-texture 1 0 1 1)))
-                          (bind-root #'ctx/cursors (mapvals
-                                                    (fn [[file [hotspot-x hotspot-y]]]
-                                                      (graphics/cursor (format (::cursor-path-format ctx/config) file)
-                                                                       hotspot-x
-                                                                       hotspot-y))
-                                                    (::cursors ctx/config)))
-                          (bind-root #'ctx/default-font (graphics/truetype-font (::default-font ctx/config)))
-                          (bind-root #'ctx/world-unit-scale (float (/ (::tile-size ctx/config))))
-                          (bind-root #'ctx/world-viewport (graphics/world-viewport ctx/world-unit-scale
-                                                                                   (::world-viewport ctx/config)))
-                          (bind-root #'ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                                             (tiled/renderer tiled-map
-                                                                                             ctx/world-unit-scale
-                                                                                             (:java-object ctx/batch)))))
-                          (bind-root #'ctx/ui-viewport (graphics/ui-viewport (::ui-viewport ctx/config)))
-                          (ui/load! (::ui ctx/config))
-                          (reset-game! (::tiled-map ctx/config)))
+  (run! require (::requires ctx/config))
+  (bind-root #'ctx/schemas (io-slurp-edn (::schemas ctx/config)))
+  (bind-root #'ctx/db (db/create (::db ctx/config)))
+  (bind-root #'ctx/assets (assets/create (::assets ctx/config)))
+  (bind-root #'ctx/batch (graphics/sprite-batch))
+  (bind-root #'ctx/shape-drawer-texture (graphics/white-pixel-texture))
+  (bind-root #'ctx/shape-drawer (graphics/shape-drawer ctx/batch
+                                                       (graphics/texture-region ctx/shape-drawer-texture 1 0 1 1)))
+  (bind-root #'ctx/cursors (mapvals
+                            (fn [[file [hotspot-x hotspot-y]]]
+                              (graphics/cursor (format (::cursor-path-format ctx/config) file)
+                                               hotspot-x
+                                               hotspot-y))
+                            (::cursors ctx/config)))
+  (bind-root #'ctx/default-font (graphics/truetype-font (::default-font ctx/config)))
+  (bind-root #'ctx/world-unit-scale (float (/ (::tile-size ctx/config))))
+  (bind-root #'ctx/world-viewport (graphics/world-viewport ctx/world-unit-scale
+                                                           (::world-viewport ctx/config)))
+  (bind-root #'ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
+                                                     (tiled/renderer tiled-map
+                                                                     ctx/world-unit-scale
+                                                                     (:java-object ctx/batch)))))
+  (bind-root #'ctx/ui-viewport (graphics/ui-viewport (::ui-viewport ctx/config)))
+  (ui/load! (::ui ctx/config))
+  (reset-game! (::tiled-map ctx/config)))
 
-                        (dispose! [_]
-                          (dispose! ctx/assets)
-                          (dispose! ctx/batch)
-                          (dispose! ctx/shape-drawer-texture)
-                          (run! dispose! (vals ctx/cursors))
-                          (dispose! ctx/default-font)
-                          ; TODO vis-ui dispose
-                          ; TODO dispose world tiled-map/level resources?
-                          )
+(defn dispose []
+  (dispose! ctx/assets)
+  (dispose! ctx/batch)
+  (dispose! ctx/shape-drawer-texture)
+  (run! dispose! (vals ctx/cursors))
+  (dispose! ctx/default-font)
+  ; TODO vis-ui dispose
+  ; TODO dispose world tiled-map/level resources?
+  )
 
-                        (render! [_]
-                          (bind-root #'ctx/active-entities (active-entities))
-                          (camera/set-position! (:camera ctx/world-viewport)
-                                                (:position @ctx/player-eid))
-                          (graphics/clear-screen!)
-                          (draw-tiled-map!)
-                          (draw-on-world-view! [debug-draw-before-entities!
-                                                render-entities!
-                                                ; geom-test!
-                                                highlight-mouseover-tile!])
-                          (ui/draw! ctx/stage)
-                          (ui/act! ctx/stage)
-                          (player-state-handle-click)
-                          (update-mouseover-entity!)
-                          (bind-root #'ctx/paused? (pause-game?))
-                          (when-not ctx/paused?
-                            (update-time!)
-                            (update-potential-fields!)
-                            (tick-entities!))
-                          (remove-destroyed-entities!) ; do not pause as pickup item should be destroyed
-                          (camera-controls!))
+(defn render! []
+  (bind-root #'ctx/active-entities (active-entities))
+  (camera/set-position! (:camera ctx/world-viewport)
+                        (:position @ctx/player-eid))
+  (graphics/clear-screen!)
+  (draw-tiled-map!)
+  (draw-on-world-view! [debug-draw-before-entities!
+                        render-entities!
+                        ; geom-test!
+                        highlight-mouseover-tile!])
+  (ui/draw! ctx/stage)
+  (ui/act! ctx/stage)
+  (player-state-handle-click)
+  (update-mouseover-entity!)
+  (bind-root #'ctx/paused? (pause-game?))
+  (when-not ctx/paused?
+    (update-time!)
+    (update-potential-fields!)
+    (tick-entities!))
+  (remove-destroyed-entities!) ; do not pause as pickup item should be destroyed
+  (camera-controls!))
 
-                        (resize! [_]
-                          (viewport/update! ctx/ui-viewport)
-                          (viewport/update! ctx/world-viewport)))
-                      (::application ctx/config)))
+(defn resize! []
+  (viewport/update! ctx/ui-viewport)
+  (viewport/update! ctx/world-viewport))
