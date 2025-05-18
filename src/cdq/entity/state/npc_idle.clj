@@ -5,7 +5,8 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.potential-field.movement :as potential-field]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [cdq.vector2 :as v]))
 
 (defn- npc-choose-skill [entity ctx]
   (->> entity
@@ -27,7 +28,8 @@
     {:effect/source eid
      :effect/target target
      :effect/target-direction (when target
-                                (entity/direction entity @target))}))
+                                (v/direction (:position entity)
+                                             (:position @target)))}))
 
 (defcomponent :npc-idle
   (entity/create [[_ eid]]

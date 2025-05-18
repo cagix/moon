@@ -6,7 +6,6 @@
             [cdq.math :as math]
             [cdq.raycaster :as raycaster]
             [cdq.val-max :as val-max]
-            [cdq.vector2 :as v]
             [gdl.graphics.camera :as camera]))
 
 (defmulti create (fn [[k]]
@@ -48,9 +47,6 @@
     (mod-value base-value
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
-
-(defn direction [entity other-entity]
-  (v/direction (:position entity) (:position other-entity)))
 
 (defn collides? [entity other-entity]
   (math/overlaps? entity other-entity))
