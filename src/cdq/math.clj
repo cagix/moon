@@ -24,7 +24,7 @@
                   (m->shape shape-b)))
 
 (defn rect-contains? [rectangle [x y]]
-  (math/contains? (m->shape rectangle) x y))
+  (math/contains? (m->shape rectangle) [x y]))
 
 (defn circle->outer-rectangle [{[x y] :position :keys [radius] :as circle}]
   {:pre [(circle? circle)]}
