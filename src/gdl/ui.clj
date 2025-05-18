@@ -8,35 +8,35 @@
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Cell
-                                               Table
+                                               HorizontalGroup
                                                Image
                                                Label
-                                               WidgetGroup
-                                               HorizontalGroup
-                                               VerticalGroup
+                                               Table
                                                Stack
                                                Tree$Node
+                                               VerticalGroup
+                                               WidgetGroup
                                                Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
+                                                  ChangeListener
                                                   Drawable
-                                                  TextureRegionDrawable
-                                                  ChangeListener)
+                                                  TextureRegionDrawable)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align
                                    Scaling)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip
-                                      Separator
-                                      VisLabel
-                                      VisTable
-                                      VisImage
-                                      VisTextButton
+           (com.kotcrab.vis.ui.widget Separator
+                                      Tooltip
                                       VisCheckBox
-                                      VisSelectBox
+                                      VisImage
                                       VisImageButton
-                                      VisTextField
+                                      VisLabel
+                                      VisSelectBox
                                       VisScrollPane
+                                      VisTable
+                                      VisTextButton
+                                      VisTextField
                                       VisWindow)))
 
 (defn user-object [^Actor actor]
