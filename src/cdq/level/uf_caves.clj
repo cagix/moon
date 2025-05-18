@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
-            [cdq.level.helper :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+            [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
@@ -18,7 +18,7 @@
 (defn- set-creatures-tiles [creature-properties spawn-rate tiled-map spawn-positions]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
         level (inc (rand-int 6))
-        creatures (creatures-with-level creature-properties level)]
+        creatures (filter #(= level (:creature/level %)) creature-properties)]
     (doseq [position spawn-positions
             :when (<= (rand) spawn-rate)]
       (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))

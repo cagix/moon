@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.grid2d :as g2d]
-            [cdq.level.helper :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
+            [cdq.level.helper :refer [creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.level.modules-core :as modules]
             [gdl.tiled :as tiled]))
 
@@ -61,7 +61,8 @@
             :let [area-level (get area-level-grid position)]
             :when (and (number? area-level)
                        (<= (rand) spawn-rate))]
-      (let [creatures (creatures-with-level creature-properties area-level)]
+      (let [creatures (filter #(= area-level (:creature/level %))
+                              creature-properties)]
         (when (seq creatures)
           (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))))
 

@@ -5,9 +5,6 @@
             [cdq.utils :refer [assoc-ks]]
             [gdl.tiled :as tiled]))
 
-(defn creatures-with-level [creature-properties level]
-  (filter #(= level (:creature/level %)) creature-properties))
-
 (def creature-tile
   (memoize
    (fn [{:keys [property/id] :as property}]
