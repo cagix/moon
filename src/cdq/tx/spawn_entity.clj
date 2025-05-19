@@ -63,6 +63,9 @@
           components))
 
 (defn do! [position body components]
+
+  ; TODO SCHEMA COMPONENTS !
+
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -71,12 +74,21 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! ctx/id-counter inc))
                                             create-vs))))]
+
+    ;;
+
     (let [id (:entity/id @eid)]
       (assert (number? id))
       (swap! ctx/entity-ids assoc id eid))
+
     (content-grid/add-entity! ctx/content-grid eid)
+
     ; https://github.com/damn/core/issues/58
     ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
     (grid/add-entity! ctx/grid eid)
+
+    ;;
+
+
     (doseq [component @eid]
       (utils/handle-txs! (entity/create! component eid)))))
