@@ -64,8 +64,7 @@
 
 (defcomponent :player-item-on-cursor
   (entity/create [[_ eid item]]
-    {:eid eid
-     :item item})
+    {:item item})
 
   (entity/render-below! [[_ {:keys [item]}] entity]
     (when (world-item?)
@@ -76,10 +75,10 @@
 
   (state/pause-game? [_] true)
 
-  (state/enter! [[_ {:keys [eid item]}]]
+  (state/enter! [[_ {:keys [item]}] eid]
     [[:tx/assoc eid :entity/item-on-cursor item]])
 
-  (state/exit! [[_ {:keys [eid]}]]
+  (state/exit! [_ eid]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -90,15 +89,15 @@
          [:tx/dissoc eid :entity/item-on-cursor]
          [:tx/spawn-item (item-place-position entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [[_ {:keys [eid]}]]
+  (state/manual-tick [_ eid]
     (when (and (input/button-just-pressed? :left)
                (world-item?))
       [[:tx/event eid :drop-item]]))
 
-  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
-  (state/draw-gui-view [[_ {:keys [eid]}]]
+  (state/draw-gui-view [_ eid]
     (when (not (world-item?))
       (draw/centered (:entity/image (:entity/item-on-cursor @eid))
                      (viewport/mouse-position ctx/ui-viewport)))))

@@ -41,8 +41,7 @@
 
 (defcomponent :active-skill
   (entity/create [[_ eid [skill effect-ctx]]]
-    {:eid eid
-     :skill skill
+    {:skill skill
      :effect-ctx effect-ctx
      :counter (->> skill
                    :skill/action-time
@@ -65,7 +64,7 @@
 
   (state/pause-game? [_] false)
 
-  (state/enter! [[_ {:keys [eid skill]}]]
+  (state/enter! [[_ {:keys [skill]}] eid]
     [[:tx/sound (:skill/start-action-sound skill)]
      (when (:skill/cooldown skill)
        [:tx/set-cooldown eid skill])

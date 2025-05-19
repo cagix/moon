@@ -7,22 +7,22 @@
 (defmulti pause-game? (fn [[k]]
                         k))
 
-(defmulti enter! (fn [[k]]
+(defmulti enter! (fn [[k] _eid]
                   k))
-(defmethod enter! :default [_])
+(defmethod enter! :default [_ _eid])
 
-(defmulti exit! (fn [[k]]
+(defmulti exit! (fn [[k] _eid]
                   k))
-(defmethod exit! :default [_])
+(defmethod exit! :default [_ _eid])
 
-(defmulti clicked-inventory-cell (fn [[k] cell]
+(defmulti clicked-inventory-cell (fn [[k] _eid _cell]
                                    k))
-(defmethod clicked-inventory-cell :default [_ cell])
+(defmethod clicked-inventory-cell :default [_ _eid _cell])
 
-(defmulti manual-tick (fn [[k]]
+(defmulti manual-tick (fn [[k] _eid]
                         k))
-(defmethod manual-tick :default [_])
+(defmethod manual-tick :default [_ _eid])
 
-(defmulti draw-gui-view (fn [[k]]
+(defmulti draw-gui-view (fn [[k] _eid]
                           k))
-(defmethod draw-gui-view :default [_])
+(defmethod draw-gui-view :default [_ _eid])

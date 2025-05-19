@@ -8,7 +8,7 @@
 
   (state/pause-game? [_] true)
 
-  (state/enter! [_]
+  (state/enter! [_ _eid]
     [[:tx/sound "bfxr_playerdeath"]
      [:tx/show-modal {:title "YOU DIED - again!"
                       :text "Good luck next time!"

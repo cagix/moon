@@ -7,9 +7,8 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :stunned
-  (entity/create [[_ eid duration]]
-    {:eid eid
-     :counter (timer/create ctx/elapsed-time duration)})
+  (entity/create [[_ _eid duration]]
+    {:counter (timer/create ctx/elapsed-time duration)})
 
   (entity/tick! [[_ {:keys [counter]}] eid]
     (when (timer/stopped? ctx/elapsed-time counter)

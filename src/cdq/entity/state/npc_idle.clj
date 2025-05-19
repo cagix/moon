@@ -32,9 +32,6 @@
                                              (:position @target)))}))
 
 (defcomponent :npc-idle
-  (entity/create [[_ eid]]
-    {:eid eid})
-
   (entity/tick! [_ eid]
     (let [effect-ctx (npc-effect-context eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]

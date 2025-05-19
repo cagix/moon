@@ -7,5 +7,5 @@
 (defn do! []
   (-> @ctx/player-eid
       entity/state-obj
-      state/manual-tick
+      (state/manual-tick ctx/player-eid)
       handle-txs!))

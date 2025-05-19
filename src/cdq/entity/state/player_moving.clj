@@ -6,8 +6,7 @@
 
 (defcomponent :player-moving
   (entity/create [[_ eid movement-vector]]
-    {:eid eid
-     :movement-vector movement-vector})
+    {:movement-vector movement-vector})
 
   (entity/tick! [[_ {:keys [movement-vector]}] eid]
     (if-let [movement-vector (input/player-movement-vector)]
@@ -18,8 +17,8 @@
 
   (state/pause-game? [_] false)
 
-  (state/enter! [[_ {:keys [eid movement-vector]}]]
+  (state/enter! [[_ {:keys [movement-vector]}] eid]
     [[:tx/set-movement eid movement-vector]])
 
-  (state/exit! [[_ {:keys [eid]}]]
+  (state/exit! [_ eid]
     [[:tx/dissoc eid :entity/movement]]))

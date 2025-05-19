@@ -105,12 +105,9 @@
          [:tx/show-message "No selected skill"]]]))))
 
 (defcomponent :player-idle
-  (entity/create [[_ eid]]
-    {:eid eid})
-
   (state/pause-game? [_] true)
 
-  (state/manual-tick [[_ {:keys [eid]}]]
+  (state/manual-tick [_ eid]
     (if-let [movement-vector (input/player-movement-vector)]
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (interaction-state eid)]
@@ -118,7 +115,7 @@
               (when (gdl.input/button-just-pressed? :left)
                 on-click)))))
 
-  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (state/clicked-inventory-cell [_ eid cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       [[:tx/sound "bfxr_takeit"]

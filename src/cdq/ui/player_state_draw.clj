@@ -7,4 +7,5 @@
 (defn create []
   (ui/actor
    {:draw (fn [_this]
-            (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
+            (state/draw-gui-view (entity/state-obj @ctx/player-eid)
+                                 ctx/player-eid))}))

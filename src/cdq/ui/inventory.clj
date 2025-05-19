@@ -86,7 +86,7 @@
                       (clicked [_event _x _y]
                         (-> @ctx/player-eid
                             entity/state-obj
-                            (state/clicked-inventory-cell cell)
+                            (state/clicked-inventory-cell ctx/player-eid cell)
                             utils/handle-txs!)))))))
 
 (defn- inventory-table []
