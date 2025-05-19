@@ -36,6 +36,35 @@
                   cdq.application.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                   cdq.application.render.camera-controls/do!])
 
+(comment
+ (defn create! [initial-context create-fns]
+   (reduce (fn [ctx create-fn]
+             (if (vector? create-fn)
+               (let [[k [f & params]] create-fn]
+                 (assoc ctx k (apply f ctx params)))
+               (do
+                (create-fn ctx)
+                ctx)))
+           initial-context
+           create-fns))
+
+ ; Issues which might appear:
+ ; * ui needs to query app-state, cannot to simple transformations
+ ; without using a StageWithObject
+ ; @ cdq.ui.player-state-draw -> inside actor draw
+
+ ; * also @ graphics ... always pass to 'draw' stuff ...
+
+ ; * audiovisual build from db, ...
+ ; * always timer create
+
+ ; TODO also remember actor needs to call (super) from 'act' thath's why maybe ui
+ ; problems of tooltips?
+
+ ; * Pass @ tx
+
+ )
+
 (def config
   {:title "Cyber Dungeon Quest"
    :window-width 1440
@@ -45,19 +74,7 @@
    :create! (fn []
               (comment
 
-               ; A `create-fn` is either `[k [f & params]` which will be assoc or do ...
-
-               (reset! state
-                       (reduce (fn [ctx create-fn]
-                                 (if (vector? create-fn)
-                                   (let [[k [f & params]] create-fn]
-                                     (assoc ctx k (apply f ctx params)))
-                                   (do
-                                    (create-fn ctx)
-                                    ctx)))
-                               {} ; gdx-context ! < - >
-                               create-fns))
-
+               (reset! state (create! {} create-fns))
 
                )
               (doseq [f create-fns]
