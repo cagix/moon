@@ -43,8 +43,25 @@
    :fps 60
    :dock-icon "moon.png"
    :create! (fn []
+              (comment
+
+               ; A `create-fn` is either `[k [f & params]` which will be assoc or do ...
+
+               (reset! state
+                       (reduce (fn [ctx create-fn]
+                                 (if (vector? create-fn)
+                                   (let [[k [f & params]] create-fn]
+                                     (assoc ctx k (apply f ctx params)))
+                                   (do
+                                    (create-fn ctx)
+                                    ctx)))
+                               {} ; gdx-context ! < - >
+                               create-fns))
+
+
+               )
               (doseq [f create-fns]
-                ((requiring-resolve f))))
+                ((requiring-resolve f) {})))
    :dispose! (fn []
                ((requiring-resolve dispose-fn)))
    :render! (fn []
