@@ -78,7 +78,7 @@
 
                )
               (doseq [f create-fns]
-                ((requiring-resolve f) {})))
+                ((requiring-resolve f))))
    :dispose! (fn []
                ((requiring-resolve dispose-fn)))
    :render! (fn []
