@@ -26,20 +26,18 @@
    :skill/cost
    :skill/cooldown])
 
-(defn- get-editor-window []
-  (:property-editor-window ctx/stage))
-
-(defn- window->property-value []
- (let [window (get-editor-window)
+(defn- window->property-value [property-editor-window]
+ (let [window property-editor-window
        scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (ui/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table)))
 
-(defn- rebuild-editor-window []
-  (let [prop-value (window->property-value)]
-    (ui/remove! (get-editor-window))
-    (ui/add! ctx/stage (cdq.ui.editor/editor-window prop-value))))
+(defn- rebuild-editor-window! [stage]
+  (let [window (:property-editor-window stage)
+        prop-value (window->property-value window)]
+    (ui/remove! window)
+    (ui/add! stage (cdq.ui.editor/editor-window prop-value))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -54,7 +52,7 @@
                         (ui/text-button "-"
                                         (fn []
                                           (ui/remove! (find-kv-widget table k))
-                                          (rebuild-editor-window))))]
+                                          (rebuild-editor-window! ctx/stage))))]
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
                        label]]})))
@@ -102,7 +100,7 @@
                                                            [k (k->default-value k)]
                                                            schema
                                                            map-widget-table)])
-                          (rebuild-editor-window)))]))
+                          (rebuild-editor-window! ctx/stage)))]))
     (.pack window)
     (ui/add! ctx/stage window)))
 
