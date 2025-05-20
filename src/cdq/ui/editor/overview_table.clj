@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]))
@@ -48,14 +47,14 @@
     (ui/set-touchable! top-widget :disabled)
     stack))
 
-(defn create [db property-type clicked-id-fn]
+(defn create [{:keys [ctx/db] :as ctx} property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all db property-type (ctx/make-map))
+        properties (db/build-all db property-type ctx)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]

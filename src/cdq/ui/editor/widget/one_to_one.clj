@@ -16,8 +16,7 @@
      table
      [[(when-not property-id
          (ui/text-button "+"
-                         (fn [_actor {:keys [ctx/db
-                                             ctx/stage]}]
+                         (fn [_actor {:keys [ctx/stage] :as ctx}]
                            (let [window (ui/window {:title "Choose"
                                                     :modal? true
                                                     :close-button? true
@@ -26,7 +25,7 @@
                                  clicked-id-fn (fn [id _ctx]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (ui/add! window (overview-table/create db property-type clicked-id-fn))
+                             (ui/add! window (overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
                              (ui/add! stage window)))))]
       [(when property-id
