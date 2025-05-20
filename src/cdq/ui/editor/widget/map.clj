@@ -45,27 +45,22 @@
                            (= k ((ui/user-object actor) 0))))
                     (ui/children table)))
 
-(defn- attribute-label [k schema table]
-  (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-                        (name k))
-        delete-button (when (m/optional? k (schema/malli-form schema (:schemas ctx/db)))
-                        (ui/text-button "-"
-                                        (fn []
-                                          (ui/remove! (find-kv-widget table k))
-                                          (rebuild-editor-window! ctx/stage))))]
-    (ui/table {:cell-defaults {:pad 2}
-               :rows [[{:actor delete-button :left? true}
-                       label]]})))
-
 (defn- value-widget [[k v]]
   (let [widget (widget/create (get (:schemas ctx/db) k) v)]
     (ui/set-user-object! widget [k v])
     widget))
 
 (def ^:private component-row-cols 3)
-
 (defn- component-row [[k v] schema table]
-  [{:actor (attribute-label k schema table)
+  [{:actor (ui/table {:cell-defaults {:pad 2}
+                      :rows [[{:actor (when (m/optional? k (schema/malli-form schema (:schemas ctx/db)))
+                                        (ui/text-button "-"
+                                                        (fn []
+                                                          (ui/remove! (find-kv-widget table k))
+                                                          (rebuild-editor-window! ctx/stage))))
+                               :left? true}
+                              (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                                        (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
    {:actor (value-widget [k v])
