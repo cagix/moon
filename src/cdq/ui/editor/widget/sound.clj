@@ -27,7 +27,8 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (ui/add! ctx/stage (scroll-pane/choose-window rows))))
+    (ui/add! ctx/stage (scroll-pane/choose-window (:height ctx/ui-viewport)
+                                                  rows))))
 
 (defn- columns [table sound-name]
   [(ui/text-button sound-name #(choose-window table))

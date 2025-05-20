@@ -36,7 +36,8 @@
         delete! (apply-context-fn window #(do
                                            (alter-var-root #'ctx/db db/delete (:property/id props))
                                            (db/save! ctx/db)))]
-    (ui/add-rows! window [[(scroll-pane/table-cell [[{:actor widget :colspan 2}]
+    (ui/add-rows! window [[(scroll-pane/table-cell (:height ctx/ui-viewport)
+                                                   [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                                       :center? true}
                                                      {:actor (ui/text-button "Delete" delete!)
