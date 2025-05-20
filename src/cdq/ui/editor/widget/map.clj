@@ -74,7 +74,7 @@
      :else (m/generate (schema/malli-form schema schemas)
                        {:size 3}))))
 
-(defn- open-add-component-window! [schema map-widget-table]
+(defn- open-add-component-window! [stage schemas schema map-widget-table]
   (let [window (ui/window {:title "Choose"
                            :modal? true
                            :close-button? true
@@ -82,20 +82,20 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table)))
-                                   (m/map-keys (schema/malli-form schema (:schemas ctx/db)))))]
+                                   (m/map-keys (schema/malli-form schema schemas))))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
        [(ui/text-button (name k)
                         (fn []
                           (.remove window)
-                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value (:schemas ctx/db) k)]
+                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value schemas k)]
                                                                          schema
-                                                                         (:schemas ctx/db)
+                                                                         schemas
                                                                          map-widget-table)])
-                          (rebuild-editor-window! ctx/stage)))]))
+                          (rebuild-editor-window! stage)))]))
     (.pack window)
-    (ui/add! ctx/stage window)))
+    (ui/add! stage window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])
@@ -121,7 +121,11 @@
      table
      (concat [(when opt?
                 [{:actor (ui/text-button "Add component"
-                                         #(open-add-component-window! schema table))
+                                         (fn []
+                                           (open-add-component-window! ctx/stage
+                                                                       (:schemas ctx/db)
+                                                                       schema
+                                                                       table)))
                   :colspan colspan}])]
              [(when opt?
                 [(ui/horizontal-separator-cell colspan)])]
