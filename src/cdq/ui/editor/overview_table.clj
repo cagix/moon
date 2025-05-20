@@ -32,10 +32,18 @@
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
         button (if-let [image (property/image props)]
-                 (ui/image-button image on-clicked {:scale scale})
-                 (ui/text-button (name id) on-clicked))
-        top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
-        stack (ui/stack [button top-widget])]
+                 (ui/image-button image
+                                  (fn [_actor]
+                                    (on-clicked))
+                                  {:scale scale})
+                 (ui/text-button (name id)
+                                 (fn [_actor]
+                                   (on-clicked))))
+        top-widget (ui/label (or (and extra-info-text
+                                      (extra-info-text props))
+                                 ""))
+        stack (ui/stack [button
+                         top-widget])]
     (ui/add-tooltip! button #(pprint-to-str props))
     (ui/set-touchable! top-widget :disabled)
     stack))

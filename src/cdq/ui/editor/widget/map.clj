@@ -51,7 +51,7 @@
   [{:actor (ui/table {:cell-defaults {:pad 2}
                       :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
                                         (ui/text-button "-"
-                                                        (fn []
+                                                        (fn [_actor]
                                                           (ui/remove! (find-kv-widget table k))
                                                           (rebuild-editor-window! ctx/stage))))
                                :left? true}
@@ -87,7 +87,7 @@
      window
      (for [k remaining-ks]
        [(ui/text-button (name k)
-                        (fn []
+                        (fn [_actor]
                           (.remove window)
                           (ui/add-rows! map-widget-table [(component-row [k (k->default-value schemas k)]
                                                                          schema
@@ -121,7 +121,7 @@
      table
      (concat [(when opt?
                 [{:actor (ui/text-button "Add component"
-                                         (fn []
+                                         (fn [_actor]
                                            (open-add-component-window! ctx/stage
                                                                        (:schemas ctx/db)
                                                                        schema

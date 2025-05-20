@@ -13,7 +13,7 @@
            (ui/window {:title title
                        :rows [[(ui/label text)]
                               [(ui/text-button button-text
-                                               (fn []
+                                               (fn [_actor]
                                                  (ui/remove! (::modal stage))
                                                  (on-click)))]]
                        :id ::modal

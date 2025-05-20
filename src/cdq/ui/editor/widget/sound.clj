@@ -7,7 +7,9 @@
             [gdl.ui :as ui]))
 
 (defn- play-button [sound-name]
-  (ui/text-button "play!" #(ctx/handle-txs! [[:tx/sound sound-name]])))
+  (ui/text-button "play!"
+                  (fn [_actor]
+                    (ctx/handle-txs! [[:tx/sound sound-name]]))))
 
 (declare columns)
 
@@ -19,10 +21,10 @@
 (defn- choose-window [table]
   (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets :sound))]
                [(ui/text-button sound-name
-                                (fn []
+                                (fn [actor]
                                   (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-name)])
-                                  (.remove (ui/find-ancestor-window ui/*on-clicked-actor*))
+                                  (.remove (ui/find-ancestor-window actor))
                                   (ui/pack-ancestor-window! table)
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
@@ -31,12 +33,16 @@
                                                   rows))))
 
 (defn- columns [table sound-name]
-  [(ui/text-button sound-name #(choose-window table))
+  [(ui/text-button sound-name
+                   (fn [_actor]
+                     (choose-window table)))
    (play-button sound-name)])
 
 (defmethod widget/create :s/sound [_ sound-name]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-name
                            (columns table sound-name)
-                           [(ui/text-button "No sound" #(choose-window table))])])
+                           [(ui/text-button "No sound"
+                                            (fn [_actor]
+                                              (choose-window table)))])])
     table))

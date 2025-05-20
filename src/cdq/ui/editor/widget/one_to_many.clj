@@ -16,7 +16,7 @@
     (ui/add-rows!
      table
      [[(ui/text-button "+"
-                       (fn []
+                       (fn [_actor]
                          (let [window (ui/window {:title "Choose"
                                                   :modal? true
                                                   :close-button? true
@@ -34,7 +34,9 @@
                                              {:id property-id})]
           (ui/add-tooltip! image-widget #(pprint-to-str property))))
       (for [id property-ids]
-        (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
+        (ui/text-button "-"
+                        (fn [_actor]
+                          (redo-rows (disj property-ids id)))))])))
 
 (defmethod widget/create :s/one-to-many [[_ property-type] property-ids]
   (let [table (ui/table {:cell-defaults {:pad 5}})]

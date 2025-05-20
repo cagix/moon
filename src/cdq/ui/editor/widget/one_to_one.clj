@@ -17,7 +17,7 @@
      table
      [[(when-not property-id
          (ui/text-button "+"
-                         (fn []
+                         (fn [_actor]
                            (let [window (ui/window {:title "Choose"
                                                     :modal? true
                                                     :close-button? true
@@ -36,7 +36,9 @@
            (ui/add-tooltip! image-widget #(pprint-to-str property))
            image-widget))]
       [(when property-id
-         (ui/text-button "-" #(redo-rows nil)))]])))
+         (ui/text-button "-"
+                         (fn [_actor]
+                           (redo-rows nil))))]])))
 
 (defmethod widget/create :s/one-to-one [[_ property-type] property-id]
   (let [table (ui/table {:cell-defaults {:pad 5}})]

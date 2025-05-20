@@ -8,13 +8,16 @@
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows [assets]
     (for [file (sort (assets/all-of-type assets :texture))]
-      [(ui/image-button (image file) (fn []))]
-      #_[(ui/text-button file (fn []))]))
+      [(ui/image-button (image file)
+                        (fn [_actor]))]
+      #_[(ui/text-button file
+                         (fn [_actor]))]))
 
 (defmethod widget/create :s/image [schema image]
   (ui/image-button (schema/edn->value schema image)
-                   (fn on-clicked [])
+                   (fn [_actor])
                    {:scale 2})
   #_(ui/image-button image
-                     #(ui/add! ctx/stage (scroll-pane/choose-window (texture-rows ctx/assets)))
+                     (fn [_actor]
+                       (ui/add! ctx/stage (scroll-pane/choose-window (texture-rows ctx/assets))))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
