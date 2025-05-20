@@ -16,7 +16,6 @@
            (com.badlogic.gdx.scenes.scene2d.ui Image)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   TextureRegionDrawable
-                                                  ClickListener
                                                   Drawable)))
 
 ; Items are also smaller than 48x48 all of them
@@ -96,13 +95,11 @@
                                        :user-object background-drawable})])
       (.setName "inventory-cell")
       (.setUserObject cell)
-      (.addListener (proxy [ClickListener] []
-                      (clicked [_event _x _y]
-                        ; (println "CLICK LISTENER" (.getActor this))
-                        ; no matching field
-                        (-> @ctx/player-eid
+      (.addListener (ui/click-listener
+                      (fn [{:keys [ctx/player-eid]}]
+                        (-> @player-eid
                             entity/state-obj
-                            (state/clicked-inventory-cell ctx/player-eid cell)
+                            (state/clicked-inventory-cell player-eid cell)
                             ctx/handle-txs!)))))))
 
 (defn- inventory-table [ctx]
