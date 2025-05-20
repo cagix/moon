@@ -1,16 +1,15 @@
 (ns cdq.ui.editor.widget.one-to-one
-  (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]))
 
-(defn- add-one-to-one-rows [table property-type property-id]
-  (let [redo-rows (fn [id]
+(defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]
+  (let [redo-rows (fn [ctx id]
                     (ui/clear-children! table)
-                    (add-one-to-one-rows table property-type id)
+                    (add-one-to-one-rows ctx table property-type id)
                     (ui/pack-ancestor-window! table))]
     (ui/add-rows!
      table
@@ -22,26 +21,26 @@
                                                     :close-button? true
                                                     :center? true
                                                     :close-on-escape? true})
-                                 clicked-id-fn (fn [id _ctx]
+                                 clicked-id-fn (fn [id ctx]
                                                  (.remove window)
-                                                 (redo-rows id))]
+                                                 (redo-rows ctx id))]
                              (ui/add! window (overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
                              (ui/add! stage window)))))]
       [(when property-id
-         (let [property (db/build ctx/db property-id (ctx/make-map))
+         (let [property (db/build db property-id ctx)
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
            (ui/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id
          (ui/text-button "-"
-                         (fn [_actor _ctx]
-                           (redo-rows nil))))]])))
+                         (fn [_actor ctx]
+                           (redo-rows ctx nil))))]])))
 
-(defmethod widget/create :s/one-to-one [[_ property-type] property-id _ctx]
+(defmethod widget/create :s/one-to-one [[_ property-type] property-id ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (add-one-to-one-rows table property-type property-id)
+    (add-one-to-one-rows ctx table property-type property-id)
     table))
 
 (defmethod widget/value :s/one-to-one [_ widget]
