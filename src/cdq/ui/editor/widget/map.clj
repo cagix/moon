@@ -64,14 +64,14 @@
              widget)
     :left? true}])
 
-(defn- k->default-value [k]
-  (let [schema (get (:schemas ctx/db) k)]
+(defn- k->default-value [schemas k]
+  (let [schema (get schemas k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (m/generate (schema/malli-form schema (:schemas ctx/db))
+     :else (m/generate (schema/malli-form schema schemas)
                        {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
@@ -89,7 +89,7 @@
        [(ui/text-button (name k)
                         (fn []
                           (.remove window)
-                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value k)]
+                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value (:schemas ctx/db) k)]
                                                                          schema
                                                                          (:schemas ctx/db)
                                                                          map-widget-table)])
