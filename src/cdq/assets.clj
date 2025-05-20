@@ -4,7 +4,7 @@
             [gdl.assets :as assets]))
 
 (defn create [{:keys [folder
-                      asset-type-extensions]}]
+                      asset-type-extensions]} _ctx]
   (assets/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")

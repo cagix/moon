@@ -1,5 +1,4 @@
-(ns cdq.application.create.requires
-  (:require [cdq.ctx :as ctx]))
+(ns cdq.application.create.requires)
 
-(defn do! []
-  (run! require (:requires ctx/config)))
+(defn do! [{:keys [ctx/config]}]
+  (run! require (:requires config)))

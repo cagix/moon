@@ -1,15 +1,20 @@
 (ns cdq.content-grid
-  (:require [cdq.grid2d :as g2d]))
+  (:require [cdq.grid2d :as g2d]
+            [gdl.tiled :as tiled]))
 
-(defn create [{:keys [cell-size width height]}]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size))) ; inc because corners
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
+(defn create [{:keys [ctx/config
+                      ctx/tiled-map]}]
+  (let [cell-size (:content-grid-cells-size config)
+        width  (tiled/tm-width  tiled-map)
+        height (tiled/tm-height tiled-map)]
+    {:grid (g2d/create-grid
+            (inc (int (/ width  cell-size))) ; inc because corners
+            (inc (int (/ height cell-size)))
+            (fn [idx]
+              (atom {:idx idx,
+                     :entities #{}})))
+     :cell-w cell-size
+     :cell-h cell-size}))
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid

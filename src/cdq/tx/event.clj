@@ -20,10 +20,10 @@
                                                            [new-state-k eid])
                                                          ctx)]]
            (when (:entity/player? @eid)
-             (ctx/handle-txs! ((:state-changed! (:entity/player? @eid)) new-state-obj)))
+             (ctx/handle-txs! ctx ((:state-changed! (:entity/player? @eid)) new-state-obj)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (ctx/handle-txs! (state/exit!  old-state-obj eid ctx))
-           (ctx/handle-txs! (state/enter! new-state-obj eid))))))))
+           (ctx/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+           (ctx/handle-txs! ctx (state/enter! new-state-obj eid))))))))

@@ -8,7 +8,7 @@
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn create [grid]
+(defn create [{:keys [ctx/grid]}]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]

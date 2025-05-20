@@ -12,5 +12,6 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
-(defn do! [{:keys [ctx/tiled-map]}]
-  (ctx/handle-txs! (spawn-enemies tiled-map)))
+(defn do! [{:keys [ctx/tiled-map] :as ctx}]
+  (ctx/handle-txs! ctx
+                   (spawn-enemies tiled-map)))

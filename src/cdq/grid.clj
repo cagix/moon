@@ -62,7 +62,7 @@
     (filter #(math/rect-contains? @% position)
             (:entities @cell))))
 
-(defn create [tiled-map]
+(defn create [{:keys [ctx/tiled-map]}]
   (g2d/create-grid (tiled/tm-width  tiled-map)
                    (tiled/tm-height tiled-map)
                    (fn [position]

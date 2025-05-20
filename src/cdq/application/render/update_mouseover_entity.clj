@@ -1,9 +1,7 @@
 (ns cdq.application.render.update-mouseover-entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.utils :refer [bind-root
-                               sort-by-order]]
+            [cdq.utils :refer [sort-by-order]]
             [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
@@ -29,4 +27,4 @@
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (bind-root #'ctx/mouseover-eid new-eid)))
+    (assoc :ctx/mouseover-eid new-eid)))

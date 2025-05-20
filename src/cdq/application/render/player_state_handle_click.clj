@@ -4,6 +4,7 @@
             [cdq.state :as state]))
 
 (defn do! [{:keys [ctx/player-eid] :as ctx}]
-  (ctx/handle-txs! (state/manual-tick (entity/state-obj @player-eid)
+  (ctx/handle-txs! ctx
+                   (state/manual-tick (entity/state-obj @player-eid)
                                       player-eid
                                       ctx)))

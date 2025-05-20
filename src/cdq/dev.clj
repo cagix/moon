@@ -9,7 +9,7 @@
 
 (defn post-txs! [txs]
   (post-runnable!
-   (ctx/handle-txs! txs)))
+   (ctx/handle-txs! @app/state txs)))
 
 (comment
 

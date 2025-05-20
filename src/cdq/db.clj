@@ -69,7 +69,7 @@
     (map #(schema/transform schemas % ctx)
          (all-raw this property-type))))
 
-(defn create [path schemas]
+(defn create [path schemas _ctx]
   (let [schemas (io-slurp-edn schemas)
         properties-file (io/resource path) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]

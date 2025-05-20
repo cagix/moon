@@ -1,8 +1,6 @@
 (ns cdq.application.render.bind-paused
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [bind-root]]
             [gdl.input :as input]))
 
 (defn- pause-game? [{:keys [ctx/pausing?
@@ -15,4 +13,4 @@
                     (input/key-pressed? (get controls :unpause-continously)))))))
 
 (defn do! [ctx]
-  (bind-root #'ctx/paused? (pause-game? ctx)))
+  (assoc :ctx/paused? (pause-game? ctx)))

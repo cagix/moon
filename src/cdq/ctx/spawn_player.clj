@@ -38,7 +38,7 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})
 
-(defn do! []
+(defn do! [{:keys [ctx/start-position]}]
   (ctx/handle-txs!
    [[:tx/spawn-creature (player-entity-props (utils/tile->middle ctx/start-position)
                                              ctx/player-entity-config)]]))

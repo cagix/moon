@@ -36,7 +36,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (ctx/handle-txs! (entity/tick! [k v] eid ctx)))
+               (ctx/handle-txs! ctx (entity/tick! [k v] eid ctx)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
@@ -51,4 +51,4 @@
   (when-not paused?
     (update-time!)
     (update-potential-fields!)
-    (tick-entities! (ctx/make-map))))
+    (tick-entities! ctx)))

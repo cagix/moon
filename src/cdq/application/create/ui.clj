@@ -1,6 +1,5 @@
 (ns cdq.application.create.ui
-  (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]))
+  (:require [gdl.ui :as ui]))
 
-(defn do! []
-  (ui/load! (:ui ctx/config)))
+(defn do! [{:keys [ctx/config]}]
+  (ui/load! (:ui config)))

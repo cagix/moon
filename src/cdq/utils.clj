@@ -183,9 +183,3 @@
   (binding [*print-level* (or print-level 3)]
     (with-out-str
      (clojure.pprint/pprint data))))
-
-(defn create-config [path]
-  (let [m (io-slurp-edn path)]
-    (reify ILookup
-      (valAt [_ k]
-        (safe-get m k)))))
