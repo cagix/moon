@@ -6,9 +6,9 @@
 (defcomponent :entity/line-render
   (entity/render-default! [[_ {:keys [thick? end color]}]
                            entity
-                           draw]
+                           ctx]
     (let [position (:position entity)]
       (if thick?
-        (draw/with-line-width draw 4
-          #(draw/line draw position end color))
-        (draw/line draw position end color)))))
+        (draw/with-line-width ctx 4
+          #(draw/line ctx position end color))
+        (draw/line ctx position end color)))))

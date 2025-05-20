@@ -27,15 +27,15 @@
 (def ^:private droppable-color   [0   0.6 0 0.8])
 (def ^:private not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-cell-rect! [draw player-entity x y mouseover? cell]
-  (draw/rectangle draw x y cell-size cell-size :gray)
+(defn- draw-cell-rect! [ctx player-entity x y mouseover? cell]
+  (draw/rectangle ctx x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (draw/filled-rectangle draw
+      (draw/filled-rectangle ctx
                              (inc x)
                              (inc y)
                              (- cell-size 2)
@@ -49,10 +49,10 @@
   (ui/widget
    {:draw
     (fn [^Actor actor
-         {:keys [ctx/draw
-                 ctx/player-eid
-                 ctx/ui-viewport]}]
-      (draw-cell-rect! draw
+         {:keys [ctx/player-eid
+                 ctx/ui-viewport]
+          :as ctx}]
+      (draw-cell-rect! ctx
                        @player-eid
                        (.getX actor)
                        (.getY actor)

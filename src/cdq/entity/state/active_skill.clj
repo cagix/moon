@@ -7,20 +7,20 @@
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
-(defn- draw-skill-image [draw image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [ctx image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (draw/filled-circle draw center radius [1 1 1 0.125])
-    (draw/sector draw
+    (draw/filled-circle ctx center radius [1 1 1 0.125])
+    (draw/sector ctx
                  center
                  radius
                  90 ; start-angle
                  (* (float action-counter-ratio) 360) ; degree
                  [1 1 1 0.5])
-    (draw/image draw image [(- (float x) radius) y])))
+    (draw/image ctx image [(- (float x) radius) y])))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -37,8 +37,8 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
-(defn- render-active-effect [draw effect-ctx effect]
-  (run! #(effect/render % effect-ctx draw) effect))
+(defn- render-active-effect [ctx effect-ctx effect]
+  (run! #(effect/render % effect-ctx ctx) effect))
 
 (defcomponent :active-skill
   (entity/create [[_ eid [skill effect-ctx]] {:keys [ctx/elapsed-time]}]
@@ -75,14 +75,14 @@
                 (not (zero? (:skill/cost skill))))
        [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
-  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}] entity draw]
+  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}] entity ctx]
     (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-image draw
+      (draw-skill-image ctx
                         image
                         entity
                         (:position entity)
                         (timer/ratio ctx/elapsed-time counter))
-      (render-active-effect draw
+      (render-active-effect ctx
                             effect-ctx ; TODO !!!
                             ; !! FIXME !!
                             ; (update-effect-ctx effect-ctx)

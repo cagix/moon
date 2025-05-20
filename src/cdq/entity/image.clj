@@ -4,8 +4,8 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/image
-  (entity/render-default! [[_ image] entity draw]
-    (draw/rotated-centered draw
+  (entity/render-default! [[_ image] entity ctx]
+    (draw/rotated-centered ctx
                            image
                            (or (:rotation-angle entity) 0)
                            (:position entity))))

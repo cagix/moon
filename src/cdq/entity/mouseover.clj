@@ -10,10 +10,10 @@
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
 (defmethod entity/render-below! :entity/mouseover?
-  [_ {:keys [entity/faction] :as entity} draw]
+  [_ {:keys [entity/faction] :as entity} ctx]
   (let [player @ctx/player-eid]
-    (draw/with-line-width draw 3
-      #(draw/ellipse draw
+    (draw/with-line-width ctx 3
+      #(draw/ellipse ctx
                      (:position entity)
                      (:half-width entity)
                      (:half-height entity)

@@ -6,8 +6,8 @@
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]))
 
-(defn- render-infostr-on-bar [draw infostr x y h]
-  (draw/text draw
+(defn- render-infostr-on-bar [ctx infostr x y h]
+  (draw/text ctx
              {:text infostr
               :x (+ x 75)
               :y (+ y 2)
@@ -20,16 +20,16 @@
         manacontent (graphics/sprite (assets "images/mana.png")   world-unit-scale)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [draw x y contentimage minmaxval name]
-                            (draw/image draw rahmen [x y])
-                            (draw/image draw (graphics/sub-sprite contentimage
+        render-hpmana-bar (fn [ctx x y contentimage minmaxval name]
+                            (draw/image ctx rahmen [x y])
+                            (draw/image ctx (graphics/sub-sprite contentimage
                                                                   [0
                                                                    0
                                                                    (* rahmenw (val-max/ratio minmaxval))
                                                                    rahmenh]
                                                                   world-unit-scale)
                                         [x y])
-                            (render-infostr-on-bar draw
+                            (render-infostr-on-bar ctx
                                                    (str (utils/readable-number (minmaxval 0))
                                                         "/"
                                                         (minmaxval 1)
@@ -39,9 +39,8 @@
                                                    y
                                                    rahmenh))]
     (ui/actor
-     {:draw (fn [_this {:keys [ctx/player-eid
-                               ctx/draw]}]
+     {:draw (fn [_this {:keys [ctx/player-eid] :as ctx}]
               (let [player-entity @player-eid
                     x (- x (/ rahmenw 2))]
-                (render-hpmana-bar draw x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                (render-hpmana-bar draw x y-mana manacontent (entity/mana      player-entity) "MP")))})))
+                (render-hpmana-bar ctx x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP")))})))

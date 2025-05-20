@@ -66,9 +66,9 @@
   (entity/create [[_ eid item] _ctx]
     {:item item})
 
-  (entity/render-below! [[_ {:keys [item]}] entity draw]
+  (entity/render-below! [[_ {:keys [item]}] entity ctx]
     (when (world-item?)
-      (draw/centered draw
+      (draw/centered ctx
                      (:entity/image item)
                      (item-place-position entity))))
 
@@ -98,8 +98,8 @@
   (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
-  (state/draw-gui-view [_ eid draw]
+  (state/draw-gui-view [_ eid ctx]
     (when (not (world-item?))
-      (draw/centered draw
+      (draw/centered ctx
                      (:entity/image (:entity/item-on-cursor @eid))
                      (viewport/mouse-position ctx/ui-viewport)))))

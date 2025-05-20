@@ -10,9 +10,9 @@
     (when (timer/stopped? elapsed-time counter)
       [[:tx/dissoc eid k]]))
 
-  (entity/render-above! [[_ {:keys [text]}] entity draw]
+  (entity/render-above! [[_ {:keys [text]}] entity ctx]
     (let [[x y] (:position entity)]
-      (draw/text draw
+      (draw/text ctx
                  {:text text
                   :x x
                   :y (+ y

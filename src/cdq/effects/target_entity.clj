@@ -43,11 +43,11 @@
           (end-point source* target* maxrange)
           (db/build ctx/db :audiovisuals/hit-ground)]])))
 
-  (effect/render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} draw]
+  (effect/render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} ctx]
     (when target
       (let [source* @source
             target* @target]
-        (draw/line draw
+        (draw/line ctx
                    (start-point source* target*)
                    (end-point source* target* maxrange)
                    (if (entity/in-range? source* target* maxrange)

@@ -93,10 +93,16 @@
                            :free-skill-points 3
                            :click-distance-tiles 1.5})
 
-(defn- make-map []
-  {:ctx/elapsed-time elapsed-time
+(defn make-map []
+  {:ctx/default-font default-font
+   :ctx/batch        batch
+   :ctx/unit-scale   unit-scale
+   :ctx/shape-drawer shape-drawer
+   :ctx/world-unit-scale world-unit-scale
+   :ctx/elapsed-time elapsed-time
    :ctx/effect-body-props effect-body-props
    :ctx/content-grid content-grid
+   :ctx/player-eid player-eid
    :ctx/grid grid
    :ctx/cursors cursors
    :ctx/stage stage
@@ -125,9 +131,3 @@
                              {:transaction transaction
                               :sym sym}
                              t)))))))
-
-(defn get-draw []
-  {:ctx/default-font default-font
-   :ctx/batch        batch
-   :ctx/unit-scale   unit-scale
-   :ctx/shape-drawer shape-drawer})

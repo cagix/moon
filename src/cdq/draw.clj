@@ -91,17 +91,17 @@
 (defn with-line-width [{:keys [ctx/shape-drawer]} width draw-fn]
   (sd/with-line-width shape-drawer width draw-fn))
 
-(defn grid [draw leftx bottomy gridw gridh cellw cellh color]
+(defn grid [ctx leftx bottomy gridw gridh cellw cellh color]
   (let [w (* (float gridw) (float cellw))
         h (* (float gridh) (float cellh))
         topy (+ (float bottomy) (float h))
         rightx (+ (float leftx) (float w))]
     (doseq [idx (range (inc (float gridw)))
             :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (line draw [linex topy] [linex bottomy] color))
+      (line ctx [linex topy] [linex bottomy] color))
     (doseq [idx (range (inc (float gridh)))
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (line draw [leftx liney] [rightx liney] color))))
+      (line ctx [leftx liney] [rightx liney] color))))
 
-(defn centered [draw image position]
-  (rotated-centered draw image 0 position))
+(defn centered [ctx image position]
+  (rotated-centered ctx image 0 position))

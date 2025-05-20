@@ -11,5 +11,5 @@
        [:tx/mod-remove eid modifiers]]))
 
   ; TODO draw opacity as of counter ratio?
-  (entity/render-above! [_ entity draw]
-    (draw/filled-circle draw (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+  (entity/render-above! [_ entity ctx]
+    (draw/filled-circle ctx (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

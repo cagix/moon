@@ -3,7 +3,5 @@
             [gdl.ui :as ui]))
 
 (defn do! []
-  (reset! (.ctx ctx/stage) {:ctx/player-eid ctx/player-eid
-                            :ctx/ui-viewport ctx/ui-viewport
-                            :ctx/draw (ctx/get-draw)})
+  (reset! (.ctx ctx/stage) (ctx/make-map))
   (ui/draw! ctx/stage))

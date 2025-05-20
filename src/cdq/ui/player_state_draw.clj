@@ -5,8 +5,7 @@
 
 (defn create []
   (ui/actor
-   {:draw (fn [_this {:keys [ctx/player-eid
-                             ctx/draw]}]
+   {:draw (fn [_this {:keys [ctx/player-eid] :as ctx}]
             (state/draw-gui-view (entity/state-obj @player-eid)
                                  player-eid
-                                 draw))}))
+                                 ctx))}))
