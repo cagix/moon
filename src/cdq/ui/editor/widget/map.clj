@@ -45,15 +45,11 @@
                            (= k ((ui/user-object actor) 0))))
                     (ui/children table)))
 
-(defn- value-widget [[k v]]
-  (let [widget (widget/create (get (:schemas ctx/db) k) v)]
-    (ui/set-user-object! widget [k v])
-    widget))
-
 (def ^:private component-row-cols 3)
-(defn- component-row [[k v] schema table]
+
+(defn- component-row [[k v] map-schema schemas table]
   [{:actor (ui/table {:cell-defaults {:pad 2}
-                      :rows [[{:actor (when (m/optional? k (schema/malli-form schema (:schemas ctx/db)))
+                      :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
                                         (ui/text-button "-"
                                                         (fn []
                                                           (ui/remove! (find-kv-widget table k))
@@ -63,7 +59,9 @@
                                         (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (value-widget [k v])
+   {:actor (let [widget (widget/create (get schemas k) v)]
+             (ui/set-user-object! widget [k v])
+             widget)
     :left? true}])
 
 (defn- k->default-value [k]
@@ -91,10 +89,10 @@
        [(ui/text-button (name k)
                         (fn []
                           (.remove window)
-                          (ui/add-rows! map-widget-table [(component-row
-                                                           [k (k->default-value k)]
-                                                           schema
-                                                           map-widget-table)])
+                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value k)]
+                                                                         schema
+                                                                         (:schemas ctx/db)
+                                                                         map-widget-table)])
                           (rebuild-editor-window! ctx/stage)))]))
     (.pack window)
     (ui/add! ctx/stage window)))
@@ -109,7 +107,11 @@
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % schema table)
+                                    (map (fn [[k v]]
+                                           (component-row [k v]
+                                                          schema
+                                                          (:schemas ctx/db)
+                                                          table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
