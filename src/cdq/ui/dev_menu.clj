@@ -18,7 +18,7 @@
             {:label "Help"
              :items [{:label (:info ctx/config)}]}
             {:label "Objects"
-             :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys ctx/schemas)))]
+             :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas ctx/db))))]
                       {:label (str/capitalize (name property-type))
                        :on-click (fn []
                                    (editor/open-editor-window! property-type))})}]

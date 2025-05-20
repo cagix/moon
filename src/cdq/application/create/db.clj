@@ -4,4 +4,5 @@
             [cdq.utils :refer [bind-root]]))
 
 (defn do! []
-  (bind-root #'ctx/db (db/create (:db ctx/config))))
+  (bind-root #'ctx/db (db/create (:db ctx/config)
+                                 (:schemas ctx/config))))

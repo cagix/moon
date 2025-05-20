@@ -31,8 +31,7 @@
 
 (def unit-scale (atom 1))
 
-(declare schemas
-         db
+(declare db
          assets
          batch
          shape-drawer-texture

@@ -14,7 +14,6 @@
 
 (def create-fns '[cdq.application.create.config/do!
                   cdq.application.create.requires/do!
-                  cdq.application.create.schemas/do!
                   cdq.application.create.db/do!
                   cdq.application.create.assets/do!
                   cdq.application.create.batch/do!

@@ -1,10 +1,9 @@
 (ns cdq.db
   (:refer-clojure :exclude [update])
-  (:require [cdq.ctx :as ctx]
-            [cdq.schema :as schema]
+  (:require [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.malli :as m]
-            [cdq.utils :as utils]
+            [cdq.utils :as utils :refer [io-slurp-edn]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
@@ -33,12 +32,12 @@
                                        schemas)
                     property))
 
-(defrecord DB [data file]
+(defrecord DB [data file schemas]
   PDB
   (update [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (validate! ctx/schemas property)
+    (validate! schemas property)
     (clojure.core/update this :data assoc id property))
 
   (delete [this property-id]
@@ -62,16 +61,18 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id]
-    (schema/transform ctx/schemas (get-raw this property-id)))
+    (schema/transform schemas (get-raw this property-id)))
 
   (build-all [this property-type]
-    (map #(schema/transform ctx/schemas %) (all-raw this property-type))))
+    (map #(schema/transform schemas %) (all-raw this property-type))))
 
-(defn create [path]
-  (let [properties-file (io/resource path) ; TODO required from existing?
+(defn create [path schemas]
+  (let [schemas (io-slurp-edn schemas)
+        properties-file (io/resource path) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! (partial validate! ctx/schemas) properties)
+    (run! (partial validate! schemas) properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
-              :file properties-file})))
+              :file properties-file
+              :schemas schemas})))

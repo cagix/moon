@@ -50,7 +50,7 @@
 (defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (m/optional? k (schema/malli-form schema ctx/schemas))
+        delete-button (when (m/optional? k (schema/malli-form schema (:schemas ctx/db)))
                         (ui/text-button "-"
                                         (fn []
                                           (ui/remove! (find-kv-widget table k))
@@ -60,7 +60,7 @@
                        label]]})))
 
 (defn- value-widget [[k v]]
-  (let [widget (widget/create (get ctx/schemas k) v)]
+  (let [widget (widget/create (get (:schemas ctx/db) k) v)]
     (ui/set-user-object! widget [k v])
     widget))
 
@@ -74,13 +74,13 @@
     :left? true}])
 
 (defn- k->default-value [k]
-  (let [schema (get ctx/schemas k)]
+  (let [schema (get (:schemas ctx/db) k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (m/generate (schema/malli-form schema ctx/schemas)
+     :else (m/generate (schema/malli-form schema (:schemas ctx/db))
                        {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
@@ -91,7 +91,7 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table)))
-                                   (m/map-keys (schema/malli-form schema ctx/schemas))))]
+                                   (m/map-keys (schema/malli-form schema (:schemas ctx/db)))))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
@@ -120,7 +120,7 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema ctx/schemas))
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas ctx/db)))
                                   (set (keys m))))]
     (ui/add-rows!
      table
@@ -138,4 +138,4 @@
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (ui/user-object widget)]]
-          [k (widget/value (get ctx/schemas k) widget)])))
+          [k (widget/value (get (:schemas ctx/db) k) widget)])))
