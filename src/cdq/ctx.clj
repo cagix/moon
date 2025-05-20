@@ -44,6 +44,7 @@
          get-tiled-map-renderer
          stage
          tiled-map
+         start-position
          grid
          raycaster
          content-grid
