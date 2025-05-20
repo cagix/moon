@@ -44,12 +44,6 @@
         (try-move grid body (assoc movement :direction [xdir 0]))
         (try-move grid body (assoc movement :direction [0 ydir])))))
 
-; set max speed so small entities are not skipped by projectiles
-; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ ctx/minimum-size ctx/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
-
-(def ^:private speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
-
 (defcomponent :entity/movement
   (entity/tick! [[_ {:keys [direction
                             speed
@@ -58,7 +52,7 @@
                  eid
                  {:keys [ctx/delta-time
                          ctx/grid]}]
-    (assert (m/validate speed-schema speed)
+    (assert (m/validate ctx/speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
                 (v/normalised? direction))

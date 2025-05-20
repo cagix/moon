@@ -1,5 +1,6 @@
 (ns cdq.ctx
-  (:require [cdq.utils :as utils]))
+  (:require [cdq.malli :as m]
+            [cdq.utils :as utils]))
 
 (comment
  (spit "asset_diagnostics" (.getDiagnostics assets))
@@ -66,6 +67,12 @@
 ; skipping bodies at too fast movement
 ; TODO assert at properties load
 (def minimum-size 0.39) ; == spider smallest creature size.
+
+; set max speed so small entities are not skipped by projectiles
+; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+(def ^:private max-speed (/ minimum-size max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
+
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (def z-orders [:z-order/on-ground
                :z-order/ground
