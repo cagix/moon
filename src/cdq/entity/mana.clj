@@ -3,5 +3,5 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/mana
-  (entity/create [[_ v]]
+  (entity/create [[_ v] _ctx]
     [v v]))

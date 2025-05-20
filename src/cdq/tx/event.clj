@@ -8,7 +8,7 @@
 (defn do!
   ([ctx eid event]
    (do! ctx eid event nil))
-  ([_ctx eid event params]
+  ([ctx eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
            new-fsm (fsm/fsm-event fsm event)
@@ -17,7 +17,8 @@
          (let [old-state-obj (entity/state-obj @eid)
                new-state-obj [new-state-k (entity/create (if params
                                                            [new-state-k eid params]
-                                                           [new-state-k eid]))]]
+                                                           [new-state-k eid])
+                                                         ctx)]]
            (when (:entity/player? @eid)
              (ctx/handle-txs! ((:state-changed! (:entity/player? @eid)) new-state-obj)))
            (swap! eid #(-> %

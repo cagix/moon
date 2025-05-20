@@ -5,7 +5,7 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :player-moving
-  (entity/create [[_ eid movement-vector]]
+  (entity/create [[_ eid movement-vector] _ctx]
     {:movement-vector movement-vector})
 
   (entity/tick! [[_ {:keys [movement-vector]}] eid _ctx]

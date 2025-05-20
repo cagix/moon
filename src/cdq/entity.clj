@@ -7,14 +7,14 @@
             [cdq.val-max :as val-max]
             [gdl.graphics.camera :as camera]))
 
-(defmulti create (fn [[k]]
+(defmulti create (fn [[k] ctx]
                    k))
-(defmethod create :default [[_ v]]
+(defmethod create :default [[_ v] ctx]
   v)
 
-(defmulti create! (fn [[k] eid]
+(defmulti create! (fn [[k] eid ctx]
                     k))
-(defmethod create! :default [_ eid])
+(defmethod create! :default [_ eid ctx])
 
 (defmulti destroy! (fn [[k] eid]
                     k))

@@ -1,14 +1,13 @@
 (ns cdq.entity.state.stunned
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :stunned
-  (entity/create [[_ _eid duration]]
-    {:counter (timer/create ctx/elapsed-time duration)})
+  (entity/create [[_ _eid duration] {:keys [ctx/elapsed-time]}]
+    {:counter (timer/create elapsed-time duration)})
 
   (entity/tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
     (when (timer/stopped? elapsed-time counter)

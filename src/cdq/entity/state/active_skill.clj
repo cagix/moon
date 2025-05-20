@@ -41,13 +41,13 @@
   (run! #(effect/render % effect-ctx draw) effect))
 
 (defcomponent :active-skill
-  (entity/create [[_ eid [skill effect-ctx]]]
+  (entity/create [[_ eid [skill effect-ctx]] {:keys [ctx/elapsed-time]}]
     {:skill skill
      :effect-ctx effect-ctx
      :counter (->> skill
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
-                   (timer/create ctx/elapsed-time))})
+                   (timer/create elapsed-time))})
 
   (entity/tick! [[_ {:keys [skill effect-ctx counter]}]
                  eid

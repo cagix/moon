@@ -4,7 +4,7 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/skills
-  (entity/create! [[k skills] eid]
+  (entity/create! [[k skills] eid _ctx]
     (cons [:tx/assoc eid k nil]
           (for [skill skills]
             [:tx/add-skill eid skill])))

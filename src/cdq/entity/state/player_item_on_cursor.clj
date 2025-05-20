@@ -63,7 +63,7 @@
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defcomponent :player-item-on-cursor
-  (entity/create [[_ eid item]]
+  (entity/create [[_ eid item] _ctx]
     {:item item})
 
   (entity/render-below! [[_ {:keys [item]}] entity draw]

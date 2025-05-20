@@ -58,9 +58,9 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defn- create-vs [components]
+(defn- create-vs [components ctx]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/create [k v])))
+            (assoc m k (entity/create [k v] ctx)))
           {}
           components))
 
@@ -69,7 +69,8 @@
                    ctx/id-counter
                    ctx/entity-ids
                    ctx/content-grid
-                   ctx/grid]}
+                   ctx/grid]
+            :as ctx}
            position body components]
 
   ; TODO SCHEMA COMPONENTS !
@@ -81,7 +82,7 @@
                       (create-body minimum-size z-orders)
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
-                                            create-vs))))]
+                                            (create-vs ctx)))))]
 
     ;;
 
@@ -99,4 +100,6 @@
 
 
     (doseq [component @eid]
-      (ctx/handle-txs! (entity/create! component eid)))))
+      (ctx/handle-txs! (entity/create! component
+                                       eid
+                                       ctx)))))

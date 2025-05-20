@@ -4,7 +4,7 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/delete-after-animation-stopped?
-  (entity/create! [_ eid]
+  (entity/create! [_ eid _ctx]
     (-> @eid :entity/animation :looping? not assert)
     nil)
 

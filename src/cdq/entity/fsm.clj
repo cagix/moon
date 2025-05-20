@@ -54,10 +54,11 @@
     [:player-dead]]))
 
 (defcomponent :entity/fsm
-  (entity/create! [[k {:keys [fsm initial-state]}] eid]
+  (entity/create! [[k {:keys [fsm initial-state]}] eid ctx]
     ; fsm throws when initial-state is not part of states, so no need to assert initial-state
     ; initial state is nil, so associng it. make bug report at reduce-fsm?
     [[:tx/assoc eid k (assoc ((case fsm
                                 :fsms/player player-fsm
                                 :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
-     [:tx/assoc eid initial-state (entity/create [initial-state eid])]]))
+     [:tx/assoc eid initial-state (entity/create [initial-state eid]
+                                                 ctx)]]))

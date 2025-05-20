@@ -37,7 +37,7 @@
                              (hpbar-color ratio)))))
 
 (defcomponent :entity/hp
-  (entity/create [[_ v]]
+  (entity/create [[_ v] _ctx]
     [v v])
 
   (entity/render-info! [_ entity draw]

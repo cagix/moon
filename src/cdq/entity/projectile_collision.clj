@@ -6,7 +6,7 @@
             [cdq.utils :refer [defcomponent find-first]]))
 
 (defcomponent :entity/projectile-collision
-  (entity/create [[_ v]]
+  (entity/create [[_ v] _ctx]
     (assoc v :already-hit-bodies #{}))
 
   (entity/tick! [[k {:keys [entity-effects already-hit-bodies piercing?]}]

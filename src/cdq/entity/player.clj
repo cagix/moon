@@ -3,5 +3,5 @@
             [cdq.entity :as entity]
             [cdq.utils :as utils]))
 
-(defmethod entity/create! :entity/player? [_ eid]
+(defmethod entity/create! :entity/player? [_ eid _ctx]
   (utils/bind-root #'ctx/player-eid eid))
