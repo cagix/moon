@@ -3,14 +3,16 @@
             [cdq.vector2 :as v]
             [cdq.tx.spawn-entity]))
 
-(defn do! [{:keys [position direction faction]}
+(defn do! [ctx
+           {:keys [position direction faction]}
            {:keys [entity/image
                    projectile/max-range
                    projectile/speed
                    entity-effects
                    projectile/piercing?] :as projectile}]
   (let [size (projectile/size projectile)]
-    (cdq.tx.spawn-entity/do! position
+    (cdq.tx.spawn-entity/do! ctx
+                             position
                              {:width size
                               :height size
                               :z-order :z-order/flying

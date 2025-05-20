@@ -1,12 +1,13 @@
 (ns cdq.tx.move-entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.content-grid :as content-grid]
+  (:require [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.vector2 :as v]))
 
-(defn do! [eid body direction rotate-in-movement-direction?]
-  (content-grid/position-changed! ctx/content-grid eid)
-  (grid/position-changed! ctx/grid eid)
+(defn do! [{:keys [ctx/content-grid
+                   ctx/grid]}
+           eid body direction rotate-in-movement-direction?]
+  (content-grid/position-changed! content-grid eid)
+  (grid/position-changed! grid eid)
   (swap! eid assoc
          :position (:position body)
          :left-bottom (:left-bottom body))

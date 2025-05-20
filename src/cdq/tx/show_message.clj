@@ -1,10 +1,9 @@
 (ns cdq.tx.show-message
-  (:require [cdq.ctx :as ctx]
-            [cdq.ui.message :as message]
+  (:require [cdq.ui.message :as message]
             [gdl.ui :as ui]))
 
-(defn do! [message]
-  (-> ctx/stage
+(defn do! [{:keys [ctx/stage]} message]
+  (-> stage
       ui/root
       (ui/find-actor "player-message")
       (message/show! message)))

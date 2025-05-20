@@ -93,3 +93,36 @@
 (def player-entity-config {:creature-id :creatures/vampire
                            :free-skill-points 3
                            :click-distance-tiles 1.5})
+
+(defn- make-map []
+  {:ctx/elapsed-time elapsed-time
+   :ctx/effect-body-props effect-body-props
+   :ctx/content-grid content-grid
+   :ctx/grid grid
+   :ctx/cursors cursors
+   :ctx/stage stage
+   :ctx/ui-viewport ui-viewport
+   :ctx/assets assets
+   :ctx/sound-path-format sound-path-format
+   :ctx/db db
+   :ctx/minimum-size minimum-size
+   :ctx/z-orders z-orders
+   :ctx/id-counter id-counter
+   :ctx/entity-ids entity-ids
+   :ctx/delta-time delta-time})
+
+(defn handle-txs! [transactions]
+  (let [ctx (make-map)]
+    (doseq [transaction transactions
+            :when transaction
+            :let [_ (assert (vector? transaction)
+                            (pr-str transaction))
+                  ; TODO also should be with namespace 'tx' the first is a keyword
+                  sym (symbol (str "cdq.tx." (name (first transaction)) "/do!"))
+                  do! (requiring-resolve sym)]] ; TODO throw error if requiring failes ! compiler errors ... compile all tx/game first ?
+      (try (apply do! (cons ctx (rest transaction)))
+           (catch Throwable t
+             (throw (ex-info ""
+                             {:transaction transaction
+                              :sym sym}
+                             t)))))))

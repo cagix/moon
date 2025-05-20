@@ -1,9 +1,10 @@
 (ns cdq.tx.spawn-line
-  (:require [cdq.ctx :as ctx]
-            [cdq.tx.spawn-entity]))
+  (:require [cdq.tx.spawn-entity]))
 
-(defn do! [{:keys [start end duration color thick?]}]
-  (cdq.tx.spawn-entity/do! start
-                           ctx/effect-body-props
+(defn do! [{:keys [ctx/effect-body-props] :as ctx}
+           {:keys [start end duration color thick?]}]
+  (cdq.tx.spawn-entity/do! ctx
+                           start
+                           effect-body-props
                            #:entity {:line-render {:thick? thick? :end end :color color}
                                      :delete-after-duration duration}))

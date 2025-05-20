@@ -1,4 +1,4 @@
 (ns cdq.tx.dissoc)
 
-(defn do! [eid k]
+(defn do! [_ctx eid k]
   (swap! eid dissoc k))

@@ -1,5 +1,6 @@
 (ns cdq.ctx.spawn-enemies
-  (:require [cdq.utils :as utils]
+  (:require [cdq.ctx :as ctx]
+            [cdq.utils :as utils]
             [gdl.tiled :as tiled]))
 
 (defn- spawn-enemies [tiled-map]
@@ -12,4 +13,4 @@
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
 (defn do! [{:keys [ctx/tiled-map]}]
-  (utils/handle-txs! (spawn-enemies tiled-map)))
+  (ctx/handle-txs! (spawn-enemies tiled-map)))

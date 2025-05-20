@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]))
 
-(defn do! [eid cell item]
+(defn do! [_ctx eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))

@@ -32,14 +32,16 @@
                             height
                             collides?
                             z-order
-                            rotation-angle]}]
+                            rotation-angle]}
+                    minimum-size
+                    z-orders]
   (assert position)
   (assert width)
   (assert height)
-  (assert (>= width  (if collides? ctx/minimum-size 0)))
-  (assert (>= height (if collides? ctx/minimum-size 0)))
+  (assert (>= width  (if collides? minimum-size 0)))
+  (assert (>= height (if collides? minimum-size 0)))
   (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set ctx/z-orders) z-order))
+  (assert ((set z-orders) z-order))
   (assert (or (nil? rotation-angle)
               (<= 0 rotation-angle 360)))
   (map->Body
@@ -62,7 +64,13 @@
           {}
           components))
 
-(defn do! [position body components]
+(defn do! [{:keys [ctx/minimum-size
+                   ctx/z-orders
+                   ctx/id-counter
+                   ctx/entity-ids
+                   ctx/content-grid
+                   ctx/grid]}
+           position body components]
 
   ; TODO SCHEMA COMPONENTS !
 
@@ -70,25 +78,25 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      create-body
+                      (create-body minimum-size z-orders)
                       (utils/safe-merge (-> components
-                                            (assoc :entity/id (swap! ctx/id-counter inc))
+                                            (assoc :entity/id (swap! id-counter inc))
                                             create-vs))))]
 
     ;;
 
     (let [id (:entity/id @eid)]
       (assert (number? id))
-      (swap! ctx/entity-ids assoc id eid))
+      (swap! entity-ids assoc id eid))
 
-    (content-grid/add-entity! ctx/content-grid eid)
+    (content-grid/add-entity! content-grid eid)
 
     ; https://github.com/damn/core/issues/58
     ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (grid/add-entity! ctx/grid eid)
+    (grid/add-entity! grid eid)
 
     ;;
 
 
     (doseq [component @eid]
-      (utils/handle-txs! (entity/create! component eid)))))
+      (ctx/handle-txs! (entity/create! component eid)))))

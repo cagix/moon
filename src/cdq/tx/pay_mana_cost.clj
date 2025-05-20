@@ -6,5 +6,5 @@
     (assert (<= cost mana-val))
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
-(defn do! [eid cost]
+(defn do! [_ctx eid cost]
   (swap! eid pay-mana-cost cost))

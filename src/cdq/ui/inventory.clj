@@ -87,7 +87,7 @@
                         (-> @ctx/player-eid
                             entity/state-obj
                             (state/clicked-inventory-cell ctx/player-eid cell)
-                            utils/handle-txs!)))))))
+                            ctx/handle-txs!)))))))
 
 (defn- inventory-table []
   (ui/table {:id ::table

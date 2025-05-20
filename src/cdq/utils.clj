@@ -10,21 +10,6 @@
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
 
-(defn handle-txs! [transactions]
-  (doseq [transaction transactions
-          :when transaction
-          :let [_ (assert (vector? transaction)
-                          (pr-str transaction))
-                ; TODO also should be with namespace 'tx' the first is a keyword
-                sym (symbol (str "cdq.tx." (name (first transaction)) "/do!"))
-                do! (requiring-resolve sym)]] ; TODO throw error if requiring failes ! compiler errors ... compile all tx/game first ?
-    (try (apply do! (rest transaction))
-         (catch Throwable t
-           (throw (ex-info ""
-                           {:transaction transaction
-                            :sym sym}
-                           t))))))
-
 (defn bind-root [var value]
   (Var/.bindRoot var value))
 

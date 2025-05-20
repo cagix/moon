@@ -8,7 +8,7 @@
             [gdl.ui :as ui]))
 
 (defn- play-button [sound-name]
-  (ui/text-button "play!" #(tx.sound/do! sound-name)))
+  (ui/text-button "play!" #(tx.sound/do! (ctx/make-map) sound-name)))
 
 (declare columns)
 

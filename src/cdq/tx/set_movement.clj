@@ -10,5 +10,5 @@
   (assoc entity :entity/movement {:direction movement-vector
                                   :speed (or (entity/stat entity :entity/movement-speed) 0)}))
 
-(defn do! [eid movement-vector]
+(defn do! [_ctx eid movement-vector]
   (swap! eid set-movement movement-vector))

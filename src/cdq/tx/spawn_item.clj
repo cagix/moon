@@ -1,8 +1,9 @@
 (ns cdq.tx.spawn-item
   (:require [cdq.tx.spawn-entity]))
 
-(defn do! [position item]
-  (cdq.tx.spawn-entity/do! position
+(defn do! [ctx position item]
+  (cdq.tx.spawn-entity/do! ctx
+                           position
                            {:width 0.75
                             :height 0.75
                             :z-order :z-order/on-ground}

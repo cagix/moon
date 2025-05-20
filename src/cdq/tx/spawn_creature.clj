@@ -1,6 +1,5 @@
 (ns cdq.tx.spawn-creature
   (:require [cdq.db :as db]
-            [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [cdq.tx.spawn-entity]))
 
@@ -18,9 +17,11 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn do! [{:keys [position creature-id components]}]
-  (let [props (db/build ctx/db creature-id)]
-    (cdq.tx.spawn-entity/do! position
+(defn do! [{:keys [ctx/db] :as ctx}
+           {:keys [position creature-id components]}]
+  (let [props (db/build db creature-id)]
+    (cdq.tx.spawn-entity/do! ctx
+                             position
                              (->body (:entity/body props))
                              (-> props
                                  (dissoc :entity/body)

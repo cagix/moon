@@ -4,8 +4,7 @@
             [cdq.potential-field.update :as potential-field]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :refer [bind-root
-                               pretty-pst
-                               handle-txs!]]
+                               pretty-pst]]
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]))
 
@@ -33,7 +32,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (handle-txs! (entity/tick! [k v] eid)))
+               (ctx/handle-txs! (entity/tick! [k v] eid)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t

@@ -6,7 +6,7 @@
       ((:skill-removed! (:entity/player? @eid)) skill))
     (swap! eid update :entity/skills dissoc id))
 
-(defn do! [eid {:keys [property/id] :as skill}]
+(defn do! [_ctx eid {:keys [property/id] :as skill}]
   {:pre [(not (contains? (:entity/skills @eid) id))]}
   (when (:entity/player? @eid)
     ((:skill-added! (:entity/player? @eid)) skill))

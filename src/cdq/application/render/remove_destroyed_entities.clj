@@ -2,8 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
-            [cdq.grid :as grid]
-            [cdq.utils :refer [handle-txs!]]))
+            [cdq.grid :as grid]))
 
 (defn do! []
   (doseq [eid (filter (comp :entity/destroyed? deref)
@@ -14,4 +13,4 @@
     (content-grid/remove-entity! eid)
     (grid/remove-entity! eid)
     (doseq [component @eid]
-      (handle-txs! (entity/destroy! component eid)))))
+      (ctx/handle-txs! (entity/destroy! component eid)))))
