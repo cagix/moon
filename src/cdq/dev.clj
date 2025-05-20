@@ -79,10 +79,10 @@
  )
 
 
-(defn- learn-skill! [_context skill-id]
+#_(defn- learn-skill! [_context skill-id]
   (cdq.tx.add-skill/do! ctx/player-eid (db/build ctx/db skill-id)))
 
-(defn- create-item! [_context item-id]
+#_(defn- create-item! [_context item-id]
   (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
