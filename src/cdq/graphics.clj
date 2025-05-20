@@ -1,6 +1,5 @@
 (ns cdq.graphics
-  (:require [cdq.ctx :as ctx]
-            [gdl.graphics :as graphics]))
+  (:require [gdl.graphics :as graphics]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -30,19 +29,21 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defn sub-sprite [sprite [x y w h]]
+(defn sub-sprite [sprite [x y w h] world-unit-scale]
   (sprite* (graphics/sub-region (:texture-region sprite) x y w h)
-           ctx/world-unit-scale))
+           world-unit-scale))
 
-(defn sprite-sheet [texture tilew tileh]
+(defn sprite-sheet [texture tilew tileh world-unit-scale]
   {:image (sprite* (graphics/texture-region texture)
-                   ctx/world-unit-scale)
+                   world-unit-scale)
    :tilew tilew
    :tileh tileh})
 
-(defn from-sheet [{:keys [image tilew tileh]} [x y]]
-  (sub-sprite image [(* x tilew) (* y tileh) tilew tileh]))
+(defn from-sheet [{:keys [image tilew tileh]} [x y] world-unit-scale]
+  (sub-sprite image
+              [(* x tilew) (* y tileh) tilew tileh]
+              world-unit-scale))
 
-(defn sprite [texture]
+(defn sprite [texture world-unit-scale]
   (sprite* (graphics/texture-region texture)
-           ctx/world-unit-scale))
+           world-unit-scale))

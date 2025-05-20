@@ -15,9 +15,12 @@
               :up? true}))
 
 (defn create [[x y-mana]]
-  (let [rahmen      (graphics/sprite (ctx/assets "images/rahmen.png"))
-        hpcontent   (graphics/sprite (ctx/assets "images/hp.png"))
-        manacontent (graphics/sprite (ctx/assets "images/mana.png"))
+  (let [rahmen      (graphics/sprite (ctx/assets "images/rahmen.png")
+                                     ctx/world-unit-scale)
+        hpcontent   (graphics/sprite (ctx/assets "images/hp.png")
+                                     ctx/world-unit-scale)
+        manacontent (graphics/sprite (ctx/assets "images/mana.png")
+                                     ctx/world-unit-scale)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [draw x y contentimage minmaxval name]
@@ -26,7 +29,8 @@
                                                                   [0
                                                                    0
                                                                    (* rahmenw (val-max/ratio minmaxval))
-                                                                   rahmenh])
+                                                                   rahmenh]
+                                                                  ctx/world-unit-scale)
                                         [x y])
                             (render-infostr-on-bar draw
                                                    (str (utils/readable-number (minmaxval 0))

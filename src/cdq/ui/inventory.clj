@@ -74,8 +74,12 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png") 48 48)
-                       (slot->sprite-idx slot)))
+  (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png")
+                                              48
+                                              48
+                                              ctx/world-unit-scale)
+                       (slot->sprite-idx slot)
+                       ctx/world-unit-scale))
 
 (defn- slot->background [slot]
   (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
