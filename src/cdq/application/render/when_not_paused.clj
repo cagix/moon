@@ -8,6 +8,7 @@
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]))
 
+; 2 steps ! assoc-delta-time & update-elapsed-time
 (defn- update-time! []
   (let [delta-ms (min (graphics/delta-time) ctx/max-delta)]
     (alter-var-root #'ctx/elapsed-time + delta-ms)
