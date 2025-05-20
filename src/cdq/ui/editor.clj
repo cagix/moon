@@ -11,11 +11,12 @@
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
-  #(try (f)
-        (ui/remove! window)
-        (catch Throwable t
-          (utils/pretty-pst t)
-          (ui/add! ctx/stage (error-window/create t)))))
+  (fn [{:keys [ctx/stage] :as ctx}]
+    (try (f ctx)
+         (ui/remove! window)
+         (catch Throwable t
+           (utils/pretty-pst t)
+           (ui/add! stage (error-window/create t))))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -30,25 +31,25 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (widget/create schema props (ctx/make-map))
-        save!   (apply-context-fn window #(do
+        save!   (apply-context-fn window (fn [_ctx]
                                            (alter-var-root #'ctx/db db/update (widget/value schema widget))
                                            (db/save! ctx/db)))
-        delete! (apply-context-fn window #(do
+        delete! (apply-context-fn window (fn [_ctx]
                                            (alter-var-root #'ctx/db db/delete (:property/id props))
                                            (db/save! ctx/db)))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ctx/ui-viewport)
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
-                                                                             (fn [_actor _ctx]
-                                                                               (save!)))
+                                                                             (fn [_actor ctx]
+                                                                               (save! ctx)))
                                                       :center? true}
                                                      {:actor (ui/text-button "Delete"
-                                                                             (fn [_actor _ctx]
-                                                                               (delete!)))
+                                                                             (fn [_actor ctx]
+                                                                               (delete! ctx)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta _ctx]
+    (.addActor window (ui/actor {:act (fn [_this _delta ctx]
                                         (when (input/key-just-pressed? :enter)
-                                          (save!)))}))
+                                          (save! ctx)))}))
     (.pack window)
     window))
 
