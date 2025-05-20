@@ -6,5 +6,5 @@
   (ui/add-tooltip! (ui/text-field v {})
                    (str schema)))
 
-(defmethod widget/value :string [_ widget]
+(defmethod widget/value :string [_ widget _schemas]
   (ui/get-text widget))

@@ -8,6 +8,6 @@
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
-(defmethod widget/value :enum [_ widget]
+(defmethod widget/value :enum [_ widget _schemas]
   (edn/read-string (ui/get-selected widget)))
 

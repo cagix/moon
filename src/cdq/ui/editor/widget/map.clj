@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.ctx :as ctx]
-            [cdq.schema :as schema]
+  (:require [cdq.schema :as schema]
             [cdq.malli :as m]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
@@ -26,16 +25,18 @@
    :skill/cost
    :skill/cooldown])
 
-(defn- window->property-value [property-editor-window]
+(defn- window->property-value [property-editor-window schemas]
  (let [window property-editor-window
        scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (ui/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
-   (widget/value [:s/map] table)))
+   (widget/value [:s/map] table schemas)))
 
-(defn- rebuild-editor-window! [{:keys [ctx/stage] :as ctx}]
+(defn- rebuild-editor-window! [{:keys [ctx/stage
+                                       ctx/db]
+                                :as ctx}]
   (let [window (:property-editor-window stage)
-        prop-value (window->property-value window)]
+        prop-value (window->property-value window (:schemas db))]
     (ui/remove! window)
     (ui/add! stage (cdq.ui.editor/editor-window prop-value ctx))))
 
@@ -47,7 +48,7 @@
 
 (def ^:private component-row-cols 3)
 
-(defn- component-row [[k v] map-schema schemas table]
+(defn- component-row [ctx [k v] map-schema schemas table]
   [{:actor (ui/table {:cell-defaults {:pad 2}
                       :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
                                         (ui/text-button "-"
@@ -59,7 +60,7 @@
                                         (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (let [widget (widget/create (get schemas k) v (ctx/make-map))]
+   {:actor (let [widget (widget/create (get schemas k) v ctx)]
              (ui/set-user-object! widget [k v])
              widget)
     :left? true}])
@@ -89,7 +90,8 @@
        [(ui/text-button (name k)
                         (fn [_actor ctx]
                           (.remove window)
-                          (ui/add-rows! map-widget-table [(component-row [k (k->default-value schemas k)]
+                          (ui/add-rows! map-widget-table [(component-row ctx
+                                                                         [k (k->default-value schemas k)]
                                                                          schema
                                                                          schemas
                                                                          map-widget-table)])
@@ -103,19 +105,20 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m _ctx]
+(defmethod widget/create :s/map [schema m {:keys [ctx/db] :as ctx}]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
                                     (map (fn [[k v]]
-                                           (component-row [k v]
+                                           (component-row ctx
+                                                          [k v]
                                                           schema
-                                                          (:schemas ctx/db)
+                                                          (:schemas db)
                                                           table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas ctx/db)))
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas db)))
                                   (set (keys m))))]
     (ui/add-rows!
      table
@@ -135,8 +138,8 @@
 
 (def ^:private value-widget? (comp vector? ui/user-object))
 
-(defmethod widget/value :s/map [_ table]
+(defmethod widget/value :s/map [_ table schemas]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (ui/user-object widget)]]
-          [k (widget/value (get (:schemas ctx/db) k) widget)])))
+          [k (widget/value (get schemas k) widget schemas)])))

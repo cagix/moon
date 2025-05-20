@@ -43,7 +43,7 @@
     (add-one-to-one-rows ctx table property-type property-id)
     table))
 
-(defmethod widget/value :s/one-to-one [_ widget]
+(defmethod widget/value :s/one-to-one [_ widget _schemas]
   (->> (ui/children widget)
        (keep ui/user-object)
        first))

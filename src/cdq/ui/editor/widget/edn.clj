@@ -8,6 +8,6 @@
   (ui/add-tooltip! (ui/text-field (->edn-str v) {})
                    (str schema)))
 
-(defmethod widget/value :widget/edn [_ widget]
+(defmethod widget/value :widget/edn [_ widget _schemas]
   (edn/read-string (ui/get-text widget)))
 

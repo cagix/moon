@@ -6,5 +6,5 @@
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 
-(defmethod widget/value :boolean [_ widget]
+(defmethod widget/value :boolean [_ widget _schemas]
   (ui/checked? widget))

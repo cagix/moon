@@ -35,8 +35,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (widget/create schema props ctx)
-        save!   (apply-context-fn window (fn [_ctx]
-                                           (alter-var-root #'ctx/db db/update (widget/value schema widget))
+        save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
+                                           (alter-var-root #'ctx/db db/update (widget/value schema widget (:schemas db)))
                                            (db/save! ctx/db)))
         delete! (apply-context-fn window (fn [_ctx]
                                            (alter-var-root #'ctx/db db/delete (:property/id props))

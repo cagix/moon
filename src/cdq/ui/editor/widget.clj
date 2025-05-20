@@ -14,5 +14,5 @@
 
 (defmulti create (fn [schema _v _ctx]
                    (widget-type schema)))
-(defmulti value  (fn [schema _v]
+(defmulti value  (fn [schema _v _schemas]
                    (widget-type schema)))
