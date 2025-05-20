@@ -72,15 +72,12 @@
                     :boot     9
                     :bag      10}) ; transparent
 
-(defn- slot->sprite-idx [slot]
-  [21 (+ (slot->y-sprite-idx slot) 2)])
-
 (defn- slot->sprite [slot]
   (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png")
                                               48
                                               48
                                               ctx/world-unit-scale)
-                       (slot->sprite-idx slot)
+                       [21 (+ (slot->y-sprite-idx slot) 2)]
                        ctx/world-unit-scale))
 
 (defn- slot->background [slot]
@@ -91,7 +88,8 @@
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
     (doto (ui/stack [(draw-rect-actor)
-                     (ui/image-widget (slot->background slot) {:id :image})])
+                     (ui/image-widget (slot->background slot)
+                                      {:id :image})])
       (.setName "inventory-cell")
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
