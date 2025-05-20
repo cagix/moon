@@ -1,5 +1,6 @@
 (ns cdq.application.create.game-state
   (:require [cdq.ctx :as ctx]
+            [cdq.ctx.spawn-enemies :as spawn-enemies]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
@@ -19,15 +20,6 @@
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]))
-
-(defn- spawn-enemies [tiled-map]
-  (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                {:position position
-                 :creature-id (keyword creature-id)
-                 :components {:entity/fsm {:fsm :fsms/npc
-                                           :initial-state :npc-sleeping}
-                              :entity/faction :evil}})]
-    [:tx/spawn-creature (update props :position tile->middle)]))
 
 (defn- player-entity-props [start-position]
   {:position (tile->middle start-position)
@@ -97,7 +89,7 @@
     (bind-root #'ctx/id-counter (atom 0))
     (bind-root #'ctx/entity-ids (atom {}))
     (bind-root #'ctx/potential-field-cache (atom nil))
-    (handle-txs! (spawn-enemies tiled-map))
+    (spawn-enemies/do! {:ctx/tiled-map ctx/tiled-map})
     (handle-txs! (spawn-player start-position))))
 
 (defn do! []
