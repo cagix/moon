@@ -20,5 +20,5 @@
   (state/enter! [[_ {:keys [movement-vector]}] eid]
     [[:tx/set-movement eid movement-vector]])
 
-  (state/exit! [_ eid]
+  (state/exit! [_ eid _ctx]
     [[:tx/dissoc eid :entity/movement]]))

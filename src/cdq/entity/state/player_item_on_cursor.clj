@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
@@ -44,8 +43,9 @@
       [:tx/event eid :dropped-item]
       [:tx/event eid :pickup-item item-in-cell]])))
 
-(defn- world-item? []
-  (not (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))))
+(defn- world-item? [{:keys [ctx/stage
+                            ctx/ui-viewport]}]
+  (not (ui/hit stage (viewport/mouse-position ui-viewport))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -56,9 +56,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [entity]
+(defn- item-place-position [{:keys [ctx/world-viewport]} entity]
   (placement-point (:position entity)
-                   (viewport/mouse-position ctx/world-viewport)
+                   (viewport/mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -67,10 +67,10 @@
     {:item item})
 
   (entity/render-below! [[_ {:keys [item]}] entity ctx]
-    (when (world-item?)
+    (when (world-item? ctx)
       (draw/centered ctx
                      (:entity/image item)
-                     (item-place-position entity))))
+                     (item-place-position ctx entity))))
 
   (state/cursor [_] :cursors/hand-grab)
 
@@ -79,7 +79,7 @@
   (state/enter! [[_ {:keys [item]}] eid]
     [[:tx/assoc eid :entity/item-on-cursor item]])
 
-  (state/exit! [_ eid]
+  (state/exit! [_ eid ctx]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -88,18 +88,18 @@
       (when (:entity/item-on-cursor entity)
         [[:tx/sound "bfxr_itemputground"]
          [:tx/dissoc eid :entity/item-on-cursor]
-         [:tx/spawn-item (item-place-position entity) (:entity/item-on-cursor entity)]])))
+         [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [_ eid]
+  (state/manual-tick [_ eid ctx]
     (when (and (input/button-just-pressed? :left)
-               (world-item?))
+               (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 
   (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
-  (state/draw-gui-view [_ eid ctx]
-    (when (not (world-item?))
+  (state/draw-gui-view [_ eid {:keys [ctx/ui-viewport] :as ctx}]
+    (when (not (world-item? ctx))
       (draw/centered ctx
                      (:entity/image (:entity/item-on-cursor @eid))
-                     (viewport/mouse-position ctx/ui-viewport)))))
+                     (viewport/mouse-position ui-viewport)))))

@@ -25,5 +25,5 @@
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (ctx/handle-txs! (state/exit!  old-state-obj eid))
+           (ctx/handle-txs! (state/exit!  old-state-obj eid ctx))
            (ctx/handle-txs! (state/enter! new-state-obj eid))))))))

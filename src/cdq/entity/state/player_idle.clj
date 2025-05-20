@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.input :as input]
             [cdq.state :as state]
@@ -13,27 +12,29 @@
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
-  (fn [eid]
+  (fn [ctx eid]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid]
+(defmethod on-clicked :clickable/item [{:keys [ctx/stage
+                                               ctx/player-eid]}
+                                       eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> ctx/stage :windows :inventory-window ui/visible?)
+     (-> stage :windows :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
-      [:tx/event ctx/player-eid :pickup-item item]]
+      [:tx/event player-eid :pickup-item item]]
 
-     (inventory/can-pickup-item? (:entity/inventory @ctx/player-eid) item)
+     (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
      [[:tx/sound "bfxr_pickup"]
       [:tx/mark-destroyed eid]
-      [:tx/pickup-item ctx/player-eid item]]
+      [:tx/pickup-item player-eid item]]
 
      :else
      [[:tx/sound "bfxr_denied"]
       [:tx/show-message "Your Inventory is full"]])))
 
-(defmethod on-clicked :clickable/player [_]
+(defmethod on-clicked :clickable/player [_ctx _eid]
   [[:tx/toggle-inventory-visible]]) ; TODO every 'transaction' should have a sound or effect with it?
 
 (defn- clickable->cursor [entity too-far-away?]
@@ -43,11 +44,11 @@
                       :cursors/hand-before-grab)
     :clickable/player :cursors/bag))
 
-(defn- clickable-entity-interaction [player-entity clicked-eid]
+(defn- clickable-entity-interaction [ctx player-entity clicked-eid]
   (if (< (v/distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
-    [(clickable->cursor @clicked-eid false) (on-clicked clicked-eid)]
+    [(clickable->cursor @clicked-eid false) (on-clicked ctx clicked-eid)]
     [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]
                                              [:tx/show-message "Too far away"]]]))
 
@@ -58,31 +59,38 @@
    (ui/button? actor) :cursors/over-button
    :else :cursors/default))
 
-(defn- player-effect-ctx [eid]
-  (let [target-position (or (and ctx/mouseover-eid
-                                 (:position @ctx/mouseover-eid))
-                            (viewport/mouse-position ctx/world-viewport))]
+(defn- player-effect-ctx [{:keys [ctx/mouseover-eid
+                                  ctx/world-viewport]}
+                          eid]
+  (let [target-position (or (and mouseover-eid
+                                 (:position @mouseover-eid))
+                            (viewport/mouse-position world-viewport))]
     {:effect/source eid
-     :effect/target ctx/mouseover-eid
+     :effect/target mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [eid]
+(defn- interaction-state
+  [{:keys [ctx/stage
+           ctx/ui-viewport
+           ctx/mouseover-eid]
+    :as ctx}
+   eid]
   (let [entity @eid
-        mouseover-actor (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))]
+        mouseover-actor (ui/hit stage (viewport/mouse-position ui-viewport))]
     (cond
      mouseover-actor
      [(mouseover-actor->cursor mouseover-actor)
       nil] ; handled by actors themself, they check player state
 
-     (and ctx/mouseover-eid
-          (:entity/clickable @ctx/mouseover-eid))
-     (clickable-entity-interaction entity ctx/mouseover-eid)
+     (and mouseover-eid
+          (:entity/clickable @mouseover-eid))
+     (clickable-entity-interaction ctx entity mouseover-eid)
 
      :else
-     (if-let [skill-id (action-bar/selected-skill (:action-bar ctx/stage))]
+     (if-let [skill-id (action-bar/selected-skill (:action-bar stage))]
        (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx eid)
+             effect-ctx (player-effect-ctx ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
@@ -107,10 +115,10 @@
 (defcomponent :player-idle
   (state/pause-game? [_] true)
 
-  (state/manual-tick [_ eid]
+  (state/manual-tick [_ eid ctx]
     (if-let [movement-vector (input/player-movement-vector)]
       [[:tx/event eid :movement-input movement-vector]]
-      (let [[cursor on-click] (interaction-state eid)]
+      (let [[cursor on-click] (interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]
               (when (gdl.input/button-just-pressed? :left)
                 on-click)))))

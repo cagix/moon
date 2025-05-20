@@ -5,4 +5,5 @@
 
 (defn do! []
   (ctx/handle-txs! (state/manual-tick (entity/state-obj @ctx/player-eid)
-                                      ctx/player-eid)))
+                                      ctx/player-eid
+                                      (ctx/make-map))))

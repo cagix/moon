@@ -13,7 +13,7 @@
         (when (<= distance (entity/stat entity :entity/aggro-range))
           [[:tx/event eid :alert]]))))
 
-  (state/exit! [_ eid]
+  (state/exit! [_ eid _ctx]
     [[:tx/spawn-alert (:position @eid) (:entity/faction @eid) 0.2]
      [:tx/add-text-effect eid "[WHITE]!"]])
 

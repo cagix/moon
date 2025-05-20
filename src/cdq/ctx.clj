@@ -107,6 +107,7 @@
    :ctx/unit-scale   unit-scale
    :ctx/shape-drawer shape-drawer
    :ctx/world-unit-scale world-unit-scale
+   :ctx/world-viewport world-viewport
    :ctx/elapsed-time elapsed-time
    :ctx/effect-body-props effect-body-props
    :ctx/content-grid content-grid
