@@ -126,6 +126,7 @@
    :ctx/delta-time delta-time
    :ctx/raycaster raycaster
    :ctx/paused? paused?
+   :ctx/mouseover-eid mouseover-eid
    })
 
 (defn handle-txs! [transactions]
