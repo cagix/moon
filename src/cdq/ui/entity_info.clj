@@ -1,6 +1,5 @@
 (ns cdq.ui.entity-info
-  (:require [cdq.ctx :as ctx]
-            [cdq.info :as info]
+  (:require [cdq.info :as info]
             [gdl.ui :as ui]))
 
 (comment
@@ -29,8 +28,8 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (ui/actor {:act (fn [_this _delta]
-                                        (.setText label (str (if-let [eid ctx/mousover-eid]
+    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/mouseover-eid]}]
+                                        (.setText label (str (if-let [eid mouseover-eid]
                                                                (->label-text @eid)
                                                                "")))
                                         (.pack window))}))

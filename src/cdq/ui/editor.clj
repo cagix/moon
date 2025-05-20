@@ -44,7 +44,7 @@
                                                      {:actor (ui/text-button "Delete"
                                                                              (fn [_actor] (delete!)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta]
+    (.addActor window (ui/actor {:act (fn [_this _delta _ctx]
                                         (when (input/key-just-pressed? :enter)
                                           (save!)))}))
     (.pack window)

@@ -17,7 +17,7 @@
 (defn create [& {:keys [id actors]}]
   (ui/group {:id id
              :actors (cons (ui/actor
-                            {:act (fn [this _delta]
+                            {:act (fn [this _delta _ctx]
                                     (check-window-hotkeys       (ui/parent this))
                                     (check-escape-close-windows (ui/parent this)))})
                            actors)}))

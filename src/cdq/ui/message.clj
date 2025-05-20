@@ -14,7 +14,7 @@
                                      :text text
                                      :scale 2.5
                                      :up? true}))))
-             :act (fn [this delta]
+             :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)
                         (swap! state update :counter + delta)

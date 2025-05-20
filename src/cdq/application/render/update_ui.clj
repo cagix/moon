@@ -3,4 +3,5 @@
             [gdl.ui :as ui]))
 
 (defn do! []
+  (reset! (.ctx ctx/stage) {:ctx/mouseover-eid ctx/mouseover-eid})
   (ui/act! ctx/stage))
