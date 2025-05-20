@@ -1,6 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.utils :as utils]
@@ -14,13 +13,11 @@
               :y (+ y 2)
               :up? true}))
 
-(defn create [[x y-mana]]
-  (let [rahmen      (graphics/sprite (ctx/assets "images/rahmen.png")
-                                     ctx/world-unit-scale)
-        hpcontent   (graphics/sprite (ctx/assets "images/hp.png")
-                                     ctx/world-unit-scale)
-        manacontent (graphics/sprite (ctx/assets "images/mana.png")
-                                     ctx/world-unit-scale)
+(defn create [[x y-mana] {:keys [ctx/assets
+                                 ctx/world-unit-scale]}]
+  (let [rahmen      (graphics/sprite (assets "images/rahmen.png") world-unit-scale)
+        hpcontent   (graphics/sprite (assets "images/hp.png")     world-unit-scale)
+        manacontent (graphics/sprite (assets "images/mana.png")   world-unit-scale)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [draw x y contentimage minmaxval name]
@@ -30,7 +27,7 @@
                                                                    0
                                                                    (* rahmenw (val-max/ratio minmaxval))
                                                                    rahmenh]
-                                                                  ctx/world-unit-scale)
+                                                                  world-unit-scale)
                                         [x y])
                             (render-infostr-on-bar draw
                                                    (str (utils/readable-number (minmaxval 0))

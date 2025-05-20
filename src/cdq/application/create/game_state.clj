@@ -23,7 +23,9 @@
    (cdq.ui.action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                80 ; action-bar-icon-size
-                               ])
+                               ]
+                              {:ctx/assets ctx/assets
+                               :ctx/world-unit-scale ctx/world-unit-scale})
    (cdq.ui.windows/create :id :windows
                           :actors [(cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
                                    (cdq.ui.inventory/create :id :inventory-window
