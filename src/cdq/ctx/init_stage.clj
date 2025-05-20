@@ -12,10 +12,10 @@
             [gdl.input :as input]
             [gdl.ui :as ui]))
 
-(defn do! [reset-game-function-var]
+(defn do! []
   (bind-root #'ctx/stage (ui/stage (:java-object ctx/ui-viewport)
                                    (:java-object ctx/batch)
-                                   [(cdq.ui.dev-menu/create reset-game-function-var)
+                                   [(cdq.ui.dev-menu/create)
                                     (cdq.ui.action-bar/create :id :action-bar)
                                     (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                                                 80 ; action-bar-icon-size

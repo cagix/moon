@@ -8,12 +8,13 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui.menu :as menu]))
 
-(defn create [reset-game-function-var]
+(defn create []
   (menu/create
    {:menus [{:label "World"
              :items (for [world-fn (:world-fns ctx/config)]
                       {:label (str "Start " (namespace world-fn))
-                       :on-click (fn [] (@reset-game-function-var world-fn))})}
+                       :on-click (fn []
+                                   ((requiring-resolve 'cdq.application.create.game-state/reset-game!) world-fn))})}
             {:label "Help"
              :items [{:label (:info ctx/config)}]}
             {:label "Objects"

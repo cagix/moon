@@ -10,11 +10,9 @@
             [cdq.utils :refer [bind-root]]
             [gdl.tiled :as tiled]))
 
-(declare reset-game!)
-
-(defn- reset-game! [world-fn]
+(defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (cdq.ctx.init-stage/do! #'reset-game!)
+  (cdq.ctx.init-stage/do!)
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
