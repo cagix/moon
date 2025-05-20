@@ -1,6 +1,17 @@
 (ns cdq.application
   (:require [gdl.application :as application]))
 
+; I rewrote states exit/enter/etc
+; How do I know it even workds still ?
+
+; => no tests ...
+; => tests improve design
+
+; * SEPARATE WIRING FROM LOGIC
+; * MOVE LOGIC TO ITS PLACE (SEE FORM DEPENDENCIES)
+
+; grep defn-\|private
+
 (def create-fns '[cdq.application.create.config/do!
                   cdq.application.create.requires/do!
                   cdq.application.create.schemas/do!
@@ -62,6 +73,13 @@
  ; problems of tooltips?
 
  ; * Pass @ tx
+
+ ; - editor altering db
+ ; - bind-root / alter var time , etc.
+ ; => swap! state ?
+
+ ; => It might not be worth it
+ ; => Create a design document
 
  )
 
