@@ -3,7 +3,8 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint])
-  (:import (clojure.lang PersistentVector
+  (:import (clojure.lang ILookup
+                         PersistentVector
                          Var)))
 
 (defn io-slurp-edn [path]
@@ -197,3 +198,9 @@
   (binding [*print-level* (or print-level 3)]
     (with-out-str
      (clojure.pprint/pprint data))))
+
+(defn create-config [path]
+  (let [m (io-slurp-edn path)]
+    (reify ILookup
+      (valAt [_ k]
+        (safe-get m k)))))
