@@ -13,8 +13,7 @@
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Image
-                                               Widget)
+           (com.badlogic.gdx.scenes.scene2d.ui Image)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   TextureRegionDrawable
                                                   ClickListener
@@ -47,15 +46,18 @@
 ; is not layouted automatically to cell , use 0/0 ??
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (let [^Actor actor this]
-        (draw-cell-rect! (ctx/get-draw)
-                         @ctx/player-eid
-                         (.getX actor)
-                         (.getY actor)
-                         (ui/hit actor (viewport/mouse-position ctx/ui-viewport))
-                         (ui/user-object (ui/parent actor)))))))
+  (ui/widget
+   {:draw
+    (fn [^Actor actor
+         {:keys [ctx/draw
+                 ctx/player-eid
+                 ctx/ui-viewport]}]
+      (draw-cell-rect! draw
+                       @player-eid
+                       (.getX actor)
+                       (.getY actor)
+                       (ui/hit actor (viewport/mouse-position ui-viewport))
+                       (ui/user-object (ui/parent actor))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
