@@ -1,7 +1,6 @@
 (ns cdq.ui.editor.widget.one-to-one
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.info :as info]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
