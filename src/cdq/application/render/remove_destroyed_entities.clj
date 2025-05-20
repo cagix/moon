@@ -15,4 +15,4 @@
     (doseq [component @eid]
       (ctx/handle-txs! (entity/destroy! component
                                         eid
-                                        {:ctx/db ctx/db})))))
+                                        (ctx/make-map))))))
