@@ -2,15 +2,23 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            [cdq.tx.add-skill]
-            [cdq.tx.spawn-creature]
-            [cdq.tx.spawn-item]
             [gdl.application :refer [post-runnable!]]
             [gdl.graphics.viewport :as viewport]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
+(defn post-txs! [txs]
+  (post-runnable!
+   (ctx/handle-txs! txs)))
+
 (comment
+
+ (post-txs!
+  [[:tx/show-modal {:title "hey title"
+                    :text "my text"
+                    :button-text "button txt"
+                    :on-click (fn []
+                                (println "hoho"))}]])
 
  (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 

@@ -1,17 +1,23 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.ctx.show-modal :as show-modal]))
+  (:require [gdl.ui :as ui]))
 
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn do! [{:keys [ctx/stage
-                   ctx/ui-viewport]} opts]
-  (show-modal/do! stage
-                  ui-viewport
-                  opts))
-
-(comment
- (gdl.application/post-runnable!
-  (ctx/handle-txs! [[:tx/show-modal {:title "hey title"
-                                     :text "my text"
-                                     :button-text "button txt"
-                                     :on-click (fn []
-                                                 (println "hoho"))}]]))
- )
+                   ctx/ui-viewport]}
+           {:keys [title text button-text on-click]}]
+  (assert (not (::modal stage)))
+  (ui/add! stage
+           (ui/window {:title title
+                       :rows [[(ui/label text)]
+                              [(ui/text-button button-text
+                                               (fn []
+                                                 (ui/remove! (::modal stage))
+                                                 (on-click)))]]
+                       :id ::modal
+                       :modal? true
+                       :center-position [(/ (:width  ui-viewport) 2)
+                                         (* (:height ui-viewport) (/ 3 4))]
+                       :pack? true})))
