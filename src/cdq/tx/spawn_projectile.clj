@@ -1,6 +1,5 @@
 (ns cdq.tx.spawn-projectile
-  (:require [cdq.ctx :as ctx]
-            [cdq.projectile :as projectile]
+  (:require [cdq.projectile :as projectile]
             [cdq.vector2 :as v]
             [cdq.tx.spawn-entity]))
 

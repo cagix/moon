@@ -1,6 +1,5 @@
 (ns cdq.tx.spawn-item
-  (:require [cdq.ctx :as ctx]
-            [cdq.tx.spawn-entity]))
+  (:require [cdq.tx.spawn-entity]))
 
 (defn do! [position item]
   (cdq.tx.spawn-entity/do! position
