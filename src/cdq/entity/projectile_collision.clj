@@ -1,6 +1,5 @@
 (ns cdq.entity.projectile-collision
-  (:require [cdq.ctx :as ctx]
-            [cdq.cell :as cell]
+  (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.math :as math]
@@ -10,13 +9,15 @@
   (entity/create [[_ v]]
     (assoc v :already-hit-bodies #{}))
 
-  (entity/tick!  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+  (entity/tick! [[k {:keys [entity-effects already-hit-bodies piercing?]}]
+                 eid
+                 {:keys [ctx/grid]}]
     ; TODO this could be called from body on collision
     ; for non-solid
     ; means non colliding with other entities
     ; but still collding with other stuff here ? o.o
     (let [entity @eid
-          cells* (map deref (grid/rectangle->cells ctx/grid entity)) ; just use cached-touched -cells
+          cells* (map deref (grid/rectangle->cells grid entity)) ; just use cached-touched -cells
           hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))

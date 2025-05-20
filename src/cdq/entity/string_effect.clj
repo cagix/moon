@@ -6,8 +6,8 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/string-effect
-  (entity/tick! [[k {:keys [counter]}] eid]
-    (when (timer/stopped? ctx/elapsed-time counter)
+  (entity/tick! [[k {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
+    (when (timer/stopped? elapsed-time counter)
       [[:tx/dissoc eid k]]))
 
   (entity/render-above! [[_ {:keys [text]}] entity draw]

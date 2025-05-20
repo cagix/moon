@@ -1,6 +1,5 @@
 (ns cdq.entity.state.npc-idle
-  (:require [cdq.ctx :as ctx]
-            [cdq.cell :as cell]
+  (:require [cdq.cell :as cell]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
@@ -18,9 +17,9 @@
                      (effect/applicable-and-useful? ctx (:skill/effects %))))
        first))
 
-(defn- npc-effect-context [eid]
+(defn- npc-effect-context [{:keys [ctx/grid]} eid]
   (let [entity @eid
-        target (cell/nearest-entity @(ctx/grid (mapv int (:position entity)))
+        target (cell/nearest-entity @(grid (mapv int (:position entity)))
                                     (entity/enemy entity))
         target (when (and target
                           (entity/line-of-sight? entity @target))
@@ -32,9 +31,10 @@
                                              (:position @target)))}))
 
 (defcomponent :npc-idle
-  (entity/tick! [_ eid]
-    (let [effect-ctx (npc-effect-context eid)]
+  (entity/tick! [_ eid {:keys [ctx/grid]
+                        :as ctx}]
+    (let [effect-ctx (npc-effect-context ctx eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (or (potential-field/find-direction ctx/grid eid)
+        [[:tx/event eid :movement-direction (or (potential-field/find-direction grid eid)
                                                 [0 0])]]))))

@@ -20,9 +20,9 @@
                     k))
 (defmethod destroy! :default [_ eid])
 
-(defmulti tick! (fn [[k] eid]
+(defmulti tick! (fn [[k] eid ctx]
                   k))
-(defmethod tick! :default [_ eid])
+(defmethod tick! :default [_ eid ctx])
 
 (defmulti  render-below! (fn [[k] entity draw] k))
 (defmethod render-below! :default [_ _entity draw])

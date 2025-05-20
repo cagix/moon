@@ -10,8 +10,8 @@
   (entity/create [[_ _eid duration]]
     {:counter (timer/create ctx/elapsed-time duration)})
 
-  (entity/tick! [[_ {:keys [counter]}] eid]
-    (when (timer/stopped? ctx/elapsed-time counter)
+  (entity/tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
+    (when (timer/stopped? elapsed-time counter)
       [[:tx/event eid :effect-wears-off]]))
 
   (state/cursor [_] :cursors/denied)

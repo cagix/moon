@@ -49,7 +49,9 @@
                    (apply-action-speed-modifier @eid skill)
                    (timer/create ctx/elapsed-time))})
 
-  (entity/tick! [[_ {:keys [skill effect-ctx counter]}] eid]
+  (entity/tick! [[_ {:keys [skill effect-ctx counter]}]
+                 eid
+                 {:keys [ctx/elapsed-time]}]
     (cond
      (not (effect/some-applicable? (update-effect-ctx effect-ctx) ; TODO how 2 test
                                    (:skill/effects skill)))
@@ -57,7 +59,7 @@
       ; TODO some sound ?
       ]
 
-     (timer/stopped? ctx/elapsed-time counter)
+     (timer/stopped? elapsed-time counter)
      [[:tx/effect effect-ctx (:skill/effects skill)]
       [:tx/event eid :action-done]]))
 

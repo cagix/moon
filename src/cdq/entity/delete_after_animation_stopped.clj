@@ -8,7 +8,7 @@
     (-> @eid :entity/animation :looping? not assert)
     nil)
 
-  (entity/tick! [_ eid]
+  (entity/tick! [_ eid _ctx]
     (when (animation/stopped? (:entity/animation @eid))
       [[:tx/mark-destroyed eid]])))
 

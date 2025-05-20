@@ -10,8 +10,10 @@
     {:movement-vector movement-vector
      :counter (timer/create ctx/elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-  (entity/tick! [[_ {:keys [counter]}] eid]
-    (when (timer/stopped? ctx/elapsed-time counter)
+  (entity/tick! [[_ {:keys [counter]}]
+                 eid
+                 {:keys [ctx/elapsed-time]}]
+    (when (timer/stopped? elapsed-time counter)
       [[:tx/event eid :timer-finished]]))
 
   (state/enter! [[_ {:keys [movement-vector]}] eid]

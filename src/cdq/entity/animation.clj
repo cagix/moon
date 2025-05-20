@@ -7,5 +7,5 @@
   (entity/create! [[_ animation] eid]
     [[:tx/assoc eid :entity/image (animation/current-frame animation)]])
 
-  (entity/tick! [[_ animation] eid]
+  (entity/tick! [[_ animation] eid _ctx]
     [[:tx/update-animation eid animation]]))

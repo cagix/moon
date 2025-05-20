@@ -21,25 +21,28 @@
                            ctx/active-entities
                            max-iterations)))
 
-(defn- tick-entities! []
+(defn- tick-entities!
+  [{:keys [ctx/active-entities
+           ctx/stage]
+    :as ctx}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
   ; but then the 'order' is important? in such case dependent components
   ; should be moved together?
   (try
-   (doseq [eid ctx/active-entities]
+   (doseq [eid active-entities]
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (ctx/handle-txs! (entity/tick! [k v] eid)))
+               (ctx/handle-txs! (entity/tick! [k v] eid ctx)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (pretty-pst t)
-     (ui/add! ctx/stage (error-window/create t))
+     (ui/add! stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
@@ -47,4 +50,8 @@
   (when-not ctx/paused?
     (update-time!)
     (update-potential-fields!)
-    (tick-entities!)))
+    (tick-entities! {:ctx/active-entities ctx/active-entities
+                     :ctx/elapsed-time ctx/elapsed-time
+                     :ctx/delta-time ctx/delta-time
+                     :ctx/grid ctx/grid
+                     :ctx/stage ctx/stage})))

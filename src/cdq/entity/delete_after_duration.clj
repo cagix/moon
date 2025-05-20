@@ -8,6 +8,6 @@
   (entity/create [[_ duration]]
     (timer/create ctx/elapsed-time duration))
 
-  (entity/tick! [[_ counter] eid]
-    (when (timer/stopped? ctx/elapsed-time counter)
+  (entity/tick! [[_ counter] eid {:keys [ctx/elapsed-time]}]
+    (when (timer/stopped? elapsed-time counter)
       [[:tx/mark-destroyed eid]])))
