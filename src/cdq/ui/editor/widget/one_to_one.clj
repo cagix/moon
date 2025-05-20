@@ -24,7 +24,7 @@
                                                     :close-button? true
                                                     :center? true
                                                     :close-on-escape? true})
-                                 clicked-id-fn (fn [id]
+                                 clicked-id-fn (fn [id _ctx]
                                                  (.remove window)
                                                  (redo-rows id))]
                              (ui/add! window (overview-table/create db property-type clicked-id-fn))

@@ -52,8 +52,9 @@
     (.pack window)
     window))
 
-(defn- edit-property [id]
-  (ui/add! ctx/stage (editor-window (db/get-raw ctx/db id))))
+(defn- edit-property [id {:keys [ctx/stage
+                                 ctx/db]}]
+  (ui/add! stage (editor-window (db/get-raw db id))))
 
 (defn open-editor-window! [property-type]
   (let [window (ui/window {:title "Edit"

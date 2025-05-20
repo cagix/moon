@@ -31,15 +31,14 @@
                          :properties/player-item-on-cursor {:columns 1}})
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
-  (let [on-clicked #(clicked-id-fn id)
+  (let [on-clicked (fn [_actor ctx]
+                     (clicked-id-fn id ctx))
         button (if-let [image (property/image props)]
                  (ui/image-button image
-                                  (fn [_actor _ctx]
-                                    (on-clicked))
+                                  on-clicked
                                   {:scale scale})
                  (ui/text-button (name id)
-                                 (fn [_actor _ctx]
-                                   (on-clicked))))
+                                 on-clicked))
         top-widget (ui/label (or (and extra-info-text
                                       (extra-info-text props))
                                  ""))
