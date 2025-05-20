@@ -1,6 +1,5 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.ctx :as ctx]
-            [cdq.ui.editor :as editor]
+  (:require [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.graphics :as graphics]
@@ -25,24 +24,30 @@
                        :on-click (fn [ctx]
                                    (editor/open-editor-window! ctx property-type))})}]
     :update-labels [{:label "Mouseover-entity id"
-                     :update-fn (fn []
-                                  (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
+                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
+                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (:entity/id entity)))
                      :icon (assets "images/mouseover.png")}
                     {:label "elapsed-time"
-                     :update-fn (fn [] (str (utils/readable-number ctx/elapsed-time) " seconds"))
+                     :update-fn (fn [{:keys [ctx/elapsed-time]}]
+                                  (str (utils/readable-number elapsed-time) " seconds"))
                      :icon (assets "images/clock.png")}
                     {:label "paused?"
-                     :update-fn (fn [] ctx/paused?)}
+                     :update-fn (fn [{:keys [ctx/paused?]}]
+                                  paused?)}
                     {:label "GUI"
-                     :update-fn (fn [] (mapv int (viewport/mouse-position ctx/ui-viewport)))}
+                     :update-fn (fn [{:keys [ctx/ui-viewport]}]
+                                  (mapv int (viewport/mouse-position ui-viewport)))}
                     {:label "World"
-                     :update-fn (fn [] (mapv int (viewport/mouse-position ctx/world-viewport)))}
+                     :update-fn (fn [{:keys [ctx/world-viewport]}]
+                                  (mapv int (viewport/mouse-position world-viewport)))}
                     {:label "Zoom"
-                     :update-fn (fn [] (camera/zoom (:camera ctx/world-viewport)))
+                     :update-fn (fn [{:keys [ctx/world-viewport]}]
+                                  (camera/zoom (:camera world-viewport)))
                      :icon (assets "images/zoom.png")}
                     {:label "FPS"
-                     :update-fn (fn [] (graphics/frames-per-second))
+                     :update-fn (fn [_ctx]
+                                  (graphics/frames-per-second))
                      :icon (assets "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "

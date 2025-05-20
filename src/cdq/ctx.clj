@@ -125,6 +125,7 @@
    :ctx/entity-ids entity-ids
    :ctx/delta-time delta-time
    :ctx/raycaster raycaster
+   :ctx/paused? paused?
    })
 
 (defn handle-txs! [transactions]
