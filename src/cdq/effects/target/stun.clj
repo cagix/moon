@@ -7,5 +7,5 @@
     (and target
          (:entity/fsm @target)))
 
-  (effect/handle [[_ duration] {:keys [effect/target]}]
+  (effect/handle [[_ duration] {:keys [effect/target]} _ctx]
     [[:tx/event target :stun duration]]))

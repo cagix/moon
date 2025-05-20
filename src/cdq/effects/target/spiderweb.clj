@@ -1,6 +1,5 @@
 (ns cdq.effects.target.spiderweb
-  (:require [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
@@ -12,8 +11,8 @@
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (effect/handle [_ {:keys [effect/target]}]
+    (effect/handle [_ {:keys [effect/target]} {:keys [ctx/elapsed-time]}]
       (when-not (:entity/temp-modifier @target)
         [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
-                                                  :counter (timer/create ctx/elapsed-time duration)}]
+                                                  :counter (timer/create elapsed-time duration)}]
          [:tx/mod-add target modifiers]]))))

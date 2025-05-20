@@ -1,14 +1,14 @@
 (ns cdq.effects.target-all
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
-(defn- creatures-in-los-of-player []
-  (->> ctx/active-entities
+(defn- creatures-in-los-of-player [{:keys [ctx/active-entities
+                                           ctx/player-eid]}]
+  (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(entity/line-of-sight? @ctx/player-eid @%))
+       (filter #(entity/line-of-sight? @player-eid @%))
        (remove #(:entity/player? @%))))
 
 (defcomponent :effects/target-all
@@ -20,10 +20,10 @@
     ; TODO
     false)
 
-  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
+  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} ctx]
     (let [source* @source]
       (apply concat
-             (for [target (creatures-in-los-of-player)]
+             (for [target (creatures-in-los-of-player ctx)]
                [[:tx/spawn-line {:start (:position source*) #_(start-point source* target*)
                                  :end (:position @target)
                                  :duration 0.05
@@ -39,7 +39,7 @@
 
   (effect/render [_ {:keys [effect/source]} ctx]
     (let [source* @source]
-      (doseq [target* (map deref (creatures-in-los-of-player))]
+      (doseq [target* (map deref (creatures-in-los-of-player ctx))]
         (draw/line ctx
                    (:position source*) #_(start-point source* target*)
                    (:position target*)

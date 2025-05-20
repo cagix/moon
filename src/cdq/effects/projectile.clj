@@ -31,7 +31,7 @@
                           target-p)
               max-range))))
 
-  (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
+  (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]} _ctx]
     [[:tx/spawn-projectile
       {:position (start-point @source
                               target-direction

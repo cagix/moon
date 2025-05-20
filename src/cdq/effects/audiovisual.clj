@@ -9,5 +9,5 @@
   (effect/useful? [_ _effect-ctx _ctx]
     false)
 
-  (effect/handle [[_ audiovisual] {:keys [effect/target-position]}]
+  (effect/handle [[_ audiovisual] {:keys [effect/target-position]} _ctx]
     [[:tx/audiovisual target-position audiovisual]]))

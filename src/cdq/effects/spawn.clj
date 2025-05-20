@@ -8,7 +8,8 @@
          target-position))
 
   (effect/handle [[_ {:keys [property/id]}]
-                  {:keys [effect/source effect/target-position]}]
+                  {:keys [effect/source effect/target-position]}
+                  _ctx]
     [[:tx/spawn-creature {:position target-position
                           :creature-id id ; already properties/get called through one-to-one, now called again.
                           :components {:entity/fsm {:fsm :fsms/npc

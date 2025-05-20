@@ -9,5 +9,5 @@
   (effect/useful? [_ _effect-ctx _ctx]
     false)
 
-  (effect/handle [[_ sound] _ctx]
+  (effect/handle [[_ sound] _effect-ctx _ctx]
     [[:tx/sound sound]]))

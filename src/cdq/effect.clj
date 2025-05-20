@@ -3,7 +3,7 @@
 (defmulti applicable? (fn [[k] effect-ctx]
                         k))
 
-(defmulti handle (fn [[k] effect-ctx]
+(defmulti handle (fn [[k] effect-ctx ctx]
                    k))
 
 (defmulti useful? (fn [[k] effect-ctx ctx]
