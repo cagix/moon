@@ -7,12 +7,34 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
+            [cdq.ui.action-bar]
+            [cdq.ui.entity-info]
+            [cdq.ui.inventory ]
+            [cdq.ui.hp-mana-bar]
+            [cdq.ui.dev-menu]
+            [cdq.ui.player-state-draw]
+            [cdq.ui.windows]
+            [cdq.ui.message]
             [cdq.utils :refer [bind-root]]
             [gdl.tiled :as tiled]))
 
+(defn- stage-actors []
+  [(cdq.ui.dev-menu/create)
+   (cdq.ui.action-bar/create :id :action-bar)
+   (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
+                               80 ; action-bar-icon-size
+                               ])
+   (cdq.ui.windows/create :id :windows
+                          :actors [(cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
+                                   (cdq.ui.inventory/create :id :inventory-window
+                                                            :position [(:width  ctx/ui-viewport)
+                                                                       (:height ctx/ui-viewport)])])
+   (cdq.ui.player-state-draw/create)
+   (cdq.ui.message/create :name "player-message")])
+
 (defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (cdq.ctx.init-stage/do!)
+  (cdq.ctx.init-stage/do! (stage-actors))
   (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
