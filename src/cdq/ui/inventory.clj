@@ -86,10 +86,12 @@
     (TextureRegionDrawable/.tint drawable (gdl.graphics/color 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
-  (let [cell [slot (or position [0 0])]]
+  (let [cell [slot (or position [0 0])]
+        background-drawable (slot->background slot)]
     (doto (ui/stack [(draw-rect-actor)
-                     (ui/image-widget (slot->background slot)
-                                      {:id :image})])
+                     (ui/image-widget background-drawable
+                                      {:name "image-widget"
+                                       :user-object background-drawable})])
       (.setName "inventory-cell")
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
@@ -134,7 +136,7 @@
 
 (defn set-item! [inventory-window cell item]
   (let [cell-widget (get-cell-widget inventory-window cell)
-        image-widget (get cell-widget :image)
+        image-widget (ui/find-actor cell-widget "image-widget")
         drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
@@ -142,8 +144,8 @@
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)
-        image-widget (get cell-widget :image)]
-    (Image/.setDrawable image-widget (slot->background (cell 0)))
+        image-widget (ui/find-actor cell-widget "image-widget")]
+    (Image/.setDrawable image-widget (ui/user-object image-widget))
     (ui/remove-tooltip! cell-widget)))
 
 (defn cell-with-item? [actor]
