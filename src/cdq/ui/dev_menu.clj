@@ -8,17 +8,19 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui.menu :as menu]))
 
-(defn create []
+(defn create [{:keys [ctx/config
+                      ctx/db
+                      ctx/assets]}]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn (:world-fns ctx/config)]
+             :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn []
                                    ((requiring-resolve 'cdq.application.create.game-state/reset-game!) world-fn))})}
             {:label "Help"
-             :items [{:label (:info ctx/config)}]}
+             :items [{:label (:info config)}]}
             {:label "Objects"
-             :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas ctx/db))))]
+             :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas db))))]
                       {:label (str/capitalize (name property-type))
                        :on-click (fn []
                                    (editor/open-editor-window! property-type))})}]
@@ -26,10 +28,10 @@
                      :update-fn (fn []
                                   (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
                                     (:entity/id entity)))
-                     :icon (ctx/assets "images/mouseover.png")}
+                     :icon (assets "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [] (str (utils/readable-number ctx/elapsed-time) " seconds"))
-                     :icon (ctx/assets "images/clock.png")}
+                     :icon (assets "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [] ctx/paused?)}
                     {:label "GUI"
@@ -38,10 +40,10 @@
                      :update-fn (fn [] (mapv int (viewport/mouse-position ctx/world-viewport)))}
                     {:label "Zoom"
                      :update-fn (fn [] (camera/zoom (:camera ctx/world-viewport)))
-                     :icon (ctx/assets "images/zoom.png")}
+                     :icon (assets "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (fn [] (graphics/frames-per-second))
-                     :icon (ctx/assets "images/fps.png")}]}))
+                     :icon (assets "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]

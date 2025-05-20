@@ -19,7 +19,9 @@
             [gdl.tiled :as tiled]))
 
 (defn- stage-actors []
-  [(cdq.ui.dev-menu/create)
+  [(cdq.ui.dev-menu/create {:ctx/assets ctx/assets
+                            :ctx/db ctx/db
+                            :ctx/config ctx/config})
    (cdq.ui.action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ctx/ui-viewport) 2)
                                80 ; action-bar-icon-size
