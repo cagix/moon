@@ -56,6 +56,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (ui/add! window (overview-table/create property-type edit-property))
+    (ui/add! window (overview-table/create ctx/db property-type edit-property))
     (.pack window)
     (ui/add! ctx/stage window)))

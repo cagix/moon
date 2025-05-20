@@ -26,7 +26,7 @@
                                  clicked-id-fn (fn [id]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (ui/add! window (overview-table/create property-type clicked-id-fn))
+                             (ui/add! window (overview-table/create ctx/db property-type clicked-id-fn))
                              (.pack window)
                              (ui/add! ctx/stage window)))))]
       [(when property-id
