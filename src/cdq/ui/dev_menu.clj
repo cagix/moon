@@ -23,7 +23,7 @@
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas db))))]
                       {:label (str/capitalize (name property-type))
                        :on-click (fn []
-                                   (editor/open-editor-window! property-type))})}]
+                                   (editor/open-editor-window! (ctx/make-map) property-type))})}]
     :update-labels [{:label "Mouseover-entity id"
                      :update-fn (fn []
                                   (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
