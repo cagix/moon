@@ -34,7 +34,7 @@
          (let [property (db/build ctx/db property-id (ctx/make-map))
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
-           (ui/add-tooltip! image-widget #(pprint-to-str property))
+           (ui/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id
          (ui/text-button "-"
