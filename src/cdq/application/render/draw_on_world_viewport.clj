@@ -10,19 +10,23 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics.viewport :as viewport]))
 
-(defn- geom-test! [ctx]
-  (let [position (viewport/mouse-position ctx/world-viewport)
+(defn- geom-test! [{:keys [ctx/world-viewport
+                           ctx/grid]
+                    :as ctx}]
+  (let [position (viewport/mouse-position world-viewport)
         radius 0.8
         circle {:position position :radius radius}]
     (draw/circle ctx position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (grid/circle->cells ctx/grid circle))]
+    (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
       (draw/rectangle ctx x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (math/circle->outer-rectangle circle)]
       (draw/rectangle ctx x y width height [0 0 1 1]))))
 
-(defn- highlight-mouseover-tile! [ctx]
-  (let [[x y] (mapv int (viewport/mouse-position ctx/world-viewport))
-        cell (ctx/grid [x y])]
+(defn- highlight-mouseover-tile! [{:keys [ctx/world-viewport
+                                          ctx/grid]
+                                   :as ctx}]
+  (let [[x y] (mapv int (viewport/mouse-position world-viewport))
+        cell (grid [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       (draw/rectangle ctx x y 1 1
                       (case (:movement @cell)
@@ -33,19 +37,21 @@
   (let [[x y] (:left-bottom entity)]
     (draw/rectangle ctx x y (:width entity) (:height entity) color)))
 
-(defn- debug-draw-before-entities! [ctx]
-  (let [cam (:camera ctx/world-viewport)
+(defn- debug-draw-before-entities! [{:keys [ctx/world-viewport
+                                            ctx/grid]
+                                     :as ctx}]
+  (let [cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
     (when ctx/show-tile-grid?
       (draw/grid ctx
                  (int left-x) (int bottom-y)
-                 (inc (int (:width  ctx/world-viewport)))
-                 (+ 2 (int (:height ctx/world-viewport)))
+                 (inc (int (:width  world-viewport)))
+                 (+ 2 (int (:height world-viewport)))
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell (ctx/grid [x y])]
+            :let [cell (grid [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -61,9 +67,11 @@
             (let [ratio (/ distance (ctx/factions-iterations faction))]
               (draw/filled-rectangle ctx x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- render-entities! [ctx]
-  (let [entities (map deref ctx/active-entities)
-        player @ctx/player-eid]
+(defn- render-entities! [{:keys [ctx/active-entities
+                                 ctx/player-eid]
+                          :as ctx}]
+  (let [entities (map deref active-entities)
+        player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               ctx/render-z-order)
@@ -89,14 +97,17 @@
    ; geom-test!
    highlight-mouseover-tile!])
 
-(defn do! []
-  (batch/draw-on-viewport! ctx/batch
-                           ctx/world-viewport
+(defn do! [{:keys [ctx/batch
+                   ctx/world-viewport
+                   ctx/world-unit-scale
+                   ctx/unit-scale]
+            :as ctx}]
+  (batch/draw-on-viewport! batch
+                           world-viewport
                            (fn []
-                             (let [ctx (ctx/make-map)]
-                               (draw/with-line-width ctx ctx/world-unit-scale
-                                 (fn []
-                                   (reset! ctx/unit-scale ctx/world-unit-scale)
-                                   (doseq [f draw-fns]
-                                     (f ctx))
-                                   (reset! ctx/unit-scale 1)))))))
+                             (draw/with-line-width ctx world-unit-scale
+                               (fn []
+                                 (reset! unit-scale world-unit-scale)
+                                 (doseq [f draw-fns]
+                                   (f ctx))
+                                 (reset! unit-scale 1))))))

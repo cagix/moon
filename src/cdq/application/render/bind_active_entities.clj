@@ -3,6 +3,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.utils :refer [bind-root]]))
 
-(defn do! []
-  (bind-root #'ctx/active-entities (content-grid/active-entities ctx/content-grid
-                                                                 @ctx/player-eid)))
+(defn do! [{:keys [ctx/content-grid
+                   ctx/player-eid]}]
+  (bind-root #'ctx/active-entities (content-grid/active-entities content-grid
+                                                                 @player-eid)))

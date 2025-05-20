@@ -7,20 +7,25 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
-(defn do! []
-  (let [ctx (ctx/make-map)
-        new-eid (if (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
+(defn do! [{:keys [ctx/stage
+                   ctx/ui-viewport
+                   ctx/player-eid
+                   ctx/grid
+                   ctx/world-viewport
+                   ctx/mouseover-eid]
+            :as ctx}]
+  (let [new-eid (if (ui/hit stage (viewport/mouse-position ui-viewport))
                   nil
-                  (let [player @ctx/player-eid
+                  (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities ctx/grid
-                                                           (viewport/mouse-position ctx/world-viewport)))]
+                                     (grid/point->entities grid
+                                                           (viewport/mouse-position world-viewport)))]
                     (->> ctx/render-z-order
                          (sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(entity/line-of-sight? ctx player @%))
                          first)))]
-    (when-let [eid ctx/mouseover-eid]
+    (when-let [eid mouseover-eid]
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))

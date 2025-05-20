@@ -67,7 +67,7 @@
                ((requiring-resolve dispose-fn) (ctx/make-map)))
    :render! (fn []
               (doseq [f render-fns]
-                ((requiring-resolve f))))
+                ((requiring-resolve f) (ctx/make-map))))
    :resize! (fn [_width _height]
               ((requiring-resolve resize-fn) (ctx/make-map)))})
 

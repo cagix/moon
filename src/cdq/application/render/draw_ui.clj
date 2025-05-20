@@ -1,7 +1,6 @@
 (ns cdq.application.render.draw-ui
-  (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]))
+  (:require [gdl.ui :as ui]))
 
-(defn do! []
-  (reset! (.ctx ctx/stage) (ctx/make-map))
-  (ui/draw! ctx/stage))
+(defn do! [{:keys [ctx/stage] :as ctx}]
+  (reset! (.ctx stage) ctx)
+  (ui/draw! stage))

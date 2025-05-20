@@ -47,8 +47,8 @@
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
-(defn do! []
-  (when-not ctx/paused?
+(defn do! [{:keys [ctx/paused?] :as ctx}]
+  (when-not paused?
     (update-time!)
     (update-potential-fields!)
     (tick-entities! (ctx/make-map))))

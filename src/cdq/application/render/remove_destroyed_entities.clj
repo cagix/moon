@@ -4,15 +4,13 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]))
 
-(defn do! []
+(defn do! [{:keys [ctx/entity-ids] :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @ctx/entity-ids))]
+                      (vals @entity-ids))]
     (let [id (:entity/id @eid)]
-      (assert (contains? @ctx/entity-ids id))
-      (swap! ctx/entity-ids dissoc id))
+      (assert (contains? @entity-ids id))
+      (swap! entity-ids dissoc id))
     (content-grid/remove-entity! eid)
     (grid/remove-entity! eid)
     (doseq [component @eid]
-      (ctx/handle-txs! (entity/destroy! component
-                                        eid
-                                        (ctx/make-map))))))
+      (ctx/handle-txs! (entity/destroy! component eid ctx)))))

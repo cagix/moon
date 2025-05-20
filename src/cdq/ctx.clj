@@ -101,7 +101,13 @@
                            :click-distance-tiles 1.5})
 
 (defn make-map []
-  {:ctx/active-entities active-entities
+  {:ctx/get-tiled-map-renderer get-tiled-map-renderer
+   :ctx/tiled-map tiled-map
+   :ctx/explored-tile-corners explored-tile-corners
+   :ctx/pausing? pausing?
+   :ctx/controls controls
+   :ctx/zoom-speed zoom-speed
+   :ctx/active-entities active-entities
    :ctx/default-font default-font
    :ctx/batch        batch
    :ctx/unit-scale   unit-scale

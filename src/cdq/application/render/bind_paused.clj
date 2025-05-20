@@ -5,12 +5,14 @@
             [cdq.utils :refer [bind-root]]
             [gdl.input :as input]))
 
-(defn- pause-game? []
+(defn- pause-game? [{:keys [ctx/pausing?
+                            ctx/player-eid
+                            ctx/controls]}]
   (or #_error
-      (and ctx/pausing?
-           (state/pause-game? (entity/state-obj @ctx/player-eid))
-           (not (or (input/key-just-pressed? (get ctx/controls :unpause-once))
-                    (input/key-pressed? (get ctx/controls :unpause-continously)))))))
+      (and pausing?
+           (state/pause-game? (entity/state-obj @player-eid))
+           (not (or (input/key-just-pressed? (get controls :unpause-once))
+                    (input/key-pressed? (get controls :unpause-continously)))))))
 
-(defn do! []
-  (bind-root #'ctx/paused? (pause-game?)))
+(defn do! [ctx]
+  (bind-root #'ctx/paused? (pause-game? ctx)))
