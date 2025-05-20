@@ -125,8 +125,8 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defn create [{:keys [ctx/db]}]
+(defn create [{:keys [ctx/db] :as ctx}]
   (generate-modules {:world/map-size 5,
                      :world/max-area-level 3,
                      :world/spawn-rate 0.05}
-                    (db/build-all db :properties/creatures)))
+                    (db/build-all db :properties/creatures ctx)))

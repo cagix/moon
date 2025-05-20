@@ -29,7 +29,7 @@
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
                   {:keys [effect/source effect/target] :as effect-ctx}
-                  {:keys [ctx/db]}]
+                  {:keys [ctx/db] :as ctx}]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -41,7 +41,7 @@
          [:tx/effect effect-ctx entity-effects]]
         [[:tx/audiovisual
           (end-point source* target* maxrange)
-          (db/build db :audiovisuals/hit-ground)]])))
+          (db/build db :audiovisuals/hit-ground ctx)]])))
 
   (effect/render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} ctx]
     (when target

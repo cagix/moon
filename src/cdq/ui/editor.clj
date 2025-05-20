@@ -29,7 +29,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (widget/create schema props)
+        widget (widget/create schema props (ctx/make-map))
         save!   (apply-context-fn window #(do
                                            (alter-var-root #'ctx/db db/update (widget/value schema widget))
                                            (db/save! ctx/db)))

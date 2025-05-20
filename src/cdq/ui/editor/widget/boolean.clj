@@ -2,7 +2,7 @@
   (:require [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]))
 
-(defmethod widget/create :boolean [_ checked?]
+(defmethod widget/create :boolean [_ checked? _ctx]
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 

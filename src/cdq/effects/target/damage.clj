@@ -27,7 +27,7 @@
 
   (effect/handle [[_ damage]
                   {:keys [effect/source effect/target]}
-                  {:keys [ctx/db]}]
+                  {:keys [ctx/db] :as ctx}]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -43,6 +43,6 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          [[:tx/assoc-in target [:entity/hp 0] new-hp-val]
-          [:tx/audiovisual (:position target*) (db/build db :audiovisuals/damage)]
+          [:tx/audiovisual (:position target*) (db/build db :audiovisuals/damage ctx)]
           [:tx/event target (if (zero? new-hp-val) :kill :alert)]
           [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))

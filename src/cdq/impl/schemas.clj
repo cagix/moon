@@ -1,6 +1,5 @@
 (ns cdq.impl.schemas
   (:require [cdq.animation :as animation]
-            [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.schema :as schema]
@@ -67,30 +66,33 @@
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
 
-(defn- edn->sprite [{:keys [file sub-image-bounds]}]
+(defn- edn->sprite
+  [{:keys [file sub-image-bounds]}
+   {:keys [ctx/assets
+           ctx/world-unit-scale]}]
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet (graphics/sprite-sheet (ctx/assets file)
+      (graphics/from-sheet (graphics/sprite-sheet (assets file)
                                                   tilew
                                                   tileh
-                                                  ctx/world-unit-scale)
+                                                  world-unit-scale)
                            [(int (/ sprite-x tilew))
                             (int (/ sprite-y tileh))]
-                           ctx/world-unit-scale))
-    (graphics/sprite (ctx/assets file)
-                     ctx/world-unit-scale)))
+                           world-unit-scale))
+    (graphics/sprite (assets file)
+                     world-unit-scale)))
 
-(defmethod schema/edn->value :s/image [_ edn]
-  (edn->sprite edn))
+(defmethod schema/edn->value :s/image [_ edn ctx]
+  (edn->sprite edn ctx))
 
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
-  (animation/create (map edn->sprite frames)
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} ctx]
+  (animation/create (map #(edn->sprite % ctx) frames)
                     :frame-duration frame-duration
                     :looping? looping?))
 
-(defmethod schema/edn->value :s/one-to-one [_ property-id]
-  (db/build ctx/db property-id))
+(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
+  (db/build db property-id ctx))
 
-(defmethod schema/edn->value :s/one-to-many [_ property-ids]
-  (set (map #(db/build ctx/db %) property-ids)))
+(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
+  (set (map #(db/build db % ctx) property-ids)))

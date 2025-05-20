@@ -28,14 +28,14 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defmulti edn->value (fn [schema v]
+(defmulti edn->value (fn [schema v _ctx]
                        (when schema  ; undefined-data-ks
                          (type schema))))
 
-(defmethod edn->value :default [_schema v]
+(defmethod edn->value :default [_schema v _ctx]
   v)
 
-(defn transform [schemas property]
+(defn transform [schemas property ctx]
   (apply-kvs property
              (fn [k v]
                (let [schema (try (get schemas k)
@@ -43,8 +43,8 @@
                                    #_(swap! undefined-data-ks conj k)
                                    nil))
                      v (if (map? v)
-                         (transform schemas v)
+                         (transform schemas v ctx)
                          v)]
-                 (try (edn->value schema v)
+                 (try (edn->value schema v ctx)
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))

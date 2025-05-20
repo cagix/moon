@@ -30,7 +30,7 @@
                              (.pack window)
                              (ui/add! ctx/stage window)))))]
       [(when property-id
-         (let [property (db/build ctx/db property-id)
+         (let [property (db/build ctx/db property-id (ctx/make-map))
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
            (ui/add-tooltip! image-widget #(pprint-to-str property))
@@ -40,7 +40,7 @@
                          (fn [_actor]
                            (redo-rows nil))))]])))
 
-(defmethod widget/create :s/one-to-one [[_ property-type] property-id]
+(defmethod widget/create :s/one-to-one [[_ property-type] property-id _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))

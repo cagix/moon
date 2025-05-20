@@ -2,7 +2,7 @@
   (:require [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]))
 
-(defmethod widget/create :string [schema v]
+(defmethod widget/create :string [schema v _ctx]
   (ui/add-tooltip! (ui/text-field v {})
                    (str schema)))
 

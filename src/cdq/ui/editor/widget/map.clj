@@ -59,7 +59,7 @@
                                         (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (let [widget (widget/create (get schemas k) v)]
+   {:actor (let [widget (widget/create (get schemas k) v (ctx/make-map))]
              (ui/set-user-object! widget [k v])
              widget)
     :left? true}])
@@ -103,7 +103,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m]
+(defmethod widget/create :s/map [schema m _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep

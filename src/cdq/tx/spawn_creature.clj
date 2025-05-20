@@ -19,7 +19,7 @@
 
 (defn do! [{:keys [ctx/db] :as ctx}
            {:keys [position creature-id components]}]
-  (let [props (db/build db creature-id)]
+  (let [props (db/build db creature-id ctx)]
     (cdq.tx.spawn-entity/do! ctx
                              position
                              (->body (:entity/body props))

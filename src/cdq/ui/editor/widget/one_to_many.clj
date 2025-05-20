@@ -29,7 +29,7 @@
                            (.pack window)
                            (ui/add! ctx/stage window))))]
       (for [property-id property-ids]
-        (let [property (db/build ctx/db property-id)
+        (let [property (db/build ctx/db property-id (ctx/make-map))
               image-widget (ui/image->widget (property/image property)
                                              {:id property-id})]
           (ui/add-tooltip! image-widget (pprint-to-str property))))
@@ -38,7 +38,7 @@
                         (fn [_actor]
                           (redo-rows (disj property-ids id)))))])))
 
-(defmethod widget/create :s/one-to-many [[_ property-type] property-ids]
+(defmethod widget/create :s/one-to-many [[_ property-type] property-ids _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))

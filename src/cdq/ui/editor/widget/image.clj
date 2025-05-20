@@ -13,8 +13,8 @@
       #_[(ui/text-button file
                          (fn [_actor]))]))
 
-(defmethod widget/create :s/image [schema image]
-  (ui/image-button (schema/edn->value schema image)
+(defmethod widget/create :s/image [schema image ctx]
+  (ui/image-button (schema/edn->value schema image ctx)
                    (fn [_actor])
                    {:scale 2})
   #_(ui/image-button image

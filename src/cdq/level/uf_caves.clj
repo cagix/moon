@@ -123,8 +123,9 @@
      :start-position start-position}))
 
 (defn create [{:keys [ctx/db
-                      ctx/assets]}]
+                      ctx/assets]
+               :as ctx}]
   (create* {:map-size 200,
             :spawn-rate 0.01}
-           (db/build-all db :properties/creatures)
+           (db/build-all db :properties/creatures ctx)
            (assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

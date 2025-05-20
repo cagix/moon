@@ -4,7 +4,7 @@
             [clojure.edn :as edn]
             [gdl.ui :as ui]))
 
-(defmethod widget/create :widget/edn [schema v]
+(defmethod widget/create :widget/edn [schema v _ctx]
   (ui/add-tooltip! (ui/text-field (->edn-str v) {})
                    (str schema)))
 

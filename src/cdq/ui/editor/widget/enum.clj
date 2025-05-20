@@ -4,7 +4,7 @@
             [clojure.edn :as edn]
             [gdl.ui :as ui]))
 
-(defmethod widget/create :enum [schema v]
+(defmethod widget/create :enum [schema v _ctx]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 

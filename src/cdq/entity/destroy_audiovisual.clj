@@ -6,7 +6,7 @@
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id]
                     eid
-                    {:keys [ctx/db]}]
+                    {:keys [ctx/db] :as ctx}]
     [[:tx/audiovisual
       (:position @eid)
-      (db/build db audiovisuals-id)]]))
+      (db/build db audiovisuals-id ctx)]]))

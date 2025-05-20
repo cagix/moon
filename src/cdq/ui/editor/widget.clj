@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget
   (:require [cdq.schema :as schema]))
 
-(defn- widget-type [schema _]
+(defn- widget-type [schema]
   (let [stype (schema/type schema)]
     (cond
      (#{:s/map-optional :s/components-ns} stype)
@@ -12,5 +12,7 @@
 
      :else stype)))
 
-(defmulti create widget-type)
-(defmulti value  widget-type)
+(defmulti create (fn [schema _v _ctx]
+                   (widget-type schema)))
+(defmulti value  (fn [schema _v]
+                   (widget-type schema)))

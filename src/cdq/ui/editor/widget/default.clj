@@ -4,7 +4,7 @@
                                ->edn-str]]
             [gdl.ui :as ui]))
 
-(defmethod widget/create :default [_ v]
+(defmethod widget/create :default [_ v _ctx]
   (ui/label (truncate (->edn-str v) 60)))
 
 (defmethod widget/value :default [_ widget]

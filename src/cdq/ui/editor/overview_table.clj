@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]))
@@ -55,7 +56,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all db property-type)
+        properties (db/build-all db property-type (ctx/make-map))
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]

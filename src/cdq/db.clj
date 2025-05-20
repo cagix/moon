@@ -22,9 +22,9 @@
            "Returns the property value without schema based transformations.")
   (all-raw [_ property-type]
            "Returns all properties with type without schema-based transformations.")
-  (build [_ property-id]
+  (build [_ property-id ctx]
          "Returns the property with schema-based transformations.")
-  (build-all [_ property-type]
+  (build-all [_ property-type ctx]
              "Returns all properties with type with schema-based transformations."))
 
 (defn- validate! [schemas property]
@@ -60,11 +60,14 @@
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
-  (build [this property-id]
-    (schema/transform schemas (get-raw this property-id)))
+  (build [this property-id ctx]
+    (schema/transform schemas
+                      (get-raw this property-id)
+                      ctx))
 
-  (build-all [this property-type]
-    (map #(schema/transform schemas %) (all-raw this property-type))))
+  (build-all [this property-type ctx]
+    (map #(schema/transform schemas % ctx)
+         (all-raw this property-type))))
 
 (defn create [path schemas]
   (let [schemas (io-slurp-edn schemas)
