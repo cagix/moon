@@ -3,19 +3,22 @@
             [cdq.info :as info]
             [gdl.ui :as ui]))
 
-(let [disallowed-keys [:entity/skills
-                       #_:entity/fsm
-                       :entity/faction
-                       :active-skill]]
-  (defn- ->label-text []
-    ; items then have 2x pretty-name
-    #_(.setText (.getTitleLabel window)
-                (if-let [eid ctx/mouseover-eid]
-                  (info/text [:property/pretty-name (:property/pretty-name @eid)])
-                  "Entity Info"))
-    (when-let [eid ctx/mouseover-eid]
-      (info/text ; don't use select-keys as it loses Entity record type
-                 (apply dissoc @eid disallowed-keys)))))
+(comment
+
+ ; items then have 2x pretty-name
+ #_(.setText (.getTitleLabel window)
+             (info/text [:property/pretty-name (:property/pretty-name entity)])
+             "Entity Info")
+ )
+
+(def disallowed-keys [:entity/skills
+                      #_:entity/fsm
+                      :entity/faction
+                      :active-skill])
+
+(defn- ->label-text [entity]
+  ; don't use select-keys as it loses Entity record type
+  (info/text (apply dissoc entity disallowed-keys)))
 
 (defn create [position]
   (let [label (ui/label "")
@@ -27,6 +30,8 @@
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
     (.addActor window (ui/actor {:act (fn [_this _delta]
-                                        (.setText label (str (->label-text)))
+                                        (.setText label (str (if-let [eid ctx/mousover-eid]
+                                                               (->label-text @eid)
+                                                               "")))
                                         (.pack window))}))
     window))
