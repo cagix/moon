@@ -52,12 +52,14 @@
     [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]
                                              [:tx/show-message "Too far away"]]]))
 
-(defn- mouseover-actor->cursor [actor]
-  (cond
-   (cdq.ui.inventory/cell-with-item? actor) :cursors/hand-before-grab
-   (ui/window-title-bar? actor) :cursors/move-window
-   (ui/button? actor) :cursors/over-button
-   :else :cursors/default))
+(defn- mouseover-actor->cursor [actor player-entity-inventory]
+  (let [inventory-slot (cdq.ui.inventory/cell-with-item? actor)]
+    (cond
+     (and inventory-slot
+         (get-in player-entity-inventory inventory-slot)) :cursors/hand-before-grab
+     (ui/window-title-bar? actor) :cursors/move-window
+     (ui/button? actor) :cursors/over-button
+     :else :cursors/default)))
 
 (defn- player-effect-ctx [{:keys [ctx/mouseover-eid
                                   ctx/world-viewport]}
@@ -80,7 +82,7 @@
         mouseover-actor (ui/hit stage (viewport/mouse-position ui-viewport))]
     (cond
      mouseover-actor
-     [(mouseover-actor->cursor mouseover-actor)
+     [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
       nil] ; handled by actors themself, they check player state
 
      (and mouseover-eid

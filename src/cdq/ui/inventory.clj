@@ -152,9 +152,10 @@
     (Image/.setDrawable image-widget (ui/user-object image-widget))
     (ui/remove-tooltip! cell-widget)))
 
-(defn cell-with-item? [actor]
+(defn cell-with-item?
+  "Ff the actor is an inventory-cell, returns the inventory slot."
+  [actor]
   {:pre [actor]}
   (and (ui/parent actor)
        (= "inventory-cell" (Actor/.getName (ui/parent actor)))
-       (get-in (:entity/inventory @ctx/player-eid)
-               (ui/user-object (ui/parent actor)))))
+       (ui/user-object (ui/parent actor))))
