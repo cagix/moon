@@ -33,11 +33,11 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table)))
 
-(defn- rebuild-editor-window! [stage]
+(defn- rebuild-editor-window! [{:keys [ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window)]
     (ui/remove! window)
-    (ui/add! stage (cdq.ui.editor/editor-window prop-value))))
+    (ui/add! stage (cdq.ui.editor/editor-window prop-value ctx))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -51,9 +51,9 @@
   [{:actor (ui/table {:cell-defaults {:pad 2}
                       :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
                                         (ui/text-button "-"
-                                                        (fn [_actor {:keys [ctx/stage]}]
+                                                        (fn [_actor ctx]
                                                           (ui/remove! (find-kv-widget table k))
-                                                          (rebuild-editor-window! stage))))
+                                                          (rebuild-editor-window! ctx))))
                                :left? true}
                               (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                                         (name k))]]})
@@ -87,13 +87,13 @@
      window
      (for [k remaining-ks]
        [(ui/text-button (name k)
-                        (fn [_actor _ctx]
+                        (fn [_actor ctx]
                           (.remove window)
                           (ui/add-rows! map-widget-table [(component-row [k (k->default-value schemas k)]
                                                                          schema
                                                                          schemas
                                                                          map-widget-table)])
-                          (rebuild-editor-window! stage)))]))
+                          (rebuild-editor-window! ctx)))]))
     (.pack window)
     (ui/add! stage window)))
 
