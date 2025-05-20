@@ -1,6 +1,5 @@
 (ns cdq.entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.op :as op]
             [cdq.malli :as m]
             [cdq.raycaster :as raycaster]
@@ -158,10 +157,13 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [source target]
+(defn line-of-sight? [{:keys [ctx/world-viewport
+                              ctx/raycaster]}
+                      source
+                      target]
   (and (or (not (:entity/player? source))
-           (on-screen? ctx/world-viewport target))
+           (on-screen? world-viewport target))
        (not (and los-checks?
-                 (raycaster/blocked? ctx/raycaster
+                 (raycaster/blocked? raycaster
                                      (:position source)
                                      (:position target))))))

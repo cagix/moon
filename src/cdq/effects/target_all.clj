@@ -5,10 +5,11 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defn- creatures-in-los-of-player [{:keys [ctx/active-entities
-                                           ctx/player-eid]}]
+                                           ctx/player-eid]
+                                    :as ctx}]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(entity/line-of-sight? @player-eid @%))
+       (filter #(entity/line-of-sight? ctx @player-eid @%))
        (remove #(:entity/player? @%))))
 
 (defcomponent :effects/target-all

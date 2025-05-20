@@ -17,12 +17,12 @@
                      (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
        first))
 
-(defn- npc-effect-context [{:keys [ctx/grid]} eid]
+(defn- npc-effect-context [{:keys [ctx/grid] :as ctx} eid]
   (let [entity @eid
         target (cell/nearest-entity @(grid (mapv int (:position entity)))
                                     (entity/enemy entity))
         target (when (and target
-                          (entity/line-of-sight? entity @target))
+                          (entity/line-of-sight? ctx entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

@@ -8,7 +8,8 @@
             [gdl.ui :as ui]))
 
 (defn do! []
-  (let [new-eid (if (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
+  (let [ctx (ctx/make-map)
+        new-eid (if (ui/hit ctx/stage (viewport/mouse-position ctx/ui-viewport))
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -17,7 +18,7 @@
                     (->> ctx/render-z-order
                          (sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(entity/line-of-sight? player @%))
+                         (filter #(entity/line-of-sight? ctx player @%))
                          first)))]
     (when-let [eid ctx/mouseover-eid]
       (swap! eid dissoc :entity/mouseover?))

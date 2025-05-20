@@ -73,7 +73,7 @@
                      entity/render-info!]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (entity/line-of-sight? player entity))]
+                      (entity/line-of-sight? ctx player entity))]
       (try
        (when ctx/show-body-bounds?
          (draw-body-rect ctx entity (if (:collides? entity) :white :gray)))
