@@ -35,7 +35,9 @@
 (defn reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (cdq.ctx.init-stage/do! (stage-actors))
-  (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn))
+  (let [{:keys [tiled-map start-position]} ((requiring-resolve world-fn)
+                                            {:ctx/db ctx/db
+                                             :ctx/assets ctx/assets})
         width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
     (bind-root #'ctx/start-position start-position)
