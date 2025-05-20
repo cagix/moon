@@ -7,8 +7,9 @@
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]))
 
-(defn- render-infostr-on-bar [infostr x y h]
-  (draw/text {:text infostr
+(defn- render-infostr-on-bar [draw infostr x y h]
+  (draw/text draw
+             {:text infostr
               :x (+ x 75)
               :y (+ y 2)
               :up? true}))
@@ -19,15 +20,27 @@
         manacontent (graphics/sprite (ctx/assets "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [x y contentimage minmaxval name]
-                            (draw/image rahmen [x y])
-                            (draw/image (graphics/sub-sprite contentimage
-                                                             [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+        render-hpmana-bar (fn [draw x y contentimage minmaxval name]
+                            (draw/image draw rahmen [x y])
+                            (draw/image draw (graphics/sub-sprite contentimage
+                                                                  [0
+                                                                   0
+                                                                   (* rahmenw (val-max/ratio minmaxval))
+                                                                   rahmenh])
                                         [x y])
-                            (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+                            (render-infostr-on-bar draw
+                                                   (str (utils/readable-number (minmaxval 0))
+                                                        "/"
+                                                        (minmaxval 1)
+                                                        " "
+                                                        name)
+                                                   x
+                                                   y
+                                                   rahmenh))]
     (ui/actor
      {:draw (fn [_this]
-              (let [player-entity @ctx/player-eid
+              (let [draw (ctx/get-draw)
+                    player-entity @ctx/player-eid
                     x (- x (/ rahmenw 2))]
-                (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
+                (render-hpmana-bar draw x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                (render-hpmana-bar draw x y-mana manacontent (entity/mana      player-entity) "MP")))})))

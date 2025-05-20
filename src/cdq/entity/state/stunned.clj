@@ -18,8 +18,8 @@
 
   (state/pause-game? [_] false)
 
-  (entity/render-below! [_ entity]
-    (draw/circle (:position entity) 0.5 [1 1 1 0.6])))
+  (entity/render-below! [_ entity draw]
+    (draw/circle draw (:position entity) 0.5 [1 1 1 0.6])))
 
 
 

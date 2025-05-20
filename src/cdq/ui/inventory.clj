@@ -28,15 +28,20 @@
 (def ^:private droppable-color   [0   0.6 0 0.8])
 (def ^:private not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-cell-rect! [player-entity x y mouseover? cell]
-  (draw/rectangle x y cell-size cell-size :gray)
+(defn- draw-cell-rect! [draw player-entity x y mouseover? cell]
+  (draw/rectangle draw x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (draw/filled-rectangle draw
+                             (inc x)
+                             (inc y)
+                             (- cell-size 2)
+                             (- cell-size 2)
+                             color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
@@ -45,7 +50,8 @@
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
       (let [^Actor actor this]
-        (draw-cell-rect! @ctx/player-eid
+        (draw-cell-rect! (ctx/get-draw)
+                         @ctx/player-eid
                          (.getX actor)
                          (.getY actor)
                          (ui/hit actor (viewport/mouse-position ctx/ui-viewport))

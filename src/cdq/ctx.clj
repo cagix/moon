@@ -126,3 +126,9 @@
                              {:transaction transaction
                               :sym sym}
                              t)))))))
+
+(defn get-draw []
+  {:ctx/default-font default-font
+   :ctx/batch        batch
+   :ctx/unit-scale   unit-scale
+   :ctx/shape-drawer shape-drawer})

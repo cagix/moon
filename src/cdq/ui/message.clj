@@ -5,9 +5,11 @@
 
 (defn create [& {:keys [name]}]
   (ui/actor {:draw (fn [this]
-                     (let [state (ui/user-object this)]
+                     (let [draw (ctx/get-draw)
+                           state (ui/user-object this)]
                        (when-let [text (:text @state)]
-                         (draw/text {:x (/ (:width     ctx/ui-viewport) 2)
+                         (draw/text draw
+                                    {:x (/ (:width     ctx/ui-viewport) 2)
                                      :y (+ (/ (:height ctx/ui-viewport) 2) 200)
                                      :text text
                                      :scale 2.5

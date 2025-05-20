@@ -22,14 +22,15 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [position width half-width half-height]} ratio]
+(defn- draw-hpbar [draw {:keys [position width half-width half-height]} ratio]
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
           height (* 5 ctx/world-unit-scale)
           border (* borders-px ctx/world-unit-scale)]
-      (draw/filled-rectangle x y width height :black)
-      (draw/filled-rectangle (+ x border)
+      (draw/filled-rectangle draw x y width height :black)
+      (draw/filled-rectangle draw
+                             (+ x border)
                              (+ y border)
                              (- (* width ratio) (* 2 border))
                              (- height          (* 2 border))
@@ -39,7 +40,7 @@
   (entity/create [[_ v]]
     [v v])
 
-  (entity/render-info! [_ entity]
+  (entity/render-info! [_ entity draw]
     (let [ratio (val-max/ratio (entity/hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar entity ratio)))))
+        (draw-hpbar draw entity ratio)))))

@@ -23,6 +23,6 @@
                         k))
 (defmethod manual-tick :default [_ _eid])
 
-(defmulti draw-gui-view (fn [[k] _eid]
+(defmulti draw-gui-view (fn [[k] _eid draw]
                           k))
-(defmethod draw-gui-view :default [_ _eid])
+(defmethod draw-gui-view :default [_ _eid draw])

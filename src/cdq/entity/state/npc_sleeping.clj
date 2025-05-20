@@ -18,9 +18,10 @@
     [[:tx/spawn-alert (:position @eid) (:entity/faction @eid) 0.2]
      [:tx/add-text-effect eid "[WHITE]!"]])
 
-  (entity/render-above! [_ entity]
+  (entity/render-above! [_ entity draw]
     (let [[x y] (:position entity)]
-      (draw/text {:text "zzz"
+      (draw/text draw
+                 {:text "zzz"
                   :x x
                   :y (+ y (:half-height entity))
                   :up? true}))))

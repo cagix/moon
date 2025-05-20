@@ -8,4 +8,5 @@
   (ui/actor
    {:draw (fn [_this]
             (state/draw-gui-view (entity/state-obj @ctx/player-eid)
-                                 ctx/player-eid))}))
+                                 ctx/player-eid
+                                 (ctx/get-draw)))}))

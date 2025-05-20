@@ -37,9 +37,10 @@
                 ; find a way to pass ctx / effect-ctx separate ?
                 [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
-  (effect/render [_ {:keys [effect/source]}]
+  (effect/render [_ {:keys [effect/source]} draw]
     (let [source* @source]
       (doseq [target* (map deref (creatures-in-los-of-player))]
-        (draw/line (:position source*) #_(start-point source* target*)
+        (draw/line draw
+                   (:position source*) #_(start-point source* target*)
                    (:position target*)
                    [1 0 0 0.5])))))
