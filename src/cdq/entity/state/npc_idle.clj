@@ -7,14 +7,14 @@
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
 
-(defn- npc-choose-skill [entity ctx]
+(defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
-                     (effect/applicable-and-useful? ctx (:skill/effects %))))
+       (filter #(and (= :usable (entity/skill-usable-state entity % effect-ctx))
+                     (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
        first))
 
 (defn- npc-effect-context [{:keys [ctx/grid]} eid]
@@ -34,7 +34,7 @@
   (entity/tick! [_ eid {:keys [ctx/grid]
                         :as ctx}]
     (let [effect-ctx (npc-effect-context ctx eid)]
-      (if-let [skill (npc-choose-skill @eid effect-ctx)]
+      (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
         [[:tx/event eid :movement-direction (or (potential-field/find-direction grid eid)
                                                 [0 0])]]))))

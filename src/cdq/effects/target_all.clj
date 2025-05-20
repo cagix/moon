@@ -16,7 +16,7 @@
   (effect/applicable? [_ _]
     true)
 
-  (effect/useful? [_ _]
+  (effect/useful? [_ _effect-ctx _ctx]
     ; TODO
     false)
 

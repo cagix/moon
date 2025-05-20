@@ -50,8 +50,4 @@
   (when-not ctx/paused?
     (update-time!)
     (update-potential-fields!)
-    (tick-entities! {:ctx/active-entities ctx/active-entities
-                     :ctx/elapsed-time ctx/elapsed-time
-                     :ctx/delta-time ctx/delta-time
-                     :ctx/grid ctx/grid
-                     :ctx/stage ctx/stage})))
+    (tick-entities! (ctx/make-map))))

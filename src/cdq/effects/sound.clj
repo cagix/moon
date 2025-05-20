@@ -6,7 +6,7 @@
   (effect/applicable? [_ _ctx]
     true)
 
-  (effect/useful? [_ _]
+  (effect/useful? [_ _effect-ctx _ctx]
     false)
 
   (effect/handle [[_ sound] _ctx]

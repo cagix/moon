@@ -1,6 +1,5 @@
 (ns cdq.effects.projectile
-  (:require [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.projectile :as projectile]
             [cdq.utils :refer [defcomponent]]
             [cdq.raycaster :as raycaster]
@@ -18,11 +17,12 @@
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
-                   {:keys [effect/source effect/target]}]
+                   {:keys [effect/source effect/target]}
+                   {:keys [ctx/raycaster]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (raycaster/path-blocked? ctx/raycaster
+      (and (not (raycaster/path-blocked? raycaster
                                          source-p
                                          target-p
                                          (projectile/size projectile)))

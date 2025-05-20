@@ -25,7 +25,7 @@
     (and target
          (seq (effect/filter-applicable? effect-ctx entity-effects))))
 
-  (effect/useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (effect/useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _ctx]
     (entity/in-range? @source @target maxrange))
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
