@@ -42,9 +42,9 @@
                                                    y
                                                    rahmenh))]
     (ui/actor
-     {:draw (fn [_this]
-              (let [draw (ctx/get-draw)
-                    player-entity @ctx/player-eid
+     {:draw (fn [_this {:keys [ctx/player-eid
+                               ctx/draw]}]
+              (let [player-entity @player-eid
                     x (- x (/ rahmenw 2))]
                 (render-hpmana-bar draw x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                 (render-hpmana-bar draw x y-mana manacontent (entity/mana      player-entity) "MP")))})))

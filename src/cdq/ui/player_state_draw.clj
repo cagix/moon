@@ -1,12 +1,12 @@
 (ns cdq.ui.player-state-draw
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [gdl.ui :as ui]))
 
 (defn create []
   (ui/actor
-   {:draw (fn [_this]
-            (state/draw-gui-view (entity/state-obj @ctx/player-eid)
-                                 ctx/player-eid
-                                 (ctx/get-draw)))}))
+   {:draw (fn [_this {:keys [ctx/player-eid
+                             ctx/draw]}]
+            (state/draw-gui-view (entity/state-obj @player-eid)
+                                 player-eid
+                                 draw))}))
