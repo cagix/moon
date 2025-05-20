@@ -1,6 +1,5 @@
 (ns cdq.ctx.spawn-enemies
-  (:require [cdq.utils :refer [handle-txs!
-                               tile->middle]]
+  (:require [cdq.utils :as utils]
             [gdl.tiled :as tiled]))
 
 (defn- spawn-enemies [tiled-map]
@@ -10,7 +9,7 @@
                  :components {:entity/fsm {:fsm :fsms/npc
                                            :initial-state :npc-sleeping}
                               :entity/faction :evil}})]
-    [:tx/spawn-creature (update props :position tile->middle)]))
+    [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
 (defn do! [{:keys [ctx/tiled-map]}]
-  (handle-txs! (spawn-enemies tiled-map)))
+  (utils/handle-txs! (spawn-enemies tiled-map)))
