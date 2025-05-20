@@ -74,7 +74,7 @@
      :else (m/generate (schema/malli-form schema schemas)
                        {:size 3}))))
 
-(defn- choose-component-window [schema map-widget-table]
+(defn- open-add-component-window! [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
                            :modal? true
                            :close-button? true
@@ -120,7 +120,8 @@
     (ui/add-rows!
      table
      (concat [(when opt?
-                [{:actor (ui/text-button "Add component" #(choose-component-window schema table))
+                [{:actor (ui/text-button "Add component"
+                                         #(open-add-component-window! schema table))
                   :colspan colspan}])]
              [(when opt?
                 [(ui/horizontal-separator-cell colspan)])]
