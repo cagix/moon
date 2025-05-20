@@ -34,11 +34,11 @@
   (let [on-clicked #(clicked-id-fn id)
         button (if-let [image (property/image props)]
                  (ui/image-button image
-                                  (fn [_actor]
+                                  (fn [_actor _ctx]
                                     (on-clicked))
                                   {:scale scale})
                  (ui/text-button (name id)
-                                 (fn [_actor]
+                                 (fn [_actor _ctx]
                                    (on-clicked))))
         top-widget (ui/label (or (and extra-info-text
                                       (extra-info-text props))

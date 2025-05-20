@@ -17,7 +17,8 @@
      table
      [[(when-not property-id
          (ui/text-button "+"
-                         (fn [_actor]
+                         (fn [_actor {:keys [ctx/db
+                                             ctx/stage]}]
                            (let [window (ui/window {:title "Choose"
                                                     :modal? true
                                                     :close-button? true
@@ -26,9 +27,9 @@
                                  clicked-id-fn (fn [id]
                                                  (.remove window)
                                                  (redo-rows id))]
-                             (ui/add! window (overview-table/create ctx/db property-type clicked-id-fn))
+                             (ui/add! window (overview-table/create db property-type clicked-id-fn))
                              (.pack window)
-                             (ui/add! ctx/stage window)))))]
+                             (ui/add! stage window)))))]
       [(when property-id
          (let [property (db/build ctx/db property-id (ctx/make-map))
                image-widget (ui/image->widget (property/image property)
@@ -37,7 +38,7 @@
            image-widget))]
       [(when property-id
          (ui/text-button "-"
-                         (fn [_actor]
+                         (fn [_actor _ctx]
                            (redo-rows nil))))]])))
 
 (defmethod widget/create :s/one-to-one [[_ property-type] property-id _ctx]

@@ -9,15 +9,15 @@
 #_(defn- texture-rows [assets]
     (for [file (sort (assets/all-of-type assets :texture))]
       [(ui/image-button (image file)
-                        (fn [_actor]))]
+                        (fn [_actor _ctx]))]
       #_[(ui/text-button file
-                         (fn [_actor]))]))
+                         (fn [_actor _ctx]))]))
 
 (defmethod widget/create :s/image [schema image ctx]
   (ui/image-button (schema/edn->value schema image ctx)
-                   (fn [_actor])
+                   (fn [_actor _ctx])
                    {:scale 2})
   #_(ui/image-button image
-                     (fn [_actor]
+                     (fn [_actor _ctx]
                        (ui/add! ctx/stage (scroll-pane/choose-window (texture-rows ctx/assets))))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here

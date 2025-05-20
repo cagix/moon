@@ -51,9 +51,9 @@
   [{:actor (ui/table {:cell-defaults {:pad 2}
                       :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
                                         (ui/text-button "-"
-                                                        (fn [_actor]
+                                                        (fn [_actor {:keys [ctx/stage]}]
                                                           (ui/remove! (find-kv-widget table k))
-                                                          (rebuild-editor-window! ctx/stage))))
+                                                          (rebuild-editor-window! stage))))
                                :left? true}
                               (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                                         (name k))]]})
@@ -87,7 +87,7 @@
      window
      (for [k remaining-ks]
        [(ui/text-button (name k)
-                        (fn [_actor]
+                        (fn [_actor _ctx]
                           (.remove window)
                           (ui/add-rows! map-widget-table [(component-row [k (k->default-value schemas k)]
                                                                          schema
@@ -121,9 +121,10 @@
      table
      (concat [(when opt?
                 [{:actor (ui/text-button "Add component"
-                                         (fn [_actor]
-                                           (open-add-component-window! ctx/stage
-                                                                       (:schemas ctx/db)
+                                         (fn [_actor {:keys [ctx/stage
+                                                             ctx/db]}]
+                                           (open-add-component-window! stage
+                                                                       (:schemas db)
                                                                        schema
                                                                        table)))
                   :colspan colspan}])]

@@ -39,10 +39,12 @@
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ctx/ui-viewport)
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
-                                                                             (fn [_actor] (save!)))
+                                                                             (fn [_actor _ctx]
+                                                                               (save!)))
                                                       :center? true}
                                                      {:actor (ui/text-button "Delete"
-                                                                             (fn [_actor] (delete!)))
+                                                                             (fn [_actor _ctx]
+                                                                               (delete!)))
                                                       :center? true}]])]])
     (.addActor window (ui/actor {:act (fn [_this _delta _ctx]
                                         (when (input/key-just-pressed? :enter)

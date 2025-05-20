@@ -8,7 +8,7 @@
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"
-                  (fn [_actor]
+                  (fn [_actor _ctx]
                     (ctx/handle-txs! [[:tx/sound sound-name]]))))
 
 (declare columns)
@@ -18,10 +18,12 @@
       (str/replace-first "sounds/" "")
       (str/replace ".wav" "")))
 
-(defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets :sound))]
+(defn- open-choose-sound-window! [table {:keys [ctx/assets
+                                                ctx/ui-viewport
+                                                ctx/stage]}]
+  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type assets :sound))]
                [(ui/text-button sound-name
-                                (fn [actor]
+                                (fn [actor _ctx]
                                   (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-name)])
                                   (.remove (ui/find-ancestor-window actor))
@@ -29,13 +31,13 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (ui/add! ctx/stage (scroll-pane/choose-window (:height ctx/ui-viewport)
-                                                  rows))))
+    (ui/add! stage (scroll-pane/choose-window (:height ui-viewport)
+                                              rows))))
 
 (defn- columns [table sound-name]
   [(ui/text-button sound-name
-                   (fn [_actor]
-                     (choose-window table)))
+                   (fn [_actor ctx]
+                     (open-choose-sound-window! table ctx)))
    (play-button sound-name)])
 
 (defmethod widget/create :s/sound [_ sound-name _ctx]
@@ -43,6 +45,6 @@
     (ui/add-rows! table [(if sound-name
                            (columns table sound-name)
                            [(ui/text-button "No sound"
-                                            (fn [_actor]
-                                              (choose-window table)))])])
+                                            (fn [_actor ctx]
+                                              (open-choose-sound-window! table ctx)))])])
     table))

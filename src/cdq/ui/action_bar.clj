@@ -34,7 +34,7 @@
 (defn add-skill! [action-bar {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
         button (ui/image-button image
-                                (fn [_actor])
+                                (fn [_actor _ctx])
                                 {:scale 2})]
     (ui/set-user-object! button id)
     (ui/add-tooltip! button #(info/text skill %)) ; (assoc ctx :effect/source (world/player)) FIXME
