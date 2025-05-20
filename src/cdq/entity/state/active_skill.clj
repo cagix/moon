@@ -1,6 +1,5 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
@@ -75,13 +74,15 @@
                 (not (zero? (:skill/cost skill))))
        [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
-  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}] entity ctx]
+  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}]
+                        entity
+                        {:keys [ctx/elapsed-time] :as ctx}]
     (let [{:keys [entity/image skill/effects]} skill]
       (draw-skill-image ctx
                         image
                         entity
                         (:position entity)
-                        (timer/ratio ctx/elapsed-time counter))
+                        (timer/ratio elapsed-time counter))
       (render-active-effect ctx
                             effect-ctx ; TODO !!!
                             ; !! FIXME !!

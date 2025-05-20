@@ -1,6 +1,5 @@
 (ns cdq.entity.mouseover
-  (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
+  (:require [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
@@ -10,8 +9,10 @@
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
 (defmethod entity/render-below! :entity/mouseover?
-  [_ {:keys [entity/faction] :as entity} ctx]
-  (let [player @ctx/player-eid]
+  [_
+   {:keys [entity/faction] :as entity}
+   {:keys [ctx/player-eid] :as ctx}]
+  (let [player @player-eid]
     (draw/with-line-width ctx 3
       #(draw/ellipse ctx
                      (:position entity)
