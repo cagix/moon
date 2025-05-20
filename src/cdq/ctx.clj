@@ -106,6 +106,7 @@
    :ctx/batch        batch
    :ctx/unit-scale   unit-scale
    :ctx/shape-drawer shape-drawer
+   :ctx/shape-drawer-texture shape-drawer-texture
    :ctx/world-unit-scale world-unit-scale
    :ctx/world-viewport world-viewport
    :ctx/elapsed-time elapsed-time

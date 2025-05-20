@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [gdl.application :as application]))
+  (:require [cdq.ctx :as ctx]
+            [gdl.application :as application]))
 
 (def create-fns '[cdq.application.create.config/do!
                   cdq.application.create.requires/do!
@@ -63,12 +64,12 @@
               (doseq [f create-fns]
                 ((requiring-resolve f))))
    :dispose! (fn []
-               ((requiring-resolve dispose-fn)))
+               ((requiring-resolve dispose-fn) (ctx/make-map)))
    :render! (fn []
               (doseq [f render-fns]
                 ((requiring-resolve f))))
    :resize! (fn [_width _height]
-              ((requiring-resolve resize-fn)))})
+              ((requiring-resolve resize-fn) (ctx/make-map)))})
 
 (defn -main []
   (application/start! config))

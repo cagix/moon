@@ -1,7 +1,7 @@
 (ns cdq.application.resize
-  (:require [cdq.ctx :as ctx]
-            [gdl.graphics.viewport :as viewport]))
+  (:require [gdl.graphics.viewport :as viewport]))
 
-(defn do! []
-  (viewport/update! ctx/ui-viewport)
-  (viewport/update! ctx/world-viewport))
+(defn do! [{:keys [ctx/ui-viewport
+                   ctx/world-viewport]}]
+  (viewport/update! ui-viewport)
+  (viewport/update! world-viewport))
