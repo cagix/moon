@@ -1,17 +1,6 @@
 (ns cdq.application
   (:require [gdl.application :as application]))
 
-; I rewrote states exit/enter/etc
-; How do I know it even workds still ?
-
-; => no tests ...
-; => tests improve design
-
-; * SEPARATE WIRING FROM LOGIC
-; * MOVE LOGIC TO ITS PLACE (SEE FORM DEPENDENCIES)
-
-; grep defn-\|private
-
 (def create-fns '[cdq.application.create.config/do!
                   cdq.application.create.requires/do!
                   cdq.application.create.db/do!
@@ -57,29 +46,6 @@
                 ctx)))
            initial-context
            create-fns))
-
- ; Issues which might appear:
- ; * ui needs to query app-state, cannot to simple transformations
- ; without using a StageWithObject
- ; @ cdq.ui.player-state-draw -> inside actor draw
-
- ; * also @ graphics ... always pass to 'draw' stuff ...
-
- ; * audiovisual build from db, ...
- ; * always timer create
-
- ; TODO also remember actor needs to call (super) from 'act' thath's why maybe ui
- ; problems of tooltips?
-
- ; * Pass @ tx
-
- ; - editor altering db
- ; - bind-root / alter var time , etc.
- ; => swap! state ?
-
- ; => It might not be worth it
- ; => Create a design document
-
  )
 
 (def config
