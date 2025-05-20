@@ -15,15 +15,15 @@
    {:menus [{:label "World"
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " (namespace world-fn))
-                       :on-click (fn []
+                       :on-click (fn [_ctx]
                                    ((requiring-resolve 'cdq.application.create.game-state/reset-game!) world-fn))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas db))))]
                       {:label (str/capitalize (name property-type))
-                       :on-click (fn []
-                                   (editor/open-editor-window! (ctx/make-map) property-type))})}]
+                       :on-click (fn [ctx]
+                                   (editor/open-editor-window! ctx property-type))})}]
     :update-labels [{:label "Mouseover-entity id"
                      :update-fn (fn []
                                   (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
