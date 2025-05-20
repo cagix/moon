@@ -9,7 +9,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.ui.action-bar]
             [cdq.ui.entity-info]
-            [cdq.ui.inventory ]
+            [cdq.ui.inventory]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.player-state-draw]
@@ -30,7 +30,8 @@
                                :ctx/world-unit-scale ctx/world-unit-scale})
    (cdq.ui.windows/create :id :windows
                           :actors [(cdq.ui.entity-info/create [(:width ctx/ui-viewport) 0])
-                                   (cdq.ui.inventory/create :id :inventory-window
+                                   (cdq.ui.inventory/create (ctx/make-map)
+                                                            :id :inventory-window
                                                             :position [(:width  ctx/ui-viewport)
                                                                        (:height ctx/ui-viewport)])])
    (cdq.ui.player-state-draw/create)

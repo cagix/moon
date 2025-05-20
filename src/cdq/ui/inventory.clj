@@ -72,22 +72,24 @@
                     :boot     9
                     :bag      10}) ; transparent
 
-(defn- slot->sprite [slot]
-  (graphics/from-sheet (graphics/sprite-sheet (ctx/assets "images/items.png")
+; TODO actually we can pass this whole map into inventory-window ...
+(defn- slot->sprite [{:keys [ctx/assets
+                             ctx/world-unit-scale]} slot]
+  (graphics/from-sheet (graphics/sprite-sheet (assets "images/items.png")
                                               48
                                               48
-                                              ctx/world-unit-scale)
+                                              world-unit-scale)
                        [21 (+ (slot->y-sprite-idx slot) 2)]
-                       ctx/world-unit-scale))
+                       world-unit-scale))
 
-(defn- slot->background [slot]
-  (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
+(defn- slot->background [ctx slot]
+  (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite ctx slot)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (TextureRegionDrawable/.tint drawable (gdl.graphics/color 1 1 1 0.4))))
 
-(defn- ->cell [slot & {:keys [position]}]
+(defn- ->cell [ctx slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        background-drawable (slot->background slot)]
+        background-drawable (slot->background ctx slot)]
     (doto (ui/stack [(draw-rect-actor)
                      (ui/image-widget background-drawable
                                       {:name "image-widget"
@@ -96,39 +98,41 @@
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
                       (clicked [_event _x _y]
+                        ; (println "CLICK LISTENER" (.getActor this))
+                        ; no matching field
                         (-> @ctx/player-eid
                             entity/state-obj
                             (state/clicked-inventory-cell ctx/player-eid cell)
                             ctx/handle-txs!)))))))
 
-(defn- inventory-table []
+(defn- inventory-table [ctx]
   (ui/table {:id ::table
              :rows (concat [[nil nil
-                             (->cell :inventory.slot/helm)
-                             (->cell :inventory.slot/necklace)]
+                             (->cell ctx :inventory.slot/helm)
+                             (->cell ctx :inventory.slot/necklace)]
                             [nil
-                             (->cell :inventory.slot/weapon)
-                             (->cell :inventory.slot/chest)
-                             (->cell :inventory.slot/cloak)
-                             (->cell :inventory.slot/shield)]
+                             (->cell ctx :inventory.slot/weapon)
+                             (->cell ctx :inventory.slot/chest)
+                             (->cell ctx :inventory.slot/cloak)
+                             (->cell ctx :inventory.slot/shield)]
                             [nil nil
-                             (->cell :inventory.slot/leg)]
+                             (->cell ctx :inventory.slot/leg)]
                             [nil
-                             (->cell :inventory.slot/glove)
-                             (->cell :inventory.slot/rings :position [0 0])
-                             (->cell :inventory.slot/rings :position [1 0])
-                             (->cell :inventory.slot/boot)]]
+                             (->cell ctx :inventory.slot/glove)
+                             (->cell ctx :inventory.slot/rings :position [0 0])
+                             (->cell ctx :inventory.slot/rings :position [1 0])
+                             (->cell ctx :inventory.slot/boot)]]
                            (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
                              (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->cell :inventory.slot/bag :position [x y]))))}))
+                               (->cell ctx :inventory.slot/bag :position [x y]))))}))
 
-(defn create [& {:keys [id position]}]
+(defn create [ctx & {:keys [id position]}]
   (ui/window {:title "Inventory"
               :id id
               :visible? false
               :pack? true
               :position position
-              :rows [[{:actor (inventory-table)
+              :rows [[{:actor (inventory-table ctx)
                        :pad 4}]]}))
 
 (defn- get-cell-widget [inventory-window cell]
