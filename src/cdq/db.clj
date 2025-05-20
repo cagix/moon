@@ -28,9 +28,9 @@
   (build-all [_ property-type]
              "Returns all properties with type with schema-based transformations."))
 
-(defn- validate! [property]
-  (m/form->validate (schema/malli-form (get ctx/schemas (property/type property))
-                                       ctx/schemas)
+(defn- validate! [schemas property]
+  (m/form->validate (schema/malli-form (get schemas (property/type property))
+                                       schemas)
                     property))
 
 (defrecord DB [data file]
@@ -38,7 +38,7 @@
   (update [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (validate! property)
+    (validate! ctx/schemas property)
     (clojure.core/update this :data assoc id property))
 
   (delete [this property-id]
@@ -72,6 +72,6 @@
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
+    (run! (partial validate! ctx/schemas) properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file})))
