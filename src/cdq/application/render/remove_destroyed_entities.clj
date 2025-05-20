@@ -13,4 +13,6 @@
     (content-grid/remove-entity! eid)
     (grid/remove-entity! eid)
     (doseq [component @eid]
-      (ctx/handle-txs! (entity/destroy! component eid)))))
+      (ctx/handle-txs! (entity/destroy! component
+                                        eid
+                                        {:ctx/db ctx/db})))))

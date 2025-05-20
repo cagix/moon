@@ -16,9 +16,9 @@
                     k))
 (defmethod create! :default [_ eid ctx])
 
-(defmulti destroy! (fn [[k] eid]
+(defmulti destroy! (fn [[k] eid ctx]
                     k))
-(defmethod destroy! :default [_ eid])
+(defmethod destroy! :default [_ eid ctx])
 
 (defmulti tick! (fn [[k] eid ctx]
                   k))
