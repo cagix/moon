@@ -15,9 +15,10 @@
                       :entity/faction
                       :active-skill])
 
-(defn- ->label-text [entity]
+(defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (info/text (apply dissoc entity disallowed-keys)))
+  (info/text (apply dissoc entity disallowed-keys)
+             ctx))
 
 (defn create [position]
   (let [label (ui/label "")
@@ -28,9 +29,10 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/mouseover-eid]}]
+    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/mouseover-eid]
+                                                         :as ctx}]
                                         (.setText label (str (if-let [eid mouseover-eid]
-                                                               (->label-text @eid)
+                                                               (->label-text @eid ctx)
                                                                "")))
                                         (.pack window))}))
     window))

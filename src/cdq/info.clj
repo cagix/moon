@@ -11,9 +11,9 @@
       s
       (remove-newlines new-s))))
 
-(defmulti info-segment (fn [[k] _entity]
+(defmulti info-segment (fn [[k] _entity ctx]
                          k))
-(defmethod info-segment :default [_ _entity])
+(defmethod info-segment :default [_ _entity ctx])
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
@@ -55,12 +55,12 @@
 
 (defn text
   "Creates a formatted informational text representation of components."
-  [components]
+  [components ctx]
   (->> components
        (sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (let [entity components
-                          s (try (info-segment component entity)
+                          s (try (info-segment component entity ctx)
                                  (catch Throwable t
                                    ; fails for
                                    ; effects/spawn
@@ -75,6 +75,6 @@
                         (str "[" color "]" s "[]")
                         s))
                     (when (map? v)
-                      (str "\n" (text v))))))
+                      (str "\n" (text v ctx))))))
        (str/join "\n")
        remove-newlines))

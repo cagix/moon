@@ -1,6 +1,5 @@
 (ns cdq.impl.info
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.info :refer [info-segment]]
             [cdq.op :as op]
             [cdq.timer :as timer]
@@ -36,32 +35,35 @@
                  (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
              (sort-by op/-order op))))
 
-(defmethod info-segment :property/pretty-name [[_ v] _entity] v)
+(defmethod info-segment :property/pretty-name [[_ v] _entity _ctx]
+  v)
 
-(defmethod info-segment :maxrange [[_ v] _entity] v)
+(defmethod info-segment :maxrange [[_ v] _entity _ctx]
+  v)
 
-(defmethod info-segment :creature/level [[_ v] _entity] (str "Level: " v))
+(defmethod info-segment :creature/level [[_ v] _entity _ctx]
+  (str "Level: " v))
 
-(defmethod info-segment :projectile/piercing?  [_ _entity] ; TODO also when false ?!
+(defmethod info-segment :projectile/piercing?  [_ _entity _ctx] ; TODO also when false ?!
   "Piercing")
 
-(defmethod info-segment :skill/action-time-modifier-key [[_ v] _entity]
+(defmethod info-segment :skill/action-time-modifier-key [[_ v] _entity _ctx]
   (case v
     :entity/cast-speed "Spell"
     :entity/attack-speed "Attack"))
 
-(defmethod info-segment :skill/action-time [[_ v] _entity]
+(defmethod info-segment :skill/action-time [[_ v] _entity _ctx]
   (str "Action-Time: " (readable-number v) " seconds"))
 
-(defmethod info-segment :skill/cooldown [[_ v] _entity]
+(defmethod info-segment :skill/cooldown [[_ v] _entity _ctx]
   (when-not (zero? v)
     (str "Cooldown: " (readable-number v) " seconds")))
 
-(defmethod info-segment :skill/cost [[_ v] _entity]
+(defmethod info-segment :skill/cost [[_ v] _entity _ctx]
   (when-not (zero? v)
     (str "Cost: " v " Mana")))
 
-(defmethod info-segment ::stat [[k _] entity]
+(defmethod info-segment ::stat [[k _] entity _ctx]
   (str (str/capitalize (name k)) ": " (entity/stat entity k)))
 
 (derive :entity/reaction-time  ::stat)
@@ -72,16 +74,16 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(defmethod info-segment :effects/spawn [[_ {:keys [property/pretty-name]}] _entity]
+(defmethod info-segment :effects/spawn [[_ {:keys [property/pretty-name]}] _entity _ctx]
   (str "Spawns a " pretty-name))
 
-(defmethod info-segment :effects.target/convert [_ _entity]
+(defmethod info-segment :effects.target/convert [_ _entity _ctx]
   "Converts target to your side.")
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
 
-(defmethod info-segment :effects.target/damage [[_ damage] _entity]
+(defmethod info-segment :effects.target/damage [[_ damage] _entity _ctx]
   (damage-info damage)
   #_(if source
       (let [modified (entity/damage @source damage)]
@@ -91,58 +93,58 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod info-segment :effects.target/hp [[k ops] _entity]
+(defmethod info-segment :effects.target/hp [[k ops] _entity _ctx]
   (op-info ops k))
 
-(defmethod info-segment :effects.target/kill [_ _entity]
+(defmethod info-segment :effects.target/kill [_ _entity _ctx]
   "Kills target")
 
 ; FIXME no source
 ; => to entity move
-(defmethod info-segment :effects.target/melee-damage [_ _entity]
+(defmethod info-segment :effects.target/melee-damage [_ _entity _ctx]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))
 
-(defmethod info-segment :effects.target/spiderweb [_ _entity]
+(defmethod info-segment :effects.target/spiderweb [_ _entity _ctx]
   "Spiderweb slows 50% for 5 seconds."
   ; modifiers same like item/modifiers has info-text
   ; counter ?
   )
 
-(defmethod info-segment :effects.target/stun [[_ duration] _entity]
+(defmethod info-segment :effects.target/stun [[_ duration] _entity _ctx]
   (str "Stuns for " (readable-number duration) " seconds"))
 
-(defmethod info-segment :effects/target-all [_ _entity]
+(defmethod info-segment :effects/target-all [_ _entity _ctx]
   "All visible targets")
 
-(defmethod info-segment :entity/delete-after-duration [[_ counter] _entity]
-  (str "Remaining: " (readable-number (timer/ratio ctx/elapsed-time counter)) "/1"))
+(defmethod info-segment :entity/delete-after-duration [[_ counter] _entity {:keys [ctx/elapsed-time]}]
+  (str "Remaining: " (readable-number (timer/ratio elapsed-time counter)) "/1"))
 
-(defmethod info-segment :entity/faction [[_ faction] _entity]
+(defmethod info-segment :entity/faction [[_ faction] _entity _ctx]
   (str "Faction: " (name faction)))
 
-(defmethod info-segment :entity/fsm [[_ fsm] _entity]
+(defmethod info-segment :entity/fsm [[_ fsm] _entity _ctx]
   (str "State: " (name (:state fsm))))
 
-(defmethod info-segment :entity/hp [_ entity]
+(defmethod info-segment :entity/hp [_ entity _ctx]
   (str "Hitpoints: " (entity/hitpoints entity)))
 
-(defmethod info-segment :entity/mana [_ entity]
+(defmethod info-segment :entity/mana [_ entity _ctx]
   (str "Mana: " (entity/mana entity)))
 
-(defmethod info-segment :entity/modifiers [[_ mods] _entity]
+(defmethod info-segment :entity/modifiers [[_ mods] _entity _ctx]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
                            (op-info ops k)) mods))))
 
-(defmethod info-segment :entity/species [[_ species] _entity]
+(defmethod info-segment :entity/species [[_ species] _entity _ctx]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity]
-  (str "Spiderweb - remaining: " (readable-number (timer/ratio ctx/elapsed-time counter)) "/1"))
+(defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity {:keys [ctx/elapsed-time]}]
+  (str "Spiderweb - remaining: " (readable-number (timer/ratio elapsed-time counter)) "/1"))
 
-#_(defmethod info-segment :entity/skills [skills]
+#_(defmethod info-segment :entity/skills [skills _ctx]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))

@@ -44,7 +44,7 @@
                                  ""))
         stack (ui/stack [button
                          top-widget])]
-    (ui/add-tooltip! button #(pprint-to-str props))
+    (ui/add-tooltip! button (pprint-to-str props))
     (ui/set-touchable! top-widget :disabled)
     stack))
 

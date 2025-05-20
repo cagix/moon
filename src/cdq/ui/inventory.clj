@@ -140,7 +140,7 @@
         drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info/text item))))
+    (ui/add-tooltip! cell-widget #(info/text item %))))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)

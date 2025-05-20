@@ -32,7 +32,7 @@
         (let [property (db/build ctx/db property-id)
               image-widget (ui/image->widget (property/image property)
                                              {:id property-id})]
-          (ui/add-tooltip! image-widget #(pprint-to-str property))))
+          (ui/add-tooltip! image-widget (pprint-to-str property))))
       (for [id property-ids]
         (ui/text-button "-"
                         (fn [_actor]
