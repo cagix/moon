@@ -23,22 +23,6 @@
 
 ; TODO do not complect configuration with order -> no params ?
 
-(def initial-context
-  {:ctx/pausing? true
-   :ctx/zoom-speed 0.025
-   :ctx/controls {:zoom-in :minus
-                  :zoom-out :equals
-                  :unpause-once :p
-                  :unpause-continously :space}
-   :ctx/sound-path-format "sounds/%s.wav"
-   :ctx/unit-scale (atom 1)
-   :ctx/mouseover-eid nil ; needed ?
-   :ctx/effect-body-props {:width 0.5
-                           :height 0.5
-                           :z-order :z-order/effect}
-   :ctx/minimum-size ctx/minimum-size
-   :ctx/z-orders ctx/z-orders})
-
 (def create-app-state
   '[[:ctx/config [cdq.create.config/create "config.edn"]]
     cdq.create.requires/create
@@ -75,27 +59,6 @@
     cdq.create.spawn-enemies/do!
     [:ctx/player-eid [cdq.create.player-entity/do!]]])
 
-(def create-fns (concat create-app-state
-                        create-game-state))
-
-(def dispose-fn 'cdq.application.dispose/do!)
-
-(def resize-fn 'cdq.application.resize/do!)
-
-(def render-fns '[cdq.render.bind-active-entities/do!
-                  cdq.render.set-camera-on-player/do!
-                  cdq.render.clear-screen/do!
-                  cdq.render.draw-tiled-map/do!
-                  cdq.render.draw-on-world-viewport/do!
-                  cdq.render.draw-ui/do!
-                  cdq.render.update-ui/do!
-                  cdq.render.player-state-handle-click/do!
-                  cdq.render.update-mouseover-entity/do!
-                  cdq.render.bind-paused/do!
-                  cdq.render.when-not-paused/do!
-                  cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                  cdq.render.camera-controls/do!])
-
 (defn render-ctx! [initial-context render-fns]
   (reduce (fn [ctx render-fn]
             (if-let [result ((requiring-resolve render-fn) ctx)]
@@ -125,23 +88,54 @@
  )
 
 (defn -main []
-  (application/start! {:title "Cyber Dungeon Quest"
-                       :window-width 1440
-                       :window-height 900
-                       :fps 60
-                       :dock-icon "moon.png"
-                       :create!
-                       (fn []
-                         (reset! state (create-ctx! initial-context create-fns)))
+  (let [initial-context {:ctx/pausing? true
+                         :ctx/zoom-speed 0.025
+                         :ctx/controls {:zoom-in :minus
+                                        :zoom-out :equals
+                                        :unpause-once :p
+                                        :unpause-continously :space}
+                         :ctx/sound-path-format "sounds/%s.wav"
+                         :ctx/unit-scale (atom 1)
+                         :ctx/mouseover-eid nil ; needed ?
+                         :ctx/effect-body-props {:width 0.5
+                                                 :height 0.5
+                                                 :z-order :z-order/effect}
+                         :ctx/minimum-size ctx/minimum-size
+                         :ctx/z-orders ctx/z-orders}
+        create-fns (concat create-app-state
+                           create-game-state)
+        dispose-fn 'cdq.application.dispose/do!
+        resize-fn 'cdq.application.resize/do!
+        render-fns '[cdq.render.bind-active-entities/do!
+                     cdq.render.set-camera-on-player/do!
+                     cdq.render.clear-screen/do!
+                     cdq.render.draw-tiled-map/do!
+                     cdq.render.draw-on-world-viewport/do!
+                     cdq.render.draw-ui/do!
+                     cdq.render.update-ui/do!
+                     cdq.render.player-state-handle-click/do!
+                     cdq.render.update-mouseover-entity/do!
+                     cdq.render.bind-paused/do!
+                     cdq.render.when-not-paused/do!
+                     cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                     cdq.render.camera-controls/do!]]
+    (application/start! {:title "Cyber Dungeon Quest"
+                         :window-width 1440
+                         :window-height 900
+                         :fps 60
+                         :dock-icon "moon.png"
+                         :create!
+                         (fn []
+                           (reset! state (create-ctx! initial-context create-fns)))
 
-                       :dispose!
-                       (fn []
-                         ((requiring-resolve dispose-fn) @state))
+                         :dispose!
+                         (fn []
+                           ((requiring-resolve dispose-fn) @state))
 
-                       :render!
-                       (fn []
-                         (swap! state render-ctx! render-fns))
+                         :render!
+                         (fn []
+                           (swap! state render-ctx! render-fns))
 
-                       :resize!
-                       (fn [_width _height]
-                         ((requiring-resolve resize-fn) @state))}))
+                         :resize!
+                         (fn [_width _height]
+                           ((requiring-resolve resize-fn) @state))})))
