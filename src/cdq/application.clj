@@ -77,19 +77,19 @@
 
 (def resize-fn 'cdq.application.resize/do!)
 
-(def render-fns '[cdq.application.render.bind-active-entities/do!
-                  cdq.application.render.set-camera-on-player/do!
-                  cdq.application.render.clear-screen/do!
-                  cdq.application.render.draw-tiled-map/do!
-                  cdq.application.render.draw-on-world-viewport/do!
-                  cdq.application.render.draw-ui/do!
-                  cdq.application.render.update-ui/do!
-                  cdq.application.render.player-state-handle-click/do!
-                  cdq.application.render.update-mouseover-entity/do!
-                  cdq.application.render.bind-paused/do!
-                  cdq.application.render.when-not-paused/do!
-                  cdq.application.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                  cdq.application.render.camera-controls/do!])
+(def render-fns '[cdq.render.bind-active-entities/do!
+                  cdq.render.set-camera-on-player/do!
+                  cdq.render.clear-screen/do!
+                  cdq.render.draw-tiled-map/do!
+                  cdq.render.draw-on-world-viewport/do!
+                  cdq.render.draw-ui/do!
+                  cdq.render.update-ui/do!
+                  cdq.render.player-state-handle-click/do!
+                  cdq.render.update-mouseover-entity/do!
+                  cdq.render.bind-paused/do!
+                  cdq.render.when-not-paused/do!
+                  cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                  cdq.render.camera-controls/do!])
 
 (defn render-ctx! [initial-context render-fns]
   (reduce (fn [ctx render-fn]

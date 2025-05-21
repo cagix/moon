@@ -1,4 +1,4 @@
-(ns cdq.application.render.bind-active-entities
+(ns cdq.render.bind-active-entities
   (:require [cdq.content-grid :as content-grid]))
 
 (defn do!

@@ -1,4 +1,4 @@
-(ns cdq.application.render.when-not-paused
+(ns cdq.render.when-not-paused
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.potential-field.update :as potential-field]

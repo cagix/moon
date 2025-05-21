@@ -1,4 +1,4 @@
-(ns cdq.application.render.remove-destroyed-entities
+(ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]

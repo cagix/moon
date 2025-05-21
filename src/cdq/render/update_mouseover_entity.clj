@@ -1,4 +1,4 @@
-(ns cdq.application.render.update-mouseover-entity
+(ns cdq.render.update-mouseover-entity
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.grid :as grid]

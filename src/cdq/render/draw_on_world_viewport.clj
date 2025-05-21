@@ -1,4 +1,4 @@
-(ns cdq.application.render.draw-on-world-viewport
+(ns cdq.render.draw-on-world-viewport
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
             [cdq.entity :as entity]

@@ -1,7 +1,7 @@
-(ns cdq.application.render.draw-ui
+(ns cdq.render.update-ui
   (:require [gdl.ui :as ui]))
 
 (defn do! [{:keys [ctx/stage] :as ctx}]
   (reset! (.ctx stage) ctx)
-  (ui/draw! stage)
+  (ui/act! stage)
   nil)

@@ -1,4 +1,4 @@
-(ns cdq.application.render.set-camera-on-player
+(ns cdq.render.set-camera-on-player
   (:require [gdl.graphics.camera :as camera]))
 
 (defn do! [{:keys [ctx/world-viewport

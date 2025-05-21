@@ -1,4 +1,4 @@
-(ns cdq.application.render.bind-paused
+(ns cdq.render.bind-paused
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [gdl.input :as input]))

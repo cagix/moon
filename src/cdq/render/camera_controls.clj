@@ -1,4 +1,4 @@
-(ns cdq.application.render.camera-controls
+(ns cdq.render.camera-controls
   (:require [gdl.graphics.camera :as camera]
             [gdl.input :as input]))
 

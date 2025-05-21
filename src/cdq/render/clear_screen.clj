@@ -1,4 +1,4 @@
-(ns cdq.application.render.clear-screen
+(ns cdq.render.clear-screen
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [_ctx]
