@@ -20,6 +20,8 @@
 ;  -> comment out stage & check
 ; => issue disappeared after restart (mac os problem?)
 
+; TODO do not complect configuration with order -> no params ?
+
 (def initial-context
   {:ctx/pausing? true
    :ctx/zoom-speed 0.025
@@ -35,8 +37,6 @@
                            :z-order :z-order/effect}
    :ctx/minimum-size ctx/minimum-size
    :ctx/z-orders ctx/z-orders})
-
-; TODO do not complect configuration with order -> no params ?
 
 (def create-fns '[[:ctx/config [cdq.create.config/create "config.edn"]]
                   cdq.create.requires/create
