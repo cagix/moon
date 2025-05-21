@@ -1,5 +1,5 @@
 (ns cdq.ui.editor
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.application :as application]
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -11,8 +11,8 @@
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
-  (fn [{:keys [ctx/stage] :as ctx}]
-    (try (f ctx)
+  (fn [{:keys [ctx/db ctx/stage]}]
+    (try (f db)
          (ui/remove! window)
          (catch Throwable t
            (utils/pretty-pst t)
@@ -35,18 +35,14 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (widget/create schema props ctx)
-        save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
-
-                                           #_(alter-var-root #'ctx/db db/update (widget/value schema widget (:schemas db)))
-                                           #_(db/save! ctx/db)
-
-                                           ))
-        delete! (apply-context-fn window (fn [_ctx]
-
-                                           #_(alter-var-root #'ctx/db db/delete (:property/id props))
-                                           #_(db/save! ctx/db)
-
-                                           ))]
+        save!   (apply-context-fn window (fn [db]
+                                           (let [new-db (db/update db (widget/value schema widget (:schemas db)))]
+                                             (db/save! new-db)
+                                             (swap! application/state assoc :ctx/db new-db))))
+        delete! (apply-context-fn window (fn [db]
+                                           (let [new-db (db/delete db (:property/id props))]
+                                             (db/save! new-db)
+                                             (swap! application/state assoc :ctx/db new-db))))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"

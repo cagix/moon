@@ -8,6 +8,7 @@
 ; => beceause so many namespaces ?!
 
 ; * fix dev-menu start w. different world (assoc in config !?)
+; => 'create' itself pass a config opts around ? idk.
 
 ; * editor save/delete
 ; => pass state to each step and swap there?? idk
