@@ -10,9 +10,6 @@
 ; * fix dev-menu start w. different world (assoc in config !?)
 ; => 'create' itself pass a config opts around ? idk.
 
-; * editor save/delete
-; => pass state to each step and swap there?? idk
-
 ; * click sometimes not working! ( stage & input click handler outside of stage is catched ?)
 ;  -> comment out stage & check
 ; => issue disappeared after restart (mac os problem?)
