@@ -2,32 +2,6 @@
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]))
 
-(defn create! [initial-context create-fns]
-  (reduce (fn [ctx create-fn]
-            (if (vector? create-fn)
-              (let [[k [f & params]] create-fn]
-                (assoc ctx k (apply (requiring-resolve f) ctx params)))
-              (do
-               ((requiring-resolve create-fn) ctx)
-               ctx)))
-          initial-context
-          create-fns))
-
-(defn reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
-  (create! ctx create-game-state))
-
-(defn render!
-  "Reduces over the `ctx`.
-
-  `render-fns` is a sequence of namespace qualified symbols which point to `(fn [ctx] ctx-or-nil)`."
-  [ctx render-fns]
-  (reduce (fn [ctx render-fn]
-            (if-let [result ((requiring-resolve render-fn) ctx)]
-              result
-              ctx))
-          ctx
-          render-fns))
-
 (comment
  (spit "asset_diagnostics" (.getDiagnostics assets))
 

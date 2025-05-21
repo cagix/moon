@@ -24,15 +24,36 @@
 ; TODO do not complect configuration with order -> no params ?
 
 
+(defn create! [initial-context create-fns]
+  (reduce (fn [ctx create-fn]
+            (if (vector? create-fn)
+              (let [[k [f & params]] create-fn]
+                (assoc ctx k (apply (requiring-resolve f) ctx params)))
+              (do
+               ((requiring-resolve create-fn) ctx)
+               ctx)))
+          initial-context
+          create-fns))
+
+(defn render!
+  "Reduces over the `ctx`.
+
+  `render-fns` is a sequence of namespace qualified symbols which point to `(fn [ctx] ctx-or-nil)`."
+  [ctx render-fns]
+  (reduce (fn [ctx render-fn]
+            (if-let [result ((requiring-resolve render-fn) ctx)]
+              result
+              ctx))
+          ctx
+          render-fns))
 
 (def state (atom nil))
 
-(defn reset-game-state! []
- (swap! state ctx/reset-game-state))
+(defn- reset-game-state* [{:keys [ctx/create-game-state] :as ctx}]
+  (create! ctx create-game-state))
 
-(comment
-  (clojure.pprint/pprint (sort (keys @state)))
- )
+(defn reset-game-state! []
+  (swap! state reset-game-state*))
 
 (defn -main []
   (let [initial-context {:ctx/pausing? true
@@ -105,7 +126,7 @@
                          :dock-icon "moon.png"
                          :create!
                          (fn []
-                           (reset! state (ctx/create! initial-context create-fns)))
+                           (reset! state (create! initial-context create-fns)))
 
                          :dispose!
                          (fn []
@@ -113,7 +134,7 @@
 
                          :render!
                          (fn []
-                           (swap! state ctx/render! render-fns))
+                           (swap! state render! render-fns))
 
                          :resize!
                          (fn [_width _height]

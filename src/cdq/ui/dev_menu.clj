@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.ui.editor :as editor]
+  (:require [cdq.application :as application]
+            [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.graphics :as graphics]
@@ -18,22 +19,14 @@
    {:menus [{:label "World"
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " (namespace world-fn))
-                       :on-click (fn [_ctx]
-                                   ; TODO set also the world-fn not just reset ....
-                                   ; its in config !?
-                                   ((requiring-resolve 'cdq.application/reset-game-state!))
-
-                                   ; TODO just swap! the internal stage context
-                                   ; or all handlers call swap with on-click
-                                   ; and then at update-ui return ctx
-
-                                   )})}
+                       :on-click (fn [_actor _ctx]
+                                   (application/reset-game-state!))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas db))))]
                       {:label (str/capitalize (name property-type))
-                       :on-click (fn [ctx]
+                       :on-click (fn [_actor ctx]
                                    (editor/open-editor-window! ctx property-type))})}]
     :update-labels [{:label "Mouseover-entity id"
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
