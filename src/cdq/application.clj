@@ -4,8 +4,14 @@
 
 ; TODO
 ; * world-fns dev-menu
+; => need to save the steps somewhere (config?)
+; * call 'create!' ...
+
 ; * editor save/delete
-; * click sometimes not working!
+; => pass state to each step ? idk
+
+; * click sometimes not working! ( stage & input click handler outside of stage is catched ?)
+;  -> comment out stage & check
 
 (def initial-context
   {:ctx/pausing? true
@@ -22,6 +28,8 @@
                            :z-order :z-order/effect}
    :ctx/minimum-size ctx/minimum-size
    :ctx/z-orders ctx/z-orders})
+
+; TODO do not complect configuration with order -> no params ?
 
 (def create-fns '[[:ctx/config [cdq.config/create "config.edn"]]
                   cdq.application.create.requires/do!
