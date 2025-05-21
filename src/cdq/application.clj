@@ -77,10 +77,6 @@
     cdq.create.spawn-enemies/do!
     [:ctx/player-eid [cdq.create.player-entity/do!]]])
 
-(comment
- (swap! app/state ctx/create-into app/create-game-state)
- )
-
 (def create-fns (concat create-app-state
                         create-game-state))
 
@@ -122,6 +118,9 @@
           create-fns))
 
 (def state (atom nil))
+
+(defn reset-game-state! []
+ (swap! state create-ctx! create-game-state))
 
 (comment
   (clojure.pprint/pprint (sort (keys @state)))
