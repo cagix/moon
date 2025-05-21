@@ -23,32 +23,12 @@
 
 ; TODO do not complect configuration with order -> no params ?
 
-(defn render-ctx! [initial-context render-fns]
-  (reduce (fn [ctx render-fn]
-            (if-let [result ((requiring-resolve render-fn) ctx)]
-              result
-              ctx))
-          initial-context
-          render-fns))
 
-(defn create-ctx! [initial-context create-fns]
-  (reduce (fn [ctx create-fn]
-            (if (vector? create-fn)
-              (let [[k [f & params]] create-fn]
-                (assoc ctx k (apply (requiring-resolve f) ctx params)))
-              (do
-               ((requiring-resolve create-fn) ctx)
-               ctx)))
-          initial-context
-          create-fns))
 
 (def state (atom nil))
 
-(defn reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
-  (create-ctx! ctx create-game-state))
-
 (defn reset-game-state! []
- (swap! state reset-game-state))
+ (swap! state ctx/reset-game-state))
 
 (comment
   (clojure.pprint/pprint (sort (keys @state)))
@@ -125,7 +105,7 @@
                          :dock-icon "moon.png"
                          :create!
                          (fn []
-                           (reset! state (create-ctx! initial-context create-fns)))
+                           (reset! state (ctx/create! initial-context create-fns)))
 
                          :dispose!
                          (fn []
@@ -133,7 +113,7 @@
 
                          :render!
                          (fn []
-                           (swap! state render-ctx! render-fns))
+                           (swap! state ctx/render! render-fns))
 
                          :resize!
                          (fn [_width _height]
