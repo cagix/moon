@@ -76,11 +76,6 @@
                   cdq.application.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                   cdq.application.render.camera-controls/do!])
 
-; bind-root / alter-var-root:
-; cdq.application.render.when-not-paused
-; cdq.entity.player -> do @ main render-fn ? -> otherwise only side effects?
-; cdq.ui.editor -> ?
-
 (defn render-ctx! [initial-context render-fns]
   (reduce (fn [ctx render-fn]
             (if-let [result ((requiring-resolve render-fn) ctx)]
@@ -103,7 +98,7 @@
 (def state (atom nil))
 
 (comment
-  (sort (keys @state))
+  (clojure.pprint/pprint (sort (keys @state)))
  )
 
 (defn create! []
