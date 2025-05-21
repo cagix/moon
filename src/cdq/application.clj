@@ -39,7 +39,6 @@
    :ctx/minimum-size ctx/minimum-size
    :ctx/z-orders ctx/z-orders})
 
-; 14 namespaces ! -> for just creating a map !
 (def create-app-state
   '[[:ctx/config [cdq.create.config/create "config.edn"]]
     cdq.create.requires/create
@@ -58,7 +57,6 @@
     [:ctx/ui-viewport [cdq.create.ui-viewport/do!]]
     cdq.create.ui/do!])
 
-; 14 namespaces -> for creating ...
 (def create-game-state
   '[[:ctx/elapsed-time [cdq.create.elapsed-time/create]]
     [:ctx/stage [cdq.create.stage/do!]]
