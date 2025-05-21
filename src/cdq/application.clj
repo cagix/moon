@@ -49,12 +49,6 @@
 
 (def state (atom nil))
 
-(defn- reset-game-state* [{:keys [ctx/create-game-state] :as ctx}]
-  (create! ctx create-game-state))
-
-(defn reset-game-state! []
-  (swap! state reset-game-state*))
-
 (defn -main []
   (let [initial-context {:ctx/pausing? true
                          :ctx/zoom-speed 0.025
