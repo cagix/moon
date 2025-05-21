@@ -124,25 +124,24 @@
   (clojure.pprint/pprint (sort (keys @state)))
  )
 
-(defn create! []
-  (reset! state (create-ctx! initial-context create-fns)))
-
-(defn dispose! []
-  ((requiring-resolve dispose-fn) @state))
-
-(defn render! []
-  (swap! state render-ctx! render-fns))
-
-(defn resize! [_width _height]
-  ((requiring-resolve resize-fn) @state))
-
 (defn -main []
   (application/start! {:title "Cyber Dungeon Quest"
                        :window-width 1440
                        :window-height 900
                        :fps 60
                        :dock-icon "moon.png"
-                       :create! create!
-                       :dispose! dispose!
-                       :render! render!
-                       :resize! resize!}))
+                       :create!
+                       (fn []
+                         (reset! state (create-ctx! initial-context create-fns)))
+
+                       :dispose!
+                       (fn []
+                         ((requiring-resolve dispose-fn) @state))
+
+                       :render!
+                       (fn []
+                         (swap! state render-ctx! render-fns))
+
+                       :resize!
+                       (fn [_width _height]
+                         ((requiring-resolve resize-fn) @state))}))
