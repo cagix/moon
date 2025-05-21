@@ -136,16 +136,13 @@
 (defn resize! [_width _height]
   ((requiring-resolve resize-fn) @state))
 
-(def config
-  {:title "Cyber Dungeon Quest"
-   :window-width 1440
-   :window-height 900
-   :fps 60
-   :dock-icon "moon.png"
-   :create! create!
-   :dispose! dispose!
-   :render! render!
-   :resize! resize!})
-
 (defn -main []
-  (application/start! config))
+  (application/start! {:title "Cyber Dungeon Quest"
+                       :window-width 1440
+                       :window-height 900
+                       :fps 60
+                       :dock-icon "moon.png"
+                       :create! create!
+                       :dispose! dispose!
+                       :render! render!
+                       :resize! resize!}))
