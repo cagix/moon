@@ -35,6 +35,13 @@
           initial-context
           create-fns))
 
+(defn create-initial-state [initial-context]
+  (create! initial-context (concat (:ctx/create-app-state initial-context)
+                                   (:ctx/create-game-state initial-context))))
+
+(defn reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
+  (create! ctx create-game-state))
+
 (defn render!
   "Reduces over the `ctx`.
 
@@ -64,6 +71,22 @@
                                                  :z-order :z-order/effect}
                          :ctx/minimum-size ctx/minimum-size
                          :ctx/z-orders ctx/z-orders
+                         :ctx/create-app-state '[[:ctx/config [cdq.create.config/create "config.edn"]]
+                                                 cdq.create.requires/create
+                                                 [:ctx/db [cdq.db/create "properties.edn" "schema.edn"]]
+                                                 [:ctx/assets [cdq.create.assets/create {:folder "resources/"
+                                                                                         :asset-type-extensions {:sound   #{"wav"}
+                                                                                                                 :texture #{"png" "bmp"}}}]]
+                                                 [:ctx/batch [cdq.create.batch/do!]]
+                                                 [:ctx/shape-drawer-texture [cdq.create.shape-drawer-texture/do!]]
+                                                 [:ctx/world-unit-scale [cdq.create.world-unit-scale/do!]]
+                                                 [:ctx/shape-drawer [cdq.create.shape-drawer/do!]]
+                                                 [:ctx/cursors [cdq.create.cursors/do!]]
+                                                 [:ctx/default-font [cdq.create.default-font/do!]]
+                                                 [:ctx/world-viewport [cdq.create.world-viewport/do!]]
+                                                 [:ctx/get-tiled-map-renderer [cdq.create.tiled-map-renderer/do!]]
+                                                 [:ctx/ui-viewport [cdq.create.ui-viewport/do!]]
+                                                 cdq.create.ui/do!]
                          :ctx/create-game-state '[[:ctx/elapsed-time [cdq.create.elapsed-time/create]]
                                                   [:ctx/stage [cdq.create.stage/do!]]
 
@@ -80,24 +103,6 @@
                                                   [:ctx/potential-field-cache [cdq.create.potential-field-cache/create]]
                                                   cdq.create.spawn-enemies/do!
                                                   [:ctx/player-eid [cdq.create.player-entity/do!]]]}
-        create-app-state '[[:ctx/config [cdq.create.config/create "config.edn"]]
-                           cdq.create.requires/create
-                           [:ctx/db [cdq.db/create "properties.edn" "schema.edn"]]
-                           [:ctx/assets [cdq.create.assets/create {:folder "resources/"
-                                                                   :asset-type-extensions {:sound   #{"wav"}
-                                                                                           :texture #{"png" "bmp"}}}]]
-                           [:ctx/batch [cdq.create.batch/do!]]
-                           [:ctx/shape-drawer-texture [cdq.create.shape-drawer-texture/do!]]
-                           [:ctx/world-unit-scale [cdq.create.world-unit-scale/do!]]
-                           [:ctx/shape-drawer [cdq.create.shape-drawer/do!]]
-                           [:ctx/cursors [cdq.create.cursors/do!]]
-                           [:ctx/default-font [cdq.create.default-font/do!]]
-                           [:ctx/world-viewport [cdq.create.world-viewport/do!]]
-                           [:ctx/get-tiled-map-renderer [cdq.create.tiled-map-renderer/do!]]
-                           [:ctx/ui-viewport [cdq.create.ui-viewport/do!]]
-                           cdq.create.ui/do!]
-        create-fns (concat create-app-state
-                           (:ctx/create-game-state initial-context))
         dispose-fn 'cdq.application.dispose/do!
         resize-fn 'cdq.application.resize/do!
         render-fns '[cdq.render.bind-active-entities/do!
@@ -120,7 +125,7 @@
                          :dock-icon "moon.png"
                          :create!
                          (fn []
-                           (reset! state (create! initial-context create-fns)))
+                           (reset! state (create-initial-state initial-context)))
 
                          :dispose!
                          (fn []
