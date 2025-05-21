@@ -107,8 +107,6 @@
                            (fn []
                              (draw/with-line-width ctx world-unit-scale
                                (fn []
-                                 (reset! unit-scale world-unit-scale)
                                  (doseq [f draw-fns]
-                                   (f ctx))
-                                 (reset! unit-scale 1)))))
+                                   (f (assoc ctx :ctx/unit-scale world-unit-scale)))))))
   nil)

@@ -64,9 +64,7 @@
           {}
           components))
 
-(defn do! [{:keys [ctx/minimum-size
-                   ctx/z-orders
-                   ctx/id-counter
+(defn do! [{:keys [ctx/id-counter
                    ctx/entity-ids
                    ctx/content-grid
                    ctx/grid]
@@ -79,7 +77,7 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      (create-body minimum-size z-orders)
+                      (create-body ctx/minimum-size ctx/z-orders)
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]

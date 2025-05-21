@@ -15,7 +15,7 @@
   (batch/draw-texture-region! batch
                               texture-region
                               position
-                              (unit-dimensions image @unit-scale)
+                              (unit-dimensions image unit-scale)
                               0 ; rotation
                               color))
 
@@ -24,7 +24,7 @@
                         {:keys [texture-region color] :as image}
                         rotation
                         [x y]]
-  (let [[w h] (unit-dimensions image @unit-scale)]
+  (let [[w h] (unit-dimensions image unit-scale)]
     (batch/draw-texture-region! batch
                                 texture-region
                                 [(- (float x) (/ (float w) 2))
@@ -44,7 +44,7 @@
    {:keys [font scale x y text h-align up?]}]
   (graphics/draw-text! (or font default-font)
                        batch
-                       {:scale (* (float @unit-scale)
+                       {:scale (* (float unit-scale)
                                   (float (or scale 1)))
                         :x x
                         :y y
