@@ -1,4 +1,4 @@
-(ns cdq.explored-tile-corners
+(ns cdq.create.explored-tile-corners
   (:require [cdq.grid2d :as g2d]
             [gdl.tiled :as tiled]))
 

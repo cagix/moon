@@ -1,4 +1,4 @@
-(ns cdq.application.create.cursors
+(ns cdq.create.cursors
   (:require [cdq.utils :refer [mapvals]]
             [gdl.graphics :as graphics]))
 

@@ -1,4 +1,4 @@
-(ns cdq.ctx.spawn-player
+(ns cdq.create.player-entity
   (:require [cdq.ctx :as ctx]
             [cdq.state :as state]
             [cdq.tx.spawn-creature]

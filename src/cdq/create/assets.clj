@@ -1,4 +1,4 @@
-(ns cdq.assets
+(ns cdq.create.assets
   (:require [cdq.utils.files :as files]
             [clojure.string :as str]
             [gdl.assets :as assets]))

@@ -1,4 +1,4 @@
-(ns cdq.application.create.shape-drawer
+(ns cdq.create.shape-drawer
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/batch

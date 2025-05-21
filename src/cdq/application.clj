@@ -37,40 +37,40 @@
 
 ; TODO do not complect configuration with order -> no params ?
 
-(def create-fns '[[:ctx/config [cdq.config/create "config.edn"]]
-                  cdq.application.create.requires/do!
+(def create-fns '[[:ctx/config [cdq.create.config/create "config.edn"]]
+                  cdq.create.requires/create
                   [:ctx/db [cdq.db/create "properties.edn" "schema.edn"]]
-                  [:ctx/assets [cdq.assets/create {:folder "resources/"
-                                                   :asset-type-extensions {:sound   #{"wav"}
-                                                                           :texture #{"png" "bmp"}}}]]
-                  [:ctx/batch [cdq.application.create.batch/do!]]
-                  [:ctx/shape-drawer-texture [cdq.application.create.shape-drawer-texture/do!]]
-                  [:ctx/world-unit-scale [cdq.application.create.world-unit-scale/do!]]
-                  [:ctx/shape-drawer [cdq.application.create.shape-drawer/do!]]
-                  [:ctx/cursors [cdq.application.create.cursors/do!]]
-                  [:ctx/default-font [cdq.application.create.default-font/do!]]
-                  [:ctx/world-viewport [cdq.application.create.world-viewport/do!]]
-                  [:ctx/get-tiled-map-renderer [cdq.application.create.tiled-map-renderer/do!]]
-                  [:ctx/ui-viewport [cdq.application.create.ui-viewport/do!]]
-                  cdq.application.create.ui/do!
+                  [:ctx/assets [cdq.create.assets/create {:folder "resources/"
+                                                          :asset-type-extensions {:sound   #{"wav"}
+                                                                                  :texture #{"png" "bmp"}}}]]
+                  [:ctx/batch [cdq.create.batch/do!]]
+                  [:ctx/shape-drawer-texture [cdq.create.shape-drawer-texture/do!]]
+                  [:ctx/world-unit-scale [cdq.create.world-unit-scale/do!]]
+                  [:ctx/shape-drawer [cdq.create.shape-drawer/do!]]
+                  [:ctx/cursors [cdq.create.cursors/do!]]
+                  [:ctx/default-font [cdq.create.default-font/do!]]
+                  [:ctx/world-viewport [cdq.create.world-viewport/do!]]
+                  [:ctx/get-tiled-map-renderer [cdq.create.tiled-map-renderer/do!]]
+                  [:ctx/ui-viewport [cdq.create.ui-viewport/do!]]
+                  cdq.create.ui/do!
 
 
-                  [:ctx/elapsed-time [cdq.elapsed-time/create]]
-                  [:ctx/stage [cdq.ctx.init-stage/do!]]
+                  [:ctx/elapsed-time [cdq.create.elapsed-time/create]]
+                  [:ctx/stage [cdq.create.stage/do!]]
 
-                  [:ctx/level [cdq.level/create cdq.level.vampire/create]]
-                  [:ctx/tiled-map [cdq.level/tiled-map]]
-                  [:ctx/start-position [cdq.level/start-position]]
+                  [:ctx/level [cdq.create.level/create cdq.level.vampire/create]]
+                  [:ctx/tiled-map [cdq.create.level/tiled-map]]
+                  [:ctx/start-position [cdq.create.level/start-position]]
 
                   [:ctx/grid [cdq.grid/create]]
                   [:ctx/raycaster [cdq.raycaster/create]]
                   [:ctx/content-grid [cdq.content-grid/create]]
-                  [:ctx/explored-tile-corners [cdq.explored-tile-corners/create]]
-                  [:ctx/id-counter [cdq.id-counter/create]]
-                  [:ctx/entity-ids [cdq.entity-ids/create]]
-                  [:ctx/potential-field-cache [cdq.potential-field-cache/create]]
-                  cdq.ctx.spawn-enemies/do!
-                  [:ctx/player-eid [cdq.ctx.spawn-player/do!]]])
+                  [:ctx/explored-tile-corners [cdq.create.explored-tile-corners/create]]
+                  [:ctx/id-counter [cdq.create.id-counter/create]]
+                  [:ctx/entity-ids [cdq.create.entity-ids/create]]
+                  [:ctx/potential-field-cache [cdq.create.potential-field-cache/create]]
+                  cdq.create.spawn-enemies
+                  [:ctx/player-eid [cdq.create.player-entity/do!]]])
 
 (def dispose-fn 'cdq.application.dispose/do!)
 

@@ -1,4 +1,4 @@
-(ns cdq.ctx.spawn-enemies
+(ns cdq.create.spawn-enemies
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [gdl.tiled :as tiled]))

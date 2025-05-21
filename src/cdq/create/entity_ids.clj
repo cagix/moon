@@ -1,4 +1,4 @@
-(ns cdq.entity-ids)
+(ns cdq.create.entity-ids)
 
 (defn create [_ctx]
   (atom {}))

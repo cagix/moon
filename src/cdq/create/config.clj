@@ -1,4 +1,4 @@
-(ns cdq.config
+(ns cdq.create.config
   (:require [cdq.utils :refer [io-slurp-edn safe-get]]))
 
 (defn create [_ctx path]

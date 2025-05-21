@@ -1,4 +1,4 @@
-(ns cdq.application.create.tiled-map-renderer
+(ns cdq.create.tiled-map-renderer
   (:require [gdl.tiled :as tiled]))
 
 (defn do! [{:keys [ctx/world-unit-scale

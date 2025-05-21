@@ -1,4 +1,4 @@
-(ns cdq.application.create.world-viewport
+(ns cdq.create.world-viewport
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/world-unit-scale

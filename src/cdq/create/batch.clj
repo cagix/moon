@@ -1,4 +1,4 @@
-(ns cdq.application.create.batch
+(ns cdq.create.batch
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [_ctx]

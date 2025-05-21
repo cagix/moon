@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui-viewport
+(ns cdq.create.ui-viewport
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/config]}]

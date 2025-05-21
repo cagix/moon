@@ -1,4 +1,4 @@
-(ns cdq.application.create.default-font
+(ns cdq.create.default-font
   (:require [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/config]}]

@@ -1,4 +1,4 @@
-(ns cdq.ctx.init-stage
+(ns cdq.create.stage
   (:require [cdq.ui.action-bar]
             [cdq.ui.entity-info]
             [cdq.ui.inventory]

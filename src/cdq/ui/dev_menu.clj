@@ -15,7 +15,7 @@
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [_ctx]
-                                   ((requiring-resolve 'cdq.application.create.game-state/reset-game!) world-fn))})}
+                                   ((requiring-resolve 'cdq.create.game-state/reset-game!) world-fn))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"
