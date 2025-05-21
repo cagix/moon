@@ -18,6 +18,7 @@
 
 ; * click sometimes not working! ( stage & input click handler outside of stage is catched ?)
 ;  -> comment out stage & check
+; => issue disappeared after restart (mac os problem?)
 
 (def initial-context
   {:ctx/pausing? true
@@ -69,7 +70,7 @@
                   [:ctx/id-counter [cdq.create.id-counter/create]]
                   [:ctx/entity-ids [cdq.create.entity-ids/create]]
                   [:ctx/potential-field-cache [cdq.create.potential-field-cache/create]]
-                  cdq.create.spawn-enemies
+                  cdq.create.spawn-enemies/do!
                   [:ctx/player-eid [cdq.create.player-entity/do!]]])
 
 (def dispose-fn 'cdq.application.dispose/do!)
