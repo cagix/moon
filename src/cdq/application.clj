@@ -14,7 +14,7 @@
 ;  -> comment out stage & check
 ; => issue disappeared after restart (mac os problem?)
 
-(defn- create! [initial-context create-fns]
+(defn- create-into! [initial-context create-fns]
   (reduce (fn [ctx create-fn]
             (if (vector? create-fn)
               (let [[k [f & params]] create-fn]
@@ -26,11 +26,11 @@
           create-fns))
 
 (defn- create-initial-state [initial-context]
-  (create! initial-context (concat (:ctx/create-app-state initial-context)
-                                   (:ctx/create-game-state initial-context))))
+  (create-into! initial-context (concat (:ctx/create-app-state initial-context)
+                                        (:ctx/create-game-state initial-context))))
 
 (defn reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
-  (create! ctx create-game-state))
+  (create-into! ctx create-game-state))
 
 (defn- render!
   "Reduces over the `ctx`.
