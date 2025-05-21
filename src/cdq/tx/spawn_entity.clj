@@ -100,4 +100,5 @@
 
 
     (doseq [component @eid]
-      (ctx/handle-txs! ctx (entity/create! component eid ctx)))))
+      (ctx/handle-txs! ctx (entity/create! component eid ctx)))
+    eid))

@@ -3,4 +3,5 @@
 
 (defn do! [{:keys [ctx/stage] :as ctx}]
   (reset! (.ctx stage) ctx)
-  (ui/act! stage))
+  (ui/act! stage)
+  nil)

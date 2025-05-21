@@ -36,11 +36,17 @@
                            :cell-defaults {:pad 5}})
         widget (widget/create schema props ctx)
         save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
-                                           (alter-var-root #'ctx/db db/update (widget/value schema widget (:schemas db)))
-                                           (db/save! ctx/db)))
+
+                                           #_(alter-var-root #'ctx/db db/update (widget/value schema widget (:schemas db)))
+                                           #_(db/save! ctx/db)
+
+                                           ))
         delete! (apply-context-fn window (fn [_ctx]
-                                           (alter-var-root #'ctx/db db/delete (:property/id props))
-                                           (db/save! ctx/db)))]
+
+                                           #_(alter-var-root #'ctx/db db/delete (:property/id props))
+                                           #_(db/save! ctx/db)
+
+                                           ))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"

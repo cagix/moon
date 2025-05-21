@@ -3,8 +3,10 @@
             [clojure.string :as str]
             [gdl.assets :as assets]))
 
-(defn create [{:keys [folder
-                      asset-type-extensions]} _ctx]
+(defn create
+  [_ctx
+   {:keys [folder
+           asset-type-extensions]}]
   (assets/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")

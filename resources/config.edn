@@ -38,7 +38,6 @@
             cdq.entity.mana
             cdq.entity.mouseover
             cdq.entity.movement
-            cdq.entity.player ; TODO no tx, binds-root!
             cdq.entity.projectile-collision
             cdq.entity.skills
             cdq.entity.string-effect
@@ -59,11 +58,6 @@
             cdq.ui.editor.widget.animation
             cdq.ui.editor.widget.map
             ]
- :schemas "schema.edn"
- :db "properties.edn"
- :assets {:folder "resources/"
-          :asset-type-extensions {:sound   #{"wav"}
-                                  :texture #{"png" "bmp"}}}
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
            :cursors/default               ["default"      [0   0]]
@@ -88,9 +82,6 @@
  :ui-viewport {:width 1440
                :height 900}
  :ui {:skin-scale :x1}
- :tiled-map cdq.level.vampire/create
- ; cdq.level.uf-caves/create
- ; cdq.level.modules/create
  :content-grid-cells-size 16
  :world-fns [cdq.level.vampire/create
              cdq.level.uf-caves/create

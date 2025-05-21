@@ -3,23 +3,18 @@
             [cdq.entity :as entity]
             [cdq.potential-field.update :as potential-field]
             [cdq.ui.error-window :as error-window]
-            [cdq.utils :refer [bind-root
-                               pretty-pst]]
+            [cdq.utils :refer [pretty-pst]]
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]))
 
-; 2 steps ! assoc-delta-time & update-elapsed-time
-(defn- update-time! []
-  (let [delta-ms (min (graphics/delta-time) ctx/max-delta)]
-    (alter-var-root #'ctx/elapsed-time + delta-ms)
-    (bind-root #'ctx/delta-time delta-ms)))
-
-(defn- update-potential-fields! []
+(defn- update-potential-fields! [{:keys [ctx/potential-field-cache
+                                         ctx/grid
+                                         ctx/active-entities]}]
   (doseq [[faction max-iterations] ctx/factions-iterations]
-    (potential-field/tick! ctx/potential-field-cache
-                           ctx/grid
+    (potential-field/tick! potential-field-cache
+                           grid
                            faction
-                           ctx/active-entities
+                           active-entities
                            max-iterations)))
 
 (defn- tick-entities!
@@ -47,8 +42,21 @@
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
+(defn assoc-delta-time
+  [ctx]
+  (assoc ctx :ctx/delta-time (min (graphics/delta-time) ctx/max-delta)))
+
+(defn update-elapsed-time
+  [{:keys [ctx/delta-time]
+    :as ctx}]
+  (update ctx :ctx/elapsed-time + delta-time))
+
 (defn do! [{:keys [ctx/paused?] :as ctx}]
-  (when-not paused?
-    (update-time!)
-    (update-potential-fields!)
-    (tick-entities! ctx)))
+  (if paused?
+    ctx
+    (let [ctx (-> ctx
+                  assoc-delta-time
+                  update-elapsed-time)]
+      (update-potential-fields! ctx)
+      (tick-entities! ctx)
+      ctx)))

@@ -13,4 +13,4 @@
                     (input/key-pressed? (get controls :unpause-continously)))))))
 
 (defn do! [ctx]
-  (assoc :ctx/paused? (pause-game? ctx)))
+  (assoc ctx :ctx/paused? (pause-game? ctx)))

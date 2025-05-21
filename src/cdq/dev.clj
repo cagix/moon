@@ -9,7 +9,7 @@
 
 (defn post-txs! [txs]
   (post-runnable!
-   (ctx/handle-txs! @app/state txs)))
+   (ctx/handle-txs! #_@app/state txs)))
 
 (comment
 
@@ -86,7 +86,7 @@
   (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
-  @(ctx/grid (mapv int (viewport/mouse-position ctx/world-viewport))))
+  #_@(ctx/grid (mapv int (viewport/mouse-position ctx/world-viewport))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

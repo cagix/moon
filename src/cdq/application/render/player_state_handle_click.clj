@@ -7,4 +7,5 @@
   (ctx/handle-txs! ctx
                    (state/manual-tick (entity/state-obj @player-eid)
                                       player-eid
-                                      ctx)))
+                                      ctx))
+  nil)

@@ -8,4 +8,5 @@
   (when (input/key-pressed? (get controls :zoom-in))
     (camera/inc-zoom! (:camera world-viewport) zoom-speed))
   (when (input/key-pressed? (get controls :zoom-out))
-    (camera/inc-zoom! (:camera world-viewport) (- zoom-speed))))
+    (camera/inc-zoom! (:camera world-viewport) (- zoom-speed)))
+  nil)

@@ -110,4 +110,5 @@
                                  (reset! unit-scale world-unit-scale)
                                  (doseq [f draw-fns]
                                    (f ctx))
-                                 (reset! unit-scale 1))))))
+                                 (reset! unit-scale 1)))))
+  nil)

@@ -10,9 +10,6 @@
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
 
-(defn bind-root [var value]
-  (Var/.bindRoot var value))
-
 (defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))

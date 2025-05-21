@@ -1,6 +1,7 @@
 (ns cdq.ctx.spawn-player
   (:require [cdq.ctx :as ctx]
             [cdq.state :as state]
+            [cdq.tx.spawn-creature]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.utils :as utils]))
@@ -16,21 +17,21 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added! (fn [skill]
-                                                 (-> ctx/stage
+                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
+                                                 (-> stage
                                                      :action-bar
                                                      (action-bar/add-skill! skill)))
-                                 :skill-removed! (fn [skill]
-                                                   (-> ctx/stage
+                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
+                                                   (-> stage
                                                        :action-bar
                                                        (action-bar/remove-skill! skill)))
-                                 :item-set! (fn [inventory-cell item]
-                                              (-> ctx/stage
+                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
+                                              (-> stage
                                                   :windows
                                                   :inventory-window
                                                   (inventory-window/set-item! inventory-cell item)))
-                                 :item-removed! (fn [inventory-cell]
-                                                  (-> ctx/stage
+                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
+                                                  (-> stage
                                                       :windows
                                                       :inventory-window
                                                       (inventory-window/remove-item! inventory-cell)))}
@@ -38,7 +39,7 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})
 
-(defn do! [{:keys [ctx/start-position]}]
-  (ctx/handle-txs!
-   [[:tx/spawn-creature (player-entity-props (utils/tile->middle ctx/start-position)
-                                             ctx/player-entity-config)]]))
+(defn do! [{:keys [ctx/start-position] :as ctx}]
+  (cdq.tx.spawn-creature/do! ctx
+                             (player-entity-props (utils/tile->middle start-position)
+                                                  ctx/player-entity-config)))

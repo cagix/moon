@@ -14,4 +14,5 @@
     (grid/remove-entity! eid)
     (doseq [component @eid]
       (ctx/handle-txs! ctx
-                       (entity/destroy! component eid ctx)))))
+                       (entity/destroy! component eid ctx))))
+  nil)

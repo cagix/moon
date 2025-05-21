@@ -3,11 +3,11 @@
 #_(defn remove-skill [eid {:keys [property/id] :as skill}]
     {:pre [(contains? (:entity/skills @eid) id)]}
     (when (:entity/player? @eid)
-      ((:skill-removed! (:entity/player? @eid)) skill))
+      ((:skill-removed! (:entity/player? @eid)) ctx skill))
     (swap! eid update :entity/skills dissoc id))
 
-(defn do! [_ctx eid {:keys [property/id] :as skill}]
+(defn do! [ctx eid {:keys [property/id] :as skill}]
   {:pre [(not (contains? (:entity/skills @eid) id))]}
   (when (:entity/player? @eid)
-    ((:skill-added! (:entity/player? @eid)) skill))
+    ((:skill-added! (:entity/player? @eid)) ctx skill))
   (swap! eid assoc-in [:entity/skills id] skill))
