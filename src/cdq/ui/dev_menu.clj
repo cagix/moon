@@ -7,6 +7,10 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui.menu :as menu]))
 
+; The dev menu is actually outside the application
+; and we can see the ctx/ state itself
+; and is it much more work to restart the whole game instead of one level ?
+
 (defn create [{:keys [ctx/config
                       ctx/db
                       ctx/assets]}]
@@ -18,6 +22,11 @@
                                    ; TODO set also the world-fn not just reset ....
                                    ; its in config !?
                                    ((requiring-resolve 'cdq.application/reset-game-state!))
+
+                                   ; TODO just swap! the internal stage context
+                                   ; or all handlers call swap with on-click
+                                   ; and then at update-ui return ctx
+
                                    )})}
             {:label "Help"
              :items [{:label (:info config)}]}
