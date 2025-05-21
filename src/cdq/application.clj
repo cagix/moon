@@ -31,14 +31,10 @@
   (create-into! initial-context (concat (:ctx/create-app-state initial-context)
                                         (:ctx/create-game-state initial-context))))
 
-(defn reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
+(defn- reset-game-state [{:keys [ctx/create-game-state] :as ctx}]
   (create-into! ctx create-game-state))
 
-(defn- render!
-  "Reduces over the `ctx`.
-
-  `render-fns` is a sequence of namespace qualified symbols which point to `(fn [ctx] ctx-or-nil)`."
-  [ctx render-fns]
+(defn- render! [ctx render-fns]
   (reduce (fn [ctx render-fn]
             (if-let [result ((requiring-resolve render-fn) ctx)]
               result
@@ -47,6 +43,9 @@
           render-fns))
 
 (def state (atom nil))
+
+(defn reset-game-state! []
+  (swap! state reset-game-state))
 
 (defn -main []
   (let [{:keys [app-config
