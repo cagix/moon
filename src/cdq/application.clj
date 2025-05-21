@@ -7,22 +7,12 @@
 ; * startup slower -> maybe serialized require problem ?
 ; => beceause so many namespaces ?!
 
-; * world-fns dev-menu
-; => need to save the steps somewhere (config?)
-; * call 'create!' ...
-
 ; * editor save/delete
 ; => pass state to each step and swap there?? idk
-
-; * render make declare as side-effect-y -> no need return nil always ?
-; assoc/update/side-effects,etc.
 
 ; * click sometimes not working! ( stage & input click handler outside of stage is catched ?)
 ;  -> comment out stage & check
 ; => issue disappeared after restart (mac os problem?)
-
-; TODO do not complect configuration with order -> no params ?
-
 
 (defn create! [initial-context create-fns]
   (reduce (fn [ctx create-fn]
