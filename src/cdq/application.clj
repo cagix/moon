@@ -1,7 +1,16 @@
 (ns cdq.application
-  (:require [cdq.malli :as m]
+  (:require cdq.create.assets
+            cdq.db
+            [cdq.utils :refer [mapvals
+                               io-slurp-edn
+                               safe-get
+                               safe-merge]]
+            [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [gdl.graphics :as graphics]
             [gdl.graphics.viewport :as viewport]
+            [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
@@ -12,7 +21,8 @@
                                 :mac-os {:glfw-async? true
                                          :dock-icon "moon.png"}})
 
-; TODO do also for entities ...
+; TODO do also for entities ... !!
+; => & what components allowed/etc.
 
 (def ctx-schema (m/schema [:map {:closed true}
 
@@ -95,6 +105,10 @@
  ; delta-time missing required key
  ; mouseover-eid unknown error (can be nil)
 
+ ; TODO these fields are _not_ optional at render/dispose/resize!
+ ; only after create ...
+ ; +> fix
+
  )
 
 (defn check-validity [ctx]
@@ -113,22 +127,39 @@
                                               :height 0.5
                                               :z-order :z-order/effect}})
 
-(def create-app-state '[[:ctx/config [cdq.create.config/create "config.edn"]]
-                        cdq.create.requires/create
-                        [:ctx/db [cdq.db/create "properties.edn" "schema.edn"]]
-                        [:ctx/assets [cdq.create.assets/create {:folder "resources/"
-                                                                :asset-type-extensions {:sound   #{"wav"}
-                                                                                        :texture #{"png" "bmp"}}}]]
-                        [:ctx/batch [cdq.create.batch/do!]]
-                        [:ctx/shape-drawer-texture [cdq.create.shape-drawer-texture/do!]]
-                        [:ctx/world-unit-scale [cdq.create.world-unit-scale/do!]]
-                        [:ctx/shape-drawer [cdq.create.shape-drawer/do!]]
-                        [:ctx/cursors [cdq.create.cursors/do!]]
-                        [:ctx/default-font [cdq.create.default-font/do!]]
-                        [:ctx/world-viewport [cdq.create.world-viewport/do!]]
-                        [:ctx/get-tiled-map-renderer [cdq.create.tiled-map-renderer/do!]]
-                        [:ctx/ui-viewport [cdq.create.ui-viewport/do!]]
-                        cdq.create.ui/do!])
+(defn create-app-state []
+  (let [config (let [m (io-slurp-edn "config.edn")]
+                 (reify clojure.lang.ILookup
+                   (valAt [_ k]
+                     (safe-get m k))))
+        batch (graphics/sprite-batch)
+        shape-drawer-texture (graphics/white-pixel-texture)
+        world-unit-scale (float (/ (:tile-size config)))]
+    (run! require (:requires config))
+    (ui/load! (:ui config))
+    {:ctx/config config
+     :ctx/db (cdq.db/create "properties.edn" "schema.edn")
+
+     :ctx/assets (cdq.create.assets/create {:folder "resources/"
+                                            :asset-type-extensions {:sound   #{"wav"}
+                                                                    :texture #{"png" "bmp"}}})
+     :ctx/batch batch
+     :ctx/world-unit-scale world-unit-scale
+     :ctx/shape-drawer-texture shape-drawer-texture
+     :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
+     :ctx/cursors (mapvals
+                   (fn [[file [hotspot-x hotspot-y]]]
+                     (graphics/cursor (format (:cursor-path-format config) file)
+                                      hotspot-x
+                                      hotspot-y))
+                   (:cursors config))
+     :ctx/default-font (graphics/truetype-font (:default-font config))
+     :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
+     :ctx/ui-viewport (graphics/ui-viewport (:ui-viewport config))
+     :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
+                                            (tiled/renderer tiled-map
+                                                            world-unit-scale
+                                                            (:java-object batch))))}))
 
 (def create-game-state '[[:ctx/elapsed-time [cdq.create.elapsed-time/create]]
                          [:ctx/stage [cdq.create.stage/do!]]
@@ -146,9 +177,6 @@
                          [:ctx/potential-field-cache [cdq.create.potential-field-cache/create]]
                          cdq.create.spawn-enemies/do!
                          [:ctx/player-eid [cdq.create.player-entity/do!]]])
-
-(def create-initial-state (concat create-app-state
-                                  create-game-state))
 
 ; TODO
 
@@ -177,7 +205,9 @@
           create-fns))
 
 (defn create! []
-  (create-into! initial-context create-initial-state))
+  (create-into! (safe-merge initial-context
+                            (create-app-state))
+                create-game-state))
 
 (def render-fns '[cdq.render.bind-active-entities/do!
                   cdq.render.set-camera-on-player/do!

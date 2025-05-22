@@ -4,8 +4,7 @@
             [gdl.assets :as assets]))
 
 (defn create
-  [_ctx
-   {:keys [folder
+  [{:keys [folder
            asset-type-extensions]}]
   (assets/create
    (for [[asset-type extensions] asset-type-extensions
