@@ -2,20 +2,14 @@
   (:require cdq.create.assets
             cdq.db
             [cdq.g :as g]
-            [cdq.utils :refer [mapvals
-                               io-slurp-edn
-                               safe-get]]
+            [cdq.utils :refer [mapvals]]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]))
 
-(defn- create-app-state []
-  (let [config (let [m (io-slurp-edn "config.edn")]
-                 (reify clojure.lang.ILookup
-                   (valAt [_ k]
-                     (safe-get m k))))
-        batch (graphics/sprite-batch)
+(defn- create-app-state [config]
+  (let [batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
         ui-viewport (graphics/ui-viewport (:ui-viewport config))
@@ -48,5 +42,5 @@
                                                          (:java-object batch))))
       :ctx/stage stage})))
 
-(defn do! []
-  (g/reset-game-state! (create-app-state)))
+(defn do! [config]
+  (g/reset-game-state! (create-app-state config)))

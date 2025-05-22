@@ -69,6 +69,16 @@
             cdq.ui.editor.widget.animation
             cdq.ui.editor.widget.map
             ]
+ :clojure.gdx.backends.lwjgl {:title "Cyber Dungeon Quest"
+                              :windowed-mode {:width 1440
+                                              :height 900}
+                              :foreground-fps 60
+                              :mac-os {:glfw-async? true
+                                       :dock-icon "moon.png"}}
+ :create  cdq.application.create/do!
+ :dispose cdq.application.dispose/do!
+ :render  cdq.application.render/do!
+ :resize  cdq.application.resize/do!
  :effect-body-props {:width 0.5
                      :height 0.5
                      :z-order :z-order/effect}

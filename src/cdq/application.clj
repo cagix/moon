@@ -1,31 +1,28 @@
 (ns cdq.application
-  (:require [cdq.g :as g]
+  (:require [cdq.config :as config]
+            [cdq.g :as g]
             [clojure.gdx.backends.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (def state (atom nil))
 
 (defn -main []
-  (lwjgl/application {:title "Cyber Dungeon Quest"
-                      :windowed-mode {:width 1440
-                                      :height 900}
-                      :foreground-fps 60
-                      :mac-os {:glfw-async? true
-                               :dock-icon "moon.png"}}
-                     (proxy [ApplicationAdapter] []
-                       (create []
-                         (reset! state ((requiring-resolve 'cdq.application.create/do!)))
-                         (g/validate @state))
+  (let [config (config/create "config.edn")]
+    (lwjgl/application (:clojure.gdx.backends.lwjgl config)
+                       (proxy [ApplicationAdapter] []
+                         (create []
+                           (reset! state ((requiring-resolve (:create config)) config))
+                           (g/validate @state))
 
-                       (dispose []
-                         (g/validate @state)
-                         ((requiring-resolve 'cdq.application.dispose/do!) @state))
+                         (dispose []
+                           (g/validate @state)
+                           ((requiring-resolve (:dispose config)) @state))
 
-                       (render []
-                         (g/validate @state)
-                         (swap! state (requiring-resolve 'cdq.application.render/do!))
-                         (g/validate @state))
+                         (render []
+                           (g/validate @state)
+                           (swap! state (requiring-resolve (:render config)))
+                           (g/validate @state))
 
-                       (resize [_width _height]
-                         (g/validate @state)
-                         ((requiring-resolve 'cdq.application.resize/do!) @state)))))
+                         (resize [_width _height]
+                           (g/validate @state)
+                           ((requiring-resolve (:resize config)) @state))))))
