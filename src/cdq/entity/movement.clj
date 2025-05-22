@@ -3,7 +3,6 @@
             [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
@@ -52,7 +51,7 @@
                  eid
                  {:keys [ctx/delta-time
                          ctx/grid]}]
-    (assert (m/validate ctx/speed-schema speed)
+    (assert (<= 0 speed ctx/max-speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
                 (v/normalised? direction))

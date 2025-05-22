@@ -1,6 +1,5 @@
 (ns cdq.ctx
-  (:require [cdq.malli :as m]
-            [cdq.utils :as utils]))
+  (:require [cdq.utils :as utils]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
@@ -12,9 +11,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ minimum-size max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
-
-(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
+(def max-speed (/ minimum-size max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
 (def z-orders [:z-order/on-ground
                :z-order/ground
