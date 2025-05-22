@@ -14,6 +14,9 @@
 ;  -> comment out stage & check
 ; => issue disappeared after restart (mac os problem?)
 
+; TODO stage has outdated context as input listener ! set to nil and see ?!
+; handle stage different ?
+
 (defn- create-into! [initial-context create-fns]
   (reduce (fn [ctx create-fn]
             (if (vector? create-fn)
