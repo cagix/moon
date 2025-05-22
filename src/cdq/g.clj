@@ -15,7 +15,7 @@
 (defprotocol PotentialField
   (potential-field-find-direction [_ eid]))
 
-(defprotocol World
+(defprotocol Grid
   (nearest-enemy-distance [_ entity]))
 
 (defprotocol PlayerMovementInput

@@ -1,10 +1,8 @@
 (ns cdq.application
   (:require [cdq.ctx :as ctx]
-            [cdq.cell :as cell]
             cdq.create.assets
             [cdq.content-grid]
             cdq.db
-            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
             [cdq.tx.spawn-creature]
@@ -31,13 +29,6 @@
             [gdl.ui :as ui]
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
-
-(extend-type cdq.g.Game
-  cdq.g/World
-  (nearest-enemy-distance [{:keys [ctx/grid]} entity]
-    (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
-                                  (entity/enemy entity)))
-  )
 
 (def application-configuration {:title "Cyber Dungeon Quest"
                                 :windowed-mode {:width 1440
