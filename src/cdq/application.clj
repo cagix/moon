@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             cdq.create.assets
             [cdq.content-grid :as content-grid]
             cdq.db
@@ -171,6 +172,10 @@
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-field/find-direction grid eid))
+
+  (nearest-enemy-distance [{:keys [ctx/grid]} entity]
+    (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
+                                  (entity/enemy entity)))
   )
 
 (def application-configuration {:title "Cyber Dungeon Quest"

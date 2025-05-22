@@ -1,14 +1,13 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.cell :as cell]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :npc-sleeping
-  (entity/tick! [_ eid {:keys [ctx/grid]}]
-    (let [entity @eid
-          cell (grid (mapv int (:position entity)))]
-      (when-let [distance (cell/nearest-entity-distance @cell (entity/enemy entity))]
+  (entity/tick! [_ eid ctx]
+    (let [entity @eid]
+      (when-let [distance (g/nearest-enemy-distance ctx entity)]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           [[:tx/event eid :alert]]))))
 
