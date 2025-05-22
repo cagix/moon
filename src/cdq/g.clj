@@ -6,7 +6,8 @@
   (reset-game-state! [_]))
 
 (defprotocol Stage
-  (mouseover-actor [_]))
+  (mouseover-actor [_])
+  (selected-skill [_]))
 
 (defprotocol Schema
   (validate [_]))

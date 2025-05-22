@@ -2,7 +2,6 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
-            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
             [gdl.graphics.viewport :as viewport]
@@ -86,7 +85,7 @@
        (clickable-entity-interaction ctx entity mouseover-eid)
 
        :else
-       (if-let [skill-id (action-bar/selected-skill (:action-bar stage))]
+       (if-let [skill-id (g/selected-skill ctx)]
          (let [skill (skill-id (:entity/skills entity))
                effect-ctx (player-effect-ctx ctx eid)
                state (entity/skill-usable-state entity skill effect-ctx)]

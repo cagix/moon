@@ -1,6 +1,6 @@
 (ns cdq.g.game-state.stage
   (:require [cdq.g :as g]
-            [cdq.ui.action-bar]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
             [cdq.ui.inventory]
@@ -13,7 +13,7 @@
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
   [(cdq.ui.dev-menu/create ctx)
-   (cdq.ui.action-bar/create :id :action-bar)
+   (action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
                                80 ; action-bar-icon-size
                                ]
@@ -35,4 +35,7 @@
   g/Stage
   (mouseover-actor [{:keys [ctx/stage
                             ctx/ui-viewport]}]
-    (ui/hit stage (viewport/mouse-position ui-viewport))))
+    (ui/hit stage (viewport/mouse-position ui-viewport)))
+
+  (selected-skill [{:keys [ctx/stage]}]
+    (action-bar/selected-skill (:action-bar stage))))
