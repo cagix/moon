@@ -29,13 +29,6 @@
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(def application-configuration {:title "Cyber Dungeon Quest"
-                                :windowed-mode {:width 1440
-                                                :height 900}
-                                :foreground-fps 60
-                                :mac-os {:glfw-async? true
-                                         :dock-icon "moon.png"}})
-
 (def initial-context {:ctx/controls {:zoom-in :minus
                                      :zoom-out :equals
                                      :unpause-once :p
@@ -238,7 +231,12 @@
   (swap! state create-game-state))
 
 (defn -main []
-  (lwjgl/application application-configuration
+  (lwjgl/application {:title "Cyber Dungeon Quest"
+                      :windowed-mode {:width 1440
+                                      :height 900}
+                      :foreground-fps 60
+                      :mac-os {:glfw-async? true
+                               :dock-icon "moon.png"}}
                      (proxy [ApplicationAdapter] []
                        (create []
                          (reset! state (create!))
