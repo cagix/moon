@@ -7,7 +7,6 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
             [cdq.ui.message]
-            [gdl.input :as input]
             [gdl.ui :as ui]))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
@@ -26,11 +25,9 @@
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
-(defn do! [{:keys [ctx/ui-viewport
-                   ctx/batch]
-            :as ctx}]
-  (let [stage (ui/stage (:java-object ui-viewport)
-                        (:java-object batch)
-                        (create-actors ctx))]
-    (input/set-processor! stage)
-    stage))
+(defn do!
+  [{:keys [ctx/stage]
+    :as ctx}]
+  (ui/clear! stage)
+  (run! #(ui/add! stage %) (create-actors ctx))
+  nil)

@@ -9,6 +9,7 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.graphics :as graphics]
             [gdl.graphics.viewport :as viewport]
+            [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils])
@@ -134,9 +135,13 @@
                      (safe-get m k))))
         batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
-        world-unit-scale (float (/ (:tile-size config)))]
+        world-unit-scale (float (/ (:tile-size config)))
+        ui-viewport (graphics/ui-viewport (:ui-viewport config))
+        stage (ui/stage (:java-object ui-viewport)
+                        (:java-object batch))]
     (run! require (:requires config))
     (ui/load! (:ui config))
+    (input/set-processor! stage)
     {:ctx/config config
      :ctx/db (cdq.db/create "properties.edn" "schema.edn")
 
@@ -155,14 +160,15 @@
                    (:cursors config))
      :ctx/default-font (graphics/truetype-font (:default-font config))
      :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
-     :ctx/ui-viewport (graphics/ui-viewport (:ui-viewport config))
+     :ctx/ui-viewport ui-viewport
      :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
                                             (tiled/renderer tiled-map
                                                             world-unit-scale
-                                                            (:java-object batch))))}))
+                                                            (:java-object batch))))
+     :ctx/stage stage}))
 
 (def create-game-state '[[:ctx/elapsed-time [cdq.create.elapsed-time/create]]
-                         [:ctx/stage [cdq.create.stage/do!]]
+                         cdq.create.stage/do!
 
                          [:ctx/level [cdq.create.level/create cdq.level.vampire/create]]
                          [:ctx/tiled-map [cdq.create.level/tiled-map]]
