@@ -36,25 +36,6 @@
                                 :mac-os {:glfw-async? true
                                          :dock-icon "moon.png"}})
 
-; TODO do also for entities ... !!
-; => & what components allowed/etc.
-; missing gdx app, input, graphics, audio ?
-; => abstract from the whole plattform itself ??
-; => move into 1 context ?
-; 'graphics' ???
-
-(comment
-
- (m/validate-humanize ctx-schema @state)
- ; delta-time missing required key
- ; mouseover-eid unknown error (can be nil)
-
- ; TODO these fields are _not_ optional at render/dispose/resize!
- ; only after create ...
- ; +> fix
-
- )
-
 (def initial-context {:ctx/pausing? true
                       :ctx/zoom-speed 0.025
                       :ctx/controls {:zoom-in :minus
@@ -63,7 +44,7 @@
                                      :unpause-continously :space}
                       :ctx/sound-path-format "sounds/%s.wav"
                       :ctx/unit-scale 1
-                      :ctx/mouseover-eid nil ; needed ?
+                      :ctx/mouseover-eid nil
                       :ctx/effect-body-props {:width 0.5
                                               :height 0.5
                                               :z-order :z-order/effect}})
