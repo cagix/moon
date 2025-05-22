@@ -87,6 +87,9 @@
           initial-context
           create-fns))
 
+(defn create! []
+  (create-into! initial-context create-initial-state))
+
 (def render-fns '[cdq.render.bind-active-entities/do!
                   cdq.render.set-camera-on-player/do!
                   cdq.render.clear-screen/do!
@@ -144,7 +147,7 @@
   (lwjgl/application application-configuration
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create-into! initial-context create-initial-state)))
+                         (reset! state (create!)))
 
                        (dispose []
                          (dispose! @state))
