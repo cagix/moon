@@ -1,11 +1,13 @@
 (ns cdq.application
   (:require [cdq.ctx :as ctx]
             cdq.create.assets
-            cdq.content-grid
+            [cdq.content-grid :as content-grid]
             cdq.db
+            [cdq.entity :as entity]
+            [cdq.g]
             [cdq.state :as state]
             [cdq.tx.spawn-creature]
-            cdq.grid
+            [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             cdq.raycaster
             [cdq.ui.action-bar :as action-bar]
@@ -20,6 +22,7 @@
                                          safe-get
                                          safe-merge]]
             [cdq.malli :as m]
+            [cdq.vector2 :as v]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.graphics :as graphics]
             [gdl.graphics.viewport :as viewport]
@@ -28,6 +31,103 @@
             [gdl.ui :as ui]
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
+
+(defrecord Body [position
+                 left-bottom
+
+                 width
+                 height
+                 half-width
+                 half-height
+                 radius
+
+                 collides?
+                 z-order
+                 rotation-angle]
+  entity/Entity
+  (in-range? [entity target* maxrange] ; == circle-collides?
+    (< (- (float (v/distance (:position entity)
+                             (:position target*)))
+          (float (:radius entity))
+          (float (:radius target*)))
+       (float maxrange))))
+
+(defn- create-body [{[x y] :position
+                     :keys [position
+                            width
+                            height
+                            collides?
+                            z-order
+                            rotation-angle]}
+                    minimum-size
+                    z-orders]
+  (assert position)
+  (assert width)
+  (assert height)
+  (assert (>= width  (if collides? minimum-size 0)))
+  (assert (>= height (if collides? minimum-size 0)))
+  (assert (or (boolean? collides?) (nil? collides?)))
+  (assert ((set z-orders) z-order))
+  (assert (or (nil? rotation-angle)
+              (<= 0 rotation-angle 360)))
+  (map->Body
+   {:position (mapv float position)
+    :left-bottom [(float (- x (/ width  2)))
+                  (float (- y (/ height 2)))]
+    :width  (float width)
+    :height (float height)
+    :half-width  (float (/ width  2))
+    :half-height (float (/ height 2))
+    :radius (float (max (/ width  2)
+                        (/ height 2)))
+    :collides? collides?
+    :z-order z-order
+    :rotation-angle (or rotation-angle 0)}))
+
+(defn- create-vs [components ctx]
+  (reduce (fn [m [k v]]
+            (assoc m k (entity/create [k v] ctx)))
+          {}
+          components))
+
+(defrecord Game []
+  cdq.g/World
+  (spawn-entity! [{:keys [ctx/id-counter
+                          ctx/entity-ids
+                          ctx/content-grid
+                          ctx/grid]
+                   :as ctx}
+                  position body components]
+
+    ; TODO SCHEMA COMPONENTS !
+
+    (assert (and (not (contains? components :position))
+                 (not (contains? components :entity/id))))
+    (let [eid (atom (-> body
+                        (assoc :position position)
+                        (create-body ctx/minimum-size ctx/z-orders)
+                        (utils/safe-merge (-> components
+                                              (assoc :entity/id (swap! id-counter inc))
+                                              (create-vs ctx)))))]
+
+      ;;
+
+      (let [id (:entity/id @eid)]
+        (assert (number? id))
+        (swap! entity-ids assoc id eid))
+
+      (content-grid/add-entity! content-grid eid)
+
+      ; https://github.com/damn/core/issues/58
+      ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+      (grid/add-entity! grid eid)
+
+      ;;
+
+
+      (doseq [component @eid]
+        (ctx/handle-txs! ctx (entity/create! component eid ctx)))
+      eid)))
 
 (def application-configuration {:title "Cyber Dungeon Quest"
                                 :windowed-mode {:width 1440
@@ -154,30 +254,30 @@
     (run! require (:requires config))
     (ui/load! (:ui config))
     (input/set-processor! stage)
-    {:ctx/config config
-     :ctx/db (cdq.db/create "properties.edn" "schema.edn")
+    (map->Game {:ctx/config config
+                :ctx/db (cdq.db/create "properties.edn" "schema.edn")
 
-     :ctx/assets (cdq.create.assets/create {:folder "resources/"
-                                            :asset-type-extensions {:sound   #{"wav"}
-                                                                    :texture #{"png" "bmp"}}})
-     :ctx/batch batch
-     :ctx/world-unit-scale world-unit-scale
-     :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
-     :ctx/cursors (mapvals
-                   (fn [[file [hotspot-x hotspot-y]]]
-                     (graphics/cursor (format (:cursor-path-format config) file)
-                                      hotspot-x
-                                      hotspot-y))
-                   (:cursors config))
-     :ctx/default-font (graphics/truetype-font (:default-font config))
-     :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
-     :ctx/ui-viewport ui-viewport
-     :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
-                                            (tiled/renderer tiled-map
-                                                            world-unit-scale
-                                                            (:java-object batch))))
-     :ctx/stage stage}))
+                :ctx/assets (cdq.create.assets/create {:folder "resources/"
+                                                       :asset-type-extensions {:sound   #{"wav"}
+                                                                               :texture #{"png" "bmp"}}})
+                :ctx/batch batch
+                :ctx/world-unit-scale world-unit-scale
+                :ctx/shape-drawer-texture shape-drawer-texture
+                :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
+                :ctx/cursors (mapvals
+                              (fn [[file [hotspot-x hotspot-y]]]
+                                (graphics/cursor (format (:cursor-path-format config) file)
+                                                 hotspot-x
+                                                 hotspot-y))
+                              (:cursors config))
+                :ctx/default-font (graphics/truetype-font (:default-font config))
+                :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
+                :ctx/ui-viewport ui-viewport
+                :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
+                                                       (tiled/renderer tiled-map
+                                                                       world-unit-scale
+                                                                       (:java-object batch))))
+                :ctx/stage stage})))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
   [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
@@ -233,6 +333,7 @@
                 :entity/click-distance-tiles click-distance-tiles}})
 
 (defn- spawn-player-entity [ctx start-position]
+  (println "spawn-player-entity - class " (class ctx))
   (cdq.tx.spawn-creature/do! ctx
                              (player-entity-props (utils/tile->middle start-position)
                                                   ctx/player-entity-config)))
@@ -251,6 +352,7 @@
                    (spawn-enemies* tiled-map)))
 
 (defn create-game-state [ctx]
+  (println "create-game-state - class " (class ctx))
   (reset-stage! (:ctx/stage ctx)
                 (create-actors ctx))
   (let [{:keys [tiled-map
@@ -274,8 +376,8 @@
 
 (defn create! []
   (create-game-state
-   (safe-merge initial-context
-               (create-app-state))))
+   (safe-merge (create-app-state)
+               initial-context)))
 
 (def render-fns '[cdq.render.bind-active-entities/do!
                   cdq.render.set-camera-on-player/do!
