@@ -68,6 +68,7 @@
             cdq.ui.editor.widget.animation
             cdq.ui.editor.widget.map
             ]
+ :sound-path-format "sounds/%s.wav"
  :controls {:zoom-in :minus
             :zoom-out :equals
             :unpause-once :p

@@ -29,8 +29,7 @@
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(def initial-context {:ctx/sound-path-format "sounds/%s.wav"
-                      :ctx/mouseover-eid nil
+(def initial-context {:ctx/mouseover-eid nil
                       :ctx/effect-body-props {:width 0.5
                                               :height 0.5
                                               :z-order :z-order/effect}})
