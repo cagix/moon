@@ -68,6 +68,10 @@
             cdq.ui.editor.widget.animation
             cdq.ui.editor.widget.map
             ]
+ :controls {:zoom-in :minus
+            :zoom-out :equals
+            :unpause-once :p
+            :unpause-continously :space}
  :pausing? false
  :zoom-speed 0.025
  :cursors {:cursors/bag                   ["bag001"       [0   0]]

@@ -2,11 +2,10 @@
   (:require [gdl.graphics.camera :as camera]
             [gdl.input :as input]))
 
-(defn do! [{:keys [ctx/controls
-                   ctx/world-viewport
+(defn do! [{:keys [ctx/world-viewport
                    ctx/config]}]
-  (when (input/key-pressed? (get controls :zoom-in))
+  (when (input/key-pressed? (get (:controls config) :zoom-in))
     (camera/inc-zoom! (:camera world-viewport) (:zoom-speed config)))
-  (when (input/key-pressed? (get controls :zoom-out))
+  (when (input/key-pressed? (get (:controls config) :zoom-out))
     (camera/inc-zoom! (:camera world-viewport) (- (:zoom-speed config))))
   nil)

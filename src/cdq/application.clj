@@ -29,11 +29,7 @@
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(def initial-context {:ctx/controls {:zoom-in :minus
-                                     :zoom-out :equals
-                                     :unpause-once :p
-                                     :unpause-continously :space}
-                      :ctx/sound-path-format "sounds/%s.wav"
+(def initial-context {:ctx/sound-path-format "sounds/%s.wav"
                       :ctx/mouseover-eid nil
                       :ctx/effect-body-props {:width 0.5
                                               :height 0.5
