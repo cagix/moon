@@ -3,7 +3,6 @@
             [cdq.malli :as m]))
 
 (def schema (m/schema [:map {:closed true}
-                       [:ctx/pausing? :some]
                        [:ctx/zoom-speed :some]
                        [:ctx/controls :some]
                        [:ctx/sound-path-format :some]

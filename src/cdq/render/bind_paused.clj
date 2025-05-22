@@ -3,11 +3,11 @@
             [cdq.state :as state]
             [gdl.input :as input]))
 
-(defn- pause-game? [{:keys [ctx/pausing?
+(defn- pause-game? [{:keys [ctx/config
                             ctx/player-eid
                             ctx/controls]}]
   (or #_error
-      (and pausing?
+      (and (:pausing? config)
            (state/pause-game? (entity/state-obj @player-eid))
            (not (or (input/key-just-pressed? (get controls :unpause-once))
                     (input/key-pressed? (get controls :unpause-continously)))))))
