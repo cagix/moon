@@ -161,6 +161,12 @@
                    (raycaster/blocked? raycaster
                                        (:position source)
                                        (:position target))))))
+
+  (path-blocked? [{:keys [ctx/raycaster]} start end width]
+    (raycaster/path-blocked? raycaster
+                             start
+                             end
+                             width))
   )
 
 (def application-configuration {:title "Cyber Dungeon Quest"
