@@ -1,7 +1,6 @@
 (ns cdq.g.handle-txs
   (:require [cdq.g]))
 
-(println "loading cdq.g.handle-txs" )
 (extend-type cdq.g.Game
   cdq.g/EffectHandler
   (handle-txs! [ctx transactions]
