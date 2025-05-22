@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require [cdq.malli :as m]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.graphics.viewport :as viewport]
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
@@ -10,6 +11,94 @@
                                 :foreground-fps 60
                                 :mac-os {:glfw-async? true
                                          :dock-icon "moon.png"}})
+
+; TODO do also for entities ...
+
+(def ctx-schema (m/schema [:map {:closed true}
+
+                           ; missing gdx app, input, graphics, audio ?
+                           ; => abstract from the whole plattform itself ??
+                           ; => move into 1 context ?
+
+                           ; config ?
+                           [:ctx/pausing? :some]
+                           [:ctx/zoom-speed :some]
+                           [:ctx/controls :some]
+                           [:ctx/sound-path-format :some]
+                           [:ctx/effect-body-props :some]
+
+                           [:ctx/config :some]
+
+                           ; db
+                           [:ctx/db :some]
+
+                           ; sounds & textures
+                           [:ctx/assets :some]
+                           ; * dispose
+                           ; * play sound
+                           ; * sprites
+
+                           ; graphics
+                           [:ctx/batch :some]
+                           ; usage:
+                           ; * dispose
+                           ; * create shape-drawer/stage/tiled-map-renderer
+                           ; * cdq.draw
+                           ; * draw on world-viewport
+                           [:ctx/shape-drawer-texture :some]
+                           ; * only dispose / shape-drawer
+                           [:ctx/shape-drawer :some]
+                           ; * draw
+                           [:ctx/unit-scale :some]
+                           [:ctx/world-unit-scale :some]
+                           [:ctx/cursors :some]
+                           [:ctx/default-font :some]
+                           [:ctx/world-viewport :some]
+                           [:ctx/get-tiled-map-renderer :some]
+                           [:ctx/ui-viewport :some]
+
+                           ; ui
+                           [:ctx/stage :some]
+
+                           ; game logic:
+
+                           ; time
+                           [:ctx/elapsed-time :some]
+                           [:ctx/delta-time {:optional true} number?] ; optional - added in render each frame
+                           [:ctx/paused? {:optional true} :boolean] ; optional - added in render each frame
+
+                           [:ctx/level :some] ; < - move together ?
+                           [:ctx/tiled-map :some]
+                           [:ctx/start-position :some]
+
+                           ; < - comes from level/tiled-map
+                           [:ctx/grid :some]
+                           [:ctx/raycaster :some]
+                           [:ctx/content-grid :some]
+                           [:ctx/explored-tile-corners :some]
+
+                           ;
+                           [:ctx/id-counter :some]
+                           [:ctx/entity-ids :some]
+                           [:ctx/potential-field-cache :some]
+                           ;
+
+                           ; control pointers:
+                           [:ctx/mouseover-eid :any]
+                           [:ctx/player-eid :some]
+                           [:ctx/active-entities {:optional true} :some] ; optional - added in render each frame
+                           ]))
+
+(comment
+
+ (m/validate-humanize ctx-schema @state)
+ ; delta-time missing required key
+ ; mouseover-eid unknown error (can be nil)
+
+ )
+
+(defn check-validity [ctx]
+  (m/validate-humanize ctx-schema ctx))
 
 (def initial-context {:ctx/pausing? true
                       :ctx/zoom-speed 0.025
@@ -147,13 +236,18 @@
   (lwjgl/application application-configuration
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create!)))
+                         (reset! state (create!))
+                         (check-validity @state))
 
                        (dispose []
+                         (check-validity @state)
                          (dispose! @state))
 
                        (render []
-                         (swap! state render!))
+                         (check-validity @state)
+                         (swap! state render!)
+                         (check-validity @state))
 
                        (resize [_width _height]
+                         (check-validity @state)
                          (resize! @state)))))

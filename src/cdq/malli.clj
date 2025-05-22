@@ -12,12 +12,15 @@
 (defn generate [form opts]
   (mg/generate form opts))
 
-(defn form->validate [form value]
-  (let [schema (schema form)]
-    (when-not (validate schema value)
+(defn validate-humanize [schema value]
+  (when-not (validate schema value)
       (throw (ex-info (str (me/humanize (m/explain schema value)))
                       {:value value
-                       :schema (m/form schema)})))))
+                       :schema (m/form schema)}))))
+
+(defn form->validate [form value]
+  (let [schema (schema form)]
+    (validate-humanize schema value)))
 
 (comment
  (nil? (form->validate [:map {:closed true}
