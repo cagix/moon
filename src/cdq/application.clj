@@ -56,24 +56,22 @@
 (defn reset-game-state! []
   (swap! state reset-game-state))
 
-(defn- application-listener [{:keys [initial-context
-                                     dispose-fn
-                                     resize-fn
-                                     render-fns]}]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (reset! state (create-initial-state initial-context)))
-
-    (dispose []
-      ((requiring-resolve dispose-fn) @state))
-
-    (render []
-      (swap! state render! render-fns))
-
-    (resize [_width _height]
-      ((requiring-resolve resize-fn) @state))))
-
 (defn -main []
-  (let [config (utils/io-slurp-edn "cdq.application.edn")]
-    (lwjgl/application (:clojure.gdx.backends.lwjgl/application config)
-                       (application-listener (:cdq.application/listener config)))))
+  (let [{:keys [clojure.gdx.backends.lwjgl/application-configuration
+                initial-context
+                dispose-fn
+                resize-fn
+                render-fns]} (utils/io-slurp-edn "cdq.application.edn")]
+    (lwjgl/application application-configuration
+                       (proxy [ApplicationAdapter] []
+                         (create []
+                           (reset! state (create-initial-state initial-context)))
+
+                         (dispose []
+                           ((requiring-resolve dispose-fn) @state))
+
+                         (render []
+                           (swap! state render! render-fns))
+
+                         (resize [_width _height]
+                           ((requiring-resolve resize-fn) @state))))))
