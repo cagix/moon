@@ -5,6 +5,7 @@
             [cdq.content-grid :as content-grid]
             cdq.db
             [cdq.entity :as entity]
+            cdq.input
             [cdq.g]
             [cdq.state :as state]
             [cdq.tx.spawn-creature]
@@ -176,6 +177,10 @@
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
                                   (entity/enemy entity)))
+
+  (player-movement-vector [_]
+    (cdq.input/player-movement-vector))
+
   )
 
 (def application-configuration {:title "Cyber Dungeon Quest"
