@@ -2,6 +2,9 @@
 
 (defrecord Game [])
 
+(defprotocol GameState
+  (reset-game-state! [_]))
+
 (defprotocol Schema
   (validate [_]))
 

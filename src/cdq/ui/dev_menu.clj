@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
+            [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
@@ -20,7 +21,7 @@
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [_actor _ctx]
-                                   #_(application/reset-game-state!))})}
+                                   (swap! application/state g/reset-game-state!))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"
