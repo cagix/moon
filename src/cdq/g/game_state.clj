@@ -89,18 +89,18 @@
 (defn- spawn-enemies! [{:keys [ctx/tiled-map] :as ctx}]
   (g/handle-txs! ctx (spawn-enemies* tiled-map)))
 
-(defn- create-game-state [ctx]
+(defn- create-game-state [{:keys [ctx/config] :as ctx}]
   (reset-stage! (:ctx/stage ctx)
                 (create-actors ctx))
   (let [{:keys [tiled-map
-                start-position]} ((requiring-resolve 'cdq.level.vampire/create) ctx)
+                start-position]} ((requiring-resolve (:world-fn config)) ctx)
         grid (cdq.grid/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
                     :ctx/grid grid
                     :ctx/raycaster (cdq.raycaster/create grid)
-                    :ctx/content-grid (cdq.content-grid/create tiled-map 16)
+                    :ctx/content-grid (cdq.content-grid/create tiled-map (:content-grid-cell-size config))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                       (tiled/tm-height tiled-map)
                                                                       (constantly false)))

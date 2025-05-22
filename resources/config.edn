@@ -107,6 +107,8 @@
                 :quality-scaling 2}
  :world-viewport {:width 1440
                   :height 900}
+ :world-fn cdq.level.vampire/create
+ :content-grid-cell-size 16
  :effect-body-props {:width 0.5
                      :height 0.5
                      :z-order :z-order/effect}
