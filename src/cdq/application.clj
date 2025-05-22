@@ -9,7 +9,7 @@
             [cdq.tx.spawn-creature]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
-            cdq.raycaster
+            [cdq.raycaster :as raycaster]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.entity-info]
             [cdq.ui.inventory :as inventory-window]
@@ -25,6 +25,7 @@
             [cdq.vector2 :as v]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as camera]
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
@@ -90,6 +91,25 @@
           {}
           components))
 
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [viewport entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (camera/position (:camera viewport))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (:width viewport))  2)))
+     (<= ydist (inc (/ (float (:height viewport)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
 (defrecord Game []
   cdq.g/World
   (spawn-entity! [{:keys [ctx/id-counter
@@ -127,7 +147,21 @@
 
       (doseq [component @eid]
         (ctx/handle-txs! ctx (entity/create! component eid ctx)))
-      eid)))
+      eid))
+
+  ; does not take into account size of entity ...
+  ; => assert bodies <1 width then
+  (line-of-sight? [{:keys [ctx/world-viewport
+                           ctx/raycaster]}
+                   source
+                   target]
+    (and (or (not (:entity/player? source))
+             (on-screen? world-viewport target))
+         (not (and los-checks?
+                   (raycaster/blocked? raycaster
+                                       (:position source)
+                                       (:position target))))))
+  )
 
 (def application-configuration {:title "Cyber Dungeon Quest"
                                 :windowed-mode {:width 1440

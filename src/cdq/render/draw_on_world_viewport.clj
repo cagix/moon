@@ -2,6 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.draw :as draw]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.grid :as grid]
             [cdq.math :as math]
             [cdq.utils :refer [sort-by-order
@@ -127,7 +128,7 @@
                      #'entity/render-info!]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (entity/line-of-sight? ctx player entity))]
+                      (g/line-of-sight? ctx player entity))]
       (try
        (when ctx/show-body-bounds?
          (draw-body-rect ctx entity (if (:collides? entity) :white :gray)))

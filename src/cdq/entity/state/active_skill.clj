@@ -1,6 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
@@ -26,7 +27,7 @@
   [ctx {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (entity/line-of-sight? ctx @source @target))
+           (g/line-of-sight? ctx @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 

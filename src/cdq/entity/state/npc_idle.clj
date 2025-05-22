@@ -2,6 +2,7 @@
   (:require [cdq.cell :as cell]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.state :as state]
             [cdq.potential-field.movement :as potential-field]
             [cdq.utils :refer [defcomponent]]
@@ -22,7 +23,7 @@
         target (cell/nearest-entity @(grid (mapv int (:position entity)))
                                     (entity/enemy entity))
         target (when (and target
-                          (entity/line-of-sight? ctx entity @target))
+                          (g/line-of-sight? ctx entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
