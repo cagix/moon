@@ -112,18 +112,6 @@
           ctx
           render-fns))
 
-(def state (atom nil))
-
-(comment
- (spit "state.clj"
-       (with-out-str
-        (clojure.pprint/pprint
-         (sort (keys @state)))))
- )
-
-(defn reset-game-state! []
-  (swap! state create-into! create-game-state))
-
 (defn dispose! [{:keys [ctx/assets
                         ctx/batch
                         ctx/shape-drawer-texture
@@ -142,6 +130,18 @@
                        ctx/world-viewport]}]
   (viewport/update! ui-viewport)
   (viewport/update! world-viewport))
+
+(def state (atom nil))
+
+(comment
+ (spit "state.clj"
+       (with-out-str
+        (clojure.pprint/pprint
+         (sort (keys @state)))))
+ )
+
+(defn reset-game-state! []
+  (swap! state create-into! create-game-state))
 
 (defn -main []
   (lwjgl/application application-configuration
