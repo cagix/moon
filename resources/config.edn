@@ -69,6 +69,7 @@
             cdq.ui.editor.widget.map
             ]
  :pausing? false
+ :zoom-speed 0.025
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
            :cursors/default               ["default"      [0   0]]

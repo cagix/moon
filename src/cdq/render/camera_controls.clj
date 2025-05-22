@@ -4,9 +4,9 @@
 
 (defn do! [{:keys [ctx/controls
                    ctx/world-viewport
-                   ctx/zoom-speed]}]
+                   ctx/config]}]
   (when (input/key-pressed? (get controls :zoom-in))
-    (camera/inc-zoom! (:camera world-viewport) zoom-speed))
+    (camera/inc-zoom! (:camera world-viewport) (:zoom-speed config)))
   (when (input/key-pressed? (get controls :zoom-out))
-    (camera/inc-zoom! (:camera world-viewport) (- zoom-speed)))
+    (camera/inc-zoom! (:camera world-viewport) (- (:zoom-speed config))))
   nil)

@@ -36,8 +36,7 @@
                                 :mac-os {:glfw-async? true
                                          :dock-icon "moon.png"}})
 
-(def initial-context {:ctx/zoom-speed 0.025
-                      :ctx/controls {:zoom-in :minus
+(def initial-context {:ctx/controls {:zoom-in :minus
                                      :zoom-out :equals
                                      :unpause-once :p
                                      :unpause-continously :space}
