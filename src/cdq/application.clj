@@ -113,7 +113,7 @@
 ; move the debug flag to either render or mouseover or lets see
 (def ^:private ^:dbg-flag los-checks? true)
 
-(defrecord Game []
+(extend-type cdq.g.Game
   cdq.g/World
   (spawn-entity! [{:keys [ctx/id-counter
                           ctx/entity-ids
@@ -308,30 +308,31 @@
     (run! require (:requires config))
     (ui/load! (:ui config))
     (input/set-processor! stage)
-    (map->Game {:ctx/config config
-                :ctx/db (cdq.db/create "properties.edn" "schema.edn")
+    (cdq.g/map->Game
+     {:ctx/config config
+      :ctx/db (cdq.db/create "properties.edn" "schema.edn")
 
-                :ctx/assets (cdq.create.assets/create {:folder "resources/"
-                                                       :asset-type-extensions {:sound   #{"wav"}
-                                                                               :texture #{"png" "bmp"}}})
-                :ctx/batch batch
-                :ctx/world-unit-scale world-unit-scale
-                :ctx/shape-drawer-texture shape-drawer-texture
-                :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
-                :ctx/cursors (mapvals
-                              (fn [[file [hotspot-x hotspot-y]]]
-                                (graphics/cursor (format (:cursor-path-format config) file)
-                                                 hotspot-x
-                                                 hotspot-y))
-                              (:cursors config))
-                :ctx/default-font (graphics/truetype-font (:default-font config))
-                :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
-                :ctx/ui-viewport ui-viewport
-                :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                       (tiled/renderer tiled-map
-                                                                       world-unit-scale
-                                                                       (:java-object batch))))
-                :ctx/stage stage})))
+      :ctx/assets (cdq.create.assets/create {:folder "resources/"
+                                             :asset-type-extensions {:sound   #{"wav"}
+                                                                     :texture #{"png" "bmp"}}})
+      :ctx/batch batch
+      :ctx/world-unit-scale world-unit-scale
+      :ctx/shape-drawer-texture shape-drawer-texture
+      :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
+      :ctx/cursors (mapvals
+                    (fn [[file [hotspot-x hotspot-y]]]
+                      (graphics/cursor (format (:cursor-path-format config) file)
+                                       hotspot-x
+                                       hotspot-y))
+                    (:cursors config))
+      :ctx/default-font (graphics/truetype-font (:default-font config))
+      :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
+      :ctx/ui-viewport ui-viewport
+      :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
+                                             (tiled/renderer tiled-map
+                                                             world-unit-scale
+                                                             (:java-object batch))))
+      :ctx/stage stage})))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
   [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
