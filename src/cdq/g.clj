@@ -5,8 +5,10 @@
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components]))
 
+(defprotocol LineOfSight
+  (line-of-sight? [_ source target]))
+
 (defprotocol World
-  (line-of-sight? [_ source target])
   (path-blocked? [_ start end width])
   (potential-field-find-direction [_ eid])
   (nearest-enemy-distance [_ entity]))

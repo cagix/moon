@@ -2,6 +2,7 @@
             cdq.g.handle-txs
             cdq.g.interaction-state
             cdq.g.spawn-entity
+            cdq.g.line-of-sight
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
