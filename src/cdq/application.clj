@@ -230,7 +230,7 @@
                            [:ctx/cursors :some]
                            [:ctx/default-font :some]
                            [:ctx/world-viewport :some]
-                           [:ctx/get-tiled-map-renderer :some]
+                           [:ctx/tiled-map-renderer :some]
                            [:ctx/ui-viewport :some]
 
                            ; ui
@@ -325,10 +325,10 @@
       :ctx/default-font (graphics/truetype-font (:default-font config))
       :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
       :ctx/ui-viewport ui-viewport
-      :ctx/get-tiled-map-renderer (memoize (fn [tiled-map]
-                                             (tiled/renderer tiled-map
-                                                             world-unit-scale
-                                                             (:java-object batch))))
+      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
+                                         (tiled/renderer tiled-map
+                                                         world-unit-scale
+                                                         (:java-object batch))))
       :ctx/stage stage})))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
