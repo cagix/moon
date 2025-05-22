@@ -3,6 +3,7 @@
             cdq.g.interaction-state
             cdq.g.spawn-entity
             cdq.g.line-of-sight
+            cdq.g.raycaster
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert

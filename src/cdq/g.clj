@@ -8,8 +8,11 @@
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
 
+(defprotocol Raycaster
+  (ray-blocked? [_ start end])
+  (path-blocked? [_ start end width]))
+
 (defprotocol World
-  (path-blocked? [_ start end width])
   (potential-field-find-direction [_ eid])
   (nearest-enemy-distance [_ entity]))
 

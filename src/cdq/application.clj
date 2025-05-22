@@ -35,12 +35,6 @@
 
 (extend-type cdq.g.Game
   cdq.g/World
-  (path-blocked? [{:keys [ctx/raycaster]} start end width]
-    (raycaster/path-blocked? raycaster
-                             start
-                             end
-                             width))
-
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-field/find-direction grid eid))
 
