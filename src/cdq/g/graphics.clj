@@ -8,6 +8,9 @@
 (defmethod draw! :draw/text [[_ opts] ctx]
   (draw/text ctx opts))
 
+(defmethod draw! :draw/rectangle [[_ & opts] ctx]
+  (apply draw/rectangle ctx opts))
+
 (defmethod draw! :draw/filled-rectangle [[_ & opts] ctx]
   (apply draw/filled-rectangle ctx opts))
 

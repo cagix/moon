@@ -34,9 +34,9 @@
                         :air  [1 1 0 0.5]
                         :none [1 0 0 0.5])))))
 
-(defn- draw-body-rect [ctx entity color]
+(defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (draw/rectangle ctx x y (:width entity) (:height entity) color)))
+    [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
 (defn- draw-tile-grid [{:keys [ctx/world-viewport]
                         :as ctx}]
@@ -82,11 +82,11 @@
                       (g/line-of-sight? ctx player entity))]
       (try
        (when ctx/show-body-bounds?
-         (draw-body-rect ctx entity (if (:collides? entity) :white :gray)))
+         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
          (g/handle-draws! ctx (render! component entity ctx)))
        (catch Throwable t
-         (draw-body-rect ctx entity :red)
+         (g/handle-draws! ctx (draw-body-rect entity :red))
          (pretty-pst t))))))
 
 (defn do! [{:keys [ctx/batch
