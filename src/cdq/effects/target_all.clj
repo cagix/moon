@@ -1,6 +1,5 @@
 (ns cdq.effects.target-all
-  (:require [cdq.draw :as draw]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
@@ -40,8 +39,8 @@
 
   (effect/render [_ {:keys [effect/source]} ctx]
     (let [source* @source]
-      (doseq [target* (map deref (creatures-in-los-of-player ctx))]
-        (draw/line ctx
-                   (:position source*) #_(start-point source* target*)
-                   (:position target*)
-                   [1 0 0 0.5])))))
+      (for [target* (map deref (creatures-in-los-of-player ctx))]
+        [:draw/line
+         (:position source*) #_(start-point source* target*)
+         (:position target*)
+         [1 0 0 0.5]]))))

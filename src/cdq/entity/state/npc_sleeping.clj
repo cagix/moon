@@ -1,6 +1,5 @@
 (ns cdq.entity.state.npc-sleeping
   (:require [cdq.cell :as cell]
-            [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]))
@@ -17,10 +16,9 @@
     [[:tx/spawn-alert (:position @eid) (:entity/faction @eid) 0.2]
      [:tx/add-text-effect eid "[WHITE]!"]])
 
-  (entity/render-above! [_ entity ctx]
+  (entity/render-above! [_ entity _ctx]
     (let [[x y] (:position entity)]
-      (draw/text ctx
-                 {:text "zzz"
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true}))))
+      [[:draw/text {:text "zzz"
+                    :x x
+                    :y (+ y (:half-height entity))
+                    :up? true}]])))

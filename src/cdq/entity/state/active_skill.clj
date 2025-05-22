@@ -1,25 +1,24 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.draw :as draw]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
-(defn- draw-skill-image [ctx image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (draw/filled-circle ctx center radius [1 1 1 0.125])
-    (draw/sector ctx
-                 center
-                 radius
-                 90 ; start-angle
-                 (* (float action-counter-ratio) 360) ; degree
-                 [1 1 1 0.5])
-    (draw/image ctx image [(- (float x) radius) y])))
+    [[:draw/filled-circle center radius [1 1 1 0.125]]
+     [:draw/sector
+      center
+      radius
+      90 ; start-angle
+      (* (float action-counter-ratio) 360) ; degree
+      [1 1 1 0.5]]
+     [:draw/image image [(- (float x) radius) y]]]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -37,7 +36,7 @@
          1)))
 
 (defn- render-active-effect [ctx effect-ctx effect]
-  (run! #(effect/render % effect-ctx ctx) effect))
+  (mapcat #(effect/render % effect-ctx ctx) effect))
 
 (defcomponent :active-skill
   (entity/create [[_ eid [skill effect-ctx]] {:keys [ctx/elapsed-time]}]
@@ -78,14 +77,13 @@
                         entity
                         {:keys [ctx/elapsed-time] :as ctx}]
     (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-image ctx
-                        image
-                        entity
-                        (:position entity)
-                        (timer/ratio elapsed-time counter))
-      (render-active-effect ctx
-                            effect-ctx ; TODO !!!
-                            ; !! FIXME !!
-                            ; (update-effect-ctx effect-ctx)
-                            ; - render does not need to update .. update inside active-skill
-                            effects))))
+      (concat (draw-skill-image image
+                                entity
+                                (:position entity)
+                                (timer/ratio elapsed-time counter))
+              (render-active-effect ctx
+                                    effect-ctx ; TODO !!!
+                                    ; !! FIXME !!
+                                    ; (update-effect-ctx effect-ctx)
+                                    ; - render does not need to update .. update inside active-skill
+                                    effects)))))

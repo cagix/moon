@@ -68,9 +68,9 @@
 
   (entity/render-below! [[_ {:keys [item]}] entity ctx]
     (when (world-item? ctx)
-      (draw/centered ctx
-                     (:entity/image item)
-                     (item-place-position ctx entity))))
+      [[:draw/centered
+        (:entity/image item)
+        (item-place-position ctx entity)]]))
 
   (state/cursor [_] :cursors/hand-grab)
 

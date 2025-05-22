@@ -1,11 +1,10 @@
 (ns cdq.entity.image
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/image
-  (entity/render-default! [[_ image] entity ctx]
-    (draw/rotated-centered ctx
-                           image
-                           (or (:rotation-angle entity) 0)
-                           (:position entity))))
+  (entity/render-default! [[_ image] entity _ctx]
+    [[:draw/rotated-centered
+      image
+      (or (:rotation-angle entity) 0)
+      (:position entity)]]))

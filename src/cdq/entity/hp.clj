@@ -1,6 +1,5 @@
 (ns cdq.entity.hp
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]
             [cdq.val-max :as val-max]))
 
@@ -29,13 +28,13 @@
           y (+ y half-height)
           height (* 5 world-unit-scale)
           border (* borders-px world-unit-scale)]
-      (draw/filled-rectangle ctx x y width height :black)
-      (draw/filled-rectangle ctx
-                             (+ x border)
-                             (+ y border)
-                             (- (* width ratio) (* 2 border))
-                             (- height          (* 2 border))
-                             (hpbar-color ratio)))))
+      [[:draw/filled-rectangle x y width height :black]
+       [:draw/filled-rectangle
+        (+ x border)
+        (+ y border)
+        (- (* width ratio) (* 2 border))
+        (- height          (* 2 border))
+        (hpbar-color ratio)]])))
 
 (defcomponent :entity/hp
   (entity/create [[_ v] _ctx]

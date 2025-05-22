@@ -1,7 +1,6 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.draw :as draw]
             [cdq.db :as db]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
@@ -43,13 +42,15 @@
           (end-point source* target* maxrange)
           (db/build db :audiovisuals/hit-ground ctx)]])))
 
-  (effect/render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} ctx]
+  (effect/render [[_ {:keys [maxrange]}]
+                  {:keys [effect/source effect/target]}
+                  _ctx]
     (when target
       (let [source* @source
             target* @target]
-        (draw/line ctx
-                   (start-point source* target*)
-                   (end-point source* target* maxrange)
-                   (if (entity/in-range? source* target* maxrange)
-                     [1 0 0 0.5]
-                     [1 1 0 0.5]))))))
+        [[:draw/line
+          (start-point source* target*)
+          (end-point source* target* maxrange)
+          (if (entity/in-range? source* target* maxrange)
+            [1 0 0 0.5]
+            [1 1 0 0.5])]]))))

@@ -1,6 +1,5 @@
 (ns cdq.entity.state.stunned
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
@@ -17,8 +16,5 @@
 
   (state/pause-game? [_] false)
 
-  (entity/render-below! [_ entity ctx]
-    (draw/circle ctx (:position entity) 0.5 [1 1 1 0.6])))
-
-
-
+  (entity/render-below! [_ entity _ctx]
+    [[:draw/circle (:position entity) 0.5 [1 1 1 0.6]]]))

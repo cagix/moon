@@ -1,6 +1,5 @@
 (ns cdq.entity.temp-modifier
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
@@ -11,5 +10,5 @@
        [:tx/mod-remove eid modifiers]]))
 
   ; TODO draw opacity as of counter ratio?
-  (entity/render-above! [_ entity ctx]
-    (draw/filled-circle ctx (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+  (entity/render-above! [_ entity _ctx]
+    [[:draw/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]]]))
