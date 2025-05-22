@@ -2,18 +2,6 @@
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]))
 
-(comment
- (spit "asset_diagnostics" (.getDiagnostics assets))
-
- (count (seq (.getAssetNames assets)))
-
- (spit "assets"
-       (with-out-str
-        (clojure.pprint/pprint
-         (for [asset-name (.getAssetNames assets)]
-           [asset-name (.get assets asset-name)]))))
- )
-
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
 
