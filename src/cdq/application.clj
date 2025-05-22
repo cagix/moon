@@ -42,6 +42,13 @@
 
 (def state (atom nil))
 
+(comment
+ (spit "state.clj"
+       (with-out-str
+        (clojure.pprint/pprint
+         (sort (keys @state)))))
+ )
+
 (defn reset-game-state! []
   (swap! state reset-game-state))
 
