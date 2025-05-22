@@ -68,6 +68,9 @@
             cdq.ui.editor.widget.animation
             cdq.ui.editor.widget.map
             ]
+ :effect-body-props {:width 0.5
+                     :height 0.5
+                     :z-order :z-order/effect}
  :sound-path-format "sounds/%s.wav"
  :controls {:zoom-in :minus
             :zoom-out :equals

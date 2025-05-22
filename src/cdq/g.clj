@@ -6,7 +6,8 @@
   (validate [_]))
 
 (defprotocol SpawnEntity
-  (spawn-entity! [_ position body components]))
+  (spawn-entity! [_ position body components])
+  (spawn-effect! [_ position components]))
 
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))

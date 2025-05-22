@@ -3,7 +3,6 @@
             [cdq.malli :as m]))
 
 (def schema (m/schema [:map {:closed true}
-                       [:ctx/effect-body-props :some]
                        [:ctx/config :some]
                        [:ctx/db :some]
                        [:ctx/assets :some]

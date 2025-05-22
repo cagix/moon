@@ -91,4 +91,12 @@
       (grid/add-entity! grid eid)
       (doseq [component @eid]
         (g/handle-txs! ctx (entity/create! component eid ctx)))
-      eid)))
+      eid))
+
+  (spawn-effect! [{:keys [ctx/config] :as ctx}
+                  position
+                  components]
+    (g/spawn-entity! ctx
+                     position
+                     (:effect-body-props config)
+                     components)))

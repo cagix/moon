@@ -29,10 +29,6 @@
             [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(def initial-context {:ctx/effect-body-props {:width 0.5
-                                              :height 0.5
-                                              :z-order :z-order/effect}})
-
 (defn create-app-state []
   (let [config (let [m (io-slurp-edn "config.edn")]
                  (reify clojure.lang.ILookup
@@ -167,9 +163,7 @@
     ctx))
 
 (defn create! []
-  (create-game-state
-   (safe-merge (create-app-state)
-               initial-context)))
+  (create-game-state (create-app-state)))
 
 (def render-fns '[cdq.render.bind-active-entities/do!
                   cdq.render.set-camera-on-player/do!

@@ -2,12 +2,11 @@
   (:require [cdq.tx.sound :as tx.sound]
             [cdq.g :as g]))
 
-(defn do! [{:keys [ctx/effect-body-props] :as ctx}
+(defn do! [ctx
            position
            {:keys [tx/sound entity/animation]}]
   (tx.sound/do! ctx sound)
-  (g/spawn-entity! ctx
+  (g/spawn-effect! ctx
                    position
-                   effect-body-props
                    {:entity/animation animation
                     :entity/delete-after-animation-stopped? true}))
