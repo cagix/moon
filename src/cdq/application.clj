@@ -11,7 +11,6 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
-            [cdq.potential-field.movement :as potential-field]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.entity-info]
             [cdq.ui.inventory :as inventory-window]
@@ -35,9 +34,6 @@
 
 (extend-type cdq.g.Game
   cdq.g/World
-  (potential-field-find-direction [{:keys [ctx/grid]} eid]
-    (potential-field/find-direction grid eid))
-
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
                                   (entity/enemy entity)))

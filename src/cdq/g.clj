@@ -12,8 +12,10 @@
   (ray-blocked? [_ start end])
   (path-blocked? [_ start end width]))
 
+(defprotocol PotentialField
+  (potential-field-find-direction [_ eid]))
+
 (defprotocol World
-  (potential-field-find-direction [_ eid])
   (nearest-enemy-distance [_ entity]))
 
 (defprotocol PlayerMovementInput
