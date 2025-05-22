@@ -2,14 +2,15 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [gdl.application :refer [post-runnable!]]
             [gdl.graphics.viewport :as viewport]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
-(defn post-txs! [txs]
+#_(defn post-txs! [txs]
   (post-runnable!
-   (ctx/handle-txs! #_@app/state txs)))
+   (g/handle-txs! #_@app/state txs)))
 
 (comment
 

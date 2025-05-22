@@ -1,4 +1,5 @@
 {:requires [cdq.g.player-movement-vector
+            cdq.g.handle-txs
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert

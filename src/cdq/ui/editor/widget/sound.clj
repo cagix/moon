@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.sound
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.g :as g]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [clojure.string :as str]
@@ -8,8 +8,8 @@
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"
-                  (fn [_actor _ctx]
-                    (ctx/handle-txs! [[:tx/sound sound-name]]))))
+                  (fn [_actor ctx]
+                    (g/handle-txs! ctx [[:tx/sound sound-name]]))))
 
 (declare columns)
 

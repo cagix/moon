@@ -11,3 +11,6 @@
 
 (defprotocol PlayerMovementInput
   (player-movement-vector [_]))
+
+(defprotocol EffectHandler
+  (handle-txs! [_ transactions]))

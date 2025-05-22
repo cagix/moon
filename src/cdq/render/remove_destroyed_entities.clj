@@ -1,7 +1,7 @@
 (ns cdq.render.remove-destroyed-entities
-  (:require [cdq.ctx :as ctx]
-            [cdq.content-grid :as content-grid]
+  (:require [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.grid :as grid]))
 
 (defn do! [{:keys [ctx/entity-ids] :as ctx}]
@@ -13,6 +13,5 @@
     (content-grid/remove-entity! eid)
     (grid/remove-entity! eid)
     (doseq [component @eid]
-      (ctx/handle-txs! ctx
-                       (entity/destroy! component eid ctx))))
+      (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)

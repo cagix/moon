@@ -1,8 +1,8 @@
 (ns cdq.tx.effect
-  (:require [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
+            [cdq.g :as g]
             [cdq.utils :as utils]))
 
 (defn do! [ctx effect-ctx effects]
-  (run! #(ctx/handle-txs! ctx (effect/handle % effect-ctx ctx))
+  (run! #(g/handle-txs! ctx (effect/handle % effect-ctx ctx))
         (effect/filter-applicable? effect-ctx effects)))

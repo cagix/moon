@@ -1,6 +1,7 @@
 (ns cdq.render.when-not-paused
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.potential-field.update :as potential-field]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :refer [pretty-pst]]
@@ -31,7 +32,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (ctx/handle-txs! ctx (entity/tick! [k v] eid ctx)))
+               (g/handle-txs! ctx (entity/tick! [k v] eid ctx)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t

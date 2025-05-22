@@ -1,6 +1,6 @@
 (ns cdq.tx.event
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.state :as state]
             [cdq.utils :as utils]
             [reduce-fsm :as fsm]))
@@ -20,10 +20,10 @@
                                                            [new-state-k eid])
                                                          ctx)]]
            (when (:entity/player? @eid)
-             (ctx/handle-txs! ctx ((:state-changed! (:entity/player? @eid)) new-state-obj)))
+             (g/handle-txs! ctx ((:state-changed! (:entity/player? @eid)) new-state-obj)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (ctx/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-           (ctx/handle-txs! ctx (state/enter! new-state-obj eid))))))))
+           (g/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+           (g/handle-txs! ctx (state/enter! new-state-obj eid))))))))

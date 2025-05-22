@@ -5,7 +5,7 @@
             [cdq.content-grid :as content-grid]
             cdq.db
             [cdq.entity :as entity]
-            [cdq.g]
+            [cdq.g :as g]
             [cdq.state :as state]
             [cdq.tx.spawn-creature]
             [cdq.grid :as grid]
@@ -150,7 +150,7 @@
 
 
       (doseq [component @eid]
-        (ctx/handle-txs! ctx (entity/create! component eid ctx)))
+        (g/handle-txs! ctx (entity/create! component eid ctx)))
       eid))
 
   ; does not take into account size of entity ...
@@ -399,8 +399,7 @@
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
 (defn- spawn-enemies! [{:keys [ctx/tiled-map] :as ctx}]
-  (ctx/handle-txs! ctx
-                   (spawn-enemies* tiled-map)))
+  (g/handle-txs! ctx (spawn-enemies* tiled-map)))
 
 (defn create-game-state [ctx]
   (reset-stage! (:ctx/stage ctx)
