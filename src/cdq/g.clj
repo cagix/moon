@@ -2,6 +2,9 @@
 
 (defrecord Game [])
 
+(defprotocol Schema
+  (validate [_]))
+
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components]))
 

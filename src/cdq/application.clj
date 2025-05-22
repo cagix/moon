@@ -20,7 +20,6 @@
                                          io-slurp-edn
                                          safe-get
                                          safe-merge]]
-            [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.graphics :as graphics]
             [gdl.graphics.viewport :as viewport]
@@ -39,79 +38,10 @@
 
 ; TODO do also for entities ... !!
 ; => & what components allowed/etc.
-
-(def ctx-schema (m/schema [:map {:closed true}
-
-                           ; missing gdx app, input, graphics, audio ?
-                           ; => abstract from the whole plattform itself ??
-                           ; => move into 1 context ?
-
-                           ; config ?
-                           [:ctx/pausing? :some]
-                           [:ctx/zoom-speed :some]
-                           [:ctx/controls :some]
-                           [:ctx/sound-path-format :some]
-                           [:ctx/effect-body-props :some]
-
-                           [:ctx/config :some]
-
-                           ; db
-                           [:ctx/db :some]
-
-                           ; sounds & textures
-                           [:ctx/assets :some]
-                           ; * dispose
-                           ; * play sound
-                           ; * sprites
-
-                           ; graphics
-                           [:ctx/batch :some]
-                           ; usage:
-                           ; * dispose
-                           ; * create shape-drawer/stage/tiled-map-renderer
-                           ; * cdq.draw
-                           ; * draw on world-viewport
-                           [:ctx/shape-drawer-texture :some]
-                           ; * only dispose / shape-drawer
-                           [:ctx/shape-drawer :some]
-                           ; * draw
-                           [:ctx/unit-scale :some]
-                           [:ctx/world-unit-scale :some]
-                           [:ctx/cursors :some]
-                           [:ctx/default-font :some]
-                           [:ctx/world-viewport :some]
-                           [:ctx/tiled-map-renderer :some]
-                           [:ctx/ui-viewport :some]
-
-                           ; ui
-                           [:ctx/stage :some]
-
-                           ; game logic:
-
-                           ; time
-                           [:ctx/elapsed-time :some]
-                           [:ctx/delta-time {:optional true} number?] ; optional - added in render each frame
-                           [:ctx/paused? {:optional true} :boolean] ; optional - added in render each frame
-
-                           [:ctx/tiled-map :some]
-
-                           ; < - comes from level/tiled-map
-                           [:ctx/grid :some]
-                           [:ctx/raycaster :some]
-                           [:ctx/content-grid :some]
-                           [:ctx/explored-tile-corners :some]
-
-                           ;
-                           [:ctx/id-counter :some]
-                           [:ctx/entity-ids :some]
-                           [:ctx/potential-field-cache :some]
-                           ;
-
-                           ; control pointers:
-                           [:ctx/mouseover-eid :any]
-                           [:ctx/player-eid :some]
-                           [:ctx/active-entities {:optional true} :some] ; optional - added in render each frame
-                           ]))
+; missing gdx app, input, graphics, audio ?
+; => abstract from the whole plattform itself ??
+; => move into 1 context ?
+; 'graphics' ???
 
 (comment
 
@@ -124,9 +54,6 @@
  ; +> fix
 
  )
-
-(defn check-validity [ctx]
-  (m/validate-humanize ctx-schema ctx))
 
 (def initial-context {:ctx/pausing? true
                       :ctx/zoom-speed 0.025
@@ -336,17 +263,17 @@
                      (proxy [ApplicationAdapter] []
                        (create []
                          (reset! state (create!))
-                         (check-validity @state))
+                         (g/validate @state))
 
                        (dispose []
-                         (check-validity @state)
+                         (g/validate @state)
                          (dispose! @state))
 
                        (render []
-                         (check-validity @state)
+                         (g/validate @state)
                          (swap! state render!)
-                         (check-validity @state))
+                         (g/validate @state))
 
                        (resize [_width _height]
-                         (check-validity @state)
+                         (g/validate @state)
                          (resize! @state)))))

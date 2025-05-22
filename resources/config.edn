@@ -5,6 +5,8 @@
             cdq.g.line-of-sight
             cdq.g.raycaster
             cdq.g.potential-field
+            cdq.g.grid
+            cdq.g.schema
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
