@@ -1,6 +1,7 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
+                 [clojure.gdx.backends.lwjgl "1.13.0-0.2"]
                  [gdl "-SNAPSHOT"]
                  [metosin/malli "0.13.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
