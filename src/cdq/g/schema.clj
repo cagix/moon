@@ -29,7 +29,7 @@
                        [:ctx/id-counter :some]
                        [:ctx/entity-ids :some]
                        [:ctx/potential-field-cache :some]
-                       [:ctx/mouseover-eid :any]
+                       [:ctx/mouseover-eid {:optional true} :any]
                        [:ctx/player-eid :some]
                        [:ctx/active-entities {:optional true} :some]]))
 
