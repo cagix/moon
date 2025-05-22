@@ -2,10 +2,6 @@
   (:require [cdq.draw :as draw]
             [cdq.g :as g]))
 
-; TODO can still just call side effecty draws in entity/render-info ...
-
-; cdq.draw still used: ui-actors ( ? ) , draw-gui-view
-
 (defmulti draw! (fn [[k] _ctx]
                   k))
 

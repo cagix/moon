@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
@@ -100,6 +99,6 @@
 
   (state/draw-gui-view [_ eid {:keys [ctx/ui-viewport] :as ctx}]
     (when (not (world-item? ctx))
-      (draw/centered ctx
-                     (:entity/image (:entity/item-on-cursor @eid))
-                     (viewport/mouse-position ui-viewport)))))
+      [[:draw/centered
+        (:entity/image (:entity/item-on-cursor @eid))
+        (viewport/mouse-position ui-viewport)]])))
