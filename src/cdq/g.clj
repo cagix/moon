@@ -14,3 +14,6 @@
 
 (defprotocol EffectHandler
   (handle-txs! [_ transactions]))
+
+(defprotocol InteractionState
+  (interaction-state [_ eid]))
