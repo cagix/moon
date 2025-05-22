@@ -42,3 +42,6 @@
 (defprotocol EffectContext
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
+
+(defprotocol Graphics
+  (handle-draws! [_ draws]))
