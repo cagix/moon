@@ -9,14 +9,14 @@
             [gdl.ui :as ui]))
 
 (defn- create-app-state [config]
+  (run! require (:requires config))
+  (ui/load! (:ui config))
   (let [batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
         ui-viewport (graphics/ui-viewport (:ui-viewport config))
         stage (ui/stage (:java-object ui-viewport)
                         (:java-object batch))]
-    (run! require (:requires config))
-    (ui/load! (:ui config))
     (input/set-processor! stage)
     (cdq.g/map->Game
      {:ctx/config config

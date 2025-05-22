@@ -1,4 +1,14 @@
-{:requires [cdq.g.player-movement-vector
+{:clojure.gdx.backends.lwjgl {:title "Cyber Dungeon Quest"
+                              :windowed-mode {:width 1440
+                                              :height 900}
+                              :foreground-fps 60
+                              :mac-os {:glfw-async? true
+                                       :dock-icon "moon.png"}}
+ :create  cdq.application.create/do!
+ :dispose cdq.application.dispose/do!
+ :render  cdq.application.render/do!
+ :resize  cdq.application.resize/do!
+ :requires [cdq.g.player-movement-vector
             cdq.g.handle-txs
             cdq.g.interaction-state
             cdq.g.spawn-entity
@@ -67,33 +77,17 @@
             cdq.ui.editor.widget.one-to-many
             cdq.ui.editor.widget.image
             cdq.ui.editor.widget.animation
-            cdq.ui.editor.widget.map
-            ]
- :clojure.gdx.backends.lwjgl {:title "Cyber Dungeon Quest"
-                              :windowed-mode {:width 1440
-                                              :height 900}
-                              :foreground-fps 60
-                              :mac-os {:glfw-async? true
-                                       :dock-icon "moon.png"}}
- :create  cdq.application.create/do!
- :dispose cdq.application.dispose/do!
- :render  cdq.application.render/do!
- :resize  cdq.application.resize/do!
- :effect-body-props {:width 0.5
-                     :height 0.5
-                     :z-order :z-order/effect}
- :sound-path-format "sounds/%s.wav"
- :controls {:zoom-in :minus
-            :zoom-out :equals
-            :unpause-once :p
-            :unpause-continously :space}
- :pausing? true
- :zoom-speed 0.025
+            cdq.ui.editor.widget.map]
+ :ui {:skin-scale :x1}
+ :tile-size 48
+ :ui-viewport {:width 1440
+               :height 900}
  :db {:schemas "schema.edn"
       :properties "properties.edn"}
  :assets {:folder "resources/"
           :asset-type-extensions {:sound   #{"wav"}
                                   :texture #{"png" "bmp"}}}
+ :cursor-path-format "cursors/%s.png"
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
            :cursors/default               ["default"      [0   0]]
@@ -108,16 +102,21 @@
            :cursors/skill-not-usable      ["x007"         [0   0]]
            :cursors/use-skill             ["pointer004"   [0   0]]
            :cursors/walking               ["walking"      [16 16]]}
- :cursor-path-format "cursors/%s.png"
  :default-font {:file "fonts/exocet/films.EXL_____.ttf"
                 :size 16
                 :quality-scaling 2}
- :tile-size 48
  :world-viewport {:width 1440
                   :height 900}
- :ui-viewport {:width 1440
-               :height 900}
- :ui {:skin-scale :x1}
+ :effect-body-props {:width 0.5
+                     :height 0.5
+                     :z-order :z-order/effect}
+ :sound-path-format "sounds/%s.wav"
+ :controls {:zoom-in :minus
+            :zoom-out :equals
+            :unpause-once :p
+            :unpause-continously :space}
+ :pausing? true
+ :zoom-speed 0.025
  :content-grid-cells-size 16
  :world-fns [cdq.level.vampire/create
              cdq.level.uf-caves/create
