@@ -8,4 +8,7 @@
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
                                   (entity/enemy entity)))
-  )
+
+  (nearest-enemy [{:keys [ctx/grid]} entity]
+    (cell/nearest-entity @(grid (mapv int (:position entity)))
+                         (entity/enemy entity))))

@@ -4,7 +4,6 @@
             [cdq.inventory :as inventory]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
-            [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
@@ -57,17 +56,6 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [ctx/mouseover-eid
-                                  ctx/world-viewport]}
-                          eid]
-  (let [target-position (or (and mouseover-eid
-                                 (:position @mouseover-eid))
-                            (viewport/mouse-position world-viewport))]
-    {:effect/source eid
-     :effect/target mouseover-eid
-     :effect/target-position target-position
-     :effect/target-direction (v/direction (:position @eid) target-position)}))
-
 (extend-type cdq.g.Game
   g/InteractionState
   (interaction-state [{:keys [ctx/mouseover-eid]
@@ -87,7 +75,7 @@
        :else
        (if-let [skill-id (g/selected-skill ctx)]
          (let [skill (skill-id (:entity/skills entity))
-               effect-ctx (player-effect-ctx ctx eid)
+               effect-ctx (g/player-effect-ctx ctx eid)
                state (entity/skill-usable-state entity skill effect-ctx)]
            (if (= state :usable)
              ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight

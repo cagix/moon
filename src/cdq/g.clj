@@ -27,7 +27,8 @@
   (potential-field-find-direction [_ eid]))
 
 (defprotocol Grid
-  (nearest-enemy-distance [_ entity]))
+  (nearest-enemy-distance [_ entity])
+  (nearest-enemy [_ entity]))
 
 (defprotocol PlayerMovementInput
   (player-movement-vector [_]))
@@ -37,3 +38,7 @@
 
 (defprotocol InteractionState
   (interaction-state [_ eid]))
+
+(defprotocol EffectContext
+  (player-effect-ctx [_ eid])
+  (npc-effect-ctx [_ eid]))

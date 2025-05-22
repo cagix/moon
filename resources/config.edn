@@ -18,6 +18,7 @@
             cdq.g.grid
             cdq.g.schema
             cdq.g.game-state
+            cdq.g.effect-context
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
