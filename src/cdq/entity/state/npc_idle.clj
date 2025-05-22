@@ -4,7 +4,6 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.potential-field.movement :as potential-field]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
 
@@ -32,10 +31,9 @@
                                              (:position @target)))}))
 
 (defcomponent :npc-idle
-  (entity/tick! [_ eid {:keys [ctx/grid]
-                        :as ctx}]
+  (entity/tick! [_ eid ctx]
     (let [effect-ctx (npc-effect-context ctx eid)]
       (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (or (potential-field/find-direction grid eid)
+        [[:tx/event eid :movement-direction (or (g/potential-field-find-direction ctx eid)
                                                 [0 0])]]))))

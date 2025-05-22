@@ -10,6 +10,7 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
+            [cdq.potential-field.movement :as potential-field]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.entity-info]
             [cdq.ui.inventory :as inventory-window]
@@ -167,6 +168,9 @@
                              start
                              end
                              width))
+
+  (potential-field-find-direction [{:keys [ctx/grid]} eid]
+    (potential-field/find-direction grid eid))
   )
 
 (def application-configuration {:title "Cyber Dungeon Quest"
