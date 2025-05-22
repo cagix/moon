@@ -43,7 +43,6 @@
                                      :unpause-once :p
                                      :unpause-continously :space}
                       :ctx/sound-path-format "sounds/%s.wav"
-                      :ctx/unit-scale 1
                       :ctx/mouseover-eid nil
                       :ctx/effect-body-props {:width 0.5
                                               :height 0.5
@@ -71,6 +70,7 @@
                                              :asset-type-extensions {:sound   #{"wav"}
                                                                      :texture #{"png" "bmp"}}})
       :ctx/batch batch
+      :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
       :ctx/shape-drawer-texture shape-drawer-texture
       :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
