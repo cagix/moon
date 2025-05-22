@@ -2,10 +2,8 @@
   (:require [cdq.grid2d :as g2d]
             [gdl.tiled :as tiled]))
 
-(defn create [{:keys [ctx/config
-                      ctx/tiled-map]}]
-  (let [cell-size (:content-grid-cells-size config)
-        width  (tiled/tm-width  tiled-map)
+(defn create [tiled-map cell-size]
+  (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]
     {:grid (g2d/create-grid
             (inc (int (/ width  cell-size))) ; inc because corners
