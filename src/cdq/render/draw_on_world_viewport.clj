@@ -38,35 +38,32 @@
   (let [[x y] (:left-bottom entity)]
     (draw/rectangle ctx x y (:width entity) (:height entity) color)))
 
-(defn- debug-draw-before-entities! [{:keys [ctx/world-viewport
-                                            ctx/grid]
-                                     :as ctx}]
-  (let [cam (:camera world-viewport)
-        [left-x right-x bottom-y top-y] (camera/frustum cam)]
-
-    (when ctx/show-tile-grid?
+(defn- draw-tile-grid [{:keys [ctx/world-viewport]
+                        :as ctx}]
+  (when ctx/show-tile-grid?
+    (let [[left-x _right-x bottom-y _top-y] (camera/frustum (:camera world-viewport))]
       (draw/grid ctx
                  (int left-x) (int bottom-y)
                  (inc (int (:width  world-viewport)))
                  (+ 2 (int (:height world-viewport)))
-                 1 1 [1 1 1 0.8]))
+                 1 1 [1 1 1 0.8]))))
 
-    (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell (grid [x y])]
-            :when cell
-            :let [cell* @cell]]
-
-      (when (and ctx/show-cell-entities? (seq (:entities cell*)))
-        (draw/filled-rectangle ctx x y 1 1 [1 0 0 0.6]))
-
-      (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
-        (draw/filled-rectangle ctx x y 1 1 [0 0 1 0.6]))
-
-      (when-let [faction ctx/show-potential-field-colors?]
-        (let [{:keys [distance]} (faction cell*)]
-          (when distance
-            (let [ratio (/ distance (ctx/factions-iterations faction))]
-              (draw/filled-rectangle ctx x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+(defn- draw-cell-debug [{:keys [ctx/world-viewport
+                                ctx/grid]
+                         :as ctx}]
+  (doseq [[x y] (camera/visible-tiles (:camera world-viewport))
+          :let [cell (grid [x y])]
+          :when cell
+          :let [cell* @cell]]
+    (when (and ctx/show-cell-entities? (seq (:entities cell*)))
+      (draw/filled-rectangle ctx x y 1 1 [1 0 0 0.6]))
+    (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
+      (draw/filled-rectangle ctx x y 1 1 [0 0 1 0.6]))
+    (when-let [faction ctx/show-potential-field-colors?]
+      (let [{:keys [distance]} (faction cell*)]
+        (when distance
+          (let [ratio (/ distance (ctx/factions-iterations faction))]
+            (draw/filled-rectangle ctx x y 1 1 [ratio (- 1 ratio) ratio 0.6])))))))
 
 (defn- render-entities! [{:keys [ctx/active-entities
                                  ctx/player-eid]
@@ -92,22 +89,21 @@
          (draw-body-rect ctx entity :red)
          (pretty-pst t))))))
 
-(def draw-fns
-  [debug-draw-before-entities!
-   render-entities!
-   ; geom-test!
-   highlight-mouseover-tile!])
-
 (defn do! [{:keys [ctx/batch
                    ctx/world-viewport
                    ctx/world-unit-scale
                    ctx/unit-scale]
             :as ctx}]
-  (batch/draw-on-viewport! batch
-                           world-viewport
-                           (fn []
-                             (draw/with-line-width ctx world-unit-scale
-                               (fn []
-                                 (doseq [f draw-fns]
-                                   (f (assoc ctx :ctx/unit-scale world-unit-scale)))))))
+  (let [draw-fns [draw-tile-grid
+                  draw-cell-debug
+                  render-entities!
+                  ; geom-test!
+                  highlight-mouseover-tile!]]
+    (batch/draw-on-viewport! batch
+                             world-viewport
+                             (fn []
+                               (draw/with-line-width ctx world-unit-scale
+                                 (fn []
+                                   (doseq [f draw-fns]
+                                     (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
   nil)
