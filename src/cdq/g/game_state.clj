@@ -2,42 +2,16 @@
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid]
             [cdq.g :as g]
-            [cdq.state :as state]
-            [cdq.tx.spawn-creature]
+            [cdq.g.game-state.stage :as stage]
             [cdq.grid]
             [cdq.grid2d :as g2d]
+            [cdq.state :as state]
+            [cdq.tx.spawn-creature]
             [cdq.raycaster]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.dev-menu]
-            [cdq.ui.entity-info]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.hp-mana-bar]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.windows]
-            [cdq.ui.message]
             [cdq.utils :as utils]
-            [gdl.tiled :as tiled]
-            [gdl.ui :as ui]))
-
-(defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
-  [(cdq.ui.dev-menu/create ctx)
-   (cdq.ui.action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width  ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
-
-(defn reset-stage! [stage actors]
-  (ui/clear! stage)
-  (run! #(ui/add! stage %) actors))
+            [gdl.tiled :as tiled]))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
@@ -77,7 +51,7 @@
                              (player-entity-props (utils/tile->middle start-position)
                                                   ctx/player-entity-config)))
 
-(defn- spawn-enemies* [tiled-map]
+(defn- spawn-enemies [tiled-map]
   (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                 {:position position
                  :creature-id (keyword creature-id)
@@ -86,12 +60,8 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
-(defn- spawn-enemies! [{:keys [ctx/tiled-map] :as ctx}]
-  (g/handle-txs! ctx (spawn-enemies* tiled-map)))
-
 (defn- create-game-state [{:keys [ctx/config] :as ctx}]
-  (reset-stage! (:ctx/stage ctx)
-                (create-actors ctx))
+  (stage/reset ctx)
   (let [{:keys [tiled-map
                 start-position]} ((requiring-resolve (:world-fn config)) ctx)
         grid (cdq.grid/create tiled-map)
@@ -108,7 +78,7 @@
                     :ctx/entity-ids (atom {})
                     :ctx/potential-field-cache (atom nil)})
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position))]
-    (spawn-enemies! ctx)
+    (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
 (extend-type cdq.g.Game
