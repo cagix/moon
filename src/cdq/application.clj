@@ -1,222 +1,9 @@
 (ns cdq.application
-  (:require [cdq.ctx :as ctx]
-            cdq.create.assets
-            [cdq.content-grid]
-            cdq.db
-            [cdq.g :as g]
-            [cdq.state :as state]
-            [cdq.tx.spawn-creature]
-            [cdq.grid :as grid]
-            [cdq.grid2d :as g2d]
-            [cdq.raycaster :as raycaster]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.entity-info]
-            [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.hp-mana-bar]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.windows]
-            [cdq.ui.message]
-            [cdq.utils :as utils :refer [mapvals
-                                         io-slurp-edn
-                                         safe-get
-                                         safe-merge]]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.viewport :as viewport]
-            [gdl.input :as input]
-            [gdl.tiled :as tiled]
-            [gdl.ui :as ui]
-            [gdl.utils])
+  (:require [cdq.g :as g]
+            [clojure.gdx.backends.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(defn create-app-state []
-  (let [config (let [m (io-slurp-edn "config.edn")]
-                 (reify clojure.lang.ILookup
-                   (valAt [_ k]
-                     (safe-get m k))))
-        batch (graphics/sprite-batch)
-        shape-drawer-texture (graphics/white-pixel-texture)
-        world-unit-scale (float (/ (:tile-size config)))
-        ui-viewport (graphics/ui-viewport (:ui-viewport config))
-        stage (ui/stage (:java-object ui-viewport)
-                        (:java-object batch))]
-    (run! require (:requires config))
-    (ui/load! (:ui config))
-    (input/set-processor! stage)
-    (cdq.g/map->Game
-     {:ctx/config config
-      :ctx/db (cdq.db/create "properties.edn" "schema.edn")
-
-      :ctx/assets (cdq.create.assets/create {:folder "resources/"
-                                             :asset-type-extensions {:sound   #{"wav"}
-                                                                     :texture #{"png" "bmp"}}})
-      :ctx/batch batch
-      :ctx/unit-scale 1
-      :ctx/world-unit-scale world-unit-scale
-      :ctx/shape-drawer-texture shape-drawer-texture
-      :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
-      :ctx/cursors (mapvals
-                    (fn [[file [hotspot-x hotspot-y]]]
-                      (graphics/cursor (format (:cursor-path-format config) file)
-                                       hotspot-x
-                                       hotspot-y))
-                    (:cursors config))
-      :ctx/default-font (graphics/truetype-font (:default-font config))
-      :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
-      :ctx/ui-viewport ui-viewport
-      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
-                                         (tiled/renderer tiled-map
-                                                         world-unit-scale
-                                                         (:java-object batch))))
-      :ctx/stage stage})))
-
-(defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
-  [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
-   (cdq.ui.action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width  ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
-
-(defn reset-stage! [stage actors]
-  (ui/clear! stage)
-  (run! #(ui/add! stage %) actors))
-
-(defn- player-entity-props [start-position {:keys [creature-id
-                                                   free-skill-points
-                                                   click-distance-tiles]}]
-  {:position start-position
-   :creature-id creature-id
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? {:state-changed! (fn [new-state-obj]
-                                                   (when-let [cursor (state/cursor new-state-obj)]
-                                                     [[:tx/set-cursor cursor]]))
-                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
-                                                 (-> stage
-                                                     :action-bar
-                                                     (action-bar/add-skill! skill)))
-                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
-                                                   (-> stage
-                                                       :action-bar
-                                                       (action-bar/remove-skill! skill)))
-                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
-                                              (-> stage
-                                                  :windows
-                                                  :inventory-window
-                                                  (inventory-window/set-item! inventory-cell item)))
-                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
-                                                  (-> stage
-                                                      :windows
-                                                      :inventory-window
-                                                      (inventory-window/remove-item! inventory-cell)))}
-                :entity/free-skill-points free-skill-points
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles click-distance-tiles}})
-
-(defn- spawn-player-entity [ctx start-position]
-  (cdq.tx.spawn-creature/do! ctx
-                             (player-entity-props (utils/tile->middle start-position)
-                                                  ctx/player-entity-config)))
-
-(defn- spawn-enemies* [tiled-map]
-  (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                {:position position
-                 :creature-id (keyword creature-id)
-                 :components {:entity/fsm {:fsm :fsms/npc
-                                           :initial-state :npc-sleeping}
-                              :entity/faction :evil}})]
-    [:tx/spawn-creature (update props :position utils/tile->middle)]))
-
-(defn- spawn-enemies! [{:keys [ctx/tiled-map] :as ctx}]
-  (g/handle-txs! ctx (spawn-enemies* tiled-map)))
-
-(defn create-game-state [ctx]
-  (reset-stage! (:ctx/stage ctx)
-                (create-actors ctx))
-  (let [{:keys [tiled-map
-                start-position]} ((requiring-resolve 'cdq.level.vampire/create) ctx)
-        grid (cdq.grid/create tiled-map)
-        ctx (merge ctx
-                   {:ctx/tiled-map tiled-map
-                    :ctx/elapsed-time 0
-                    :ctx/grid grid
-                    :ctx/raycaster (cdq.raycaster/create grid)
-                    :ctx/content-grid (cdq.content-grid/create tiled-map 16)
-                    :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                                      (tiled/tm-height tiled-map)
-                                                                      (constantly false)))
-                    :ctx/id-counter (atom 0)
-                    :ctx/entity-ids (atom {})
-                    :ctx/potential-field-cache (atom nil)})
-        ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position))]
-    (spawn-enemies! ctx)
-    ctx))
-
-(defn create! []
-  (create-game-state (create-app-state)))
-
-(def render-fns '[cdq.render.bind-active-entities/do!
-                  cdq.render.set-camera-on-player/do!
-                  cdq.render.clear-screen/do!
-                  cdq.render.draw-tiled-map/do!
-                  cdq.render.draw-on-world-viewport/do!
-                  cdq.render.draw-ui/do!
-                  cdq.render.update-ui/do!
-                  cdq.render.player-state-handle-click/do!
-                  cdq.render.update-mouseover-entity/do!
-                  cdq.render.bind-paused/do!
-                  cdq.render.when-not-paused/do!
-                  cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                  cdq.render.camera-controls/do!])
-
-(defn render! [ctx]
-  (reduce (fn [ctx render-fn]
-            (if-let [result ((requiring-resolve render-fn) ctx)]
-              result
-              ctx))
-          ctx
-          render-fns))
-
-(defn dispose! [{:keys [ctx/assets
-                        ctx/batch
-                        ctx/shape-drawer-texture
-                        ctx/cursors
-                        ctx/default-font]}]
-  (gdl.utils/dispose! assets)
-  (gdl.utils/dispose! batch)
-  (gdl.utils/dispose! shape-drawer-texture)
-  (run! gdl.utils/dispose! (vals cursors))
-  (gdl.utils/dispose! default-font)
-  ; TODO vis-ui dispose
-  ; TODO dispose world tiled-map/level resources?
-  )
-
-(defn resize! [{:keys [ctx/ui-viewport
-                       ctx/world-viewport]}]
-  (viewport/update! ui-viewport)
-  (viewport/update! world-viewport))
-
 (def state (atom nil))
-
-(comment
- (spit "state.clj"
-       (with-out-str
-        (clojure.pprint/pprint
-         (sort (keys @state)))))
- )
-
-(defn reset-game-state! []
-  (swap! state create-game-state))
 
 (defn -main []
   (lwjgl/application {:title "Cyber Dungeon Quest"
@@ -227,18 +14,18 @@
                                :dock-icon "moon.png"}}
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create!))
+                         (reset! state ((requiring-resolve 'cdq.application.create/do!)))
                          (g/validate @state))
 
                        (dispose []
                          (g/validate @state)
-                         (dispose! @state))
+                         ((requiring-resolve 'cdq.application.dispose/do!) @state))
 
                        (render []
                          (g/validate @state)
-                         (swap! state render!)
+                         (swap! state (requiring-resolve 'cdq.application.render/do!))
                          (g/validate @state))
 
                        (resize [_width _height]
                          (g/validate @state)
-                         (resize! @state)))))
+                         ((requiring-resolve 'cdq.application.resize/do!) @state)))))
