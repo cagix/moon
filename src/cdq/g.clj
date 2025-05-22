@@ -5,6 +5,9 @@
 (defprotocol GameState
   (reset-game-state! [_]))
 
+(defprotocol Stage
+  (mouseover-actor [_]))
+
 (defprotocol Schema
   (validate [_]))
 

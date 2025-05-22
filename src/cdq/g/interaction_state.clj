@@ -71,13 +71,11 @@
 
 (extend-type cdq.g.Game
   g/InteractionState
-  (interaction-state [{:keys [ctx/stage
-                              ctx/ui-viewport
-                              ctx/mouseover-eid]
+  (interaction-state [{:keys [ctx/mouseover-eid]
                        :as ctx}
                       eid]
     (let [entity @eid
-          mouseover-actor (ui/hit stage (viewport/mouse-position ui-viewport))]
+          mouseover-actor (g/mouseover-actor ctx)]
       (cond
        mouseover-actor
        [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))

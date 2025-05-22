@@ -1,5 +1,6 @@
 (ns cdq.g.game-state.stage
-  (:require [cdq.ui.action-bar]
+  (:require [cdq.g :as g]
+            [cdq.ui.action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
             [cdq.ui.inventory]
@@ -7,6 +8,7 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
             [cdq.ui.message]
+            [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
@@ -28,3 +30,9 @@
 (defn reset [{:keys [ctx/stage] :as ctx}]
   (ui/clear! stage)
   (run! #(ui/add! stage %) (create-actors ctx)))
+
+(extend-type cdq.g.Game
+  g/Stage
+  (mouseover-actor [{:keys [ctx/stage
+                            ctx/ui-viewport]}]
+    (ui/hit stage (viewport/mouse-position ui-viewport))))

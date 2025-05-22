@@ -6,14 +6,12 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
-(defn do! [{:keys [ctx/stage
-                   ctx/ui-viewport
-                   ctx/player-eid
+(defn do! [{:keys [ctx/player-eid
                    ctx/grid
                    ctx/world-viewport
                    ctx/mouseover-eid]
             :as ctx}]
-  (let [new-eid (if (ui/hit stage (viewport/mouse-position ui-viewport))
+  (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
