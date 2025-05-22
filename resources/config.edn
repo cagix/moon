@@ -1,4 +1,6 @@
-{:requires [cdq.effects.target.audiovisual
+{:requires [cdq.g.player-movement-vector
+
+            cdq.effects.target.audiovisual
             cdq.effects.target.convert
             cdq.effects.target.damage
             cdq.effects.target.kill
