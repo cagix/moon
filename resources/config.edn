@@ -79,6 +79,11 @@
             :unpause-continously :space}
  :pausing? true
  :zoom-speed 0.025
+ :db {:schemas "schema.edn"
+      :properties "properties.edn"}
+ :assets {:folder "resources/"
+          :asset-type-extensions {:sound   #{"wav"}
+                                  :texture #{"png" "bmp"}}}
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
            :cursors/default               ["default"      [0   0]]

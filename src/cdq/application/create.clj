@@ -26,10 +26,8 @@
     (input/set-processor! stage)
     (cdq.g/map->Game
      {:ctx/config config
-      :ctx/db (cdq.db/create "properties.edn" "schema.edn")
-      :ctx/assets (cdq.create.assets/create {:folder "resources/"
-                                             :asset-type-extensions {:sound   #{"wav"}
-                                                                     :texture #{"png" "bmp"}}})
+      :ctx/db (cdq.db/create (:db config))
+      :ctx/assets (cdq.create.assets/create (:assets config))
       :ctx/batch batch
       :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
