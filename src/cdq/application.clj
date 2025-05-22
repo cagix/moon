@@ -333,7 +333,6 @@
                 :entity/click-distance-tiles click-distance-tiles}})
 
 (defn- spawn-player-entity [ctx start-position]
-  (println "spawn-player-entity - class " (class ctx))
   (cdq.tx.spawn-creature/do! ctx
                              (player-entity-props (utils/tile->middle start-position)
                                                   ctx/player-entity-config)))
@@ -352,7 +351,6 @@
                    (spawn-enemies* tiled-map)))
 
 (defn create-game-state [ctx]
-  (println "create-game-state - class " (class ctx))
   (reset-stage! (:ctx/stage ctx)
                 (create-actors ctx))
   (let [{:keys [tiled-map
