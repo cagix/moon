@@ -184,6 +184,9 @@
     (fn []
       (c/handle-draws! ctx draws))))
 
+; TODO
+; !! -> use namespaced keywords <- !!
+
 (defrecord Gdx [assets
                 batch
                 unit-scale
