@@ -11,59 +11,74 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics.viewport :as viewport]))
 
-(defn- geom-test! [{:keys [ctx/world-viewport
-                           ctx/grid]
-                    :as ctx}]
+(defn- geom-test* [{:keys [ctx/world-viewport
+                           ctx/grid]}]
   (let [position (viewport/mouse-position world-viewport)
         radius 0.8
-        circle {:position position :radius radius}]
-    (draw/circle ctx position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
-      (draw/rectangle ctx x y 1 1 [1 0 0 0.5]))
-    (let [{[x y] :left-bottom :keys [width height]} (math/circle->outer-rectangle circle)]
-      (draw/rectangle ctx x y width height [0 0 1 1]))))
+        circle {:position position
+                :radius radius}]
+    (conj (cons [:draw/circle position radius [1 0 0 0.5]]
+                (for [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
+                  [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
+          (let [{[x y] :left-bottom
+                 :keys [width height]} (math/circle->outer-rectangle circle)]
+            [:draw/rectangle x y width height [0 0 1 1]]))))
 
-(defn- highlight-mouseover-tile! [{:keys [ctx/world-viewport
-                                          ctx/grid]
-                                   :as ctx}]
+(defn- geom-test [ctx]
+  (g/handle-draws! ctx (geom-test* ctx)))
+
+(defn- highlight-mouseover-tile* [{:keys [ctx/world-viewport
+                                          ctx/grid]}]
   (let [[x y] (mapv int (viewport/mouse-position world-viewport))
         cell (grid [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
-      (draw/rectangle ctx x y 1 1
-                      (case (:movement @cell)
-                        :air  [1 1 0 0.5]
-                        :none [1 0 0 0.5])))))
+      [[:draw/rectangle x y 1 1
+        (case (:movement @cell)
+          :air  [1 1 0 0.5]
+          :none [1 0 0 0.5])]])))
+
+(defn- highlight-mouseover-tile [ctx]
+  (g/handle-draws! ctx (highlight-mouseover-tile* ctx)))
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
-(defn- draw-tile-grid [{:keys [ctx/world-viewport]
-                        :as ctx}]
+(defn- draw-tile-grid* [{:keys [ctx/world-viewport]}]
   (when ctx/show-tile-grid?
     (let [[left-x _right-x bottom-y _top-y] (camera/frustum (:camera world-viewport))]
-      (draw/grid ctx
-                 (int left-x) (int bottom-y)
-                 (inc (int (:width  world-viewport)))
-                 (+ 2 (int (:height world-viewport)))
-                 1 1 [1 1 1 0.8]))))
+      [[:draw/grid
+        (int left-x)
+        (int bottom-y)
+        (inc (int (:width  world-viewport)))
+        (+ 2 (int (:height world-viewport)))
+        1
+        1
+        [1 1 1 0.8]]])))
 
-(defn- draw-cell-debug [{:keys [ctx/world-viewport
-                                ctx/grid]
-                         :as ctx}]
-  (doseq [[x y] (camera/visible-tiles (:camera world-viewport))
-          :let [cell (grid [x y])]
-          :when cell
-          :let [cell* @cell]]
-    (when (and ctx/show-cell-entities? (seq (:entities cell*)))
-      (draw/filled-rectangle ctx x y 1 1 [1 0 0 0.6]))
-    (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
-      (draw/filled-rectangle ctx x y 1 1 [0 0 1 0.6]))
-    (when-let [faction ctx/show-potential-field-colors?]
-      (let [{:keys [distance]} (faction cell*)]
-        (when distance
-          (let [ratio (/ distance (ctx/factions-iterations faction))]
-            (draw/filled-rectangle ctx x y 1 1 [ratio (- 1 ratio) ratio 0.6])))))))
+(defn- draw-tile-grid [ctx]
+  (g/handle-draws! ctx (draw-tile-grid* ctx)))
+
+(defn- draw-cell-debug* [{:keys [ctx/world-viewport
+                                 ctx/grid]
+                          :as ctx}]
+  (apply concat
+         (for [[x y] (camera/visible-tiles (:camera world-viewport))
+               :let [cell (grid [x y])]
+               :when cell
+               :let [cell* @cell]]
+           [(when (and ctx/show-cell-entities? (seq (:entities cell*)))
+              [:draw/filled-rectangle x y 1 1 [1 0 0 0.6]])
+            (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
+              [:draw/filled-rectangle x y 1 1 [0 0 1 0.6]])
+            (when-let [faction ctx/show-potential-field-colors?]
+              (let [{:keys [distance]} (faction cell*)]
+                (when distance
+                  (let [ratio (/ distance (ctx/factions-iterations faction))]
+                    [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
+
+(defn- draw-cell-debug [ctx]
+  (g/handle-draws! ctx (draw-cell-debug* ctx)))
 
 (defn- render-entities! [{:keys [ctx/active-entities
                                  ctx/player-eid]
@@ -97,8 +112,8 @@
   (let [draw-fns [draw-tile-grid
                   draw-cell-debug
                   render-entities!
-                  ; geom-test!
-                  highlight-mouseover-tile!]]
+                  ;geom-test
+                  highlight-mouseover-tile]]
     (batch/draw-on-viewport! batch
                              world-viewport
                              (fn []

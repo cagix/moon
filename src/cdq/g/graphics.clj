@@ -38,6 +38,9 @@
 (defmethod draw! :draw/sector [[_ & opts] ctx]
   (apply draw/sector ctx opts))
 
+(defmethod draw! :draw/grid [[_ & opts] ctx]
+  (apply draw/grid ctx opts))
+
 (defmethod draw! :draw/with-line-width [[_ width draws] ctx]
   (draw/with-line-width ctx width
     (fn []
@@ -46,5 +49,6 @@
 (extend-type cdq.g.Game
   g/Graphics
   (handle-draws! [ctx draws]
-    (doseq [component draws]
+    (doseq [component draws
+            :when component]
       (draw! component ctx))))
