@@ -1,8 +1,3 @@
-; * all gdl dependencies here (actor ?) -> frames-per-second ...
-; => gdl still required ?
-; * private functions out -> sprite, assets, etc.
-; ?
-; * dispose/schema sees this too ...
 (ns cdq.application.create
   (:require [gdl.assets :as assets]
             [cdq.db :as db]
@@ -188,6 +183,10 @@
 (defmethod draw! :draw/centered [[_ image position] ctx]
   (draw! [:draw/rotated-centered image 0 position] ctx))
 
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
                              {:keys [ctx/default-font
                                      ctx/batch
@@ -265,12 +264,6 @@
   (sd/with-line-width shape-drawer width
     (fn []
       (g/handle-draws! ctx draws))))
-
-; doc for :draw/text:
-;  "font, h-align, up? and scale are optional.
-;  h-align one of: :center, :left, :right. Default :center.
-;  up? renders the font over y, otherwise under.
-;  scale will multiply the drawn text size with the scale."
 
 (extend-type cdq.g.Game
   g/Graphics
