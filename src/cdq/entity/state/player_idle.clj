@@ -1,8 +1,8 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.c :as c]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [gdl.c :as c]))
 
 (defcomponent :player-idle
   (state/pause-game? [_] true)

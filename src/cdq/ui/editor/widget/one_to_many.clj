@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.one-to-many
-  (:require [cdq.c :as c]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
+            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defn- add-one-to-many-rows [ctx table property-type property-ids]

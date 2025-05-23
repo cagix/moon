@@ -1,12 +1,12 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.c :as c]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [cdq.schema :as schema]
             [cdq.malli :as m]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :as utils]
             [clojure.set :as set]
+            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (def ^:private property-k-sort-order

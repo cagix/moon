@@ -1,7 +1,7 @@
 (ns cdq.gdx
-  (:require [cdq.c :as c]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [gdl.assets :as assets]
+            [gdl.c :as c]
             [gdl.files :as files]
             [gdl.files.file-handle :as fh]
             [gdl.graphics :as graphics]

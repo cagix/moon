@@ -1,8 +1,8 @@
 (ns cdq.ui.hp-mana-bar
   (:require [cdq.entity :as entity]
-            [cdq.c :as c]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
+            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defn- render-infostr-on-bar [infostr x y h]

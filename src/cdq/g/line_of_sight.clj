@@ -1,7 +1,7 @@
 (ns cdq.g.line-of-sight
   (:require cdq.gdx
-            [cdq.c :as c]
-            [cdq.g :as g]))
+            [cdq.g :as g]
+            [gdl.c :as c]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

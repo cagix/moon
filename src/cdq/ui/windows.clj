@@ -1,5 +1,5 @@
 (ns cdq.ui.windows
-  (:require [cdq.c :as c]
+  (:require [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defn- check-escape-close-windows [ctx windows]

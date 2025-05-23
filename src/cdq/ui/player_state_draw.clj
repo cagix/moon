@@ -1,7 +1,7 @@
 (ns cdq.ui.player-state-draw
   (:require [cdq.entity :as entity]
-            [cdq.c :as c]
             [cdq.state :as state]
+            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defn create []

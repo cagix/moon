@@ -5,7 +5,6 @@
             [cdq.application.potential-fields.update :as potential-fields.update]
             [cdq.application.potential-fields.movement :as potential-fields.movement]
             [cdq.application.raycaster :as raycaster]
-            [cdq.c :as c]
             [cdq.gdx :as gdx]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
@@ -33,6 +32,7 @@
 
             [clojure.gdx.backends.lwjgl :as lwjgl]
 
+            [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [mapvals]])

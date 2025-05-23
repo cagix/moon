@@ -1,9 +1,9 @@
 (ns cdq.impl.schemas
   (:require [cdq.animation :as animation]
-            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.schema :as schema]
-            [cdq.val-max :as val-max]))
+            [cdq.val-max :as val-max]
+            [gdl.c :as c]))
 
 (defmethod schema/malli-form :s/val-max [_ _schemas] val-max/schema)
 (defmethod schema/malli-form :s/number  [_ _schemas] number?)

@@ -1,5 +1,5 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.c :as c]
+  (:require [gdl.c :as c]
             [gdl.ui :as ui]))
 
 ; no window movable type cursor appears here like in player idle

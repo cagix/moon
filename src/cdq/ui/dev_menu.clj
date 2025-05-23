@@ -1,10 +1,10 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
+            [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.ui.menu :as menu]))
 

@@ -1,9 +1,9 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.c :as c]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+            [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 

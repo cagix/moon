@@ -1,8 +1,8 @@
 (ns cdq.g.effect-context
   (:require cdq.gdx
-            [cdq.c :as c]
             [cdq.g :as g]
-            [cdq.vector2 :as v]))
+            [cdq.vector2 :as v]
+            [gdl.c :as c]))
 
 (extend-type cdq.gdx.Gdx
   g/EffectContext

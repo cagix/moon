@@ -1,6 +1,6 @@
 (ns cdq.tx.sound
-  (:require [cdq.c :as c]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
+            [gdl.c :as c]
             [gdl.audio.sound :as sound]))
 
 (defn do! [ctx sound-name]

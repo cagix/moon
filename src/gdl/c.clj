@@ -1,4 +1,4 @@
-(ns cdq.c)
+(ns gdl.c)
 
 (defprotocol Disposable
   (dispose! [_]))

@@ -1,12 +1,12 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
-            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.property :as property]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :as utils]
+            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]

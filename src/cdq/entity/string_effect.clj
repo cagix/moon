@@ -1,8 +1,8 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
-            [cdq.c :as c]
             [cdq.g :as g]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [gdl.c :as c]))
 
 (defcomponent :entity/string-effect
   (entity/tick! [[k {:keys [counter]}] eid ctx]

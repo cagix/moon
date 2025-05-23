@@ -1,12 +1,12 @@
 (ns cdq.ui.inventory
   (:require [cdq.entity :as entity]
-            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.utils :as utils]
+            [gdl.c :as c]
             [gdl.graphics]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
