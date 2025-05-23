@@ -7,13 +7,14 @@
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils])
   (:import (clojure.lang IFn)
            (com.badlogic.gdx ApplicationAdapter
-                             Gdx)
+                             Gdx
+                             Input$Keys
+                             Input$Buttons)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -27,6 +28,27 @@
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 ;;
+
+(defn- k->code [key]
+  (case key
+    :minus  Input$Keys/MINUS
+    :equals Input$Keys/EQUALS
+    :space  Input$Keys/SPACE
+    :p      Input$Keys/P
+    :enter  Input$Keys/ENTER
+    :escape Input$Keys/ESCAPE
+    :i      Input$Keys/I
+    :e      Input$Keys/E
+    :d      Input$Keys/D
+    :a      Input$Keys/A
+    :w      Input$Keys/W
+    :s      Input$Keys/S
+    ))
+
+(defn- button->code [button]
+  (case button
+    :left Input$Buttons/LEFT
+    ))
 
 (defn- asset-type->class ^Class [asset-type]
   (case asset-type
@@ -409,13 +431,13 @@
 
   c/Input
   (button-just-pressed? [_ button]
-    (input/button-just-pressed? button))
+    (.isButtonJustPressed Gdx/input (button->code button)))
 
   (key-pressed? [_ key]
-    (input/key-pressed? key))
+    (.isKeyPressed Gdx/input (k->code key)))
 
   (key-just-pressed? [_ key]
-    (input/key-just-pressed? key)))
+    (.isKeyJustPressed Gdx/input (k->code key))))
 
 (defn- create-state! [config]
   (ui/load! (:ui config))
@@ -425,7 +447,7 @@
         ui-viewport (graphics/ui-viewport (:ui-viewport config))
         stage (ui/stage (:java-object ui-viewport)
                         (:java-object batch))]
-    (input/set-processor! stage)
+    (.setInputProcessor Gdx/input stage)
     (map->Context {:assets (create-assets (:assets config))
                    :batch batch
                    :unit-scale 1
