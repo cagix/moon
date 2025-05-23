@@ -1,6 +1,6 @@
 (ns cdq.application.config
-  (:require [cdq.utils :refer [io-slurp-edn
-                               safe-get]])
+  (:require [cdq.utils :refer [io-slurp-edn]]
+            [gdl.utils :refer [safe-get]])
   (:import (clojure.lang ILookup)))
 
 (defn create [path]

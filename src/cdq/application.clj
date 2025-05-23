@@ -26,8 +26,7 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
             [cdq.ui.message]
-            [cdq.utils :as utils :refer [mapvals
-                                         sort-by-order
+            [cdq.utils :as utils :refer [sort-by-order
                                          pretty-pst
                                          safe-merge]]
             [cdq.vector2 :as v]
@@ -35,7 +34,8 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
 
             [gdl.graphics :as graphics]
-            [gdl.tiled :as tiled])
+            [gdl.tiled :as tiled]
+            [gdl.utils :refer [mapvals]])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (defrecord Body [position

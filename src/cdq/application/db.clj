@@ -5,7 +5,8 @@
             [cdq.malli :as m]
             [cdq.utils :as utils :refer [io-slurp-edn]]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [gdl.utils :refer [safe-get]]))
 
 (defprotocol PDB
   (update [_ property]
@@ -54,7 +55,7 @@
          (utils/async-pprint-spit! file)))
 
   (get-raw [_ property-id]
-    (utils/safe-get data property-id))
+    (safe-get data property-id))
 
   (all-raw [_ property-type]
     (->> (vals data)

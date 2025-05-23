@@ -1,6 +1,5 @@
 (ns cdq.gdx
   (:require [cdq.c :as c]
-            [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.files :as files]
@@ -11,7 +10,7 @@
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
-            [gdl.utils :refer [dispose!]]))
+            [gdl.utils :as utils]))
 
 (defn- recursively-search [folder extensions]
   (loop [[file & remaining] (fh/list (files/internal folder))
@@ -199,11 +198,11 @@
                 stage]
   c/Disposable
   (dispose! [_]
-    (dispose! assets)
-    (dispose! batch)
-    (dispose! shape-drawer-texture)
-    (run! dispose! (vals cursors))
-    (dispose! default-font)
+    (utils/dispose! assets)
+    (utils/dispose! batch)
+    (utils/dispose! shape-drawer-texture)
+    (run! utils/dispose! (vals cursors))
+    (utils/dispose! default-font)
     ; TODO vis-ui dispose
     )
 
