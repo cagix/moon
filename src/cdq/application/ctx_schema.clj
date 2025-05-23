@@ -1,4 +1,4 @@
-(ns cdq.application.schema
+(ns cdq.application.ctx-schema
   (:require [cdq.malli :as m]))
 
 (def ^:private schema
