@@ -1,4 +1,4 @@
-(ns forge.mapgen-test
+#_(ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -7,7 +7,7 @@
 
 (def state (atom nil))
 
-(defn- show-whole-map! [camera tiled-map]
+#_(defn- show-whole-map! [camera tiled-map]
   (camera/set-position! camera
                         [(/ (tiled/tm-width  tiled-map) 2)
                          (/ (tiled/tm-height tiled-map) 2)])

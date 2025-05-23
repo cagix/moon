@@ -1,15 +1,15 @@
 ; => space invaders <=
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.interop :as interop]
-            [gdl.tiled :as tiled]
-            [gdl.ui :as ui]
-            [gdl.utils :as utils])
+            [gdl.tiled :as tiled] ; only renderer, internal
+            [gdl.ui :as ui] ; partly internal ? ? are the widgets part of ctx ???
+            [gdl.utils :as utils]) ; dispose, safe-get, mapvals
   (:import (clojure.lang IFn
                          ILookup)
            (com.badlogic.gdx ApplicationAdapter
