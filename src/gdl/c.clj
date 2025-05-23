@@ -11,6 +11,8 @@
 (defprotocol Graphics
   (delta-time [_])
   (clear-screen! [_])
+  (frames-per-second [_])
+  (set-cursor! [_ cursor-key])
   (handle-draws! [_ draws])
   (world-mouse-position [_])
   (ui-mouse-position [_])
@@ -24,7 +26,6 @@
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]])
-  (set-cursor! [_ cursor-key])
   (world-viewport-width [_])
   (world-viewport-height [_])
   (ui-viewport-width [_])

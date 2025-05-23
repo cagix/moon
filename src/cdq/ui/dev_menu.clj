@@ -5,7 +5,6 @@
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.c :as c]
-            [gdl.graphics :as graphics]
             [gdl.ui.menu :as menu]))
 
 ; The dev menu is actually outside the application
@@ -46,8 +45,7 @@
                      :update-fn c/camera-zoom
                      :icon (c/texture ctx "images/zoom.png")}
                     {:label "FPS"
-                     :update-fn (fn [_ctx]
-                                  (graphics/frames-per-second))
+                     :update-fn c/frames-per-second
                      :icon (c/texture ctx "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "
