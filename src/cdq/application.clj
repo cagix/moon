@@ -5,7 +5,6 @@
             [cdq.application.potential-fields.update :as potential-fields.update]
             [cdq.application.potential-fields.movement :as potential-fields.movement]
             [cdq.application.raycaster :as raycaster]
-            [gdl.application :as gdx]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
@@ -30,13 +29,11 @@
                                          safe-merge]]
             [cdq.vector2 :as v]
 
-            [clojure.gdx.backends.lwjgl :as lwjgl]
 
+            [gdl.application]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
-            [gdl.tiled :as tiled]
-            [gdl.utils :refer [mapvals]])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+            [gdl.tiled :as tiled]))
 
 (defrecord Body [position
                  left-bottom
@@ -382,11 +379,6 @@
       (db/save! new-db)
       (assoc ctx :ctx/db new-db))))
 
-(defn- dispose-game-state! [ctx]
-  (c/dispose! ctx)
-  ; TODO dispose world tiled-map/level resources?
-  )
-
 (defn- geom-test* [ctx]
   (let [position (c/world-mouse-position ctx)
         radius 0.8
@@ -556,6 +548,7 @@
   (update ctx :ctx/elapsed-time + delta-time))
 
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
+  (ctx-schema/validate ctx)
   (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
     (c/set-camera-position! ctx (:position @player-eid))
     (c/clear-screen! ctx)
@@ -582,32 +575,22 @@
       (camera-controls! ctx)
       ctx)))
 
-(def state (atom nil))
-
 (defn reset-game-state! []
-  (swap! state create-game-state))
+  (swap! gdl.application/state create-game-state))
 
 (defn -main []
   (let [config (config/create "config.edn")]
     (run! require (:requires config))
-    (lwjgl/application (:clojure.gdx.backends.lwjgl config)
-                       (proxy [ApplicationAdapter] []
-                         (create []
-                           (reset! state (-> (gdx/create config)
-                                             (safe-merge {:ctx/config config
-                                                          :ctx/db (db/create (:db config))})
-                                             create-game-state))
-                           (ctx-schema/validate @state))
+    (gdl.application/start! config
+                            (fn [context]
+                              (-> context
+                                  (safe-merge {:ctx/config config
+                                               :ctx/db (db/create (:db config))})
+                                  create-game-state))
+                            render-game-state!
 
-                         (dispose []
-                           (ctx-schema/validate @state)
-                           (dispose-game-state! @state))
-
-                         (render []
-                           (ctx-schema/validate @state)
-                           (swap! state render-game-state!)
-                           (ctx-schema/validate @state))
-
-                         (resize [_width _height]
-                           (ctx-schema/validate @state)
-                           (c/update-viewports! @state))))))
+                              #_(dispose! [_]
+                                ; nil
+                                ; TODO dispose world tiled-map/level resources?
+                                )
+                              )))

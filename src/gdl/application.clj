@@ -1,5 +1,6 @@
 (ns gdl.application
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.c :as c]
             [gdl.files :as files]
@@ -11,7 +12,8 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils])
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -188,6 +190,12 @@
 ; TODO
 ; !! -> use namespaced keywords <- !!
 
+(defprotocol Disposable
+  (dispose! [_]))
+
+(defprotocol Viewports
+  (update-viewports! [_]))
+
 (defrecord Context [assets
                     batch
                     unit-scale
@@ -200,7 +208,7 @@
                     ui-viewport
                     tiled-map-renderer
                     stage]
-  c/Disposable
+  Disposable
   (dispose! [_]
     (utils/dispose! assets)
     (utils/dispose! batch)
@@ -209,6 +217,12 @@
     (utils/dispose! default-font)
     ; TODO vis-ui dispose
     )
+
+  Viewports
+  (update-viewports! [_]
+    (graphics/update! ui-viewport)
+    (graphics/update! world-viewport))
+
 
   c/Textures
   (texture [_ path]
@@ -238,10 +252,6 @@
 
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
-
-  (update-viewports! [_]
-    (graphics/update! ui-viewport)
-    (graphics/update! world-viewport))
 
   (draw-on-world-viewport! [ctx fns]
     (graphics/draw-on-viewport! batch
@@ -375,7 +385,7 @@
   (key-just-pressed? [_ key]
     (input/key-just-pressed? key)))
 
-(defn create [config]
+(defn- create-state! [config]
   (ui/load! (:ui config))
   (let [batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
@@ -404,3 +414,27 @@
                                                                   world-unit-scale
                                                                   (:java-object batch))))
                    :stage stage})))
+
+(def state (atom nil))
+
+(defn start! [config create! render!]
+  (lwjgl/application (:clojure.gdx.backends.lwjgl config)
+                     (proxy [ApplicationAdapter] []
+                       (create []
+                         (reset! state (create! (create-state! config)))
+                         #_(ctx-schema/validate @state))
+
+                       (dispose []
+                         #_(ctx-schema/validate @state)
+                         (dispose! @state)
+                         #_(dispose! @state)
+                         )
+
+                       (render []
+                         #_(ctx-schema/validate @state)
+                         (swap! state render!)
+                         #_(ctx-schema/validate @state))
+
+                       (resize [_width _height]
+                         #_(ctx-schema/validate @state)
+                         (update-viewports! @state)))))

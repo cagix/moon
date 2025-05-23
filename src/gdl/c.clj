@@ -1,8 +1,5 @@
 (ns gdl.c)
 
-(defprotocol Disposable
-  (dispose! [_]))
-
 (defprotocol Textures
   (texture [_ path])
   (all-textures [_]))
@@ -34,8 +31,7 @@
   (ui-viewport-height [_])
   (draw-on-world-viewport! [_ fns])
   (draw-tiled-map! [_ tiled-map color-setter])
-  (set-camera-position! [_ position])
-  (update-viewports! [_]))
+  (set-camera-position! [_ position]))
 
 (defprotocol Stage
   (get-actor [_ id])
