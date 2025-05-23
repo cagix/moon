@@ -1,6 +1,7 @@
 (ns cdq.g.graphics
   (:require [cdq.draw :as draw]
-            [cdq.g :as g]))
+            [cdq.g :as g]
+            [gdl.graphics.batch :as batch]))
 
 (defmulti draw! (fn [[k] _ctx]
                   k))
@@ -51,4 +52,16 @@
   (handle-draws! [ctx draws]
     (doseq [component draws
             :when component]
-      (draw! component ctx))))
+      (draw! component ctx)))
+
+  (draw-on-world-viewport! [{:keys [ctx/batch
+                                    ctx/world-viewport
+                                    ctx/world-unit-scale]
+                             :as ctx} fns]
+    (batch/draw-on-viewport! batch
+                             world-viewport
+                             (fn []
+                               (draw/with-line-width ctx world-unit-scale
+                                 (fn []
+                                   (doseq [f fns]
+                                     (f (assoc ctx :ctx/unit-scale world-unit-scale)))))))))

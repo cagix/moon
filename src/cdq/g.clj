@@ -44,4 +44,5 @@
   (npc-effect-ctx [_ eid]))
 
 (defprotocol Graphics
+  (draw-on-world-viewport! [_ fns])
   (handle-draws! [_ draws]))

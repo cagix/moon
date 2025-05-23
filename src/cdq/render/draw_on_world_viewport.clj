@@ -1,13 +1,11 @@
 (ns cdq.render.draw-on-world-viewport
   (:require [cdq.ctx :as ctx]
-            [cdq.draw :as draw]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.grid :as grid]
             [cdq.math :as math]
             [cdq.utils :refer [sort-by-order
                                pretty-pst]]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.viewport :as viewport]))
 
@@ -104,21 +102,10 @@
          (g/handle-draws! ctx (draw-body-rect entity :red))
          (pretty-pst t))))))
 
-(defn do! [{:keys [ctx/batch
-                   ctx/world-viewport
-                   ctx/world-unit-scale
-                   ctx/unit-scale]
-            :as ctx}]
-  (let [draw-fns [draw-tile-grid
-                  draw-cell-debug
-                  render-entities!
-                  ;geom-test
-                  highlight-mouseover-tile]]
-    (batch/draw-on-viewport! batch
-                             world-viewport
-                             (fn []
-                               (draw/with-line-width ctx world-unit-scale
-                                 (fn []
-                                   (doseq [f draw-fns]
-                                     (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
+(defn do! [ctx]
+  (g/draw-on-world-viewport! ctx [draw-tile-grid
+                                  draw-cell-debug
+                                  render-entities!
+                                  ;geom-test
+                                  highlight-mouseover-tile])
   nil)
