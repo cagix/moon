@@ -38,12 +38,6 @@
             [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
-(defn- initial-app-state [config]
-  (run! require (:requires config))
-  (safe-merge (gdx/create config)
-              {:ctx/config config
-               :ctx/db (db/create (:db config))}))
-
 (defrecord Body [position
                  left-bottom
 
@@ -354,9 +348,6 @@
                      (g/config ctx :effect-body-props)
                      components)))
 
-(defn- create-app-state! [config]
-  (create-game-state (initial-app-state config)))
-
 (extend-type cdq.gdx.Gdx
   g/Config
   (config [{:keys [ctx/config]} key]
@@ -598,10 +589,14 @@
 
 (defn -main []
   (let [config (config/create "config.edn")]
+    (run! require (:requires config))
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
                        (proxy [ApplicationAdapter] []
                          (create []
-                           (reset! state (create-app-state! config))
+                           (reset! state (-> (gdx/create config)
+                                             (safe-merge {:ctx/config config
+                                                          :ctx/db (db/create (:db config))})
+                                             create-game-state))
                            (ctx-schema/validate @state))
 
                          (dispose []
