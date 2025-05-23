@@ -14,4 +14,11 @@
   ;                             gdl.ui.proxy$gdl.ui.CtxStage$ILookup$a65747ce.touchUp                         :
   ;                                     com.badlogic.gdx.scenes.scene2d.Stage.touchUp               Stage.java:  354
   ;                              com.badlogic.gdx.scenes.scene2d.InputListener.handle       InputListener.java:   71
-  #_@(.ctx stage))
+  #_@(.ctx stage)
+  ; we need to set nil as input listeners
+  ; are updated outside of render
+  ; inside lwjgl3application code
+  ; so it has outdated context
+  #_(reset! (.ctx stage) nil)
+  nil
+  )
