@@ -1,7 +1,6 @@
 (ns cdq.g.game-state.stage
   (:require [cdq.g :as g]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory]
@@ -11,7 +10,7 @@
             [cdq.ui.message]))
 
 (defn- create-actors [ctx]
-  [(cdq.ui.dev-menu/create ctx)
+  [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
    (action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (g/ui-viewport-width ctx) 2)
                                80 ; action-bar-icon-size

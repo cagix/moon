@@ -27,9 +27,6 @@
   (key-pressed? [_ key])
   (key-just-pressed? [_ key]))
 
-(defprotocol GameState
-  (reset-game-state! [_]))
-
 (defprotocol Stage
   (draw-stage! [_])
   (update-stage! [_])
