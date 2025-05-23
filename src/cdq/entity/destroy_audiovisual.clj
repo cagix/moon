@@ -1,12 +1,10 @@
 (ns cdq.entity.destroy-audiovisual
-  (:require [cdq.db :as db]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/destroy-audiovisual
-  (entity/destroy! [[_ audiovisuals-id]
-                    eid
-                    {:keys [ctx/db] :as ctx}]
+  (entity/destroy! [[_ audiovisuals-id] eid ctx]
     [[:tx/audiovisual
       (:position @eid)
-      (db/build db audiovisuals-id ctx)]]))
+      (g/build ctx audiovisuals-id)]]))

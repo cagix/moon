@@ -1,7 +1,7 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.db :as db]
+            [cdq.g :as g]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
 
@@ -28,7 +28,7 @@
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
                   {:keys [effect/source effect/target] :as effect-ctx}
-                  {:keys [ctx/db] :as ctx}]
+                  ctx]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -40,7 +40,7 @@
          [:tx/effect effect-ctx entity-effects]]
         [[:tx/audiovisual
           (end-point source* target* maxrange)
-          (db/build db :audiovisuals/hit-ground ctx)]])))
+          (g/build ctx :audiovisuals/hit-ground)]])))
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}

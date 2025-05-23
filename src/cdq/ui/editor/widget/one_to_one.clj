@@ -1,12 +1,12 @@
 (ns cdq.ui.editor.widget.one-to-one
-  (:require [cdq.db :as db]
+  (:require [cdq.g :as g]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.ui :as ui]))
 
-(defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]
+(defn- add-one-to-one-rows [ctx table property-type property-id]
   (let [redo-rows (fn [ctx id]
                     (ui/clear-children! table)
                     (add-one-to-one-rows ctx table property-type id)
@@ -28,7 +28,7 @@
                              (.pack window)
                              (ui/add! stage window)))))]
       [(when property-id
-         (let [property (db/build db property-id ctx)
+         (let [property (g/build ctx property-id)
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
            (ui/add-tooltip! image-widget (pprint-to-str property))

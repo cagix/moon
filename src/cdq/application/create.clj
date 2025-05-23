@@ -1,6 +1,6 @@
 (ns cdq.application.create
   (:require cdq.create.assets
-            cdq.db
+            [cdq.db :as db]
             [cdq.g :as g]
             [cdq.utils :refer [mapvals]]
             [gdl.graphics :as graphics]
@@ -20,7 +20,7 @@
     (input/set-processor! stage)
     (cdq.g/map->Game
      {:ctx/config config
-      :ctx/db (cdq.db/create (:db config))
+      :ctx/db (db/create (:db config))
       :ctx/assets (cdq.create.assets/create (:assets config))
       :ctx/batch batch
       :ctx/unit-scale 1
@@ -49,6 +49,14 @@
   g/Config
   (config [{:keys [ctx/config]} key]
     (get config key)))
+
+(extend-type cdq.g.Game
+  g/Database
+  (build [{:keys [ctx/db] :as ctx} property-id]
+    (db/build db property-id ctx))
+
+  (build-all [{:keys [ctx/db] :as ctx} property-type]
+    (db/build-all db property-type ctx)))
 
 (extend-type cdq.g.Game
   g/Input

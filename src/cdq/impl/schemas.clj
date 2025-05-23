@@ -1,6 +1,6 @@
 (ns cdq.impl.schemas
   (:require [cdq.animation :as animation]
-            [cdq.db :as db]
+            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.schema :as schema]
             [cdq.val-max :as val-max]))
@@ -91,8 +91,8 @@
                     :frame-duration frame-duration
                     :looping? looping?))
 
-(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
-  (db/build db property-id ctx))
+(defmethod schema/edn->value :s/one-to-one [_ property-id ctx]
+  (g/build ctx property-id))
 
-(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
-  (set (map #(db/build db % ctx) property-ids)))
+(defmethod schema/edn->value :s/one-to-many [_ property-ids ctx]
+  (set (map (partial g/build ctx) property-ids)))

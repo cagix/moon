@@ -5,6 +5,10 @@
 (defprotocol Config
   (config [_ key]))
 
+(defprotocol Database
+  (build [_ property-id])
+  (build-all [_ property-type]))
+
 (defprotocol Input
   (button-just-pressed? [_ button])
   (key-pressed? [_ key])

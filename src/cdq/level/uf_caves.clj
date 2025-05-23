@@ -1,5 +1,5 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.db :as db]
+  (:require [cdq.g :as g]
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
@@ -122,10 +122,8 @@
     {:tiled-map tiled-map
      :start-position start-position}))
 
-(defn create [{:keys [ctx/db
-                      ctx/assets]
-               :as ctx}]
+(defn create [{:keys [ctx/assets] :as ctx}]
   (create* {:map-size 200,
             :spawn-rate 0.01}
-           (db/build-all db :properties/creatures ctx)
+           (g/build-all ctx :properties/creatures)
            (assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

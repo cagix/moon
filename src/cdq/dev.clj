@@ -1,6 +1,5 @@
 (ns cdq.dev
   (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [gdl.application :refer [post-runnable!]]
@@ -80,10 +79,10 @@
 
 
 #_(defn- learn-skill! [_context skill-id]
-  (cdq.tx.add-skill/do! ctx/player-eid (db/build ctx/db skill-id)))
+  (cdq.tx.add-skill/do! ctx/player-eid (g/build ctx skill-id)))
 
 #_(defn- create-item! [_context item-id]
-  (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
+  (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (g/build ctx item-id)))
 
 (defn- mouseover-grid-cell []
   #_@(ctx/grid (mapv int (g/world-mouse-position ctx))))
