@@ -60,17 +60,17 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
-(defn- create-game-state [{:keys [ctx/config] :as ctx}]
+(defn- create-game-state [ctx]
   (stage/reset ctx)
   (let [{:keys [tiled-map
-                start-position]} ((requiring-resolve (:world-fn config)) ctx)
+                start-position]} ((requiring-resolve (g/config ctx :world-fn)) ctx)
         grid (cdq.grid/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
                     :ctx/grid grid
                     :ctx/raycaster (cdq.raycaster/create grid)
-                    :ctx/content-grid (cdq.content-grid/create tiled-map (:content-grid-cell-size config))
+                    :ctx/content-grid (cdq.content-grid/create tiled-map (g/config ctx :content-grid-cell-size))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                       (tiled/tm-height tiled-map)
                                                                       (constantly false)))

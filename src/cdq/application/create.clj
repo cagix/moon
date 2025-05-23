@@ -46,6 +46,11 @@
   (g/reset-game-state! (create-app-state config)))
 
 (extend-type cdq.g.Game
+  g/Config
+  (config [{:keys [ctx/config]} key]
+    (get config key)))
+
+(extend-type cdq.g.Game
   g/Input
   (button-just-pressed? [_ button]
     (input/button-just-pressed? button))

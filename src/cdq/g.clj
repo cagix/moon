@@ -2,6 +2,9 @@
 
 (defrecord Game [])
 
+(defprotocol Config
+  (config [_ key]))
+
 (defprotocol Input
   (button-just-pressed? [_ button])
   (key-pressed? [_ key])

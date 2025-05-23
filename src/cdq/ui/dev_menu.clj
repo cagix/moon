@@ -11,17 +11,17 @@
 ; and we can see the ctx/ state itself
 ; and is it much more work to restart the whole game instead of one level ?
 
-(defn create [{:keys [ctx/config
-                      ctx/db
-                      ctx/assets]}]
+(defn create [{:keys [ctx/db
+                      ctx/assets]
+               :as ctx}]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn (:world-fns config)]
+             :items (for [world-fn (g/config ctx :world-fns)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [_actor _ctx]
                                    (swap! application/state g/reset-game-state!))})}
             {:label "Help"
-             :items [{:label (:info config)}]}
+             :items [{:label (g/config ctx :info)}]}
             {:label "Objects"
              :items (for [property-type (sort (filter #(= "properties" (namespace %)) (keys (:schemas db))))]
                       {:label (str/capitalize (name property-type))

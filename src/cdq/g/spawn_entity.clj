@@ -93,10 +93,8 @@
         (g/handle-txs! ctx (entity/create! component eid ctx)))
       eid))
 
-  (spawn-effect! [{:keys [ctx/config] :as ctx}
-                  position
-                  components]
+  (spawn-effect! [ctx position components]
     (g/spawn-entity! ctx
                      position
-                     (:effect-body-props config)
+                     (g/config ctx :effect-body-props)
                      components)))
