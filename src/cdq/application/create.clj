@@ -2,7 +2,7 @@
   (:require [gdl.assets :as assets]
             [cdq.db :as db]
             [cdq.g :as g]
-            [cdq.utils :refer [mapvals]]
+            [cdq.utils :as utils :refer [mapvals]]
             [clojure.string :as str]
             [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
@@ -39,7 +39,7 @@
       :ctx/batch batch
       :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
-      :ctx/shape-drawer-texture shape-drawer-texture
+      :ctx/shape-drawer-texture shape-drawer-texture ; used @ dispose & schema
       :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
       :ctx/cursors (mapvals
                     (fn [[file [hotspot-x hotspot-y]]]
@@ -354,4 +354,7 @@
                          [x y]]
     (g/sub-sprite ctx
                   image
-                  [(* x tilew) (* y tileh) tilew tileh])))
+                  [(* x tilew) (* y tileh) tilew tileh]))
+
+  (set-cursor! [{:keys [ctx/cursors]} cursor-key]
+    (graphics/set-cursor! (utils/safe-get cursors cursor))))
