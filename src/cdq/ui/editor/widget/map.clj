@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.schema :as schema]
+  (:require [cdq.g :as g]
+            [cdq.schema :as schema]
             [cdq.malli :as m]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
@@ -32,11 +33,9 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table schemas)))
 
-(defn- rebuild-editor-window! [{:keys [ctx/stage
-                                       ctx/db]
-                                :as ctx}]
+(defn- rebuild-editor-window! [{:keys [ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
-        prop-value (window->property-value window (:schemas db))]
+        prop-value (window->property-value window (g/schemas ctx))]
     (ui/remove! window)
     (ui/add! stage (cdq.ui.editor/editor-window prop-value ctx))))
 
@@ -105,7 +104,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m {:keys [ctx/db] :as ctx}]
+(defmethod widget/create :s/map [schema m ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -113,21 +112,20 @@
                                            (component-row ctx
                                                           [k v]
                                                           schema
-                                                          (:schemas db)
+                                                          (g/schemas ctx)
                                                           table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas db)))
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (g/schemas ctx)))
                                   (set (keys m))))]
     (ui/add-rows!
      table
      (concat [(when opt?
                 [{:actor (ui/text-button "Add component"
-                                         (fn [_actor {:keys [ctx/stage
-                                                             ctx/db]}]
+                                         (fn [_actor {:keys [ctx/stage] :as ctx}]
                                            (open-add-component-window! stage
-                                                                       (:schemas db)
+                                                                       (g/schemas ctx)
                                                                        schema
                                                                        table)))
                   :colspan colspan}])]

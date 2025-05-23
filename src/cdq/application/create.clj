@@ -62,21 +62,45 @@
 
 (extend-type cdq.g.Game
   g/Database
+  (get-raw [{:keys [ctx/db]} property-id]
+    (db/get-raw db property-id))
+
   (build [{:keys [ctx/db] :as ctx} property-id]
     (db/build db property-id ctx))
 
   (build-all [{:keys [ctx/db] :as ctx} property-type]
-    (db/build-all db property-type ctx)))
+    (db/build-all db property-type ctx))
+
+  (property-types [{:keys [ctx/db]}]
+    (filter #(= "properties" (namespace %)) (keys (:schemas db))))
+
+  (schemas [{:keys [ctx/db]}]
+    (:schemas db))
+
+  (update-property! [{:keys [ctx/db] :as ctx}
+                     property]
+    (let [new-db (db/update db property)]
+      (db/save! new-db)
+      (assoc ctx :ctx/db new-db)))
+
+  (delete-property! [{:keys [ctx/db] :as ctx}
+                     property-id]
+    (let [new-db (db/delete db property-id)]
+      (db/save! new-db)
+      (assoc ctx :ctx/db new-db))))
 
 (extend-type cdq.g.Game
   g/Textures
   (texture [{:keys [ctx/assets]} path]
     (assets path))
+
   (all-textures [{:keys [ctx/assets]}]
     (assets/all-of-type assets :texture))
+
   g/Sounds
   (sound [{:keys [ctx/assets]} path]
     (assets path))
+
   (all-sounds [{:keys [ctx/assets]}]
     (assets/all-of-type assets :sound)))
 

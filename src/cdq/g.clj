@@ -14,8 +14,13 @@
   (config [_ key]))
 
 (defprotocol Database
+  (get-raw [_ property-id])
   (build [_ property-id])
-  (build-all [_ property-type]))
+  (build-all [_ property-type])
+  (property-types [_])
+  (schemas [_])
+  (update-property! [_ property])
+  (delete-property! [_ property-id]))
 
 (defprotocol Input
   (button-just-pressed? [_ button])
