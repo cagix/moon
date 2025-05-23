@@ -15,7 +15,8 @@
             [gdl.utils :as utils])
   (:import (com.badlogic.gdx ApplicationAdapter
                              Gdx)
-           (com.badlogic.gdx.audio Sound)))
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)))
 
 (def sound-path-format "sounds/%s.wav")
 
@@ -23,16 +24,16 @@
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list (files/internal folder))
+  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
          result []]
     (cond (nil? file)
           result
 
-          (fh/directory? file)
-          (recur (concat remaining (fh/list file)) result)
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
 
-          (extensions (fh/extension file))
-          (recur remaining (conj result (fh/path file)))
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
 
           :else
           (recur remaining result))))
@@ -233,6 +234,7 @@
          (format sound-path-format)
          assets
          Sound/.play))
+
   (all-sounds [_]
     (assets/all-of-type assets :sound))
 
