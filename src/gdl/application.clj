@@ -2,10 +2,8 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.c :as c]
             [gdl.files :as files]
-            [gdl.files.file-handle :as fh]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
@@ -13,15 +11,42 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils])
-  (:import (com.badlogic.gdx ApplicationAdapter
+  (:import (clojure.lang IFn)
+           (com.badlogic.gdx ApplicationAdapter
                              Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)))
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture)))
+
+;; Publics
 
 (def sound-path-format "sounds/%s.wav")
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+;;
+
+(defn- asset-type->class ^Class [asset-type]
+  (case asset-type
+    :sound Sound
+    :texture Texture))
+
+(defn- asset-manager [assets]
+  (let [manager (proxy [AssetManager IFn] []
+                  (invoke [path]
+                    (if (AssetManager/.contains this path)
+                      (AssetManager/.get this ^String path)
+                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
+    (doseq [[file asset-type] assets]
+      (.load manager ^String file (asset-type->class asset-type)))
+    (.finishLoading manager)
+    manager))
+
+(defn- assets-of-type [^AssetManager assets asset-type]
+  (filter #(= (.getAssetType assets %) (asset-type->class asset-type))
+          (.getAssetNames assets)))
 
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
@@ -40,7 +65,7 @@
 
 (defn- create-assets [{:keys [folder
                               asset-type-extensions]}]
-  (assets/create
+  (asset-manager
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
                    (recursively-search folder extensions))]
@@ -236,14 +261,14 @@
          Sound/.play))
 
   (all-sounds [_]
-    (assets/all-of-type assets :sound))
+    (assets-of-type assets :sound))
 
   c/Textures
   (texture [_ path]
     (assets path))
 
   (all-textures [_]
-    (assets/all-of-type assets :texture))
+    (assets-of-type assets :texture))
 
   c/Graphics
   (delta-time [_]
