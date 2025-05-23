@@ -11,9 +11,7 @@
 ; and we can see the ctx/ state itself
 ; and is it much more work to restart the whole game instead of one level ?
 
-(defn create [{:keys [ctx/db
-                      ctx/assets]
-               :as ctx}]
+(defn create [{:keys [ctx/db] :as ctx}]
   (menu/create
    {:menus [{:label "World"
              :items (for [world-fn (g/config ctx :world-fns)]
@@ -31,11 +29,11 @@
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (:entity/id entity)))
-                     :icon (assets "images/mouseover.png")}
+                     :icon (g/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [{:keys [ctx/elapsed-time]}]
                                   (str (utils/readable-number elapsed-time) " seconds"))
-                     :icon (assets "images/clock.png")}
+                     :icon (g/texture ctx "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
@@ -45,11 +43,11 @@
                      :update-fn (fn [ctx] (mapv int (g/world-mouse-position ctx)))}
                     {:label "Zoom"
                      :update-fn g/camera-zoom
-                     :icon (assets "images/zoom.png")}
+                     :icon (g/texture ctx "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (fn [_ctx]
                                   (graphics/frames-per-second))
-                     :icon (assets "images/fps.png")}]}))
+                     :icon (g/texture ctx "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]

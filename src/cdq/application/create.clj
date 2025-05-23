@@ -1,12 +1,22 @@
 (ns cdq.application.create
-  (:require cdq.create.assets
+  (:require [gdl.assets :as assets]
             [cdq.db :as db]
             [cdq.g :as g]
             [cdq.utils :refer [mapvals]]
+            [clojure.string :as str]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [cdq.utils.files :as files]))
+
+(defn- create-assets [{:keys [folder
+                              asset-type-extensions]}]
+  (assets/create
+   (for [[asset-type extensions] asset-type-extensions
+         file (map #(str/replace-first % folder "")
+                   (files/recursively-search folder extensions))]
+     [file asset-type])))
 
 (defn- create-app-state [config]
   (run! require (:requires config))
@@ -21,7 +31,7 @@
     (cdq.g/map->Game
      {:ctx/config config
       :ctx/db (db/create (:db config))
-      :ctx/assets (cdq.create.assets/create (:assets config))
+      :ctx/assets (create-assets (:assets config))
       :ctx/batch batch
       :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
@@ -57,6 +67,18 @@
 
   (build-all [{:keys [ctx/db] :as ctx} property-type]
     (db/build-all db property-type ctx)))
+
+(extend-type cdq.g.Game
+  g/Textures
+  (texture [{:keys [ctx/assets]} path]
+    (assets path))
+  (all-textures [{:keys [ctx/assets]}]
+    (assets/all-of-type assets :texture))
+  g/Sounds
+  (sound [{:keys [ctx/assets]} path]
+    (assets path))
+  (all-sounds [{:keys [ctx/assets]}]
+    (assets/all-of-type assets :sound)))
 
 (extend-type cdq.g.Game
   g/Input

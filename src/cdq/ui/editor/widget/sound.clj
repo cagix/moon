@@ -3,7 +3,6 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.ui :as ui]))
 
 (defn- play-button [sound-name]
@@ -18,10 +17,10 @@
       (str/replace-first "sounds/" "")
       (str/replace ".wav" "")))
 
-(defn- open-choose-sound-window! [table {:keys [ctx/assets
-                                                ctx/ui-viewport
-                                                ctx/stage]}]
-  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type assets :sound))]
+(defn- open-choose-sound-window! [table {:keys [ctx/ui-viewport
+                                                ctx/stage]
+                                         :as ctx}]
+  (let [rows (for [sound-name (map sound-file->sound-name (g/all-sounds ctx))]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (ui/clear-children! table)

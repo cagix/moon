@@ -12,11 +12,12 @@
                :y (+ y 2)
                :up? true}])
 
-(defn create [[x y-mana] {:keys [ctx/assets
-                                 ctx/world-unit-scale]}]
-  (let [rahmen      (graphics/sprite (assets "images/rahmen.png") world-unit-scale)
-        hpcontent   (graphics/sprite (assets "images/hp.png")     world-unit-scale)
-        manacontent (graphics/sprite (assets "images/mana.png")   world-unit-scale)
+(defn create [[x y-mana]
+              {:keys [ctx/world-unit-scale]
+               :as ctx}]
+  (let [rahmen      (graphics/sprite (g/texture ctx "images/rahmen.png") world-unit-scale)
+        hpcontent   (graphics/sprite (g/texture ctx "images/hp.png")     world-unit-scale)
+        manacontent (graphics/sprite (g/texture ctx "images/mana.png")   world-unit-scale)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [ctx x y contentimage minmaxval name]

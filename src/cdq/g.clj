@@ -2,6 +2,14 @@
 
 (defrecord Game [])
 
+(defprotocol Textures
+  (texture [_ path])
+  (all-textures [_]))
+
+(defprotocol Sounds
+  (sound [_ path])
+  (all-sounds [_]))
+
 (defprotocol Config
   (config [_ key]))
 

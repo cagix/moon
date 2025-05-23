@@ -62,9 +62,10 @@
                     :bag      10}) ; transparent
 
 ; TODO actually we can pass this whole map into inventory-window ...
-(defn- slot->sprite [{:keys [ctx/assets
-                             ctx/world-unit-scale]} slot]
-  (graphics/from-sheet (graphics/sprite-sheet (assets "images/items.png")
+(defn- slot->sprite [{:keys [ctx/world-unit-scale]
+                      :as ctx}
+                     slot]
+  (graphics/from-sheet (graphics/sprite-sheet (g/texture ctx "images/items.png")
                                               48
                                               48
                                               world-unit-scale)
