@@ -6,17 +6,6 @@
 
 (def state (atom nil))
 
-; We could _pass_ the whole application to -main / start!
-; -> we don't need to know about 'cdq.g' / 'cdq.config' ....
-; but not sure, we get an outdated context at stage !
-; may need to share the atom itself with the stage ?
-#_(defprotocol Application
-  (on-create [_ libgdx-context])
-  (on-dispose [_])
-  (on-render [_])
-  (on-resize [_ width height])
-  (validate [_]))
-
 (defn -main []
   (let [config (config/create "config.edn")]
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
