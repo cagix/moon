@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.c :as c]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]
@@ -42,7 +42,7 @@
       [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn- world-item? [ctx]
-  (not (g/mouseover-actor ctx)))
+  (not (c/mouseover-actor ctx)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -55,7 +55,7 @@
 
 (defn- item-place-position [ctx entity]
   (placement-point (:position entity)
-                   (g/world-mouse-position ctx)
+                   (c/world-mouse-position ctx)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -88,7 +88,7 @@
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [_ eid ctx]
-    (when (and (g/button-just-pressed? ctx :left)
+    (when (and (c/button-just-pressed? ctx :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 
@@ -99,4 +99,4 @@
     (when (not (world-item? ctx))
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
-        (g/ui-mouse-position ctx)]])))
+        (c/ui-mouse-position ctx)]])))

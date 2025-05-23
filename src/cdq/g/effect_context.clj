@@ -1,14 +1,16 @@
 (ns cdq.g.effect-context
-  (:require [cdq.g :as g]
+  (:require cdq.gdx
+            [cdq.c :as c]
+            [cdq.g :as g]
             [cdq.vector2 :as v]))
 
-(extend-type cdq.g.Game
+(extend-type cdq.gdx.Gdx
   g/EffectContext
   (player-effect-ctx [{:keys [ctx/mouseover-eid] :as ctx}
                       eid]
     (let [target-position (or (and mouseover-eid
                                    (:position @mouseover-eid))
-                              (g/world-mouse-position ctx))]
+                              (c/world-mouse-position ctx))]
       {:effect/source eid
        :effect/target mouseover-eid
        :effect/target-position target-position

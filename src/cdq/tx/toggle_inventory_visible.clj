@@ -1,8 +1,8 @@
 (ns cdq.tx.toggle-inventory-visible
-  (:require [cdq.g :as g]
+  (:require [cdq.c :as c]
             [gdl.ui :as ui]))
 
 (defn do! [ctx]
-  (-> (g/get-actor ctx :windows)
+  (-> (c/get-actor ctx :windows)
       :inventory-window
       ui/toggle-visible!))

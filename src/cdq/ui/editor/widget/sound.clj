@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.widget.sound
-  (:require [cdq.g :as g]
+  (:require [cdq.c :as c]
+            [cdq.g :as g]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [clojure.string :as str]
@@ -18,7 +19,7 @@
       (str/replace ".wav" "")))
 
 (defn- open-choose-sound-window! [table ctx]
-  (let [rows (for [sound-name (map sound-file->sound-name (g/all-sounds ctx))]
+  (let [rows (for [sound-name (map sound-file->sound-name (c/all-sounds ctx))]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (ui/clear-children! table)
@@ -28,7 +29,7 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (g/add-actor! ctx (scroll-pane/choose-window (g/ui-viewport-width ctx)
+    (c/add-actor! ctx (scroll-pane/choose-window (c/ui-viewport-width ctx)
                                                  rows))))
 
 (defn- columns [table sound-name]

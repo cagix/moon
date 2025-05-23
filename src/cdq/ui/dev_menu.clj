@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
+            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
@@ -29,25 +30,25 @@
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (:entity/id entity)))
-                     :icon (g/texture ctx "images/mouseover.png")}
+                     :icon (c/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [ctx]
                                   (str (utils/readable-number (g/elapsed-time ctx)) " seconds"))
-                     :icon (g/texture ctx "images/clock.png")}
+                     :icon (c/texture ctx "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
                     {:label "GUI"
-                     :update-fn (fn [ctx] (mapv int (g/ui-mouse-position ctx)))}
+                     :update-fn (fn [ctx] (mapv int (c/ui-mouse-position ctx)))}
                     {:label "World"
-                     :update-fn (fn [ctx] (mapv int (g/world-mouse-position ctx)))}
+                     :update-fn (fn [ctx] (mapv int (c/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn g/camera-zoom
-                     :icon (g/texture ctx "images/zoom.png")}
+                     :update-fn c/camera-zoom
+                     :icon (c/texture ctx "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (fn [_ctx]
                                   (graphics/frames-per-second))
-                     :icon (g/texture ctx "images/fps.png")}]}))
+                     :icon (c/texture ctx "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]

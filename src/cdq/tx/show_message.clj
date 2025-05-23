@@ -1,7 +1,7 @@
 (ns cdq.tx.show-message
-  (:require [cdq.g :as g]
+  (:require [cdq.c :as c]
             [cdq.ui.message :as message]))
 
 (defn do! [ctx message]
-  (message/show! (g/find-actor-by-name ctx "player-message")
+  (message/show! (c/find-actor-by-name ctx "player-message")
                  message))

@@ -1,15 +1,5 @@
 (ns cdq.g)
 
-(defrecord Game [])
-
-(defprotocol Textures
-  (texture [_ path])
-  (all-textures [_]))
-
-(defprotocol Sounds
-  (sound [_ path])
-  (all-sounds [_]))
-
 (defprotocol Config
   (config [_ key]))
 
@@ -21,18 +11,6 @@
   (schemas [_])
   (update-property! [_ property])
   (delete-property! [_ property-id]))
-
-(defprotocol Input
-  (button-just-pressed? [_ button])
-  (key-pressed? [_ key])
-  (key-just-pressed? [_ key]))
-
-(defprotocol Stage
-  (get-actor [_ id])
-  (find-actor-by-name [_ name])
-  (add-actor! [_ actor])
-  (mouseover-actor [_])
-  (reset-actors! [_ actors]))
 
 (defprotocol StageActors
   (open-error-window! [_ throwable])
@@ -72,26 +50,6 @@
 (defprotocol EffectContext
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
-
-(defprotocol Graphics
-  (handle-draws! [_ draws])
-  (world-mouse-position [_])
-  (ui-mouse-position [_])
-  (camera-position [_])
-  (inc-zoom! [_ amount])
-  (camera-frustum [_])
-  (visible-tiles [_])
-  (camera-zoom [_])
-  (pixels->world-units [_ pixels])
-  (sprite [_ texture-path])
-  (sub-sprite [_ sprite [x y w h]])
-  (sprite-sheet [_ texture-path tilew tileh])
-  (sprite-sheet->sprite [_ sprite [x y]])
-  (set-cursor! [_ cursor-key])
-  (world-viewport-width [_])
-  (world-viewport-height [_])
-  (ui-viewport-width [_])
-  (ui-viewport-height [_]))
 
 (defprotocol Time
   (elapsed-time [_])

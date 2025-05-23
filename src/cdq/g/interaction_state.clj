@@ -1,5 +1,7 @@
 (ns cdq.g.interaction-state
-  (:require [cdq.entity :as entity]
+  (:require cdq.gdx
+            [cdq.entity :as entity]
+            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
             [cdq.ui.inventory]
@@ -15,7 +17,7 @@
                                        eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> (g/get-actor ctx :windows) :inventory-window ui/visible?)
+     (-> (c/get-actor ctx :windows) :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]
@@ -56,13 +58,13 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(extend-type cdq.g.Game
+(extend-type cdq.gdx.Gdx
   g/InteractionState
   (interaction-state [{:keys [ctx/mouseover-eid]
                        :as ctx}
                       eid]
     (let [entity @eid
-          mouseover-actor (g/mouseover-actor ctx)]
+          mouseover-actor (c/mouseover-actor ctx)]
       (cond
        mouseover-actor
        [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))

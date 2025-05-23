@@ -1,5 +1,6 @@
 (ns cdq.impl.schemas
   (:require [cdq.animation :as animation]
+            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.schema :as schema]
             [cdq.val-max :as val-max]))
@@ -69,11 +70,11 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (g/sprite-sheet->sprite ctx
-                              (g/sprite-sheet ctx file tilew tileh)
+      (c/sprite-sheet->sprite ctx
+                              (c/sprite-sheet ctx file tilew tileh)
                               [(int (/ sprite-x tilew))
                                (int (/ sprite-y tileh))]))
-    (g/sprite ctx file)))
+    (c/sprite ctx file)))
 
 (defmethod schema/edn->value :s/image [_ edn ctx]
   (edn->sprite edn ctx))

@@ -1,6 +1,6 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.c :as c]
             [cdq.utils :refer [defcomponent]]
             [cdq.val-max :as val-max]))
 
@@ -25,8 +25,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units ctx 5)
-          border (g/pixels->world-units ctx borders-px)]
+          height (c/pixels->world-units ctx 5)
+          border (c/pixels->world-units ctx borders-px)]
       [[:draw/filled-rectangle x y width height :black]
        [:draw/filled-rectangle
         (+ x border)

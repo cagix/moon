@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.g :as g]
+  (:require [cdq.c :as c]
+            [cdq.g :as g]
             [cdq.schema :as schema]
             [cdq.malli :as m]
             [cdq.ui.editor]
@@ -34,10 +35,10 @@
    (widget/value [:s/map] table schemas)))
 
 (defn- rebuild-editor-window! [ctx]
-  (let [window (g/get-actor ctx :property-editor-window)
+  (let [window (c/get-actor ctx :property-editor-window)
         prop-value (window->property-value window (g/schemas ctx))]
     (ui/remove! window)
-    (g/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
+    (c/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -97,7 +98,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (g/add-actor! ctx window)))
+    (c/add-actor! ctx window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])

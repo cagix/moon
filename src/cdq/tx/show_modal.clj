@@ -1,5 +1,5 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.g :as g]
+  (:require [cdq.c :as c]
             [gdl.ui :as ui]))
 
 ; no window movable type cursor appears here like in player idle
@@ -8,16 +8,16 @@
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn do! [ctx
            {:keys [title text button-text on-click]}]
-  (assert (not (g/get-actor ctx ::modal)))
-  (g/add-actor! ctx
+  (assert (not (c/get-actor ctx ::modal)))
+  (c/add-actor! ctx
                 (ui/window {:title title
                             :rows [[(ui/label text)]
                                    [(ui/text-button button-text
                                                     (fn [_actor ctx]
-                                                      (ui/remove! (g/get-actor ctx ::modal))
+                                                      (ui/remove! (c/get-actor ctx ::modal))
                                                       (on-click)))]]
                             :id ::modal
                             :modal? true
-                            :center-position [(/ (g/ui-viewport-width ctx) 2)
-                                              (* (g/ui-viewport-height ctx) (/ 3 4))]
+                            :center-position [(/ (c/ui-viewport-width ctx) 2)
+                                              (* (c/ui-viewport-height ctx) (/ 3 4))]
                             :pack? true})))

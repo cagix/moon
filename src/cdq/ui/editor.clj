@@ -1,5 +1,6 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
+            [cdq.c :as c]
             [cdq.g :as g]
             [cdq.property :as property]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -37,7 +38,7 @@
                                            (swap! application/state
                                                   g/delete-property!
                                                   (:property/id props))))]
-    (ui/add-rows! window [[(scroll-pane/table-cell (g/ui-viewport-height ctx)
+    (ui/add-rows! window [[(scroll-pane/table-cell (c/ui-viewport-height ctx)
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
                                                                              (fn [_actor ctx]
@@ -48,13 +49,13 @@
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
     (.addActor window (ui/actor {:act (fn [_this _delta ctx]
-                                        (when (g/key-just-pressed? ctx :enter)
+                                        (when (c/key-just-pressed? ctx :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))
 
 (defn- edit-property [id ctx]
-  (g/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
+  (c/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
 
 (defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"
@@ -64,4 +65,4 @@
                            :close-on-escape? true})]
     (ui/add! window (overview-table/create ctx property-type edit-property))
     (.pack window)
-    (g/add-actor! ctx window)))
+    (c/add-actor! ctx window)))

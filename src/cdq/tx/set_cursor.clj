@@ -1,5 +1,5 @@
 (ns cdq.tx.set-cursor
-  (:require [cdq.g :as g]))
+  (:require [cdq.c :as c]))
 
 (defn do! [ctx cursor]
-  (g/set-cursor! ctx cursor))
+  (c/set-cursor! ctx cursor))

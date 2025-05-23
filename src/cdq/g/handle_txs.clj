@@ -1,7 +1,8 @@
 (ns cdq.g.handle-txs
-  (:require [cdq.g]))
+  (:require cdq.gdx
+            [cdq.g]))
 
-(extend-type cdq.g.Game
+(extend-type cdq.gdx.Gdx
   cdq.g/EffectHandler
   (handle-txs! [ctx transactions]
     (doseq [transaction transactions
