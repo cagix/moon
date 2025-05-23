@@ -1,8 +1,8 @@
 (ns cdq.application
   (:require [cdq.application.config :as config]
+            [cdq.application.db :as db]
             [cdq.application.schema :as application-schema]
             [cdq.ctx :as ctx]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.g :as g]

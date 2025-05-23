@@ -1,4 +1,4 @@
-(ns cdq.db
+(ns cdq.application.db
   (:refer-clojure :exclude [update])
   (:require [cdq.schema :as schema]
             [cdq.property :as property]
