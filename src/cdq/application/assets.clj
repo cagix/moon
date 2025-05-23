@@ -24,7 +24,7 @@
   (assets/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
-                   (files/recursively-search folder extensions))]
+                   (recursively-search folder extensions))]
      [file asset-type])))
 
 (defn all-textures [assets]
