@@ -12,6 +12,10 @@
 (defprotocol Schema
   (validate [_]))
 
+; TODO txs should not be available here ....
+; but then tx-handler has to know everything again !?
+; confused
+
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components])
   (spawn-effect! [_ position components]))
@@ -43,6 +47,19 @@
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
 
+; only missing line of sight and sprites
+; set cursor , etc
 (defprotocol Graphics
   (draw-on-world-viewport! [_ fns])
-  (handle-draws! [_ draws]))
+  (handle-draws! [_ draws])
+  (world-mouse-position [_])
+  (ui-mouse-position [_])
+  (update-viewports! [_])
+  (draw-tiled-map! [_ tiled-map color-setter])
+  (camera-position [_])
+  (inc-zoom! [_ amount])
+  (camera-frustum [_])
+  (visible-tiles [_])
+  (set-camera-position! [_ position])
+  (camera-zoom [_])
+  (pixels->world-units [_ pixels]))

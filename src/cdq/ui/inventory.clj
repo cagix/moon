@@ -8,7 +8,6 @@
             [cdq.state :as state]
             [cdq.utils :as utils]
             [gdl.graphics]
-            [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
@@ -41,15 +40,12 @@
 (defn- draw-rect-actor []
   (ui/widget
    {:draw
-    (fn [^Actor actor
-         {:keys [ctx/player-eid
-                 ctx/ui-viewport]
-          :as ctx}]
+    (fn [^Actor actor {:keys [ctx/player-eid] :as ctx}]
       (g/handle-draws! ctx
                        (draw-cell-rect @player-eid
                                        (.getX actor)
                                        (.getY actor)
-                                       (ui/hit actor (viewport/mouse-position ui-viewport))
+                                       (ui/hit actor (g/ui-mouse-position ctx))
                                        (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx

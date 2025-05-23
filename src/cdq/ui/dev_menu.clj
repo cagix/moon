@@ -5,8 +5,6 @@
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.viewport :as viewport]
             [gdl.ui.menu :as menu]))
 
 ; The dev menu is actually outside the application
@@ -42,14 +40,11 @@
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
                     {:label "GUI"
-                     :update-fn (fn [{:keys [ctx/ui-viewport]}]
-                                  (mapv int (viewport/mouse-position ui-viewport)))}
+                     :update-fn (fn [ctx] (mapv int (g/ui-mouse-position ctx)))}
                     {:label "World"
-                     :update-fn (fn [{:keys [ctx/world-viewport]}]
-                                  (mapv int (viewport/mouse-position world-viewport)))}
+                     :update-fn (fn [ctx] (mapv int (g/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn (fn [{:keys [ctx/world-viewport]}]
-                                  (camera/zoom (:camera world-viewport)))
+                     :update-fn g/camera-zoom
                      :icon (assets "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (fn [_ctx]

@@ -1,17 +1,14 @@
 (ns cdq.render.draw-tiled-map
-  (:require [cdq.tile-color-setter :as tile-color-setter]
-            [gdl.graphics.camera :as camera]
-            [gdl.tiled :as tiled]))
+  (:require [cdq.g :as g]
+            [cdq.tile-color-setter :as tile-color-setter]))
 
-(defn do! [{:keys [ctx/tiled-map-renderer
-                   ctx/tiled-map
+(defn do! [{:keys [ctx/tiled-map
                    ctx/raycaster
-                   ctx/explored-tile-corners
-                   ctx/world-viewport]}]
-  (tiled/draw! (tiled-map-renderer tiled-map)
-               tiled-map
-               (tile-color-setter/create raycaster
-                                         explored-tile-corners
-                                         (camera/position (:camera world-viewport)))
-               (:camera world-viewport))
+                   ctx/explored-tile-corners]
+            :as ctx}]
+  (g/draw-tiled-map! ctx
+                     tiled-map
+                     (tile-color-setter/create raycaster
+                                               explored-tile-corners
+                                               (g/camera-position ctx)))
   nil)

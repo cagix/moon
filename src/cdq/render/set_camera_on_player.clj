@@ -1,8 +1,6 @@
 (ns cdq.render.set-camera-on-player
-  (:require [gdl.graphics.camera :as camera]))
+  (:require [cdq.g :as g]))
 
-(defn do! [{:keys [ctx/world-viewport
-                   ctx/player-eid]}]
-  (camera/set-position! (:camera world-viewport)
-                        (:position @player-eid))
+(defn do! [{:keys [ctx/player-eid] :as ctx}]
+  (g/set-camera-position! ctx (:position @player-eid))
   nil)

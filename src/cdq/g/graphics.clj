@@ -2,7 +2,16 @@
   (:require [cdq.g :as g]
             [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
-            [gdl.graphics.shape-drawer :as sd]))
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.viewport :as viewport]
+            [gdl.tiled :as tiled]))
+
+; TODO I understand - this knows about graphics keys .... only here ....
+; * line-of-sight - on-screen?
+
+; => all 'gdl.graphics' -> frames-per-second, etc.
+; => then make separate object !?
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -142,4 +151,47 @@
                                (sd/with-line-width shape-drawer world-unit-scale
                                  (fn []
                                    (doseq [f fns]
-                                     (f (assoc ctx :ctx/unit-scale world-unit-scale)))))))))
+                                     (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
+
+  (world-mouse-position [{:keys [ctx/world-viewport]}]
+    (viewport/mouse-position world-viewport))
+
+  (ui-mouse-position [{:keys [ctx/ui-viewport]}]
+    (viewport/mouse-position ui-viewport))
+
+  (update-viewports! [{:keys [ctx/ui-viewport
+                              ctx/world-viewport]}]
+    (viewport/update! ui-viewport)
+    (viewport/update! world-viewport))
+
+  (draw-tiled-map! [{:keys [ctx/tiled-map-renderer
+                            ctx/world-viewport]}
+                    tiled-map
+                    color-setter]
+    (tiled/draw! (tiled-map-renderer tiled-map)
+                 tiled-map
+                 color-setter
+                 (:camera world-viewport)))
+
+  (camera-position [{:keys [ctx/world-viewport]}]
+    (camera/position (:camera world-viewport)))
+
+  (inc-zoom! [{:keys [ctx/world-viewport]} amount]
+    (camera/inc-zoom! (:camera world-viewport) amount))
+
+  (camera-frustum [{:keys [ctx/world-viewport]}]
+    (camera/frustum (:camera world-viewport)))
+
+  (visible-tiles [{:keys [ctx/world-viewport]}]
+    (camera/visible-tiles (:camera world-viewport)))
+
+  (set-camera-position! [{:keys [ctx/world-viewport]} position]
+    (camera/set-position! (:camera world-viewport)
+                          position))
+
+  (camera-zoom [{:keys [ctx/world-viewport]}]
+    (camera/zoom (:camera world-viewport)))
+
+  (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
+    (* pixels world-unit-scale))
+  )

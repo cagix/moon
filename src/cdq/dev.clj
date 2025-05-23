@@ -4,7 +4,6 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [gdl.application :refer [post-runnable!]]
-            [gdl.graphics.viewport :as viewport]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
@@ -87,7 +86,7 @@
   (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
-  #_@(ctx/grid (mapv int (viewport/mouse-position ctx/world-viewport))))
+  #_@(ctx/grid (mapv int (g/world-mouse-position ctx))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

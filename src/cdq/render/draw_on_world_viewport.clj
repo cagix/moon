@@ -5,13 +5,10 @@
             [cdq.grid :as grid]
             [cdq.math :as math]
             [cdq.utils :refer [sort-by-order
-                               pretty-pst]]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.viewport :as viewport]))
+                               pretty-pst]]))
 
-(defn- geom-test* [{:keys [ctx/world-viewport
-                           ctx/grid]}]
-  (let [position (viewport/mouse-position world-viewport)
+(defn- geom-test* [{:keys [ctx/grid] :as ctx}]
+  (let [position (g/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]
@@ -25,9 +22,8 @@
 (defn- geom-test [ctx]
   (g/handle-draws! ctx (geom-test* ctx)))
 
-(defn- highlight-mouseover-tile* [{:keys [ctx/world-viewport
-                                          ctx/grid]}]
-  (let [[x y] (mapv int (viewport/mouse-position world-viewport))
+(defn- highlight-mouseover-tile* [{:keys [ctx/grid] :as ctx}]
+  (let [[x y] (mapv int (g/world-mouse-position ctx))
         cell (grid [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
@@ -42,9 +38,9 @@
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
-(defn- draw-tile-grid* [{:keys [ctx/world-viewport]}]
+(defn- draw-tile-grid* [{:keys [ctx/world-viewport] :as ctx}]
   (when ctx/show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (camera/frustum (:camera world-viewport))]
+    (let [[left-x _right-x bottom-y _top-y] (g/camera-frustum ctx)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)
@@ -57,11 +53,9 @@
 (defn- draw-tile-grid [ctx]
   (g/handle-draws! ctx (draw-tile-grid* ctx)))
 
-(defn- draw-cell-debug* [{:keys [ctx/world-viewport
-                                 ctx/grid]
-                          :as ctx}]
+(defn- draw-cell-debug* [{:keys [ctx/grid] :as ctx}]
   (apply concat
-         (for [[x y] (camera/visible-tiles (:camera world-viewport))
+         (for [[x y] (g/visible-tiles ctx)
                :let [cell (grid [x y])]
                :when cell
                :let [cell* @cell]]

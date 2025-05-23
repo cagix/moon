@@ -36,4 +36,4 @@
 
                          (resize [_width _height]
                            (g/validate @state)
-                           ((requiring-resolve (:resize config)) @state))))))
+                           (g/update-viewports! @state))))))

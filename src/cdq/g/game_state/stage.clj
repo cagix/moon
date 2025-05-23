@@ -8,7 +8,6 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
             [cdq.ui.message]
-            [gdl.graphics.viewport :as viewport]
             [gdl.ui :as ui]))
 
 (defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
@@ -33,9 +32,8 @@
 
 (extend-type cdq.g.Game
   g/Stage
-  (mouseover-actor [{:keys [ctx/stage
-                            ctx/ui-viewport]}]
-    (ui/hit stage (viewport/mouse-position ui-viewport)))
+  (mouseover-actor [{:keys [ctx/stage] :as ctx}]
+    (ui/hit stage (g/ui-mouse-position ctx)))
 
   (selected-skill [{:keys [ctx/stage]}]
     (action-bar/selected-skill (:action-bar stage))))

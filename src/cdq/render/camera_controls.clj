@@ -1,11 +1,10 @@
 (ns cdq.render.camera-controls
-  (:require [gdl.graphics.camera :as camera]
+  (:require [cdq.g :as g]
             [gdl.input :as input]))
 
-(defn do! [{:keys [ctx/world-viewport
-                   ctx/config]}]
+(defn do! [{:keys [ctx/config] :as ctx}]
   (when (input/key-pressed? (get (:controls config) :zoom-in))
-    (camera/inc-zoom! (:camera world-viewport) (:zoom-speed config)))
+    (g/inc-zoom! ctx (:zoom-speed config)))
   (when (input/key-pressed? (get (:controls config) :zoom-out))
-    (camera/inc-zoom! (:camera world-viewport) (- (:zoom-speed config))))
+    (g/inc-zoom! ctx (- (:zoom-speed config))))
   nil)
