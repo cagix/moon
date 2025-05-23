@@ -1,5 +1,6 @@
 (ns cdq.application.potential-fields.update
-  (:require [cdq.cell :as cell]
+  (:require [cdq.ctx :refer [factions-iterations]]
+            [cdq.cell :as cell]
             [cdq.grid :as grid]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
@@ -137,7 +138,7 @@
 (defn do! [{:keys [ctx/potential-field-cache
                    ctx/grid
                    ctx/active-entities]}]
-  (doseq [[faction max-iterations] ctx/factions-iterations]
+  (doseq [[faction max-iterations] factions-iterations]
     (tick! potential-field-cache
            grid
            faction
