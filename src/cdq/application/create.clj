@@ -357,4 +357,4 @@
                   [(* x tilew) (* y tileh) tilew tileh]))
 
   (set-cursor! [{:keys [ctx/cursors]} cursor-key]
-    (graphics/set-cursor! (utils/safe-get cursors cursor))))
+    (graphics/set-cursor! (utils/safe-get cursors cursor-key))))
