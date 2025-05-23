@@ -5,7 +5,6 @@
             [cdq.state :as state]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
-            [gdl.input :as input]
             [gdl.ui :as ui]))
 
 (defn- clicked-cell [eid cell]
@@ -89,7 +88,7 @@
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [_ eid ctx]
-    (when (and (input/button-just-pressed? :left)
+    (when (and (g/button-just-pressed? ctx :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 

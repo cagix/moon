@@ -2,6 +2,11 @@
 
 (defrecord Game [])
 
+(defprotocol Input
+  (button-just-pressed? [_ button])
+  (key-pressed? [_ key])
+  (key-just-pressed? [_ key]))
+
 (defprotocol GameState
   (reset-game-state! [_]))
 

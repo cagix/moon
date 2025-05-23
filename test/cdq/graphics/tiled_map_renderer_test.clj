@@ -1,4 +1,4 @@
-(ns cdq.graphics.tiled-map-renderer-test
+#_(ns cdq.graphics.tiled-map-renderer-test
   (:require [gdl.tiled :as tiled]
             [gdl.graphics.camera :as camera])
   (:import (com.badlogic.gdx ApplicationAdapter)
@@ -17,10 +17,10 @@
 
 (def camera-position [32 71])
 
-(defn- color-setter [_color _x _y]
+#_(defn- color-setter [_color _x _y]
   Color/WHITE)
 
-(defn -main []
+#_(defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application.
    (proxy [ApplicationAdapter] []

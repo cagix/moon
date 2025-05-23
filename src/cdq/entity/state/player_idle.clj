@@ -1,8 +1,7 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]
-            [gdl.input]))
+            [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :player-idle
   (state/pause-game? [_] true)
@@ -12,7 +11,7 @@
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (g/interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]
-              (when (gdl.input/button-just-pressed? :left)
+              (when (g/button-just-pressed? ctx :left)
                 on-click)))))
 
   (state/clicked-inventory-cell [_ eid cell]

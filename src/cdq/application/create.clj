@@ -44,3 +44,14 @@
 
 (defn do! [config]
   (g/reset-game-state! (create-app-state config)))
+
+(extend-type cdq.g.Game
+  g/Input
+  (button-just-pressed? [_ button]
+    (input/button-just-pressed? button))
+
+  (key-pressed? [_ key]
+    (input/key-pressed? key))
+
+  (key-just-pressed? [_ key]
+    (input/key-just-pressed? key)))
