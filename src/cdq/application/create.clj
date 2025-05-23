@@ -312,6 +312,12 @@
                  color-setter
                  (:camera world-viewport)))
 
+  (ui-viewport-width [{:keys [ctx/ui-viewport]}]
+    (:width ui-viewport))
+
+  (ui-viewport-height [{:keys [ctx/ui-viewport]}]
+    (:height ui-viewport))
+
   (world-viewport-width [{:keys [ctx/world-viewport]}]
     (:width world-viewport))
 

@@ -2,10 +2,10 @@
   (:require [cdq.g :as g]
             [gdl.ui :as ui]))
 
-(defn- draw-message [state {:keys [ctx/ui-viewport]}]
+(defn- draw-message [state ctx]
   (when-let [text (:text @state)]
-    [:draw/text {:x (/ (:width     ui-viewport) 2)
-                 :y (+ (/ (:height ui-viewport) 2) 200)
+    [:draw/text {:x (/ (g/ui-viewport-width ctx) 2)
+                 :y (+ (/ (g/ui-viewport-height ctx) 2) 200)
                  :text text
                  :scale 2.5
                  :up? true}]))

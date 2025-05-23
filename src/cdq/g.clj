@@ -92,4 +92,6 @@
   (sprite-sheet->sprite [_ sprite [x y]])
   (set-cursor! [_ cursor-key])
   (world-viewport-width [_])
-  (world-viewport-height [_]))
+  (world-viewport-height [_])
+  (ui-viewport-width [_])
+  (ui-viewport-height [_]))

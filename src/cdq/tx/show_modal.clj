@@ -1,12 +1,12 @@
 (ns cdq.tx.show-modal
-  (:require [gdl.ui :as ui]))
+  (:require [cdq.g :as g]
+            [gdl.ui :as ui]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn do! [{:keys [ctx/stage
-                   ctx/ui-viewport]}
+(defn do! [{:keys [ctx/stage] :as ctx}
            {:keys [title text button-text on-click]}]
   (assert (not (::modal stage)))
   (ui/add! stage
@@ -18,6 +18,6 @@
                                                  (on-click)))]]
                        :id ::modal
                        :modal? true
-                       :center-position [(/ (:width  ui-viewport) 2)
-                                         (* (:height ui-viewport) (/ 3 4))]
+                       :center-position [(/ (g/ui-viewport-width ctx) 2)
+                                         (* (g/ui-viewport-height ctx) (/ 3 4))]
                        :pack? true})))

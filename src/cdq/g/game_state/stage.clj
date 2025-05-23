@@ -10,19 +10,19 @@
             [cdq.ui.message]
             [gdl.ui :as ui]))
 
-(defn- create-actors [{:keys [ctx/ui-viewport] :as ctx}]
+(defn- create-actors [ctx]
   [(cdq.ui.dev-menu/create ctx)
    (action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
+   (cdq.ui.hp-mana-bar/create [(/ (g/ui-viewport-width ctx) 2)
                                80 ; action-bar-icon-size
                                ]
                               ctx)
    (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
+                          :actors [(cdq.ui.entity-info/create [(g/ui-viewport-width ctx) 0])
                                    (cdq.ui.inventory/create ctx
                                                             :id :inventory-window
-                                                            :position [(:width  ui-viewport)
-                                                                       (:height ui-viewport)])])
+                                                            :position [(g/ui-viewport-width ctx)
+                                                                       (g/ui-viewport-height ctx)])])
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
