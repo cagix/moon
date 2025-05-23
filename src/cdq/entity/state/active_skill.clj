@@ -3,7 +3,6 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -40,17 +39,15 @@
   (mapcat #(effect/render % effect-ctx ctx) effect))
 
 (defcomponent :active-skill
-  (entity/create [[_ eid [skill effect-ctx]] {:keys [ctx/elapsed-time]}]
+  (entity/create [[_ eid [skill effect-ctx]] ctx]
     {:skill skill
      :effect-ctx effect-ctx
      :counter (->> skill
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
-                   (timer/create elapsed-time))})
+                   (g/create-timer ctx))})
 
-  (entity/tick! [[_ {:keys [skill effect-ctx counter]}]
-                 eid
-                 {:keys [ctx/elapsed-time] :as ctx}]
+  (entity/tick! [[_ {:keys [skill effect-ctx counter]}] eid ctx]
     (cond
      (not (effect/some-applicable? (update-effect-ctx ctx effect-ctx) ; TODO how 2 test
                                    (:skill/effects skill)))
@@ -58,7 +55,7 @@
       ; TODO some sound ?
       ]
 
-     (timer/stopped? elapsed-time counter)
+     (g/timer-stopped? ctx counter)
      [[:tx/effect effect-ctx (:skill/effects skill)]
       [:tx/event eid :action-done]]))
 
@@ -74,14 +71,12 @@
                 (not (zero? (:skill/cost skill))))
        [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
-  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}]
-                        entity
-                        {:keys [ctx/elapsed-time] :as ctx}]
+  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}] entity ctx]
     (let [{:keys [entity/image skill/effects]} skill]
       (concat (draw-skill-image image
                                 entity
                                 (:position entity)
-                                (timer/ratio elapsed-time counter))
+                                (g/timer-ratio ctx counter))
               (render-active-effect ctx
                                     effect-ctx ; TODO !!!
                                     ; !! FIXME !!

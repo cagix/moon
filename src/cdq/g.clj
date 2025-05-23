@@ -104,3 +104,13 @@
   (world-viewport-height [_])
   (ui-viewport-width [_])
   (ui-viewport-height [_]))
+
+(defprotocol World
+  (draw-world-map! [_]))
+
+(defprotocol Time
+  (elapsed-time [_])
+  (create-timer [_ duration])
+  (timer-stopped? [_ timer])
+  (reset-timer [_ timer])
+  (timer-ratio [_ timer]))

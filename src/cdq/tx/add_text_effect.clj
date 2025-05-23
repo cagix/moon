@@ -1,15 +1,15 @@
 (ns cdq.tx.add-text-effect
-  (:require [cdq.timer :as timer]))
+  (:require [cdq.g :as g]))
 
-(defn- add-text-effect [entity text elapsed-time]
+(defn- add-text-effect [entity text ctx]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(timer/reset elapsed-time %)))
+               (update :counter #(g/reset-timer ctx %)))
            {:text text
-            :counter (timer/create elapsed-time 0.4)})))
+            :counter (g/create-timer ctx 0.4)})))
 
-(defn do! [{:keys [ctx/elapsed-time]} eid text]
-  (swap! eid add-text-effect text elapsed-time))
+(defn do! [ctx eid text]
+  (swap! eid add-text-effect text ctx))

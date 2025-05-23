@@ -31,8 +31,8 @@
                                     (:entity/id entity)))
                      :icon (g/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
-                     :update-fn (fn [{:keys [ctx/elapsed-time]}]
-                                  (str (utils/readable-number elapsed-time) " seconds"))
+                     :update-fn (fn [ctx]
+                                  (str (utils/readable-number (g/elapsed-time ctx)) " seconds"))
                      :icon (g/texture ctx "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]

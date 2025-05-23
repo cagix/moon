@@ -1,15 +1,15 @@
 (ns cdq.entity.state.stunned
   (:require [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :stunned
-  (entity/create [[_ _eid duration] {:keys [ctx/elapsed-time]}]
-    {:counter (timer/create elapsed-time duration)})
+  (entity/create [[_ _eid duration] ctx]
+    {:counter (g/create-timer ctx duration)})
 
-  (entity/tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
-    (when (timer/stopped? elapsed-time counter)
+  (entity/tick! [[_ {:keys [counter]}] eid ctx]
+    (when (g/timer-stopped? ctx counter)
       [[:tx/event eid :effect-wears-off]]))
 
   (state/cursor [_] :cursors/denied)

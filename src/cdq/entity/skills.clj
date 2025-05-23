@@ -1,6 +1,6 @@
 (ns cdq.entity.skills
   (:require [cdq.entity :as entity]
-            [cdq.timer :as timer]
+            [cdq.g :as g]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :entity/skills
@@ -9,10 +9,8 @@
           (for [skill skills]
             [:tx/add-skill eid skill])))
 
-  (entity/tick! [[k skills]
-                 eid
-                 {:keys [ctx/elapsed-time]}]
+  (entity/tick! [[k skills] eid ctx]
     (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (timer/stopped? elapsed-time cooling-down?))]
+                     (g/timer-stopped? ctx cooling-down?))]
       [:tx/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false])))
