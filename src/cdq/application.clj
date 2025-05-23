@@ -3,12 +3,13 @@
             [cdq.application.config :as config]
             [cdq.application.db :as db]
             [cdq.application.ctx-schema :as ctx-schema]
+            [cdq.application.potential-fields.update :as potential-fields.update]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.g :as g]
             [cdq.math :as math]
-            [cdq.potential-field.update :as potential-field]
+
             [cdq.utils :as utils :refer [mapvals
                                          sort-by-order
                                          pretty-pst]]
@@ -582,16 +583,6 @@
 (defn- assoc-paused [ctx]
   (assoc ctx :ctx/paused? (pause-game? ctx)))
 
-(defn- update-potential-fields! [{:keys [ctx/potential-field-cache
-                                         ctx/grid
-                                         ctx/active-entities]}]
-  (doseq [[faction max-iterations] ctx/factions-iterations]
-    (potential-field/tick! potential-field-cache
-                           grid
-                           faction
-                           active-entities
-                           max-iterations)))
-
 (defn- tick-entities!
   [{:keys [ctx/active-entities] :as ctx}]
   ; precaution in case a component gets removed by another component
@@ -640,7 +631,7 @@
                 (let [ctx (-> ctx
                               assoc-delta-time
                               update-elapsed-time)]
-                  (update-potential-fields! ctx)
+                  (potential-fields.update/do! ctx)
                   (tick-entities! ctx)
                   ctx))]
       (g/remove-destroyed-entities! ctx) ; do not pause as pickup item should be destroyed
