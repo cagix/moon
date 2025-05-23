@@ -1,22 +1,25 @@
 (ns cdq.application
+  "Only holds application create/render/resize/dispose
+  and supplies protocols for interaction with the context.
+
+  Namespaces in `cdq.application.*` are only used internally here."
   (:require [cdq.application.assets :as assets]
             [cdq.application.config :as config]
             [cdq.application.db :as db]
             [cdq.application.ctx-schema :as ctx-schema]
             [cdq.application.potential-fields.update :as potential-fields.update]
             [cdq.application.potential-fields.movement :as potential-fields.movement]
+            [cdq.application.raycaster :as raycaster]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.g :as g]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
             [cdq.timer :as timer]
-            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.tx.spawn-creature]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -246,15 +249,54 @@
                color-setter
                (:camera world-viewport)))
 
+(def ^:private explored-tile-color (graphics/color 0.5 0.5 0.5 1))
+
+(def ^:private ^:dbg-flag see-all-tiles? false)
+
+(defn- tile-color-setter [raycaster explored-tile-corners light-position]
+  #_(reset! do-once false)
+  (let [light-cache (atom {})]
+    (fn tile-color-setter [_color x y]
+      (let [position [(int x) (int y)]
+            explored? (get @explored-tile-corners position) ; TODO needs int call ?
+            base-color (if explored? explored-tile-color graphics/black)
+            cache-entry (get @light-cache position :not-found)
+            blocked? (if (= cache-entry :not-found)
+                       (let [blocked? (raycaster/blocked? raycaster light-position position)]
+                         (swap! light-cache assoc position blocked?)
+                         blocked?)
+                       cache-entry)]
+        #_(when @do-once
+            (swap! ray-positions conj position))
+        (if blocked?
+          (if see-all-tiles? graphics/white base-color)
+          (do (when-not explored?
+                (swap! explored-tile-corners assoc (mapv int position) true))
+              graphics/white))))))
+
+(comment
+ (def ^:private count-rays? false)
+
+ (def ray-positions (atom []))
+ (def do-once (atom true))
+
+ (count @ray-positions)
+ 2256
+ (count (distinct @ray-positions))
+ 608
+ (* 608 4)
+ 2432
+ )
+
 (defn- draw-world-map! [{:keys [ctx/tiled-map
                                 ctx/raycaster
                                 ctx/explored-tile-corners]
                          :as ctx}]
   (draw-tiled-map! ctx
                    tiled-map
-                   (tile-color-setter/create raycaster
-                                             explored-tile-corners
-                                             (g/camera-position ctx))))
+                   (tile-color-setter raycaster
+                                      explored-tile-corners
+                                      (g/camera-position ctx))))
 
 (extend-type cdq.g.Game
   g/Time
@@ -457,8 +499,8 @@
 (defn- with-line-width [shape-drawer width draw-fn]
   (sd/with-line-width shape-drawer width draw-fn))
 
-(defmulti draw! (fn [[k] _ctx]
-                  k))
+(defmulti ^:private draw! (fn [[k] _ctx]
+                            k))
 
 (defmethod draw! :draw/image [[_ {:keys [texture-region color] :as image} position]
                               {:keys [ctx/batch

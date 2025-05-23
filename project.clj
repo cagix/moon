@@ -23,7 +23,7 @@
              ]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}
-          :namespaces [#"^gdl\."]
+          ;:namespaces [#"^gdl\."]
           }
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
