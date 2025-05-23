@@ -119,6 +119,34 @@
   (key-just-pressed? [_ key]
     (input/key-just-pressed? key)))
 
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [texture-region] :as image} scale world-unit-scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions (graphics/dimensions texture-region)
+                                             scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defrecord Sprite [texture-region
+                   pixel-dimensions
+                   world-unit-dimensions
+                   color]) ; optional
+
+(defn- sprite* [texture-region world-unit-scale]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions 1 world-unit-scale) ; = scale 1
+      map->Sprite))
+
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
     (:pixel-dimensions image)
@@ -299,4 +327,31 @@
     (camera/zoom (:camera world-viewport)))
 
   (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
-    (* pixels world-unit-scale)))
+    (* pixels world-unit-scale))
+
+  (sprite [{:keys [ctx/world-unit-scale] :as ctx}
+           texture-path]
+    (sprite* (graphics/texture-region (g/texture ctx texture-path))
+             world-unit-scale))
+
+  (sub-sprite [{:keys [ctx/world-unit-scale]}
+               sprite
+               [x y w h]]
+    (sprite* (graphics/sub-region (:texture-region sprite) x y w h)
+             world-unit-scale))
+
+  (sprite-sheet [{:keys [ctx/world-unit-scale] :as ctx}
+                 texture-path
+                 tilew
+                 tileh]
+    {:image (sprite* (graphics/texture-region (g/texture ctx texture-path))
+                     world-unit-scale)
+     :tilew tilew
+     :tileh tileh})
+
+  (sprite-sheet->sprite [ctx
+                         {:keys [image tilew tileh]}
+                         [x y]]
+    (g/sub-sprite ctx
+                  image
+                  [(* x tilew) (* y tileh) tilew tileh])))

@@ -1,7 +1,6 @@
 (ns cdq.ui.inventory
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
@@ -62,15 +61,10 @@
                     :bag      10}) ; transparent
 
 ; TODO actually we can pass this whole map into inventory-window ...
-(defn- slot->sprite [{:keys [ctx/world-unit-scale]
-                      :as ctx}
-                     slot]
-  (graphics/from-sheet (graphics/sprite-sheet (g/texture ctx "images/items.png")
-                                              48
-                                              48
-                                              world-unit-scale)
-                       [21 (+ (slot->y-sprite-idx slot) 2)]
-                       world-unit-scale))
+(defn- slot->sprite [ctx slot]
+  (g/sprite-sheet->sprite ctx
+                          (g/sprite-sheet ctx "images/items.png" 48 48)
+                          [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]
   (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite ctx slot)))]

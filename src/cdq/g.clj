@@ -72,8 +72,6 @@
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
 
-; only missing line of sight and sprites
-; set cursor , etc
 (defprotocol Graphics
   (draw-on-world-viewport! [_ fns])
   (handle-draws! [_ draws])
@@ -87,4 +85,8 @@
   (visible-tiles [_])
   (set-camera-position! [_ position])
   (camera-zoom [_])
-  (pixels->world-units [_ pixels]))
+  (pixels->world-units [_ pixels])
+  (sprite [_ texture-path])
+  (sub-sprite [_ sprite [x y w h]])
+  (sprite-sheet [_ texture-path tilew tileh])
+  (sprite-sheet->sprite [_ sprite [x y]]))

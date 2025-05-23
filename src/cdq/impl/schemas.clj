@@ -1,7 +1,6 @@
 (ns cdq.impl.schemas
   (:require [cdq.animation :as animation]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.schema :as schema]
             [cdq.val-max :as val-max]))
 
@@ -66,21 +65,15 @@
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
 
-(defn- edn->sprite [{:keys [file sub-image-bounds]}
-                    {:keys [ctx/world-unit-scale]
-                     :as ctx}]
+(defn- edn->sprite [{:keys [file sub-image-bounds]} ctx]
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet (graphics/sprite-sheet (g/texture ctx file)
-                                                  tilew
-                                                  tileh
-                                                  world-unit-scale)
-                           [(int (/ sprite-x tilew))
-                            (int (/ sprite-y tileh))]
-                           world-unit-scale))
-    (graphics/sprite (g/texture ctx file)
-                     world-unit-scale)))
+      (g/sprite-sheet->sprite ctx
+                              (g/sprite-sheet ctx file tilew tileh)
+                              [(int (/ sprite-x tilew))
+                               (int (/ sprite-y tileh))]))
+    (g/sprite ctx file)))
 
 (defmethod schema/edn->value :s/image [_ edn ctx]
   (edn->sprite edn ctx))
