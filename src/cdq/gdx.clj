@@ -1,7 +1,10 @@
 (ns cdq.gdx
-  (:require [cdq.application.assets :as assets]
-            [cdq.c :as c]
+  (:require [cdq.c :as c]
             [cdq.utils :as utils]
+            [clojure.string :as str]
+            [gdl.assets :as assets]
+            [gdl.files :as files]
+            [gdl.files.file-handle :as fh]
             [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
@@ -11,6 +14,29 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :refer [dispose!]]))
+
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (fh/list (files/internal folder))
+         result []]
+    (cond (nil? file)
+          result
+
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
+
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- create-assets [{:keys [folder
+                              asset-type-extensions]}]
+  (assets/create
+   (for [[asset-type extensions] asset-type-extensions
+         file (map #(str/replace-first % folder "")
+                   (recursively-search folder extensions))]
+     [file asset-type])))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -185,14 +211,14 @@
     (assets path))
 
   (all-textures [_]
-    (assets/all-textures assets))
+    (assets/all-of-type assets :texture))
 
   c/Sounds
   (sound [_ path]
     (assets path))
 
   (all-sounds [_]
-    (assets/all-sounds assets))
+    (assets/all-of-type assets :sound))
 
   c/Graphics
   (delta-time [_]
@@ -354,7 +380,7 @@
         stage (ui/stage (:java-object ui-viewport)
                         (:java-object batch))]
     (input/set-processor! stage)
-    (map->Gdx {:assets (assets/create (:assets config))
+    (map->Gdx {:assets (create-assets (:assets config))
                :batch batch
                :unit-scale 1
                :world-unit-scale world-unit-scale
