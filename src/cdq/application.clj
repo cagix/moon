@@ -4,6 +4,7 @@
             [cdq.application.db :as db]
             [cdq.application.ctx-schema :as ctx-schema]
             [cdq.application.potential-fields.update :as potential-fields.update]
+            [cdq.application.potential-fields.movement :as potential-fields.movement]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
@@ -17,7 +18,6 @@
             [cdq.timer :as timer]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.tx.spawn-creature]
-            [cdq.potential-field.movement :as potential-field]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.entity-info]
@@ -291,7 +291,7 @@
                          (entity/enemy entity)))
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
-    (potential-field/find-direction grid eid)))
+    (potential-fields.movement/find-direction grid eid)))
 
 (extend-type cdq.g.Game
   g/Entities
