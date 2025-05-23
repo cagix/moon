@@ -12,7 +12,7 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.tx.spawn-creature]
             [cdq.potential-field.movement :as potential-field]
-            [cdq.raycaster]
+            [cdq.raycaster :as raycaster]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.utils :as utils]
@@ -129,7 +129,7 @@
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
                     :ctx/grid grid
-                    :ctx/raycaster (cdq.raycaster/create grid)
+                    :ctx/raycaster (raycaster/create grid)
                     :ctx/content-grid (cdq.content-grid/create tiled-map (g/config ctx :content-grid-cell-size))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                       (tiled/tm-height tiled-map)
@@ -140,6 +140,19 @@
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position))]
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
+
+(extend-type cdq.g.Game
+  g/Raycaster
+  (ray-blocked? [{:keys [ctx/raycaster]} start end]
+    (raycaster/blocked? raycaster
+                        start
+                        end))
+
+  (path-blocked? [{:keys [ctx/raycaster]} start end width]
+    (raycaster/path-blocked? raycaster
+                             start
+                             end
+                             width)))
 
 (extend-type cdq.g.Game
   g/GameState
@@ -228,6 +241,17 @@
       (doseq [component @eid]
         (g/handle-txs! ctx (entity/create! component eid ctx)))
       eid))
+
+  (move-entity! [{:keys [ctx/content-grid
+                         ctx/grid]}
+                 eid body direction rotate-in-movement-direction?]
+    (content-grid/position-changed! content-grid eid)
+    (grid/position-changed! grid eid)
+    (swap! eid assoc
+           :position (:position body)
+           :left-bottom (:left-bottom body))
+    (when rotate-in-movement-direction?
+      (swap! eid assoc :rotation-angle (v/angle-from-vector direction))))
 
   (spawn-effect! [ctx position components]
     (g/spawn-entity! ctx
