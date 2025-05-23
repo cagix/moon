@@ -7,7 +7,6 @@
  :create  cdq.application.create/do!
  :dispose cdq.application.dispose/do!
  :render  cdq.application.render/do!
- :resize  cdq.application.resize/do!
  :requires [cdq.g.player-movement-vector
             cdq.g.handle-txs
             cdq.g.interaction-state
