@@ -4,7 +4,8 @@
             [cdq.state :as state]))
 
 (defn- pause-game? [{:keys [ctx/config
-                            ctx/player-eid]}]
+                            ctx/player-eid]
+                     :as ctx}]
   (or #_error
       (and (:pausing? config)
            (state/pause-game? (entity/state-obj @player-eid))
