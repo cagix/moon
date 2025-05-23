@@ -1,6 +1,7 @@
 (ns cdq.application
-  (:require [cdq.ctx :as ctx]
-            [cdq.config :as config]
+  (:require [cdq.application.config :as config]
+            [cdq.application.schema :as application-schema]
+            [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.state :as state]
@@ -664,17 +665,17 @@
                        (proxy [ApplicationAdapter] []
                          (create []
                            (reset! state (create-game-state! config))
-                           (g/validate @state))
+                           (application-schema/validate @state))
 
                          (dispose []
-                           (g/validate @state)
+                           (application-schema/validate @state)
                            (dispose-game-state! @state))
 
                          (render []
-                           (g/validate @state)
+                           (application-schema/validate @state)
                            (swap! state render-game-state!)
-                           (g/validate @state))
+                           (application-schema/validate @state))
 
                          (resize [_width _height]
-                           (g/validate @state)
+                           (application-schema/validate @state)
                            (g/update-viewports! @state))))))

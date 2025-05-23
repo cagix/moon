@@ -43,9 +43,6 @@
   (open-error-window! [_ throwable])
   (selected-skill [_]))
 
-(defprotocol Schema
-  (validate [_]))
-
 (defprotocol Entities
   (get-active-entities [_])
   (remove-destroyed-entities! [_])
