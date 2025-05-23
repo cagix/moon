@@ -257,7 +257,6 @@
                                              (g/camera-position ctx))))
 
 (extend-type cdq.g.Game
-  g/World
   g/Time
   (elapsed-time [{:keys [ctx/elapsed-time]}]
     elapsed-time)
@@ -302,20 +301,20 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
+(defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (vals @entity-ids))]
+    (let [id (:entity/id @eid)]
+      (assert (contains? @entity-ids id))
+      (swap! entity-ids dissoc id))
+    (content-grid/remove-entity! eid)
+    (grid/remove-entity! eid)
+    (doseq [component @eid]
+      (g/handle-txs! ctx (entity/destroy! component eid ctx))))
+  nil)
+
 (extend-type cdq.g.Game
   g/Entities
-  (remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
-    (doseq [eid (filter (comp :entity/destroyed? deref)
-                        (vals @entity-ids))]
-      (let [id (:entity/id @eid)]
-        (assert (contains? @entity-ids id))
-        (swap! entity-ids dissoc id))
-      (content-grid/remove-entity! eid)
-      (grid/remove-entity! eid)
-      (doseq [component @eid]
-        (g/handle-txs! ctx (entity/destroy! component eid ctx))))
-    nil)
-
   (spawn-entity! [{:keys [ctx/id-counter
                           ctx/entity-ids
                           ctx/content-grid
@@ -802,10 +801,9 @@
     (when (g/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
     (when (g/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))))
 
-(defn- assoc-active-entities [{:keys [ctx/content-grid
-                                      ctx/player-eid]}]
-  (assoc ctx :ctx/active-entities
-         (content-grid/active-entities content-grid @player-eid)))
+(defn- get-active-entities [{:keys [ctx/content-grid
+                                    ctx/player-eid]}]
+  (content-grid/active-entities content-grid @player-eid))
 
 (defn- draw-on-world-viewport!* [{:keys [ctx/batch
                                          ctx/world-viewport
@@ -902,7 +900,7 @@
                         position))
 
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
-  (let [ctx (assoc-active-entities ctx)]
+  (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
     (set-camera-position! ctx (:position @player-eid))
     (graphics/clear-screen!)
     (draw-world-map! ctx)
@@ -920,7 +918,7 @@
                   (potential-fields.update/do! ctx)
                   (tick-entities! ctx)
                   ctx))]
-      (g/remove-destroyed-entities! ctx) ; do not pause as pickup item should be destroyed
+      (remove-destroyed-entities! ctx) ; do not pause as pickup item should be destroyed
       (camera-controls! ctx)
       ctx)))
 
