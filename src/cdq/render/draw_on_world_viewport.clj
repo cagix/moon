@@ -2,18 +2,17 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.grid :as grid]
             [cdq.math :as math]
             [cdq.utils :refer [sort-by-order
                                pretty-pst]]))
 
-(defn- geom-test* [{:keys [ctx/grid] :as ctx}]
+(defn- geom-test* [ctx]
   (let [position (g/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]
     (conj (cons [:draw/circle position radius [1 0 0 0.5]]
-                (for [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
+                (for [[x y] (map #(:position @%) (g/circle->cells ctx circle))]
                   [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
           (let [{[x y] :left-bottom
                  :keys [width height]} (math/circle->outer-rectangle circle)]
@@ -22,9 +21,9 @@
 (defn- geom-test [ctx]
   (g/handle-draws! ctx (geom-test* ctx)))
 
-(defn- highlight-mouseover-tile* [{:keys [ctx/grid] :as ctx}]
+(defn- highlight-mouseover-tile* [ctx]
   (let [[x y] (mapv int (g/world-mouse-position ctx))
-        cell (grid [x y])]
+        cell (g/grid-cell ctx [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
         (case (:movement @cell)
@@ -53,10 +52,10 @@
 (defn- draw-tile-grid [ctx]
   (g/handle-draws! ctx (draw-tile-grid* ctx)))
 
-(defn- draw-cell-debug* [{:keys [ctx/grid] :as ctx}]
+(defn- draw-cell-debug* [ctx]
   (apply concat
          (for [[x y] (g/visible-tiles ctx)
-               :let [cell (grid [x y])]
+               :let [cell (g/grid-cell ctx [x y])]
                :when cell
                :let [cell* @cell]]
            [(when (and ctx/show-cell-entities? (seq (:entities cell*)))

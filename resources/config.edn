@@ -10,7 +10,6 @@
  :requires [cdq.g.player-movement-vector
             cdq.g.handle-txs
             cdq.g.interaction-state
-            cdq.g.spawn-entity
             cdq.g.line-of-sight
             cdq.g.raycaster
             cdq.g.schema

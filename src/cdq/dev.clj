@@ -85,7 +85,7 @@
   (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (g/build ctx item-id)))
 
 (defn- mouseover-grid-cell []
-  #_@(ctx/grid (mapv int (g/world-mouse-position ctx))))
+  #_@(g/grid-cell ctx (mapv int (g/world-mouse-position ctx))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

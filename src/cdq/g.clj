@@ -46,9 +46,10 @@
 (defprotocol Schema
   (validate [_]))
 
-(defprotocol SpawnEntity
+(defprotocol Entities
   (spawn-entity! [_ position body components])
-  (spawn-effect! [_ position components]))
+  (spawn-effect! [_ position components])
+  (move-entity! [_ eid body direction rotate-in-movement-direction?]))
 
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
@@ -59,6 +60,9 @@
 
 (defprotocol Grid
   (valid-position? [_ new-body])
+  (grid-cell [_ position])
+  (point->entities [_ position])
+  (circle->cells [_ circle])
   (circle->entities [_ circle])
   (nearest-enemy-distance [_ entity])
   (nearest-enemy [_ entity])
