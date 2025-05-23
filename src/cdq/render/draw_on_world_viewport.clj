@@ -38,14 +38,14 @@
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
-(defn- draw-tile-grid* [{:keys [ctx/world-viewport] :as ctx}]
+(defn- draw-tile-grid* [ctx]
   (when ctx/show-tile-grid?
     (let [[left-x _right-x bottom-y _top-y] (g/camera-frustum ctx)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)
-        (inc (int (:width  world-viewport)))
-        (+ 2 (int (:height world-viewport)))
+        (inc (int (g/world-viewport-width ctx)))
+        (+ 2 (int (g/world-viewport-height ctx)))
         1
         1
         [1 1 1 0.8]]])))

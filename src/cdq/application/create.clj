@@ -1,3 +1,8 @@
+; * all gdl dependencies here (actor ?) -> frames-per-second ...
+; => gdl still required ?
+; * private functions out -> sprite, assets, etc.
+; ?
+; * dispose/schema sees this too ...
 (ns cdq.application.create
   (:require [gdl.assets :as assets]
             [cdq.db :as db]
@@ -39,7 +44,7 @@
       :ctx/batch batch
       :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
-      :ctx/shape-drawer-texture shape-drawer-texture ; used @ dispose & schema
+      :ctx/shape-drawer-texture shape-drawer-texture
       :ctx/shape-drawer (graphics/shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
       :ctx/cursors (mapvals
                     (fn [[file [hotspot-x hotspot-y]]]
@@ -306,6 +311,12 @@
                  tiled-map
                  color-setter
                  (:camera world-viewport)))
+
+  (world-viewport-width [{:keys [ctx/world-viewport]}]
+    (:width world-viewport))
+
+  (world-viewport-height [{:keys [ctx/world-viewport]}]
+    (:height world-viewport))
 
   (camera-position [{:keys [ctx/world-viewport]}]
     (camera/position (:camera world-viewport)))

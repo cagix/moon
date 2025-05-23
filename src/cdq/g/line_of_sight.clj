@@ -1,21 +1,20 @@
 (ns cdq.g.line-of-sight
-  (:require [cdq.g :as g]
-            [gdl.graphics.camera :as camera]))
+  (:require [cdq.g :as g]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
-(defn- on-screen? [viewport entity]
-  (let [[x y] (:position entity)
+(defn- on-screen? [ctx position]
+  (let [[x y] position
         x (float x)
         y (float y)
-        [cx cy] (camera/position (:camera viewport))
+        [cx cy] (g/camera-position ctx)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (:width viewport))  2)))
-     (<= ydist (inc (/ (float (:height viewport)) 2))))))
+     (<= xdist (inc (/ (float (g/world-viewport-width ctx))  2)))
+     (<= ydist (inc (/ (float (g/world-viewport-height ctx)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see
@@ -25,11 +24,9 @@
   g/LineOfSight
   ; does not take into account size of entity ...
   ; => assert bodies <1 width then
-  (line-of-sight? [{:keys [ctx/world-viewport] :as ctx}
-                   source
-                   target]
+  (line-of-sight? [ctx source target]
     (and (or (not (:entity/player? source))
-             (on-screen? world-viewport target))
+             (on-screen? ctx (:position target)))
          (not (and los-checks?
                    (g/ray-blocked? ctx
                                    (:position source)

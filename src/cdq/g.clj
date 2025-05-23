@@ -90,4 +90,6 @@
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]])
-  (set-cursor! [_ cursor-key]))
+  (set-cursor! [_ cursor-key])
+  (world-viewport-width [_])
+  (world-viewport-height [_]))
