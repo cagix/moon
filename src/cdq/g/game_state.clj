@@ -216,6 +216,23 @@
 
 (extend-type cdq.g.Game
   g/Entities
+  (get-active-entities [{:keys [ctx/content-grid
+                                ctx/player-eid]}]
+    (content-grid/active-entities content-grid
+                                  @player-eid))
+
+  (remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
+    (doseq [eid (filter (comp :entity/destroyed? deref)
+                        (vals @entity-ids))]
+      (let [id (:entity/id @eid)]
+        (assert (contains? @entity-ids id))
+        (swap! entity-ids dissoc id))
+      (content-grid/remove-entity! eid)
+      (grid/remove-entity! eid)
+      (doseq [component @eid]
+        (g/handle-txs! ctx (entity/destroy! component eid ctx))))
+    nil)
+
   (spawn-entity! [{:keys [ctx/id-counter
                           ctx/entity-ids
                           ctx/content-grid

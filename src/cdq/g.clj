@@ -47,6 +47,8 @@
   (validate [_]))
 
 (defprotocol Entities
+  (get-active-entities [_])
+  (remove-destroyed-entities! [_])
   (spawn-entity! [_ position body components])
   (spawn-effect! [_ position components])
   (move-entity! [_ eid body direction rotate-in-movement-direction?]))

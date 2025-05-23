@@ -1,9 +1,5 @@
 (ns cdq.render.bind-active-entities
-  (:require [cdq.content-grid :as content-grid]))
+  (:require [cdq.g :as g]))
 
-(defn do!
-  [{:keys [ctx/content-grid
-           ctx/player-eid]
-    :as ctx}]
-  (assoc ctx :ctx/active-entities (content-grid/active-entities content-grid
-                                                                @player-eid)))
+(defn do! [ctx]
+  (assoc ctx :ctx/active-entities (g/get-active-entities ctx)))
