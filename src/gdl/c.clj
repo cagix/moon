@@ -5,7 +5,7 @@
   (all-textures [_]))
 
 (defprotocol Sounds
-  (sound [_ path])
+  (play-sound! [_ sound-name])
   (all-sounds [_]))
 
 (defprotocol Graphics

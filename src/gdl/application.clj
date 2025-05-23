@@ -1,3 +1,4 @@
+; => space invaders <=
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.string :as str]
@@ -13,7 +14,10 @@
             [gdl.ui :as ui]
             [gdl.utils :as utils])
   (:import (com.badlogic.gdx ApplicationAdapter
-                             Gdx)))
+                             Gdx)
+           (com.badlogic.gdx.audio Sound)))
+
+(def sound-path-format "sounds/%s.wav")
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -223,6 +227,14 @@
     (graphics/update! ui-viewport)
     (graphics/update! world-viewport))
 
+  c/Sounds
+  (play-sound! [ctx sound-name]
+    (->> sound-name
+         (format sound-path-format)
+         assets
+         Sound/.play))
+  (all-sounds [_]
+    (assets/all-of-type assets :sound))
 
   c/Textures
   (texture [_ path]
@@ -230,13 +242,6 @@
 
   (all-textures [_]
     (assets/all-of-type assets :texture))
-
-  c/Sounds
-  (sound [_ path]
-    (assets path))
-
-  (all-sounds [_]
-    (assets/all-of-type assets :sound))
 
   c/Graphics
   (delta-time [_]

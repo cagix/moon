@@ -1,10 +1,5 @@
 (ns cdq.tx.sound
-  (:require [cdq.g :as g]
-            [gdl.c :as c]
-            [gdl.audio.sound :as sound]))
+  (:require [gdl.c :as c]))
 
 (defn do! [ctx sound-name]
-  (->> sound-name
-       (format (g/config ctx :sound-path-format))
-       (c/sound ctx)
-       sound/play!))
+  (c/play-sound! ctx sound-name))
