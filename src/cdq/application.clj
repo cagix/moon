@@ -11,7 +11,6 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.g :as g]
-            [cdq.g.game-state.stage :as stage]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
@@ -21,6 +20,12 @@
             [cdq.potential-field.movement :as potential-field]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
+            [cdq.ui.entity-info]
+            [cdq.ui.error-window :as error-window]
+            [cdq.ui.hp-mana-bar]
+            [cdq.ui.player-state-draw]
+            [cdq.ui.windows]
+            [cdq.ui.message]
             [cdq.utils :as utils :refer [mapvals
                                          sort-by-order
                                          pretty-pst]]
@@ -174,8 +179,32 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
+(defn- create-actors [ctx]
+  [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
+   (action-bar/create :id :action-bar)
+   (cdq.ui.hp-mana-bar/create [(/ (g/ui-viewport-width ctx) 2)
+                               80 ; action-bar-icon-size
+                               ]
+                              ctx)
+   (cdq.ui.windows/create :id :windows
+                          :actors [(cdq.ui.entity-info/create [(g/ui-viewport-width ctx) 0])
+                                   (cdq.ui.inventory/create ctx
+                                                            :id :inventory-window
+                                                            :position [(g/ui-viewport-width ctx)
+                                                                       (g/ui-viewport-height ctx)])])
+   (cdq.ui.player-state-draw/create)
+   (cdq.ui.message/create :name "player-message")])
+
+(extend-type cdq.g.Game
+  g/StageActors
+  (open-error-window! [ctx throwable]
+    (g/add-actor! ctx (error-window/create throwable)))
+
+  (selected-skill [ctx]
+    (action-bar/selected-skill (g/get-actor ctx :action-bar))))
+
 (defn- create-game-state [ctx]
-  (stage/reset ctx)
+  (g/reset-actors! ctx (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} ((requiring-resolve (g/config ctx :world-fn)) ctx)
         grid (grid/create tiled-map)
