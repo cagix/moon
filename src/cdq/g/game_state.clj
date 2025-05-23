@@ -1,14 +1,17 @@
 (ns cdq.g.game-state
   (:require [cdq.ctx :as ctx]
+            [cdq.cell :as cell]
             [cdq.content-grid]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.g.game-state.stage :as stage]
-            [cdq.grid]
+            [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.tx.spawn-creature]
+            [cdq.potential-field.movement :as potential-field]
             [cdq.raycaster]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -62,7 +65,7 @@
   (stage/reset ctx)
   (let [{:keys [tiled-map
                 start-position]} ((requiring-resolve (g/config ctx :world-fn)) ctx)
-        grid (cdq.grid/create tiled-map)
+        grid (grid/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
@@ -110,3 +113,22 @@
 
   (timer-ratio [{:keys [ctx/elapsed-time]} timer]
     (timer/ratio elapsed-time timer)))
+
+(extend-type cdq.g.Game
+  cdq.g/Grid
+  (valid-position? [{:keys [ctx/grid]} new-body]
+    (grid/valid-position? grid new-body))
+
+  (circle->entities [{:keys [ctx/grid]} circle]
+    (grid/circle->entities grid circle))
+
+  (nearest-enemy-distance [{:keys [ctx/grid]} entity]
+    (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
+                                  (entity/enemy entity)))
+
+  (nearest-enemy [{:keys [ctx/grid]} entity]
+    (cell/nearest-entity @(grid (mapv int (:position entity)))
+                         (entity/enemy entity)))
+
+  (potential-field-find-direction [{:keys [ctx/grid]} eid]
+    (potential-field/find-direction grid eid)))

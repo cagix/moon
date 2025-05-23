@@ -13,8 +13,6 @@
             cdq.g.spawn-entity
             cdq.g.line-of-sight
             cdq.g.raycaster
-            cdq.g.potential-field
-            cdq.g.grid
             cdq.g.schema
             cdq.g.game-state
             cdq.g.effect-context

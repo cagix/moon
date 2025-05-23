@@ -46,10 +46,6 @@
 (defprotocol Schema
   (validate [_]))
 
-; TODO txs should not be available here ....
-; but then tx-handler has to know everything again !?
-; confused
-
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components])
   (spawn-effect! [_ position components]))
@@ -61,12 +57,12 @@
   (ray-blocked? [_ start end])
   (path-blocked? [_ start end width]))
 
-(defprotocol PotentialField
-  (potential-field-find-direction [_ eid]))
-
 (defprotocol Grid
+  (valid-position? [_ new-body])
+  (circle->entities [_ circle])
   (nearest-enemy-distance [_ entity])
-  (nearest-enemy [_ entity]))
+  (nearest-enemy [_ entity])
+  (potential-field-find-direction [_ eid]))
 
 (defprotocol PlayerMovementInput
   (player-movement-vector [_]))
