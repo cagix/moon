@@ -1,9 +1,7 @@
 (ns gdl.graphics
   (:require [gdl.files :as files]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.viewport :as viewport]
             [gdl.interop :as interop]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
@@ -60,10 +58,14 @@
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
 
+(defprotocol Batch
+  (draw-on-viewport! [_ viewport draw-fn])
+  (draw-texture-region! [_ texture-region [x y] [w h] rotation color]))
+
 (defn sprite-batch []
   (let [this (SpriteBatch.)]
     (reify
-      batch/Batch
+      Batch
       (draw-on-viewport! [_ viewport draw-fn]
         (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
         (.setProjectionMatrix this (camera/combined (:camera viewport)))
@@ -250,10 +252,14 @@
           (draw-fn)
           (.setDefaultLineWidth this (float old-line-width)))))))
 
+(defprotocol Viewport
+  (update! [_])
+  (mouse-position [_]))
+
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
-      viewport/Viewport
+      Viewport
       (update! [_]
         (.update this
                  (.getWidth  Gdx/graphics)

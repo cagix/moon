@@ -6,10 +6,8 @@
             [gdl.files :as files]
             [gdl.files.file-handle :as fh]
             [gdl.graphics :as graphics]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
@@ -80,24 +78,24 @@
 (defmethod draw! :draw/image [[_ {:keys [texture-region color] :as image} position]
                               {:keys [batch
                                       unit-scale]}]
-  (batch/draw-texture-region! batch
-                              texture-region
-                              position
-                              (unit-dimensions image unit-scale)
-                              0 ; rotation
-                              color))
+  (graphics/draw-texture-region! batch
+                                 texture-region
+                                 position
+                                 (unit-dimensions image unit-scale)
+                                 0 ; rotation
+                                 color))
 
 (defmethod draw! :draw/rotated-centered [[_ {:keys [texture-region color] :as image} rotation [x y]]
                                          {:keys [batch
                                                  unit-scale]}]
   (let [[w h] (unit-dimensions image unit-scale)]
-    (batch/draw-texture-region! batch
-                                texture-region
-                                [(- (float x) (/ (float w) 2))
-                                 (- (float y) (/ (float h) 2))]
-                                [w h]
-                                rotation
-                                color)))
+    (graphics/draw-texture-region! batch
+                                   texture-region
+                                   [(- (float x) (/ (float w) 2))
+                                    (- (float y) (/ (float h) 2))]
+                                   [w h]
+                                   rotation
+                                   color)))
 
 (defmethod draw! :draw/centered [[_ image position] ctx]
   (draw! [:draw/rotated-centered image 0 position] ctx))
@@ -239,17 +237,17 @@
     (camera/set-position! (:camera world-viewport) position))
 
   (update-viewports! [_]
-    (viewport/update! ui-viewport)
-    (viewport/update! world-viewport))
+    (graphics/update! ui-viewport)
+    (graphics/update! world-viewport))
 
   (draw-on-world-viewport! [ctx fns]
-    (batch/draw-on-viewport! batch
-                             world-viewport
-                             (fn []
-                               (sd/with-line-width shape-drawer world-unit-scale
-                                 (fn []
-                                   (doseq [f fns]
-                                     (f (assoc ctx :unit-scale world-unit-scale))))))))
+    (graphics/draw-on-viewport! batch
+                                world-viewport
+                                (fn []
+                                  (sd/with-line-width shape-drawer world-unit-scale
+                                    (fn []
+                                      (doseq [f fns]
+                                        (f (assoc ctx :unit-scale world-unit-scale))))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (tiled/draw! (tiled-map-renderer tiled-map)
@@ -258,10 +256,10 @@
                  (:camera world-viewport)))
 
   (world-mouse-position [_]
-    (viewport/mouse-position world-viewport))
+    (graphics/mouse-position world-viewport))
 
   (ui-mouse-position [_]
-    (viewport/mouse-position ui-viewport))
+    (graphics/mouse-position ui-viewport))
 
   (ui-viewport-width [_]
     (:width ui-viewport))
