@@ -85,7 +85,6 @@
   (handle-draws! [_ draws])
   (world-mouse-position [_])
   (ui-mouse-position [_])
-  (update-viewports! [_])
   (draw-tiled-map! [_ tiled-map color-setter])
   (camera-position [_])
   (inc-zoom! [_ amount])

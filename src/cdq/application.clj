@@ -296,11 +296,6 @@
   (ui-mouse-position [{:keys [ctx/ui-viewport]}]
     (viewport/mouse-position ui-viewport))
 
-  (update-viewports! [{:keys [ctx/ui-viewport
-                              ctx/world-viewport]}]
-    (viewport/update! ui-viewport)
-    (viewport/update! world-viewport))
-
   (draw-tiled-map! [{:keys [ctx/tiled-map-renderer
                             ctx/world-viewport]}
                     tiled-map
@@ -638,6 +633,11 @@
       (camera-controls! ctx)
       ctx)))
 
+(defn- update-viewports! [{:keys [ctx/ui-viewport
+                                  ctx/world-viewport]}]
+  (viewport/update! ui-viewport)
+  (viewport/update! world-viewport))
+
 (def state (atom nil))
 
 (defn -main []
@@ -659,4 +659,4 @@
 
                          (resize [_width _height]
                            (ctx-schema/validate @state)
-                           (g/update-viewports! @state))))))
+                           (update-viewports! @state))))))
