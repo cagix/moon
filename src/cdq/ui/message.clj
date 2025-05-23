@@ -1,19 +1,18 @@
 (ns cdq.ui.message
-  (:require [cdq.draw :as draw]
+  (:require [cdq.g :as g]
             [gdl.ui :as ui]))
 
+(defn- draw-message [state {:keys [ctx/ui-viewport]}]
+  (when-let [text (:text @state)]
+    [:draw/text {:x (/ (:width     ui-viewport) 2)
+                 :y (+ (/ (:height ui-viewport) 2) 200)
+                 :text text
+                 :scale 2.5
+                 :up? true}]))
+
 (defn create [& {:keys [name]}]
-  (ui/actor {:draw (fn [this {:keys [ctx/ui-viewport]
-                              :as ctx}]
-                     ;(println "CTX: " @(.ctx (.getStage this)))
-                     (let [state (ui/user-object this)]
-                       (when-let [text (:text @state)]
-                         (draw/text ctx
-                                    {:x (/ (:width     ui-viewport) 2)
-                                     :y (+ (/ (:height ui-viewport) 2) 200)
-                                     :text text
-                                     :scale 2.5
-                                     :up? true}))))
+  (ui/actor {:draw (fn [this ctx]
+                     (g/handle-draws! ctx [(draw-message (ui/user-object this) ctx)]))
              :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)

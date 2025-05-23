@@ -1,6 +1,5 @@
 (ns cdq.ui.inventory
-  (:require [cdq.draw :as draw]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
@@ -26,20 +25,15 @@
 (def ^:private droppable-color   [0   0.6 0 0.8])
 (def ^:private not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-cell-rect! [ctx player-entity x y mouseover? cell]
-  (draw/rectangle ctx x y cell-size cell-size :gray)
-  (when (and mouseover?
-             (= :player-item-on-cursor (entity/state-k player-entity)))
-    (let [item (:entity/item-on-cursor player-entity)
-          color (if (inventory/valid-slot? cell item)
-                  droppable-color
-                  not-allowed-color)]
-      (draw/filled-rectangle ctx
-                             (inc x)
-                             (inc y)
-                             (- cell-size 2)
-                             (- cell-size 2)
-                             color))))
+(defn- draw-cell-rect [player-entity x y mouseover? cell]
+  [[:draw/rectangle x y cell-size cell-size :gray]
+   (when (and mouseover?
+              (= :player-item-on-cursor (entity/state-k player-entity)))
+     (let [item (:entity/item-on-cursor player-entity)
+           color (if (inventory/valid-slot? cell item)
+                   droppable-color
+                   not-allowed-color)]
+       [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
@@ -51,12 +45,12 @@
          {:keys [ctx/player-eid
                  ctx/ui-viewport]
           :as ctx}]
-      (draw-cell-rect! ctx
-                       @player-eid
-                       (.getX actor)
-                       (.getY actor)
-                       (ui/hit actor (viewport/mouse-position ui-viewport))
-                       (ui/user-object (ui/parent actor))))}))
+      (g/handle-draws! ctx
+                       (draw-cell-rect @player-eid
+                                       (.getX actor)
+                                       (.getY actor)
+                                       (ui/hit actor (viewport/mouse-position ui-viewport))
+                                       (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
