@@ -5,17 +5,16 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
-            [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
-  (fn [{:keys [ctx/stage] :as ctx}]
+  (fn [ctx]
     (try (f ctx)
          (ui/remove! window)
          (catch Throwable t
            (utils/pretty-pst t)
-           (ui/add! stage (error-window/create t))))))
+           (g/open-error-window! ctx t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -54,10 +53,10 @@
     (.pack window)
     window))
 
-(defn- edit-property [id {:keys [ctx/stage] :as ctx}]
-  (ui/add! stage (editor-window (g/get-raw ctx id) ctx)))
+(defn- edit-property [id ctx]
+  (g/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
 
-(defn open-editor-window! [{:keys [ctx/stage] :as ctx} property-type]
+(defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"
                            :modal? true
                            :close-button? true
@@ -65,4 +64,4 @@
                            :close-on-escape? true})]
     (ui/add! window (overview-table/create ctx property-type edit-property))
     (.pack window)
-    (ui/add! stage window)))
+    (g/add-actor! ctx window)))

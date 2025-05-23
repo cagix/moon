@@ -31,7 +31,16 @@
   (reset-game-state! [_]))
 
 (defprotocol Stage
+  (draw-stage! [_])
+  (update-stage! [_])
+  (get-actor [_ id])
+  (find-actor-by-name [_ name])
+  (add-actor! [_ actor])
   (mouseover-actor [_])
+  (reset-actors! [_ actors]))
+
+(defprotocol StageActors
+  (open-error-window! [_ throwable])
   (selected-skill [_]))
 
 (defprotocol Schema

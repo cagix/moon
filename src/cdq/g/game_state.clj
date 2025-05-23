@@ -24,22 +24,18 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
-                                                 (-> stage
-                                                     :action-bar
-                                                     (action-bar/add-skill! skill)))
-                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
-                                                   (-> stage
-                                                       :action-bar
-                                                       (action-bar/remove-skill! skill)))
-                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
-                                              (-> stage
-                                                  :windows
+                                 :skill-added! (fn [ctx skill]
+                                                 (action-bar/add-skill! (g/get-actor ctx :action-bar)
+                                                                        skill))
+                                 :skill-removed! (fn [ctx skill]
+                                                   (action-bar/remove-skill! (g/get-actor ctx :action-bar)
+                                                                             skill))
+                                 :item-set! (fn [ctx inventory-cell item]
+                                              (-> (g/get-actor ctx :windows)
                                                   :inventory-window
                                                   (inventory-window/set-item! inventory-cell item)))
-                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
-                                                  (-> stage
-                                                      :windows
+                                 :item-removed! (fn [ctx inventory-cell]
+                                                  (-> (g/get-actor ctx :windows)
                                                       :inventory-window
                                                       (inventory-window/remove-item! inventory-cell)))}
                 :entity/free-skill-points free-skill-points

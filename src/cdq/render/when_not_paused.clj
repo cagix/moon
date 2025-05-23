@@ -3,10 +3,8 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.potential-field.update :as potential-field]
-            [cdq.ui.error-window :as error-window]
             [cdq.utils :refer [pretty-pst]]
-            [gdl.graphics :as graphics]
-            [gdl.ui :as ui]))
+            [gdl.graphics :as graphics]))
 
 (defn- update-potential-fields! [{:keys [ctx/potential-field-cache
                                          ctx/grid
@@ -19,9 +17,7 @@
                            max-iterations)))
 
 (defn- tick-entities!
-  [{:keys [ctx/active-entities
-           ctx/stage]
-    :as ctx}]
+  [{:keys [ctx/active-entities] :as ctx}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
@@ -39,7 +35,7 @@
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (pretty-pst t)
-     (ui/add! stage (error-window/create t))
+     (g/open-error-window! ctx t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 

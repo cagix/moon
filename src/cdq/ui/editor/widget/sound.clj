@@ -17,7 +17,7 @@
       (str/replace-first "sounds/" "")
       (str/replace ".wav" "")))
 
-(defn- open-choose-sound-window! [table {:keys [ctx/stage] :as ctx}]
+(defn- open-choose-sound-window! [table ctx]
   (let [rows (for [sound-name (map sound-file->sound-name (g/all-sounds ctx))]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
@@ -28,8 +28,8 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (ui/add! stage (scroll-pane/choose-window (g/ui-viewport-width ctx)
-                                              rows))))
+    (g/add-actor! ctx (scroll-pane/choose-window (g/ui-viewport-width ctx)
+                                                 rows))))
 
 (defn- columns [table sound-name]
   [(ui/text-button sound-name

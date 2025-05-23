@@ -15,7 +15,7 @@
      table
      [[(when-not property-id
          (ui/text-button "+"
-                         (fn [_actor {:keys [ctx/stage] :as ctx}]
+                         (fn [_actor ctx]
                            (let [window (ui/window {:title "Choose"
                                                     :modal? true
                                                     :close-button? true
@@ -26,7 +26,7 @@
                                                  (redo-rows ctx id))]
                              (ui/add! window (overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
-                             (ui/add! stage window)))))]
+                             (g/add-actor! ctx window)))))]
       [(when property-id
          (let [property (g/build ctx property-id)
                image-widget (ui/image->widget (property/image property)

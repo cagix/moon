@@ -3,12 +3,12 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
+            [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
-            [cdq.ui.message]
-            [gdl.ui :as ui]))
+            [cdq.ui.message]))
 
 (defn- create-actors [ctx]
   [(cdq.ui.dev-menu/create ctx)
@@ -26,14 +26,24 @@
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
-(defn reset [{:keys [ctx/stage] :as ctx}]
-  (ui/clear! stage)
-  (run! #(ui/add! stage %) (create-actors ctx)))
+(defn reset [ctx]
+  (g/reset-actors! ctx (create-actors ctx)))
 
 (extend-type cdq.g.Game
-  g/Stage
-  (mouseover-actor [{:keys [ctx/stage] :as ctx}]
-    (ui/hit stage (g/ui-mouse-position ctx)))
+  g/StageActors
+  (open-error-window! [ctx throwable]
+    (g/add-actor! ctx (error-window/create throwable)))
 
-  (selected-skill [{:keys [ctx/stage]}]
-    (action-bar/selected-skill (:action-bar stage))))
+  (selected-skill [ctx]
+    (action-bar/selected-skill (g/get-actor ctx :action-bar))))
+
+; TODO get-inventory-window
+; get-action-bar, etc. ...
+; use get-actor internally
+
+; => game context API hides internal gdl api
+; => gdl api in different namespace ?
+
+; show-modal here
+; tx player message, etc.
+; cdq.tx.toggle-inventory-visible

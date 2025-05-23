@@ -18,6 +18,6 @@
                    (fn [_actor _ctx])
                    {:scale 2})
   #_(ui/image-button image
-                     (fn [_actor _ctx]
-                       (ui/add! ctx/stage (scroll-pane/choose-window (texture-rows ctx))))
+                     (fn [_actor ctx]
+                       (g/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here

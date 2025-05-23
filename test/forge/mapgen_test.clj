@@ -123,7 +123,7 @@
                      [(text-button "Generate" #(try (generate-screen-ctx c (g/build ctx level-id))
                                                     (catch Throwable t
                                                       (pretty-pst t)
-                                                      (stage/add! ctx/stage (error-window/create t))
+                                                      (g/show-error-window! ctx t)
                                                       (println t))))]]
               :pack? true}))
 
