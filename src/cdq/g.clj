@@ -28,8 +28,6 @@
   (key-just-pressed? [_ key]))
 
 (defprotocol Stage
-  (draw-stage! [_])
-  (update-stage! [_])
   (get-actor [_ id])
   (find-actor-by-name [_ name])
   (add-actor! [_ actor])
@@ -41,8 +39,6 @@
   (selected-skill [_]))
 
 (defprotocol Entities
-  (get-active-entities [_])
-  (remove-destroyed-entities! [_])
   (spawn-entity! [_ position body components])
   (spawn-effect! [_ position components])
   (move-entity! [_ eid body direction rotate-in-movement-direction?]))
@@ -78,16 +74,13 @@
   (npc-effect-ctx [_ eid]))
 
 (defprotocol Graphics
-  (draw-on-world-viewport! [_ fns])
   (handle-draws! [_ draws])
   (world-mouse-position [_])
   (ui-mouse-position [_])
-  (draw-tiled-map! [_ tiled-map color-setter])
   (camera-position [_])
   (inc-zoom! [_ amount])
   (camera-frustum [_])
   (visible-tiles [_])
-  (set-camera-position! [_ position])
   (camera-zoom [_])
   (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
@@ -99,9 +92,6 @@
   (world-viewport-height [_])
   (ui-viewport-width [_])
   (ui-viewport-height [_]))
-
-(defprotocol World
-  (draw-world-map! [_]))
 
 (defprotocol Time
   (elapsed-time [_])

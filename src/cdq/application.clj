@@ -237,18 +237,27 @@
                              end
                              width)))
 
+(defn- draw-tiled-map! [{:keys [ctx/tiled-map-renderer
+                                ctx/world-viewport]}
+                        tiled-map
+                        color-setter]
+  (tiled/draw! (tiled-map-renderer tiled-map)
+               tiled-map
+               color-setter
+               (:camera world-viewport)))
+
+(defn- draw-world-map! [{:keys [ctx/tiled-map
+                                ctx/raycaster
+                                ctx/explored-tile-corners]
+                         :as ctx}]
+  (draw-tiled-map! ctx
+                   tiled-map
+                   (tile-color-setter/create raycaster
+                                             explored-tile-corners
+                                             (g/camera-position ctx))))
+
 (extend-type cdq.g.Game
   g/World
-  (draw-world-map! [{:keys [ctx/tiled-map
-                            ctx/raycaster
-                            ctx/explored-tile-corners]
-                     :as ctx}]
-    (g/draw-tiled-map! ctx
-                       tiled-map
-                       (tile-color-setter/create raycaster
-                                                 explored-tile-corners
-                                                 (g/camera-position ctx))))
-
   g/Time
   (elapsed-time [{:keys [ctx/elapsed-time]}]
     elapsed-time)
@@ -295,11 +304,6 @@
 
 (extend-type cdq.g.Game
   g/Entities
-  (get-active-entities [{:keys [ctx/content-grid
-                                ctx/player-eid]}]
-    (content-grid/active-entities content-grid
-                                  @player-eid))
-
   (remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
     (doseq [eid (filter (comp :entity/destroyed? deref)
                         (vals @entity-ids))]
@@ -571,33 +575,11 @@
             :when component]
       (draw! component ctx)))
 
-  (draw-on-world-viewport! [{:keys [ctx/batch
-                                    ctx/world-viewport
-                                    ctx/world-unit-scale
-                                    ctx/shape-drawer]
-                             :as ctx} fns]
-    (batch/draw-on-viewport! batch
-                             world-viewport
-                             (fn []
-                               (sd/with-line-width shape-drawer world-unit-scale
-                                 (fn []
-                                   (doseq [f fns]
-                                     (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
-
   (world-mouse-position [{:keys [ctx/world-viewport]}]
     (viewport/mouse-position world-viewport))
 
   (ui-mouse-position [{:keys [ctx/ui-viewport]}]
     (viewport/mouse-position ui-viewport))
-
-  (draw-tiled-map! [{:keys [ctx/tiled-map-renderer
-                            ctx/world-viewport]}
-                    tiled-map
-                    color-setter]
-    (tiled/draw! (tiled-map-renderer tiled-map)
-                 tiled-map
-                 color-setter
-                 (:camera world-viewport)))
 
   (ui-viewport-width [{:keys [ctx/ui-viewport]}]
     (:width ui-viewport))
@@ -622,10 +604,6 @@
 
   (visible-tiles [{:keys [ctx/world-viewport]}]
     (camera/visible-tiles (:camera world-viewport)))
-
-  (set-camera-position! [{:keys [ctx/world-viewport]} position]
-    (camera/set-position! (:camera world-viewport)
-                          position))
 
   (camera-zoom [{:keys [ctx/world-viewport]}]
     (camera/zoom (:camera world-viewport)))
@@ -663,40 +641,40 @@
   (set-cursor! [{:keys [ctx/cursors]} cursor-key]
     (graphics/set-cursor! (utils/safe-get cursors cursor-key))))
 
+(defn- draw-stage! [{:keys [ctx/stage] :as ctx}]
+  (reset! (.ctx stage) ctx)
+  (ui/draw! stage)
+  ; we need to set nil as input listeners
+  ; are updated outside of render
+  ; inside lwjgl3application code
+  ; so it has outdated context
+  ; => maybe context should be an immutable data structure with mutable fields?
+  #_(reset! (.ctx stage) nil)
+  nil)
+
+(defn- update-stage! [{:keys [ctx/stage] :as ctx}]
+  (reset! (.ctx stage) ctx)
+  (ui/act! stage)
+  ; We cannot pass this
+  ; because input events are handled outside ui/act! and in the Lwjgl3Input system:
+  ;                         com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.<init>   Lwjgl3Application.java:  153
+  ;                           com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.loop   Lwjgl3Application.java:  181
+  ;                              com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window.update        Lwjgl3Window.java:  414
+  ;                        com.badlogic.gdx.backends.lwjgl3.DefaultLwjgl3Input.update  DefaultLwjgl3Input.java:  190
+  ;                                            com.badlogic.gdx.InputEventQueue.drain     InputEventQueue.java:   70
+  ;                             gdl.ui.proxy$gdl.ui.CtxStage$ILookup$a65747ce.touchUp                         :
+  ;                                     com.badlogic.gdx.scenes.scene2d.Stage.touchUp               Stage.java:  354
+  ;                              com.badlogic.gdx.scenes.scene2d.InputListener.handle       InputListener.java:   71
+  #_@(.ctx stage)
+  ; we need to set nil as input listeners
+  ; are updated outside of render
+  ; inside lwjgl3application code
+  ; so it has outdated context
+  #_(reset! (.ctx stage) nil)
+  nil)
+
 (extend-type cdq.g.Game
   g/Stage
-  (draw-stage! [{:keys [ctx/stage] :as ctx}]
-    (reset! (.ctx stage) ctx)
-    (ui/draw! stage)
-    ; we need to set nil as input listeners
-    ; are updated outside of render
-    ; inside lwjgl3application code
-    ; so it has outdated context
-    ; => maybe context should be an immutable data structure with mutable fields?
-    #_(reset! (.ctx stage) nil)
-    nil)
-
-  (update-stage! [{:keys [ctx/stage] :as ctx}]
-    (reset! (.ctx stage) ctx)
-    (ui/act! stage)
-    ; We cannot pass this
-    ; because input events are handled outside ui/act! and in the Lwjgl3Input system:
-    ;                         com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.<init>   Lwjgl3Application.java:  153
-    ;                           com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.loop   Lwjgl3Application.java:  181
-    ;                              com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window.update        Lwjgl3Window.java:  414
-    ;                        com.badlogic.gdx.backends.lwjgl3.DefaultLwjgl3Input.update  DefaultLwjgl3Input.java:  190
-    ;                                            com.badlogic.gdx.InputEventQueue.drain     InputEventQueue.java:   70
-    ;                             gdl.ui.proxy$gdl.ui.CtxStage$ILookup$a65747ce.touchUp                         :
-    ;                                     com.badlogic.gdx.scenes.scene2d.Stage.touchUp               Stage.java:  354
-    ;                              com.badlogic.gdx.scenes.scene2d.InputListener.handle       InputListener.java:   71
-    #_@(.ctx stage)
-    ; we need to set nil as input listeners
-    ; are updated outside of render
-    ; inside lwjgl3application code
-    ; so it has outdated context
-    #_(reset! (.ctx stage) nil)
-    nil)
-
   (get-actor [{:keys [ctx/stage]} id]
     (id stage))
 
@@ -824,15 +802,30 @@
     (when (g/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
     (when (g/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))))
 
-(defn- assoc-active-entities [ctx]
-  (assoc ctx :ctx/active-entities (g/get-active-entities ctx)))
+(defn- assoc-active-entities [{:keys [ctx/content-grid
+                                      ctx/player-eid]}]
+  (assoc ctx :ctx/active-entities
+         (content-grid/active-entities content-grid @player-eid)))
+
+(defn- draw-on-world-viewport!* [{:keys [ctx/batch
+                                         ctx/world-viewport
+                                         ctx/world-unit-scale
+                                         ctx/shape-drawer]
+                                  :as ctx} fns]
+  (batch/draw-on-viewport! batch
+                           world-viewport
+                           (fn []
+                             (sd/with-line-width shape-drawer world-unit-scale
+                               (fn []
+                                 (doseq [f fns]
+                                   (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
 
 (defn- draw-on-world-viewport! [ctx]
-  (g/draw-on-world-viewport! ctx [draw-tile-grid
-                                  draw-cell-debug
-                                  render-entities!
-                                  ;geom-test
-                                  highlight-mouseover-tile])
+  (draw-on-world-viewport!* ctx [draw-tile-grid
+                                 draw-cell-debug
+                                 render-entities!
+                                 ;geom-test
+                                 highlight-mouseover-tile])
   nil)
 
 (defn- player-state-handle-click! [{:keys [ctx/player-eid] :as ctx}]
@@ -904,14 +897,18 @@
     :as ctx}]
   (update ctx :ctx/elapsed-time + delta-time))
 
+(defn- set-camera-position! [{:keys [ctx/world-viewport]} position]
+  (camera/set-position! (:camera world-viewport)
+                        position))
+
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
   (let [ctx (assoc-active-entities ctx)]
-    (g/set-camera-position! ctx (:position @player-eid))
+    (set-camera-position! ctx (:position @player-eid))
     (graphics/clear-screen!)
-    (g/draw-world-map! ctx)
+    (draw-world-map! ctx)
     (draw-on-world-viewport! ctx)
-    (g/draw-stage! ctx)
-    (g/update-stage! ctx)
+    (draw-stage! ctx)
+    (update-stage! ctx)
     (player-state-handle-click! ctx)
     (let [ctx (update-mouseover-entity! ctx)
           ctx (assoc-paused ctx)
