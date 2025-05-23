@@ -4,6 +4,7 @@
             [cdq.db :as db]
             [cdq.g :as g]
             [cdq.utils :as utils :refer [mapvals]]
+            [cdq.utils.files :as files]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.string :as str]
             [gdl.graphics :as graphics]
@@ -13,8 +14,8 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
-            [gdl.ui :as ui]
-            [cdq.utils.files :as files])
+            [gdl.utils :refer [dispose!]]
+            [gdl.ui :as ui])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (defn- create-assets [{:keys [folder
@@ -424,6 +425,20 @@
     (ui/clear! stage)
     (run! #(ui/add! stage %) actors)))
 
+(defn- dispose-game-state! [{:keys [ctx/assets
+                                    ctx/batch
+                                    ctx/shape-drawer-texture
+                                    ctx/cursors
+                                    ctx/default-font]}]
+  (dispose! assets)
+  (dispose! batch)
+  (dispose! shape-drawer-texture)
+  (run! dispose! (vals cursors))
+  (dispose! default-font)
+  ; TODO vis-ui dispose
+  ; TODO dispose world tiled-map/level resources?
+  )
+
 (def state (atom nil))
 
 (defn -main []
@@ -436,7 +451,7 @@
 
                          (dispose []
                            (g/validate @state)
-                           ((requiring-resolve (:dispose config)) @state))
+                           (dispose-game-state! @state))
 
                          (render []
                            (g/validate @state)
