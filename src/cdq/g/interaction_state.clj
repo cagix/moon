@@ -1,5 +1,5 @@
 (ns cdq.g.interaction-state
-  (:require cdq.gdx
+  (:require gdl.application
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
@@ -58,7 +58,7 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/InteractionState
   (interaction-state [{:keys [ctx/mouseover-eid]
                        :as ctx}

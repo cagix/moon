@@ -1,10 +1,10 @@
 (ns cdq.g.effect-context
-  (:require cdq.gdx
+  (:require gdl.application
             [cdq.g :as g]
             [cdq.vector2 :as v]
             [gdl.c :as c]))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/EffectContext
   (player-effect-ctx [{:keys [ctx/mouseover-eid] :as ctx}
                       eid]

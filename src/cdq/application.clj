@@ -5,7 +5,7 @@
             [cdq.application.potential-fields.update :as potential-fields.update]
             [cdq.application.potential-fields.movement :as potential-fields.movement]
             [cdq.application.raycaster :as raycaster]
-            [cdq.gdx :as gdx]
+            [gdl.application :as gdx]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
@@ -155,7 +155,7 @@
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/StageActors
   (open-error-window! [ctx throwable]
     (c/add-actor! ctx (error-window/create throwable)))
@@ -184,7 +184,7 @@
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/Raycaster
   (ray-blocked? [{:keys [ctx/raycaster]} start end]
     (raycaster/blocked? raycaster
@@ -246,7 +246,7 @@
                                         explored-tile-corners
                                         (c/camera-position ctx))))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/Time
   (elapsed-time [{:keys [ctx/elapsed-time]}]
     elapsed-time)
@@ -263,7 +263,7 @@
   (timer-ratio [{:keys [ctx/elapsed-time]} timer]
     (timer/ratio elapsed-time timer)))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   cdq.g/Grid
   (grid-cell [{:keys [ctx/grid]} position]
     (grid position))
@@ -303,7 +303,7 @@
       (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/Entities
   (spawn-entity! [{:keys [ctx/id-counter
                           ctx/entity-ids
@@ -348,12 +348,12 @@
                      (g/config ctx :effect-body-props)
                      components)))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/Config
   (config [{:keys [ctx/config]} key]
     (get config key)))
 
-(extend-type cdq.gdx.Gdx
+(extend-type gdl.application.Context
   g/Database
   (get-raw [{:keys [ctx/db]} property-id]
     (db/get-raw db property-id))
