@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [cdq.application.config :as config]
+  (:require [cdq.application.assets :as assets]
+            [cdq.application.config :as config]
             [cdq.application.db :as db]
             [cdq.application.schema :as application-schema]
             [cdq.ctx :as ctx]
@@ -11,12 +12,9 @@
             [cdq.utils :as utils :refer [mapvals
                                          sort-by-order
                                          pretty-pst]]
-            [cdq.utils.files :as files]
 
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.string :as str]
 
-            [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
@@ -27,14 +25,6 @@
             [gdl.utils :refer [dispose!]]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx ApplicationAdapter)))
-
-(defn- create-assets [{:keys [folder
-                              asset-type-extensions]}]
-  (assets/create
-   (for [[asset-type extensions] asset-type-extensions
-         file (map #(str/replace-first % folder "")
-                   (files/recursively-search folder extensions))]
-     [file asset-type])))
 
 (defn- create-app-state [config]
   (run! require (:requires config))
@@ -49,7 +39,7 @@
     (cdq.g/map->Game
      {:ctx/config config
       :ctx/db (db/create (:db config))
-      :ctx/assets (create-assets (:assets config))
+      :ctx/assets (assets/create (:assets config))
       :ctx/batch batch
       :ctx/unit-scale 1
       :ctx/world-unit-scale world-unit-scale
@@ -113,14 +103,14 @@
     (assets path))
 
   (all-textures [{:keys [ctx/assets]}]
-    (assets/all-of-type assets :texture))
+    (assets/all-textures assets))
 
   g/Sounds
   (sound [{:keys [ctx/assets]} path]
     (assets path))
 
   (all-sounds [{:keys [ctx/assets]}]
-    (assets/all-of-type assets :sound)))
+    (assets/all-sounds assets)))
 
 (extend-type cdq.g.Game
   g/Input
