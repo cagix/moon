@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [gdl.files :as files]
-            [gdl.graphics.camera :as camera]
+  (:require [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.interop :as interop]
             [clojure.string :as str])
@@ -124,7 +123,7 @@
     texture))
 
 (defn cursor [path hotspot-x hotspot-y]
-  (let [pixmap (Pixmap. (files/internal path))
+  (let [pixmap (Pixmap. (.internal Gdx/files path))
         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
@@ -146,7 +145,7 @@
     font))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (files/internal file)
+  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
                                         {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)

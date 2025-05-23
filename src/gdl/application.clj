@@ -3,7 +3,6 @@
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.string :as str]
             [gdl.c :as c]
-            [gdl.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
