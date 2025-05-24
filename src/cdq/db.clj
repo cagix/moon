@@ -1,5 +1,4 @@
 (ns cdq.db
-  (:refer-clojure :exclude [update])
   (:require [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.malli :as m]
@@ -9,16 +8,18 @@
             [gdl.utils :refer [safe-get]]))
 
 (defprotocol PDB
-  (update [_ property]
+  (update! [_ property]
           "Validates the given property, throws an error if invalid and asserts its id is contained in the database.
 
+          Writes the database to disk asynchronously.
+
           Returns a new database with the property updated.")
-  (delete [_ property-id]
+  (delete! [_ property-id]
           "Asserts if a property with property-id is contained in the database.
 
+          Writes the database to disk asynchronously.
+
           Returns a new database with the property removed.")
-  (save! [_]
-         "Writes the database to disk asynchronously in another thread.")
   (get-raw [_ property-id]
            "Returns the property value without schema based transformations.")
   (all-raw [_ property-type]
@@ -33,26 +34,30 @@
                                        schemas)
                     property))
 
+(defn- save! [{:keys [data file]}]
+  ; TODO validate them again!?
+  (->> data
+       vals
+       (sort-by property/type)
+       (map utils/recur-sort-map)
+       doall
+       (utils/async-pprint-spit! file)))
+
 (defrecord DB [data file schemas]
   PDB
-  (update [this {:keys [property/id] :as property}]
+  (update! [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
     (validate! schemas property)
-    (clojure.core/update this :data assoc id property))
+    (let [new-db (update this :data assoc id property)]
+      (save! new-db)
+      new-db))
 
-  (delete [this property-id]
+  (delete! [this property-id]
     (assert (contains? data property-id))
-    (clojure.core/update this :data dissoc property-id))
-
-  (save! [_]
-    ; TODO validate them again!?
-    (->> data
-         vals
-         (sort-by property/type)
-         (map utils/recur-sort-map)
-         doall
-         (utils/async-pprint-spit! file)))
+    (let [new-db (update this :data dissoc property-id)]
+      (save! new-db)
+      new-db))
 
   (get-raw [_ property-id]
     (safe-get data property-id))

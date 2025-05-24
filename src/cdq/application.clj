@@ -978,17 +978,11 @@
   (schemas [{:keys [ctx/db]}]
     (:schemas db))
 
-  (update-property! [{:keys [ctx/db] :as ctx}
-                     property]
-    (let [new-db (db/update db property)]
-      (db/save! new-db)
-      (assoc ctx :ctx/db new-db)))
+  (update-property! [ctx property]
+    (update ctx :ctx/db db/update! property))
 
-  (delete-property! [{:keys [ctx/db] :as ctx}
-                     property-id]
-    (let [new-db (db/delete db property-id)]
-      (db/save! new-db)
-      (assoc ctx :ctx/db new-db))))
+  (delete-property! [ctx property-id]
+    (update ctx :ctx/db db/delete! property-id)))
 
 (defn- geom-test* [ctx]
   (let [position (c/world-mouse-position ctx)
