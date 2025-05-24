@@ -1,7 +1,6 @@
 (ns cdq.ui.editor.widget.map
   (:require [cdq.g :as g]
-            [cdq.schema :as schema]
-            [cdq.malli :as m]
+            [cdq.schemas :as schemas]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :as utils]
@@ -50,7 +49,7 @@
 
 (defn- component-row [ctx [k v] map-schema schemas table]
   [{:actor (ui/table {:cell-defaults {:pad 2}
-                      :rows [[{:actor (when (m/optional? k (schema/malli-form map-schema schemas))
+                      :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
                                         (ui/text-button "-"
                                                         (fn [_actor ctx]
                                                           (ui/remove! (find-kv-widget table k))
@@ -65,16 +64,6 @@
              widget)
     :left? true}])
 
-(defn- k->default-value [schemas k]
-  (let [schema (get schemas k)]
-    (cond
-     (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
-
-     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
-
-     :else (m/generate (schema/malli-form schema schemas)
-                       {:size 3}))))
-
 (defn- open-add-component-window! [ctx schema map-widget-table]
   (let [schemas (g/schemas ctx)
         window (ui/window {:title "Choose"
@@ -84,7 +73,7 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table schemas)))
-                                   (m/map-keys (schema/malli-form schema schemas))))]
+                                   (schemas/map-keys schemas schema)))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
@@ -92,7 +81,7 @@
                         (fn [_actor ctx]
                           (.remove window)
                           (ui/add-rows! map-widget-table [(component-row ctx
-                                                                         [k (k->default-value schemas k)]
+                                                                         [k (schemas/k->default-value schemas k)]
                                                                          schema
                                                                          schemas
                                                                          map-widget-table)])
@@ -119,7 +108,7 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (g/schemas ctx)))
+        opt? (seq (set/difference (schemas/optional-keyset (g/schemas ctx) schema)
                                   (set (keys m))))]
     (ui/add-rows!
      table

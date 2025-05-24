@@ -20,6 +20,8 @@
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
+            [cdq.schemas :as schemas]
+            [cdq.schemas-impl :as schemas-impl]
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -973,7 +975,7 @@
     (db/build-all db property-type ctx))
 
   (property-types [{:keys [ctx/db]}]
-    (filter #(= "properties" (namespace %)) (keys (:schemas db))))
+    (schemas/property-types (:schemas db)))
 
   (schemas [{:keys [ctx/db]}]
     (:schemas db))
@@ -1200,6 +1202,9 @@
       (valAt [_ k]
         (gdl.utils/safe-get m k)))))
 
+(defn- create-schemas [path]
+  (schemas-impl/create (utils/io-slurp-edn path)))
+
 (defn -main []
   (let [config (create-config "config.edn")]
     (run! require (:requires config))
@@ -1207,10 +1212,10 @@
                             (fn [context]
                               (-> context
                                   (safe-merge {:ctx/config config
-                                               :ctx/db (db/create (:db config))})
+                                               :ctx/db (db/create {:schemas (create-schemas (:schemas config))
+                                                                   :properties (:properties config)})})
                                   create-game-state))
                             render-game-state!
-
                             #_(dispose! [_]
                                         ; nil
                                         ; TODO dispose world tiled-map/level resources?

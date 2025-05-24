@@ -50,8 +50,6 @@
             cdq.entity.string-effect
             cdq.entity.temp-modifier
 
-            cdq.impl.schemas
-
             cdq.ui.editor.widget.default
             cdq.ui.editor.widget.edn
             cdq.ui.editor.widget.string
@@ -67,8 +65,8 @@
  :tile-size 48
  :ui-viewport {:width 1440
                :height 900}
- :db {:schemas "schema.edn"
-      :properties "properties.edn"}
+ :schemas "schema.edn"
+ :properties "properties.edn"
  :assets {:folder "resources/"
           :asset-type-extensions {:sound   #{"wav"}
                                   :texture #{"png" "bmp"}}}

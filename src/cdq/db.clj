@@ -1,11 +1,10 @@
 (ns cdq.db
-  (:require [cdq.schema :as schema]
+  (:require [cdq.schemas :as schemas]
             [cdq.property :as property]
-            [cdq.malli :as m]
-            [cdq.utils :as utils :refer [io-slurp-edn]]
+            [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.utils :refer [safe-get]]))
+            [gdl.utils]))
 
 (defprotocol PDB
   (update! [_ property]
@@ -29,11 +28,6 @@
   (build-all [_ property-type ctx]
              "Returns all properties with type with schema-based transformations."))
 
-(defn- validate! [schemas property]
-  (m/form->validate (schema/malli-form (get schemas (property/type property))
-                                       schemas)
-                    property))
-
 (defn- save! [{:keys [data file]}]
   ; TODO validate them again!?
   (->> data
@@ -48,7 +42,7 @@
   (update! [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (validate! schemas property)
+    (schemas/validate schemas property)
     (let [new-db (update this :data assoc id property)]
       (save! new-db)
       new-db))
@@ -60,28 +54,28 @@
       new-db))
 
   (get-raw [_ property-id]
-    (safe-get data property-id))
+    (gdl.utils/safe-get data property-id))
 
   (all-raw [_ property-type]
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id ctx]
-    (schema/transform schemas
-                      (get-raw this property-id)
-                      ctx))
+    (schemas/transform schemas
+                       (get-raw this property-id)
+                       ctx))
 
   (build-all [this property-type ctx]
-    (map #(schema/transform schemas % ctx)
+    (map #(schemas/transform schemas % ctx)
          (all-raw this property-type))))
 
-(defn create [{:keys [schemas properties]}]
-  (let [schemas (io-slurp-edn schemas)
-        properties-file (io/resource properties) ; TODO required from existing?
+(defn create [{:keys [schemas
+                      properties]}]
+  (let [properties-file (io/resource properties) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! (partial validate! schemas) properties)
+    (run! (partial schemas/validate schemas) properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file
               :schemas schemas})))
