@@ -8,6 +8,7 @@
             cdq.info
             cdq.player-movement-vector
             cdq.interaction-state
+            cdq.line-of-sight
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert

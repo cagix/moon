@@ -77,37 +77,6 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
-; does not take into account zoom - but zoom is only for debug ???
-; vision range?
-(defn- on-screen? [ctx position]
-  (let [[x y] position
-        x (float x)
-        y (float y)
-        [cx cy] (c/camera-position ctx)
-        px (float cx)
-        py (float cy)
-        xdist (Math/abs (- x px))
-        ydist (Math/abs (- y py))]
-    (and
-     (<= xdist (inc (/ (float (c/world-viewport-width ctx))  2)))
-     (<= ydist (inc (/ (float (c/world-viewport-height ctx)) 2))))))
-
-; TODO at wrong point , this affects targeting logic of npcs
-; move the debug flag to either render or mouseover or lets see
-(def ^:private ^:dbg-flag los-checks? true)
-
-(extend-type gdl.application.Context
-  g/LineOfSight
-  ; does not take into account size of entity ...
-  ; => assert bodies <1 width then
-  (line-of-sight? [ctx source target]
-    (and (or (not (:entity/player? source))
-             (on-screen? ctx (entity/position target)))
-         (not (and los-checks?
-                   (g/ray-blocked? ctx
-                                   (entity/position source)
-                                   (entity/position target)))))))
-
 ; !!! Entity logic/data schema is _all over_ the application !!!
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
