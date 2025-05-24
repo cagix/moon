@@ -9,10 +9,10 @@
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defn create [grid]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
+  (let [width  (g2d/width  (.g2d grid))
+        height (g2d/height (.g2d grid))
         arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
+    (doseq [cell (g2d/cells (.g2d grid))]
       (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
 

@@ -22,7 +22,7 @@
                                              (entity/faction @%))
                                        (:collides? @%)
                                        (entity/overlaps? entity @%))
-                                 (grid/cells->entities cells*))
+                                 (grid/cells->entities grid cells*))
           destroy? (or (and hit-entity (not piercing?))
                        (some #(cell/blocked? % (:z-order entity)) cells*))]
       [(when destroy?

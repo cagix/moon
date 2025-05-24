@@ -15,6 +15,7 @@
             [cdq.state :as state]
             [cdq.g :as g]
             [cdq.grid :as grid]
+            [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.malli :as m]
             [cdq.math :as math]
@@ -291,7 +292,7 @@
 
   (mana-val [entity]
     (if (:entity/mana entity)
-      ((mana entity) 0)
+      ((entity/mana entity) 0)
       0))
 
   (hitpoints [entity]
@@ -353,12 +354,14 @@
   (content-grid/position-changed! content-grid eid)
   (grid/position-changed! grid eid))
 
-(defn- context-entity-remove! [{:keys [ctx/entity-ids]} eid]
+(defn- context-entity-remove! [{:keys [ctx/entity-ids
+                                       ctx/grid]}
+                               eid]
   (let [id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (content-grid/remove-entity! eid)
-  (grid/remove-entity! eid))
+  (grid/remove-entity! grid eid))
 
 ; TODO what about components which get added later/??
 ; => validate?
@@ -785,7 +788,7 @@
   (c/reset-actors! ctx (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} ((requiring-resolve (g/config ctx :world-fn)) ctx)
-        grid (grid/create tiled-map)
+        grid (grid-impl/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
@@ -884,7 +887,7 @@
 (extend-type gdl.application.Context
   cdq.g/Grid
   (grid-cell [{:keys [ctx/grid]} position]
-    (grid position))
+    (grid/cell grid position))
 
   (point->entities [{:keys [ctx/grid]} position]
     (grid/point->entities grid position))
@@ -899,11 +902,11 @@
     (grid/circle->entities grid circle))
 
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
-    (cell/nearest-entity-distance @(grid (mapv int (entity/position entity)))
+    (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
                                   (entity/enemy entity)))
 
   (nearest-enemy [{:keys [ctx/grid]} entity]
-    (cell/nearest-entity @(grid (mapv int (entity/position entity)))
+    (cell/nearest-entity @(grid/cell grid (mapv int (entity/position entity)))
                          (entity/enemy entity)))
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
