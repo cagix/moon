@@ -8,7 +8,6 @@
  :dispose cdq.application.dispose/do!
  :render  cdq.application.render/do!
  :requires [cdq.g.player-movement-vector
-            cdq.g.handle-txs
             cdq.g.interaction-state
             cdq.g.line-of-sight
             cdq.g.effect-context

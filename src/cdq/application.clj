@@ -37,6 +37,8 @@
             [gdl.math]
             [gdl.tiled :as tiled]))
 
+; !!! Entity logic/data schema is _all over_ the application !!!
+
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
 
@@ -211,6 +213,23 @@
   (selected-skill [ctx]
     (action-bar/selected-skill (c/get-actor ctx :action-bar))))
 
+(extend-type gdl.application.Context
+  g/EffectHandler
+  (handle-txs! [ctx transactions]
+    (doseq [transaction transactions
+            :when transaction
+            :let [_ (assert (vector? transaction)
+                            (pr-str transaction))
+                  ; TODO also should be with namespace 'tx' the first is a keyword
+                  sym (symbol (str "cdq.tx." (name (first transaction)) "/do!"))
+                  do! (requiring-resolve sym)]] ; TODO throw error if requiring failes ! compiler errors ... compile all tx/game first ?
+      (try (apply do! (cons ctx (rest transaction)))
+           (catch Throwable t
+             (throw (ex-info ""
+                             {:transaction transaction
+                              :sym sym}
+                             t)))))))
+
 (defn- create-game-state [ctx]
   (c/reset-actors! ctx (create-actors ctx))
   (let [{:keys [tiled-map
@@ -358,8 +377,18 @@
                           ctx/content-grid
                           ctx/grid]
                    :as ctx}
-                  position body components]
+                  position
+                  body
+                  components]
     ; TODO SCHEMA COMPONENTS !
+
+    ; -> no 'spawn-entity' -> only speficif entities !
+    ; body - :effect-body-props
+    ; spawn-effect! -> audiovisual, alert, line
+    ; spawn-creature
+    ; spawn-item
+    ; spawn-projectile
+
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body
