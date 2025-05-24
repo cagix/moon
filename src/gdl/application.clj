@@ -1,7 +1,6 @@
 ; => space invaders <=
 (ns gdl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
@@ -12,8 +11,7 @@
             [gdl.utils :as utils]) ; dispose, safe-get, mapvals
   (:import (clojure.lang IFn
                          ILookup)
-           (com.badlogic.gdx ApplicationAdapter
-                             Gdx
+           (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
            (com.badlogic.gdx.assets AssetManager)
@@ -691,7 +689,7 @@
   (key-just-pressed? [_ key]
     (.isKeyJustPressed Gdx/input (k->code key))))
 
-(defn- create-state! [config]
+(defn create-state! [config]
   (ui/load! (:ui config))
   (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
@@ -721,27 +719,3 @@
                                                                   world-unit-scale
                                                                   (:java-object batch))))
                    :stage stage})))
-
-(def state (atom nil))
-
-(defn start! [config create! render!]
-  (lwjgl/application (:clojure.gdx.backends.lwjgl config)
-                     (proxy [ApplicationAdapter] []
-                       (create []
-                         (reset! state (create! (create-state! config)))
-                         #_(ctx-schema/validate @state))
-
-                       (dispose []
-                         #_(ctx-schema/validate @state)
-                         (Disposable/.dispose @state)
-                         #_(dispose! @state)
-                         )
-
-                       (render []
-                         #_(ctx-schema/validate @state)
-                         (swap! state render!)
-                         #_(ctx-schema/validate @state))
-
-                       (resize [_width _height]
-                         #_(ctx-schema/validate @state)
-                         (update-viewports! @state)))))
