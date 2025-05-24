@@ -1,9 +1,14 @@
-{:clojure.gdx.backends.lwjgl {:title "Cyber Dungeon Quest"
-                              :windowed-mode {:width 1440
-                                              :height 900}
-                              :foreground-fps 60
-                              :mac-os {:glfw-async? true
-                                       :dock-icon "moon.png"}}
+{:cdq.application/create! cdq.application-state/create!
+ :cdq.application/dispose! cdq.dispose/do!
+ :cdq.application/render! cdq.render/do!
+ :cdq.application/resize! cdq.resize/do!
+ :cdq.application/validate-ctx-schema cdq.ctx-schema/validate
+ :cdq.application/clojure.gdx.backends.lwjgl {:title "Cyber Dungeon Quest"
+                                              :windowed-mode {:width 1440
+                                                              :height 900}
+                                              :foreground-fps 60
+                                              :mac-os {:glfw-async? true
+                                                       :dock-icon "moon.png"}}
  :requires [cdq.effect-ctx
             cdq.info
             cdq.player-movement-vector
