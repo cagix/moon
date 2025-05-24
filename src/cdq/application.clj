@@ -46,25 +46,24 @@
 
 (defn -main []
   (let [config (create-config "config.edn")
-        create! (fn [config]
-                  ((requiring-resolve 'cdq.application-state/create!) config)
-                  #_(ctx-schema/validate @state))
+        create!  (requiring-resolve 'cdq.application-state/create!)
         dispose! (requiring-resolve 'cdq.dispose/do!)
-        render! (fn [ctx]
-                  (m/validate-humanize ctx-schema ctx)
-                  ((requiring-resolve 'cdq.render/do!) ctx))
-        resize! (requiring-resolve 'cdq.resize/do!)]
+        render!  (requiring-resolve 'cdq.render/do!)
+        resize!  (requiring-resolve 'cdq.resize/do!)]
     (run! require (:requires config))
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
                        (proxy [ApplicationAdapter] []
                          (create []
-                           (reset! state (create! config)))
+                           (reset! state (create! config))
+                           (m/validate-humanize ctx-schema @state))
 
                          (dispose []
                            (dispose! @state))
 
                          (render []
-                           (swap! state render!))
+                           (m/validate-humanize ctx-schema @state)
+                           (swap! state render!)
+                           (m/validate-humanize ctx-schema @state))
 
                          (resize [width height]
                            (resize! @state width height))))))
