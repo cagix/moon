@@ -1047,30 +1047,35 @@
   (swap! state create-game-state))
 
 (defn -main []
-  (let [config (create-config "config.edn")]
+  (let [config (create-config "config.edn")
+        create! (fn [config]
+                  (-> (gdl.application/create-state! config)
+                      (safe-merge {:ctx/config config
+                                   :ctx/db (db/create {:schemas (create-schemas (:schemas config))
+                                                       :properties (:properties config)})})
+                      create-game-state)
+                  #_(ctx-schema/validate @state))
+        dispose! (fn [ctx]
+                   #_(ctx-schema/validate ctx)
+                   (Disposable/.dispose ctx)
+                   ; TODO dispose world tiled-map/level resources?
+                   #_(dispose! @state))
+        render! (fn [ctx]
+                  #_(ctx-schema/validate @state)
+                  (render-game-state! ctx)
+                  #_(ctx-schema/validate @state))
+        resize! (requiring-resolve 'cdq.resize/do!)]
     (run! require (:requires config))
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
                        (proxy [ApplicationAdapter] []
                          (create []
-                           (reset! state (-> (gdl.application/create-state! config)
-                                             (safe-merge {:ctx/config config
-                                                          :ctx/db (db/create {:schemas (create-schemas (:schemas config))
-                                                                              :properties (:properties config)})})
-                                             create-game-state))
-                           #_(ctx-schema/validate @state))
+                           (reset! state (create! config)))
 
                          (dispose []
-                           #_(ctx-schema/validate @state)
-                           (Disposable/.dispose @state)
-                           ; TODO dispose world tiled-map/level resources?
-                           #_(dispose! @state)
-                           )
+                           (dispose! @state))
 
                          (render []
-                           #_(ctx-schema/validate @state)
-                           (swap! state render-game-state!)
-                           #_(ctx-schema/validate @state))
+                           (swap! state render!))
 
-                         (resize [_width _height]
-                           #_(ctx-schema/validate @state)
-                           (gdl.application/update-viewports! @state))))))
+                         (resize [width height]
+                           (resize! @state width height))))))
