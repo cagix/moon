@@ -58,11 +58,11 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable!
-  (cdq.tx.spawn-creature/do! {:position [35 73]
-                              :creature-id :creatures/dragon-red
-                              :components {:entity/fsm {:fsm :fsms/npc
-                                                        :initial-state :npc-sleeping}
-                                           :entity/faction :evil}}))
+  [[:tx/spawn-creature {:position [35 73]
+                        :creature-id :creatures/dragon-red
+                        :components {:entity/fsm {:fsm :fsms/npc
+                                                  :initial-state :npc-sleeping}
+                                     :entity/faction :evil}}]])
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
