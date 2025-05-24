@@ -1,6 +1,6 @@
 (ns cdq.vector2
-  (:import (com.badlogic.gdx.math MathUtils
-                                  Vector2)))
+  (:require [clojure.gdx.math.math-utils :as math-utils])
+  (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- m-v2
   (^Vector2 [[x y]] (Vector2. x y))
@@ -60,7 +60,7 @@
 ;	static public boolean isEqual (float a, float b) {
 ;		return Math.abs(a - b) <= FLOAT_ROUNDING_ERROR;
 ;	}
-  (MathUtils/isEqual 1 (length v)))
+  (math-utils/equal? 1 (length v)))
 
 (defn direction [[sx sy] [tx ty]]
   (normalise [(- (float tx) (float sx))

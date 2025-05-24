@@ -1,9 +1,12 @@
-; => space invaders <=
 (ns gdl.application
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.shape-drawer :as sd]
+  (:require [clojure.gdx.assets.asset-manager :as asset-manager]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.math.math-utils :as math-utils]
             [clojure.string :as str]
+            [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled] ; only renderer, internal
@@ -14,26 +17,19 @@
            (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
-           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
                                       Texture
-                                      Texture$TextureFilter
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math MathUtils
-                                  Vector2)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 ;; Publics
 
@@ -41,113 +37,6 @@
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-;;
-
-(defn- degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
-
-(defn- clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- draw-text! [^BitmapFont font batch {:keys [scale x y text h-align up?]}]
-  (let [data (.getData font)
-        old-scale (float (.scaleX data))
-        new-scale (float (* old-scale (float scale)))
-        target-width (float 0)
-        wrap? false]
-    (.setScale data new-scale)
-    (.draw font
-           (:java-object batch)
-           text
-           (float x)
-           (float (+ y (if up? (text-height font text) 0)))
-           target-width
-           (interop/k->align (or h-align :center))
-           wrap?)
-    (.setScale data old-scale)))
-
-(defn- create-shape-drawer [batch texture-region]
-  (let [this (ShapeDrawer. (:java-object batch) texture-region)]
-    (reify
-      sd/ShapeDrawer
-      (set-color! [_ color]
-        (.setColor this (interop/->color color)))
-
-      (ellipse! [_ x y radius-x radius-y]
-        (.ellipse this
-                  (float x)
-                  (float y)
-                  (float radius-x)
-                  (float radius-y)))
-
-      (filled-ellipse! [_ x y radius-x radius-y]
-        (.filledEllipse this
-                        (float x)
-                        (float y)
-                        (float radius-x)
-                        (float radius-y)))
-
-      (circle! [_ x y radius]
-        (.circle this
-                 (float x)
-                 (float y)
-                 (float radius)))
-
-      (filled-circle! [_ x y radius]
-        (.filledCircle this
-                       (float x)
-                       (float y)
-                       (float radius)))
-
-      (arc! [_ center-x center-y radius start-angle degree]
-        (.arc this
-              (float center-x)
-              (float center-y)
-              (float radius)
-              (float (degree->radians start-angle))
-              (float (degree->radians degree))))
-
-      (sector! [_ center-x center-y radius start-angle degree]
-        (.sector this
-                 (float center-x)
-                 (float center-y)
-                 (float radius)
-                 (float (degree->radians start-angle))
-                 (float (degree->radians degree))))
-
-      (rectangle! [_ x y w h]
-        (.rectangle this
-                    (float x)
-                    (float y)
-                    (float w)
-                    (float h)))
-
-      (filled-rectangle! [_ x y w h]
-        (.filledRectangle this
-                          (float x)
-                          (float y)
-                          (float w)
-                          (float h)))
-
-      (line! [_ sx sy ex ey]
-        (.line this
-               (float sx)
-               (float sy)
-               (float ex)
-               (float ey)))
-
-      (with-line-width [_ width draw-fn]
-        (let [old-line-width (.getDefaultLineWidth this)]
-          (.setDefaultLineWidth this (float (* width old-line-width)))
-          (draw-fn)
-          (.setDefaultLineWidth this (float old-line-width)))))))
 
 (defprotocol Viewport
   (update-vp! [_])
@@ -168,12 +57,12 @@
       ; TODO clamping only works for gui-viewport ?
       ; TODO ? "Can be negative coordinates, undefined cells."
       (mouse-position [_]
-        (let [mouse-x (clamp (.getX Gdx/input)
-                             (.getLeftGutterWidth this)
-                             (.getRightGutterX    this))
-              mouse-y (clamp (.getY Gdx/input)
-                             (.getTopGutterHeight this)
-                             (.getTopGutterY      this))]
+        (let [mouse-x (math-utils/clamp (.getX Gdx/input)
+                                        (.getLeftGutterWidth this)
+                                        (.getRightGutterX    this))
+              mouse-y (math-utils/clamp (.getY Gdx/input)
+                                        (.getTopGutterHeight this)
+                                        (.getTopGutterY      this))]
           (let [v2 (.unproject this (Vector2. mouse-x mouse-y))]
             [(.x v2) (.y v2)])))
 
@@ -202,29 +91,13 @@
                   camera
                   {:center-camera? false})))
 
-(defn- font-params [{:keys [size]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- generate-font [file-handle params]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator (font-params params))]
-    (.dispose generator)
-    font))
-
 (defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
-                                        {:size (* size quality-scaling)})]
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units not visible
-    font))
+  (let [font (freetype/generate (.internal Gdx/files file)
+                                {:size (* size quality-scaling)})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  :use-integer-positions? true}) ; otherwise scaling to world-units not visible
+    ))
 
 (defn- create-cursor [path hotspot-x hotspot-y]
   (let [pixmap (Pixmap. (.internal Gdx/files path))
@@ -300,26 +173,6 @@
     :left Input$Buttons/LEFT
     ))
 
-(defn- asset-type->class ^Class [asset-type]
-  (case asset-type
-    :sound Sound
-    :texture Texture))
-
-(defn- asset-manager [assets]
-  (let [manager (proxy [AssetManager IFn] []
-                  (invoke [path]
-                    (if (AssetManager/.contains this path)
-                      (AssetManager/.get this ^String path)
-                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
-    (doseq [[file asset-type] assets]
-      (.load manager ^String file (asset-type->class asset-type)))
-    (.finishLoading manager)
-    manager))
-
-(defn- assets-of-type [^AssetManager assets asset-type]
-  (filter #(= (.getAssetType assets %) (asset-type->class asset-type))
-          (.getAssetNames assets)))
-
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
          result []]
@@ -337,7 +190,7 @@
 
 (defn- create-assets [{:keys [folder
                               asset-type-extensions]}]
-  (asset-manager
+  (asset-manager/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
                    (recursively-search folder extensions))]
@@ -376,9 +229,6 @@
     (:pixel-dimensions image)
     (:world-unit-dimensions image)))
 
-(defn- with-line-width [shape-drawer width draw-fn]
-  (sd/with-line-width shape-drawer width draw-fn))
-
 (defmulti ^:private draw! (fn [[k] _ctx]
                             k))
 
@@ -415,15 +265,15 @@
                              {:keys [default-font
                                      batch
                                      unit-scale]}]
-  (draw-text! (or font default-font)
-              batch
-              {:scale (* (float unit-scale)
-                         (float (or scale 1)))
-               :x x
-               :y y
-               :text text
-               :h-align h-align
-               :up? up?}))
+  (bitmap-font/draw! (or font default-font)
+                     batch
+                     {:scale (* (float unit-scale)
+                                (float (or scale 1)))
+                      :x x
+                      :y y
+                      :text text
+                      :h-align h-align
+                      :up? up?}))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
                                 {:keys [shape-drawer]}]
@@ -530,14 +380,14 @@
          Sound/.play))
 
   (all-sounds [_]
-    (assets-of-type assets :sound))
+    (asset-manager/all-of-type assets :sound))
 
   c/Textures
   (texture [_ path]
     (assets path))
 
   (all-textures [_]
-    (assets-of-type assets :texture))
+    (asset-manager/all-of-type assets :texture))
 
   c/Graphics
   (delta-time [_]
@@ -703,7 +553,8 @@
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
                    :shape-drawer-texture shape-drawer-texture
-                   :shape-drawer (create-shape-drawer batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
+                   :shape-drawer (sd/create (:java-object batch)
+                                            (graphics/texture-region shape-drawer-texture 1 0 1 1))
                    :cursors (utils/mapvals
                              (fn [[file [hotspot-x hotspot-y]]]
                                (create-cursor (format (:cursor-path-format config) file)
