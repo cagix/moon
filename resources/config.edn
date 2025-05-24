@@ -6,6 +6,7 @@
                                        :dock-icon "moon.png"}}
  :requires [cdq.effect-ctx
             cdq.info
+            cdq.player-movement-vector
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
