@@ -4,6 +4,7 @@
   (config [_ key]))
 
 (defprotocol Context
+  (context-entity-add! [_ eid])
   (context-entity-remove! [_ eid]))
 
 (defprotocol ActiveEntities
@@ -64,3 +65,6 @@
 
 (defprotocol InfoText
   (info-text [_ object]))
+
+(defprotocol SpawnEntity
+  (spawn-entity! [_ position body components]))

@@ -45,4 +45,5 @@
   (stat [_ k])
   (mana [_])
   (mana-val [_])
-  (hitpoints [_]))
+  (hitpoints [_])
+  (pay-mana-cost [_ cost]))

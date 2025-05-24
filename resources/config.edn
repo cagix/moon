@@ -62,6 +62,7 @@
             cdq.line-of-sight
             cdq.draw-world-map
             cdq.get-active-entities
+            cdq.spawn-entity
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
