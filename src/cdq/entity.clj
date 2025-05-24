@@ -1,6 +1,6 @@
 (ns cdq.entity
-  (:require [cdq.op :as op]
-            [cdq.malli :as m]
+  (:require [cdq.malli :as m]
+            [cdq.modifiers :as modifiers]
             [cdq.val-max :as val-max]))
 
 (defmulti create (fn [[k] ctx]
@@ -32,22 +32,14 @@
 (defmulti  render-info! (fn [[k] entity ctx] k))
 (defmethod render-info! :default [_ _entity ctx])
 
-(defn mod-value [base-value modifiers modifier-k]
-  {:pre [(= "modifier" (namespace modifier-k))]}
-  (op/apply (modifier-k modifiers)
-            base-value))
-
 (defn stat [entity k]
   (when-let [base-value (k entity)]
-    (mod-value base-value
-               (:entity/modifiers entity)
-               (keyword "modifier" (name k)))))
+    (modifiers/get-value base-value
+                         (:entity/modifiers entity)
+                         (keyword "modifier" (name k)))))
 
-(defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
-(defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))
-
-(defn mod-add    [entity mods] (update entity :entity/modifiers mods-add    mods))
-(defn mod-remove [entity mods] (update entity :entity/modifiers mods-remove mods))
+(defn mod-add    [entity mods] (update entity :entity/modifiers modifiers/add    mods))
+(defn mod-remove [entity mods] (update entity :entity/modifiers modifiers/remove mods))
 
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
@@ -55,14 +47,14 @@
 (defn- apply-max-modifier [val-max modifiers modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 1 mod-value modifiers modifier-k)
+  (let [val-max (update val-max 1 modifiers/get-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn- apply-min-modifier [val-max modifiers modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 0 mod-value modifiers modifier-k)
+  (let [val-max (update val-max 0 modifiers/get-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 
