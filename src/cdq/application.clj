@@ -314,6 +314,59 @@
           {}
           components))
 
+(defn- spawn-entity! [{:keys [ctx/id-counter
+                              ctx/entity-ids
+                              ctx/content-grid
+                              ctx/grid]
+                       :as ctx}
+                      position
+                      body
+                      components]
+  ; TODO SCHEMA COMPONENTS !
+
+  ; -> no 'spawn-entity' -> only speficif entities !
+  ; body - :effect-body-props
+  ; spawn-effect! -> audiovisual, alert, line
+  ; spawn-creature
+  ; spawn-item
+  ; spawn-projectile
+
+  (assert (and (not (contains? components :position))
+               (not (contains? components :entity/id))))
+  (let [eid (atom (-> body
+                      (assoc :position position)
+                      (create-body ctx/minimum-size ctx/z-orders)
+                      (utils/safe-merge (-> components
+                                            (assoc :entity/id (swap! id-counter inc))
+                                            (create-vs ctx)))))]
+    (let [id (entity/id @eid)]
+      (assert (number? id))
+      (swap! entity-ids assoc id eid))
+    (content-grid/add-entity! content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+    (grid/add-entity! grid eid)
+    (doseq [component @eid]
+      (g/handle-txs! ctx (entity/create! component eid ctx)))
+    eid))
+
+(defn- move-entity! [{:keys [ctx/content-grid
+                             ctx/grid]}
+                     eid body direction rotate-in-movement-direction?]
+  (content-grid/position-changed! content-grid eid)
+  (grid/position-changed! grid eid)
+  (swap! eid assoc
+         :position (:position body)
+         :left-bottom (:left-bottom body))
+  (when rotate-in-movement-direction?
+    (swap! eid assoc :rotation-angle (v/angle-from-vector direction))))
+
+(defn- spawn-effect! [ctx position components]
+  (g/spawn-entity! ctx
+                   position
+                   (g/config ctx :effect-body-props)
+                   components))
+
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
                                                    click-distance-tiles]}]
@@ -803,61 +856,6 @@
     (doseq [component @eid]
       (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)
-
-(extend-type gdl.application.Context
-  g/Entities
-  (spawn-entity! [{:keys [ctx/id-counter
-                          ctx/entity-ids
-                          ctx/content-grid
-                          ctx/grid]
-                   :as ctx}
-                  position
-                  body
-                  components]
-    ; TODO SCHEMA COMPONENTS !
-
-    ; -> no 'spawn-entity' -> only speficif entities !
-    ; body - :effect-body-props
-    ; spawn-effect! -> audiovisual, alert, line
-    ; spawn-creature
-    ; spawn-item
-    ; spawn-projectile
-
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        (create-body ctx/minimum-size ctx/z-orders)
-                        (utils/safe-merge (-> components
-                                              (assoc :entity/id (swap! id-counter inc))
-                                              (create-vs ctx)))))]
-      (let [id (entity/id @eid)]
-        (assert (number? id))
-        (swap! entity-ids assoc id eid))
-      (content-grid/add-entity! content-grid eid)
-      ; https://github.com/damn/core/issues/58
-      ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-      (grid/add-entity! grid eid)
-      (doseq [component @eid]
-        (g/handle-txs! ctx (entity/create! component eid ctx)))
-      eid))
-
-  (move-entity! [{:keys [ctx/content-grid
-                         ctx/grid]}
-                 eid body direction rotate-in-movement-direction?]
-    (content-grid/position-changed! content-grid eid)
-    (grid/position-changed! grid eid)
-    (swap! eid assoc
-           :position (:position body)
-           :left-bottom (:left-bottom body))
-    (when rotate-in-movement-direction?
-      (swap! eid assoc :rotation-angle (v/angle-from-vector direction))))
-
-  (spawn-effect! [ctx position components]
-    (g/spawn-entity! ctx
-                     position
-                     (g/config ctx :effect-body-props)
-                     components)))
 
 (extend-type gdl.application.Context
   g/Config

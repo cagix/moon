@@ -16,11 +16,6 @@
   (open-error-window! [_ throwable])
   (selected-skill [_]))
 
-(defprotocol Entities
-  (spawn-entity! [_ position body components])
-  (spawn-effect! [_ position components])
-  (move-entity! [_ eid body direction rotate-in-movement-direction?]))
-
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
 
