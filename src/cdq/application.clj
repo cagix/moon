@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.animation :as animation]
             [cdq.application.db :as db]
-            [cdq.application.ctx-schema :as ctx-schema]
             [cdq.application.raycaster :as raycaster]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
@@ -44,6 +43,37 @@
             [gdl.utils]
 
             [reduce-fsm :as fsm]))
+
+(def ^:private ctx-schema
+  (m/schema [:map {:closed true}
+             [:assets :some]
+             [:batch :some]
+             [:unit-scale :some]
+             [:world-unit-scale :some]
+             [:shape-drawer-texture :some]
+             [:shape-drawer :some]
+             [:cursors :some]
+             [:default-font :some]
+             [:world-viewport :some]
+             [:ui-viewport :some]
+             [:tiled-map-renderer :some]
+             [:stage :some]
+             [:ctx/config :some]
+             [:ctx/db :some]
+             [:ctx/elapsed-time :some]
+             [:ctx/delta-time {:optional true} number?]
+             [:ctx/paused? {:optional true} :boolean]
+             [:ctx/tiled-map :some]
+             [:ctx/grid :some]
+             [:ctx/raycaster :some]
+             [:ctx/content-grid :some]
+             [:ctx/explored-tile-corners :some]
+             [:ctx/id-counter :some]
+             [:ctx/entity-ids :some]
+             [:ctx/potential-field-cache :some]
+             [:ctx/mouseover-eid {:optional true} :any]
+             [:ctx/player-eid :some]
+             [:ctx/active-entities {:optional true} :some]]))
 
 (extend-type gdl.application.Context
   g/PlayerMovementInput
@@ -1134,7 +1164,7 @@
                                    max-iterations)))
 
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
-  (ctx-schema/validate ctx)
+  (m/validate-humanize ctx-schema ctx)
   (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
     (c/set-camera-position! ctx (entity/position @player-eid))
     (c/clear-screen! ctx)
