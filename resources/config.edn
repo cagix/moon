@@ -4,9 +4,6 @@
                               :foreground-fps 60
                               :mac-os {:glfw-async? true
                                        :dock-icon "moon.png"}}
- :create  cdq.application.create/do!
- :dispose cdq.application.dispose/do!
- :render  cdq.application.render/do!
  :requires [
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
