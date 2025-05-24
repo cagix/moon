@@ -340,6 +340,9 @@
   (content-grid/remove-entity! eid)
   (grid/remove-entity! eid))
 
+; TODO what about components which get added later/??
+; => validate?
+; => :entity/id ... body
 (def ^:private components-schema
   (m/schema [:map {:closed true}
              [:entity/image {:optional true} :some]
