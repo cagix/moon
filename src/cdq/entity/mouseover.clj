@@ -7,11 +7,11 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defmethod entity/render-below! :entity/mouseover?
-  [_
-   {:keys [entity/faction] :as entity}
-   {:keys [ctx/player-eid]}]
-  (let [player @player-eid]
+(defmethod entity/render-below! :entity/mouseover? [_
+                                                    entity
+                                                    {:keys [ctx/player-eid]}]
+  (let [player @player-eid
+        faction (entity/faction entity)]
     [[:draw/with-line-width 3
       [[:draw/ellipse
         (entity/position entity)
@@ -19,7 +19,7 @@
         (:half-height entity)
         (cond (= faction (entity/enemy player))
               enemy-color
-              (= faction (:entity/faction player))
+              (= faction (entity/faction player))
               friendly-color
               :else
               neutral-color)]]]]))

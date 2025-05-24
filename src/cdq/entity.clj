@@ -44,11 +44,6 @@
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
-(defn enemy [{:keys [entity/faction]}]
-  (case faction
-    :evil :good
-    :good :evil))
-
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
 
@@ -119,6 +114,8 @@
   (overlaps? [_ other-entity])
   (rectangle [_])
   (id [_])
+  (faction [_])
+  (enemy [_])
   )
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]

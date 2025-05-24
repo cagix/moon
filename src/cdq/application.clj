@@ -68,7 +68,16 @@
        (float maxrange)))
 
   (id [{:keys [entity/id]}]
-    id))
+    id)
+
+  (faction [{:keys [entity/faction]}]
+    faction)
+
+  (enemy [this]
+    (case (entity/faction this)
+      :evil :good
+      :good :evil))
+  )
 
 (defn- create-body [{[x y] :position
                      :keys [position

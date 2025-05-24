@@ -42,8 +42,8 @@
  (defn- faction->tiles->entities-map* [entities]
    (into {}
          (for [[faction entities] (->> entities
-                                       (filter   #(:entity/faction @%))
-                                       (group-by #(:entity/faction @%)))]
+                                       (filter   #(entity/faction @%))
+                                       (group-by #(entity/faction @%)))]
            [faction
             (zipmap (map #(mapv int (entity/position @%)) entities)
                     entities)])))
@@ -117,7 +117,7 @@
                  (inc iterations)))))))
 
 (defn- tiles->entities [entities faction]
-  (let [entities (filter #(= (:entity/faction @%) faction)
+  (let [entities (filter #(= (entity/faction @%) faction)
                          entities)]
     (zipmap (map #(mapv int (entity/position @%)) entities)
             entities)))
