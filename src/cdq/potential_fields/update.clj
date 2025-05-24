@@ -1,4 +1,4 @@
-(ns cdq.application.potential-fields.update
+(ns cdq.potential-fields.update
   (:require [cdq.ctx :refer [factions-iterations]]
             [cdq.cell :as cell]
             [cdq.entity :as entity]
@@ -60,7 +60,7 @@
  )
 
 (defn- diagonal-cells? [cell* other-cell*]
-  (let [[x1 y1] (:position cell*)
+  (let [[x1 y1] (:position cell*) ; -> cell/position
         [x2 y2] (:position other-cell*)]
     (and (not= x1 x2)
          (not= y1 y2))))
@@ -68,9 +68,9 @@
 (defrecord FieldData [distance eid])
 
 (defn- add-field-data! [cell faction distance eid]
-  (swap! cell assoc faction (->FieldData distance eid)))
+  (swap! cell assoc faction (->FieldData distance eid))) ; -> cell/add-potential-field-data
 
-(defn- remove-field-data! [cell faction]
+(defn- remove-field-data! [cell faction] ; -> cell/remoev-potential-field-data
   (swap! cell assoc faction nil)) ; don't dissoc - will lose the Cell record type
 
 ; TODO performance

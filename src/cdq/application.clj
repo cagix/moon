@@ -3,8 +3,6 @@
             [cdq.application.config :as config]
             [cdq.application.db :as db]
             [cdq.application.ctx-schema :as ctx-schema]
-            [cdq.application.potential-fields.update :as potential-fields.update]
-            [cdq.application.potential-fields.movement :as potential-fields.movement]
             [cdq.application.raycaster :as raycaster]
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
@@ -21,6 +19,8 @@
             [cdq.math :as math]
             [cdq.modifiers :as modifiers]
             [cdq.projectile :as projectile]
+            [cdq.potential-fields.update :as potential-fields.update]
+            [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -794,7 +794,7 @@
                     :ctx/elapsed-time 0
                     :ctx/grid grid
                     :ctx/raycaster (raycaster/create grid)
-                    :ctx/content-grid (cdq.content-grid/create tiled-map (g/config ctx :content-grid-cell-size))
+                    :ctx/content-grid (content-grid/create tiled-map (g/config ctx :content-grid-cell-size))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                       (tiled/tm-height tiled-map)
                                                                       (constantly false)))
