@@ -46,8 +46,7 @@
             [gdl.utils]
 
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.utils Disposable)))
+  (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (def ^:private ctx-schema
   (m/schema [:map {:closed true}
@@ -1055,11 +1054,7 @@
                                                        :properties (:properties config)})})
                       create-game-state)
                   #_(ctx-schema/validate @state))
-        dispose! (fn [ctx]
-                   #_(ctx-schema/validate ctx)
-                   (Disposable/.dispose ctx)
-                   ; TODO dispose world tiled-map/level resources?
-                   #_(dispose! @state))
+        dispose! (requiring-resolve 'cdq.dispose/do!)
         render! (fn [ctx]
                   #_(ctx-schema/validate @state)
                   (render-game-state! ctx)
