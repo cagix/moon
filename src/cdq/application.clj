@@ -1059,8 +1059,7 @@
         dispose! (requiring-resolve 'cdq.dispose/do!)
         render! (fn [ctx]
                   (m/validate-humanize ctx-schema ctx)
-                  (render-game-state! ctx)
-                  (m/validate-humanize ctx-schema ctx))
+                  (render-game-state! ctx))
         resize! (requiring-resolve 'cdq.resize/do!)]
     (run! require (:requires config))
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
