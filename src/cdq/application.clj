@@ -16,6 +16,7 @@
             [cdq.g :as g]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
+            [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.projectile :as projectile]
             [cdq.timer :as timer]
@@ -339,11 +340,47 @@
   (content-grid/remove-entity! eid)
   (grid/remove-entity! eid))
 
+(def ^:private components-schema
+  (m/schema [:map {:closed true}
+             [:entity/image {:optional true} :some]
+             [:entity/animation {:optional true} :some]
+             [:entity/delete-after-animation-stopped? {:optional true} :some]
+             [:entity/alert-friendlies-after-duration {:optional true} :some]
+             [:entity/line-render {:optional true} :some]
+             [:entity/delete-after-duration {:optional true} :some]
+             [:entity/destroy-audiovisual {:optional true} :some]
+             [:entity/fsm {:optional true} :some]
+             [:entity/player? {:optional true} :some]
+             [:entity/free-skill-points {:optional true} :some]
+             [:entity/click-distance-tiles {:optional true} :some]
+             [:entity/clickable {:optional true} :some]
+             [:property/id {:optional true} :some]
+             [:property/pretty-name {:optional true} :some]
+             [:creature/level {:optional true} :some]
+             [:entity/faction {:optional true} :some]
+             [:entity/species {:optional true} :some]
+             [:entity/hp {:optional true} :some]
+             [:entity/movement {:optional true} :some]
+             [:entity/movement-speed {:optional true} :some]
+             [:entity/aggro-range {:optional true} :some]
+             [:entity/reaction-time {:optional true} :some]
+             [:entity/skills {:optional true} :some]
+             [:entity/mana {:optional true} :some]
+             [:entity/strength     {:optional true} :some]
+             [:entity/cast-speed   {:optional true} :some]
+             [:entity/attack-speed {:optional true} :some]
+             [:entity/armor-save   {:optional true} :some]
+             [:entity/armor-pierce {:optional true} :some]
+             [:entity/modifiers    {:optional true} :some]
+             [:entity/inventory    {:optional true} :some]
+             [:entity/item {:optional true} :some]
+             [:entity/projectile-collision {:optional true} :some]]))
+
 (defn- spawn-entity! [{:keys [ctx/id-counter] :as ctx}
                       position
                       body
                       components]
-  ; TODO SCHEMA COMPONENTS !
+  (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
