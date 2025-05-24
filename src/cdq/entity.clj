@@ -1,7 +1,4 @@
-(ns cdq.entity
-  (:require [cdq.malli :as m]
-            [cdq.modifiers :as modifiers]
-            [cdq.val-max :as val-max]))
+(ns cdq.entity)
 
 (defmulti create (fn [[k] ctx]
                    k))
@@ -32,57 +29,6 @@
 (defmulti  render-info! (fn [[k] entity ctx] k))
 (defmethod render-info! :default [_ _entity ctx])
 
-(defn- ->pos-int [val-max]
-  (mapv #(-> % int (max 0)) val-max))
-
-(defn- apply-max-modifier [val-max modifiers modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 1 modifiers/get-value modifiers modifier-k)
-        [v mx] (->pos-int val-max)]
-    [(min v mx) mx]))
-
-(defn- apply-min-modifier [val-max modifiers modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 0 modifiers/get-value modifiers modifier-k)
-        [v mx] (->pos-int val-max)]
-    [v (max v mx)]))
-
-(defn mana
-  "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-mana is capped by max-mana."
-  [{:keys [entity/mana
-           entity/modifiers]}]
-  (apply-max-modifier mana modifiers :modifier/mana-max))
-
-(defn mana-val [entity]
-  (if (:entity/mana entity)
-    ((mana entity) 0)
-    0))
-
-(defn hitpoints
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [{:keys [entity/hp
-           entity/modifiers]}]
-  (apply-max-modifier hp modifiers :modifier/hp-max))
-
-(defn damage
-  ([source damage]
-   (update damage
-           :damage/min-max
-           #(-> %
-                (apply-min-modifier (:entity/modifiers source) :modifier/damage-deal-min)
-                (apply-max-modifier (:entity/modifiers source) :modifier/damage-deal-max))))
-
-  ([source target damage]
-   (update (damage source damage)
-           :damage/min-max
-           apply-max-modifier
-           (:entity/modifiers target)
-           :modifier/damage-receive-max)))
-
 (defprotocol Entity
   (position [_])
   (in-range? [_ target maxrange])
@@ -97,4 +43,6 @@
   (mod-add    [_ mods])
   (mod-remove [_ mods])
   (stat [_ k])
-  )
+  (mana [_])
+  (mana-val [_])
+  (hitpoints [_]))

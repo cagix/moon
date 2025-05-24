@@ -2,6 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]))
 
@@ -39,7 +40,7 @@
        [[:tx/add-text-effect target "[WHITE]ARMOR"]]
 
        :else
-       (let [min-max (:damage/min-max (entity/damage source* target* damage))
+       (let [min-max (:damage/min-max (modifiers/damage source* target* damage))
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          [[:tx/assoc-in target [:entity/hp 0] new-hp-val]

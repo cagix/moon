@@ -86,7 +86,7 @@
 (defmethod info-segment :effects.target/damage [[_ damage] _entity _ctx]
   (damage-info damage)
   #_(if source
-      (let [modified (entity/damage @source damage)]
+      (let [modified (modifiers/damage @source damage)]
         (if (= damage modified)
           (damage-info damage)
           (str (damage-info damage) "\nModified: " (damage/info modified))))

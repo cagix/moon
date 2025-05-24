@@ -285,7 +285,17 @@
       (modifiers/get-value base-value
                            (:entity/modifiers this)
                            (keyword "modifier" (name k)))))
-  )
+
+  (mana [entity]
+    (modifiers/get-mana entity))
+
+  (mana-val [entity]
+    (if (:entity/mana entity)
+      ((mana entity) 0)
+      0))
+
+  (hitpoints [entity]
+    (modifiers/get-hitpoints entity)))
 
 (defn- create-body [{[x y] :position
                      :keys [position
