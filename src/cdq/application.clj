@@ -869,10 +869,6 @@
     (when (c/key-pressed? ctx (:zoom-in controls))  (c/inc-zoom! ctx    zoom-speed))
     (when (c/key-pressed? ctx (:zoom-out controls)) (c/inc-zoom! ctx (- zoom-speed)))))
 
-(defn- get-active-entities [{:keys [ctx/content-grid
-                                    ctx/player-eid]}]
-  (content-grid/active-entities content-grid @player-eid))
-
 (defn- player-state-handle-click! [{:keys [ctx/player-eid] :as ctx}]
   (g/handle-txs! ctx
                  (state/manual-tick (entity/state-obj @player-eid)
@@ -957,7 +953,7 @@
 ; also its side effects ... ?? -> transactions ?!
 
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
-  (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
+  (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
     (c/set-camera-position! ctx (entity/position @player-eid))
     (c/clear-screen! ctx)
     (g/draw-world-map! ctx)

@@ -3,6 +3,9 @@
 (defprotocol Config
   (config [_ key]))
 
+(defprotocol ActiveEntities
+  (get-active-entities [_]))
+
 (defprotocol Graphics
   (draw-world-map! [_]))
 
