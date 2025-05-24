@@ -2,7 +2,6 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.grid2d :as g2d]
-            [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.utils :as utils]
@@ -122,7 +121,7 @@
                                      :width cell-size
                                      :height cell-size)]
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info/text item %))))
+    (ui/add-tooltip! cell-widget #(g/info-text % item))))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)

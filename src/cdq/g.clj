@@ -52,3 +52,6 @@
   (timer-stopped? [_ timer])
   (reset-timer [_ timer])
   (timer-ratio [_ timer]))
+
+(defprotocol InfoText
+  (info-text [_ object]))

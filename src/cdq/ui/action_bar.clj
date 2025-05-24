@@ -1,5 +1,5 @@
 (ns cdq.ui.action-bar
-  (:require [cdq.info :as info]
+  (:require [cdq.g :as g]
             [gdl.ui :as ui]
             [gdl.ui.button-group :as button-group]))
 
@@ -37,7 +37,7 @@
                                 (fn [_actor _ctx])
                                 {:scale 2})]
     (ui/set-user-object! button id)
-    (ui/add-tooltip! button #(info/text skill %)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/add-tooltip! button #(g/info-text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (ui/add! horizontal-group button)
     (button-group/add! button-group button)
     nil))

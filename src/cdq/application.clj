@@ -12,6 +12,7 @@
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
+            [cdq.info :as info]
             [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.modifiers :as modifiers]
@@ -74,6 +75,11 @@
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
+
+(extend-type gdl.application.Context
+  g/InfoText
+  (info-text [ctx object]
+    (info/text ctx object)))
 
 (extend-type gdl.application.Context
   g/PlayerMovementInput

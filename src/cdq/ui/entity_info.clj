@@ -1,5 +1,5 @@
 (ns cdq.ui.entity-info
-  (:require [cdq.info :as info]
+  (:require [cdq.g :as g]
             [gdl.ui :as ui]))
 
 (comment
@@ -15,10 +15,16 @@
                       :entity/faction
                       :active-skill])
 
+; TODO details how the text looks move to info
+; only for :
+; * skill
+; * entity -> all sub-types
+; * item
+; => can test separately !?
+
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (info/text (apply dissoc entity disallowed-keys)
-             ctx))
+  (g/info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn create [position]
   (let [label (ui/label "")

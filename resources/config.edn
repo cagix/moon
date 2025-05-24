@@ -50,7 +50,6 @@
             cdq.entity.string-effect
             cdq.entity.temp-modifier
 
-            cdq.impl.info
             cdq.impl.schemas
 
             cdq.ui.editor.widget.default
