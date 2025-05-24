@@ -1,18 +1,21 @@
 (ns cdq.application
-  (:require [cdq.config :as config]
-            [clojure.gdx.backends.lwjgl :as lwjgl])
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (def state (atom nil))
 
-(defn -main []
-  (let [config (config/create "config.edn")
-        create!             (requiring-resolve (::create!              config))
-        dispose!            (requiring-resolve (::dispose!             config))
-        render!             (requiring-resolve (::render!              config))
-        resize!             (requiring-resolve (::resize!              config))
-        validate-ctx-schema (requiring-resolve (::validate-ctx-schema  config))]
-    (lwjgl/application (::clojure.gdx.backends.lwjgl config)
+(defn start! [{::keys [create!
+                       dispose!
+                       render!
+                       resize!
+                       validate-ctx-schema
+                       clojure.gdx.backends.lwjgl]}]
+  (let [create!             (requiring-resolve create!)
+        dispose!            (requiring-resolve dispose!)
+        render!             (requiring-resolve render!)
+        resize!             (requiring-resolve resize!)
+        validate-ctx-schema (requiring-resolve validate-ctx-schema)]
+    (lwjgl/application clojure.gdx.backends.lwjgl
                        (proxy [ApplicationAdapter] []
                          (create []
                            (reset! state (create! config))
