@@ -1122,6 +1122,17 @@
     :as ctx}]
   (update ctx :ctx/elapsed-time + delta-time))
 
+(defn- update-potential-fields!
+  [{:keys [ctx/potential-field-cache
+           ctx/grid
+           ctx/active-entities]}]
+  (doseq [[faction max-iterations] cdq.ctx/factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations)))
+
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
   (ctx-schema/validate ctx)
   (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
@@ -1143,7 +1154,7 @@
                 (let [ctx (-> ctx
                               assoc-delta-time
                               update-elapsed-time)]
-                  (potential-fields.update/do! ctx)
+                  (update-potential-fields! ctx)
                   (tick-entities! ctx)
                   ctx))]
       (remove-destroyed-entities! ctx) ; do not pause as pickup item should be destroyed

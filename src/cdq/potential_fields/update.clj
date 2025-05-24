@@ -1,6 +1,5 @@
 (ns cdq.potential-fields.update
-  (:require [cdq.ctx :refer [factions-iterations]]
-            [cdq.cell :as cell]
+  (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]))
 
@@ -122,7 +121,7 @@
     (zipmap (map #(mapv int (entity/position @%)) entities)
             entities)))
 
-(defn- tick! [pf-cache grid faction entities max-iterations]
+(defn tick! [pf-cache grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
         last-state   [faction :tiles->entities]
         marked-cells [faction :marked-cells]]
@@ -135,13 +134,3 @@
                                              faction
                                              tiles->entities
                                              max-iterations)))))
-
-(defn do! [{:keys [ctx/potential-field-cache
-                   ctx/grid
-                   ctx/active-entities]}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (tick! potential-field-cache
-           grid
-           faction
-           active-entities
-           max-iterations)))
