@@ -3,6 +3,9 @@
 (defprotocol Config
   (config [_ key]))
 
+(defprotocol Context
+  (context-entity-remove! [_ eid]))
+
 (defprotocol ActiveEntities
   (get-active-entities [_]))
 
