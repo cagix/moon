@@ -7,6 +7,7 @@
  :requires [cdq.effect-ctx
             cdq.info
             cdq.player-movement-vector
+            cdq.interaction-state
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
