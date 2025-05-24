@@ -10,6 +10,7 @@
             [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.g :as g]
             [cdq.grid :as grid]
@@ -35,7 +36,166 @@
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.math]
-            [gdl.tiled :as tiled]))
+            [gdl.tiled :as tiled]
+            [gdl.ui :as ui]))
+
+(extend-type gdl.application.Context
+  g/PlayerMovementInput
+  (player-movement-vector [ctx]
+    (let [r (when (c/key-pressed? ctx :d) [1  0])
+          l (when (c/key-pressed? ctx :a) [-1 0])
+          u (when (c/key-pressed? ctx :w) [0  1])
+          d (when (c/key-pressed? ctx :s) [0 -1])]
+      (when (or r l u d)
+        (let [v (v/add-vs (remove nil? [r l u d]))]
+          (when (pos? (v/length v))
+            v))))))
+
+(defmulti ^:private on-clicked
+  (fn [ctx eid]
+    (:type (:entity/clickable @eid))))
+
+(defmethod on-clicked :clickable/item [{:keys [ctx/player-eid]
+                                        :as ctx}
+                                       eid]
+  (let [item (:entity/item @eid)]
+    (cond
+     (-> (c/get-actor ctx :windows) :inventory-window ui/visible?)
+     [[:tx/sound "bfxr_takeit"]
+      [:tx/mark-destroyed eid]
+      [:tx/event player-eid :pickup-item item]]
+
+     (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
+     [[:tx/sound "bfxr_pickup"]
+      [:tx/mark-destroyed eid]
+      [:tx/pickup-item player-eid item]]
+
+     :else
+     [[:tx/sound "bfxr_denied"]
+      [:tx/show-message "Your Inventory is full"]])))
+
+(defmethod on-clicked :clickable/player [_ctx _eid]
+  [[:tx/toggle-inventory-visible]]) ; TODO every 'transaction' should have a sound or effect with it?
+
+(defn- clickable->cursor [entity too-far-away?]
+  (case (:type (:entity/clickable entity))
+    :clickable/item (if too-far-away?
+                      :cursors/hand-before-grab-gray
+                      :cursors/hand-before-grab)
+    :clickable/player :cursors/bag))
+
+(defn- clickable-entity-interaction [ctx player-entity clicked-eid]
+  (if (< (v/distance (entity/position player-entity)
+                     (entity/position @clicked-eid))
+         (:entity/click-distance-tiles player-entity))
+    [(clickable->cursor @clicked-eid false) (on-clicked ctx clicked-eid)]
+    [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]
+                                             [:tx/show-message "Too far away"]]]))
+
+(defn- mouseover-actor->cursor [actor player-entity-inventory]
+  (let [inventory-slot (cdq.ui.inventory/cell-with-item? actor)]
+    (cond
+     (and inventory-slot
+         (get-in player-entity-inventory inventory-slot)) :cursors/hand-before-grab
+     (ui/window-title-bar? actor) :cursors/move-window
+     (ui/button? actor) :cursors/over-button
+     :else :cursors/default)))
+
+(extend-type gdl.application.Context
+  g/InteractionState
+  (interaction-state [{:keys [ctx/mouseover-eid]
+                       :as ctx}
+                      eid]
+    (let [entity @eid
+          mouseover-actor (c/mouseover-actor ctx)]
+      (cond
+       mouseover-actor
+       [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
+        nil] ; handled by actors themself, they check player state
+
+       (and mouseover-eid
+            (:entity/clickable @mouseover-eid))
+       (clickable-entity-interaction ctx entity mouseover-eid)
+
+       :else
+       (if-let [skill-id (g/selected-skill ctx)]
+         (let [skill (skill-id (:entity/skills entity))
+               effect-ctx (g/player-effect-ctx ctx eid)
+               state (entity/skill-usable-state entity skill effect-ctx)]
+           (if (= state :usable)
+             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
+             ; different color ?
+             ; => e.g. meditation no TARGET .. etc.
+             [:cursors/use-skill
+              [[:tx/event eid :start-action [skill effect-ctx]]]]
+             ; TODO cursor as of usable state
+             ; cooldown -> sanduhr kleine
+             ; not-enough-mana x mit kreis?
+             ; invalid-params -> depends on params ...
+             [:cursors/skill-not-usable
+              [[:tx/sound "bfxr_denied"]
+               [:tx/show-message (case state
+                                   :cooldown "Skill is still on cooldown"
+                                   :not-enough-mana "Not enough mana"
+                                   :invalid-params "Cannot use this here")]]]))
+         [:cursors/no-skill-selected
+          [[:tx/sound "bfxr_denied"]
+           [:tx/show-message "No selected skill"]]])))))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [ctx position]
+  (let [[x y] position
+        x (float x)
+        y (float y)
+        [cx cy] (c/camera-position ctx)
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (c/world-viewport-width ctx))  2)))
+     (<= ydist (inc (/ (float (c/world-viewport-height ctx)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
+(extend-type gdl.application.Context
+  g/LineOfSight
+  ; does not take into account size of entity ...
+  ; => assert bodies <1 width then
+  (line-of-sight? [ctx source target]
+    (and (or (not (:entity/player? source))
+             (on-screen? ctx (entity/position target)))
+         (not (and los-checks?
+                   (g/ray-blocked? ctx
+                                   (entity/position source)
+                                   (entity/position target)))))))
+
+(extend-type gdl.application.Context
+  g/EffectContext
+  (player-effect-ctx [{:keys [ctx/mouseover-eid] :as ctx}
+                      eid]
+    (let [target-position (or (and mouseover-eid
+                                   (entity/position @mouseover-eid))
+                              (c/world-mouse-position ctx))]
+      {:effect/source eid
+       :effect/target mouseover-eid
+       :effect/target-position target-position
+       :effect/target-direction (v/direction (entity/position @eid) target-position)}))
+
+  (npc-effect-ctx [ctx eid]
+    (let [entity @eid
+          target (g/nearest-enemy ctx entity)
+          target (when (and target
+                            (g/line-of-sight? ctx entity @target))
+                   target)]
+      {:effect/source eid
+       :effect/target target
+       :effect/target-direction (when target
+                                  (v/direction (entity/position entity)
+                                               (entity/position @target)))})))
 
 ; !!! Entity logic/data schema is _all over_ the application !!!
 

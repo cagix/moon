@@ -7,11 +7,7 @@
  :create  cdq.application.create/do!
  :dispose cdq.application.dispose/do!
  :render  cdq.application.render/do!
- :requires [cdq.g.player-movement-vector
-            cdq.g.interaction-state
-            cdq.g.line-of-sight
-            cdq.g.effect-context
-
+ :requires [
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
             cdq.effects.target.damage
