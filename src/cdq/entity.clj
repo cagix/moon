@@ -1,6 +1,5 @@
 (ns cdq.entity
-  (:require [cdq.effect :as effect]
-            [cdq.op :as op]
+  (:require [cdq.op :as op]
             [cdq.malli :as m]
             [cdq.val-max :as val-max]))
 
@@ -111,22 +110,5 @@
   (enemy [_])
   (state-k [_])
   (state-obj [_])
+  (skill-usable-state [_ skill effect-ctx])
   )
-
-(defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (and cost (> cost (mana-val entity))))
-
-(defn skill-usable-state
-  [entity {:keys [skill/cooling-down? skill/effects] :as skill} effect-ctx]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (not-enough-mana? entity skill)
-   :not-enough-mana
-
-   (not (effect/some-applicable? effect-ctx effects))
-   :invalid-params
-
-   :else
-   :usable))

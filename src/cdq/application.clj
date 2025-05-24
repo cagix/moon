@@ -8,6 +8,7 @@
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
+            [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.g :as g]
@@ -35,6 +36,9 @@
             [gdl.graphics :as graphics]
             [gdl.math]
             [gdl.tiled :as tiled]))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (and cost (> cost (entity/mana-val entity))))
 
 (defrecord Body [position
                  left-bottom
@@ -84,6 +88,23 @@
   (state-obj [this]
     (let [k (entity/state-k this)]
       [k (k this)]))
+
+  (skill-usable-state
+    [entity
+     {:keys [skill/cooling-down? skill/effects] :as skill}
+     effect-ctx]
+    (cond
+     cooling-down?
+     :cooldown
+
+     (not-enough-mana? entity skill)
+     :not-enough-mana
+
+     (not (effect/some-applicable? effect-ctx effects))
+     :invalid-params
+
+     :else
+     :usable))
   )
 
 (defn- create-body [{[x y] :position
