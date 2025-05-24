@@ -7,4 +7,4 @@
     [[:draw/rotated-centered
       image
       (or (:rotation-angle entity) 0)
-      (:position entity)]]))
+      (entity/position entity)]]))

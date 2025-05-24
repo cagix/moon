@@ -1,5 +1,6 @@
 (ns cdq.effects.target.audiovisual
   (:require [cdq.effect :as effect]
+            [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :effects.target/audiovisual
@@ -10,4 +11,4 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target]} _ctx]
-    [[:tx/audiovisual (:position @target) audiovisual]]))
+    [[:tx/audiovisual (entity/position @target) audiovisual]]))

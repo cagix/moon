@@ -7,7 +7,7 @@
                            {:keys [entity/mouseover?] :as entity}
                            _ctx]
     (when (and mouseover? text)
-      (let [[x y] (:position entity)]
+      (let [[x y] (entity/position entity)]
         [[:draw/text {:text text
                       :x x
                       :y (+ y (:half-height entity))

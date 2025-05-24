@@ -43,6 +43,6 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          [[:tx/assoc-in target [:entity/hp 0] new-hp-val]
-          [:tx/audiovisual (:position target*) (g/build ctx :audiovisuals/damage)]
+          [:tx/audiovisual (entity/position target*) (g/build ctx :audiovisuals/damage)]
           [:tx/event target (if (zero? new-hp-val) :kill :alert)]
           [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))

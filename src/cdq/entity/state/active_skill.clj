@@ -75,7 +75,7 @@
     (let [{:keys [entity/image skill/effects]} skill]
       (concat (draw-skill-image image
                                 entity
-                                (:position entity)
+                                (entity/position entity)
                                 (g/timer-ratio ctx counter))
               (render-active-effect ctx
                                     effect-ctx ; TODO !!!

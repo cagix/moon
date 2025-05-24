@@ -1,12 +1,13 @@
 (ns cdq.effects.projectile
   (:require [cdq.effect :as effect]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.projectile :as projectile]
             [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]))
 
 (defn- start-point [entity direction size]
-  (v/add (:position entity)
+  (v/add (entity/position entity)
          (v/scale direction
                   (+ (:radius entity) size 0.1))))
 
@@ -19,8 +20,8 @@
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
                    {:keys [effect/source effect/target]}
                    ctx]
-    (let [source-p (:position @source)
-          target-p (:position @target)]
+    (let [source-p (entity/position @source)
+          target-p (entity/position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
       (and (not (g/path-blocked? ctx
                                  source-p

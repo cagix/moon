@@ -14,7 +14,7 @@
   (let [player @player-eid]
     [[:draw/with-line-width 3
       [[:draw/ellipse
-        (:position entity)
+        (entity/position entity)
         (:half-width entity)
         (:half-height entity)
         (cond (= faction (entity/enemy player))

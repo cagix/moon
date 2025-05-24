@@ -1,5 +1,6 @@
 (ns cdq.effects.target-all
   (:require [cdq.effect :as effect]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.utils :refer [defcomponent]]))
 
@@ -24,8 +25,8 @@
     (let [source* @source]
       (apply concat
              (for [target (creatures-in-los-of-player ctx)]
-               [[:tx/spawn-line {:start (:position source*) #_(start-point source* target*)
-                                 :end (:position @target)
+               [[:tx/spawn-line {:start (entity/position source*) #_(start-point source* target*)
+                                 :end (entity/position @target)
                                  :duration 0.05
                                  :color [1 0 0 0.75]
                                  :thick? true}]
@@ -41,6 +42,6 @@
     (let [source* @source]
       (for [target* (map deref (creatures-in-los-of-player ctx))]
         [:draw/line
-         (:position source*) #_(start-point source* target*)
-         (:position target*)
+         (entity/position source*) #_(start-point source* target*)
+         (entity/position target*)
          [1 0 0 0.5]]))))

@@ -7,7 +7,7 @@
   (entity/tick! [[_ {:keys [counter faction]}] eid ctx]
     (when (g/timer-stopped? ctx counter)
       (cons [:tx/mark-destroyed eid]
-            (for [friendly-eid (->> {:position (:position @eid)
+            (for [friendly-eid (->> {:position (entity/position @eid)
                                      :radius 4}
                                     (g/circle->entities ctx)
                                     (filter #(= (:entity/faction @%) faction)))]

@@ -1,5 +1,6 @@
 (ns cdq.g.line-of-sight
   (:require gdl.application
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [gdl.c :as c]))
 
@@ -28,8 +29,8 @@
   ; => assert bodies <1 width then
   (line-of-sight? [ctx source target]
     (and (or (not (:entity/player? source))
-             (on-screen? ctx (:position target)))
+             (on-screen? ctx (entity/position target)))
          (not (and los-checks?
                    (g/ray-blocked? ctx
-                                   (:position source)
-                                   (:position target)))))))
+                                   (entity/position source)
+                                   (entity/position target)))))))

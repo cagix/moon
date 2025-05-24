@@ -1,5 +1,6 @@
 (ns cdq.content-grid
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.entity :as entity]
+            [cdq.grid2d :as g2d]
             [gdl.tiled :as tiled]))
 
 (defn create [tiled-map cell-size]
@@ -16,7 +17,7 @@
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
-        [x y] (:position entity)
+        [x y] (entity/position entity)
         new-cell (get grid [(int (/ x cell-w))
                             (int (/ y cell-h))])]
     (when-not (= content-cell new-cell)

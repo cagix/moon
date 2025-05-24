@@ -1,6 +1,7 @@
 (ns cdq.application.potential-fields.update
   (:require [cdq.ctx :refer [factions-iterations]]
             [cdq.cell :as cell]
+            [cdq.entity :as entity]
             [cdq.grid :as grid]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
@@ -44,7 +45,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(mapv int (:position @%)) entities)
+            (zipmap (map #(mapv int (entity/position @%)) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -118,7 +119,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(mapv int (:position @%)) entities)
+    (zipmap (map #(mapv int (entity/position @%)) entities)
             entities)))
 
 (defn- tick! [pf-cache grid faction entities max-iterations]

@@ -82,7 +82,7 @@
   (cdq.tx.add-skill/do! ctx/player-eid (g/build ctx skill-id)))
 
 #_(defn- create-item! [_context item-id]
-  (cdq.tx.spawn-item/do! (:position @ctx/player-eid) (g/build ctx item-id)))
+  (cdq.tx.spawn-item/do! (entity/position @ctx/player-eid) (g/build ctx item-id)))
 
 (defn- mouseover-grid-cell []
   #_@(g/grid-cell ctx (mapv int (c/world-mouse-position ctx))))

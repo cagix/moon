@@ -48,9 +48,12 @@
                  z-order
                  rotation-angle]
   entity/Entity
+  (position [_]
+    position)
+
   (in-range? [entity target* maxrange] ; == circle-collides?
-    (< (- (float (v/distance (:position entity)
-                             (:position target*)))
+    (< (- (float (v/distance (entity/position entity)
+                             (entity/position target*)))
           (float (:radius entity))
           (float (:radius target*)))
        (float maxrange))))
@@ -278,11 +281,11 @@
     (grid/circle->entities grid circle))
 
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
-    (cell/nearest-entity-distance @(grid (mapv int (:position entity)))
+    (cell/nearest-entity-distance @(grid (mapv int (entity/position entity)))
                                   (entity/enemy entity)))
 
   (nearest-enemy [{:keys [ctx/grid]} entity]
-    (cell/nearest-entity @(grid (mapv int (:position entity)))
+    (cell/nearest-entity @(grid (mapv int (entity/position entity)))
                          (entity/enemy entity)))
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
@@ -550,7 +553,7 @@
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
   (ctx-schema/validate ctx)
   (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
-    (c/set-camera-position! ctx (:position @player-eid))
+    (c/set-camera-position! ctx (entity/position @player-eid))
     (c/clear-screen! ctx)
     (draw-world-map! ctx)
     (c/draw-on-world-viewport! ctx [draw-tile-grid

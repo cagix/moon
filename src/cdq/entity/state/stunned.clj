@@ -17,4 +17,4 @@
   (state/pause-game? [_] false)
 
   (entity/render-below! [_ entity _ctx]
-    [[:draw/circle (:position entity) 0.5 [1 1 1 0.6]]]))
+    [[:draw/circle (entity/position entity) 0.5 [1 1 1 0.6]]]))

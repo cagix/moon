@@ -114,6 +114,7 @@
            :modifier/damage-receive-max)))
 
 (defprotocol Entity
+  (position [_])
   (in-range? [_ target maxrange]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]

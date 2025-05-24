@@ -12,7 +12,7 @@
   (entity/render-above! [[_ {:keys [text]}]
                          entity
                          ctx]
-    (let [[x y] (:position entity)]
+    (let [[x y] (entity/position entity)]
       [[:draw/text {:text text
                     :x x
                     :y (+ y

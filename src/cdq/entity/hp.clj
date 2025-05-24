@@ -21,8 +21,11 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [ctx {:keys [position width half-width half-height]} ratio]
-  (let [[x y] position]
+(defn- draw-hpbar [ctx
+                   {:keys [width half-width half-height]
+                    :as entity}
+                   ratio]
+  (let [[x y] (entity/position entity)]
     (let [x (- x half-width)
           y (+ y half-height)
           height (c/pixels->world-units ctx 5)

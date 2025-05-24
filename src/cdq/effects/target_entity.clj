@@ -7,15 +7,15 @@
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
-  (v/add (:position entity)
-         (v/scale (v/direction (:position entity)
-                               (:position target*))
+  (v/add (entity/position entity)
+         (v/scale (v/direction (entity/position entity)
+                               (entity/position target*))
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (v/direction (:position entity)
-                               (:position target*))
+         (v/scale (v/direction (entity/position entity)
+                               (entity/position target*))
                   maxrange)))
 
 (defcomponent :effects/target-entity
@@ -33,7 +33,7 @@
           target* @target]
       (if (entity/in-range? source* target* maxrange)
         [[:tx/spawn-line {:start (start-point source* target*)
-                          :end (:position target*)
+                          :end (entity/position target*)
                           :duration 0.05
                           :color [1 0 0 0.75]
                           :thick? true}]

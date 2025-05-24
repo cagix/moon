@@ -42,8 +42,8 @@
     :clickable/player :cursors/bag))
 
 (defn- clickable-entity-interaction [ctx player-entity clicked-eid]
-  (if (< (v/distance (:position player-entity)
-                     (:position @clicked-eid))
+  (if (< (v/distance (entity/position player-entity)
+                     (entity/position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
     [(clickable->cursor @clicked-eid false) (on-clicked ctx clicked-eid)]
     [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]

@@ -6,5 +6,5 @@
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid ctx]
     [[:tx/audiovisual
-      (:position @eid)
+      (entity/position @eid)
       (g/build ctx audiovisuals-id)]]))
