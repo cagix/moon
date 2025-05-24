@@ -44,9 +44,6 @@
 
 (def state (atom nil))
 
-(defn reset-game-state! []
-  (swap! state (requiring-resolve 'cdq.game-state/create!)))
-
 (defn -main []
   (let [config (create-config "config.edn")
         create! (fn [config]

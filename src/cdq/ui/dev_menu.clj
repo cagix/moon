@@ -2,15 +2,12 @@
   (:require [cdq.application :as application]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.game-state :as game-state]
             [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.c :as c]
             [gdl.ui.menu :as menu]))
-
-; The dev menu is actually outside the application
-; and we can see the ctx/ state itself
-; and is it much more work to restart the whole game instead of one level ?
 
 (defn create [ctx]
   (menu/create
@@ -18,7 +15,7 @@
              :items (for [world-fn (g/config ctx :world-fns)]
                       {:label (str "Start " (namespace world-fn))
                        :on-click (fn [_actor _ctx]
-                                   (application/reset-game-state!))})}
+                                   (swap! application/state game-state/create!))})}
             {:label "Help"
              :items [{:label (g/config ctx :info)}]}
             {:label "Objects"
