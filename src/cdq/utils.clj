@@ -114,7 +114,8 @@
   [s]
   (map vector (iterate inc 0) s))
 
-(defn utils-positions ; from cdq.contrib.seq-utils (discontinued in 1.3)
+; from cdq.contrib.seq-utils (discontinued in 1.3)
+(defn positions
   "Returns a lazy sequence containing the positions at which pred
   is true for items in coll."
   [pred coll]

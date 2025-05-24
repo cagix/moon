@@ -2,14 +2,14 @@
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.utils :refer [utils-positions when-seq]]
+            [cdq.utils :as utils]
             [cdq.vector2 :as v]))
 
 (let [order (grid/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
     (into {} (for [[x y] (filter v/diagonal-direction? order)]
-               [(first (utils-positions #(= % [x y]) order))
-                (vec (utils-positions #(some #{%} [[x 0] [0 y]])
+               [(first (utils/positions #(= % [x y]) order))
+                (vec (utils/positions #(some #{%} [[x 0] [0 y]])
                                      order))]))))
 
 (defn- is-not-allowed-diagonal? [at-idx adjacent-cells]
@@ -37,7 +37,7 @@
           adjacent-cells)))
 
 (defn- get-min-dist-cell [distance-to cells]
-  (when-seq [cells (filter distance-to cells)]
+  (utils/when-seq [cells (filter distance-to cells)]
     (apply min-key distance-to cells)))
 
 ; rarely called -> no performance bottleneck
