@@ -1,6 +1,5 @@
 (ns cdq.application
   (:require [cdq.animation :as animation]
-            [cdq.application.config :as config]
             [cdq.application.db :as db]
             [cdq.application.ctx-schema :as ctx-schema]
             [cdq.application.raycaster :as raycaster]
@@ -42,6 +41,7 @@
             [gdl.math]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
+            [gdl.utils]
 
             [reduce-fsm :as fsm]))
 
@@ -1164,8 +1164,14 @@
 (defn reset-game-state! []
   (swap! gdl.application/state create-game-state))
 
+(defn- create-config [path]
+  (let [m (cdq.utils/io-slurp-edn path)]
+    (reify clojure.lang.ILookup
+      (valAt [_ k]
+        (gdl.utils/safe-get m k)))))
+
 (defn -main []
-  (let [config (config/create "config.edn")]
+  (let [config (create-config "config.edn")]
     (run! require (:requires config))
     (gdl.application/start! config
                             (fn [context]
@@ -1175,8 +1181,8 @@
                                   create-game-state))
                             render-game-state!
 
-                              #_(dispose! [_]
-                                ; nil
-                                ; TODO dispose world tiled-map/level resources?
-                                )
-                              )))
+                            #_(dispose! [_]
+                                        ; nil
+                                        ; TODO dispose world tiled-map/level resources?
+                                        )
+                            )))
