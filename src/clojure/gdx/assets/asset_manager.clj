@@ -1,5 +1,6 @@
 (ns clojure.gdx.assets.asset-manager
-  (:import (com.badlogic.gdx.assets AssetManager)
+  (:import (clojure.lang IFn)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
 

@@ -12,8 +12,7 @@
             [gdl.tiled :as tiled] ; only renderer, internal
             [gdl.ui :as ui] ; partly internal ? ? are the widgets part of ctx ???
             [gdl.utils :as utils]) ; dispose, safe-get, mapvals
-  (:import (clojure.lang IFn
-                         ILookup)
+  (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
