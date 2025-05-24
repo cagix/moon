@@ -77,6 +77,13 @@
     (case (entity/faction this)
       :evil :good
       :good :evil))
+
+  (state-k [{:keys [entity/fsm]}]
+    (:state fsm))
+
+  (state-obj [this]
+    (let [k (entity/state-k this)]
+      [k (k this)]))
   )
 
 (defn- create-body [{[x y] :position

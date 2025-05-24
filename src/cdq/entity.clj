@@ -44,13 +44,6 @@
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
-(defn state-k [entity]
-  (-> entity :entity/fsm :state))
-
-(defn state-obj [entity]
-  (let [k (state-k entity)]
-    [k (k entity)]))
-
 (defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
 (defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))
 
@@ -116,6 +109,8 @@
   (id [_])
   (faction [_])
   (enemy [_])
+  (state-k [_])
+  (state-obj [_])
   )
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
