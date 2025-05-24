@@ -89,10 +89,9 @@
     (let [k (entity/state-k this)]
       [k (k this)]))
 
-  (skill-usable-state
-    [entity
-     {:keys [skill/cooling-down? skill/effects] :as skill}
-     effect-ctx]
+  (skill-usable-state [entity
+                       {:keys [skill/cooling-down? skill/effects] :as skill}
+                       effect-ctx]
     (cond
      cooling-down?
      :cooldown
