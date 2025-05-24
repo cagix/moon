@@ -18,6 +18,7 @@
             [cdq.grid2d :as g2d]
             [cdq.malli :as m]
             [cdq.math :as math]
+            [cdq.modifiers :as modifiers]
             [cdq.projectile :as projectile]
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
@@ -275,6 +276,15 @@
 
      :else
      :usable))
+
+  (mod-add    [entity mods] (update entity :entity/modifiers modifiers/add    mods))
+  (mod-remove [entity mods] (update entity :entity/modifiers modifiers/remove mods))
+
+  (stat [this k]
+    (when-let [base-value (k this)]
+      (modifiers/get-value base-value
+                           (:entity/modifiers this)
+                           (keyword "modifier" (name k)))))
   )
 
 (defn- create-body [{[x y] :position

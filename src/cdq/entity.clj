@@ -32,15 +32,6 @@
 (defmulti  render-info! (fn [[k] entity ctx] k))
 (defmethod render-info! :default [_ _entity ctx])
 
-(defn stat [entity k]
-  (when-let [base-value (k entity)]
-    (modifiers/get-value base-value
-                         (:entity/modifiers entity)
-                         (keyword "modifier" (name k)))))
-
-(defn mod-add    [entity mods] (update entity :entity/modifiers modifiers/add    mods))
-(defn mod-remove [entity mods] (update entity :entity/modifiers modifiers/remove mods))
-
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
 
@@ -103,4 +94,7 @@
   (state-k [_])
   (state-obj [_])
   (skill-usable-state [_ skill effect-ctx])
+  (mod-add    [_ mods])
+  (mod-remove [_ mods])
+  (stat [_ k])
   )
