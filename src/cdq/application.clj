@@ -51,6 +51,10 @@
   (position [_]
     position)
 
+  (overlaps? [this other-entity]
+    ; TODO explicit transformation of shapes
+    (math/overlaps? this other-entity))
+
   (in-range? [entity target* maxrange] ; == circle-collides?
     (< (- (float (v/distance (entity/position entity)
                              (entity/position target*)))

@@ -1,5 +1,6 @@
 (ns cdq.grid
   (:require [cdq.cell :as cell]
+            [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
             [gdl.tiled :as tiled]))
@@ -132,4 +133,4 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (math/overlaps? other-entity body)))))))))
+                                 (entity/overlaps? other-entity body)))))))))
