@@ -65,7 +65,10 @@
                              (entity/position target*)))
           (float (:radius entity))
           (float (:radius target*)))
-       (float maxrange))))
+       (float maxrange)))
+
+  (id [{:keys [entity/id]}]
+    id))
 
 (defn- create-body [{[x y] :position
                      :keys [position
@@ -303,7 +306,7 @@
 (defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (let [id (:entity/id @eid)]
+    (let [id (entity/id @eid)]
       (assert (contains? @entity-ids id))
       (swap! entity-ids dissoc id))
     (content-grid/remove-entity! eid)
@@ -329,7 +332,7 @@
                         (utils/safe-merge (-> components
                                               (assoc :entity/id (swap! id-counter inc))
                                               (create-vs ctx)))))]
-      (let [id (:entity/id @eid)]
+      (let [id (entity/id @eid)]
         (assert (number? id))
         (swap! entity-ids assoc id eid))
       (content-grid/add-entity! content-grid eid)
@@ -543,7 +546,7 @@
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
-        (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+        (throw (ex-info "entity/id: " (entity/id @eid) t)))))
    (catch Throwable t
      (pretty-pst t)
      (g/open-error-window! ctx t)

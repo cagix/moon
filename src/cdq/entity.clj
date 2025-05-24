@@ -117,7 +117,9 @@
   (position [_])
   (in-range? [_ target maxrange])
   (overlaps? [_ other-entity])
-  (rectangle [_]))
+  (rectangle [_])
+  (id [_])
+  )
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (mana-val entity))))

@@ -130,7 +130,7 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
 
-(defn valid-position? [grid {:keys [entity/id z-order] :as body}]
+(defn valid-position? [grid {:keys [z-order] :as body}]
   {:pre [(:collides? body)]}
   (let [cells* (into [] (map deref) (rectangle->cells grid body))]
     (and (not-any? #(cell/blocked? % z-order) cells*)
@@ -138,6 +138,6 @@
               cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
-                            (and (not= (:entity/id other-entity) id)
+                            (and (not= (entity/id other-entity) (entity/id body))
                                  (:collides? other-entity)
                                  (entity/overlaps? other-entity body)))))))))

@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [cdq.utils :as utils]
@@ -28,7 +29,7 @@
     :update-labels [{:label "Mouseover-entity id"
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
-                                    (:entity/id entity)))
+                                    (entity/id entity)))
                      :icon (c/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [ctx]
