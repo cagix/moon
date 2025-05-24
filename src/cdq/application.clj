@@ -33,6 +33,7 @@
             [gdl.application]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
+            [gdl.math]
             [gdl.tiled :as tiled]))
 
 (defrecord Body [position
@@ -51,9 +52,13 @@
   (position [_]
     position)
 
+  (rectangle [_]
+    (let [[x y] left-bottom]
+      (gdl.math/rectangle x y width height)))
+
   (overlaps? [this other-entity]
-    ; TODO explicit transformation of shapes
-    (math/overlaps? this other-entity))
+    (gdl.math/overlaps? (entity/rectangle this)
+                        (entity/rectangle other-entity)))
 
   (in-range? [entity target* maxrange] ; == circle-collides?
     (< (- (float (v/distance (entity/position entity)

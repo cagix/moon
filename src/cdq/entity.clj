@@ -116,7 +116,8 @@
 (defprotocol Entity
   (position [_])
   (in-range? [_ target maxrange])
-  (overlaps? [_ other-entity]))
+  (overlaps? [_ other-entity])
+  (rectangle [_]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (mana-val entity))))

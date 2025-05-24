@@ -3,6 +3,7 @@
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
+            [gdl.math]
             [gdl.tiled :as tiled]))
 
 (defn- rectangle->tiles
@@ -34,11 +35,16 @@
 (defn cells->entities [cells]
   (into #{} (mapcat :entities) cells))
 
-(defn circle->entities [grid circle]
+(defn circle->entities [grid
+                        {:keys [position radius] :as circle}]
   (->> (circle->cells grid circle)
        (map deref)
        cells->entities
-       (filter #(math/overlaps? circle @%))))
+       (filter #(gdl.math/overlaps?
+                 (gdl.math/circle (position 0)
+                                  (position 1)
+                                  radius)
+                 (entity/rectangle @%)))))
 
 ; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
 (let [offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]]
@@ -60,7 +66,8 @@
 
 (defn point->entities [grid position]
   (when-let [cell (grid (mapv int position))]
-    (filter #(math/rect-contains? @% position)
+    (filter #(gdl.math/contains? (entity/rectangle @%)
+                                 position)
             (:entities @cell))))
 
 (defn create [tiled-map]
