@@ -171,3 +171,12 @@
   (binding [*print-level* (or print-level 3)]
     (with-out-str
      (clojure.pprint/pprint data))))
+
+; reduce-kv?
+(defn apply-kvs
+  "Calls for every key in map (f k v) to calculate new value at k."
+  [m f]
+  (reduce (fn [m k]
+            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
+          m
+          (keys m)))
