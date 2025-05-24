@@ -3,6 +3,7 @@
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
+            [cdq.utils :as utils]
             [gdl.math]
             [gdl.tiled :as tiled]))
 
@@ -70,15 +71,56 @@
                                  position)
             (:entities @cell))))
 
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  cell/Cell
+  (blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied))
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance))
+
+  (pf-blocked? [this]
+    (cell/blocked? this :z-order/ground)))
+
+(defn- create-grid-cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (atom (map->RCell
+         {:position position
+          :middle (utils/tile->middle position)
+          :movement movement
+          :entities #{}
+          :occupied #{}})))
+
 (defn create [tiled-map]
   (g2d/create-grid (tiled/tm-width  tiled-map)
                    (tiled/tm-height tiled-map)
                    (fn [position]
-                     (cell/create position
-                                  (case (tiled/movement-property tiled-map position)
-                                    "none" :none
-                                    "air"  :air
-                                    "all"  :all)))))
+                     (create-grid-cell position
+                                       (case (tiled/movement-property tiled-map position)
+                                         "none" :none
+                                         "air"  :air
+                                         "all"  :all)))))
 
 (defn- set-cells! [grid eid]
   (let [cells (rectangle->cells grid @eid)]
