@@ -13,7 +13,7 @@
   (menu/create
    {:menus [{:label "World"
              :items (for [world-fn (g/config ctx :world-fns)]
-                      {:label (str "Start " (namespace world-fn))
+                      {:label (str "Start " world-fn)
                        :on-click (fn [_actor _ctx]
                                    (swap! application/state game-state/create!))})}
             {:label "Help"

@@ -11,24 +11,19 @@
                        validate-ctx-schema
                        lwjgl-app-config]
                :as config}]
-  (let [create!             (requiring-resolve create!)
-        dispose!            (requiring-resolve dispose!)
-        render!             (requiring-resolve render!)
-        resize!             (requiring-resolve resize!)
-        validate-ctx-schema (requiring-resolve validate-ctx-schema)]
-    (lwjgl/application lwjgl-app-config
-                       (proxy [ApplicationAdapter] []
-                         (create []
-                           (reset! state (create! config))
-                           (validate-ctx-schema @state))
+  (lwjgl/application lwjgl-app-config
+                     (proxy [ApplicationAdapter] []
+                       (create []
+                         (reset! state (create! config))
+                         (validate-ctx-schema @state))
 
-                         (dispose []
-                           (dispose! @state))
+                       (dispose []
+                         (dispose! @state))
 
-                         (render []
-                           (validate-ctx-schema @state)
-                           (swap! state render!)
-                           (validate-ctx-schema @state))
+                       (render []
+                         (validate-ctx-schema @state)
+                         (swap! state render!)
+                         (validate-ctx-schema @state))
 
-                         (resize [width height]
-                           (resize! @state width height))))))
+                       (resize [width height]
+                         (resize! @state width height)))))

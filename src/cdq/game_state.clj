@@ -679,7 +679,7 @@
 (defn create! [ctx]
   (c/reset-actors! ctx (create-actors ctx))
   (let [{:keys [tiled-map
-                start-position]} ((requiring-resolve (g/config ctx :world-fn)) ctx)
+                start-position]} ((g/config ctx :world-fn) ctx)
         grid (grid-impl/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map

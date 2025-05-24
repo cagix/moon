@@ -10,7 +10,6 @@
   (schemas-impl/create (utils/io-slurp-edn path)))
 
 (defn create! [config]
-  (run! require (:requires config))
   (-> (gdl.application/create-state! config)
       (utils/safe-merge {:ctx/config config
                          :ctx/db (db/create {:schemas (create-schemas (:schemas config))
