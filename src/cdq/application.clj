@@ -314,23 +314,36 @@
           {}
           components))
 
-(defn- spawn-entity! [{:keys [ctx/id-counter
-                              ctx/entity-ids
-                              ctx/content-grid
-                              ctx/grid]
-                       :as ctx}
+(defn- context-entity-add! [{:keys [ctx/entity-ids
+                                    ctx/content-grid
+                                    ctx/grid]}
+                            eid]
+  (let [id (entity/id @eid)]
+    (assert (number? id))
+    (swap! entity-ids assoc id eid))
+  (content-grid/add-entity! content-grid eid)
+  ; https://github.com/damn/core/issues/58
+  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+  (grid/add-entity! grid eid))
+
+(defn- context-entity-moved! [{:keys [ctx/content-grid
+                                      ctx/grid]}
+                              eid]
+  (content-grid/position-changed! content-grid eid)
+  (grid/position-changed! grid eid))
+
+(defn- context-entity-remove! [{:keys [ctx/entity-ids]} eid]
+  (let [id (entity/id @eid)]
+    (assert (contains? @entity-ids id))
+    (swap! entity-ids dissoc id))
+  (content-grid/remove-entity! eid)
+  (grid/remove-entity! eid))
+
+(defn- spawn-entity! [{:keys [ctx/id-counter] :as ctx}
                       position
                       body
                       components]
   ; TODO SCHEMA COMPONENTS !
-
-  ; -> no 'spawn-entity' -> only speficif entities !
-  ; body - :effect-body-props
-  ; spawn-effect! -> audiovisual, alert, line
-  ; spawn-creature
-  ; spawn-item
-  ; spawn-projectile
-
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -339,22 +352,13 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
-    (let [id (entity/id @eid)]
-      (assert (number? id))
-      (swap! entity-ids assoc id eid))
-    (content-grid/add-entity! content-grid eid)
-    ; https://github.com/damn/core/issues/58
-    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (grid/add-entity! grid eid)
+    (context-entity-add! ctx eid)
     (doseq [component @eid]
       (g/handle-txs! ctx (entity/create! component eid ctx)))
     eid))
 
-(defn- move-entity! [{:keys [ctx/content-grid
-                             ctx/grid]}
-                     eid body direction rotate-in-movement-direction?]
-  (content-grid/position-changed! content-grid eid)
-  (grid/position-changed! grid eid)
+(defn- move-entity! [ctx eid body direction rotate-in-movement-direction?]
+  (context-entity-moved! ctx eid)
   (swap! eid assoc
          :position (:position body)
          :left-bottom (:left-bottom body))
@@ -362,10 +366,10 @@
     (swap! eid assoc :rotation-angle (v/angle-from-vector direction))))
 
 (defn- spawn-effect! [ctx position components]
-  (g/spawn-entity! ctx
-                   position
-                   (g/config ctx :effect-body-props)
-                   components))
+  (spawn-entity! ctx
+                 position
+                 (g/config ctx :effect-body-props)
+                 components))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
@@ -412,13 +416,13 @@
 
 (defn- spawn-creature! [ctx {:keys [position creature-id components]}]
   (let [props (g/build ctx creature-id)]
-    (g/spawn-entity! ctx
-                     position
-                     (create-creature-body (:entity/body props))
-                     (-> props
-                         (dissoc :entity/body)
-                         (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                         (utils/safe-merge components)))))
+    (spawn-entity! ctx
+                   position
+                   (create-creature-body (:entity/body props))
+                   (-> props
+                       (dissoc :entity/body)
+                       (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                       (utils/safe-merge components)))))
 
 (defn- spawn-player-entity [ctx start-position]
   (spawn-creature! ctx
@@ -507,37 +511,37 @@
 
 (defmethod handle-tx! :tx/audiovisual [[_ position {:keys [tx/sound entity/animation]}] ctx]
   (c/play-sound! ctx sound)
-  (g/spawn-effect! ctx
-                   position
-                   {:entity/animation animation
-                    :entity/delete-after-animation-stopped? true}))
+  (spawn-effect! ctx
+                 position
+                 {:entity/animation animation
+                  :entity/delete-after-animation-stopped? true}))
 
 (defmethod handle-tx! :tx/spawn-alert [[_ position faction duration] ctx]
-  (g/spawn-effect! ctx
-                   position
-                   {:entity/alert-friendlies-after-duration
-                    {:counter (g/create-timer ctx duration)
-                     :faction faction}}))
+  (spawn-effect! ctx
+                 position
+                 {:entity/alert-friendlies-after-duration
+                  {:counter (g/create-timer ctx duration)
+                   :faction faction}}))
 
 (defmethod handle-tx! :tx/spawn-creature [[_ opts] ctx]
   (spawn-creature! ctx opts))
 
 (defmethod handle-tx! :tx/spawn-item [[_ position item] ctx]
-  (g/spawn-entity! ctx
-                   position
-                   {:width 0.75
-                    :height 0.75
-                    :z-order :z-order/on-ground}
-                   {:entity/image (:entity/image item)
-                    :entity/item item
-                    :entity/clickable {:type :clickable/item
-                                       :text (:property/pretty-name item)}}))
+  (spawn-entity! ctx
+                 position
+                 {:width 0.75
+                  :height 0.75
+                  :z-order :z-order/on-ground}
+                 {:entity/image (:entity/image item)
+                  :entity/item item
+                  :entity/clickable {:type :clickable/item
+                                     :text (:property/pretty-name item)}}))
 
 (defmethod handle-tx! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] ctx]
-  (g/spawn-effect! ctx
-                   start
-                   #:entity {:line-render {:thick? thick? :end end :color color}
-                             :delete-after-duration duration}))
+  (spawn-effect! ctx
+                 start
+                 #:entity {:line-render {:thick? thick? :end end :color color}
+                           :delete-after-duration duration}))
 
 (defmethod handle-tx! :tx/spawn-projectile [[_
                                              {:keys [position direction faction]}
@@ -548,20 +552,20 @@
                                                      projectile/piercing?] :as projectile}]
                                             ctx]
   (let [size (projectile/size projectile)]
-    (g/spawn-entity! ctx
-                     position
-                     {:width size
-                      :height size
-                      :z-order :z-order/flying
-                      :rotation-angle (v/angle-from-vector direction)}
-                     {:entity/movement {:direction direction
-                                        :speed speed}
-                      :entity/image image
-                      :entity/faction faction
-                      :entity/delete-after-duration (/ max-range speed)
-                      :entity/destroy-audiovisual :audiovisuals/hit-wall
-                      :entity/projectile-collision {:entity-effects entity-effects
-                                                    :piercing? piercing?}})))
+    (spawn-entity! ctx
+                   position
+                   {:width size
+                    :height size
+                    :z-order :z-order/flying
+                    :rotation-angle (v/angle-from-vector direction)}
+                   {:entity/movement {:direction direction
+                                      :speed speed}
+                    :entity/image image
+                    :entity/faction faction
+                    :entity/delete-after-duration (/ max-range speed)
+                    :entity/destroy-audiovisual :audiovisuals/hit-wall
+                    :entity/projectile-collision {:entity-effects entity-effects
+                                                  :piercing? piercing?}})))
 
 (defmethod handle-tx! :tx/effect [[_ effect-ctx effects] ctx]
   (run! #(g/handle-txs! ctx (effect/handle % effect-ctx ctx))
@@ -602,7 +606,7 @@
   (swap! eid entity/mod-remove modifiers))
 
 (defmethod handle-tx! :tx/move-entity [[_ & params] ctx]
-  (apply g/move-entity! ctx params))
+  (apply move-entity! ctx params))
 
 ; we cannot just set/unset movement direction
 ; because it is handled by the state enter/exit for npc/player movement state ...
@@ -848,11 +852,7 @@
 (defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (let [id (entity/id @eid)]
-      (assert (contains? @entity-ids id))
-      (swap! entity-ids dissoc id))
-    (content-grid/remove-entity! eid)
-    (grid/remove-entity! eid)
+    (context-entity-remove! ctx eid)
     (doseq [component @eid]
       (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)
