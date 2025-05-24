@@ -18,11 +18,7 @@
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.hp-mana-bar]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.windows]
             [cdq.ui.message]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
@@ -141,22 +137,6 @@
                                            :initial-state :npc-sleeping}
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
-
-(defn- create-actors [ctx]
-  [((requiring-resolve 'cdq.ui.dev-menu/create) ctx)
-   (action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (c/ui-viewport-width ctx) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(c/ui-viewport-width ctx) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(c/ui-viewport-width ctx)
-                                                                       (c/ui-viewport-height ctx)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
 
 (extend-type gdl.application.Context
   g/StageActors
@@ -482,6 +462,9 @@
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
+
+(defprotocol StageActors
+  (create-actors [_]))
 
 (defn create! [ctx]
   (c/reset-actors! ctx (create-actors ctx))

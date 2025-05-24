@@ -64,6 +64,8 @@
             cdq.get-active-entities
             cdq.spawn-entity
 
+            cdq.game-state.create-actors
+
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
             cdq.effects.target.damage
