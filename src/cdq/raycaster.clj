@@ -1,4 +1,4 @@
-(ns cdq.application.raycaster
+(ns cdq.raycaster
   (:require [cdq.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.vector2 :as v])
