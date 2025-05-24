@@ -8,13 +8,7 @@
             [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.graphics]
-            [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Image)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  TextureRegionDrawable
-                                                  Drawable)))
+            [gdl.ui :as ui]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -40,11 +34,11 @@
 (defn- draw-rect-actor []
   (ui/widget
    {:draw
-    (fn [^Actor actor {:keys [ctx/player-eid] :as ctx}]
+    (fn [actor {:keys [ctx/player-eid] :as ctx}]
       (c/handle-draws! ctx
                        (draw-cell-rect @player-eid
-                                       (.getX actor)
-                                       (.getY actor)
+                                       (ui/get-x actor)
+                                       (ui/get-y actor)
                                        (ui/hit actor (c/ui-mouse-position ctx))
                                        (ui/user-object (ui/parent actor)))))}))
 
@@ -68,9 +62,10 @@
                           [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]
-  (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite ctx slot)))]
-    (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (gdl.graphics/color 1 1 1 0.4))))
+  (ui/create-drawable (slot->sprite ctx slot)
+                      :width cell-size
+                      :height cell-size
+                      :tint-color (gdl.graphics/color 1 1 1 0.4)))
 
 (defn- ->cell [ctx slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
@@ -123,15 +118,16 @@
 (defn set-item! [inventory-window cell item]
   (let [cell-widget (get-cell-widget inventory-window cell)
         image-widget (ui/find-actor cell-widget "image-widget")
-        drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
-    (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (Image/.setDrawable image-widget drawable)
+        drawable (ui/create-drawable (:entity/image item)
+                                     :width cell-size
+                                     :height cell-size)]
+    (ui/set-drawable! image-widget drawable)
     (ui/add-tooltip! cell-widget #(info/text item %))))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)
         image-widget (ui/find-actor cell-widget "image-widget")]
-    (Image/.setDrawable image-widget (ui/user-object image-widget))
+    (ui/set-drawable! image-widget (ui/user-object image-widget))
     (ui/remove-tooltip! cell-widget)))
 
 (defn cell-with-item?
@@ -139,5 +135,5 @@
   [actor]
   {:pre [actor]}
   (and (ui/parent actor)
-       (= "inventory-cell" (Actor/.getName (ui/parent actor)))
+       (= "inventory-cell" (ui/get-name (ui/parent actor)))
        (ui/user-object (ui/parent actor))))

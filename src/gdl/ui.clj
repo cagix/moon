@@ -42,6 +42,15 @@
                                       VisWindow)
            (gdl.ui CtxStage)))
 
+(defn get-x [^Actor actor]
+  (.getX actor))
+
+(defn get-y [^Actor actor]
+  (.getY actor))
+
+(defn get-name [^Actor actor]
+  (.getName actor))
+
 (defn user-object [^Actor actor]
   (.getUserObject actor))
 
@@ -469,3 +478,18 @@
   (proxy [ClickListener] []
     (clicked [event _x _y]
       (f @(.ctx ^CtxStage (.getStage event))))))
+
+(defn create-drawable
+  [{:keys [texture-region] :as _sprite}
+   & {:keys [width
+             height
+             tint-color]}]
+  (let [drawable (doto (TextureRegionDrawable. ^TextureRegion texture-region)
+                   (BaseDrawable/.setMinSize (float width)
+                                             (float height)))]
+    (if tint-color
+      (TextureRegionDrawable/.tint drawable tint-color)
+      drawable)))
+
+(defn set-drawable! [image-widget drawable]
+  (Image/.setDrawable image-widget drawable))
