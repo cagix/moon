@@ -9,13 +9,14 @@
                        render!
                        resize!
                        validate-ctx-schema
-                       clojure.gdx.backends.lwjgl]}]
+                       lwjgl-app-config]
+               :as config}]
   (let [create!             (requiring-resolve create!)
         dispose!            (requiring-resolve dispose!)
         render!             (requiring-resolve render!)
         resize!             (requiring-resolve resize!)
         validate-ctx-schema (requiring-resolve validate-ctx-schema)]
-    (lwjgl/application clojure.gdx.backends.lwjgl
+    (lwjgl/application lwjgl-app-config
                        (proxy [ApplicationAdapter] []
                          (create []
                            (reset! state (create! config))
