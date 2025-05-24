@@ -4,6 +4,7 @@
             [cdq.op :as op]
             [cdq.utils :refer [sort-by-k-order
                                readable-number]]
+            gdl.application
             [gdl.graphics :as graphics]
             [clojure.math :as math]
             [clojure.string :as str]))
@@ -83,6 +84,11 @@
                       (str "\n" (text ctx v))))))
        (str/join "\n")
        remove-newlines))
+
+(extend-type gdl.application.Context
+  g/InfoText
+  (info-text [ctx object]
+    (text ctx object)))
 
 (defmulti ^:private op-value-text (fn [[k]]
                                     k))
