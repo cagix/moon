@@ -1003,8 +1003,10 @@
                                    active-entities
                                    max-iterations)))
 
+; Now I get it - we do not need to depend on concretions here -> that's why its so complicated
+; also its side effects ... ?? -> transactions ?!
+
 (defn- render-game-state! [{:keys [ctx/player-eid] :as ctx}]
-  (m/validate-humanize ctx-schema ctx)
   (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
     (c/set-camera-position! ctx (entity/position @player-eid))
     (c/clear-screen! ctx)
@@ -1056,9 +1058,9 @@
                   #_(ctx-schema/validate @state))
         dispose! (requiring-resolve 'cdq.dispose/do!)
         render! (fn [ctx]
-                  #_(ctx-schema/validate @state)
+                  (m/validate-humanize ctx-schema ctx)
                   (render-game-state! ctx)
-                  #_(ctx-schema/validate @state))
+                  (m/validate-humanize ctx-schema ctx))
         resize! (requiring-resolve 'cdq.resize/do!)]
     (run! require (:requires config))
     (lwjgl/application (:clojure.gdx.backends.lwjgl config)
