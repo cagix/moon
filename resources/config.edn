@@ -9,6 +9,7 @@
             cdq.player-movement-vector
             cdq.interaction-state
             cdq.line-of-sight
+            cdq.draw-world-map
 
             cdq.effects.target.audiovisual
             cdq.effects.target.convert

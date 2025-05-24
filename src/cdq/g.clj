@@ -3,6 +3,9 @@
 (defprotocol Config
   (config [_ key]))
 
+(defprotocol Graphics
+  (draw-world-map! [_]))
+
 (defprotocol Database
   (get-raw [_ property-id])
   (build [_ property-id])
