@@ -2,7 +2,8 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.pprint :as pprint])
+            [clojure.pprint :as pprint]
+            [clojure.walk :as walk])
   (:import (clojure.lang ILookup
                          PersistentVector
                          Var)))
@@ -180,3 +181,19 @@
             (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
           m
           (keys m)))
+
+(defn require-symbols [form log?]
+  (walk/postwalk (fn [form]
+                   (if (symbol? form)
+                     (if (namespace form)
+                       (do
+                        (when log?
+                          (println "requiring-resolve " form))
+                        (requiring-resolve form))
+                       (do
+                        (when log?
+                          (println "require " form))
+                        (require form)
+                        form))
+                     form))
+                 form))
