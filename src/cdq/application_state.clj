@@ -4,11 +4,9 @@
             [cdq.utils :as utils]
             [gdl.application]))
 
-(defn create! [config]
-  (-> (gdl.application/create-state! config)
-      (utils/safe-merge {:ctx/config config
-                         :ctx/db (db/create (:db config))})
-      ((requiring-resolve 'cdq.game-state/create!))))
+(defn add-component [ctx k v]
+  {:pre [(not (contains? ctx k))]}
+  (assoc ctx k v))
 
 (extend-type gdl.application.Context
   g/Config
@@ -37,3 +35,9 @@
 
   (delete-property! [ctx property-id]
     (update ctx :ctx/db db/delete! property-id)))
+
+(defn create! [config]
+  (-> (gdl.application/create-state! config)
+      (add-component :ctx/config config)
+      (add-component :ctx/db (db/create (:db config)))
+      ((requiring-resolve 'cdq.game-state/create!))))
