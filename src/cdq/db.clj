@@ -1,5 +1,6 @@
 (ns cdq.db
   (:require [cdq.schemas :as schemas]
+            [cdq.schemas-impl :as schemas-impl]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
@@ -7,6 +8,7 @@
             [gdl.utils]))
 
 (defprotocol PDB
+  (property-types [_])
   (update! [_ property]
           "Validates the given property, throws an error if invalid and asserts its id is contained in the database.
 
@@ -39,6 +41,9 @@
 
 (defrecord DB [data file schemas]
   PDB
+  (property-types [_]
+    (schemas/property-types schemas))
+
   (update! [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
@@ -71,7 +76,8 @@
 
 (defn create [{:keys [schemas
                       properties]}]
-  (let [properties-file (io/resource properties) ; TODO required from existing?
+  (let [schemas (schemas-impl/create (utils/io-slurp-edn schemas))
+        properties-file (io/resource properties) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))

@@ -1,19 +1,13 @@
 (ns cdq.application-state
   (:require [cdq.db :as db]
             [cdq.g :as g]
-            [cdq.schemas :as schemas]
-            [cdq.schemas-impl :as schemas-impl]
             [cdq.utils :as utils]
             [gdl.application]))
-
-(defn- create-schemas [path]
-  (schemas-impl/create (utils/io-slurp-edn path)))
 
 (defn create! [config]
   (-> (gdl.application/create-state! config)
       (utils/safe-merge {:ctx/config config
-                         :ctx/db (db/create {:schemas (create-schemas (:schemas config))
-                                             :properties (:properties config)})})
+                         :ctx/db (db/create (:db config))})
       ((requiring-resolve 'cdq.game-state/create!))))
 
 (extend-type gdl.application.Context
@@ -33,7 +27,7 @@
     (db/build-all db property-type ctx))
 
   (property-types [{:keys [ctx/db]}]
-    (schemas/property-types (:schemas db)))
+    (db/property-types db))
 
   (schemas [{:keys [ctx/db]}]
     (:schemas db))

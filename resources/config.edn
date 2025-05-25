@@ -13,8 +13,8 @@
  :tile-size 48
  :ui-viewport {:width 1440
                :height 900}
- :schemas "schema.edn"
- :properties "properties.edn"
+ :db {:schemas "schema.edn"
+      :properties "properties.edn"}
  :assets {:folder "resources/"
           :asset-type-extensions {:sound   #{"wav"}
                                   :texture #{"png" "bmp"}}}
