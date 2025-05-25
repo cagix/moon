@@ -1,24 +1,28 @@
 (ns cdq.ctx-schema
   (:require [cdq.malli :as m]))
 
+; What is used together you can create sub-contexts/objects !
+; you see it at the created protocols !
+; same with entity !
+
 (def ^:private schema
   (m/schema [:map {:closed true}
              ; audio & graphics
-             [:assets :some]
+             [:ctx/assets :some]
 
              ; :ctx/graphics
-             [:batch :some]
-             [:unit-scale :some]
-             [:world-unit-scale :some]
-             [:shape-drawer-texture :some]
-             [:shape-drawer :some]
-             [:cursors :some]
-             [:default-font :some]
-             [:world-viewport :some]
-             [:ui-viewport :some]
-             [:tiled-map-renderer :some]
+             [:ctx/batch :some]
+             [:ctx/unit-scale :some]
+             [:ctx/world-unit-scale :some]
+             [:ctx/shape-drawer-texture :some]
+             [:ctx/shape-drawer :some]
+             [:ctx/cursors :some]
+             [:ctx/default-font :some]
+             [:ctx/world-viewport :some]
+             [:ctx/ui-viewport :some]
+             [:ctx/tiled-map-renderer :some]
 
-             [:stage :some]
+             [:ctx/stage :some]
              [:ctx/config :some]
              [:ctx/db :some]
              [:ctx/elapsed-time :some]

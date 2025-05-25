@@ -11,7 +11,8 @@
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled] ; only renderer, internal
             [gdl.ui :as ui] ; partly internal ? ? are the widgets part of ctx ???
-            [gdl.utils :as utils]) ; dispose, safe-get, mapvals
+            [gdl.utils :as utils]  ; dispose, safe-get, mapvals
+            [qrecord.core :as q])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx
                              Input$Keys
@@ -232,8 +233,8 @@
                             k))
 
 (defmethod draw! :draw/image [[_ {:keys [texture-region color] :as image} position]
-                              {:keys [batch
-                                      unit-scale]}]
+                              {:keys [ctx/batch
+                                      ctx/unit-scale]}]
   (draw-texture-region! batch
                         texture-region
                         position
@@ -242,8 +243,8 @@
                         color))
 
 (defmethod draw! :draw/rotated-centered [[_ {:keys [texture-region color] :as image} rotation [x y]]
-                                         {:keys [batch
-                                                 unit-scale]}]
+                                         {:keys [ctx/batch
+                                                 ctx/unit-scale]}]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region! batch
                           texture-region
@@ -261,9 +262,9 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
-                             {:keys [default-font
-                                     batch
-                                     unit-scale]}]
+                             {:keys [ctx/default-font
+                                     ctx/batch
+                                     ctx/unit-scale]}]
   (bitmap-font/draw! (or font default-font)
                      batch
                      {:scale (* (float unit-scale)
@@ -275,47 +276,47 @@
                       :up? up?}))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
-                                {:keys [shape-drawer]}]
+                                {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/filled-ellipse [[_ [x y] radius-x radius-y color]
-                                       {:keys [shape-drawer]}]
+                                       {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/circle [[_ [x y] radius color]
-                               {:keys [shape-drawer]}]
+                               {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/filled-circle [[_ [x y] radius color]
-                                      {:keys [shape-drawer]}]
+                                      {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/rectangle [[_ x y w h color]
-                                  {:keys [shape-drawer]}]
+                                  {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/filled-rectangle [[_ x y w h color]
-                                         {:keys [shape-drawer]}]
+                                         {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/arc [[_ [center-x center-y] radius start-angle degree color]
-                            {:keys [shape-drawer]}]
+                            {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/arc! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/sector [[_ [center-x center-y] radius start-angle degree color]
-                               {:keys [shape-drawer]}]
+                               {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/sector! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/line [[_ [sx sy] [ex ey] color]
-                             {:keys [shape-drawer]}]
+                             {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/line! shape-drawer sx sy ex ey))
 
@@ -332,30 +333,27 @@
       (draw! [:draw/line [leftx liney] [rightx liney] color] ctx))))
 
 (defmethod draw! :draw/with-line-width [[_ width draws]
-                                        {:keys [shape-drawer]
+                                        {:keys [ctx/shape-drawer]
                                          :as ctx}]
   (sd/with-line-width shape-drawer width
     (fn []
       (c/handle-draws! ctx draws))))
 
-; TODO
-; !! -> use namespaced keywords <- !!
-
 (defprotocol Viewports
   (update-viewports! [_]))
 
-(defrecord Context [assets
-                    batch
-                    unit-scale
-                    world-unit-scale
-                    shape-drawer-texture
-                    shape-drawer
-                    cursors
-                    default-font
-                    world-viewport
-                    ui-viewport
-                    tiled-map-renderer
-                    stage]
+(q/defrecord Context [ctx/assets
+                      ctx/batch
+                      ctx/unit-scale
+                      ctx/world-unit-scale
+                      ctx/shape-drawer-texture
+                      ctx/shape-drawer
+                      ctx/cursors
+                      ctx/default-font
+                      ctx/world-viewport
+                      ctx/ui-viewport
+                      ctx/tiled-map-renderer
+                      ctx/stage]
   Disposable
   (dispose [_]
     (utils/dispose! assets)
@@ -416,7 +414,7 @@
                          (sd/with-line-width shape-drawer world-unit-scale
                            (fn []
                              (doseq [f fns]
-                               (f (assoc ctx :unit-scale world-unit-scale))))))))
+                               (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (tiled/draw! (tiled-map-renderer tiled-map)

@@ -40,3 +40,5 @@
   {:create-actors cdq.game-state.create-actors/create-actors}
   cdq.render/Render
   {:render-entities! cdq.render.render-entities/render-entities!})
+
+; TODO this doesn;t work when we reload gdl.application.Context
