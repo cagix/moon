@@ -1,6 +1,6 @@
 (ns cdq.entity.line-render
   (:require [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/line-render
   (entity/render-default! [[_ {:keys [thick? end color]}]

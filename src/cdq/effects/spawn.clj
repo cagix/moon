@@ -1,7 +1,7 @@
 (ns cdq.effects.spawn
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]

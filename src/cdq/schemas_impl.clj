@@ -5,10 +5,9 @@
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.malli :as m]
-            [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [gdl.c :as c]
-            [gdl.utils]))
+            [gdl.utils :as utils]))
 
 (defmulti malli-form (fn [schema _schemas] (schema/type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
@@ -39,7 +38,7 @@
 (deftype Schemas [data]
   clojure.lang.ILookup
   (valAt [_ key]
-    (gdl.utils/safe-get data key))
+    (utils/safe-get data key))
 
   schemas/Schemas
   (property-types [_]

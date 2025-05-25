@@ -2,10 +2,10 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]
             [cdq.vector2 :as v]
             [gdl.c :as c]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid

@@ -3,9 +3,9 @@
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
-            [cdq.utils :refer [pprint-to-str]]
             [gdl.c :as c]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.utils :refer [pprint-to-str]]))
 
 (defn- add-one-to-one-rows [ctx table property-type property-id]
   (let [redo-rows (fn [ctx id]

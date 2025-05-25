@@ -5,10 +5,10 @@
             [cdq.g :as g]
             [cdq.malli :as m]
             [cdq.modifiers :as modifiers]
-            [cdq.utils :as utils]
             [cdq.vector2 :as v]
             gdl.application
-            [gdl.math :as math]))
+            [gdl.math :as math]
+            [gdl.utils :as utils]))
 
 ; TODO what about components which get added later/??
 ; => validate?

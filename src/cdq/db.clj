@@ -2,10 +2,9 @@
   (:require [cdq.schemas :as schemas]
             [cdq.schemas-impl :as schemas-impl]
             [cdq.property :as property]
-            [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.utils]))
+            [gdl.utils :as utils]))
 
 (defprotocol PDB
   (property-types [_])
@@ -59,7 +58,7 @@
       new-db))
 
   (get-raw [_ property-id]
-    (gdl.utils/safe-get data property-id))
+    (utils/safe-get data property-id))
 
   (all-raw [_ property-type]
     (->> (vals data)

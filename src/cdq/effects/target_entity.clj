@@ -2,8 +2,8 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.vector2 :as v]))
+            [cdq.vector2 :as v]
+            [gdl.utils :refer [defcomponent]]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]

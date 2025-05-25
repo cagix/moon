@@ -4,9 +4,9 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
-            [cdq.utils :as utils]
             [gdl.math]
-            [gdl.tiled :as tiled]))
+            [gdl.tiled :as tiled]
+            [gdl.utils :as utils]))
 
 (defn- set-touched-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]

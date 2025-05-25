@@ -20,12 +20,12 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.message]
-            [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [gdl.application]
             [gdl.c :as c]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
+            [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
 (defn- context-entity-moved! [{:keys [ctx/content-grid

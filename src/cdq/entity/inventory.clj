@@ -1,7 +1,7 @@
 (ns cdq.entity.inventory
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/inventory
   (entity/create! [[k items] eid _ctx]

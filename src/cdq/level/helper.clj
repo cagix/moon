@@ -3,8 +3,8 @@
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.property :as property]
-            [cdq.utils :as utils]
-            [gdl.tiled :as tiled]))
+            [gdl.tiled :as tiled]
+            [gdl.utils :as utils]))
 
 (def creature-tile
   (memoize

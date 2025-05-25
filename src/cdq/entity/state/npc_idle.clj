@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity

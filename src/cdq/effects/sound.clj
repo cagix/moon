@@ -1,6 +1,6 @@
 (ns cdq.effects.sound
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :effects/sound
   (effect/applicable? [_ _ctx]

@@ -4,7 +4,7 @@
             [cdq.g :as g]
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 ; is the problem private functions?
 ; we are _hiding_ this

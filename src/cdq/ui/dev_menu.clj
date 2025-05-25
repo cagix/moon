@@ -4,10 +4,10 @@
             [cdq.g :as g]
             [cdq.game-state :as game-state]
             [cdq.ui.editor :as editor]
-            [cdq.utils :as utils]
             [clojure.string :as str]
             [gdl.c :as c]
-            [gdl.ui.menu :as menu]))
+            [gdl.ui.menu :as menu]
+            [gdl.utils :as utils]))
 
 (defn create [ctx]
   (menu/create

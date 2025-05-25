@@ -2,7 +2,7 @@
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.utils :refer [defcomponent find-first]]))
+            [gdl.utils :refer [defcomponent find-first]]))
 
 (defcomponent :entity/projectile-collision
   (entity/create [[_ v] _ctx]

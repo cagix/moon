@@ -40,5 +40,8 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
+; TODO create here a q/defrecord with all qualified fields
+; and pass it to the extenders
+
 (defn validate [ctx]
   (m/validate-humanize schema ctx))

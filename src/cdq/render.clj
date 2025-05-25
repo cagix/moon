@@ -6,8 +6,8 @@
             [cdq.g :as g]
             [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
-            [cdq.utils :as utils]
-            [gdl.c :as c]))
+            [gdl.c :as c]
+            [gdl.utils :as utils]))
 
 ; TODO here are a lot of _parts_ which are finished and can be made read-only !
 

@@ -1,8 +1,8 @@
 (ns cdq.application-state
   (:require [cdq.db :as db]
             [cdq.g :as g]
-            [cdq.utils :as utils]
-            [gdl.application]))
+            [gdl.application]
+            [gdl.utils :as utils]))
 
 (defn add-component [ctx k v]
   {:pre [(not (contains? ctx k))]}

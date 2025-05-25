@@ -3,8 +3,8 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.projectile :as projectile]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.vector2 :as v]))
+            [cdq.vector2 :as v]
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- start-point [entity direction size]
   (v/add (entity/position entity)

@@ -1,6 +1,6 @@
 (ns cdq.effects.target.stun
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :effects.target/stun
   (effect/applicable? [_ {:keys [effect/target]}]

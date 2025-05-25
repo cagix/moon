@@ -1,7 +1,7 @@
 (ns cdq.level.caves
   (:require [cdq.grid2d :as g2d]
             [cdq.rand :as rand]
-            [cdq.utils :as utils]))
+            [gdl.utils :as utils]))
 
 ;Cave Algorithmus.
 ;http://properundead.com/2009/03/cave-generator.html

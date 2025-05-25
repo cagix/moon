@@ -3,10 +3,10 @@
             [cdq.schemas :as schemas]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
-            [cdq.utils :as utils]
             [clojure.set :as set]
             [gdl.c :as c]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.utils :as utils]))
 
 (def ^:private property-k-sort-order
   [:property/id

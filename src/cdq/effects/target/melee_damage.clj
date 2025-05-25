@@ -1,7 +1,7 @@
 (ns cdq.effects.target.melee-damage
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]

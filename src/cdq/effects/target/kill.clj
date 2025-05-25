@@ -1,6 +1,6 @@
 (ns cdq.effects.target.kill
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]

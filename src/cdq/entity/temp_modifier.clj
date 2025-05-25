@@ -1,7 +1,7 @@
 (ns cdq.entity.temp-modifier
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/temp-modifier
   (entity/tick! [[k {:keys [modifiers counter]}] eid ctx]

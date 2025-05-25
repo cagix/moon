@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

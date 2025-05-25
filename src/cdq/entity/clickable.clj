@@ -1,6 +1,6 @@
 (ns cdq.entity.clickable
   (:require [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/clickable
   (entity/render-default! [[_ {:keys [text]}]

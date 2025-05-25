@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :player-moving
   (entity/create [[_ eid movement-vector] _ctx]

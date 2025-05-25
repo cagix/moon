@@ -2,12 +2,12 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.op :as op]
-            [cdq.utils :refer [sort-by-k-order
-                               readable-number]]
+            [clojure.math :as math]
+            [clojure.string :as str]
             gdl.application
             [gdl.graphics :as graphics]
-            [clojure.math :as math]
-            [clojure.string :as str]))
+            [gdl.utils :refer [sort-by-k-order
+                               readable-number]]))
 
 (graphics/def-markdown-color "PRETTY_NAME" (graphics/color 0.84 0.8 0.52 1))
 

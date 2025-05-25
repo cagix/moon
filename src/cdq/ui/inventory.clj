@@ -4,10 +4,10 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.graphics]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...

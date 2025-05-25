@@ -1,7 +1,7 @@
 (ns cdq.entity.skills
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/skills
   (entity/create! [[k skills] eid _ctx]

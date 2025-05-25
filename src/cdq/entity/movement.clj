@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.vector2 :as v]))
+            [cdq.vector2 :as v]
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

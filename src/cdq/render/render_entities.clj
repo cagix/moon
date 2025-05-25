@@ -3,8 +3,8 @@
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
             [cdq.g :as g]
-            [cdq.utils :as utils]
-            [gdl.c :as c]))
+            [gdl.c :as c]
+            [gdl.utils :as utils]))
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
