@@ -40,8 +40,16 @@
              ; => first isolate stats/modifiers from the rest of the code
              ; => also how it is used (whats the 'API' for my stats -> info-text also etc?)
 
+
+             ; vimgrep/entity\/\(attack-speed\|cast-speed\|aggro-range\|movement-speed\|strength\|reaction-time\|hp\|mana\|armor-save\|armor-pierce\|modifiers\)/g src/** test/**
+
              [:entity/hp {:optional true} :some]
+             ; -> is not only used as stat but also @ damage altered/checked
+             ; => damage == function inside creature stats, not effect ....
+
              [:entity/mana {:optional true} :some]
+             ; current value read/ changed
+
              [:entity/movement-speed {:optional true} :some]
              [:entity/aggro-range {:optional true} :some]
              [:entity/reaction-time {:optional true} :some]
