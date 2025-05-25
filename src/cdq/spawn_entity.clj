@@ -32,19 +32,27 @@
              [:creature/level {:optional true} :some]
              [:entity/faction {:optional true} :some]
              [:entity/species {:optional true} :some]
-             [:entity/hp {:optional true} :some]
              [:entity/movement {:optional true} :some]
+             [:entity/skills {:optional true} :some]
+
+             ; Should each stat have its own modifiers
+             ; or :entity/stats with modifiers in one place & all stats?
+             ; => first isolate stats/modifiers from the rest of the code
+             ; => also how it is used (whats the 'API' for my stats -> info-text also etc?)
+
+             [:entity/hp {:optional true} :some]
+             [:entity/mana {:optional true} :some]
              [:entity/movement-speed {:optional true} :some]
              [:entity/aggro-range {:optional true} :some]
              [:entity/reaction-time {:optional true} :some]
-             [:entity/skills {:optional true} :some]
-             [:entity/mana {:optional true} :some]
              [:entity/strength     {:optional true} :some]
              [:entity/cast-speed   {:optional true} :some]
              [:entity/attack-speed {:optional true} :some]
              [:entity/armor-save   {:optional true} :some]
              [:entity/armor-pierce {:optional true} :some]
+
              [:entity/modifiers    {:optional true} :some]
+
              [:entity/inventory    {:optional true} :some]
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))

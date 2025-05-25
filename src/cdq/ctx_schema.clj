@@ -3,7 +3,10 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
+             ; audio & graphics
              [:assets :some]
+
+             ; :ctx/graphics
              [:batch :some]
              [:unit-scale :some]
              [:world-unit-scale :some]
@@ -14,6 +17,7 @@
              [:world-viewport :some]
              [:ui-viewport :some]
              [:tiled-map-renderer :some]
+
              [:stage :some]
              [:ctx/config :some]
              [:ctx/db :some]

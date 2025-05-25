@@ -189,7 +189,7 @@
 
 (defn- create-assets [{:keys [folder
                               asset-type-extensions]}]
-  (asset-manager/create
+  (asset-manager/create ; TODO requires context?
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
                    (recursively-search folder extensions))]

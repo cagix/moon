@@ -96,20 +96,26 @@
                                 :creature/level
                                 :entity/body
                                 :entity/animation
+                                :entity/skills
+
+                                ;; stats:
                                 :entity/hp
                                 :entity/movement-speed
                                 :entity/aggro-range
                                 :entity/reaction-time
-                                :entity/skills
                                 [:entity/mana         {:optional true}]
                                 [:entity/strength     {:optional true}]
                                 [:entity/cast-speed   {:optional true}]
                                 [:entity/attack-speed {:optional true}]
                                 [:entity/armor-save   {:optional true}]
                                 [:entity/armor-pierce {:optional true}]
+                                ;;
+
                                 [:entity/modifiers    {:optional true}]
+
                                 [:entity/inventory    {:optional true}]
-                                [:entity/color        {:optional true}]]],
+
+                                [:entity/color        {:optional true}]]], ; unused
 
  :entity/image :s/image,
  :item/slot [:enum

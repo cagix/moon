@@ -6,8 +6,11 @@
             [cdq.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]))
 
+; is the problem private functions?
+; we are _hiding_ this
+; where does this go? entity ?
 (defn- effective-armor-save [source* target*]
-  (max (- (or (entity/stat target* :entity/armor-save) 0)
+  (max (- (or (entity/stat target* :entity/armor-save)   0)
           (or (entity/stat source* :entity/armor-pierce) 0))
        0))
 
@@ -21,6 +24,12 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
+; What is this defcomponent shit
+; a bunch of functions together -> protocol ! defrecord !
+; can  use defaults do nil with extend assoc defaults ....
+; we want to create records based on keys
+; we can do this @ transform ? - based on the namespace
+; => we need a structural view also !!
 (defcomponent :effects.target/damage
   (effect/applicable? [_ {:keys [effect/target]}]
     (and target

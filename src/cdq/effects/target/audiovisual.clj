@@ -3,6 +3,9 @@
             [cdq.entity :as entity]
             [cdq.utils :refer [defcomponent]]))
 
+; creates an audiovisual at the target position
+; requires a :effect/target in the effect context
+
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
     target)
