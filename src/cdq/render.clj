@@ -4,6 +4,7 @@
             [cdq.state :as state]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.g :as g]
+            [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
             [cdq.utils :as utils]
             [gdl.c :as c]))
@@ -53,7 +54,7 @@
       (catch Throwable t
         (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t)))))
    (catch Throwable t
-     (utils/pretty-pst t)
+     (stacktrace/pretty-pst t)
      (g/open-error-window! ctx t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )

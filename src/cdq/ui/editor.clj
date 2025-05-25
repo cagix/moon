@@ -2,10 +2,10 @@
   (:require [cdq.application :as application]
             [cdq.g :as g]
             [cdq.property :as property]
+            [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
-            [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.ui :as ui]))
 
@@ -14,7 +14,7 @@
     (try (f ctx)
          (ui/remove! window)
          (catch Throwable t
-           (utils/pretty-pst t)
+           (stacktrace/pretty-pst t)
            (g/open-error-window! ctx t)))))
 
 ; We are working with raw property data without edn->value and build

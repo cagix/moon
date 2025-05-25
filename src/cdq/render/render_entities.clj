@@ -1,6 +1,7 @@
 (ns cdq.render.render-entities
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [cdq.stacktrace :as stacktrace]
             [cdq.g :as g]
             [cdq.utils :as utils]
             [gdl.c :as c]))
@@ -31,4 +32,4 @@
          (c/handle-draws! ctx (render! component entity ctx)))
        (catch Throwable t
          (c/handle-draws! ctx (draw-body-rect entity :red))
-         (utils/pretty-pst t))))))
+         (stacktrace/pretty-pst t))))))

@@ -1,6 +1,5 @@
 (ns cdq.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [clojure.walk :as walk])
@@ -10,10 +9,6 @@
 
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
-
-(defn pretty-pst [t]
-  (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24)))
 
 (def overwrite-warnings? false)
 
