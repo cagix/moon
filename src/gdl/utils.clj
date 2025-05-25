@@ -1,7 +1,4 @@
-(ns gdl.utils
-  (:import (com.badlogic.gdx.utils Disposable)))
-
-(def dispose! Disposable/.dispose)
+(ns gdl.utils)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

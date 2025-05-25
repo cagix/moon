@@ -356,11 +356,11 @@
                       ctx/stage]
   Disposable
   (dispose [_]
-    (utils/dispose! assets)
-    (utils/dispose! batch)
-    (utils/dispose! shape-drawer-texture)
-    (run! utils/dispose! (vals cursors))
-    (utils/dispose! default-font)
+    (Disposable/.dispose assets)
+    (Disposable/.dispose batch)
+    (Disposable/.dispose shape-drawer-texture)
+    (run! Disposable/.dispose (vals cursors))
+    (Disposable/.dispose default-font)
     ; TODO vis-ui dispose
     )
 
