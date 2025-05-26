@@ -15,28 +15,29 @@
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
-(defn- create-state! [config]
+(defn- create-state! [ctx config]
   (let [batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))]
-    (gdl.application/map->Context
-     {:batch batch
-      :unit-scale 1
-      :world-unit-scale world-unit-scale
-      :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create (:java-object batch)
-                               (graphics/texture-region shape-drawer-texture 1 0 1 1))
-      :cursors (utils/mapvals
-                (fn [[file [hotspot-x hotspot-y]]]
-                  (graphics/create-cursor (format (:cursor-path-format config) file)
-                                          hotspot-x
-                                          hotspot-y))
-                (:cursors config))
-      :default-font (graphics/truetype-font (:default-font config))})))
+    (merge ctx
+           {:ctx/batch batch
+            :ctx/unit-scale 1
+            :ctx/world-unit-scale world-unit-scale
+            :ctx/shape-drawer-texture shape-drawer-texture
+            :ctx/shape-drawer (sd/create (:java-object batch)
+                                         (graphics/texture-region shape-drawer-texture 1 0 1 1))
+            :ctx/cursors (utils/mapvals
+                          (fn [[file [hotspot-x hotspot-y]]]
+                            (graphics/create-cursor (format (:cursor-path-format config) file)
+                                                    hotspot-x
+                                                    hotspot-y))
+                          (:cursors config))
+            :ctx/default-font (graphics/truetype-font (:default-font config))})))
 
 (defn create! [config]
   (ui/load! (:ui config))
-  (-> (create-state! config)
+  (-> (gdl.application/map->Context {})
+      (create-state! config)
       (cdq.create.gdx/add-gdx!)
       (cdq.create.ui-viewport/add config)
       (cdq.create.stage/add-stage!)
