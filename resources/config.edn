@@ -64,6 +64,7 @@
             cdq.get-active-entities
             cdq.spawn-entity
             cdq.handle-draws
+            cdq.graphics
 
             cdq.game-state.create-actors
 
