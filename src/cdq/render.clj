@@ -8,7 +8,33 @@
             [cdq.math :as math]
             [gdl.utils :as utils]))
 
-; TODO here are a lot of _parts_ which are finished and can be made read-only !
+(defn- draw-body-rect [entity color]
+  (let [[x y] (:left-bottom entity)]
+    [[:draw/rectangle x y (:width entity) (:height entity) color]]))
+
+(defn- render-entities! [{:keys [ctx/active-entities
+                                ctx/player-eid]
+                         :as ctx}]
+  (let [entities (map deref active-entities)
+        player @player-eid]
+    (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
+                                                    first
+                                                    ctx/render-z-order)
+            render! [#'entity/render-below!
+                     #'entity/render-default!
+                     #'entity/render-above!
+                     #'entity/render-info!]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (g/line-of-sight? ctx player entity))]
+      (try
+       (when ctx/show-body-bounds?
+         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+       (doseq [component entity]
+         (g/handle-draws! ctx (render! component entity ctx)))
+       (catch Throwable t
+         (g/handle-draws! ctx (draw-body-rect entity :red))
+         (stacktrace/pretty-pst t))))))
 
 (defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
@@ -131,9 +157,6 @@
 
 (defn- geom-test [ctx]
   (g/handle-draws! ctx (geom-test* ctx)))
-
-(defprotocol Render
-  (render-entities! [ctx]))
 
 (defn- draw-tile-grid* [ctx]
   (when ctx/show-tile-grid?
