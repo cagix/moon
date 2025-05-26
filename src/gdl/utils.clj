@@ -203,14 +203,14 @@
                      form))
                  form))
 
-(defn create-config [path & {:keys log?}]
+(defn create-config [path & {:keys [log?]}]
   (let [m (require-symbols (io-slurp-edn path)
                            log?)]
     (reify ILookup
       (valAt [_ k]
-        (utils/safe-get m k)))))
+        (safe-get m k)))))
 
-(defn create-into! [m create!-fns & {:keys [strict?]}]
+(defn create-into! [m create-fns & {:keys [strict?]}]
   (reduce (fn [m create!]
             (if (vector? create!)
               (let [[k create!] create!]
