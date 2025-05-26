@@ -7,7 +7,6 @@
             [cdq.create.tiled-map-renderer]
             [cdq.create.ui-viewport]
             [cdq.create.world-viewport]
-            [clojure.gdx.interop :as interop]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]
             [gdl.graphics :as graphics]
