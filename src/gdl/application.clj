@@ -1,6 +1,5 @@
 (ns gdl.application
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
             [clojure.space.earlygrey.shape-drawer :as sd]
@@ -23,20 +22,6 @@
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal Gdx/files file)
-                                {:size (* size quality-scaling)})]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? true
-                                  :use-integer-positions? true}) ; otherwise scaling to world-units not visible
-    ))
-
-(defn- create-cursor [path hotspot-x hotspot-y]
-  (let [pixmap (Pixmap. (.internal Gdx/files path))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
 
 (defprotocol Batch
   (draw-on-viewport! [_ viewport draw-fn])
@@ -360,11 +345,11 @@
                                             (graphics/texture-region shape-drawer-texture 1 0 1 1))
                    :cursors (utils/mapvals
                              (fn [[file [hotspot-x hotspot-y]]]
-                               (create-cursor (format (:cursor-path-format config) file)
-                                              hotspot-x
-                                              hotspot-y))
+                               (graphics/create-cursor (format (:cursor-path-format config) file)
+                                                       hotspot-x
+                                                       hotspot-y))
                              (:cursors config))
-                   :default-font (truetype-font (:default-font config))
+                   :default-font (graphics/truetype-font (:default-font config))
                    :world-viewport (viewport/world-viewport world-unit-scale
                                                             (:world-viewport config))
                    :ui-viewport ui-viewport

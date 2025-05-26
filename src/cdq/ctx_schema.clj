@@ -1,6 +1,12 @@
 (ns cdq.ctx-schema
   (:require [cdq.malli :as m]))
 
+; Idea : if nothing is private, everything is in the right place!
+; functions are tools
+; dont' hide your tools
+; then you know what you have created ... and nicely separated ...
+; e.g. create truetype-font!!
+; => e.g. don't hide your draw logic behind handle-draws! exposed in gdl , wired in cdq ?!
 
 ; 0. Move cdq.context and gdl.context together
 ; => its _pure wiring_

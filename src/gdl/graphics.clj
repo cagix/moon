@@ -1,7 +1,11 @@
 (ns gdl.graphics
-  (:import (com.badlogic.gdx.graphics Color
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Color
                                       Colors
-                                      Texture)
+                                      Texture
+                                      Pixmap)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn color [r g b a]
@@ -36,3 +40,16 @@
 (defn dimensions [^TextureRegion texture-region]
   [(.getRegionWidth  texture-region)
    (.getRegionHeight texture-region)])
+
+(defn truetype-font [{:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (.internal Gdx/files file)
+                                {:size (* size quality-scaling)})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
+
+(defn create-cursor [path hotspot-x hotspot-y]
+  (let [pixmap (Pixmap. (.internal Gdx/files path))
+        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
