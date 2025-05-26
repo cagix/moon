@@ -30,8 +30,10 @@
   (ui-viewport-width [_])
   (ui-viewport-height [_])
   (draw-on-world-viewport! [_ fns])
-  (draw-tiled-map! [_ tiled-map color-setter])
   (set-camera-position! [_ position]))
+
+(defprotocol TiledMapRenderer
+  (draw-tiled-map! [_ tiled-map color-setter]))
 
 (defprotocol Draws
   (handle-draws! [_ draws]))

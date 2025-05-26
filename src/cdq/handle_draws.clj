@@ -1,6 +1,7 @@
 (ns cdq.handle-draws
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.space.earlygrey.shape-drawer :as sd]
+            [gdl.application]
             [gdl.c :as c]
             [gdl.graphics :as graphics]))
 

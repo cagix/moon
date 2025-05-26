@@ -4,7 +4,6 @@
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
-            [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
@@ -37,12 +36,6 @@
                                     (fn []
                                       (doseq [f fns]
                                         (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
-
-  (draw-tiled-map! [_ tiled-map color-setter]
-    (tiled/draw! (tiled-map-renderer tiled-map)
-                 tiled-map
-                 color-setter
-                 (:camera world-viewport)))
 
   (world-mouse-position [_]
     (viewport/mouse-position world-viewport))
@@ -117,8 +110,4 @@
                    :default-font (graphics/truetype-font (:default-font config))
                    :world-viewport (viewport/world-viewport world-unit-scale
                                                             (:world-viewport config))
-                   :ui-viewport ui-viewport
-                   :tiled-map-renderer (memoize (fn [tiled-map]
-                                                  (tiled/renderer tiled-map
-                                                                  world-unit-scale
-                                                                  (:java-object batch))))})))
+                   :ui-viewport ui-viewport})))

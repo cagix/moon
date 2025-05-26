@@ -4,6 +4,7 @@
             [cdq.create.db]
             [cdq.create.gdx]
             [cdq.create.stage]
+            [cdq.create.tiled-map-renderer]
             [gdl.application]
             [gdl.ui :as ui]))
 
@@ -15,4 +16,5 @@
       (cdq.create.assets/add-assets config)
       (cdq.create.config/add-config config)
       (cdq.create.db/add-db config)
+      cdq.create.tiled-map-renderer/add
       ((requiring-resolve 'cdq.game-state/create!))))

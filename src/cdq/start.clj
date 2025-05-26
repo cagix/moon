@@ -22,4 +22,4 @@
   cdq.render/Render
   {:render-entities! cdq.render.render-entities/render-entities!})
 
-; TODO this doesn;t work when we reload gdl.application.Context
+; TODO this doesn;t work when we reload gdl.application.Context -> we have to depend on it in ns form then the namespaces using it will be reloaded fine.
