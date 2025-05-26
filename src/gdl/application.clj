@@ -7,9 +7,8 @@
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
-            [gdl.tiled :as tiled] ; only renderer, internal
-            [gdl.ui :as ui] ; partly internal ? ? are the widgets part of ctx ???
-            [gdl.utils :as utils]  ; dispose, safe-get, mapvals
+            [gdl.tiled :as tiled]
+            [gdl.utils :as utils]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx
@@ -429,57 +428,6 @@
   (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
     (c/sub-sprite this image [(* x tilew) (* y tileh) tilew tileh]))
 
-  c/Stage
-  (draw-stage! [ctx]
-    (reset! (.ctx stage) ctx)
-    (ui/draw! stage)
-    ; we need to set nil as input listeners
-    ; are updated outside of render
-    ; inside lwjgl3application code
-    ; so it has outdated context
-    ; => maybe context should be an immutable data structure with mutable fields?
-    #_(reset! (.ctx stage) nil)
-    nil)
-
-  (update-stage! [ctx]
-    (reset! (.ctx stage) ctx)
-    (ui/act! stage)
-    ; We cannot pass this
-    ; because input events are handled outside ui/act! and in the Lwjgl3Input system:
-    ;                         com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.<init>   Lwjgl3Application.java:  153
-    ;                           com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.loop   Lwjgl3Application.java:  181
-    ;                              com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window.update        Lwjgl3Window.java:  414
-    ;                        com.badlogic.gdx.backends.lwjgl3.DefaultLwjgl3Input.update  DefaultLwjgl3Input.java:  190
-    ;                                            com.badlogic.gdx.InputEventQueue.drain     InputEventQueue.java:   70
-    ;                             gdl.ui.proxy$gdl.ui.CtxStage$ILookup$a65747ce.touchUp                         :
-    ;                                     com.badlogic.gdx.scenes.scene2d.Stage.touchUp               Stage.java:  354
-    ;                              com.badlogic.gdx.scenes.scene2d.InputListener.handle       InputListener.java:   71
-    #_@(.ctx stage)
-    ; we need to set nil as input listeners
-    ; are updated outside of render
-    ; inside lwjgl3application code
-    ; so it has outdated context
-    #_(reset! (.ctx stage) nil)
-    nil)
-
-  (get-actor [_ id]
-    (id stage))
-
-  (find-actor-by-name [_ name]
-    (-> stage
-        ui/root
-        (ui/find-actor name)))
-
-  (add-actor! [_ actor]
-    (ui/add! stage actor))
-
-  (mouseover-actor [this]
-    (ui/hit stage (c/ui-mouse-position this)))
-
-  (reset-actors! [_ actors]
-    (ui/clear! stage)
-    (run! #(ui/add! stage %) actors))
-
   c/Input
   (button-just-pressed? [_ button]
     (.isButtonJustPressed Gdx/input (button->code button)))
@@ -494,10 +442,7 @@
   (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
-        ui-viewport (create-ui-viewport (:ui-viewport config))
-        stage (ui/stage (:java-object ui-viewport)
-                        (:java-object batch))]
-    (.setInputProcessor Gdx/input stage)
+        ui-viewport (create-ui-viewport (:ui-viewport config))]
     (map->Context {:batch batch
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
@@ -517,5 +462,4 @@
                    :tiled-map-renderer (memoize (fn [tiled-map]
                                                   (tiled/renderer tiled-map
                                                                   world-unit-scale
-                                                                  (:java-object batch))))
-                   :stage stage})))
+                                                                  (:java-object batch))))})))
