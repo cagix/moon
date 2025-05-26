@@ -1,8 +1,8 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.space.earlygrey.shape-drawer :as sd]
-            [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
@@ -11,7 +11,8 @@
                                       Texture
                                       Pixmap
                                       Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
            (com.badlogic.gdx.utils Disposable)))
 
 (defprotocol PGraphics
@@ -32,6 +33,42 @@
   (camera-frustum [_])
   (visible-tiles [_])
   (camera-zoom [_]))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [^TextureRegion texture-region] :as image} scale world-unit-scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions [(.getRegionWidth  texture-region)
+                                              (.getRegionHeight texture-region)]
+                                             scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defrecord Sprite [texture-region
+                   pixel-dimensions
+                   world-unit-dimensions
+                   color]) ; optional
+
+(defn- create-sprite [texture-region world-unit-scale]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions 1 world-unit-scale) ; = scale 1
+      map->Sprite))
+
+(defn- sub-region [^TextureRegion texture-region x y w h]
+  (TextureRegion. texture-region
+                  (int x)
+                  (int y)
+                  (int w)
+                  (int h)))
 
 (defmulti draw! (fn [[k] _this]
                   k))
@@ -79,16 +116,16 @@
     (* pixels world-unit-scale))
 
   (sprite [_ texture]
-    (graphics/sprite (graphics/texture-region texture)
-                     world-unit-scale))
+    (create-sprite (TextureRegion. ^Texture texture)
+                   world-unit-scale))
 
   (sub-sprite [_ sprite [x y w h]]
-    (graphics/sprite (graphics/sub-region (:texture-region sprite) x y w h)
-                     world-unit-scale))
+    (create-sprite (sub-region (:texture-region sprite) x y w h)
+                   world-unit-scale))
 
   (sprite-sheet [_ texture tilew tileh]
-    {:image (graphics/sprite (graphics/texture-region texture)
-                             world-unit-scale)
+    {:image (create-sprite (TextureRegion. ^Texture texture)
+                           world-unit-scale)
      :tilew tilew
      :tileh tileh})
 
@@ -126,6 +163,13 @@
   (camera-zoom [_]
     (camera/zoom (:camera world-viewport))))
 
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (.internal Gdx/files file)
+                                {:size (* size quality-scaling)})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
+
 ; TODO Gdx graphics/clear-screen
 ; update viewports
 ; set cursor :ctx/graphics
@@ -148,7 +192,7 @@
       :unit-scale (atom 1)
       :world-unit-scale world-unit-scale
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
+      :shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
@@ -156,28 +200,66 @@
                     (.dispose pixmap)
                     cursor))
                 cursors)
-      :default-font (graphics/truetype-font default-font)
+      :default-font (truetype-font default-font)
       :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled/renderer tiled-map world-unit-scale batch)))})))
+
+(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
+
+(defn- unit-dimensions [sprite unit-scale]
+  (if (= unit-scale 1)
+    (:pixel-dimensions sprite)
+    (:world-unit-dimensions sprite)))
+
+(defn- draw-sprite!
+  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
+   (draw-texture-region! batch
+                         texture-region
+                         position
+                         (unit-dimensions sprite unit-scale)
+                         0 ; rotation
+                         color))
+  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
+   (let [[w h] (unit-dimensions sprite unit-scale)]
+     (draw-texture-region! batch
+                           texture-region
+                           [(- (float x) (/ (float w) 2))
+                            (- (float y) (/ (float h) 2))]
+                           [w h]
+                           rotation
+                           color))))
 
 
 (defmethod draw! :draw/image [[_ sprite position]
                               {:keys [batch
                                       unit-scale]}]
-  (graphics/draw-sprite! batch
-                         @unit-scale
-                         sprite
-                         position))
+  (draw-sprite! batch
+                @unit-scale
+                sprite
+                position))
 
 (defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
                                          {:keys [batch
                                                  unit-scale]}]
-  (graphics/draw-sprite! batch
-                         @unit-scale
-                         sprite
-                         position
-                         rotation))
+  (draw-sprite! batch
+                @unit-scale
+                sprite
+                position
+                rotation))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
