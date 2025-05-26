@@ -16,7 +16,7 @@
 (defn add-stage! [ctx]
   {:pre [(nil? (-k ctx))]}
   (let [stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
-                        (:java-object (:batch (:ctx/graphics ctx))))]
+                        (:batch (:ctx/graphics ctx)))]
     (.setInputProcessor Gdx/input stage)
     (assoc ctx -k stage)))
 

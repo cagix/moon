@@ -6,7 +6,8 @@
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx.utils Disposable)))
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils Disposable)))
 
 (defprotocol PGraphics
   (draw-tiled-map! [_ tiled-map color-setter])
@@ -129,15 +130,14 @@
                       default-font
                       world-viewport]}]
   (map->Graphics
-   (let [batch (graphics/sprite-batch)
+   (let [batch (SpriteBatch.)
          shape-drawer-texture (graphics/white-pixel-texture)
          world-unit-scale (float (/ tile-size))]
      {:batch batch
       :unit-scale (atom 1)
       :world-unit-scale world-unit-scale
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create (:java-object batch)
-                               (graphics/texture-region shape-drawer-texture 1 0 1 1))
+      :shape-drawer (sd/create batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (graphics/create-cursor (format cursor-path-format file)
@@ -147,9 +147,7 @@
       :default-font (graphics/truetype-font default-font)
       :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
       :tiled-map-renderer (memoize (fn [tiled-map]
-                                     (tiled/renderer tiled-map
-                                                     world-unit-scale
-                                                     (:java-object batch))))})))
+                                     (tiled/renderer tiled-map world-unit-scale batch)))})))
 
 
 (defmethod draw! :draw/image [[_ sprite position]

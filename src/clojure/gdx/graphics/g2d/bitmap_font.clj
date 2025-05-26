@@ -21,7 +21,7 @@
         wrap? false]
     (set-scale! font (* old-scale (float scale)))
     (.draw font
-           (:java-object batch)
+           batch
            text
            (float x)
            (float (+ y (if up? (text-height font text) 0)))

@@ -9,8 +9,7 @@
                                       Texture
                                       Pixmap
                                       Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d Batch TextureRegion)
            (com.badlogic.gdx.utils Disposable)))
 
 (defn color [r g b a]
@@ -55,44 +54,27 @@
     (.dispose pixmap)
     cursor))
 
-(defprotocol Batch
-  (draw-on-viewport! [_ viewport draw-fn])
-  (draw-texture-region! [_ texture-region [x y] [w h] rotation color]))
+(defn draw-on-viewport! [^Batch batch viewport draw-fn]
+  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
+  (.begin batch)
+  (draw-fn)
+  (.end batch))
 
-(defn sprite-batch []
-  (let [this (SpriteBatch.)]
-    (reify
-      Batch
-      (draw-on-viewport! [_ viewport draw-fn]
-        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
-        (.setProjectionMatrix this (camera/combined (:camera viewport)))
-        (.begin this)
-        (draw-fn)
-        (.end this))
-
-      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
-        (if color (.setColor this color))
-        (.draw this
-               texture-region
-               x
-               y
-               (/ (float w) 2) ; rotation origin
-               (/ (float h) 2)
-               w
-               h
-               1 ; scale-x
-               1 ; scale-y
-               rotation)
-        (if color (.setColor this Color/WHITE)))
-
-      Disposable
-      (dispose [_]
-        (.dispose this))
-
-      ILookup
-      (valAt [_ key]
-        (case key
-          :java-object this)))))
+(defn draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
