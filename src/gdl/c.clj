@@ -1,12 +1,10 @@
 (ns gdl.c)
 
-(defprotocol Textures
-  (texture [_ path])
-  (all-textures [_]))
-
-(defprotocol Sounds
+(defprotocol Assets
   (play-sound! [_ sound-name])
-  (all-sounds [_]))
+  (texture [_ path])
+  (all-sounds [_])
+  (all-textures [_]))
 
 (defprotocol Graphics
   (delta-time [_])

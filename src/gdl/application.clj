@@ -369,19 +369,18 @@
     (update-vp! ui-viewport)
     (update-vp! world-viewport))
 
-  c/Sounds
+  c/Assets
   (play-sound! [ctx sound-name]
     (->> sound-name
          (format sound-path-format)
          assets
          Sound/.play))
 
-  (all-sounds [_]
-    (asset-manager/all-of-type assets :sound))
-
-  c/Textures
   (texture [_ path]
     (assets path))
+
+  (all-sounds [_]
+    (asset-manager/all-of-type assets :sound))
 
   (all-textures [_]
     (asset-manager/all-of-type assets :texture))
