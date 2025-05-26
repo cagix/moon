@@ -6,9 +6,6 @@
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils ScreenUtils)))
 
-(defn add-gdx! [ctx]
-  ctx)
-
 (defn- button->code [button]
   (case button
     :left Input$Buttons/LEFT
@@ -30,26 +27,25 @@
     :s      Input$Keys/S
     ))
 
-(extend-type gdl.application.Context
-  g/Input
-  (button-just-pressed? [_ button]
-    (.isButtonJustPressed Gdx/input (button->code button)))
-
-  (key-pressed? [_ key]
-    (.isKeyPressed Gdx/input (k->code key)))
-
-  (key-just-pressed? [_ key]
-    (.isKeyJustPressed Gdx/input (k->code key)))
-
-  g/BaseGraphics
-  (delta-time [_]
-    (.getDeltaTime Gdx/graphics))
-
-  (set-cursor! [_ cursor]
-    (.setCursor Gdx/graphics cursor))
-
-  (frames-per-second [_]
-    (.getFramesPerSecond Gdx/graphics))
-
-  (clear-screen! [_]
-    (ScreenUtils/clear Color/BLACK)))
+(defn add-gdx! [ctx]
+  (extend (class ctx)
+    g/Input
+    {:button-just-pressed?
+     (fn [_ button]
+       (.isButtonJustPressed Gdx/input (button->code button)))
+     :key-pressed?
+     (fn [_ key]
+       (.isKeyPressed Gdx/input (k->code key)))
+     :key-just-pressed?
+     (fn [_ key]
+       (.isKeyJustPressed Gdx/input (k->code key)))}
+    g/BaseGraphics
+    {:delta-time (fn [_]
+                   (.getDeltaTime Gdx/graphics))
+     :set-cursor! (fn [_ cursor]
+                    (.setCursor Gdx/graphics cursor))
+     :frames-per-second (fn [_]
+                          (.getFramesPerSecond Gdx/graphics))
+     :clear-screen! (fn [_]
+                      (ScreenUtils/clear Color/BLACK))})
+  ctx)

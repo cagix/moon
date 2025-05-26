@@ -2,36 +2,26 @@
   (:require [cdq.db :as db]
             [cdq.g :as g]))
 
-; TODO this is pure _wiring_
-; separate the wiring from the logic !!!
-; -> only dispatch and take key
-; -> no logic inside extend-type stuff ?
-
 (def ^:private -k :ctx/db)
 
 (defn add-db [ctx config]
   {:pre [(not (contains? ctx -k))]}
+  (extend (class ctx)
+    g/Database
+    {:get-raw (fn [ctx property-id]
+                (db/get-raw (-k ctx) property-id))
+     :build (fn [ctx property-id]
+              (db/build (-k ctx) property-id ctx))
+     :build-all (fn [ctx property-type]
+                  (db/build-all (-k ctx) property-type ctx))
+     :property-types (fn [ctx]
+                       (db/property-types (-k ctx)))
+     :schemas (fn [ctx]
+                (:schemas (-k ctx)))
+     :update-property! (fn [ctx property]
+                         (update ctx -k db/update! property))
+     :delete-property! (fn [ctx property-id]
+                         (update ctx -k db/delete! property-id))})
   (assoc ctx -k (db/create (:db config))))
 
-(extend-type gdl.application.Context
-  g/Database
-  (get-raw [ctx property-id]
-    (db/get-raw (-k ctx) property-id))
 
-  (build [ctx property-id]
-    (db/build (-k ctx) property-id ctx))
-
-  (build-all [ctx property-type]
-    (db/build-all (-k ctx) property-type ctx))
-
-  (property-types [ctx]
-    (db/property-types (-k ctx)))
-
-  (schemas [ctx]
-    (:schemas (-k ctx)))
-
-  (update-property! [ctx property]
-    (update ctx -k db/update! property))
-
-  (delete-property! [ctx property-id]
-    (update ctx -k db/delete! property-id)))
