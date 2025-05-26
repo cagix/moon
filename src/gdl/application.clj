@@ -1,12 +1,11 @@
 (ns gdl.application
-  (:require [clojure.gdx.assets.asset-manager :as asset-manager]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.math-utils :as math-utils]
-            [clojure.string :as str]
             [clojure.space.earlygrey.shape-drawer :as sd]
+            [gdl.assets :as assets]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled] ; only renderer, internal
@@ -17,7 +16,6 @@
            (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
@@ -169,29 +167,6 @@
   (case button
     :left Input$Buttons/LEFT
     ))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- create-assets [{:keys [folder
-                              asset-type-extensions]}]
-  (asset-manager/create ; TODO requires context?
-   (for [[asset-type extensions] asset-type-extensions
-         file (map #(str/replace-first % folder "")
-                   (recursively-search folder extensions))]
-     [file asset-type])))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -368,16 +343,16 @@
 
   c/Assets
   (sound [_ path]
-    (assets path))
+    (assets/sound assets path))
 
   (texture [_ path]
-    (assets path))
+    (assets/texture assets path))
 
   (all-sounds [_]
-    (asset-manager/all-of-type assets :sound))
+    (assets/all-sounds assets))
 
   (all-textures [_]
-    (asset-manager/all-of-type assets :texture))
+    (assets/all-textures assets))
 
   c/Graphics
   (delta-time [_]
@@ -538,7 +513,7 @@
         stage (ui/stage (:java-object ui-viewport)
                         (:java-object batch))]
     (.setInputProcessor Gdx/input stage)
-    (map->Context {:assets (create-assets (:assets config))
+    (map->Context {:assets (assets/create (:assets config))
                    :batch batch
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
