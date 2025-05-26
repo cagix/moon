@@ -1,6 +1,9 @@
 (ns cdq.resize
-  (:require [gdl.application]))
+  (:require [gdl.viewport :as viewport]))
 
-(defn do! [ctx width height]
-  #_(ctx-schema/validate ctx)
-  (gdl.application/update-viewports! ctx))
+(defn do! [{:keys [ctx/ui-viewport
+                   ctx/world-viewport]}
+           width
+           height]
+  (viewport/update! ui-viewport)
+  (viewport/update! world-viewport))

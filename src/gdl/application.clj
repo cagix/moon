@@ -8,14 +8,10 @@
             [gdl.utils :as utils]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.utils Disposable)))
+  (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defprotocol Viewports
-  (update-viewports! [_]))
 
 (q/defrecord Context [ctx/assets
                       ctx/batch
@@ -29,21 +25,7 @@
                       ctx/ui-viewport
                       ctx/tiled-map-renderer
                       ctx/stage]
-  Disposable
-  (dispose [_] ; TODO !
-    (Disposable/.dispose assets)
-    (Disposable/.dispose batch)
-    (Disposable/.dispose shape-drawer-texture)
-    (run! Disposable/.dispose (vals cursors))
-    (Disposable/.dispose default-font)
-    ; TODO vis-ui dispose
-    )
-
   Viewports
-  (update-viewports! [_]
-    (viewport/update! ui-viewport)
-    (viewport/update! world-viewport))
-
   c/Graphics
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
