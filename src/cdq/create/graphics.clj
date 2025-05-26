@@ -1,11 +1,13 @@
 (ns cdq.create.graphics
   (:require [cdq.g :as g]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]
-            [gdl.utils :as utils]))
+            [gdl.utils :as utils]
+            [gdl.viewport :as viewport]))
 
 (defn add [ctx config]
   (let [batch (graphics/sprite-batch)
@@ -25,6 +27,8 @@
                                                     hotspot-y))
                           (:cursors config))
             :ctx/default-font (graphics/truetype-font (:default-font config))
+            :ctx/world-viewport (viewport/world-viewport world-unit-scale
+                                                         (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled/renderer tiled-map
                                                                world-unit-scale
@@ -188,3 +192,32 @@
   (sd/with-line-width shape-drawer width
     (fn []
       (g/handle-draws! ctx draws))))
+
+(extend-type gdl.application.Context
+  g/WorldViewport
+  (set-camera-position! [ctx position]
+    (camera/set-position! (:camera (:ctx/world-viewport ctx)) position))
+
+  (world-mouse-position [ctx]
+    (viewport/mouse-position (:ctx/world-viewport ctx)))
+
+  (world-viewport-width [ctx]
+    (:width (:ctx/world-viewport ctx)))
+
+  (world-viewport-height [ctx]
+    (:height (:ctx/world-viewport ctx)))
+
+  (camera-position [ctx]
+    (camera/position (:camera (:ctx/world-viewport ctx))))
+
+  (inc-zoom! [ctx amount]
+    (camera/inc-zoom! (:camera (:ctx/world-viewport ctx)) amount))
+
+  (camera-frustum [ctx]
+    (camera/frustum (:camera (:ctx/world-viewport ctx))))
+
+  (visible-tiles [ctx]
+    (camera/visible-tiles (:camera (:ctx/world-viewport ctx))))
+
+  (camera-zoom [ctx]
+    (camera/zoom (:camera (:ctx/world-viewport ctx)))))

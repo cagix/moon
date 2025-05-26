@@ -6,7 +6,6 @@
             [cdq.create.graphics]
             [cdq.create.stage]
             [cdq.create.ui-viewport]
-            [cdq.create.world-viewport]
             [gdl.application]
             [gdl.ui :as ui]))
 
@@ -20,5 +19,4 @@
       (cdq.create.assets/add-assets config)
       (cdq.create.config/add-config config)
       (cdq.create.db/add-db config)
-      (cdq.create.world-viewport/add config)
       ((requiring-resolve 'cdq.game-state/create!))))
