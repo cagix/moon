@@ -4,7 +4,6 @@
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.utils :as utils]
-            [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Gdx)))
 
@@ -33,15 +32,6 @@
                                       (doseq [f fns]
                                         (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
 
-  (ui-mouse-position [_]
-    (viewport/mouse-position ui-viewport))
-
-  (ui-viewport-width [_]
-    (:width ui-viewport))
-
-  (ui-viewport-height [_]
-    (:height ui-viewport))
-
   (pixels->world-units [_ pixels]
     (* pixels world-unit-scale))
 
@@ -65,8 +55,7 @@
 (defn create-state! [config]
   (let [batch (graphics/sprite-batch)
         shape-drawer-texture (graphics/white-pixel-texture)
-        world-unit-scale (float (/ (:tile-size config)))
-        ui-viewport (viewport/ui-viewport (:ui-viewport config))]
+        world-unit-scale (float (/ (:tile-size config)))]
     (map->Context {:batch batch
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
@@ -79,5 +68,4 @@
                                                        hotspot-x
                                                        hotspot-y))
                              (:cursors config))
-                   :default-font (graphics/truetype-font (:default-font config))
-                   :ui-viewport ui-viewport})))
+                   :default-font (graphics/truetype-font (:default-font config))})))

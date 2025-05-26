@@ -11,7 +11,7 @@
                                          (:world-viewport config))))
 
 (extend-type gdl.application.Context
-  g/WorldViewport
+  c/WorldViewport
   (set-camera-position! [ctx position]
     (camera/set-position! (:camera (-k ctx)) position))
 

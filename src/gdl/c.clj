@@ -23,16 +23,18 @@
   (world-viewport-height [_])
   (set-camera-position! [_ position]))
 
+(defprotocol UIViewport
+  (ui-mouse-position [_])
+  (ui-viewport-width [_])
+  (ui-viewport-height [_]))
+
 (defprotocol Graphics
   (draw-on-world-viewport! [_ fns])
-  (ui-mouse-position [_])
   (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
-  (sprite-sheet->sprite [_ sprite [x y]])
-  (ui-viewport-width [_])
-  (ui-viewport-height [_]))
+  (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol TiledMapRenderer
   (draw-tiled-map! [_ tiled-map color-setter]))
