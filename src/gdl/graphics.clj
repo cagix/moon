@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
@@ -45,13 +44,6 @@
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
-
-(defn draw-on-viewport! [^Batch batch viewport draw-fn]
-  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
-  (.begin batch)
-  (draw-fn)
-  (.end batch))
 
 (defn draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))

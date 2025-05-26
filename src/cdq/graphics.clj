@@ -36,7 +36,7 @@
 (defmulti draw! (fn [[k] _this]
                   k))
 
-(defrecord Graphics [batch
+(defrecord Graphics [^SpriteBatch batch
                      unit-scale
                      world-unit-scale
                      shape-drawer-texture
@@ -65,14 +65,15 @@
                  (:camera world-viewport)))
 
   (draw-on-world-viewport! [_ f]
-    (graphics/draw-on-viewport! batch
-                                world-viewport
-                                (fn []
-                                  (sd/with-line-width shape-drawer world-unit-scale
-                                    (fn []
-                                      (reset! unit-scale world-unit-scale)
-                                      (f)
-                                      (reset! unit-scale 1))))))
+    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
+    (.begin batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (.end batch))
 
   (pixels->world-units [_ pixels]
     (* pixels world-unit-scale))
