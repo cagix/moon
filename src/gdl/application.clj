@@ -25,7 +25,6 @@
                       ctx/ui-viewport
                       ctx/tiled-map-renderer
                       ctx/stage]
-  Viewports
   c/Graphics
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
