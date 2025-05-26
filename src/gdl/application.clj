@@ -326,7 +326,7 @@
                       ctx/tiled-map-renderer
                       ctx/stage]
   Disposable
-  (dispose [_]
+  (dispose [_] ; TODO !
     (Disposable/.dispose assets)
     (Disposable/.dispose batch)
     (Disposable/.dispose shape-drawer-texture)

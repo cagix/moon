@@ -2,6 +2,10 @@
   (:require [cdq.malli :as m]))
 
 
+; 0. Move cdq.context and gdl.context together
+; => its _pure wiring_
+; => expose gdl objects independently , e.g. assets
+
 ; 1. create the q/defrecord with all fields here
 ; 2. extend step by step and see which 'ctx/' keys are used together -> ?
 ; => use gdl.utils/create-into!

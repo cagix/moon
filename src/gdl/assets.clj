@@ -4,8 +4,8 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)))
 
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
@@ -24,7 +24,7 @@
   (asset-manager/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
-                   (recursively-search folder extensions))]
+                   (recursively-search (.internal Gdx/files folder) extensions))]
      [file asset-type])))
 
 (defn sound [assets path]

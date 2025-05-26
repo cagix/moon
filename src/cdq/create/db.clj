@@ -2,6 +2,11 @@
   (:require [cdq.db :as db]
             [cdq.g :as g]))
 
+; TODO this is pure _wiring_
+; separate the wiring from the logic !!!
+; -> only dispatch and take key
+; -> no logic inside extend-type stuff ?
+
 (def ^:private -k :ctx/db)
 
 (defn add-db [ctx config]
