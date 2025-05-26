@@ -10,7 +10,6 @@
             [cdq.grid2d :as g2d]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
-            [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.error-window :as error-window]
@@ -110,23 +109,6 @@
                              start
                              end
                              width)))
-
-(extend-type gdl.application.Context
-  g/Time
-  (elapsed-time [{:keys [ctx/elapsed-time]}]
-    elapsed-time)
-
-  (create-timer [{:keys [ctx/elapsed-time]} duration]
-    (timer/create elapsed-time duration))
-
-  (timer-stopped? [{:keys [ctx/elapsed-time]} timer]
-    (timer/stopped? elapsed-time timer))
-
-  (reset-timer [{:keys [ctx/elapsed-time]} timer]
-    (timer/reset elapsed-time timer))
-
-  (timer-ratio [{:keys [ctx/elapsed-time]} timer]
-    (timer/ratio elapsed-time timer)))
 
 (extend-type gdl.application.Context
   cdq.g/Grid

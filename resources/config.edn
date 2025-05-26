@@ -67,6 +67,7 @@
             cdq.g.graphics
             cdq.g.handle-txs
             cdq.g.spawn-creature
+            cdq.g.time
 
             cdq.game-state.create-actors
 
