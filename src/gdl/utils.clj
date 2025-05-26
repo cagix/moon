@@ -209,3 +209,16 @@
     (reify ILookup
       (valAt [_ k]
         (utils/safe-get m k)))))
+
+(defn create-into! [m create!-fns & {:keys [strict?]}]
+  (reduce (fn [m create!]
+            (if (vector? create!)
+              (let [[k create!] create!]
+                (when strict?
+                  (assert (not (contains? m k))))
+                (assoc m k (create! m)))
+              (do
+               (create! m)
+               m)))
+          m
+          create-fns))
