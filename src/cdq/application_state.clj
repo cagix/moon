@@ -5,6 +5,7 @@
             [cdq.create.gdx]
             [cdq.create.stage]
             [cdq.create.tiled-map-renderer]
+            [cdq.create.world-viewport]
             [gdl.application]
             [gdl.ui :as ui]))
 
@@ -17,4 +18,5 @@
       (cdq.create.config/add-config config)
       (cdq.create.db/add-db config)
       cdq.create.tiled-map-renderer/add
+      (cdq.create.world-viewport/add config)
       ((requiring-resolve 'cdq.game-state/create!))))

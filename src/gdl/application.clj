@@ -1,6 +1,5 @@
 (ns gdl.application
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx.interop :as interop]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
@@ -25,9 +24,6 @@
                       ctx/tiled-map-renderer
                       ctx/stage]
   c/Graphics
-  (set-camera-position! [_ position]
-    (camera/set-position! (:camera world-viewport) position))
-
   (draw-on-world-viewport! [ctx fns]
     (graphics/draw-on-viewport! batch
                                 world-viewport
@@ -37,9 +33,6 @@
                                       (doseq [f fns]
                                         (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
 
-  (world-mouse-position [_]
-    (viewport/mouse-position world-viewport))
-
   (ui-mouse-position [_]
     (viewport/mouse-position ui-viewport))
 
@@ -48,27 +41,6 @@
 
   (ui-viewport-height [_]
     (:height ui-viewport))
-
-  (world-viewport-width [_]
-    (:width world-viewport))
-
-  (world-viewport-height [_]
-    (:height world-viewport))
-
-  (camera-position [_]
-    (camera/position (:camera world-viewport)))
-
-  (inc-zoom! [_ amount]
-    (camera/inc-zoom! (:camera world-viewport) amount))
-
-  (camera-frustum [_]
-    (camera/frustum (:camera world-viewport)))
-
-  (visible-tiles [_]
-    (camera/visible-tiles (:camera world-viewport)))
-
-  (camera-zoom [_]
-    (camera/zoom (:camera world-viewport)))
 
   (pixels->world-units [_ pixels]
     (* pixels world-unit-scale))
@@ -108,6 +80,4 @@
                                                        hotspot-y))
                              (:cursors config))
                    :default-font (graphics/truetype-font (:default-font config))
-                   :world-viewport (viewport/world-viewport world-unit-scale
-                                                            (:world-viewport config))
                    :ui-viewport ui-viewport})))

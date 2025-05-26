@@ -12,25 +12,27 @@
   (frames-per-second [_])
   (clear-screen! [_]))
 
-(defprotocol Graphics
+(defprotocol WorldViewport
   (world-mouse-position [_])
-  (ui-mouse-position [_])
   (camera-position [_])
   (inc-zoom! [_ amount])
   (camera-frustum [_])
   (visible-tiles [_])
   (camera-zoom [_])
+  (world-viewport-width [_])
+  (world-viewport-height [_])
+  (set-camera-position! [_ position]))
+
+(defprotocol Graphics
+  (draw-on-world-viewport! [_ fns])
+  (ui-mouse-position [_])
   (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]])
-  (world-viewport-width [_])
-  (world-viewport-height [_])
   (ui-viewport-width [_])
-  (ui-viewport-height [_])
-  (draw-on-world-viewport! [_ fns])
-  (set-camera-position! [_ position]))
+  (ui-viewport-height [_]))
 
 (defprotocol TiledMapRenderer
   (draw-tiled-map! [_ tiled-map color-setter]))
