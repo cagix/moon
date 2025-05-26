@@ -5,7 +5,6 @@
             [cdq.game-state :as game-state]
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
-            [gdl.c :as c]
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]))
 
@@ -27,24 +26,24 @@
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (entity/id entity)))
-                     :icon (c/texture ctx "images/mouseover.png")}
+                     :icon (g/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [ctx]
                                   (str (utils/readable-number (g/elapsed-time ctx)) " seconds"))
-                     :icon (c/texture ctx "images/clock.png")}
+                     :icon (g/texture ctx "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
                     {:label "GUI"
-                     :update-fn (fn [ctx] (mapv int (c/ui-mouse-position ctx)))}
+                     :update-fn (fn [ctx] (mapv int (g/ui-mouse-position ctx)))}
                     {:label "World"
-                     :update-fn (fn [ctx] (mapv int (c/world-mouse-position ctx)))}
+                     :update-fn (fn [ctx] (mapv int (g/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn c/camera-zoom
-                     :icon (c/texture ctx "images/zoom.png")}
+                     :update-fn g/camera-zoom
+                     :icon (g/texture ctx "images/zoom.png")}
                     {:label "FPS"
-                     :update-fn c/frames-per-second
-                     :icon (c/texture ctx "images/fps.png")}]}))
+                     :update-fn g/frames-per-second
+                     :icon (g/texture ctx "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]

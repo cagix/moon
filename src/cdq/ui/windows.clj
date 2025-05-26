@@ -1,9 +1,9 @@
 (ns cdq.ui.windows
-  (:require [gdl.c :as c]
+  (:require [cdq.g :as g]
             [gdl.ui :as ui]))
 
 (defn- check-escape-close-windows [ctx windows]
-  (when (c/key-just-pressed? ctx :escape)
+  (when (g/key-just-pressed? ctx :escape)
     (run! #(ui/set-visible! % false) (ui/children windows))))
 
 (def window-hotkeys {:inventory-window  :i
@@ -11,7 +11,7 @@
 
 (defn- check-window-hotkeys [ctx windows]
   (doseq [[id input-key] window-hotkeys
-          :when (c/key-just-pressed? ctx input-key)]
+          :when (g/key-just-pressed? ctx input-key)]
     (ui/toggle-visible! (get windows id))))
 
 (defn create [& {:keys [id actors]}]

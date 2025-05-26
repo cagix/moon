@@ -22,7 +22,6 @@
             [cdq.ui.message]
             [cdq.vector2 :as v]
             [gdl.application]
-            [gdl.c :as c]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
@@ -83,17 +82,17 @@
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
                                  :skill-added! (fn [ctx skill]
-                                                 (action-bar/add-skill! (c/get-actor ctx :action-bar)
+                                                 (action-bar/add-skill! (g/get-actor ctx :action-bar)
                                                                         skill))
                                  :skill-removed! (fn [ctx skill]
-                                                   (action-bar/remove-skill! (c/get-actor ctx :action-bar)
+                                                   (action-bar/remove-skill! (g/get-actor ctx :action-bar)
                                                                              skill))
                                  :item-set! (fn [ctx inventory-cell item]
-                                              (-> (c/get-actor ctx :windows)
+                                              (-> (g/get-actor ctx :windows)
                                                   :inventory-window
                                                   (inventory-window/set-item! inventory-cell item)))
                                  :item-removed! (fn [ctx inventory-cell]
-                                                  (-> (c/get-actor ctx :windows)
+                                                  (-> (g/get-actor ctx :windows)
                                                       :inventory-window
                                                       (inventory-window/remove-item! inventory-cell)))}
                 :entity/free-skill-points free-skill-points
@@ -141,10 +140,10 @@
 (extend-type gdl.application.Context
   g/StageActors
   (open-error-window! [ctx throwable]
-    (c/add-actor! ctx (error-window/create throwable)))
+    (g/add-actor! ctx (error-window/create throwable)))
 
   (selected-skill [ctx]
-    (action-bar/selected-skill (c/get-actor ctx :action-bar))))
+    (action-bar/selected-skill (g/get-actor ctx :action-bar))))
 
 (defmulti handle-tx! (fn [[k & _params] _ctx]
                        k))
@@ -163,7 +162,7 @@
 (defn- play-sound! [ctx sound-name]
   (->> sound-name
        (format sound-path-format)
-       (c/sound ctx)
+       (g/sound ctx)
        com.badlogic.gdx.audio.Sound/.play))
 
 ; => this means we dont want gdl context in our app open --- hide it again o.lo
@@ -171,10 +170,10 @@
   (play-sound! ctx sound-name))
 
 (defmethod handle-tx! :tx/set-cursor [[_ cursor-key] ctx]
-  (c/set-cursor! ctx (utils/safe-get (:ctx/cursors ctx) cursor-key)))
+  (g/set-cursor! ctx (utils/safe-get (:ctx/cursors ctx) cursor-key)))
 
 (defmethod handle-tx! :tx/show-message [[_ message] ctx]
-  (cdq.ui.message/show! (c/find-actor-by-name ctx "player-message")
+  (cdq.ui.message/show! (g/find-actor-by-name ctx "player-message")
                         message))
 
 ; no window movable type cursor appears here like in player idle
@@ -182,22 +181,22 @@
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defmethod handle-tx! :tx/show-modal [[_ {:keys [title text button-text on-click]}] ctx]
-  (assert (not (c/get-actor ctx ::modal)))
-  (c/add-actor! ctx
+  (assert (not (g/get-actor ctx ::modal)))
+  (g/add-actor! ctx
                 (ui/window {:title title
                             :rows [[(ui/label text)]
                                    [(ui/text-button button-text
                                                     (fn [_actor ctx]
-                                                      (ui/remove! (c/get-actor ctx ::modal))
+                                                      (ui/remove! (g/get-actor ctx ::modal))
                                                       (on-click)))]]
                             :id ::modal
                             :modal? true
-                            :center-position [(/ (c/ui-viewport-width ctx) 2)
-                                              (* (c/ui-viewport-height ctx) (/ 3 4))]
+                            :center-position [(/ (g/ui-viewport-width ctx) 2)
+                                              (* (g/ui-viewport-height ctx) (/ 3 4))]
                             :pack? true})))
 
 (defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]
-  (-> (c/get-actor ctx :windows)
+  (-> (g/get-actor ctx :windows)
       :inventory-window
       ui/toggle-visible!))
 
@@ -301,9 +300,9 @@
   (apply move-entity! ctx params))
 
 ; we cannot just set/unset movement direction
-; because it is handled by the state enter/exit for npc/player movement state ...
+; because it is handled by the state enter/exit for npg/player movement state ...
 ; so we cannot expose it as a 'transaction'
-; so the movement should be updated in the respective npc/player movement 'state' and no movement 'component' necessary !
+; so the movement should be updated in the respective npg/player movement 'state' and no movement 'component' necessary !
 ; for projectiles inside projectile update !?
 (defn- set-movement* [entity movement-vector]
   (assoc entity :entity/movement {:direction movement-vector
@@ -475,7 +474,7 @@
   (create-actors [_]))
 
 (defn create! [ctx]
-  (c/reset-actors! ctx (create-actors ctx))
+  (g/reset-actors! ctx (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} ((g/config ctx :world-fn) ctx)
         grid (grid-impl/create tiled-map)

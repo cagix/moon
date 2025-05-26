@@ -10,7 +10,6 @@
             [clojure.gdx.interop :as interop]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]
-            [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))

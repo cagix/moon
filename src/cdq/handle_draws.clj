@@ -2,14 +2,14 @@
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]
-            [gdl.c :as c]
+            [cdq.g :as g]
             [gdl.graphics :as graphics]))
 
 (defmulti draw! (fn [[k] _ctx]
                   k))
 
 (extend-type gdl.application.Context
-  c/Draws
+  g/Draws
   (handle-draws! [ctx draws]
     (doseq [component draws
             :when component]
@@ -115,4 +115,4 @@
                                          :as ctx}]
   (sd/with-line-width shape-drawer width
     (fn []
-      (c/handle-draws! ctx draws))))
+      (g/handle-draws! ctx draws))))

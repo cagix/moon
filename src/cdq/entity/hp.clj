@@ -1,7 +1,7 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [gdl.c :as c]
+            [cdq.g :as g]
             [gdl.utils :refer [defcomponent]]))
 
 (def ^:private hpbar-colors
@@ -28,8 +28,8 @@
   (let [[x y] (entity/position entity)]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (c/pixels->world-units ctx 5)
-          border (c/pixels->world-units ctx borders-px)]
+          height (g/pixels->world-units ctx 5)
+          border (g/pixels->world-units ctx borders-px)]
       [[:draw/filled-rectangle x y width height :black]
        [:draw/filled-rectangle
         (+ x border)

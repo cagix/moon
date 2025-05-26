@@ -1,7 +1,7 @@
 (ns cdq.create.world-viewport
   (:require [clojure.gdx.graphics.camera :as camera]
             [gdl.application]
-            [gdl.c :as c]
+            [cdq.g :as g]
             [gdl.viewport :as viewport]))
 
 (def ^:private -k :ctx/world-viewport)
@@ -11,7 +11,7 @@
                                          (:world-viewport config))))
 
 (extend-type gdl.application.Context
-  c/WorldViewport
+  g/WorldViewport
   (set-camera-position! [ctx position]
     (camera/set-position! (:camera (-k ctx)) position))
 

@@ -2,8 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.vector2 :as v]
-            gdl.application
-            [gdl.c :as c]))
+            gdl.application))
 
 (extend-type gdl.application.Context
   g/EffectContext
@@ -11,7 +10,7 @@
                       eid]
     (let [target-position (or (and mouseover-eid
                                    (entity/position @mouseover-eid))
-                              (c/world-mouse-position ctx))]
+                              (g/world-mouse-position ctx))]
       {:effect/source eid
        :effect/target mouseover-eid
        :effect/target-position target-position

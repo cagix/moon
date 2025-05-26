@@ -3,7 +3,6 @@
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
-            [gdl.c :as c]
             [gdl.ui :as ui]
             [gdl.utils :refer [pprint-to-str]]))
 
@@ -27,7 +26,7 @@
                                                  (redo-rows ctx id))]
                              (ui/add! window (overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
-                             (c/add-actor! ctx window)))))]
+                             (g/add-actor! ctx window)))))]
       [(when property-id
          (let [property (g/build ctx property-id)
                image-widget (ui/image->widget (property/image property)

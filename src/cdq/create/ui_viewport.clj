@@ -1,6 +1,6 @@
 (ns cdq.create.ui-viewport
   (:require [gdl.application]
-            [gdl.c :as c]
+            [cdq.g :as g]
             [gdl.viewport :as viewport]))
 
 (def ^:private -k :ctx/ui-viewport)
@@ -9,7 +9,7 @@
   (assoc ctx -k (viewport/ui-viewport (:ui-viewport config))))
 
 (extend-type gdl.application.Context
-  c/UIViewport
+  g/UIViewport
   (ui-mouse-position [ctx]
     (viewport/mouse-position (-k ctx)))
 

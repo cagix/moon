@@ -1,6 +1,6 @@
 (ns cdq.create.tiled-map-renderer
   (:require [gdl.application]
-            [gdl.c :as c]
+            [cdq.g :as g]
             [gdl.tiled :as tiled]))
 
 (defn add [{:keys [ctx/batch
@@ -13,7 +13,7 @@
                                     (:java-object batch))))))
 
 (extend-type gdl.application.Context
-  c/TiledMapRenderer
+  g/TiledMapRenderer
   (draw-tiled-map! [{:keys [ctx/world-viewport
                             ctx/tiled-map-renderer]}
                     tiled-map

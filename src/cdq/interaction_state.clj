@@ -5,7 +5,6 @@
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
             gdl.application
-            [gdl.c :as c]
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
@@ -17,7 +16,7 @@
                                        eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> (c/get-actor ctx :windows) :inventory-window ui/visible?)
+     (-> (g/get-actor ctx :windows) :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]
@@ -64,7 +63,7 @@
                        :as ctx}
                       eid]
     (let [entity @eid
-          mouseover-actor (c/mouseover-actor ctx)]
+          mouseover-actor (g/mouseover-actor ctx)]
       (cond
        mouseover-actor
        [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))

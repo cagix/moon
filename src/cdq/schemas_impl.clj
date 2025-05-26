@@ -6,7 +6,6 @@
             [cdq.property :as property]
             [cdq.malli :as m]
             [cdq.val-max :as val-max]
-            [gdl.c :as c]
             [gdl.utils :as utils]))
 
 (defmulti malli-form (fn [schema _schemas] (schema/type schema)))
@@ -139,11 +138,11 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (c/sprite-sheet->sprite ctx
-                              (c/sprite-sheet ctx file tilew tileh)
+      (g/sprite-sheet->sprite ctx
+                              (g/sprite-sheet ctx file tilew tileh)
                               [(int (/ sprite-x tilew))
                                (int (/ sprite-y tileh))]))
-    (c/sprite ctx file)))
+    (g/sprite ctx file)))
 
 (defmethod schema/edn->value :s/image [_ edn ctx]
   (edn->sprite edn ctx))

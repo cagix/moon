@@ -4,7 +4,6 @@
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
-            [gdl.c :as c]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
@@ -34,10 +33,10 @@
    (widget/value [:s/map] table schemas)))
 
 (defn- rebuild-editor-window! [ctx]
-  (let [window (c/get-actor ctx :property-editor-window)
+  (let [window (g/get-actor ctx :property-editor-window)
         prop-value (window->property-value window (g/schemas ctx))]
     (ui/remove! window)
-    (c/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
+    (g/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -87,7 +86,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (c/add-actor! ctx window)))
+    (g/add-actor! ctx window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])

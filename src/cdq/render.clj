@@ -6,7 +6,6 @@
             [cdq.g :as g]
             [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
-            [gdl.c :as c]
             [gdl.utils :as utils]))
 
 ; TODO here are a lot of _parts_ which are finished and can be made read-only !
@@ -22,16 +21,16 @@
 (defn- camera-controls! [ctx]
   (let [controls (g/config ctx :controls)
         zoom-speed (g/config ctx :zoom-speed)]
-    (when (c/key-pressed? ctx (:zoom-in controls))  (c/inc-zoom! ctx    zoom-speed))
-    (when (c/key-pressed? ctx (:zoom-out controls)) (c/inc-zoom! ctx (- zoom-speed)))))
+    (when (g/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
+    (when (g/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))))
 
 (defn- pause-game? [{:keys [ctx/player-eid] :as ctx}]
   (let [controls (g/config ctx :controls)]
     (or #_error
         (and (g/config ctx :pausing?)
              (state/pause-game? (entity/state-obj @player-eid))
-             (not (or (c/key-just-pressed? ctx (:unpause-once controls))
-                      (c/key-pressed? ctx (:unpause-continously controls))))))))
+             (not (or (g/key-just-pressed? ctx (:unpause-once controls))
+                      (g/key-pressed? ctx (:unpause-continously controls))))))))
 
 (defn- assoc-paused [ctx]
   (assoc ctx :ctx/paused? (pause-game? ctx)))
@@ -61,7 +60,7 @@
 
 (defn- assoc-delta-time
   [ctx]
-  (assoc ctx :ctx/delta-time (min (c/delta-time ctx) ctx/max-delta)))
+  (assoc ctx :ctx/delta-time (min (g/delta-time ctx) ctx/max-delta)))
 
 (defn- update-elapsed-time
   [{:keys [ctx/delta-time]
@@ -83,11 +82,11 @@
 (defn- update-mouseover-entity! [{:keys [ctx/player-eid
                                          ctx/mouseover-eid]
                                   :as ctx}]
-  (let [new-eid (if (c/mouseover-actor ctx)
+  (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (g/point->entities ctx (c/world-mouse-position ctx)))]
+                                     (g/point->entities ctx (g/world-mouse-position ctx)))]
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -107,7 +106,7 @@
   nil)
 
 (defn- highlight-mouseover-tile* [ctx]
-  (let [[x y] (mapv int (c/world-mouse-position ctx))
+  (let [[x y] (mapv int (g/world-mouse-position ctx))
         cell (g/grid-cell ctx [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
@@ -116,10 +115,10 @@
           :none [1 0 0 0.5])]])))
 
 (defn- highlight-mouseover-tile [ctx]
-  (c/handle-draws! ctx (highlight-mouseover-tile* ctx)))
+  (g/handle-draws! ctx (highlight-mouseover-tile* ctx)))
 
 (defn- geom-test* [ctx]
-  (let [position (c/world-mouse-position ctx)
+  (let [position (g/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]
@@ -131,29 +130,29 @@
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
 (defn- geom-test [ctx]
-  (c/handle-draws! ctx (geom-test* ctx)))
+  (g/handle-draws! ctx (geom-test* ctx)))
 
 (defprotocol Render
   (render-entities! [ctx]))
 
 (defn- draw-tile-grid* [ctx]
   (when ctx/show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (c/camera-frustum ctx)]
+    (let [[left-x _right-x bottom-y _top-y] (g/camera-frustum ctx)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)
-        (inc (int (c/world-viewport-width ctx)))
-        (+ 2 (int (c/world-viewport-height ctx)))
+        (inc (int (g/world-viewport-width ctx)))
+        (+ 2 (int (g/world-viewport-height ctx)))
         1
         1
         [1 1 1 0.8]]])))
 
 (defn- draw-tile-grid [ctx]
-  (c/handle-draws! ctx (draw-tile-grid* ctx)))
+  (g/handle-draws! ctx (draw-tile-grid* ctx)))
 
 (defn- draw-cell-debug* [ctx]
   (apply concat
-         (for [[x y] (c/visible-tiles ctx)
+         (for [[x y] (g/visible-tiles ctx)
                :let [cell (g/grid-cell ctx [x y])]
                :when cell
                :let [cell* @cell]]
@@ -168,7 +167,7 @@
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn- draw-cell-debug [ctx]
-  (c/handle-draws! ctx (draw-cell-debug* ctx)))
+  (g/handle-draws! ctx (draw-cell-debug* ctx)))
 
 ; Now I get it - we do not need to depend on concretions here -> that's why its so complicated
 ; also its side effects ... ?? -> transactions ?!
@@ -178,16 +177,16 @@
 
 (defn do! [{:keys [ctx/player-eid] :as ctx}]
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
-    (c/set-camera-position! ctx (entity/position @player-eid))
-    (c/clear-screen! ctx)
+    (g/set-camera-position! ctx (entity/position @player-eid))
+    (g/clear-screen! ctx)
     (g/draw-world-map! ctx)
-    (c/draw-on-world-viewport! ctx [draw-tile-grid
+    (g/draw-on-world-viewport! ctx [draw-tile-grid
                                     draw-cell-debug
                                     render-entities!
                                     ;geom-test
                                     highlight-mouseover-tile])
-    (c/draw-stage! ctx)
-    (c/update-stage! ctx)
+    (g/draw-stage! ctx)
+    (g/update-stage! ctx)
     (player-state-handle-click! ctx)
     (let [ctx (update-mouseover-entity! ctx)
           ctx (assoc-paused ctx)

@@ -3,7 +3,6 @@
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
             [cdq.g :as g]
-            [gdl.c :as c]
             [gdl.utils :as utils]))
 
 (defn- draw-body-rect [entity color]
@@ -27,9 +26,9 @@
                       (g/line-of-sight? ctx player entity))]
       (try
        (when ctx/show-body-bounds?
-         (c/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
-         (c/handle-draws! ctx (render! component entity ctx)))
+         (g/handle-draws! ctx (render! component entity ctx)))
        (catch Throwable t
-         (c/handle-draws! ctx (draw-body-rect entity :red))
+         (g/handle-draws! ctx (draw-body-rect entity :red))
          (stacktrace/pretty-pst t))))))

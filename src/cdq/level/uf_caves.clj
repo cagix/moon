@@ -3,7 +3,6 @@
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
@@ -127,4 +126,4 @@
   (create* {:map-size 200,
             :spawn-rate 0.01}
            (g/build-all ctx :properties/creatures)
-           (c/texture ctx "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+           (g/texture ctx "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

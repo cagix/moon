@@ -1,5 +1,5 @@
 (ns cdq.create.stage
-  (:require [gdl.c :as c]
+  (:require [cdq.g :as g]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx Gdx)))
 
@@ -13,7 +13,7 @@
     (assoc ctx -k stage)))
 
 (extend-type gdl.application.Context
-  c/Stage
+  g/Stage
   (draw-stage! [ctx]
     (reset! (.ctx (-k ctx)) ctx)
     (ui/draw! (-k ctx))
@@ -58,7 +58,7 @@
     (ui/add! (-k ctx) actor))
 
   (mouseover-actor [ctx]
-    (ui/hit (-k ctx) (c/ui-mouse-position ctx)))
+    (ui/hit (-k ctx) (g/ui-mouse-position ctx)))
 
   (reset-actors! [ctx actors]
     (ui/clear! (-k ctx))

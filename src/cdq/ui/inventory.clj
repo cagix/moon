@@ -4,7 +4,6 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [gdl.c :as c]
             [gdl.graphics]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
@@ -34,11 +33,11 @@
   (ui/widget
    {:draw
     (fn [actor {:keys [ctx/player-eid] :as ctx}]
-      (c/handle-draws! ctx
+      (g/handle-draws! ctx
                        (draw-cell-rect @player-eid
                                        (ui/get-x actor)
                                        (ui/get-y actor)
-                                       (ui/hit actor (c/ui-mouse-position ctx))
+                                       (ui/hit actor (g/ui-mouse-position ctx))
                                        (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
@@ -56,8 +55,8 @@
 
 ; TODO actually we can pass this whole map into inventory-window ...
 (defn- slot->sprite [ctx slot]
-  (c/sprite-sheet->sprite ctx
-                          (c/sprite-sheet ctx "images/items.png" 48 48)
+  (g/sprite-sheet->sprite ctx
+                          (g/sprite-sheet ctx "images/items.png" 48 48)
                           [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]

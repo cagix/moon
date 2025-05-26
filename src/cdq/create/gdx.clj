@@ -1,5 +1,5 @@
 (ns cdq.create.gdx
-  (:require [gdl.c :as c])
+  (:require [cdq.g :as g])
   (:import (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
@@ -31,7 +31,7 @@
     ))
 
 (extend-type gdl.application.Context
-  c/Input
+  g/Input
   (button-just-pressed? [_ button]
     (.isButtonJustPressed Gdx/input (button->code button)))
 
@@ -41,7 +41,7 @@
   (key-just-pressed? [_ key]
     (.isKeyJustPressed Gdx/input (k->code key)))
 
-  c/BaseGraphics
+  g/BaseGraphics
   (delta-time [_]
     (.getDeltaTime Gdx/graphics))
 

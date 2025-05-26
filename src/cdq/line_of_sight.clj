@@ -1,8 +1,7 @@
 (ns cdq.line-of-sight
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            gdl.application
-            [gdl.c :as c]))
+            gdl.application))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -10,14 +9,14 @@
   (let [[x y] position
         x (float x)
         y (float y)
-        [cx cy] (c/camera-position ctx)
+        [cx cy] (g/camera-position ctx)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (c/world-viewport-width ctx))  2)))
-     (<= ydist (inc (/ (float (c/world-viewport-height ctx)) 2))))))
+     (<= xdist (inc (/ (float (g/world-viewport-width ctx))  2)))
+     (<= ydist (inc (/ (float (g/world-viewport-height ctx)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see
