@@ -1,16 +1,14 @@
 (ns cdq.ctx-schema
   (:require [cdq.malli :as m]))
 
-; What is used together you can create sub-contexts/objects !
-; you see it at the created protocols !
-; same with entity !
+
+; 1. create the q/defrecord with all fields here
+; 2. extend step by step and see which 'ctx/' keys are used together -> ?
+; => use gdl.utils/create-into!
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             ; audio & graphics
              [:ctx/assets :some]
-
-             ; :ctx/graphics
              [:ctx/batch :some]
              [:ctx/unit-scale :some]
              [:ctx/world-unit-scale :some]
@@ -21,7 +19,6 @@
              [:ctx/world-viewport :some]
              [:ctx/ui-viewport :some]
              [:ctx/tiled-map-renderer :some]
-
              [:ctx/stage :some]
              [:ctx/config :some]
              [:ctx/db :some]
@@ -39,9 +36,6 @@
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
-
-; TODO create here a q/defrecord with all qualified fields
-; and pass it to the extenders
 
 (defn validate [ctx]
   (m/validate-humanize schema ctx))

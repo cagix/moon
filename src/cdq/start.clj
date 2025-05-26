@@ -15,6 +15,7 @@
 (require 'cdq.render)
 (require 'cdq.render.render-entities)
 
+; TODO this is the issue we know everywhere about the exact context ...
 (extend gdl.application.Context
   cdq.game-state/StageActors
   {:create-actors cdq.game-state.create-actors/create-actors}
