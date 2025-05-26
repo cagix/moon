@@ -1,12 +1,17 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Colors
                                       Texture
-                                      Pixmap)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+                                      Pixmap
+                                      Pixmap$Format)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
+           (com.badlogic.gdx.utils Disposable)))
 
 (defn color [r g b a]
   (Color. (float r)
@@ -53,3 +58,50 @@
         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
+
+(defprotocol Batch
+  (draw-on-viewport! [_ viewport draw-fn])
+  (draw-texture-region! [_ texture-region [x y] [w h] rotation color]))
+
+(defn sprite-batch []
+  (let [this (SpriteBatch.)]
+    (reify
+      Batch
+      (draw-on-viewport! [_ viewport draw-fn]
+        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
+        (.setProjectionMatrix this (camera/combined (:camera viewport)))
+        (.begin this)
+        (draw-fn)
+        (.end this))
+
+      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
+        (if color (.setColor this color))
+        (.draw this
+               texture-region
+               x
+               y
+               (/ (float w) 2) ; rotation origin
+               (/ (float h) 2)
+               w
+               h
+               1 ; scale-x
+               1 ; scale-y
+               rotation)
+        (if color (.setColor this Color/WHITE)))
+
+      Disposable
+      (dispose [_]
+        (.dispose this))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this)))))
+
+(defn white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))

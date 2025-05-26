@@ -9,66 +9,13 @@
             [gdl.utils :as utils]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color
-                                      Pixmap
-                                      Pixmap$Format
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defprotocol Batch
-  (draw-on-viewport! [_ viewport draw-fn])
-  (draw-texture-region! [_ texture-region [x y] [w h] rotation color]))
-
-(defn- sprite-batch []
-  (let [this (SpriteBatch.)]
-    (reify
-      Batch
-      (draw-on-viewport! [_ viewport draw-fn]
-        (.setColor this Color/WHITE) ; fix scene2d.ui.tooltip flickering
-        (.setProjectionMatrix this (camera/combined (:camera viewport)))
-        (.begin this)
-        (draw-fn)
-        (.end this))
-
-      (draw-texture-region! [_ texture-region [x y] [w h] rotation color]
-        (if color (.setColor this color))
-        (.draw this
-               texture-region
-               x
-               y
-               (/ (float w) 2) ; rotation origin
-               (/ (float h) 2)
-               w
-               h
-               1 ; scale-x
-               1 ; scale-y
-               rotation)
-        (if color (.setColor this Color/WHITE)))
-
-      Disposable
-      (dispose [_]
-        (.dispose this))
-
-      ILookup
-      (valAt [_ key]
-        (case key
-          :java-object this)))))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -109,24 +56,24 @@
 (defmethod draw! :draw/image [[_ {:keys [texture-region color] :as image} position]
                               {:keys [ctx/batch
                                       ctx/unit-scale]}]
-  (draw-texture-region! batch
-                        texture-region
-                        position
-                        (unit-dimensions image unit-scale)
-                        0 ; rotation
-                        color))
+  (graphics/draw-texture-region! batch
+                                 texture-region
+                                 position
+                                 (unit-dimensions image unit-scale)
+                                 0 ; rotation
+                                 color))
 
 (defmethod draw! :draw/rotated-centered [[_ {:keys [texture-region color] :as image} rotation [x y]]
                                          {:keys [ctx/batch
                                                  ctx/unit-scale]}]
   (let [[w h] (unit-dimensions image unit-scale)]
-    (draw-texture-region! batch
-                          texture-region
-                          [(- (float x) (/ (float w) 2))
-                           (- (float y) (/ (float h) 2))]
-                          [w h]
-                          rotation
-                          color)))
+    (graphics/draw-texture-region! batch
+                                   texture-region
+                                   [(- (float x) (/ (float w) 2))
+                                    (- (float y) (/ (float h) 2))]
+                                   [w h]
+                                   rotation
+                                   color)))
 
 (defmethod draw! :draw/centered [[_ image position] ctx]
   (draw! [:draw/rotated-centered image 0 position] ctx))
@@ -265,13 +212,13 @@
     (camera/set-position! (:camera world-viewport) position))
 
   (draw-on-world-viewport! [ctx fns]
-    (draw-on-viewport! batch
-                       world-viewport
-                       (fn []
-                         (sd/with-line-width shape-drawer world-unit-scale
-                           (fn []
-                             (doseq [f fns]
-                               (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
+    (graphics/draw-on-viewport! batch
+                                world-viewport
+                                (fn []
+                                  (sd/with-line-width shape-drawer world-unit-scale
+                                    (fn []
+                                      (doseq [f fns]
+                                        (f (assoc ctx :ctx/unit-scale world-unit-scale))))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (tiled/draw! (tiled-map-renderer tiled-map)
@@ -333,8 +280,8 @@
     (c/sub-sprite this image [(* x tilew) (* y tileh) tilew tileh])))
 
 (defn create-state! [config]
-  (let [batch (sprite-batch)
-        shape-drawer-texture (white-pixel-texture)
+  (let [batch (graphics/sprite-batch)
+        shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
         ui-viewport (viewport/ui-viewport (:ui-viewport config))]
     (map->Context {:batch batch
