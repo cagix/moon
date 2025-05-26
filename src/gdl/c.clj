@@ -11,7 +11,6 @@
   (clear-screen! [_])
   (frames-per-second [_])
   (set-cursor! [_ cursor-key])
-  (handle-draws! [_ draws])
   (world-mouse-position [_])
   (ui-mouse-position [_])
   (camera-position [_])
@@ -31,6 +30,9 @@
   (draw-on-world-viewport! [_ fns])
   (draw-tiled-map! [_ tiled-map color-setter])
   (set-camera-position! [_ position]))
+
+(defprotocol Draws
+  (handle-draws! [_ draws]))
 
 (defprotocol Stage
   (get-actor [_ id])
