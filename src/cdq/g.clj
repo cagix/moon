@@ -120,7 +120,7 @@
   (find-actor-by-name [_ name])
   (add-actor! [_ actor])
   (mouseover-actor [_])
-  (reset-actors! [_ actors])
+  (reset-actors! [_])
   (draw-stage! [_])
   (update-stage! [_]))
 

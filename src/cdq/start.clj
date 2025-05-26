@@ -9,16 +9,11 @@
 
 (require 'gdl.application)
 
-(require 'cdq.game-state)
-(require 'cdq.game-state.create-actors)
-
 (require 'cdq.render)
 (require 'cdq.render.render-entities)
 
 ; TODO this is the issue we know everywhere about the exact context ...
 (extend gdl.application.Context
-  cdq.game-state/StageActors
-  {:create-actors cdq.game-state.create-actors/create-actors}
   cdq.render/Render
   {:render-entities! cdq.render.render-entities/render-entities!})
 

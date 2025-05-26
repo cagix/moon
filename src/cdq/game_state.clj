@@ -138,11 +138,8 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
-(defprotocol StageActors
-  (create-actors [_]))
-
 (defn create! [ctx]
-  (g/reset-actors! ctx (create-actors ctx))
+  (g/reset-actors! ctx)
   (let [{:keys [tiled-map
                 start-position]} ((g/config ctx :world-fn) ctx)
         grid (grid-impl/create tiled-map)

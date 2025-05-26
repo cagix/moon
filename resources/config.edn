@@ -69,8 +69,6 @@
             cdq.g.spawn-creature
             cdq.g.time
 
-            cdq.game-state.create-actors
-
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
             cdq.effects.target.damage
