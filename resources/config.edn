@@ -63,7 +63,6 @@
             cdq.g.draw-world-map
             cdq.g.get-active-entities
             cdq.g.spawn-entity
-            cdq.g.handle-draws
             cdq.g.handle-txs
             cdq.g.spawn-creature
             cdq.g.time
