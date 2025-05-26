@@ -1,4 +1,4 @@
-(ns cdq.info
+(ns cdq.g.info
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.op :as op]

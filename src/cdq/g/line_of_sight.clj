@@ -1,4 +1,4 @@
-(ns cdq.line-of-sight
+(ns cdq.g.line-of-sight
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             gdl.application))

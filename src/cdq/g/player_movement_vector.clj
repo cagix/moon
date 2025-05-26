@@ -1,4 +1,4 @@
-(ns cdq.player-movement-vector
+(ns cdq.g.player-movement-vector
   (:require [cdq.g :as g]
             [cdq.vector2 :as v]
             gdl.application))

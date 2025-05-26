@@ -1,4 +1,4 @@
-(ns cdq.handle-draws
+(ns cdq.g.handle-draws
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]

@@ -1,4 +1,4 @@
-(ns cdq.draw-world-map
+(ns cdq.g.draw-world-map
   (:require [cdq.g :as g]
             [cdq.tile-color-setter :as tile-color-setter]
             [gdl.application]

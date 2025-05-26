@@ -1,4 +1,4 @@
-(ns cdq.effect-ctx
+(ns cdq.g.effect-ctx
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.vector2 :as v]

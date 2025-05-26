@@ -1,4 +1,4 @@
-(ns cdq.graphics
+(ns cdq.g.graphics
   (:require [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application]
             [cdq.g :as g]

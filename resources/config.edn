@@ -55,18 +55,18 @@
              cdq.level.uf-caves/create
              cdq.level.modules/create]
  :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
- :requires [cdq.effect-ctx
-            cdq.info
-            cdq.player-movement-vector
-            cdq.interaction-state
-            cdq.line-of-sight
-            cdq.draw-world-map
-            cdq.get-active-entities
-            cdq.spawn-entity
-            cdq.handle-draws
-            cdq.graphics
-            cdq.handle-txs
-            cdq.spawn-creature
+ :requires [cdq.g.effect-ctx
+            cdq.g.info
+            cdq.g.player-movement-vector
+            cdq.g.interaction-state
+            cdq.g.line-of-sight
+            cdq.g.draw-world-map
+            cdq.g.get-active-entities
+            cdq.g.spawn-entity
+            cdq.g.handle-draws
+            cdq.g.graphics
+            cdq.g.handle-txs
+            cdq.g.spawn-creature
 
             cdq.game-state.create-actors
 

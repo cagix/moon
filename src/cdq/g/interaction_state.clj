@@ -1,4 +1,4 @@
-(ns cdq.interaction-state
+(ns cdq.g.interaction-state
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]

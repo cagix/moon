@@ -1,4 +1,4 @@
-(ns cdq.handle-txs
+(ns cdq.g.handle-txs
   (:require [cdq.animation :as animation]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
