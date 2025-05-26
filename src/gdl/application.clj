@@ -3,84 +3,26 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
+            [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
-                                      Texture
-                                      OrthographicCamera)
+                                      Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
-
-;; Publics
+                                   ScreenUtils)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defprotocol Viewport
-  (update-vp! [_])
-  (mouse-position [_]))
-
-(defn- fit-viewport [width height camera {:keys [center-camera?]}]
-  (let [this (FitViewport. width height camera)]
-    (reify
-      Viewport
-      (update-vp! [_]
-        (.update this
-                 (.getWidth  Gdx/graphics)
-                 (.getHeight Gdx/graphics)
-                 center-camera?))
-
-      ; touch coordinates are y-down, while screen coordinates are y-up
-      ; so the clamping of y is reverse, but as black bars are equal it does not matter
-      ; TODO clamping only works for gui-viewport ?
-      ; TODO ? "Can be negative coordinates, undefined cells."
-      (mouse-position [_]
-        (let [mouse-x (math-utils/clamp (.getX Gdx/input)
-                                        (.getLeftGutterWidth this)
-                                        (.getRightGutterX    this))
-              mouse-y (math-utils/clamp (.getY Gdx/input)
-                                        (.getTopGutterHeight this)
-                                        (.getTopGutterY      this))]
-          (let [v2 (.unproject this (Vector2. mouse-x mouse-y))]
-            [(.x v2) (.y v2)])))
-
-      ILookup
-      (valAt [_ key]
-        (case key
-          :java-object this
-          :width  (.getWorldWidth  this)
-          :height (.getWorldHeight this)
-          :camera (.getCamera      this))))))
-
-(defn- create-ui-viewport [{:keys [width height]}]
-  (fit-viewport width
-                height
-                (OrthographicCamera.)
-                {:center-camera? true}))
-
-(defn- create-world-viewport [world-unit-scale {:keys [width height]}]
-  (let [camera (OrthographicCamera.)
-        world-width  (* width world-unit-scale)
-        world-height (* height world-unit-scale)
-        y-down? false]
-    (.setToOrtho camera y-down? world-width world-height)
-    (fit-viewport world-width
-                  world-height
-                  camera
-                  {:center-camera? false})))
 
 (defn- truetype-font [{:keys [file size quality-scaling]}]
   (let [font (freetype/generate (.internal Gdx/files file)
@@ -313,8 +255,8 @@
 
   Viewports
   (update-viewports! [_]
-    (update-vp! ui-viewport)
-    (update-vp! world-viewport))
+    (viewport/update! ui-viewport)
+    (viewport/update! world-viewport))
 
   c/Graphics
   (delta-time [_]
@@ -353,10 +295,10 @@
                  (:camera world-viewport)))
 
   (world-mouse-position [_]
-    (mouse-position world-viewport))
+    (viewport/mouse-position world-viewport))
 
   (ui-mouse-position [_]
-    (mouse-position ui-viewport))
+    (viewport/mouse-position ui-viewport))
 
   (ui-viewport-width [_]
     (:width ui-viewport))
@@ -409,7 +351,7 @@
   (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
-        ui-viewport (create-ui-viewport (:ui-viewport config))]
+        ui-viewport (viewport/ui-viewport (:ui-viewport config))]
     (map->Context {:batch batch
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
@@ -423,8 +365,8 @@
                                               hotspot-y))
                              (:cursors config))
                    :default-font (truetype-font (:default-font config))
-                   :world-viewport (create-world-viewport world-unit-scale
-                                                          (:world-viewport config))
+                   :world-viewport (viewport/world-viewport world-unit-scale
+                                                            (:world-viewport config))
                    :ui-viewport ui-viewport
                    :tiled-map-renderer (memoize (fn [tiled-map]
                                                   (tiled/renderer tiled-map

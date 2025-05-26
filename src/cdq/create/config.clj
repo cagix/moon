@@ -1,5 +1,6 @@
 (ns cdq.create.config
-  (:require [cdq.g :as g]))
+  (:require [cdq.g :as g]
+            [gdl.application]))
 
 (def ^:private -k :ctx/config)
 
