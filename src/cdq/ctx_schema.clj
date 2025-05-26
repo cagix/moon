@@ -19,16 +19,8 @@
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/assets :some]
-             [:ctx/batch :some]
-             [:ctx/unit-scale :some]
-             [:ctx/world-unit-scale :some]
-             [:ctx/shape-drawer-texture :some]
-             [:ctx/shape-drawer :some]
-             [:ctx/cursors :some]
-             [:ctx/default-font :some]
-             [:ctx/world-viewport :some]
+             [:ctx/graphics :some]
              [:ctx/ui-viewport :some]
-             [:ctx/tiled-map-renderer :some]
              [:ctx/stage :some]
              [:ctx/config :some]
              [:ctx/db :some]

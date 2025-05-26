@@ -113,7 +113,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (:camera ctx/world-viewport) tiled-map)
+    (show-whole-map! (:camera world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 #_(defn ->generate-map-window [c level-id]

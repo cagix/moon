@@ -203,11 +203,14 @@
     (g/set-camera-position! ctx (entity/position @player-eid))
     (g/clear-screen! ctx)
     (g/draw-world-map! ctx)
-    (g/draw-on-world-viewport! ctx [draw-tile-grid
-                                    draw-cell-debug
-                                    render-entities!
-                                    ;geom-test
-                                    highlight-mouseover-tile])
+    (g/draw-on-world-viewport! ctx
+                               (fn []
+                                 (doseq [f [draw-tile-grid
+                                            draw-cell-debug
+                                            render-entities!
+                                            ;geom-test
+                                            highlight-mouseover-tile]]
+                                   (f ctx))))
     (g/draw-stage! ctx)
     (g/update-stage! ctx)
     (player-state-handle-click! ctx)
