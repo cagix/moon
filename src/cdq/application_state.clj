@@ -1,5 +1,6 @@
 (ns cdq.application-state
-  (:require [cdq.create.db]
+  (:require [cdq.create.assets]
+            [cdq.create.db]
             [cdq.g :as g]
             [gdl.application]))
 
@@ -14,6 +15,7 @@
 
 (defn create! [config]
   (-> (gdl.application/create-state! config)
+      (cdq.create.assets/add-assets config)
       (add-component :ctx/config config)
       (cdq.create.db/add-db config)
       ((requiring-resolve 'cdq.game-state/create!))))

@@ -5,7 +5,6 @@
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
-            [gdl.assets :as assets]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled] ; only renderer, internal
@@ -341,19 +340,6 @@
     (update-vp! ui-viewport)
     (update-vp! world-viewport))
 
-  c/Assets
-  (sound [_ path]
-    (assets/sound assets path))
-
-  (texture [_ path]
-    (assets/texture assets path))
-
-  (all-sounds [_]
-    (assets/all-sounds assets))
-
-  (all-textures [_]
-    (assets/all-textures assets))
-
   c/Graphics
   (delta-time [_]
     (.getDeltaTime Gdx/graphics))
@@ -513,8 +499,7 @@
         stage (ui/stage (:java-object ui-viewport)
                         (:java-object batch))]
     (.setInputProcessor Gdx/input stage)
-    (map->Context {:assets (assets/create (:assets config))
-                   :batch batch
+    (map->Context {:batch batch
                    :unit-scale 1
                    :world-unit-scale world-unit-scale
                    :shape-drawer-texture shape-drawer-texture
