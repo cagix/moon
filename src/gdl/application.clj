@@ -17,69 +17,25 @@
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
-(defn- scale-dimensions [dimensions scale]
-  (mapv (comp float (partial * scale)) dimensions))
-
-(defn- assoc-dimensions
-  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [texture-region] :as image} scale world-unit-scale]
-  {:pre [(or (number? scale)
-             (and (vector? scale)
-                  (number? (scale 0))
-                  (number? (scale 1))))]}
-  (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (graphics/dimensions texture-region)
-                                             scale)
-                           scale)]
-    (assoc image
-           :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
-
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
-(defn- sprite* [texture-region world-unit-scale]
-  (-> {:texture-region texture-region}
-      (assoc-dimensions 1 world-unit-scale) ; = scale 1
-      map->Sprite))
-
-(defn- unit-dimensions [image unit-scale]
-  (if (= unit-scale 1)
-    (:pixel-dimensions image)
-    (:world-unit-dimensions image)))
-
-(defn- draw-sprite!
-  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
-   (graphics/draw-texture-region! batch
-                                  texture-region
-                                  position
-                                  (unit-dimensions sprite unit-scale)
-                                  0 ; rotation
-                                  color))
-  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
-   (let [[w h] (unit-dimensions sprite unit-scale)]
-     (graphics/draw-texture-region! batch
-                                    texture-region
-                                    [(- (float x) (/ (float w) 2))
-                                     (- (float y) (/ (float h) 2))]
-                                    [w h]
-                                    rotation
-                                    color))))
-
 (defmulti ^:private draw! (fn [[k] _ctx]
                             k))
 
 (defmethod draw! :draw/image [[_ sprite position]
                               {:keys [ctx/batch
                                       ctx/unit-scale]}]
-  (draw-sprite! batch unit-scale sprite position))
+  (graphics/draw-sprite! batch
+                         unit-scale
+                         sprite
+                         position))
 
 (defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
                                          {:keys [ctx/batch
                                                  ctx/unit-scale]}]
-  (draw-sprite! batch unit-scale sprite position rotation))
+  (graphics/draw-sprite! batch
+                         unit-scale
+                         sprite
+                         position
+                         rotation))
 
 (defmethod draw! :draw/centered [[_ image position] ctx]
   (draw! [:draw/rotated-centered image 0 position] ctx))
@@ -269,16 +225,16 @@
     (* pixels world-unit-scale))
 
   (sprite [this texture-path]
-    (sprite* (graphics/texture-region (c/texture this texture-path))
-             world-unit-scale))
+    (graphics/sprite (graphics/texture-region (c/texture this texture-path))
+                     world-unit-scale))
 
   (sub-sprite [_ sprite [x y w h]]
-    (sprite* (graphics/sub-region (:texture-region sprite) x y w h)
-             world-unit-scale))
+    (graphics/sprite (graphics/sub-region (:texture-region sprite) x y w h)
+                     world-unit-scale))
 
   (sprite-sheet [this texture-path tilew tileh]
-    {:image (sprite* (graphics/texture-region (c/texture this texture-path))
-                     world-unit-scale)
+    {:image (graphics/sprite (graphics/texture-region (c/texture this texture-path))
+                             world-unit-scale)
      :tilew tilew
      :tileh tileh})
 
