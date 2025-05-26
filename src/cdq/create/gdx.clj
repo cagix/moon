@@ -2,7 +2,9 @@
   (:require [gdl.c :as c])
   (:import (com.badlogic.gdx Gdx
                              Input$Keys
-                             Input$Buttons)))
+                             Input$Buttons)
+           (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn add-gdx! [ctx]
   ctx)
@@ -37,4 +39,17 @@
     (.isKeyPressed Gdx/input (k->code key)))
 
   (key-just-pressed? [_ key]
-    (.isKeyJustPressed Gdx/input (k->code key))))
+    (.isKeyJustPressed Gdx/input (k->code key)))
+
+  c/BaseGraphics
+  (delta-time [_]
+    (.getDeltaTime Gdx/graphics))
+
+  (set-cursor! [_ cursor]
+    (.setCursor Gdx/graphics cursor))
+
+  (frames-per-second [_]
+    (.getFramesPerSecond Gdx/graphics))
+
+  (clear-screen! [_]
+    (ScreenUtils/clear Color/BLACK)))

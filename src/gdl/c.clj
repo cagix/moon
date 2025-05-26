@@ -6,11 +6,13 @@
   (all-sounds [_])
   (all-textures [_]))
 
-(defprotocol Graphics
+(defprotocol BaseGraphics
   (delta-time [_])
-  (clear-screen! [_])
+  (set-cursor! [_ cursor])
   (frames-per-second [_])
-  (set-cursor! [_ cursor-key])
+  (clear-screen! [_]))
+
+(defprotocol Graphics
   (world-mouse-position [_])
   (ui-mouse-position [_])
   (camera-position [_])

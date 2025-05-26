@@ -9,9 +9,7 @@
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)))
+           (com.badlogic.gdx.utils Disposable)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -47,18 +45,6 @@
     (viewport/update! world-viewport))
 
   c/Graphics
-  (delta-time [_]
-    (.getDeltaTime Gdx/graphics))
-
-  (set-cursor! [_ cursor-key]
-    (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
-
-  (frames-per-second [_]
-    (.getFramesPerSecond Gdx/graphics))
-
-  (clear-screen! [_]
-    (ScreenUtils/clear Color/BLACK))
-
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
 

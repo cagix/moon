@@ -170,8 +170,8 @@
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
-(defmethod handle-tx! :tx/set-cursor [[_ cursor] ctx]
-  (c/set-cursor! ctx cursor))
+(defmethod handle-tx! :tx/set-cursor [[_ cursor-key] ctx]
+  (c/set-cursor! ctx (utils/safe-get (:ctx/cursors ctx) cursor-key)))
 
 (defmethod handle-tx! :tx/show-message [[_ message] ctx]
   (cdq.ui.message/show! (c/find-actor-by-name ctx "player-message")
