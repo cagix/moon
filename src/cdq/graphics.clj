@@ -119,11 +119,19 @@
   (camera-zoom [_]
     (camera/zoom (:camera world-viewport))))
 
-(defn create [config]
+; TODO Gdx graphics/clear-screen
+; update viewports
+; set cursor :ctx/graphics
+; textures asset-manager
+(defn create [{:keys [tile-size
+                      cursor-path-format
+                      cursors
+                      default-font
+                      world-viewport]}]
   (map->Graphics
    (let [batch (graphics/sprite-batch)
          shape-drawer-texture (graphics/white-pixel-texture)
-         world-unit-scale (float (/ (:tile-size config)))]
+         world-unit-scale (float (/ tile-size))]
      {:batch batch
       :unit-scale (atom 1)
       :world-unit-scale world-unit-scale
@@ -132,13 +140,12 @@
                                (graphics/texture-region shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
-                  (graphics/create-cursor (format (:cursor-path-format config) file)
+                  (graphics/create-cursor (format cursor-path-format file)
                                           hotspot-x
                                           hotspot-y))
-                (:cursors config))
-      :default-font (graphics/truetype-font (:default-font config))
-      :world-viewport (viewport/world-viewport world-unit-scale
-                                               (:world-viewport config))
+                cursors)
+      :default-font (graphics/truetype-font default-font)
+      :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled/renderer tiled-map
                                                      world-unit-scale
