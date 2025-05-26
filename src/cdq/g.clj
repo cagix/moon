@@ -5,7 +5,8 @@
 
 (defprotocol Context
   (context-entity-add! [_ eid])
-  (context-entity-remove! [_ eid]))
+  (context-entity-remove! [_ eid])
+  (context-entity-moved! [_ eid]))
 
 (defprotocol ActiveEntities
   (get-active-entities [_]))
@@ -68,6 +69,9 @@
 
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components]))
+
+(defprotocol Creatures
+  (spawn-creature! [_ {:keys [position creature-id components]}]))
 
 (defprotocol Assets
   (sound [_ path])
