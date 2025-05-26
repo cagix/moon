@@ -158,9 +158,17 @@
 (defmethod handle-tx! :tx/dissoc [[_ eid k] _ctx]
   (swap! eid dissoc k))
 
+(def sound-path-format "sounds/%s.wav")
+
+(defn- play-sound! [ctx sound-name]
+  (->> sound-name
+       (format sound-path-format)
+       (c/sound ctx)
+       com.badlogic.gdx.audio.Sound/.play))
+
 ; => this means we dont want gdl context in our app open --- hide it again o.lo
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
-  (c/play-sound! ctx sound-name))
+  (play-sound! ctx sound-name))
 
 (defmethod handle-tx! :tx/set-cursor [[_ cursor] ctx]
   (c/set-cursor! ctx cursor))
@@ -194,7 +202,7 @@
       ui/toggle-visible!))
 
 (defmethod handle-tx! :tx/audiovisual [[_ position {:keys [tx/sound entity/animation]}] ctx]
-  (c/play-sound! ctx sound)
+  (play-sound! ctx sound)
   (spawn-effect! ctx
                  position
                  {:entity/animation animation

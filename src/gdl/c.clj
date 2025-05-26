@@ -1,7 +1,7 @@
 (ns gdl.c)
 
 (defprotocol Assets
-  (play-sound! [_ sound-name])
+  (sound [_ path])
   (texture [_ path])
   (all-sounds [_])
   (all-textures [_]))

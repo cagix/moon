@@ -17,7 +17,6 @@
            (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
@@ -32,8 +31,6 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 ;; Publics
-
-(def sound-path-format "sounds/%s.wav")
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -370,11 +367,8 @@
     (update-vp! world-viewport))
 
   c/Assets
-  (play-sound! [ctx sound-name]
-    (->> sound-name
-         (format sound-path-format)
-         assets
-         Sound/.play))
+  (sound [_ path]
+    (assets path))
 
   (texture [_ path]
     (assets path))
