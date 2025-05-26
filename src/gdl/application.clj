@@ -50,30 +50,36 @@
     (:pixel-dimensions image)
     (:world-unit-dimensions image)))
 
+(defn- draw-sprite!
+  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
+   (graphics/draw-texture-region! batch
+                                  texture-region
+                                  position
+                                  (unit-dimensions sprite unit-scale)
+                                  0 ; rotation
+                                  color))
+  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
+   (let [[w h] (unit-dimensions sprite unit-scale)]
+     (graphics/draw-texture-region! batch
+                                    texture-region
+                                    [(- (float x) (/ (float w) 2))
+                                     (- (float y) (/ (float h) 2))]
+                                    [w h]
+                                    rotation
+                                    color))))
+
 (defmulti ^:private draw! (fn [[k] _ctx]
                             k))
 
-(defmethod draw! :draw/image [[_ {:keys [texture-region color] :as image} position]
+(defmethod draw! :draw/image [[_ sprite position]
                               {:keys [ctx/batch
                                       ctx/unit-scale]}]
-  (graphics/draw-texture-region! batch
-                                 texture-region
-                                 position
-                                 (unit-dimensions image unit-scale)
-                                 0 ; rotation
-                                 color))
+  (draw-sprite! batch unit-scale sprite position))
 
-(defmethod draw! :draw/rotated-centered [[_ {:keys [texture-region color] :as image} rotation [x y]]
+(defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
                                          {:keys [ctx/batch
                                                  ctx/unit-scale]}]
-  (let [[w h] (unit-dimensions image unit-scale)]
-    (graphics/draw-texture-region! batch
-                                   texture-region
-                                   [(- (float x) (/ (float w) 2))
-                                    (- (float y) (/ (float h) 2))]
-                                   [w h]
-                                   rotation
-                                   color)))
+  (draw-sprite! batch unit-scale sprite position rotation))
 
 (defmethod draw! :draw/centered [[_ image position] ctx]
   (draw! [:draw/rotated-centered image 0 position] ctx))
