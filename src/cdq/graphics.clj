@@ -6,7 +6,12 @@
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Color
+                                      Texture
+                                      Pixmap
+                                      Pixmap$Format)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 
 (defprotocol PGraphics
@@ -131,7 +136,12 @@
                       world-viewport]}]
   (map->Graphics
    (let [batch (SpriteBatch.)
-         shape-drawer-texture (graphics/white-pixel-texture)
+         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                             (.setColor Color/WHITE)
+                                             (.drawPixel 0 0))
+                                    texture (Texture. pixmap)]
+                                (.dispose pixmap)
+                                texture)
          world-unit-scale (float (/ tile-size))]
      {:batch batch
       :unit-scale (atom 1)
@@ -140,9 +150,10 @@
       :shape-drawer (sd/create batch (graphics/texture-region shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
-                  (graphics/create-cursor (format cursor-path-format file)
-                                          hotspot-x
-                                          hotspot-y))
+                  (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                    (.dispose pixmap)
+                    cursor))
                 cursors)
       :default-font (graphics/truetype-font default-font)
       :world-viewport (viewport/world-viewport world-unit-scale world-viewport)

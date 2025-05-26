@@ -6,9 +6,7 @@
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Colors
-                                      Texture
-                                      Pixmap
-                                      Pixmap$Format)
+                                      Texture)
            (com.badlogic.gdx.graphics.g2d Batch TextureRegion)
            (com.badlogic.gdx.utils Disposable)))
 
@@ -48,12 +46,6 @@
                                   :enable-markup? true
                                   :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
 
-(defn create-cursor [path hotspot-x hotspot-y]
-  (let [pixmap (Pixmap. (.internal Gdx/files path))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
-
 (defn draw-on-viewport! [^Batch batch viewport draw-fn]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera viewport)))
@@ -75,14 +67,6 @@
          1 ; scale-y
          rotation)
   (if color (.setColor batch Color/WHITE)))
-
-(defn white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
