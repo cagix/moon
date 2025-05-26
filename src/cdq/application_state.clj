@@ -2,7 +2,8 @@
   (:require [cdq.create.assets]
             [cdq.create.db]
             [cdq.g :as g]
-            [gdl.application]))
+            [gdl.application]
+            [gdl.ui :as ui]))
 
 (defn add-component [ctx k v]
   {:pre [(not (contains? ctx k))]}
@@ -14,6 +15,7 @@
     (get config key)))
 
 (defn create! [config]
+  (ui/load! (:ui config))
   (-> (gdl.application/create-state! config)
       (cdq.create.assets/add-assets config)
       (add-component :ctx/config config)

@@ -491,7 +491,6 @@
     (.isKeyJustPressed Gdx/input (k->code key))))
 
 (defn create-state! [config]
-  (ui/load! (:ui config))
   (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ (:tile-size config)))
