@@ -1,6 +1,5 @@
 (ns gdl.tiled
-  (:import (cdq OrthogonalTiledMapRenderer ColorSetter)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
@@ -196,23 +195,3 @@
            movement-property-layers
            (some #(tile-movement-property tiled-map % position)))
       "none"))
-
-(defn renderer [tiled-map world-unit-scale batch]
-  (OrthogonalTiledMapRenderer. tiled-map
-                               (float world-unit-scale)
-                               batch))
-
-(defn draw! [^OrthogonalTiledMapRenderer renderer tiled-map color-setter camera]
-  (.setColorSetter renderer (reify ColorSetter
-                              (apply [_ color x y]
-                                (color-setter color x y))))
-  (.setView renderer camera)
-  ; there is also:
-  ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
-  ; but right order / visible only ?
-  (->> tiled-map
-       layers
-       (filter visible?)
-       (map (partial layer-index tiled-map))
-       int-array
-       (.render renderer)))

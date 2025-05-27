@@ -1,4 +1,4 @@
-package cdq;
+package gdl.graphics;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.C1;
 import static com.badlogic.gdx.graphics.g2d.Batch.C2;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 
-import cdq.ColorSetter;
+import gdl.graphics.ColorSetter;
 
 public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 

@@ -3,7 +3,7 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.space.earlygrey.shape-drawer :as sd]
-            [gdl.tiled :as tiled]
+            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
   (:import (com.badlogic.gdx Gdx)
@@ -96,10 +96,10 @@
       (draw! component this)))
 
   (draw-tiled-map! [_ tiled-map color-setter]
-    (tiled/draw! (tiled-map-renderer tiled-map)
-                 tiled-map
-                 color-setter
-                 (:camera world-viewport)))
+    (tiled-map-renderer/draw! (tiled-map-renderer tiled-map)
+                              tiled-map
+                              color-setter
+                              (:camera world-viewport)))
 
   (draw-on-world-viewport! [_ f]
     (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
@@ -203,7 +203,7 @@
       :default-font (truetype-font default-font)
       :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
       :tiled-map-renderer (memoize (fn [tiled-map]
-                                     (tiled/renderer tiled-map world-unit-scale batch)))})))
+                                     (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
