@@ -2,7 +2,9 @@
   (:require [clojure.gdx.assets.asset-manager :as asset-manager]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.files FileHandle)))
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture)))
 
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
@@ -25,16 +27,18 @@
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
                    (recursively-search (.internal Gdx/files folder) extensions))]
-     [file asset-type])))
+     [file (case asset-type
+             :sound Sound
+             :texture Texture)])))
 
 (defn sound [assets path]
-  (assets path))
+  (asset-manager/safe-get assets path))
 
 (defn texture [assets path]
-  (assets path))
+  (asset-manager/safe-get assets path))
 
 (defn all-sounds [assets]
-  (asset-manager/all-of-type assets :sound))
+  (asset-manager/all-of-type assets Sound))
 
 (defn all-textures [assets]
-  (asset-manager/all-of-type assets :texture))
+  (asset-manager/all-of-type assets Texture))
