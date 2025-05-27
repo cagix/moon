@@ -6,10 +6,12 @@
             [clojure.string :as str]
             gdl.application
             [gdl.graphics :as graphics]
+            [gdl.graphics.color :as color]
             [gdl.utils :refer [sort-by-k-order
-                               readable-number]]))
+                               readable-number]])
+  (:import (com.badlogic.gdx.graphics Colors)))
 
-(graphics/def-markdown-color "PRETTY_NAME" (graphics/color 0.84 0.8 0.52 1))
+(Colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52 1))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"

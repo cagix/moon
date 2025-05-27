@@ -1,6 +1,6 @@
 (ns cdq.tile-color-setter
   (:require [cdq.raycaster :as raycaster]
-            [gdl.graphics :as graphics]))
+            [gdl.graphics.color :as color]))
 
 (defn create [{:keys [raycaster
                       explored-tile-corners
@@ -14,7 +14,7 @@
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
             base-color (if explored?
                          explored-tile-color
-                         graphics/black)
+                         color/black)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
                        (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -25,11 +25,11 @@
             (swap! ray-positions conj position))
         (if blocked?
           (if see-all-tiles?
-            graphics/white
+            color/white
             base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              graphics/white))))))
+              color/white))))))
 
 (comment
  (def ^:private count-rays? false)

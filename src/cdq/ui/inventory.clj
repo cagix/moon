@@ -4,7 +4,7 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [gdl.graphics]
+            [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
@@ -63,7 +63,7 @@
   (ui/create-drawable (slot->sprite ctx slot)
                       :width cell-size
                       :height cell-size
-                      :tint-color (gdl.graphics/color 1 1 1 0.4)))
+                      :tint-color (color/create 1 1 1 0.4)))
 
 (defn- ->cell [ctx slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

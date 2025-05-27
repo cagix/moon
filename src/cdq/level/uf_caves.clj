@@ -3,7 +3,7 @@
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [gdl.graphics :as graphics]
+            [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
@@ -33,11 +33,11 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (graphics/texture-region texture
-                                    (* sprite-x sprite-size)
-                                    (* sprite-y sprite-size)
-                                    sprite-size
-                                    sprite-size)
+  (tm-tile (texture/region texture
+                           (* sprite-x sprite-size)
+                           (* sprite-y sprite-size)
+                           sprite-size
+                           sprite-size)
            movement))
 
 (def ^:private uf-grounds
