@@ -1,5 +1,4 @@
-{:cdq.application/create! cdq.create/create!
- :cdq.application/dispose! cdq.dispose/do!
+{:cdq.application/dispose! cdq.dispose/do!
  :cdq.application/render! cdq.render/do!
  :cdq.application/resize! cdq.resize/do!
  :cdq.application/validate-ctx-schema cdq.ctx-schema/validate

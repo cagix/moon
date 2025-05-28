@@ -12,7 +12,7 @@
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
-            [cdq.create]
+            [cdq.application]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
@@ -32,7 +32,7 @@
 (defmulti handle-tx! (fn [[k & _params] _ctx]
                        k))
 
-(extend-type cdq.create.Context
+(extend-type cdq.application.Context
   g/EffectHandler
   (handle-txs! [ctx transactions]
     (doseq [transaction transactions
