@@ -7,18 +7,15 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defprotocol Viewport
-  (update! [_])
+  (update! [_ width height])
   (mouse-position [_]))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
       Viewport
-      (update! [_]
-        (.update this
-                 (.getWidth  Gdx/graphics)
-                 (.getHeight Gdx/graphics)
-                 center-camera?))
+      (update! [_ width height]
+        (.update this width height center-camera?))
 
       ; touch coordinates are y-down, while screen coordinates are y-up
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
