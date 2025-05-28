@@ -7,8 +7,7 @@
             [cdq.state :as state]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
-            [gdl.utils :as utils]
-            [gdl.viewport :as viewport]))
+            [gdl.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -35,13 +34,12 @@
   (ui/widget
    {:draw
     (fn [actor {:keys [ctx/graphics
-                       ctx/player-eid
-                       ctx/ui-viewport] :as ctx}]
+                       ctx/player-eid] :as ctx}]
       (graphics/handle-draws! graphics
                               (draw-cell-rect @player-eid
                                               (ui/get-x actor)
                                               (ui/get-y actor)
-                                              (ui/hit actor (viewport/mouse-position ui-viewport))
+                                              (ui/hit actor (g/ui-mouse-position ctx))
                                               (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx

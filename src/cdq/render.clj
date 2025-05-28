@@ -114,15 +114,14 @@
                                    max-iterations)))
 
 
-(defn- update-mouseover-entity! [{:keys [ctx/graphics
-                                         ctx/player-eid
+(defn- update-mouseover-entity! [{:keys [ctx/player-eid
                                          ctx/mouseover-eid]
                                   :as ctx}]
   (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (g/point->entities ctx (graphics/world-mouse-position graphics)))]
+                                     (g/point->entities ctx (g/world-mouse-position ctx)))]
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -141,9 +140,8 @@
                                     ctx))
   nil)
 
-(defn- highlight-mouseover-tile* [{:keys [ctx/graphics]
-                                   :as ctx}]
-  (let [[x y] (mapv int (graphics/world-mouse-position graphics))
+(defn- highlight-mouseover-tile* [ctx]
+  (let [[x y] (mapv int (g/world-mouse-position ctx))
         cell (g/grid-cell ctx [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
@@ -155,9 +153,8 @@
                                   :as ctx}]
   (graphics/handle-draws! graphics (highlight-mouseover-tile* ctx)))
 
-(defn- geom-test* [{:keys [ctx/graphics]
-                    :as ctx}]
-  (let [position (graphics/world-mouse-position graphics)
+(defn- geom-test* [ctx]
+  (let [position (g/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]

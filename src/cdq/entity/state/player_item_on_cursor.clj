@@ -4,11 +4,9 @@
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [gdl.input :as input]
             [gdl.ui :as ui]
-            [gdl.utils :refer [defcomponent]]
-            [gdl.viewport :as viewport]))
+            [gdl.utils :refer [defcomponent]]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -56,9 +54,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [{:keys [ctx/graphics]} entity]
+(defn- item-place-position [ctx entity]
   (placement-point (entity/position entity)
-                   (graphics/world-mouse-position graphics)
+                   (g/world-mouse-position ctx)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -99,9 +97,8 @@
   (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
-  (state/draw-gui-view [_ eid {:keys [ctx/ui-viewport]
-                               :as ctx}]
+  (state/draw-gui-view [_ eid ctx]
     (when (not (world-item? ctx))
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
-        (viewport/mouse-position ui-viewport)]])))
+        (g/ui-mouse-position ctx)]])))

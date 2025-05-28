@@ -30,7 +30,6 @@
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite-sheet [x y]])
   (set-camera-position! [_ position])
-  (world-mouse-position [_])
   (world-viewport-width [_])
   (world-viewport-height [_])
   (camera-position [_])
@@ -156,9 +155,6 @@
 
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
-
-  (world-mouse-position [_]
-    (viewport/mouse-position world-viewport))
 
   (world-viewport-width [_]
     (:width world-viewport))

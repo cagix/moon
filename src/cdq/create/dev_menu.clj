@@ -1,5 +1,6 @@
 (ns cdq.create.dev-menu
   (:require cdq.application
+            cdq.create
             cdq.create.actors
             [cdq.db :as db]
             [cdq.entity :as entity]
@@ -8,10 +9,8 @@
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            cdq.create
             [gdl.ui.menu :as menu]
-            [gdl.utils :as utils]
-            [gdl.viewport :as viewport]))
+            [gdl.utils :as utils]))
 
 (extend-type cdq.create.Context
   cdq.create.actors/DevMenuActor
@@ -44,11 +43,11 @@
                        :update-fn (fn [{:keys [ctx/paused?]}]
                                     paused?)}
                       {:label "GUI"
-                       :update-fn (fn [{:keys [ctx/ui-viewport]}]
-                                    (mapv int (viewport/mouse-position ui-viewport)))}
+                       :update-fn (fn [ctx]
+                                    (mapv int (g/ui-mouse-position ctx)))}
                       {:label "World"
-                       :update-fn (fn [{:keys [ctx/graphics]}]
-                                    (mapv int (graphics/world-mouse-position graphics)))}
+                       :update-fn (fn [ctx]
+                                    (mapv int (g/world-mouse-position ctx)))}
                       {:label "Zoom"
                        :update-fn (comp graphics/camera-zoom :ctx/graphics)
                        :icon (assets/texture assets "images/zoom.png")}

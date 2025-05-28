@@ -1,14 +1,13 @@
 (ns gdl.viewport
   (:require [clojure.gdx.math.math-utils :as math-utils])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defprotocol Viewport
   (update! [_ width height])
-  (mouse-position [_]))
+  (unproject [_ position]))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
@@ -21,14 +20,14 @@
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
       ; TODO clamping only works for gui-viewport ?
       ; TODO ? "Can be negative coordinates, undefined cells."
-      (mouse-position [_]
-        (let [mouse-x (math-utils/clamp (.getX Gdx/input)
-                                        (.getLeftGutterWidth this)
-                                        (.getRightGutterX    this))
-              mouse-y (math-utils/clamp (.getY Gdx/input)
-                                        (.getTopGutterHeight this)
-                                        (.getTopGutterY      this))]
-          (let [v2 (.unproject this (Vector2. mouse-x mouse-y))]
+      (unproject [_ [x y]]
+        (let [clamped-x (math-utils/clamp x
+                                          (.getLeftGutterWidth this)
+                                          (.getRightGutterX    this))
+              clamped-y (math-utils/clamp y
+                                          (.getTopGutterHeight this)
+                                          (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. clamped-x clamped-y))]
             [(.x v2) (.y v2)])))
 
       ILookup

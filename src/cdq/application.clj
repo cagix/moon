@@ -46,7 +46,11 @@
         (.isKeyJustPressed input (interop/k->input-key key)))
 
       (set-processor! [_ input-processor]
-        (.setInputProcessor input input-processor)))))
+        (.setInputProcessor input input-processor))
+
+      (mouse-position [_]
+        [(.getX input)
+         (.getY input)]))))
 
 (defn- get-context []
   {;:clojure.gdx/app      Gdx/app

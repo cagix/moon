@@ -38,15 +38,27 @@
     (assoc ctx :ctx/stage stage)))
 
 (extend-type Context
+  g/MouseViewports
+  (world-mouse-position [{:keys [ctx/graphics
+                                 ctx/input]}]
+    (viewport/unproject (:world-viewport graphics)
+                        (input/mouse-position input)))
+
+  (ui-mouse-position [{:keys [ctx/ui-viewport
+                              ctx/input]}]
+    (viewport/unproject ui-viewport
+                        (input/mouse-position input))))
+
+(extend-type Context
   g/Stage
   (find-actor-by-name [{:keys [ctx/stage]} name]
     (-> stage
         ui/root
         (ui/find-actor name))) ; <- find-actor protocol & for stage use ui/root
 
-  (mouseover-actor [{:keys [ctx/ui-viewport
-                            ctx/stage]}]
-    (ui/hit stage (viewport/mouse-position ui-viewport))))
+  (mouseover-actor [{:keys [ctx/stage]
+                     :as ctx}]
+    (ui/hit stage (g/ui-mouse-position ctx))))
 
 (extend-type Context
   g/Context
@@ -259,12 +271,12 @@
 
 (extend-type Context
   g/EffectContext
-  (player-effect-ctx [{:keys [ctx/graphics
-                              ctx/mouseover-eid]}
+  (player-effect-ctx [{:keys [ctx/mouseover-eid]
+                       :as ctx}
                       eid]
     (let [target-position (or (and mouseover-eid
                                    (entity/position @mouseover-eid))
-                              (graphics/world-mouse-position graphics))]
+                              (g/world-mouse-position ctx))]
       {:effect/source eid
        :effect/target mouseover-eid
        :effect/target-position target-position

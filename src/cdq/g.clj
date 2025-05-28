@@ -73,3 +73,7 @@
 (defprotocol Stage
   (find-actor-by-name [_ name])
   (mouseover-actor [_]))
+
+(defprotocol MouseViewports
+  (world-mouse-position [_])
+  (ui-mouse-position [_]))
