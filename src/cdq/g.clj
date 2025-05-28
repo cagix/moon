@@ -89,9 +89,6 @@
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]]))
 
-(defprotocol Draws
-  (handle-draws! [_ draws]))
-
 (defprotocol Stage
   (get-actor [_ id])
   (find-actor-by-name [_ name])

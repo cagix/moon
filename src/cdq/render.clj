@@ -13,9 +13,10 @@
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
-(defn- render-entities! [{:keys [ctx/active-entities
-                                ctx/player-eid]
-                         :as ctx}]
+(defn- render-entities! [{:keys [ctx/graphics
+                                 ctx/active-entities
+                                 ctx/player-eid]
+                          :as ctx}]
   (let [entities (map deref active-entities)
         player @player-eid]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
@@ -30,11 +31,11 @@
                       (g/line-of-sight? ctx player entity))]
       (try
        (when ctx/show-body-bounds?
-         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+         (graphics/handle-draws! graphics (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
-         (g/handle-draws! ctx (render! component entity ctx)))
+         (graphics/handle-draws! graphics (render! component entity ctx)))
        (catch Throwable t
-         (g/handle-draws! ctx (draw-body-rect entity :red))
+         (graphics/handle-draws! graphics (draw-body-rect entity :red))
          (stacktrace/pretty-pst t))))))
 
 (defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
@@ -142,8 +143,9 @@
           :air  [1 1 0 0.5]
           :none [1 0 0 0.5])]])))
 
-(defn- highlight-mouseover-tile [ctx]
-  (g/handle-draws! ctx (highlight-mouseover-tile* ctx)))
+(defn- highlight-mouseover-tile [{:keys [ctx/graphics]
+                                  :as ctx}]
+  (graphics/handle-draws! graphics (highlight-mouseover-tile* ctx)))
 
 (defn- geom-test* [ctx]
   (let [position (g/world-mouse-position ctx)
@@ -157,8 +159,9 @@
                  :keys [width height]} (math/circle->outer-rectangle circle)]
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
-(defn- geom-test [ctx]
-  (g/handle-draws! ctx (geom-test* ctx)))
+(defn- geom-test [{:keys [ctx/graphics]
+                   :as ctx}]
+  (graphics/handle-draws! graphics (geom-test* ctx)))
 
 (defn- draw-tile-grid* [ctx]
   (when ctx/show-tile-grid?
@@ -172,8 +175,9 @@
         1
         [1 1 1 0.8]]])))
 
-(defn- draw-tile-grid [ctx]
-  (g/handle-draws! ctx (draw-tile-grid* ctx)))
+(defn- draw-tile-grid [{:keys [ctx/graphics]
+                        :as ctx}]
+  (graphics/handle-draws! graphics (draw-tile-grid* ctx)))
 
 (defn- draw-cell-debug* [ctx]
   (apply concat
@@ -191,8 +195,9 @@
                   (let [ratio (/ distance (ctx/factions-iterations faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
-(defn- draw-cell-debug [ctx]
-  (g/handle-draws! ctx (draw-cell-debug* ctx)))
+(defn- draw-cell-debug [{:keys [ctx/graphics]
+                         :as ctx}]
+  (graphics/handle-draws! graphics (draw-cell-debug* ctx)))
 
 ; Now I get it - we do not need to depend on concretions here -> that's why its so complicated
 ; also its side effects ... ?? -> transactions ?!

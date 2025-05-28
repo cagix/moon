@@ -11,7 +11,7 @@
 
 (extend-type gdl.application.Context
   g/Graphics
-  (sprite [{:keys [ctx/assets] :as ctx} texture-path]
+  (sprite [{:keys [ctx/assets] :as ctx} texture-path] ; <- textures should be inside graphics, makes this easier.
     (graphics/sprite (-k ctx)
                      (assets/texture assets texture-path)))
 
@@ -30,11 +30,6 @@
     (graphics/sprite-sheet->sprite (-k ctx)
                                    sprite-sheet
                                    [x y])))
-
-(extend-type gdl.application.Context
-  g/Draws
-  (handle-draws! [ctx draws]
-    (graphics/handle-draws! (-k ctx) draws)))
 
 (extend-type gdl.application.Context
   g/WorldViewport

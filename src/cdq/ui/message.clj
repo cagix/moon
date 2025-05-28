@@ -1,5 +1,6 @@
 (ns cdq.ui.message
   (:require [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [gdl.ui :as ui]))
 
 (defn- draw-message [state ctx]
@@ -11,8 +12,10 @@
                  :up? true}]))
 
 (defn create [& {:keys [name]}]
-  (ui/actor {:draw (fn [this ctx]
-                     (g/handle-draws! ctx [(draw-message (ui/user-object this) ctx)]))
+  (ui/actor {:draw (fn [this {:keys [ctx/graphics]
+                              :as ctx}]
+                     (graphics/handle-draws! graphics
+                                             [(draw-message (ui/user-object this) ctx)]))
              :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)
