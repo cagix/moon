@@ -69,5 +69,4 @@
 
 (defprotocol Stage
   (find-actor-by-name [_ name])
-  (mouseover-actor [_])
-  (reset-actors! [_]))
+  (mouseover-actor [_]))

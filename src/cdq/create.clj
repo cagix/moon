@@ -102,11 +102,7 @@
 
   (mouseover-actor [{:keys [ctx/ui-viewport
                             ctx/stage]}]
-    (ui/hit stage (viewport/mouse-position ui-viewport)))
-
-  (reset-actors! [{:keys [ctx/stage] :as ctx}]
-    (ui/clear! stage)
-    (run! #(ui/add! stage %) (create-actors ctx))))
+    (ui/hit stage (viewport/mouse-position ui-viewport))))
 
 (extend-type gdl.application.Context
   g/Context
@@ -229,8 +225,12 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
-(defn create-game-state [{:keys [ctx/config] :as ctx} world-fn]
-  (g/reset-actors! ctx)
+(defn create-game-state [{:keys [ctx/config
+                                 ctx/stage]
+                          :as ctx}
+                         world-fn]
+  (ui/clear! stage)
+  (run! #(ui/add! stage %) (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
