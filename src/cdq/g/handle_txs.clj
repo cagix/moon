@@ -1,5 +1,7 @@
 (ns cdq.g.handle-txs
-  (:require [cdq.animation :as animation]
+  (:require [gdl.audio.sound :as sound]
+            [gdl.assets :as assets]
+            [cdq.animation :as animation]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
@@ -15,13 +17,11 @@
 
 ; TODO move-entity!
 
-(def sound-path-format "sounds/%s.wav")
-
-(defn- play-sound! [ctx sound-name]
+(defn- play-sound! [{:keys [ctx/assets]} sound-name]
   (->> sound-name
-       (format sound-path-format)
-       (g/sound ctx)
-       com.badlogic.gdx.audio.Sound/.play))
+       (format "sounds/%s.wav")
+       (assets/sound assets)
+       sound/play!))
 
 (defn- spawn-effect! [ctx position components]
   (g/spawn-entity! ctx
@@ -54,7 +54,8 @@
 (defmethod handle-tx! :tx/dissoc [[_ eid k] _ctx]
   (swap! eid dissoc k))
 
-; => this means we dont want gdl context in our app open --- hide it again o.lo
+
+
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
