@@ -182,7 +182,7 @@
                                 {:size (* size quality-scaling)})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
-                                  :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
+                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
 
 (defn create [{:keys [clojure.gdx/graphics
                       clojure.gdx/files]}
