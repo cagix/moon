@@ -1,6 +1,7 @@
 (ns gdl.assets
   (:require [clojure.gdx.assets.asset-manager :as asset-manager]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [gdl.files :as files])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
@@ -25,7 +26,7 @@
   (asset-manager/create
    (for [[asset-type extensions] asset-type-extensions
          file (map #(str/replace-first % folder "")
-                   (recursively-search (.internal files folder) extensions))]
+                   (recursively-search (files/internal files folder) extensions))]
      [file (case asset-type
              :sound Sound
              :texture Texture)])))

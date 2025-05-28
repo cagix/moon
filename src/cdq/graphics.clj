@@ -3,6 +3,8 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.space.earlygrey.shape-drawer :as sd]
+            [gdl.files :as files]
+            [gdl.graphics :as graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
@@ -12,7 +14,7 @@
                                       Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.utils ScreenUtils Disposable)))
+           (com.badlogic.gdx.utils Disposable)))
 
 (defprotocol PGraphics
   (delta-time [_])
@@ -76,7 +78,7 @@
 (defmulti draw! (fn [[k] _this]
                   k))
 
-(defrecord Graphics [^com.badlogic.gdx.Graphics graphics
+(defrecord Graphics [graphics
                      ^SpriteBatch batch
                      unit-scale
                      world-unit-scale
@@ -95,16 +97,16 @@
 
   PGraphics
   (delta-time [_]
-    (.getDeltaTime graphics))
+    (graphics/delta-time graphics))
 
   (set-cursor! [_ cursor]
-    (.setCursor graphics (utils/safe-get cursors cursor)))
+    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
 
   (frames-per-second [_]
-    (.getFramesPerSecond graphics))
+    (graphics/frames-per-second graphics))
 
   (clear-screen! [_]
-    (ScreenUtils/clear Color/BLACK))
+    (graphics/clear-screen! graphics))
 
   (handle-draws! [this draws]
     (doseq [component draws
@@ -180,7 +182,7 @@
     (camera/zoom (:camera world-viewport))))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal files file)
+  (let [font (freetype/generate (files/internal files file)
                                 {:size (* size quality-scaling)})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
@@ -210,8 +212,8 @@
       :shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
-                  (let [pixmap (Pixmap. (.internal files (format cursor-path-format file)))
-                        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+                  (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
+                        cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                     (.dispose pixmap)
                     cursor))
                 cursors)
