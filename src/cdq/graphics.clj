@@ -13,9 +13,13 @@
                                       Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.utils Disposable)))
+           (com.badlogic.gdx.utils ScreenUtils Disposable)))
 
 (defprotocol PGraphics
+  (delta-time [_])
+  (set-cursor! [_ cursor])
+  (frames-per-second [_])
+  (clear-screen! [_])
   (draw-tiled-map! [_ tiled-map color-setter])
   (handle-draws! [_ draws])
   (draw-on-world-viewport! [_ f])
@@ -73,7 +77,8 @@
 (defmulti draw! (fn [[k] _this]
                   k))
 
-(defrecord Graphics [^SpriteBatch batch
+(defrecord Graphics [^com.badlogic.gdx.Graphics graphics
+                     ^SpriteBatch batch
                      unit-scale
                      world-unit-scale
                      shape-drawer-texture
@@ -90,6 +95,18 @@
     (Disposable/.dispose default-font))
 
   PGraphics
+  (delta-time [_]
+    (.getDeltaTime graphics))
+
+  (set-cursor! [_ cursor]
+    (.setCursor graphics (utils/safe-get cursors cursor)))
+
+  (frames-per-second [_]
+    (.getFramesPerSecond graphics))
+
+  (clear-screen! [_]
+    (ScreenUtils/clear Color/BLACK))
+
   (handle-draws! [this draws]
     (doseq [component draws
             :when component]
@@ -174,7 +191,8 @@
 ; update viewports
 ; set cursor :ctx/graphics
 ; textures asset-manager
-(defn create [{:keys [tile-size
+(defn create [graphics
+              {:keys [tile-size
                       cursor-path-format
                       cursors
                       default-font
@@ -188,7 +206,8 @@
                                 (.dispose pixmap)
                                 texture)
          world-unit-scale (float (/ tile-size))]
-     {:batch batch
+     {:graphics graphics
+      :batch batch
       :unit-scale (atom 1)
       :world-unit-scale world-unit-scale
       :shape-drawer-texture shape-drawer-texture
@@ -196,7 +215,7 @@
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
                     (.dispose pixmap)
                     cursor))
                 cursors)

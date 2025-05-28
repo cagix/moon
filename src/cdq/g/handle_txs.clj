@@ -8,6 +8,7 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
@@ -56,8 +57,9 @@
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
-(defmethod handle-tx! :tx/set-cursor [[_ cursor-key] ctx]
-  (g/set-cursor! ctx (utils/safe-get (:cursors (:ctx/graphics ctx)) cursor-key)))
+(defmethod handle-tx! :tx/set-cursor [[_ cursor-key]
+                                      {:keys [ctx/graphics]}]
+  (graphics/set-cursor! graphics cursor-key))
 
 (defmethod handle-tx! :tx/show-message [[_ message] ctx]
   (cdq.ui.message/show! (g/find-actor-by-name ctx "player-message")

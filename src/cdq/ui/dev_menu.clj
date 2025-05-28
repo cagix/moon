@@ -45,11 +45,10 @@
                      :update-fn (fn [{:keys [ctx/graphics]}]
                                   (mapv int (graphics/world-mouse-position graphics)))}
                     {:label "Zoom"
-                     :update-fn (fn [{:keys [ctx/graphics]}]
-                                  (graphics/camera-zoom graphics))
+                     :update-fn (comp graphics/camera-zoom :ctx/graphics)
                      :icon (assets/texture assets "images/zoom.png")}
                     {:label "FPS"
-                     :update-fn g/frames-per-second
+                     :update-fn (comp graphics/frames-per-second :ctx/graphics)
                      :icon (assets/texture assets "images/fps.png")}]}))
 
 ;"Mouseover-Actor: "

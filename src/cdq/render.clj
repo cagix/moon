@@ -92,8 +92,9 @@
   )
 
 (defn- assoc-delta-time
-  [ctx]
-  (assoc ctx :ctx/delta-time (min (g/delta-time ctx) ctx/max-delta)))
+  [{:keys [ctx/graphics]
+    :as ctx}]
+  (assoc ctx :ctx/delta-time (min (graphics/delta-time graphics) ctx/max-delta)))
 
 (defn- update-elapsed-time
   [{:keys [ctx/delta-time]
@@ -217,7 +218,7 @@
             :as ctx}]
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
     (graphics/set-camera-position! graphics (entity/position @player-eid))
-    (g/clear-screen! ctx)
+    (graphics/clear-screen! graphics)
     (g/draw-world-map! ctx)
     (graphics/draw-on-world-viewport! graphics
                                       (fn []

@@ -61,12 +61,6 @@
 (defprotocol Creatures
   (spawn-creature! [_ {:keys [position creature-id components]}]))
 
-(defprotocol BaseGraphics
-  (delta-time [_])
-  (set-cursor! [_ cursor])
-  (frames-per-second [_])
-  (clear-screen! [_]))
-
 (defprotocol UIViewport
   (ui-mouse-position [_])
   (ui-viewport-width [_])

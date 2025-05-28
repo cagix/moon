@@ -11,9 +11,7 @@
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx Gdx
                              Input$Keys
-                             Input$Buttons)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils ScreenUtils)))
+                             Input$Buttons)))
 
 (defn- button->code [button]
   (case button
@@ -47,26 +45,12 @@
     (key-just-pressed? [_ key]
       (.isKeyJustPressed input (k->code key)))))
 
-(defn add-gdx-graphics! [ctx graphics] ; -> this is actually truly in cdq.graphics, but pixmap, spritebatch etc. dont give their params -> can easily make a PR for that...
-  (extend (class ctx)
-    g/BaseGraphics
-    {:delta-time (fn [_]
-                   (.getDeltaTime graphics))
-     :set-cursor! (fn [_ cursor]
-                    (.setCursor graphics cursor))
-     :frames-per-second (fn [_]
-                          (.getFramesPerSecond graphics))
-     :clear-screen! (fn [_]
-                      (ScreenUtils/clear Color/BLACK))})
-  ctx)
-
 (defn create! [config]
   (ui/load! (:ui config))
   (-> (gdl.application/map->Context {})
       (assoc :ctx/config config)
-      (assoc :ctx/graphics (graphics/create config))
+      (assoc :ctx/graphics (graphics/create Gdx/graphics config)) ; <- actually create only called here <- all libgdx create stuff here and assets/input/graphics/stage/viewport as protocols in gdl ? -> all gdx code creating together and upfactored protocols?
       (assoc :ctx/input (make-input Gdx/input))
-      (add-gdx-graphics! Gdx/graphics)
       (cdq.create.ui-viewport/add config)
       (cdq.create.stage/add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))
