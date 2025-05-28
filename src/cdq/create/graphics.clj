@@ -11,9 +11,6 @@
 
 (extend-type gdl.application.Context
   g/Graphics
-  (pixels->world-units [ctx pixels]
-    (graphics/pixels->world-units (-k ctx) pixels))
-
   (sprite [{:keys [ctx/assets] :as ctx} texture-path]
     (graphics/sprite (-k ctx)
                      (assets/texture assets texture-path)))

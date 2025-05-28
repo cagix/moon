@@ -1,7 +1,7 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
             [cdq.val-max :as val-max]
-            [cdq.g :as g]
             [gdl.utils :refer [defcomponent]]))
 
 (def ^:private hpbar-colors
@@ -21,15 +21,15 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [ctx
+(defn- draw-hpbar [graphics
                    {:keys [width half-width half-height]
                     :as entity}
                    ratio]
   (let [[x y] (entity/position entity)]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units ctx 5)
-          border (g/pixels->world-units ctx borders-px)]
+          height (graphics/pixels->world-units graphics 5)
+          border (graphics/pixels->world-units graphics borders-px)]
       [[:draw/filled-rectangle x y width height :black]
        [:draw/filled-rectangle
         (+ x border)
@@ -42,7 +42,7 @@
   (entity/create [[_ v] _ctx]
     [v v])
 
-  (entity/render-info! [_ entity ctx]
+  (entity/render-info! [_ entity {:keys [ctx/graphics]}]
     (let [ratio (val-max/ratio (entity/hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar ctx entity ratio)))))
+        (draw-hpbar graphics entity ratio)))))

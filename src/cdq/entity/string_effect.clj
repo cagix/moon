@@ -1,6 +1,7 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/string-effect
@@ -10,12 +11,12 @@
 
   (entity/render-above! [[_ {:keys [text]}]
                          entity
-                         ctx]
+                         {:keys [ctx/graphics]}]
     (let [[x y] (entity/position entity)]
       [[:draw/text {:text text
                     :x x
                     :y (+ y
                           (:half-height entity)
-                          (g/pixels->world-units ctx 5))
+                          (graphics/pixels->world-units graphics 5))
                     :scale 2
                     :up? true}]])))
