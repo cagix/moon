@@ -1,6 +1,7 @@
 (ns cdq.render
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
             [cdq.state :as state]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.g :as g]
@@ -199,19 +200,21 @@
 ; Wait ! we make the protocols inside cdq.render -> get-active-entities, clear-screen, etc. and then the details defined over that..
 ; maybe even @ update pf etc can be made simpler?
 
-(defn do! [{:keys [ctx/player-eid] :as ctx}]
+(defn do! [{:keys [ctx/graphics
+                   ctx/player-eid]
+            :as ctx}]
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
     (g/set-camera-position! ctx (entity/position @player-eid))
     (g/clear-screen! ctx)
     (g/draw-world-map! ctx)
-    (g/draw-on-world-viewport! ctx
-                               (fn []
-                                 (doseq [f [draw-tile-grid
-                                            draw-cell-debug
-                                            render-entities!
-                                            ;geom-test
-                                            highlight-mouseover-tile]]
-                                   (f ctx))))
+    (graphics/draw-on-world-viewport! graphics
+                                      (fn []
+                                        (doseq [f [draw-tile-grid
+                                                   draw-cell-debug
+                                                   render-entities!
+                                                   ;geom-test
+                                                   highlight-mouseover-tile]]
+                                          (f ctx))))
     (g/draw-stage! ctx)
     (g/update-stage! ctx)
     (player-state-handle-click! ctx)

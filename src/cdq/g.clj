@@ -84,7 +84,6 @@
   (ui-viewport-height [_]))
 
 (defprotocol Graphics
-  (draw-on-world-viewport! [_ f])
   (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])

@@ -11,9 +11,6 @@
 
 (extend-type gdl.application.Context
   g/Graphics
-  (draw-on-world-viewport! [ctx f]
-    (graphics/draw-on-world-viewport! (-k ctx) f))
-
   (pixels->world-units [ctx pixels]
     (graphics/pixels->world-units (-k ctx) pixels))
 
