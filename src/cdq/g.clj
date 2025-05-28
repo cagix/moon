@@ -91,9 +91,6 @@
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]]))
 
-(defprotocol TiledMapRenderer
-  (draw-tiled-map! [_ tiled-map color-setter]))
-
 (defprotocol Draws
   (handle-draws! [_ draws]))
 

@@ -10,11 +10,6 @@
   (assoc ctx -k (graphics/create config)))
 
 (extend-type gdl.application.Context
-  g/TiledMapRenderer
-  (draw-tiled-map! [ctx tiled-map color-setter]
-    (graphics/draw-tiled-map! (-k ctx) tiled-map color-setter)))
-
-(extend-type gdl.application.Context
   g/Graphics
   (draw-on-world-viewport! [ctx f]
     (graphics/draw-on-world-viewport! (-k ctx) f))
