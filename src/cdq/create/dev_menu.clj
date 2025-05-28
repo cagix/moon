@@ -8,12 +8,12 @@
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            gdl.application
+            cdq.create
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport]))
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   cdq.create.actors/DevMenuActor
   (create-dev-menu [{:keys [ctx/assets
                             ctx/config

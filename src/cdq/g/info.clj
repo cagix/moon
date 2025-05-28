@@ -4,7 +4,7 @@
             [cdq.op :as op]
             [clojure.math :as math]
             [clojure.string :as str]
-            gdl.application
+            cdq.create
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.colors :as colors]
@@ -87,7 +87,7 @@
        (str/join "\n")
        remove-newlines))
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/InfoText
   (info-text [ctx object]
     (text ctx object)))

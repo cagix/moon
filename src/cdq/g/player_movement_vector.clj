@@ -1,10 +1,10 @@
 (ns cdq.g.player-movement-vector
   (:require [cdq.g :as g]
             [cdq.vector2 :as v]
-            gdl.application
+            cdq.create
             [gdl.input :as input]))
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/PlayerMovementInput
   (player-movement-vector [{:keys [ctx/input]}]
     (let [r (when (input/key-pressed? input :d) [1  0])

@@ -6,7 +6,7 @@
             [cdq.malli :as m]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
-            gdl.application
+            cdq.create
             [gdl.math :as math]
             [gdl.utils :as utils]))
 
@@ -198,7 +198,7 @@
           {}
           components))
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/SpawnEntity
   (spawn-entity! [{:keys [ctx/id-counter] :as ctx}
                   position

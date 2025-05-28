@@ -1,7 +1,7 @@
 (ns cdq.g.spawn-creature
   (:require [cdq.db :as db]
             [cdq.g :as g]
-            [gdl.application]
+            [cdq.create]
             [gdl.utils :as utils]))
 
 ; # :z-order/flying has no effect for now
@@ -18,7 +18,7 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/Creatures
   (spawn-creature! [{:keys [ctx/db]
                      :as ctx}

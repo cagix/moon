@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
-            gdl.application))
+            cdq.create))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -23,7 +23,7 @@
 ; move the debug flag to either render or mouseover or lets see
 (def ^:private ^:dbg-flag los-checks? true)
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/LineOfSight
   ; does not take into account size of entity ...
   ; => assert bodies <1 width then

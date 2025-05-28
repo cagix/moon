@@ -19,14 +19,18 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
             [clojure.gdx.input]
-            [gdl.application]
             [gdl.assets :as assets]
             [gdl.graphics.color :as color]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
-            [gdl.viewport :as viewport]))
+            [gdl.viewport :as viewport]
+            [qrecord.core :as q]))
+
+(q/defrecord Context [ctx/assets
+                      ctx/graphics
+                      ctx/stage])
 
 (defn- make-input [input]
   (reify input/Input
@@ -45,7 +49,7 @@
     (.setInputProcessor input stage)
     (assoc ctx :ctx/stage stage)))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Stage
   (find-actor-by-name [{:keys [ctx/stage]} name]
     (-> stage
@@ -56,7 +60,7 @@
                             ctx/stage]}]
     (ui/hit stage (viewport/mouse-position ui-viewport))))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Context
   (context-entity-add! [{:keys [ctx/entity-ids
                                 ctx/content-grid
@@ -128,7 +132,7 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/StageActors
   (open-error-window! [{:keys [ctx/stage]} throwable]
     (ui/add! stage (error-window/create throwable)))
@@ -136,7 +140,7 @@
   (selected-skill [{:keys [ctx/stage]}]
     (action-bar/selected-skill (:action-bar stage))))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Raycaster
   (ray-blocked? [{:keys [ctx/raycaster]} start end]
     (raycaster/blocked? raycaster
@@ -149,7 +153,7 @@
                              end
                              width)))
 
-(extend-type gdl.application.Context
+(extend-type Context
   cdq.g/Grid
   (grid-cell [{:keys [ctx/grid]} position]
     (grid/cell grid position))
@@ -202,7 +206,7 @@
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Game
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
@@ -212,7 +216,7 @@
                 :as gdx}
                config]
   (ui/load! (:ui config))
-  (-> (gdl.application/map->Context {})
+  (-> (map->Context {})
       (assoc :ctx/config config)
       (assoc :ctx/graphics (graphics/create gdx config))
       (assoc :ctx/input (make-input input))
@@ -222,7 +226,7 @@
       (assoc :ctx/db (db/create (:db config)))
       (g/reset-game-state! (:world-fn config))))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Graphics
   (sprite [{:keys [ctx/assets] :as ctx} texture-path] ; <- textures should be inside graphics, makes this easier.
     (graphics/sprite (:ctx/graphics ctx)
@@ -244,13 +248,13 @@
                                    sprite-sheet
                                    [x y])))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/ActiveEntities
   (get-active-entities [{:keys [ctx/content-grid
                                 ctx/player-eid]}]
     (content-grid/active-entities content-grid @player-eid)))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/DrawWorldMap
   (draw-world-map! [{:keys [ctx/graphics
                             ctx/tiled-map
@@ -265,7 +269,7 @@
                                 :explored-tile-color (color/create 0.5 0.5 0.5 1)
                                 :see-all-tiles? false}))))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/EffectContext
   (player-effect-ctx [{:keys [ctx/graphics
                               ctx/mouseover-eid]}
@@ -290,7 +294,7 @@
                                   (v/direction (entity/position entity)
                                                (entity/position @target)))})))
 
-(extend-type gdl.application.Context
+(extend-type Context
   g/Time
   (elapsed-time [{:keys [ctx/elapsed-time]}]
     elapsed-time)

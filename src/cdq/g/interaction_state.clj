@@ -4,7 +4,7 @@
             [cdq.inventory :as inventory]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
-            gdl.application
+            cdq.create
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
@@ -58,7 +58,7 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(extend-type gdl.application.Context
+(extend-type cdq.create.Context
   g/InteractionState
   (interaction-state [{:keys [ctx/mouseover-eid]
                        :as ctx}
