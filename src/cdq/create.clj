@@ -18,6 +18,7 @@
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
+            [clojure.gdx.input :as input]
             [gdl.application]
             [gdl.assets :as assets]
             [gdl.graphics.color :as color]
@@ -26,41 +27,18 @@
             [gdl.ui :as ui]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx Gdx
-                             Input$Keys
-                             Input$Buttons)))
-
-(defn- button->code [button]
-  (case button
-    :left Input$Buttons/LEFT
-    ))
-
-(defn- k->code [key]
-  (case key
-    :minus  Input$Keys/MINUS
-    :equals Input$Keys/EQUALS
-    :space  Input$Keys/SPACE
-    :p      Input$Keys/P
-    :enter  Input$Keys/ENTER
-    :escape Input$Keys/ESCAPE
-    :i      Input$Keys/I
-    :e      Input$Keys/E
-    :d      Input$Keys/D
-    :a      Input$Keys/A
-    :w      Input$Keys/W
-    :s      Input$Keys/S
-    ))
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn- make-input [input]
   (reify input/Input
     (button-just-pressed? [_ button]
-      (.isButtonJustPressed input (button->code button)))
+      (input/button-just-pressed? input button))
 
     (key-pressed? [_ key]
-      (.isKeyPressed input (k->code key)))
+      (input/key-pressed? input key))
 
     (key-just-pressed? [_ key]
-      (.isKeyJustPressed input (k->code key)))))
+      (input/key-just-pressed? input key))))
 
 (defn- add-stage! [ctx]
   (let [stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
