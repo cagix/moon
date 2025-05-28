@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl])
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.backends.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (def state (atom nil))
@@ -14,7 +15,7 @@
   (lwjgl/application lwjgl-app-config
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create! config))
+                         (reset! state (create! (gdx/get-context) config))
                          (validate-ctx-schema @state))
 
                        (dispose []

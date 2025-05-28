@@ -18,7 +18,7 @@
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
-            [clojure.gdx.input :as input]
+            [clojure.gdx.input]
             [gdl.application]
             [gdl.assets :as assets]
             [gdl.graphics.color :as color]
@@ -26,24 +26,23 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
-            [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdl.viewport :as viewport]))
 
 (defn- make-input [input]
   (reify input/Input
     (button-just-pressed? [_ button]
-      (input/button-just-pressed? input button))
+      (clojure.gdx.input/button-just-pressed? input button))
 
     (key-pressed? [_ key]
-      (input/key-pressed? input key))
+      (clojure.gdx.input/key-pressed? input key))
 
     (key-just-pressed? [_ key]
-      (input/key-just-pressed? input key))))
+      (clojure.gdx.input/key-just-pressed? input key))))
 
-(defn- add-stage! [ctx]
+(defn- add-stage! [ctx input]
   (let [stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         (:batch (:ctx/graphics ctx)))]
-    (.setInputProcessor Gdx/input stage)
+    (.setInputProcessor input stage)
     (assoc ctx :ctx/stage stage)))
 
 (extend-type gdl.application.Context
@@ -208,14 +207,16 @@
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
 
-(defn create! [config]
+(defn create! [{:keys [clojure.gdx/graphics
+                       clojure.gdx/input]}
+               config]
   (ui/load! (:ui config))
   (-> (gdl.application/map->Context {})
       (assoc :ctx/config config)
-      (assoc :ctx/graphics (graphics/create Gdx/graphics config)) ; <- actually create only called here <- all libgdx create stuff here and assets/input/graphics/stage/viewport as protocols in gdl ? -> all gdx code creating together and upfactored protocols?
-      (assoc :ctx/input (make-input Gdx/input))
+      (assoc :ctx/graphics (graphics/create graphics config)) ; <- actually create only called here <- all libgdx create stuff here and assets/input/graphics/stage/viewport as protocols in gdl ? -> all gdx code creating together and upfactored protocols?
+      (assoc :ctx/input (make-input input))
       (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config))) ; <- even viewport construction is in here .... viewport itself a protocol  ....
-      (add-stage!)
+      (add-stage! input)
       (assoc :ctx/assets (assets/create (:assets config)))
       (assoc :ctx/db (db/create (:db config)))
       (g/reset-game-state! (:world-fn config))))
