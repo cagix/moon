@@ -8,6 +8,7 @@
                                       scalegrid
                                       cave-grid
                                       flood-fill]]
+            [gdl.assets :as assets]
             [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]))
 
@@ -127,8 +128,8 @@
     {:tiled-map tiled-map
      :start-position start-position}))
 
-(defn create [ctx]
+(defn create [{:keys [ctx/assets] :as ctx}]
   (create* {:map-size 200,
             :spawn-rate 0.01}
            (g/build-all ctx :properties/creatures)
-           (g/texture ctx "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+           (assets/texture assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

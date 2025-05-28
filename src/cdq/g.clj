@@ -73,12 +73,6 @@
 (defprotocol Creatures
   (spawn-creature! [_ {:keys [position creature-id components]}]))
 
-(defprotocol Assets
-  (sound [_ path])
-  (texture [_ path])
-  (all-sounds [_])
-  (all-textures [_]))
-
 (defprotocol BaseGraphics
   (delta-time [_])
   (set-cursor! [_ cursor])

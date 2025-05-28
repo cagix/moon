@@ -42,3 +42,9 @@
 
 (defn all-textures [assets]
   (asset-manager/all-of-type assets Texture))
+
+#_(defprotocol Assets
+  (sound [_ path])
+  (texture [_ path])
+  (all-sounds [_])
+  (all-textures [_]))

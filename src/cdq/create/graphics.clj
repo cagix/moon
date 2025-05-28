@@ -1,6 +1,7 @@
 (ns cdq.create.graphics
   (:require [cdq.g :as g]
             [cdq.graphics :as graphics]
+            [gdl.assets :as assets]
             [gdl.application]))
 
 (def ^:private -k :ctx/graphics)
@@ -21,18 +22,18 @@
   (pixels->world-units [ctx pixels]
     (graphics/pixels->world-units (-k ctx) pixels))
 
-  (sprite [ctx texture-path]
+  (sprite [{:keys [ctx/assets] :as ctx} texture-path]
     (graphics/sprite (-k ctx)
-                     (g/texture ctx texture-path)))
+                     (assets/texture assets texture-path)))
 
   (sub-sprite [ctx sprite [x y w h]]
     (graphics/sub-sprite (-k ctx)
                          sprite
                          [x y w h]))
 
-  (sprite-sheet [ctx texture-path tilew tileh]
+  (sprite-sheet [{:keys [ctx/assets] :as ctx} texture-path tilew tileh]
     (graphics/sprite-sheet (-k ctx)
-                           (g/texture ctx texture-path)
+                           (assets/texture assets texture-path)
                            tilew
                            tileh))
 
