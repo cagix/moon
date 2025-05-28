@@ -1,7 +1,11 @@
 (ns cdq.level.modules
   (:require [cdq.g :as g]
             [cdq.grid2d :as g2d]
-            [cdq.level.helper :refer [creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
+            [cdq.level.helper :refer [creature-tile
+                                      scale-grid
+                                      cave-grid
+                                      adjacent-wall-positions
+                                      flood-fill]]
             [cdq.level.modules-core :as modules]
             [gdl.tiled :as tiled]))
 

@@ -2,7 +2,12 @@
   (:require [cdq.g :as g]
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
-            [cdq.level.helper :refer [creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+            [cdq.level.helper :refer [creature-tile
+                                      wgt-grid->tiled-map
+                                      adjacent-wall-positions
+                                      scalegrid
+                                      cave-grid
+                                      flood-fill]]
             [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]))
 
