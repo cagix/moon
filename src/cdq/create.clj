@@ -15,13 +15,8 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.hp-mana-bar]
-            [cdq.ui.windows]
-            [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.message]
             [cdq.vector2 :as v]
             [gdl.application]
             [gdl.assets :as assets]
@@ -72,26 +67,6 @@
                         (:batch (:ctx/graphics ctx)))]
     (.setInputProcessor Gdx/input stage)
     (assoc ctx :ctx/stage stage)))
-
-(defprotocol DevMenuActor
-  (create-dev-menu [ctx]))
-
-(defn- create-actors [{:keys [ctx/ui-viewport]
-                       :as ctx}]
-  [(create-dev-menu ctx)
-   (cdq.ui.action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
 
 (extend-type gdl.application.Context
   g/Stage
@@ -230,7 +205,7 @@
                           :as ctx}
                          world-fn]
   (ui/clear! stage)
-  (run! #(ui/add! stage %) (create-actors ctx))
+  (run! #(ui/add! stage %) ((:create-actors config) ctx))
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)

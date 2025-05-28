@@ -1,6 +1,7 @@
 (ns cdq.create.dev-menu
   (:require cdq.application
             cdq.create
+            cdq.create.actors
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
@@ -14,7 +15,7 @@
             [gdl.viewport :as viewport]))
 
 (extend-type gdl.application.Context
-  cdq.create/DevMenuActor
+  cdq.create.actors/DevMenuActor
   (create-dev-menu [{:keys [ctx/assets
                             ctx/config
                             ctx/db] :as ctx}]
