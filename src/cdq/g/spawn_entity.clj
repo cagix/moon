@@ -69,6 +69,7 @@
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
 
+; TODO we can finally use namespaced keys here !!
 (defrecord Body [position
                  left-bottom
 

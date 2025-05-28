@@ -1,5 +1,5 @@
 (ns cdq.application-state
-  (:require [cdq.create.db]
+  (:require [cdq.db :as db]
             [cdq.create.gdx]
             [cdq.create.graphics]
             [cdq.create.stage]
@@ -26,5 +26,5 @@
       (cdq.create.ui-viewport/add config)
       (cdq.create.stage/add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))
-      (cdq.create.db/add-db config)
+      (assoc :ctx/db (db/create (:db config)))
       (game-state/create! (:world-fn config))))

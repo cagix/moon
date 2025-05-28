@@ -11,15 +11,6 @@
 (defprotocol DrawWorldMap
   (draw-world-map! [_]))
 
-(defprotocol Database
-  (get-raw [_ property-id])
-  (build [_ property-id])
-  (build-all [_ property-type])
-  (property-types [_])
-  (schemas [_])
-  (update-property! [_ property])
-  (delete-property! [_ property-id]))
-
 (defprotocol StageActors
   (open-error-window! [_ throwable])
   (selected-skill [_]))

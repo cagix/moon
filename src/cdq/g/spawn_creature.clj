@@ -1,5 +1,6 @@
 (ns cdq.g.spawn-creature
-  (:require [cdq.g :as g]
+  (:require [cdq.db :as db]
+            [cdq.g :as g]
             [gdl.application]
             [gdl.utils :as utils]))
 
@@ -19,8 +20,10 @@
 
 (extend-type gdl.application.Context
   g/Creatures
-  (spawn-creature! [ctx {:keys [position creature-id components]}]
-    (let [props (g/build ctx creature-id)]
+  (spawn-creature! [{:keys [ctx/db]
+                     :as ctx}
+                    {:keys [position creature-id components]}]
+    (let [props (db/build db creature-id ctx)]
       (g/spawn-entity! ctx
                        position
                        (create-creature-body (:entity/body props))

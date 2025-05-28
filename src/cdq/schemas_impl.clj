@@ -151,9 +151,3 @@
   (animation/create (map #(edn->sprite % ctx) frames)
                     :frame-duration frame-duration
                     :looping? looping?))
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id ctx]
-  (g/build ctx property-id))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids ctx]
-  (set (map (partial g/build ctx) property-ids)))

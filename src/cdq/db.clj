@@ -1,5 +1,6 @@
 (ns cdq.db
-  (:require [cdq.schemas :as schemas]
+  (:require [cdq.schema :as schema]
+            [cdq.schemas :as schemas]
             [cdq.schemas-impl :as schemas-impl]
             [cdq.property :as property]
             [clojure.edn :as edn]
@@ -84,3 +85,9 @@
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file
               :schemas schemas})))
+
+(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
+  (build db property-id ctx))
+
+(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
+  (set (map #(build db % ctx) property-ids)))

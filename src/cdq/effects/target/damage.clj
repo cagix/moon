@@ -1,7 +1,6 @@
 (ns cdq.effects.target.damage
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.g :as g]
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
             [gdl.utils :refer [defcomponent]]))
@@ -37,7 +36,7 @@
 
   (effect/handle [[_ damage]
                   {:keys [effect/source effect/target]}
-                  ctx]
+                  _ctx]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -54,6 +53,6 @@
              new-hp-val (max (- (hp 0) dmg-amount)
                              0)]
          [[:tx/assoc-in target [:entity/hp 0] new-hp-val]
-          [:tx/audiovisual (entity/position target*) (g/build ctx :audiovisuals/damage)]
+          [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
           [:tx/event target (if (zero? new-hp-val) :kill :alert)]
           [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))

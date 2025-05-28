@@ -1,5 +1,6 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
+            [cdq.db :as db]
             [cdq.g :as g]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
@@ -7,6 +8,12 @@
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]))
+
+(defn- update-property! [ctx property]
+  (update ctx :ctx/db db/update! property))
+
+(defn- delete-property! [ctx property-id]
+  (update ctx :ctx/db db/delete! property-id))
 
 (defn- apply-context-fn [window f]
   (fn [ctx]
@@ -19,8 +26,8 @@
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
-(defn editor-window [props ctx]
-  (let [schema (get (g/schemas ctx) (property/type props))
+(defn editor-window [props {:keys [ctx/db] :as ctx}]
+  (let [schema (get (:schemas db) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -31,11 +38,11 @@
         widget (widget/create schema props ctx)
         save!   (apply-context-fn window (fn [ctx]
                                            (swap! application/state
-                                                  g/update-property!
-                                                  (widget/value schema widget (g/schemas ctx)))))
+                                                  update-property!
+                                                  (widget/value schema widget (:schemas db)))))
         delete! (apply-context-fn window (fn [_ctx]
                                            (swap! application/state
-                                                  g/delete-property!
+                                                  delete-property!
                                                   (:property/id props))))]
     (ui/add-rows! window [[(scroll-pane/table-cell (g/ui-viewport-height ctx)
                                                    [[{:actor widget :colspan 2}]
@@ -53,8 +60,8 @@
     (.pack window)
     window))
 
-(defn- edit-property [id ctx]
-  (g/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
+(defn- edit-property [id {:keys [ctx/db] :as ctx}]
+  (g/add-actor! ctx (editor-window (db/get-raw db id) ctx)))
 
 (defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"

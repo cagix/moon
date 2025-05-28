@@ -2,6 +2,7 @@
   (:require [gdl.audio.sound :as sound]
             [gdl.assets :as assets]
             [cdq.animation :as animation]
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
@@ -52,8 +53,6 @@
 (defmethod handle-tx! :tx/dissoc [[_ eid k] _ctx]
   (swap! eid dissoc k))
 
-
-
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
@@ -88,12 +87,18 @@
       :inventory-window
       ui/toggle-visible!))
 
-(defmethod handle-tx! :tx/audiovisual [[_ position {:keys [tx/sound entity/animation]}] ctx]
-  (play-sound! ctx sound)
-  (spawn-effect! ctx
-                 position
-                 {:entity/animation animation
-                  :entity/delete-after-animation-stopped? true}))
+(defmethod handle-tx! :tx/audiovisual [[_ position audiovisual]
+                                       {:keys [ctx/db]
+                                        :as ctx}]
+  (let [{:keys [tx/sound
+                entity/animation]} (if (keyword? audiovisual)
+                                     (db/build db audiovisual ctx)
+                                     audiovisual)]
+    (play-sound! ctx sound)
+    (spawn-effect! ctx
+                   position
+                   {:entity/animation animation
+                    :entity/delete-after-animation-stopped? true})))
 
 (defmethod handle-tx! :tx/spawn-alert [[_ position faction duration] ctx]
   (spawn-effect! ctx

@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
+            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.game-state :as game-state]
@@ -10,7 +11,8 @@
             [gdl.utils :as utils]))
 
 (defn create [{:keys [ctx/assets
-                      ctx/config] :as ctx}]
+                      ctx/config
+                      ctx/db] :as ctx}]
   (menu/create
    {:menus [{:label "World"
              :items (for [world-fn (:world-fns config)]
@@ -20,7 +22,7 @@
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"
-             :items (for [property-type (sort (g/property-types ctx))]
+             :items (for [property-type (sort (db/property-types db))]
                       {:label (str/capitalize (name property-type))
                        :on-click (fn [_actor ctx]
                                    (editor/open-editor-window! ctx property-type))})}]

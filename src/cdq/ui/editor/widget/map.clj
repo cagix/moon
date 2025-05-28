@@ -32,9 +32,9 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table schemas)))
 
-(defn- rebuild-editor-window! [ctx]
+(defn- rebuild-editor-window! [{:keys [ctx/db] :as ctx}]
   (let [window (g/get-actor ctx :property-editor-window)
-        prop-value (window->property-value window (g/schemas ctx))]
+        prop-value (window->property-value window (:schemas db))]
     (ui/remove! window)
     (g/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
 
@@ -63,8 +63,8 @@
              widget)
     :left? true}])
 
-(defn- open-add-component-window! [ctx schema map-widget-table]
-  (let [schemas (g/schemas ctx)
+(defn- open-add-component-window! [{:keys [ctx/db] :as ctx} schema map-widget-table]
+  (let [schemas (:schemas db)
         window (ui/window {:title "Choose"
                            :modal? true
                            :close-button? true
@@ -94,7 +94,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m ctx]
+(defmethod widget/create :s/map [schema m {:keys [ctx/db] :as ctx}]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -102,12 +102,12 @@
                                            (component-row ctx
                                                           [k v]
                                                           schema
-                                                          (g/schemas ctx)
+                                                          (:schemas db)
                                                           table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (schemas/optional-keyset (g/schemas ctx) schema)
+        opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
                                   (set (keys m))))]
     (ui/add-rows!
      table
