@@ -7,6 +7,7 @@
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
+            [cdq.timer :as timer]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.projectile :as projectile]
@@ -104,11 +105,12 @@
                    {:entity/animation animation
                     :entity/delete-after-animation-stopped? true})))
 
-(defmethod handle-tx! :tx/spawn-alert [[_ position faction duration] ctx]
+(defmethod handle-tx! :tx/spawn-alert [[_ position faction duration]
+                                       {:keys [ctx/elapsed-time] :as ctx}]
   (spawn-effect! ctx
                  position
                  {:entity/alert-friendlies-after-duration
-                  {:counter (g/create-timer ctx duration)
+                  {:counter (timer/create elapsed-time duration)
                    :faction faction}}))
 
 (defmethod handle-tx! :tx/spawn-creature [[_ opts] ctx]
@@ -271,10 +273,10 @@
 (defn do! [ctx eid cell item]
   #_(tx/stack-item ctx eid cell item))
 
-(defmethod handle-tx! :tx/set-cooldown [[_ eid skill] ctx]
+(defmethod handle-tx! :tx/set-cooldown [[_ eid skill] {:keys [ctx/elapsed-time]}]
   (swap! eid assoc-in
          [:entity/skills (:property/id skill) :skill/cooling-down?]
-         (g/create-timer ctx (:skill/cooldown skill))))
+         (timer/create elapsed-time (:skill/cooldown skill))))
 
 (defmethod handle-tx! :tx/add-skill [[_ eid {:keys [property/id] :as skill}] ctx]
   {:pre [(not (contains? (:entity/skills @eid) id))]}
@@ -288,15 +290,15 @@
       ((:skill-removed! (:entity/player? @eid)) ctx skill))
     (swap! eid update :entity/skills dissoc id))
 
-(defn- add-text-effect* [entity text ctx]
+(defn- add-text-effect* [entity text {:keys [ctx/elapsed-time]}]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(g/reset-timer ctx %)))
+               (update :counter #(timer/reset elapsed-time %)))
            {:text text
-            :counter (g/create-timer ctx 0.4)})))
+            :counter (timer/create elapsed-time 0.4)})))
 
 (defmethod handle-tx! :tx/add-text-effect [[_ eid text] ctx]
   (swap! eid add-text-effect* text ctx))

@@ -10,10 +10,10 @@
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
+            [cdq.malli :as m]
             [cdq.state :as state]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.tile-color-setter :as tile-color-setter]
-            [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
@@ -373,23 +373,6 @@
        :effect/target-direction (when target
                                   (v/direction (entity/position entity)
                                                (entity/position @target)))})))
-
-(extend-type Context
-  g/Time
-  (elapsed-time [{:keys [ctx/elapsed-time]}]
-    elapsed-time)
-
-  (create-timer [{:keys [ctx/elapsed-time]} duration]
-    (timer/create elapsed-time duration))
-
-  (timer-stopped? [{:keys [ctx/elapsed-time]} timer]
-    (timer/stopped? elapsed-time timer))
-
-  (reset-timer [{:keys [ctx/elapsed-time]} timer]
-    (timer/reset elapsed-time timer))
-
-  (timer-ratio [{:keys [ctx/elapsed-time]} timer]
-    (timer/ratio elapsed-time timer)))
 
 (def state (atom nil))
 

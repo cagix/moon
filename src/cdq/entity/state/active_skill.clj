@@ -3,6 +3,7 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
+            [cdq.timer :as timer]
             [gdl.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -39,15 +40,18 @@
   (mapcat #(effect/render % effect-ctx ctx) effect))
 
 (defcomponent :active-skill
-  (entity/create [[_ eid [skill effect-ctx]] ctx]
+  (entity/create [[_ eid [skill effect-ctx]]
+                  {:keys [ctx/elapsed-time]}]
     {:skill skill
      :effect-ctx effect-ctx
      :counter (->> skill
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
-                   (g/create-timer ctx))})
+                   (timer/create elapsed-time))})
 
-  (entity/tick! [[_ {:keys [skill effect-ctx counter]}] eid ctx]
+  (entity/tick! [[_ {:keys [skill effect-ctx counter]}]
+                 eid
+                 {:keys [ctx/elapsed-time] :as ctx}]
     (cond
      (not (effect/some-applicable? (update-effect-ctx ctx effect-ctx) ; TODO how 2 test
                                    (:skill/effects skill)))
@@ -55,7 +59,7 @@
       ; TODO some sound ?
       ]
 
-     (g/timer-stopped? ctx counter)
+     (timer/stopped? elapsed-time counter)
      [[:tx/effect effect-ctx (:skill/effects skill)]
       [:tx/event eid :action-done]]))
 
@@ -71,12 +75,14 @@
                 (not (zero? (:skill/cost skill))))
        [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
-  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}] entity ctx]
+  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}]
+                        entity
+                        {:keys [ctx/elapsed-time] :as ctx}]
     (let [{:keys [entity/image skill/effects]} skill]
       (concat (draw-skill-image image
                                 entity
                                 (entity/position entity)
-                                (g/timer-ratio ctx counter))
+                                (timer/ratio elapsed-time counter))
               (render-active-effect ctx
                                     effect-ctx ; TODO !!!
                                     ; !! FIXME !!

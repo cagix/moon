@@ -36,7 +36,7 @@
                        :icon (assets/texture assets "images/mouseover.png")}
                       {:label "elapsed-time"
                        :update-fn (fn [ctx]
-                                    (str (utils/readable-number (g/elapsed-time ctx)) " seconds"))
+                                    (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
                        :icon (assets/texture assets "images/clock.png")}
                       {:label "paused?"
                        :update-fn (fn [{:keys [ctx/paused?]}]

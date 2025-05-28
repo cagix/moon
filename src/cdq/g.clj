@@ -48,13 +48,6 @@
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
 
-(defprotocol Time
-  (elapsed-time [_])
-  (create-timer [_ duration])
-  (timer-stopped? [_ timer])
-  (reset-timer [_ timer])
-  (timer-ratio [_ timer]))
-
 (defprotocol InfoText
   (info-text [_ object]))
 
