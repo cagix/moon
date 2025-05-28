@@ -39,6 +39,30 @@
                       ctx/graphics
                       ctx/stage])
 
+(def ^:private schema
+  (m/schema [:map {:closed true}
+             [:ctx/assets :some]
+             [:ctx/graphics :some]
+             [:ctx/input :some]
+             [:ctx/ui-viewport :some]
+             [:ctx/stage :some]
+             [:ctx/config :some]
+             [:ctx/db :some]
+             [:ctx/elapsed-time :some]
+             [:ctx/delta-time {:optional true} number?]
+             [:ctx/paused? {:optional true} :boolean]
+             [:ctx/tiled-map :some]
+             [:ctx/grid :some]
+             [:ctx/raycaster :some]
+             [:ctx/content-grid :some]
+             [:ctx/explored-tile-corners :some]
+             [:ctx/id-counter :some]
+             [:ctx/entity-ids :some]
+             [:ctx/potential-field-cache :some]
+             [:ctx/mouseover-eid {:optional true} :any]
+             [:ctx/player-eid :some]
+             [:ctx/active-entities {:optional true} :some]]))
+
 (defn- make-files []
   (let [files Gdx/files]
     (reify files/Files
@@ -162,20 +186,19 @@
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
-(defn- create-app-state! [{:keys [clojure.gdx/input
-                                  clojure.gdx/files]
-                           :as gdx}
-                          config]
-  (ui/load! (:ui config))
-  (-> (map->Context {})
-      (assoc :ctx/config config)
-      (assoc :ctx/graphics (graphics/create gdx config))
-      (assoc :ctx/input input)
-      (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config)))
-      (add-stage! input)
-      (assoc :ctx/assets (assets/create files (:assets config)))
-      (assoc :ctx/db (db/create (:db config)))
-      (create-game-state (:world-fn config))))
+(defn- create-app-state! [config]
+  (let [{:keys [clojure.gdx/input
+                clojure.gdx/files] :as gdx} (get-context)]
+    (ui/load! (:ui config))
+    (-> (map->Context {})
+        (assoc :ctx/config config)
+        (assoc :ctx/graphics (graphics/create gdx config))
+        (assoc :ctx/input input)
+        (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config)))
+        (add-stage! input)
+        (assoc :ctx/assets (assets/create files (:assets config)))
+        (assoc :ctx/db (db/create (:db config)))
+        (create-game-state (:world-fn config)))))
 
 (extend-type Context
   g/MouseViewports
@@ -373,22 +396,21 @@
 (defn start! [{::keys [dispose!
                        render!
                        resize!
-                       validate-ctx-schema
                        lwjgl-app-config]
                :as config}]
   (lwjgl/application lwjgl-app-config
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create-app-state! (get-context) config))
-                         (validate-ctx-schema @state))
+                         (reset! state (create-app-state! config))
+                         (m/validate-humanize schema @state))
 
                        (dispose []
                          (dispose! @state))
 
                        (render []
-                         (validate-ctx-schema @state)
+                         (m/validate-humanize schema @state)
                          (swap! state render!)
-                         (validate-ctx-schema @state))
+                         (m/validate-humanize schema @state))
 
                        (resize [width height]
                          (resize! @state width height)))))

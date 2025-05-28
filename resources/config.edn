@@ -1,7 +1,6 @@
 {:cdq.application/dispose! cdq.dispose/do!
  :cdq.application/render! cdq.render/do!
  :cdq.application/resize! cdq.resize/do!
- :cdq.application/validate-ctx-schema cdq.ctx-schema/validate
  :cdq.application/lwjgl-app-config {:title "Cyber Dungeon Quest"
                                     :windowed-mode {:width 1440
                                                     :height 900}
