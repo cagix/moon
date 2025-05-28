@@ -4,6 +4,7 @@
             [cdq.create.graphics]
             [cdq.create.stage]
             [cdq.create.ui-viewport]
+            [cdq.game-state :as game-state]
             [gdl.application]
             [gdl.assets :as assets]
             [gdl.ui :as ui]))
@@ -26,4 +27,4 @@
       (cdq.create.stage/add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))
       (cdq.create.db/add-db config)
-      ((requiring-resolve 'cdq.game-state/create!))))
+      (game-state/create! (:world-fn config))))

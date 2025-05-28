@@ -34,6 +34,7 @@
              [:entity/species {:optional true} :some]
              [:entity/movement {:optional true} :some]
              [:entity/skills {:optional true} :some]
+             [:entity/color {:optional true} :some]
 
              ; Should each stat have its own modifiers
              ; or :entity/stats with modifiers in one place & all stats?

@@ -16,7 +16,7 @@
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " world-fn)
                        :on-click (fn [_actor _ctx]
-                                   (swap! application/state game-state/create!))})}
+                                   (swap! application/state game-state/create! world-fn))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"

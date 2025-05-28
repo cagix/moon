@@ -138,10 +138,10 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
-(defn create! [{:keys [ctx/config] :as ctx}]
+(defn create! [{:keys [ctx/config] :as ctx} world-fn]
   (g/reset-actors! ctx)
   (let [{:keys [tiled-map
-                start-position]} ((:world-fn config) ctx)
+                start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
