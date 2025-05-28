@@ -44,16 +44,17 @@
       (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)
 
-(defn- camera-controls! [ctx]
-  (let [controls (g/config ctx :controls)
-        zoom-speed (g/config ctx :zoom-speed)]
+(defn- camera-controls! [{:keys [ctx/config] :as ctx}]
+  (let [controls (:controls config)
+        zoom-speed (:zoom-speed config)]
     (when (g/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
     (when (g/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))))
 
-(defn- pause-game? [{:keys [ctx/player-eid] :as ctx}]
-  (let [controls (g/config ctx :controls)]
+(defn- pause-game? [{:keys [ctx/config
+                            ctx/player-eid] :as ctx}]
+  (let [controls (:controls config)]
     (or #_error
-        (and (g/config ctx :pausing?)
+        (and (:pausing? config)
              (state/pause-game? (entity/state-obj @player-eid))
              (not (or (g/key-just-pressed? ctx (:unpause-once controls))
                       (g/key-pressed? ctx (:unpause-continously controls))))))))

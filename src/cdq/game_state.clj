@@ -138,17 +138,17 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
-(defn create! [ctx]
+(defn create! [{:keys [ctx/config] :as ctx}]
   (g/reset-actors! ctx)
   (let [{:keys [tiled-map
-                start-position]} ((g/config ctx :world-fn) ctx)
+                start-position]} ((:world-fn config) ctx)
         grid (grid-impl/create tiled-map)
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
                     :ctx/grid grid
                     :ctx/raycaster (raycaster/create grid)
-                    :ctx/content-grid (content-grid/create tiled-map (g/config ctx :content-grid-cell-size))
+                    :ctx/content-grid (content-grid/create tiled-map (:content-grid-cell-size config))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                       (tiled/tm-height tiled-map)
                                                                       (constantly false)))

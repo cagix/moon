@@ -15,18 +15,16 @@
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
-; TODO move-entity!
-
 (defn- play-sound! [{:keys [ctx/assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
        (assets/sound assets)
        sound/play!))
 
-(defn- spawn-effect! [ctx position components]
+(defn- spawn-effect! [{:keys [ctx/config] :as ctx} position components]
   (g/spawn-entity! ctx
                    position
-                   (g/config ctx :effect-body-props)
+                   (:effect-body-props config)
                    components))
 
 (defmulti handle-tx! (fn [[k & _params] _ctx]

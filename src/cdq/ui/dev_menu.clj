@@ -9,15 +9,16 @@
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]))
 
-(defn create [{:keys [ctx/assets] :as ctx}]
+(defn create [{:keys [ctx/assets
+                      ctx/config] :as ctx}]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn (g/config ctx :world-fns)]
+             :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " world-fn)
                        :on-click (fn [_actor _ctx]
                                    (swap! application/state game-state/create!))})}
             {:label "Help"
-             :items [{:label (g/config ctx :info)}]}
+             :items [{:label (:info config)}]}
             {:label "Objects"
              :items (for [property-type (sort (g/property-types ctx))]
                       {:label (str/capitalize (name property-type))

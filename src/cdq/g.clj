@@ -1,8 +1,5 @@
 (ns cdq.g)
 
-(defprotocol Config
-  (config [_ key]))
-
 (defprotocol Context
   (context-entity-add! [_ eid])
   (context-entity-remove! [_ eid])
