@@ -88,7 +88,7 @@
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules/scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (modules/place (tiled/load-map modules/file)
+        tiled-map (modules/place (tiled/load-tmx-map modules/file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))

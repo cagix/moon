@@ -1,10 +1,16 @@
 (ns gdl.tiled
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
-           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
+           (com.badlogic.gdx.maps MapLayer
+                                  MapLayers
+                                  MapProperties)
+           (com.badlogic.gdx.maps.tiled TmxMapLoader
+                                        TiledMap
+                                        TiledMapTile
+                                        TiledMapTileLayer
+                                        TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
 
-(defn load-map
+(defn load-tmx-map
   "Loads the TiledMap from the given file. The file is resolved via the FileHandleResolver set in the constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate system.
 
   Parameters:

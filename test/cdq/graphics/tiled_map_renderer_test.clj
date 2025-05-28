@@ -25,7 +25,7 @@
   (Lwjgl3Application.
    (proxy [ApplicationAdapter] []
      (create []
-       (def tiled-map (tiled/load-map tiled-map-path))
+       (def tiled-map (tiled/load-tmx-map tiled-map-path))
        (def batch (SpriteBatch.))
        (def camera (doto (OrthographicCamera.)
                      (.setToOrtho false ; y-down?

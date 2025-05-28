@@ -154,7 +154,7 @@
   #_(dispose (:tiled-map @current-data)))
 
 (comment
- (atom {:tiled-map (tiled/load-map modules/file)
+ (atom {:tiled-map (tiled/load-tmx-map modules/file)
         :show-movement-properties false
         :show-grid-lines false})
  )
