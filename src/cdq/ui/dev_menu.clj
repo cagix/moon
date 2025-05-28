@@ -9,7 +9,8 @@
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.ui.menu :as menu]
-            [gdl.utils :as utils]))
+            [gdl.utils :as utils]
+            [gdl.viewport :as viewport]))
 
 (defn create [{:keys [ctx/assets
                       ctx/config
@@ -40,7 +41,8 @@
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
                     {:label "GUI"
-                     :update-fn (fn [ctx] (mapv int (g/ui-mouse-position ctx)))}
+                     :update-fn (fn [{:keys [ctx/ui-viewport]}]
+                                  (mapv int (viewport/mouse-position ui-viewport)))}
                     {:label "World"
                      :update-fn (fn [{:keys [ctx/graphics]}]
                                   (mapv int (graphics/world-mouse-position graphics)))}

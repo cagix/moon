@@ -1,21 +1,21 @@
 (ns cdq.ui.message
-  (:require [cdq.g :as g]
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [gdl.ui :as ui]))
 
-(defn- draw-message [state ctx]
+(defn- draw-message [state viewport]
   (when-let [text (:text @state)]
-    [:draw/text {:x (/ (g/ui-viewport-width ctx) 2)
-                 :y (+ (/ (g/ui-viewport-height ctx) 2) 200)
+    [:draw/text {:x (/ (:width viewport) 2)
+                 :y (+ (/ (:height viewport) 2) 200)
                  :text text
                  :scale 2.5
                  :up? true}]))
 
 (defn create [& {:keys [name]}]
-  (ui/actor {:draw (fn [this {:keys [ctx/graphics]
-                              :as ctx}]
+  (ui/actor {:draw (fn [this {:keys [ctx/graphics
+                                     ctx/ui-viewport]}]
                      (graphics/handle-draws! graphics
-                                             [(draw-message (ui/user-object this) ctx)]))
+                                             [(draw-message (ui/user-object this)
+                                                            ui-viewport)]))
              :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)

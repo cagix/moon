@@ -1,14 +1,14 @@
 (ns cdq.application-state
   (:require [cdq.db :as db]
             [cdq.create.stage]
-            [cdq.create.ui-viewport]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.game-state :as game-state]
             [gdl.application]
             [gdl.assets :as assets]
             [gdl.input :as input]
-            [gdl.ui :as ui])
+            [gdl.ui :as ui]
+            [gdl.viewport :as viewport])
   (:import (com.badlogic.gdx Gdx
                              Input$Keys
                              Input$Buttons)))
@@ -51,7 +51,7 @@
       (assoc :ctx/config config)
       (assoc :ctx/graphics (graphics/create Gdx/graphics config)) ; <- actually create only called here <- all libgdx create stuff here and assets/input/graphics/stage/viewport as protocols in gdl ? -> all gdx code creating together and upfactored protocols?
       (assoc :ctx/input (make-input Gdx/input))
-      (cdq.create.ui-viewport/add config)
+      (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config))) ; <- even viewport construction is in here .... viewport itself a protocol  ....
       (cdq.create.stage/add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))
       (assoc :ctx/db (db/create (:db config)))

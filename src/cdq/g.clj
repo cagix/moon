@@ -61,11 +61,6 @@
 (defprotocol Creatures
   (spawn-creature! [_ {:keys [position creature-id components]}]))
 
-(defprotocol UIViewport
-  (ui-mouse-position [_])
-  (ui-viewport-width [_])
-  (ui-viewport-height [_]))
-
 (defprotocol Graphics
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])

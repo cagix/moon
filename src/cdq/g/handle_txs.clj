@@ -69,7 +69,9 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defmethod handle-tx! :tx/show-modal [[_ {:keys [title text button-text on-click]}] ctx]
+(defmethod handle-tx! :tx/show-modal [[_ {:keys [title text button-text on-click]}]
+                                      {:keys [ctx/ui-viewport]
+                                       :as ctx}]
   (assert (not (g/get-actor ctx ::modal)))
   (g/add-actor! ctx
                 (ui/window {:title title
@@ -80,8 +82,8 @@
                                                       (on-click)))]]
                             :id ::modal
                             :modal? true
-                            :center-position [(/ (g/ui-viewport-width ctx) 2)
-                                              (* (g/ui-viewport-height ctx) (/ 3 4))]
+                            :center-position [(/ (:width ui-viewport) 2)
+                                              (* (:height ui-viewport) (/ 3 4))]
                             :pack? true})))
 
 (defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]

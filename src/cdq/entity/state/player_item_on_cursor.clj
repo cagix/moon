@@ -7,7 +7,8 @@
             [cdq.graphics :as graphics]
             [gdl.input :as input]
             [gdl.ui :as ui]
-            [gdl.utils :refer [defcomponent]]))
+            [gdl.utils :refer [defcomponent]]
+            [gdl.viewport :as viewport]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -98,8 +99,9 @@
   (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
-  (state/draw-gui-view [_ eid ctx]
+  (state/draw-gui-view [_ eid {:keys [ctx/ui-viewport]
+                               :as ctx}]
     (when (not (world-item? ctx))
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
-        (g/ui-mouse-position ctx)]])))
+        (viewport/mouse-position ui-viewport)]])))

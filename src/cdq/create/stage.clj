@@ -8,7 +8,8 @@
             [cdq.ui.inventory]
             [cdq.ui.player-state-draw]
             [cdq.ui.message]
-            [gdl.ui :as ui])
+            [gdl.ui :as ui]
+            [gdl.viewport :as viewport])
   (:import (com.badlogic.gdx Gdx)))
 
 (def ^:private -k :ctx/stage)
@@ -20,19 +21,20 @@
     (.setInputProcessor Gdx/input stage)
     (assoc ctx -k stage)))
 
-(defn- create-actors [ctx]
+(defn- create-actors [{:keys [ctx/ui-viewport]
+                       :as ctx}]
   [(cdq.ui.dev-menu/create ctx)
    (cdq.ui.action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (g/ui-viewport-width ctx) 2)
+   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
                                80 ; action-bar-icon-size
                                ]
                               ctx)
    (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(g/ui-viewport-width ctx) 0])
+                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
                                    (cdq.ui.inventory/create ctx
                                                             :id :inventory-window
-                                                            :position [(g/ui-viewport-width ctx)
-                                                                       (g/ui-viewport-height ctx)])])
+                                                            :position [(:width ui-viewport)
+                                                                       (:height ui-viewport)])])
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
@@ -81,8 +83,9 @@
   (add-actor! [ctx actor]
     (ui/add! (-k ctx) actor))
 
-  (mouseover-actor [ctx]
-    (ui/hit (-k ctx) (g/ui-mouse-position ctx)))
+  (mouseover-actor [{:keys [ctx/ui-viewport
+                            ctx/stage]}]
+    (ui/hit stage (viewport/mouse-position ui-viewport)))
 
   (reset-actors! [ctx]
     (ui/clear! (-k ctx))
