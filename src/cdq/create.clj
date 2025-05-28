@@ -13,6 +13,8 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.potential-fields.movement :as potential-fields.movement]
+            [cdq.tile-color-setter :as tile-color-setter]
+            [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.editor :as editor]
             [cdq.ui.hp-mana-bar]
@@ -22,9 +24,11 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.player-state-draw]
             [cdq.ui.message]
+            [cdq.vector2 :as v]
             [clojure.string :as str]
             [gdl.application]
             [gdl.assets :as assets]
+            [gdl.graphics.color :as color]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
@@ -323,3 +327,66 @@
     (graphics/sprite-sheet->sprite (:ctx/graphics ctx)
                                    sprite-sheet
                                    [x y])))
+
+(extend-type gdl.application.Context
+  g/ActiveEntities
+  (get-active-entities [{:keys [ctx/content-grid
+                                ctx/player-eid]}]
+    (content-grid/active-entities content-grid @player-eid)))
+
+(extend-type gdl.application.Context
+  g/DrawWorldMap
+  (draw-world-map! [{:keys [ctx/graphics
+                            ctx/tiled-map
+                            ctx/raycaster
+                            ctx/explored-tile-corners]}]
+    (graphics/draw-tiled-map! graphics
+                              tiled-map
+                              (tile-color-setter/create
+                               {:raycaster raycaster
+                                :explored-tile-corners explored-tile-corners
+                                :light-position (graphics/camera-position graphics)
+                                :explored-tile-color (color/create 0.5 0.5 0.5 1)
+                                :see-all-tiles? false}))))
+
+(extend-type gdl.application.Context
+  g/EffectContext
+  (player-effect-ctx [{:keys [ctx/graphics
+                              ctx/mouseover-eid]}
+                      eid]
+    (let [target-position (or (and mouseover-eid
+                                   (entity/position @mouseover-eid))
+                              (graphics/world-mouse-position graphics))]
+      {:effect/source eid
+       :effect/target mouseover-eid
+       :effect/target-position target-position
+       :effect/target-direction (v/direction (entity/position @eid) target-position)}))
+
+  (npc-effect-ctx [ctx eid]
+    (let [entity @eid
+          target (g/nearest-enemy ctx entity)
+          target (when (and target
+                            (g/line-of-sight? ctx entity @target))
+                   target)]
+      {:effect/source eid
+       :effect/target target
+       :effect/target-direction (when target
+                                  (v/direction (entity/position entity)
+                                               (entity/position @target)))})))
+
+(extend-type gdl.application.Context
+  g/Time
+  (elapsed-time [{:keys [ctx/elapsed-time]}]
+    elapsed-time)
+
+  (create-timer [{:keys [ctx/elapsed-time]} duration]
+    (timer/create elapsed-time duration))
+
+  (timer-stopped? [{:keys [ctx/elapsed-time]} timer]
+    (timer/stopped? elapsed-time timer))
+
+  (reset-timer [{:keys [ctx/elapsed-time]} timer]
+    (timer/reset elapsed-time timer))
+
+  (timer-ratio [{:keys [ctx/elapsed-time]} timer]
+    (timer/ratio elapsed-time timer)))
