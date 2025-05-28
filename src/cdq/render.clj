@@ -8,6 +8,7 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
             [gdl.input :as input]
+            [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
 (defn- draw-body-rect [entity color]
@@ -214,7 +215,8 @@
 ; maybe even @ update pf etc can be made simpler?
 
 (defn do! [{:keys [ctx/graphics
-                   ctx/player-eid]
+                   ctx/player-eid
+                   ctx/stage]
             :as ctx}]
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
     (graphics/set-camera-position! graphics (entity/position @player-eid))
@@ -228,8 +230,8 @@
                                                    ;geom-test
                                                    highlight-mouseover-tile]]
                                           (f ctx))))
-    (g/draw-stage! ctx)
-    (g/update-stage! ctx)
+    (ui/act! stage ctx)
+    (ui/draw! stage ctx)
     (player-state-handle-click! ctx)
     (let [ctx (update-mouseover-entity! ctx)
           ctx (assoc-paused ctx)

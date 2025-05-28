@@ -170,11 +170,29 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (user-object %)) actors))))
 
-(defn draw! [stage]
-  (Stage/.draw stage))
+(defn draw! [stage ctx]
+  (reset! (.ctx stage) ctx)
+  (Stage/.draw stage)
+  ; we need to set nil as input listeners
+  ; are updated outside of render
+  ; inside lwjgl3application code
+  ; so it has outdated context
+  ; => maybe context should be an immutable data structure with mutable fields?
+  #_(reset! (.ctx (-k ctx)) nil)
+  nil)
 
-(defn act! [stage]
-  (Stage/.act stage))
+(defn act! [stage ctx]
+  (reset! (.ctx stage) ctx)
+  (Stage/.act stage)
+  ; We cannot pass this
+  ; because input events are handled outside ui/act! and in the Lwjgl3Input system
+  #_@(.ctx (-k ctx))
+  ; we need to set nil as input listeners
+  ; are updated outside of render
+  ; inside lwjgl3application code
+  ; FIXME so it has outdated context.
+  #_(reset! (.ctx (-k ctx)) nil)
+  nil)
 
 (defn root [stage]
   (Stage/.getRoot stage))

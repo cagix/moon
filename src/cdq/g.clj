@@ -68,10 +68,6 @@
   (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol Stage
-  (get-actor [_ id])
   (find-actor-by-name [_ name])
-  (add-actor! [_ actor])
   (mouseover-actor [_])
-  (reset-actors! [_])
-  (draw-stage! [_])
-  (update-stage! [_]))
+  (reset-actors! [_]))

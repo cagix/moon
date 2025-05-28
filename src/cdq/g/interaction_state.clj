@@ -11,12 +11,13 @@
   (fn [ctx eid]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [{:keys [ctx/player-eid]
+(defmethod on-clicked :clickable/item [{:keys [ctx/player-eid
+                                               ctx/stage]
                                         :as ctx}
                                        eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> (g/get-actor ctx :windows) :inventory-window ui/visible?)
+     (-> (:windows stage) :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]

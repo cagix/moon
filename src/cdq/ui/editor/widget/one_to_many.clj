@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.one-to-many
-  (:require [cdq.g :as g]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
@@ -15,7 +14,8 @@
     (ui/add-rows!
      table
      [[(ui/text-button "+"
-                       (fn [_actor ctx]
+                       (fn [_actor {:keys [ctx/stage]
+                                    :as ctx}]
                          (let [window (ui/window {:title "Choose"
                                                   :modal? true
                                                   :close-button? true
@@ -26,7 +26,7 @@
                                                (redo-rows ctx (conj property-ids id)))]
                            (ui/add! window (overview-table/create ctx property-type clicked-id-fn))
                            (.pack window)
-                           (g/add-actor! ctx window))))]
+                           (ui/add! stage window))))]
       (for [property-id property-ids]
         (let [property (db/build db property-id ctx)
               image-widget (ui/image->widget (property/image property)

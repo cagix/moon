@@ -15,6 +15,7 @@
             [cdq.ui.error-window :as error-window]
             [gdl.application]
             [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
 (extend-type gdl.application.Context
@@ -57,18 +58,18 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added! (fn [ctx skill]
-                                                 (action-bar/add-skill! (g/get-actor ctx :action-bar)
+                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
+                                                 (action-bar/add-skill! (:action-bar stage)
                                                                         skill))
-                                 :skill-removed! (fn [ctx skill]
-                                                   (action-bar/remove-skill! (g/get-actor ctx :action-bar)
+                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
+                                                   (action-bar/remove-skill! (:action-bar stage)
                                                                              skill))
-                                 :item-set! (fn [ctx inventory-cell item]
-                                              (-> (g/get-actor ctx :windows)
+                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
+                                              (-> (:windows stage)
                                                   :inventory-window
                                                   (inventory-window/set-item! inventory-cell item)))
-                                 :item-removed! (fn [ctx inventory-cell]
-                                                  (-> (g/get-actor ctx :windows)
+                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
+                                                  (-> (:windows stage)
                                                       :inventory-window
                                                       (inventory-window/remove-item! inventory-cell)))}
                 :entity/free-skill-points free-skill-points
@@ -91,11 +92,11 @@
 
 (extend-type gdl.application.Context
   g/StageActors
-  (open-error-window! [ctx throwable]
-    (g/add-actor! ctx (error-window/create throwable)))
+  (open-error-window! [{:keys [ctx/stage]} throwable]
+    (ui/add! stage (error-window/create throwable)))
 
-  (selected-skill [ctx]
-    (action-bar/selected-skill (g/get-actor ctx :action-bar))))
+  (selected-skill [{:keys [ctx/stage]}]
+    (action-bar/selected-skill (:action-bar stage))))
 
 (extend-type gdl.application.Context
   g/Raycaster

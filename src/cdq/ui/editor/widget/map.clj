@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.g :as g]
-            [cdq.schemas :as schemas]
+  (:require [cdq.schemas :as schemas]
             [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
@@ -32,11 +31,12 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table schemas)))
 
-(defn- rebuild-editor-window! [{:keys [ctx/db] :as ctx}]
-  (let [window (g/get-actor ctx :property-editor-window)
+(defn- rebuild-editor-window! [{:keys [ctx/db
+                                       ctx/stage] :as ctx}]
+  (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (ui/remove! window)
-    (g/add-actor! ctx (cdq.ui.editor/editor-window prop-value ctx))))
+    (ui/add! stage (cdq.ui.editor/editor-window prop-value ctx))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -63,7 +63,10 @@
              widget)
     :left? true}])
 
-(defn- open-add-component-window! [{:keys [ctx/db] :as ctx} schema map-widget-table]
+(defn- open-add-component-window! [{:keys [ctx/db
+                                           ctx/stage]}
+                                   schema
+                                   map-widget-table]
   (let [schemas (:schemas db)
         window (ui/window {:title "Choose"
                            :modal? true
@@ -86,7 +89,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (g/add-actor! ctx window)))
+    (ui/add! stage window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])
