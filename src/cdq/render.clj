@@ -7,6 +7,7 @@
             [cdq.g :as g]
             [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
+            [gdl.input :as input]
             [gdl.utils :as utils]))
 
 (defn- draw-body-rect [entity color]
@@ -47,21 +48,22 @@
   nil)
 
 (defn- camera-controls! [{:keys [ctx/config
-                                 ctx/graphics]
-                          :as ctx}]
+                                 ctx/graphics
+                                 ctx/input]}]
   (let [controls (:controls config)
         zoom-speed (:zoom-speed config)]
-    (when (g/key-pressed? ctx (:zoom-in controls))  (graphics/inc-zoom! graphics    zoom-speed))
-    (when (g/key-pressed? ctx (:zoom-out controls)) (graphics/inc-zoom! graphics (- zoom-speed)))))
+    (when (input/key-pressed? input (:zoom-in controls))  (graphics/inc-zoom! graphics    zoom-speed))
+    (when (input/key-pressed? input (:zoom-out controls)) (graphics/inc-zoom! graphics (- zoom-speed)))))
 
 (defn- pause-game? [{:keys [ctx/config
-                            ctx/player-eid] :as ctx}]
+                            ctx/input
+                            ctx/player-eid]}]
   (let [controls (:controls config)]
     (or #_error
         (and (:pausing? config)
              (state/pause-game? (entity/state-obj @player-eid))
-             (not (or (g/key-just-pressed? ctx (:unpause-once controls))
-                      (g/key-pressed? ctx (:unpause-continously controls))))))))
+             (not (or (input/key-just-pressed? input (:unpause-once controls))
+                      (input/key-pressed? input (:unpause-continously controls))))))))
 
 (defn- assoc-paused [ctx]
   (assoc ctx :ctx/paused? (pause-game? ctx)))

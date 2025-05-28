@@ -7,6 +7,7 @@
             [cdq.game-state :as game-state]
             [gdl.application]
             [gdl.assets :as assets]
+            [gdl.input :as input]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx Gdx
                              Input$Keys
@@ -35,25 +36,26 @@
     :s      Input$Keys/S
     ))
 
-(defn add-gdx! [ctx]
+(defn- make-input [input]
+  (reify input/Input
+    (button-just-pressed? [_ button]
+      (.isButtonJustPressed input (button->code button)))
+
+    (key-pressed? [_ key]
+      (.isKeyPressed input (k->code key)))
+
+    (key-just-pressed? [_ key]
+      (.isKeyJustPressed input (k->code key)))))
+
+(defn add-gdx-graphics! [ctx graphics] ; -> this is actually truly in cdq.graphics, but pixmap, spritebatch etc. dont give their params -> can easily make a PR for that...
   (extend (class ctx)
-    g/Input
-    {:button-just-pressed?
-     (fn [_ button]
-       (.isButtonJustPressed Gdx/input (button->code button)))
-     :key-pressed?
-     (fn [_ key]
-       (.isKeyPressed Gdx/input (k->code key)))
-     :key-just-pressed?
-     (fn [_ key]
-       (.isKeyJustPressed Gdx/input (k->code key)))}
     g/BaseGraphics
     {:delta-time (fn [_]
-                   (.getDeltaTime Gdx/graphics))
+                   (.getDeltaTime graphics))
      :set-cursor! (fn [_ cursor]
-                    (.setCursor Gdx/graphics cursor))
+                    (.setCursor graphics cursor))
      :frames-per-second (fn [_]
-                          (.getFramesPerSecond Gdx/graphics))
+                          (.getFramesPerSecond graphics))
      :clear-screen! (fn [_]
                       (ScreenUtils/clear Color/BLACK))})
   ctx)
@@ -63,7 +65,8 @@
   (-> (gdl.application/map->Context {})
       (assoc :ctx/config config)
       (assoc :ctx/graphics (graphics/create config))
-      (add-gdx!)
+      (assoc :ctx/input (make-input Gdx/input))
+      (add-gdx-graphics! Gdx/graphics)
       (cdq.create.ui-viewport/add config)
       (cdq.create.stage/add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))

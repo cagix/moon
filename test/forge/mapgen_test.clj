@@ -71,10 +71,10 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (input/key-pressed? gdx/input :left)  (apply-position 0 -))
-    (if (input/key-pressed? gdx/input :right) (apply-position 0 +))
-    (if (input/key-pressed? gdx/input :up)    (apply-position 1 +))
-    (if (input/key-pressed? gdx/input :down)  (apply-position 1 -))))
+    (if (input/key-pressed? input :left)  (apply-position 0 -))
+    (if (input/key-pressed? input :right) (apply-position 0 +))
+    (if (input/key-pressed? input :up)    (apply-position 1 +))
+    (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
 #_(defn- render-on-map [_context]
   (let [{:keys [tiled-map
@@ -130,8 +130,8 @@
 (def ^:private zoom-speed 0.025)
 
 #_(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
-  (when (gdx/key-pressed? input :minus)  (camera/inc-zoom! camera    zoom-speed))
-  (when (gdx/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera    zoom-speed))
+  (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))
@@ -143,9 +143,9 @@
   #_(graphics/draw-tiled-map (:tiled-map @current-data)
                              (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
-  #_(if (gdx/key-just-pressed? :l)
+  #_(if (input/key-just-pressed? input :l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (gdx/key-just-pressed? :m)
+  #_(if (input/key-just-pressed? input :m)
       (swap! current-data update :show-movement-properties not))
   #_(adjust-zoom input c/camera)
   #_(camera-controls input c/camera))

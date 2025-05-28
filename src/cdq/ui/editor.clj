@@ -7,6 +7,7 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
+            [gdl.input :as input]
             [gdl.ui :as ui]))
 
 (defn- update-property! [ctx property]
@@ -54,8 +55,9 @@
                                                                              (fn [_actor ctx]
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta ctx]
-                                        (when (g/key-just-pressed? ctx :enter)
+    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/input]
+                                                         :as ctx}]
+                                        (when (input/key-just-pressed? input :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))

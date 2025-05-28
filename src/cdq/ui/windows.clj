@@ -1,23 +1,27 @@
 (ns cdq.ui.windows
-  (:require [cdq.g :as g]
+  (:require [gdl.input :as input]
             [gdl.ui :as ui]))
 
-(defn- check-escape-close-windows [ctx windows]
-  (when (g/key-just-pressed? ctx :escape)
+(defn- check-escape-close-windows [input windows]
+  (when (input/key-just-pressed? input :escape)
     (run! #(ui/set-visible! % false) (ui/children windows))))
 
 (def window-hotkeys {:inventory-window  :i
                      :entity-info-window :e})
 
-(defn- check-window-hotkeys [ctx windows]
+(defn- check-window-hotkeys [input windows] ; << --- THE REASON FOR NOT HAVING GLOBAL STATE / DATA VARIABLES  !!
+  ;; => NOW I CAN MAKE A CONTROLS/INPUT FOOZBAZ !!!
+  ;; => do this whole thing with Gdx itself -> pass around!
+  ;; => refactor libgdx and pass 'context'
   (doseq [[id input-key] window-hotkeys
-          :when (g/key-just-pressed? ctx input-key)]
+          :when (input/key-just-pressed? input input-key)]
     (ui/toggle-visible! (get windows id))))
 
 (defn create [& {:keys [id actors]}]
   (ui/group {:id id
              :actors (cons (ui/actor
-                            {:act (fn [this _delta ctx]
-                                    (check-window-hotkeys       ctx (ui/parent this))
-                                    (check-escape-close-windows ctx (ui/parent this)))})
+                            {:act (fn [this _delta {:keys [ctx/input]
+                                                    :as ctx}]
+                                    (check-window-hotkeys       input (ui/parent this))
+                                    (check-escape-close-windows input (ui/parent this)))})
                            actors)}))

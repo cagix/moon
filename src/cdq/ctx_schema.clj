@@ -20,6 +20,7 @@
   (m/schema [:map {:closed true}
              [:ctx/assets :some]
              [:ctx/graphics :some]
+             [:ctx/input :some]
              [:ctx/ui-viewport :some]
              [:ctx/stage :some]
              [:ctx/config :some]

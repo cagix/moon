@@ -5,6 +5,7 @@
             [cdq.vector2 :as v]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
+            [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 
@@ -88,8 +89,9 @@
          [:tx/dissoc eid :entity/item-on-cursor]
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [_ eid ctx]
-    (when (and (g/button-just-pressed? ctx :left)
+  (state/manual-tick [_ eid {:keys [ctx/input]
+                             :as ctx}]
+    (when (and (input/button-just-pressed? input :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 

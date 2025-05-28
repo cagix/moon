@@ -86,8 +86,3 @@
   (reset-actors! [_])
   (draw-stage! [_])
   (update-stage! [_]))
-
-(defprotocol Input
-  (button-just-pressed? [_ button])
-  (key-pressed? [_ key])
-  (key-just-pressed? [_ key]))
