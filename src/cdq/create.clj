@@ -18,7 +18,6 @@
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
-            [clojure.gdx.input]
             [gdl.assets :as assets]
             [gdl.graphics.color :as color]
             [gdl.input :as input]
@@ -32,21 +31,10 @@
                       ctx/graphics
                       ctx/stage])
 
-(defn- make-input [input]
-  (reify input/Input
-    (button-just-pressed? [_ button]
-      (clojure.gdx.input/button-just-pressed? input button))
-
-    (key-pressed? [_ key]
-      (clojure.gdx.input/key-pressed? input key))
-
-    (key-just-pressed? [_ key]
-      (clojure.gdx.input/key-just-pressed? input key))))
-
 (defn- add-stage! [ctx input]
   (let [stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         (:batch (:ctx/graphics ctx)))]
-    (.setInputProcessor input stage)
+    (input/set-processor! input stage)
     (assoc ctx :ctx/stage stage)))
 
 (extend-type Context
@@ -219,7 +207,7 @@
   (-> (map->Context {})
       (assoc :ctx/config config)
       (assoc :ctx/graphics (graphics/create gdx config))
-      (assoc :ctx/input (make-input input))
+      (assoc :ctx/input input)
       (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config)))
       (add-stage! input)
       (assoc :ctx/assets (assets/create files (:assets config)))

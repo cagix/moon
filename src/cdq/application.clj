@@ -1,7 +1,29 @@
 (ns cdq.application
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl :as lwjgl])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.input :as input]
+            gdl.input)
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)))
+
+(defn- make-input [input]
+  (reify gdl.input/Input
+    (button-just-pressed? [_ button]
+      (clojure.gdx.input/button-just-pressed? input button))
+
+    (key-pressed? [_ key]
+      (clojure.gdx.input/key-pressed? input key))
+
+    (key-just-pressed? [_ key]
+      (clojure.gdx.input/key-just-pressed? input key))
+
+    (set-processor! [_ input-processor]
+      (.setInputProcessor input input-processor))))
+
+(defn- get-context []
+  {;:clojure.gdx/app      Gdx/app
+   :clojure.gdx/files    Gdx/files
+   :clojure.gdx/graphics Gdx/graphics
+   :clojure.gdx/input    (make-input Gdx/input)})
 
 (def state (atom nil))
 
@@ -15,7 +37,7 @@
   (lwjgl/application lwjgl-app-config
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create! (gdx/get-context) config))
+                         (reset! state (create! (get-context) config))
                          (validate-ctx-schema @state))
 
                        (dispose []
