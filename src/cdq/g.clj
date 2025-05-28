@@ -1,5 +1,8 @@
 (ns cdq.g)
 
+(defprotocol Game
+  (reset-game-state! [_ world-fn]))
+
 (defprotocol Context
   (context-entity-add! [_ eid])
   (context-entity-remove! [_ eid])

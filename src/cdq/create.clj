@@ -200,10 +200,10 @@
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
 
-(defn create-game-state [{:keys [ctx/config
-                                 ctx/stage]
-                          :as ctx}
-                         world-fn]
+(defn- create-game-state [{:keys [ctx/config
+                                  ctx/stage]
+                           :as ctx}
+                          world-fn]
   (ui/clear! stage)
   (run! #(ui/add! stage %) ((:create-actors config) ctx))
   (let [{:keys [tiled-map
@@ -225,6 +225,11 @@
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
+(extend-type gdl.application.Context
+  g/Game
+  (reset-game-state! [ctx world-fn]
+    (create-game-state ctx world-fn)))
+
 (defn create! [config]
   (ui/load! (:ui config))
   (-> (gdl.application/map->Context {})
@@ -235,7 +240,7 @@
       (add-stage!)
       (assoc :ctx/assets (assets/create (:assets config)))
       (assoc :ctx/db (db/create (:db config)))
-      (create-game-state (:world-fn config))))
+      (g/reset-game-state! (:world-fn config))))
 
 (extend-type gdl.application.Context
   g/Graphics

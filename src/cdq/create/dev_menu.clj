@@ -1,6 +1,5 @@
 (ns cdq.create.dev-menu
   (:require cdq.application
-            cdq.create
             cdq.create.actors
             [cdq.db :as db]
             [cdq.entity :as entity]
@@ -24,7 +23,7 @@
                :items (for [world-fn (:world-fns config)]
                         {:label (str "Start " world-fn)
                          :on-click (fn [_actor _ctx]
-                                     (swap! cdq.application/state cdq.create/create-game-state world-fn))})}
+                                     (swap! cdq.application/state g/reset-game-state! world-fn))})}
               {:label "Help"
                :items [{:label (:info config)}]}
               {:label "Objects"
