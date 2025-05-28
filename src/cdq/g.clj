@@ -67,17 +67,6 @@
   (frames-per-second [_])
   (clear-screen! [_]))
 
-(defprotocol WorldViewport
-  (world-mouse-position [_])
-  (camera-position [_])
-  (inc-zoom! [_ amount])
-  (camera-frustum [_])
-  (visible-tiles [_])
-  (camera-zoom [_])
-  (world-viewport-width [_])
-  (world-viewport-height [_])
-  (set-camera-position! [_ position]))
-
 (defprotocol UIViewport
   (ui-mouse-position [_])
   (ui-viewport-width [_])

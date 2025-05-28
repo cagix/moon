@@ -4,6 +4,7 @@
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 
@@ -53,9 +54,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [ctx entity]
+(defn- item-place-position [{:keys [ctx/graphics]} entity]
   (placement-point (entity/position entity)
-                   (g/world-mouse-position ctx)
+                   (graphics/world-mouse-position graphics)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 

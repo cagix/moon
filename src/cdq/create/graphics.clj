@@ -30,32 +30,3 @@
     (graphics/sprite-sheet->sprite (-k ctx)
                                    sprite-sheet
                                    [x y])))
-
-(extend-type gdl.application.Context
-  g/WorldViewport
-  (set-camera-position! [ctx position]
-    (graphics/set-camera-position! (-k ctx) position))
-
-  (world-mouse-position [ctx]
-    (graphics/world-mouse-position (-k ctx)))
-
-  (world-viewport-width [ctx]
-    (graphics/world-viewport-width (-k ctx)))
-
-  (world-viewport-height [ctx]
-    (graphics/world-viewport-height (-k ctx)))
-
-  (camera-position [ctx]
-    (graphics/camera-position (-k ctx)))
-
-  (inc-zoom! [ctx amount]
-    (graphics/inc-zoom! (-k ctx) amount))
-
-  (camera-frustum [ctx]
-    (graphics/camera-frustum (-k ctx)))
-
-  (visible-tiles [ctx]
-    (graphics/visible-tiles (-k ctx)))
-
-  (camera-zoom [ctx]
-    (graphics/camera-zoom (-k ctx))))

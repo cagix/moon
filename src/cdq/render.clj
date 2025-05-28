@@ -46,11 +46,13 @@
       (g/handle-txs! ctx (entity/destroy! component eid ctx))))
   nil)
 
-(defn- camera-controls! [{:keys [ctx/config] :as ctx}]
+(defn- camera-controls! [{:keys [ctx/config
+                                 ctx/graphics]
+                          :as ctx}]
   (let [controls (:controls config)
         zoom-speed (:zoom-speed config)]
-    (when (g/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
-    (when (g/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))))
+    (when (g/key-pressed? ctx (:zoom-in controls))  (graphics/inc-zoom! graphics    zoom-speed))
+    (when (g/key-pressed? ctx (:zoom-out controls)) (graphics/inc-zoom! graphics (- zoom-speed)))))
 
 (defn- pause-game? [{:keys [ctx/config
                             ctx/player-eid] :as ctx}]
@@ -108,14 +110,15 @@
                                    max-iterations)))
 
 
-(defn- update-mouseover-entity! [{:keys [ctx/player-eid
+(defn- update-mouseover-entity! [{:keys [ctx/graphics
+                                         ctx/player-eid
                                          ctx/mouseover-eid]
                                   :as ctx}]
   (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (g/point->entities ctx (g/world-mouse-position ctx)))]
+                                     (g/point->entities ctx (graphics/world-mouse-position graphics)))]
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -134,8 +137,9 @@
                                     ctx))
   nil)
 
-(defn- highlight-mouseover-tile* [ctx]
-  (let [[x y] (mapv int (g/world-mouse-position ctx))
+(defn- highlight-mouseover-tile* [{:keys [ctx/graphics]
+                                   :as ctx}]
+  (let [[x y] (mapv int (graphics/world-mouse-position graphics))
         cell (g/grid-cell ctx [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
@@ -147,8 +151,9 @@
                                   :as ctx}]
   (graphics/handle-draws! graphics (highlight-mouseover-tile* ctx)))
 
-(defn- geom-test* [ctx]
-  (let [position (g/world-mouse-position ctx)
+(defn- geom-test* [{:keys [ctx/graphics]
+                    :as ctx}]
+  (let [position (graphics/world-mouse-position graphics)
         radius 0.8
         circle {:position position
                 :radius radius}]
@@ -163,25 +168,25 @@
                    :as ctx}]
   (graphics/handle-draws! graphics (geom-test* ctx)))
 
-(defn- draw-tile-grid* [ctx]
+(defn- draw-tile-grid* [graphics]
+  (let [[left-x _right-x bottom-y _top-y] (graphics/camera-frustum graphics)]
+    [[:draw/grid
+      (int left-x)
+      (int bottom-y)
+      (inc (int (graphics/world-viewport-width graphics)))
+      (+ 2 (int (graphics/world-viewport-height graphics)))
+      1
+      1
+      [1 1 1 0.8]]]))
+
+(defn- draw-tile-grid [{:keys [ctx/graphics]}]
   (when ctx/show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (g/camera-frustum ctx)]
-      [[:draw/grid
-        (int left-x)
-        (int bottom-y)
-        (inc (int (g/world-viewport-width ctx)))
-        (+ 2 (int (g/world-viewport-height ctx)))
-        1
-        1
-        [1 1 1 0.8]]])))
+    (graphics/handle-draws! graphics (draw-tile-grid* graphics))))
 
-(defn- draw-tile-grid [{:keys [ctx/graphics]
-                        :as ctx}]
-  (graphics/handle-draws! graphics (draw-tile-grid* ctx)))
-
-(defn- draw-cell-debug* [ctx]
+(defn- draw-cell-debug* [{:keys [ctx/graphics]
+                          :as ctx}]
   (apply concat
-         (for [[x y] (g/visible-tiles ctx)
+         (for [[x y] (graphics/visible-tiles graphics)
                :let [cell (g/grid-cell ctx [x y])]
                :when cell
                :let [cell* @cell]]
@@ -209,7 +214,7 @@
                    ctx/player-eid]
             :as ctx}]
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
-    (g/set-camera-position! ctx (entity/position @player-eid))
+    (graphics/set-camera-position! graphics (entity/position @player-eid))
     (g/clear-screen! ctx)
     (g/draw-world-map! ctx)
     (graphics/draw-on-world-viewport! graphics

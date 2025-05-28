@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [cdq.game-state :as game-state]
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
@@ -41,9 +42,11 @@
                     {:label "GUI"
                      :update-fn (fn [ctx] (mapv int (g/ui-mouse-position ctx)))}
                     {:label "World"
-                     :update-fn (fn [ctx] (mapv int (g/world-mouse-position ctx)))}
+                     :update-fn (fn [{:keys [ctx/graphics]}]
+                                  (mapv int (graphics/world-mouse-position graphics)))}
                     {:label "Zoom"
-                     :update-fn g/camera-zoom
+                     :update-fn (fn [{:keys [ctx/graphics]}]
+                                  (graphics/camera-zoom graphics))
                      :icon (assets/texture assets "images/zoom.png")}
                     {:label "FPS"
                      :update-fn g/frames-per-second
