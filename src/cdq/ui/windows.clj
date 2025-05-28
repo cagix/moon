@@ -9,10 +9,7 @@
 (def window-hotkeys {:inventory-window  :i
                      :entity-info-window :e})
 
-(defn- check-window-hotkeys [input windows] ; << --- THE REASON FOR NOT HAVING GLOBAL STATE / DATA VARIABLES  !!
-  ;; => NOW I CAN MAKE A CONTROLS/INPUT FOOZBAZ !!!
-  ;; => do this whole thing with Gdx itself -> pass around!
-  ;; => refactor libgdx and pass 'context'
+(defn- check-window-hotkeys [input windows]
   (doseq [[id input-key] window-hotkeys
           :when (input/key-just-pressed? input input-key)]
     (ui/toggle-visible! (get windows id))))

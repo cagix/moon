@@ -6,8 +6,7 @@
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color
+  (:import (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
                                       Pixmap$Format)
@@ -180,18 +179,15 @@
   (camera-zoom [_]
     (camera/zoom (:camera world-viewport))))
 
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal Gdx/files file)
+(defn- truetype-font [files {:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (.internal files file)
                                 {:size (* size quality-scaling)})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? true}))) ; otherwise scaling to world-units not visible
 
-; TODO Gdx graphics/clear-screen
-; update viewports
-; set cursor :ctx/graphics
-; textures asset-manager
-(defn create [graphics
+(defn create [{:keys [clojure.gdx/graphics
+                      clojure.gdx/files]}
               {:keys [tile-size
                       cursor-path-format
                       cursors
@@ -214,12 +210,12 @@
       :shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
-                  (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                  (let [pixmap (Pixmap. (.internal files (format cursor-path-format file)))
                         cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
                     (.dispose pixmap)
                     cursor))
                 cursors)
-      :default-font (truetype-font default-font)
+      :default-font (truetype-font files default-font)
       :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))

@@ -2,9 +2,12 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [gdl.application :refer [post-runnable!]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]])
+  (:import (com.badlogic.gdx Gdx)))
+
+(defmacro post-runnable! [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 #_(defn post-txs! [txs]
   (post-runnable!

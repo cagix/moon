@@ -207,17 +207,18 @@
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
 
-(defn create! [{:keys [clojure.gdx/graphics
-                       clojure.gdx/input]}
+(defn create! [{:keys [clojure.gdx/input
+                       clojure.gdx/files]
+                :as gdx}
                config]
   (ui/load! (:ui config))
   (-> (gdl.application/map->Context {})
       (assoc :ctx/config config)
-      (assoc :ctx/graphics (graphics/create graphics config)) ; <- actually create only called here <- all libgdx create stuff here and assets/input/graphics/stage/viewport as protocols in gdl ? -> all gdx code creating together and upfactored protocols?
+      (assoc :ctx/graphics (graphics/create gdx config))
       (assoc :ctx/input (make-input input))
-      (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config))) ; <- even viewport construction is in here .... viewport itself a protocol  ....
+      (assoc :ctx/ui-viewport (viewport/ui-viewport (:ui-viewport config)))
       (add-stage! input)
-      (assoc :ctx/assets (assets/create (:assets config)))
+      (assoc :ctx/assets (assets/create files (:assets config)))
       (assoc :ctx/db (db/create (:db config)))
       (g/reset-game-state! (:world-fn config))))
 

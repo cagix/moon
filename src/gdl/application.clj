@@ -1,9 +1,5 @@
 (ns gdl.application
-  (:require [qrecord.core :as q])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+  (:require [qrecord.core :as q]))
 
 (q/defrecord Context [ctx/assets
                       ctx/graphics
