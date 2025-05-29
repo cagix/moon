@@ -24,8 +24,6 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
             [gdl.assets :as assets]
-            [gdl.files :as files]
-            [gdl.graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]

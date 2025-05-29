@@ -1,6 +1,9 @@
 (ns cdq.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.interop :as interop])
+            [clojure.gdx.interop :as interop]
+            [gdl.files]
+            [gdl.graphics]
+            [gdl.input])
   (:import (com.badlogic.gdx ApplicationAdapter
                              Gdx)
            (com.badlogic.gdx.graphics Color)
@@ -8,7 +11,7 @@
 
 (defn- make-files []
   (let [files Gdx/files]
-    (reify files/Files
+    (reify gdl.files/Files
       (internal [_ path]
         (.internal files path)))))
 
@@ -32,7 +35,7 @@
 
 (defn- make-input []
   (let [input Gdx/input]
-    (reify input/Input
+    (reify gdl.input/Input
       (button-just-pressed? [_ button]
         (.isButtonJustPressed input (interop/k->input-button button)))
 
