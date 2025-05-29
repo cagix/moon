@@ -184,15 +184,17 @@
                                   :enable-markup? true
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
 
-(defn create [{:keys [clojure.gdx/graphics
-                      clojure.gdx/files]}
-              {:keys [tile-size
-                      cursor-path-format
-                      cursors
-                      default-font
-                      world-viewport]}]
+(defn create [{:keys [ctx/config
+                      ctx/files]
+               :as ctx}]
   (map->Graphics
-   (let [batch (SpriteBatch.)
+   (let [graphics (:clojure.gdx/graphics (:ctx/gdx ctx))
+         {:keys [tile-size
+                 cursor-path-format
+                 cursors
+                 default-font
+                 world-viewport]} config
+         batch (SpriteBatch.)
          shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                              (.setColor Color/WHITE)
                                              (.drawPixel 0 0))

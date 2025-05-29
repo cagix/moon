@@ -11,6 +11,7 @@
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/gdx :some]
+             [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/graphics :some]
              [:ctx/input :some]
@@ -38,10 +39,11 @@
 
 (def create-fns
   '[
-    cdq.create.extend-types/do!
     cdq.create.gdx/do!
-    cdq.create.graphics/do!
     cdq.create.input/do!
+    cdq.create.files/do!
+    cdq.create.extend-types/do!
+    cdq.create.graphics/do!
     cdq.create.ui-viewport/do!
     cdq.create.stage/do!
     cdq.create.assets/do!

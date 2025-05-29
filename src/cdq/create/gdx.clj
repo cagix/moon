@@ -3,12 +3,6 @@
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils ScreenUtils)))
 
-(defn- make-files []
-  (let [files Gdx/files]
-    (reify gdl.files/Files
-      (internal [_ path]
-        (.internal files path)))))
-
 (defn- make-graphics []
   (let [graphics Gdx/graphics]
     (reify gdl.graphics/Graphics
@@ -28,5 +22,4 @@
         (ScreenUtils/clear Color/BLACK)))))
 
 (defn do! [ctx]
-  (assoc ctx :ctx/gdx {:clojure.gdx/files    (make-files)
-                       :clojure.gdx/graphics (make-graphics)}))
+  (assoc ctx :ctx/gdx {:clojure.gdx/graphics (make-graphics)}))
