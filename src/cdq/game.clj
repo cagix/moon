@@ -589,16 +589,21 @@
                               :explored-tile-color (color/create 0.5 0.5 0.5 1)
                               :see-all-tiles? false})))
 
-(defn- get-active-entities [{:keys [ctx/content-grid
-                                    ctx/player-eid]}]
-  (content-grid/active-entities content-grid @player-eid))
+(def render-fns
+  '[
+    cdq.render.assoc-active-entities/do!
+    ])
 
 (defn render! [{:keys [ctx/graphics
                        ctx/player-eid
                        ctx/stage]
                 :as ctx}]
   (m/validate-humanize schema ctx)
-  (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
+  (let [render-fns (map requiring-resolve render-fns)
+        ctx (reduce (fn [ctx render!]
+                      (render! ctx))
+                    ctx
+                    render-fns)]
     (graphics/set-camera-position! graphics (entity/position @player-eid))
     (graphics/clear-screen! graphics)
     (draw-world-map! ctx)
