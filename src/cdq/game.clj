@@ -100,10 +100,10 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})
 
-(defn- spawn-player-entity [ctx start-position]
+(defn- spawn-player-entity [ctx start-position player-props]
   (g/spawn-creature! ctx
                      (player-entity-props (utils/tile->middle start-position)
-                                          ctx/player-entity-config)))
+                                          player-props)))
 
 (defn- spawn-enemies [tiled-map]
   (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
@@ -135,7 +135,9 @@
                     :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})
                     :ctx/potential-field-cache (atom nil)})
-        ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position))]
+        ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
+                                                            start-position
+                                                            (:player-props config)))]
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 

@@ -40,6 +40,9 @@
  :create-actors cdq.create.actors/create-actors
  :world-fn cdq.level.vampire/create
  :content-grid-cell-size 16
+ :player-props {:creature-id :creatures/vampire
+                :free-skill-points 3
+                :click-distance-tiles 1.5}
  :effect-body-props {:width 0.5
                      :height 0.5
                      :z-order :z-order/effect}

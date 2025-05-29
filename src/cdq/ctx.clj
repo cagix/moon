@@ -26,9 +26,4 @@
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
 (def ^:dbg-flag show-cell-occupied? false)
-
 (def ^:dbg-flag show-body-bounds? false)
-
-(def player-entity-config {:creature-id :creatures/vampire
-                           :free-skill-points 3
-                           :click-distance-tiles 1.5})
