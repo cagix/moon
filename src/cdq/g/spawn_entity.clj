@@ -6,7 +6,6 @@
             [cdq.malli :as m]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
-            cdq.application
             [gdl.math :as math]
             [gdl.utils :as utils]))
 
@@ -198,22 +197,20 @@
           {}
           components))
 
-(extend-type cdq.application.Context
-  g/SpawnEntity
-  (spawn-entity! [{:keys [ctx/id-counter] :as ctx}
-                  position
-                  body
-                  components]
-    (m/validate-humanize components-schema components)
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        (create-body ctx/minimum-size ctx/z-orders)
-                        (utils/safe-merge (-> components
-                                              (assoc :entity/id (swap! id-counter inc))
-                                              (create-vs ctx)))))]
-      (g/context-entity-add! ctx eid)
-      (doseq [component @eid]
-        (g/handle-txs! ctx (entity/create! component eid ctx)))
-      eid)))
+(defn spawn-entity! [{:keys [ctx/id-counter] :as ctx}
+                     position
+                     body
+                     components]
+  (m/validate-humanize components-schema components)
+  (assert (and (not (contains? components :position))
+               (not (contains? components :entity/id))))
+  (let [eid (atom (-> body
+                      (assoc :position position)
+                      (create-body ctx/minimum-size ctx/z-orders)
+                      (utils/safe-merge (-> components
+                                            (assoc :entity/id (swap! id-counter inc))
+                                            (create-vs ctx)))))]
+    (g/context-entity-add! ctx eid)
+    (doseq [component @eid]
+      (g/handle-txs! ctx (entity/create! component eid ctx)))
+    eid))

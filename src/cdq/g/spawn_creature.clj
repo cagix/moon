@@ -1,7 +1,6 @@
 (ns cdq.g.spawn-creature
   (:require [cdq.db :as db]
             [cdq.g :as g]
-            [cdq.application]
             [gdl.utils :as utils]))
 
 ; # :z-order/flying has no effect for now
@@ -18,16 +17,14 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(extend-type cdq.application.Context
-  g/Creatures
-  (spawn-creature! [{:keys [ctx/db]
-                     :as ctx}
-                    {:keys [position creature-id components]}]
-    (let [props (db/build db creature-id ctx)]
-      (g/spawn-entity! ctx
-                       position
-                       (create-creature-body (:entity/body props))
-                       (-> props
-                           (dissoc :entity/body)
-                           (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                           (utils/safe-merge components))))))
+(defn spawn-creature! [{:keys [ctx/db]
+                        :as ctx}
+                       {:keys [position creature-id components]}]
+  (let [props (db/build db creature-id ctx)]
+    (g/spawn-entity! ctx
+                     position
+                     (create-creature-body (:entity/body props))
+                     (-> props
+                         (dissoc :entity/body)
+                         (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                         (utils/safe-merge components)))))

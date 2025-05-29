@@ -5,7 +5,6 @@
             [cdq.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
-            cdq.application
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.colors :as colors]
@@ -87,11 +86,6 @@
                       (str "\n" (text ctx v))))))
        (str/join "\n")
        remove-newlines))
-
-(extend-type cdq.application.Context
-  g/InfoText
-  (info-text [ctx object]
-    (text ctx object)))
 
 (defmulti ^:private op-value-text (fn [[k]]
                                     k))

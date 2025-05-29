@@ -13,7 +13,6 @@
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
-            [cdq.application]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
@@ -32,19 +31,6 @@
 
 (defmulti handle-tx! (fn [[k & _params] _ctx]
                        k))
-
-(extend-type cdq.application.Context
-  g/EffectHandler
-  (handle-txs! [ctx transactions]
-    (doseq [transaction transactions
-            :when transaction
-            :let [_ (assert (vector? transaction)
-                            (pr-str transaction))
-                  ; TODO also should be with namespace 'tx' the first is a keyword
-                  ]]
-      (try (handle-tx! transaction ctx)
-           (catch Throwable t
-             (throw (ex-info "" {:transaction transaction} t)))))))
 
 (defmethod handle-tx! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value))

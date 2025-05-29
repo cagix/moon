@@ -4,7 +4,6 @@
             [cdq.inventory :as inventory]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
-            cdq.application
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked
@@ -58,43 +57,41 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(extend-type cdq.application.Context
-  g/InteractionState
-  (interaction-state [{:keys [ctx/mouseover-eid]
-                       :as ctx}
-                      eid]
-    (let [entity @eid
-          mouseover-actor (g/mouseover-actor ctx)]
-      (cond
-       mouseover-actor
-       [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
-        nil] ; handled by actors themself, they check player state
+(defn create [{:keys [ctx/mouseover-eid]
+               :as ctx}
+              eid]
+  (let [entity @eid
+        mouseover-actor (g/mouseover-actor ctx)]
+    (cond
+     mouseover-actor
+     [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
+      nil] ; handled by actors themself, they check player state
 
-       (and mouseover-eid
-            (:entity/clickable @mouseover-eid))
-       (clickable-entity-interaction ctx entity mouseover-eid)
+     (and mouseover-eid
+          (:entity/clickable @mouseover-eid))
+     (clickable-entity-interaction ctx entity mouseover-eid)
 
-       :else
-       (if-let [skill-id (g/selected-skill ctx)]
-         (let [skill (skill-id (:entity/skills entity))
-               effect-ctx (g/player-effect-ctx ctx eid)
-               state (entity/skill-usable-state entity skill effect-ctx)]
-           (if (= state :usable)
-             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
-             ; different color ?
-             ; => e.g. meditation no TARGET .. etc.
-             [:cursors/use-skill
-              [[:tx/event eid :start-action [skill effect-ctx]]]]
-             ; TODO cursor as of usable state
-             ; cooldown -> sanduhr kleine
-             ; not-enough-mana x mit kreis?
-             ; invalid-params -> depends on params ...
-             [:cursors/skill-not-usable
-              [[:tx/sound "bfxr_denied"]
-               [:tx/show-message (case state
-                                   :cooldown "Skill is still on cooldown"
-                                   :not-enough-mana "Not enough mana"
-                                   :invalid-params "Cannot use this here")]]]))
-         [:cursors/no-skill-selected
-          [[:tx/sound "bfxr_denied"]
-           [:tx/show-message "No selected skill"]]])))))
+     :else
+     (if-let [skill-id (g/selected-skill ctx)]
+       (let [skill (skill-id (:entity/skills entity))
+             effect-ctx (g/player-effect-ctx ctx eid)
+             state (entity/skill-usable-state entity skill effect-ctx)]
+         (if (= state :usable)
+           ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
+           ; different color ?
+           ; => e.g. meditation no TARGET .. etc.
+           [:cursors/use-skill
+            [[:tx/event eid :start-action [skill effect-ctx]]]]
+           ; TODO cursor as of usable state
+           ; cooldown -> sanduhr kleine
+           ; not-enough-mana x mit kreis?
+           ; invalid-params -> depends on params ...
+           [:cursors/skill-not-usable
+            [[:tx/sound "bfxr_denied"]
+             [:tx/show-message (case state
+                                 :cooldown "Skill is still on cooldown"
+                                 :not-enough-mana "Not enough mana"
+                                 :invalid-params "Cannot use this here")]]]))
+       [:cursors/no-skill-selected
+        [[:tx/sound "bfxr_denied"]
+         [:tx/show-message "No selected skill"]]]))))
