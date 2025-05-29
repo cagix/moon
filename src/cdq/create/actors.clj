@@ -1,5 +1,6 @@
 (ns cdq.create.actors
-  (:require [cdq.ui.action-bar]
+  (:require [cdq.ui.dev-menu]
+            [cdq.ui.action-bar]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.windows]
             [cdq.ui.entity-info]
@@ -7,12 +8,9 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.message]))
 
-(defprotocol DevMenuActor
-  (create-dev-menu [ctx]))
-
 (defn create-actors [{:keys [ctx/ui-viewport]
                       :as ctx}]
-  [(create-dev-menu ctx)
+  [(cdq.ui.dev-menu/create ctx)
    (cdq.ui.action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
                                80 ; action-bar-icon-size

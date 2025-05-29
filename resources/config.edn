@@ -54,8 +54,7 @@
              cdq.level.uf-caves/create
              cdq.level.modules/create]
  :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
- :requires [cdq.create.dev-menu
-
+ :requires [
             cdq.g.info
             cdq.g.player-movement-vector
             cdq.g.interaction-state
