@@ -1,5 +1,4 @@
-(ns cdq.ctx
-  (:require [gdl.utils :as utils]))
+(ns cdq.ctx)
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
@@ -17,5 +16,3 @@
                :z-order/ground
                :z-order/flying
                :z-order/effect])
-
-(def render-z-order (utils/define-order z-orders))

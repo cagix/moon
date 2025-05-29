@@ -68,6 +68,7 @@
              [:ctx/entity-ids :some]
              [:ctx/potential-field-cache :some]
              [:ctx/factions-iterations :some]
+             [:ctx/render-z-order :some]
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
@@ -142,7 +143,8 @@
                     :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})
                     :ctx/potential-field-cache (atom nil)
-                    :ctx/factions-iterations (:potential-field-factions-iterations config)})
+                    :ctx/factions-iterations (:potential-field-factions-iterations config)
+                    :ctx/render-z-order (utils/define-order ctx/z-orders)})
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
                                                             start-position
                                                             (:player-props config)))]
@@ -377,13 +379,14 @@
 
 (defn- render-entities! [{:keys [ctx/graphics
                                  ctx/active-entities
-                                 ctx/player-eid]
+                                 ctx/player-eid
+                                 ctx/render-z-order]
                           :as ctx}]
   (let [entities (map deref active-entities)
         player @player-eid]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
-                                                    ctx/render-z-order)
+                                                    render-z-order)
             render! [#'entity/render-below!
                      #'entity/render-default!
                      #'entity/render-above!
@@ -476,14 +479,15 @@
 
 (defn- update-mouseover-entity! [{:keys [ctx/player-eid
                                          ctx/mouseover-eid
-                                         ctx/grid]
+                                         ctx/grid
+                                         ctx/render-z-order]
                                   :as ctx}]
   (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (grid/point->entities grid (g/world-mouse-position ctx)))]
-                    (->> ctx/render-z-order
+                    (->> render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(g/line-of-sight? ctx player @%))
