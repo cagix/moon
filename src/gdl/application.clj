@@ -8,6 +8,7 @@
             [clojure.gdx.input :as input]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [clojure.string :as str]
+            [gdl.audio.sound]
             [gdl.assets]
             [gdl.graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
@@ -60,7 +61,10 @@
 
       gdl.assets/Assets
       (sound [_ path]
-        (asset-manager/safe-get manager path))
+        (let [sound (asset-manager/safe-get manager path)]
+          (reify gdl.audio.sound/Sound
+            (play! [_]
+              (Sound/.play sound)))))
 
       (texture [_ path]
         (asset-manager/safe-get manager path))
