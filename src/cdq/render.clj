@@ -5,6 +5,7 @@
             [cdq.state :as state]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.g :as g]
+            [cdq.grid :as grid]
             [cdq.stacktrace :as stacktrace]
             [cdq.math :as math]
             [gdl.input :as input]
@@ -115,13 +116,14 @@
 
 
 (defn- update-mouseover-entity! [{:keys [ctx/player-eid
-                                         ctx/mouseover-eid]
+                                         ctx/mouseover-eid
+                                         ctx/grid]
                                   :as ctx}]
   (let [new-eid (if (g/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (g/point->entities ctx (g/world-mouse-position ctx)))]
+                                     (grid/point->entities grid (g/world-mouse-position ctx)))]
                     (->> ctx/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -140,9 +142,9 @@
                                     ctx))
   nil)
 
-(defn- highlight-mouseover-tile* [ctx]
+(defn- highlight-mouseover-tile* [{:keys [ctx/grid] :as ctx}]
   (let [[x y] (mapv int (g/world-mouse-position ctx))
-        cell (g/grid-cell ctx [x y])]
+        cell (grid/cell grid [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
         (case (:movement @cell)
@@ -153,13 +155,13 @@
                                   :as ctx}]
   (graphics/handle-draws! graphics (highlight-mouseover-tile* ctx)))
 
-(defn- geom-test* [ctx]
+(defn- geom-test* [{:keys [ctx/grid] :as ctx}]
   (let [position (g/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]
     (conj (cons [:draw/circle position radius [1 0 0 0.5]]
-                (for [[x y] (map #(:position @%) (g/circle->cells ctx circle))]
+                (for [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
                   [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
           (let [{[x y] :left-bottom
                  :keys [width height]} (math/circle->outer-rectangle circle)]
@@ -184,11 +186,11 @@
   (when ctx/show-tile-grid?
     (graphics/handle-draws! graphics (draw-tile-grid* graphics))))
 
-(defn- draw-cell-debug* [{:keys [ctx/graphics]
-                          :as ctx}]
+(defn- draw-cell-debug* [{:keys [ctx/graphics
+                                 ctx/grid]}]
   (apply concat
          (for [[x y] (graphics/visible-tiles graphics)
-               :let [cell (g/grid-cell ctx [x y])]
+               :let [cell (grid/cell grid [x y])]
                :when cell
                :let [cell* @cell]]
            [(when (and ctx/show-cell-entities? (seq (:entities cell*)))

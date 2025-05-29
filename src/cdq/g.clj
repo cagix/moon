@@ -22,11 +22,6 @@
   (line-of-sight? [_ source target]))
 
 (defprotocol Grid
-  (valid-position? [_ new-body])
-  (grid-cell [_ position])
-  (point->entities [_ position])
-  (circle->cells [_ circle])
-  (circle->entities [_ circle])
   (nearest-enemy-distance [_ entity])
   (nearest-enemy [_ entity])
   (potential-field-find-direction [_ eid]))

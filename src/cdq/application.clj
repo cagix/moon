@@ -256,21 +256,6 @@
 
 (extend-type Context
   cdq.g/Grid
-  (grid-cell [{:keys [ctx/grid]} position]
-    (grid/cell grid position))
-
-  (point->entities [{:keys [ctx/grid]} position]
-    (grid/point->entities grid position))
-
-  (valid-position? [{:keys [ctx/grid]} new-body]
-    (grid/valid-position? grid new-body))
-
-  (circle->cells [{:keys [ctx/grid]} circle]
-    (grid/circle->cells grid circle))
-
-  (circle->entities [{:keys [ctx/grid]} circle]
-    (grid/circle->entities grid circle))
-
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
                                   (entity/enemy entity)))
