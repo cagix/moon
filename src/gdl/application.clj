@@ -1,9 +1,16 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.input :as input]
+            [gdl.files]
             [gdl.input])
   (:import (com.badlogic.gdx ApplicationAdapter
+                             Files
                              Gdx)))
+
+(defn- make-files [^Files files]
+  (reify gdl.files/Files
+    (internal [_ path]
+      (.internal files path))))
 
 (defn- make-input [input]
   (reify gdl.input/Input
@@ -23,8 +30,9 @@
       (input/mouse-position input))))
 
 (defn- create-context [config]
-  {:ctx/input (make-input Gdx/input)}
-  )
+  {:ctx/input (make-input Gdx/input)
+   :ctx/files (make-files Gdx/files)
+   })
 
 (def state (atom nil))
 

@@ -40,7 +40,7 @@
   '[
     ;; gdl context?
     ;cdq.create.input/do!
-    cdq.create.files/do!
+    ;cdq.create.files/do!
     cdq.create.graphics/do!
     cdq.create.ui-viewport/do!
     cdq.create.stage/do!
