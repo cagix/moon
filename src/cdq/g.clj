@@ -64,7 +64,6 @@
   (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol Stage
-  (find-actor-by-name [_ name])
   (mouseover-actor [_]))
 
 (defprotocol MouseViewports

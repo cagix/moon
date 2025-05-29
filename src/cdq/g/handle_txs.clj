@@ -62,9 +62,11 @@
                                       {:keys [ctx/graphics]}]
   (graphics/set-cursor! graphics cursor-key))
 
-(defmethod handle-tx! :tx/show-message [[_ message] ctx]
-  (cdq.ui.message/show! (g/find-actor-by-name ctx "player-message")
-                        message))
+(defmethod handle-tx! :tx/show-message [[_ message] {:keys [ctx/stage]}]
+  (-> stage
+      ui/root
+      (ui/find-actor "player-message")
+      (cdq.ui.message/show! message)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

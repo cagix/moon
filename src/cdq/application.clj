@@ -214,13 +214,7 @@
 
 (extend-type Context
   g/Stage
-  (find-actor-by-name [{:keys [ctx/stage]} name]
-    (-> stage
-        ui/root
-        (ui/find-actor name))) ; <- find-actor protocol & for stage use ui/root
-
-  (mouseover-actor [{:keys [ctx/stage]
-                     :as ctx}]
+  (mouseover-actor [{:keys [ctx/stage] :as ctx}]
     (ui/hit stage (g/ui-mouse-position ctx))))
 
 (extend-type Context
