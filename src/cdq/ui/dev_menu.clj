@@ -2,10 +2,10 @@
   (:require [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
             [gdl.assets :as assets]
+            [gdl.graphics :as graphics]
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]))
 

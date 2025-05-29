@@ -9,10 +9,10 @@
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
+            [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))

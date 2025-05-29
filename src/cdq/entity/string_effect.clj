@@ -1,7 +1,7 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
             [cdq.timer :as timer]
+            [gdl.graphics :as graphics]
             [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :entity/string-effect

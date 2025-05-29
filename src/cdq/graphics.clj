@@ -4,6 +4,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.files :as files]
+            [gdl.graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
@@ -16,28 +17,6 @@
                                           TextureRegion)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)))
-
-(defprotocol PGraphics
-  (delta-time [_])
-  (set-cursor! [_ cursor])
-  (frames-per-second [_])
-  (clear-screen! [_])
-  (draw-tiled-map! [_ tiled-map color-setter])
-  (handle-draws! [_ draws])
-  (draw-on-world-viewport! [_ f])
-  (pixels->world-units [_ pixels])
-  (sprite [_ texture])
-  (sub-sprite [_ sprite [x y w h]])
-  (sprite-sheet [_ texture-path tilew tileh])
-  (sprite-sheet->sprite [_ sprite-sheet [x y]])
-  (set-camera-position! [_ position])
-  (world-viewport-width [_])
-  (world-viewport-height [_])
-  (camera-position [_])
-  (inc-zoom! [_ amount])
-  (camera-frustum [_])
-  (visible-tiles [_])
-  (camera-zoom [_]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -95,7 +74,7 @@
     (run! Disposable/.dispose (vals cursors))
     (Disposable/.dispose default-font))
 
-  PGraphics
+  gdl.graphics/Graphics
   (delta-time [_]
     (.getDeltaTime graphics))
 
@@ -148,11 +127,11 @@
      :tileh tileh})
 
   (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
-    (sub-sprite this image
-                [(* x tilew)
-                 (* y tileh)
-                 tilew
-                 tileh]))
+    (gdl.graphics/sub-sprite this image
+                             [(* x tilew)
+                              (* y tileh)
+                              tilew
+                              tileh]))
 
   (set-camera-position! [_ position]
     (camera/set-position! (:camera world-viewport) position))
@@ -359,4 +338,4 @@
                                         {:keys [shape-drawer] :as this}]
   (sd/with-line-width shape-drawer width
     (fn []
-      (handle-draws! this draws))))
+      (gdl.graphics/handle-draws! this draws))))

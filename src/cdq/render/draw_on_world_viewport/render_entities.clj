@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-viewport.render-entities
   (:require [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
+            [gdl.graphics :as graphics]
             [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)

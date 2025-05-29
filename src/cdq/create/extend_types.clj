@@ -9,7 +9,6 @@
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
             [cdq.g.handle-txs]
-            [cdq.graphics :as graphics]
             [cdq.grid :as grid]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
@@ -17,6 +16,7 @@
             [cdq.ui.error-window :as error-window]
             [cdq.vector2 :as v]
             [gdl.assets :as assets]
+            [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.viewport :as viewport])

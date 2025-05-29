@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
   (:require [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.grid :as grid]
-            [cdq.math :as math]))
+            [cdq.math :as math]
+            [gdl.graphics :as graphics]))
 
 (defn- geom-test* [{:keys [ctx/grid] :as ctx}]
   (let [position (g/world-mouse-position ctx)

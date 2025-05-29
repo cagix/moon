@@ -1,6 +1,6 @@
 (ns cdq.render.set-camera-on-player
   (:require [cdq.entity :as entity]
-            [cdq.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/player-eid]

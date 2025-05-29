@@ -1,10 +1,10 @@
 (ns cdq.ui.inventory
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
+            [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))

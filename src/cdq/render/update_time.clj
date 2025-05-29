@@ -1,6 +1,6 @@
 (ns cdq.render.update-time
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics :as graphics]))
+            [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/paused?]

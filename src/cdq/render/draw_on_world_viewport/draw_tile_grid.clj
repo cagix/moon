@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport.draw-tile-grid
-  (:require [cdq.graphics :as graphics]))
+  (:require [gdl.graphics :as graphics]))
 
 (def ^:dbg-flag show-tile-grid? false)
 

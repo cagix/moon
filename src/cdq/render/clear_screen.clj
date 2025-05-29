@@ -1,5 +1,5 @@
 (ns cdq.render.clear-screen
-  (:require [cdq.graphics :as graphics]))
+  (:require [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/graphics]
             :as ctx}]
