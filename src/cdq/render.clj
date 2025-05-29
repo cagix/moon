@@ -7,7 +7,9 @@
             [cdq.g :as g]
             [cdq.grid :as grid]
             [cdq.stacktrace :as stacktrace]
+            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.math :as math]
+            [gdl.graphics.color :as color]
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
@@ -213,6 +215,19 @@
 ; Wait ! we make the protocols inside cdq.render -> get-active-entities, clear-screen, etc. and then the details defined over that..
 ; maybe even @ update pf etc can be made simpler?
 
+(defn- draw-world-map! [{:keys [ctx/graphics
+                                ctx/tiled-map
+                                ctx/raycaster
+                                ctx/explored-tile-corners]}]
+  (graphics/draw-tiled-map! graphics
+                            tiled-map
+                            (tile-color-setter/create
+                             {:raycaster raycaster
+                              :explored-tile-corners explored-tile-corners
+                              :light-position (graphics/camera-position graphics)
+                              :explored-tile-color (color/create 0.5 0.5 0.5 1)
+                              :see-all-tiles? false})))
+
 (defn do! [{:keys [ctx/graphics
                    ctx/player-eid
                    ctx/stage]
@@ -220,7 +235,7 @@
   (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
     (graphics/set-camera-position! graphics (entity/position @player-eid))
     (graphics/clear-screen! graphics)
-    (g/draw-world-map! ctx)
+    (draw-world-map! ctx)
     (graphics/draw-on-world-viewport! graphics
                                       (fn []
                                         (doseq [f [draw-tile-grid

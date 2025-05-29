@@ -11,9 +11,6 @@
 (defprotocol ActiveEntities
   (get-active-entities [_]))
 
-(defprotocol DrawWorldMap
-  (draw-world-map! [_]))
-
 (defprotocol StageActors
   (open-error-window! [_ throwable])
   (selected-skill [_]))

@@ -13,7 +13,6 @@
             [cdq.malli :as m]
             [cdq.state :as state]
             [cdq.potential-fields.movement :as potential-fields.movement]
-            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
@@ -23,7 +22,6 @@
             [gdl.assets :as assets]
             [gdl.files :as files]
             [gdl.graphics]
-            [gdl.graphics.color :as color]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
@@ -299,21 +297,6 @@
   (get-active-entities [{:keys [ctx/content-grid
                                 ctx/player-eid]}]
     (content-grid/active-entities content-grid @player-eid)))
-
-(extend-type Context
-  g/DrawWorldMap
-  (draw-world-map! [{:keys [ctx/graphics
-                            ctx/tiled-map
-                            ctx/raycaster
-                            ctx/explored-tile-corners]}]
-    (graphics/draw-tiled-map! graphics
-                              tiled-map
-                              (tile-color-setter/create
-                               {:raycaster raycaster
-                                :explored-tile-corners explored-tile-corners
-                                :light-position (graphics/camera-position graphics)
-                                :explored-tile-color (color/create 0.5 0.5 0.5 1)
-                                :see-all-tiles? false}))))
 
 (extend-type Context
   g/EffectContext
