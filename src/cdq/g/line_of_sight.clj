@@ -35,6 +35,6 @@
     (and (or (not (:entity/player? source))
              (on-screen? graphics (entity/position target)))
          (not (and los-checks?
-                   (raycaster/blocked? ctx
+                   (raycaster/blocked? raycaster
                                        (entity/position source)
                                        (entity/position target)))))))
