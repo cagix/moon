@@ -380,13 +380,17 @@
     (fn []
       (gdl.graphics/handle-draws! this draws))))
 
+(defprotocol Resizable
+  (resize! [_ width height]))
+
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
-      viewport/Viewport
-      (update! [_ width height]
+      Resizable
+      (resize! [_ width height]
         (.update this width height center-camera?))
 
+      viewport/Viewport
       ; touch coordinates are y-down, while screen coordinates are y-up
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
       ; TODO clamping only works for gui-viewport ?
@@ -476,7 +480,6 @@
 (defn start! [{::keys [create!
                        dispose!
                        render!
-                       resize!
                        lwjgl-app-config]
                :as config}]
   (lwjgl/application lwjgl-app-config
@@ -492,4 +495,7 @@
                          (swap! state render!))
 
                        (resize [width height]
-                         (resize! @state width height)))))
+                         (let [{:keys [ctx/graphics
+                                       ctx/ui-viewport]} @state]
+                           (resize! ui-viewport                width height)
+                           (resize! (:world-viewport graphics) width height))))))

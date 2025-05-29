@@ -1,6 +1,5 @@
 (ns cdq.game
   (:require [cdq.malli :as m]
-            [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -60,12 +59,6 @@
   ; TODO vis-ui dispose
   ; TODO dispose world tiled-map/level resources?
   )
-
-(defn resize! [{:keys [ctx/ui-viewport] :as ctx}
-               width
-               height]
-  (viewport/update! ui-viewport width height)
-  (viewport/update! (:world-viewport (:ctx/graphics ctx)) width height))
 
 (def render-fns
   '[
