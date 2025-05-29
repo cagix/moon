@@ -68,6 +68,7 @@
              [:ctx/entity-ids :some]
              [:ctx/potential-field-cache :some]
              [:ctx/factions-iterations :some]
+             [:ctx/z-orders :some]
              [:ctx/render-z-order :some]
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
@@ -131,6 +132,10 @@
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
+        z-orders [:z-order/on-ground
+                  :z-order/ground
+                  :z-order/flying
+                  :z-order/effect]
         ctx (merge ctx
                    {:ctx/tiled-map tiled-map
                     :ctx/elapsed-time 0
@@ -144,7 +149,8 @@
                     :ctx/entity-ids (atom {})
                     :ctx/potential-field-cache (atom nil)
                     :ctx/factions-iterations (:potential-field-factions-iterations config)
-                    :ctx/render-z-order (utils/define-order ctx/z-orders)})
+                    :ctx/z-orders z-orders
+                    :ctx/render-z-order (utils/define-order z-orders)})
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
                                                             start-position
                                                             (:player-props config)))]
@@ -546,8 +552,7 @@
       [1 1 1 0.8]]]))
 
 (defn- draw-tile-grid [{:keys [ctx/graphics]}]
-  (when show-tile-grid?
-    (graphics/handle-draws! graphics (draw-tile-grid* graphics))))
+  (graphics/handle-draws! graphics (draw-tile-grid* graphics)))
 
 (defn- draw-cell-debug* [{:keys [ctx/graphics
                                  ctx/grid
@@ -599,11 +604,13 @@
     (draw-world-map! ctx)
     (graphics/draw-on-world-viewport! graphics
                                       (fn []
-                                        (doseq [f [draw-tile-grid
+                                        (doseq [f [(when show-tile-grid?
+                                                     draw-tile-grid)
                                                    draw-cell-debug
                                                    render-entities!
                                                    ;geom-test
-                                                   highlight-mouseover-tile]]
+                                                   highlight-mouseover-tile]
+                                                :when f]
                                           (f ctx))))
     (ui/act! stage ctx)
     (ui/draw! stage ctx)

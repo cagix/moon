@@ -1,4 +1,4 @@
-(ns cdq.application
+(ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.interop :as interop]
             [gdl.files]

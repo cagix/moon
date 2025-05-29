@@ -11,8 +11,3 @@
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def max-speed (/ minimum-size max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
-
-(def z-orders [:z-order/on-ground
-               :z-order/ground
-               :z-order/flying
-               :z-order/effect])

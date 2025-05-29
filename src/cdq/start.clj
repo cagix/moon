@@ -1,5 +1,5 @@
 (ns cdq.start
-  (:require [cdq.application :as application]
+  (:require [gdl.application :as application]
             [gdl.utils :as utils]))
 
 (defn -main [config-path]

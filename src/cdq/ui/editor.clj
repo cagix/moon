@@ -1,12 +1,12 @@
 (ns cdq.ui.editor
-  (:require [cdq.application :as application]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.g :as g]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
+            [gdl.application :as application]
             [gdl.input :as input]
             [gdl.ui :as ui]))
 

@@ -17,7 +17,7 @@
              :items (for [world-fn (:world-fns config)]
                       {:label (str "Start " world-fn)
                        :on-click (fn [_actor _ctx]
-                                   (swap! cdq.application/state g/reset-game-state! world-fn))})}
+                                   (swap! gdl.application/state g/reset-game-state! world-fn))})}
             {:label "Help"
              :items [{:label (:info config)}]}
             {:label "Objects"

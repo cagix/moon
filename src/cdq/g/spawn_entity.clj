@@ -197,7 +197,9 @@
           {}
           components))
 
-(defn spawn-entity! [{:keys [ctx/id-counter] :as ctx}
+(defn spawn-entity! [{:keys [ctx/id-counter
+                             ctx/z-orders]
+                      :as ctx}
                      position
                      body
                      components]
@@ -206,7 +208,7 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      (create-body ctx/minimum-size ctx/z-orders)
+                      (create-body ctx/minimum-size z-orders)
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]

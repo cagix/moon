@@ -1,8 +1,8 @@
-{:cdq.application/create!  cdq.game/create!
- :cdq.application/dispose! cdq.game/dispose!
- :cdq.application/render!  cdq.game/render!
- :cdq.application/resize!  cdq.game/resize!
- :cdq.application/lwjgl-app-config {:title "Cyber Dungeon Quest"
+{:gdl.application/create!  cdq.game/create!
+ :gdl.application/dispose! cdq.game/dispose!
+ :gdl.application/render!  cdq.game/render!
+ :gdl.application/resize!  cdq.game/resize!
+ :gdl.application/lwjgl-app-config {:title "Cyber Dungeon Quest"
                                     :windowed-mode {:width 1440
                                                     :height 900}
                                     :foreground-fps 60
