@@ -8,9 +8,6 @@
   (context-entity-remove! [_ eid])
   (context-entity-moved! [_ eid]))
 
-(defprotocol ActiveEntities
-  (get-active-entities [_]))
-
 (defprotocol StageActors
   (open-error-window! [_ throwable])
   (selected-skill [_]))

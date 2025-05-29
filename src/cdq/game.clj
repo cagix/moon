@@ -234,12 +234,6 @@
                                    [x y])))
 
 (extend-type Context
-  g/ActiveEntities
-  (get-active-entities [{:keys [ctx/content-grid
-                                ctx/player-eid]}]
-    (content-grid/active-entities content-grid @player-eid)))
-
-(extend-type Context
   g/EffectContext
   (player-effect-ctx [{:keys [ctx/mouseover-eid]
                        :as ctx}
@@ -469,7 +463,6 @@
                                    active-entities
                                    max-iterations)))
 
-
 (defn- update-mouseover-entity! [{:keys [ctx/player-eid
                                          ctx/mouseover-eid
                                          ctx/grid]
@@ -562,12 +555,6 @@
                          :as ctx}]
   (graphics/handle-draws! graphics (draw-cell-debug* ctx)))
 
-; Now I get it - we do not need to depend on concretions here -> that's why its so complicated
-; also its side effects ... ?? -> transactions ?!
-
-; Wait ! we make the protocols inside cdq.render -> get-active-entities, clear-screen, etc. and then the details defined over that..
-; maybe even @ update pf etc can be made simpler?
-
 (defn- draw-world-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
                                 ctx/raycaster
@@ -581,12 +568,16 @@
                               :explored-tile-color (color/create 0.5 0.5 0.5 1)
                               :see-all-tiles? false})))
 
+(defn- get-active-entities [{:keys [ctx/content-grid
+                                    ctx/player-eid]}]
+  (content-grid/active-entities content-grid @player-eid))
+
 (defn render! [{:keys [ctx/graphics
                        ctx/player-eid
                        ctx/stage]
                 :as ctx}]
   (m/validate-humanize schema ctx)
-  (let [ctx (assoc ctx :ctx/active-entities (g/get-active-entities ctx))]
+  (let [ctx (assoc ctx :ctx/active-entities (get-active-entities ctx))]
     (graphics/set-camera-position! graphics (entity/position @player-eid))
     (graphics/clear-screen! graphics)
     (draw-world-map! ctx)
