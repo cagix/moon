@@ -255,19 +255,6 @@
     (action-bar/selected-skill (:action-bar stage))))
 
 (extend-type Context
-  g/Raycaster
-  (ray-blocked? [{:keys [ctx/raycaster]} start end]
-    (raycaster/blocked? raycaster
-                        start
-                        end))
-
-  (path-blocked? [{:keys [ctx/raycaster]} start end width]
-    (raycaster/path-blocked? raycaster
-                             start
-                             end
-                             width)))
-
-(extend-type Context
   cdq.g/Grid
   (grid-cell [{:keys [ctx/grid]} position]
     (grid/cell grid position))

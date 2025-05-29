@@ -21,10 +21,6 @@
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
 
-(defprotocol Raycaster
-  (ray-blocked? [_ start end])
-  (path-blocked? [_ start end width]))
-
 (defprotocol Grid
   (valid-position? [_ new-body])
   (grid-cell [_ position])
