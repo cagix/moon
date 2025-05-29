@@ -38,20 +38,23 @@
 
 (def create-fns
   '[
-    cdq.create.input/do!
+    ;; gdl context?
+    ;cdq.create.input/do!
     cdq.create.files/do!
-    cdq.create.extend-types/do!
     cdq.create.graphics/do!
     cdq.create.ui-viewport/do!
     cdq.create.stage/do!
     cdq.create.assets/do!
+    ;;
+    cdq.create.extend-types/do!
     cdq.create.db/do!
     cdq.create.game-state/do!
     ])
 
-(defn create! [config]
+(defn create! [gdl-context config]
   (let [create-fns (map requiring-resolve create-fns)
-        initial-context (map->Context {:ctx/config config})
+        initial-context (map->Context (merge gdl-context
+                                             {:ctx/config config}))
         ctx (reduce (fn [ctx create!]
                       (create! ctx))
                     initial-context

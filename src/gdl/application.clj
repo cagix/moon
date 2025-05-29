@@ -1,6 +1,30 @@
 (ns gdl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.input :as input]
+            [gdl.input])
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)))
+
+(defn- make-input [input]
+  (reify gdl.input/Input
+    (button-just-pressed? [_ button]
+      (input/button-just-pressed? input button))
+
+    (key-pressed? [_ key]
+      (input/key-pressed? input key))
+
+    (key-just-pressed? [_ key]
+      (input/key-just-pressed? input key))
+
+    (set-processor! [_ input-processor]
+      (input/set-processor! input input-processor))
+
+    (mouse-position [_]
+      (input/mouse-position input))))
+
+(defn- create-context [config]
+  {:ctx/input (make-input Gdx/input)}
+  )
 
 (def state (atom nil))
 
@@ -13,7 +37,8 @@
   (lwjgl/application lwjgl-app-config
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create! config)))
+                         (reset! state (create! (create-context config)
+                                                config)))
 
                        (dispose []
                          (dispose! @state))
