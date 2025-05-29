@@ -69,16 +69,13 @@
   (lwjgl/application lwjgl-app-config
                      (proxy [ApplicationAdapter] []
                        (create []
-                         (reset! state (create! (gdx-context)
-                                                config)))
+                         (reset! state (create! (gdx-context) config)))
 
                        (dispose []
                          (dispose! @state))
 
                        (render []
-                         #_(m/validate-humanize schema @state)
-                         (swap! state render!)
-                         #_(m/validate-humanize schema @state))
+                         (swap! state render!))
 
                        (resize [width height]
                          (resize! @state width height)))))
