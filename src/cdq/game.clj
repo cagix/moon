@@ -10,7 +10,6 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/graphics :some]
              [:ctx/input :some]
@@ -38,14 +37,6 @@
 
 (def create-fns
   '[
-    ;; gdl context?
-    ;cdq.create.input/do!
-    ;cdq.create.files/do!
-    cdq.create.graphics/do!
-    cdq.create.ui-viewport/do!
-    cdq.create.stage/do!
-    cdq.create.assets/do!
-    ;;
     cdq.create.extend-types/do!
     cdq.create.db/do!
     cdq.create.game-state/do!
@@ -53,8 +44,8 @@
 
 (defn create! [gdl-context config]
   (let [create-fns (map requiring-resolve create-fns)
-        initial-context (map->Context (merge gdl-context
-                                             {:ctx/config config}))
+        initial-context (merge (map->Context {:ctx/config config})
+                               gdl-context)
         ctx (reduce (fn [ctx create!]
                       (create! ctx))
                     initial-context
