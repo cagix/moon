@@ -54,6 +54,8 @@
  :pausing? true
  :zoom-speed 0.025
  :content-grid-cells-size 16
+ :potential-field-factions-iterations {:good 15
+                                       :evil 5}
  :world-fns [cdq.level.vampire/create
              cdq.level.uf-caves/create
              cdq.level.modules/create]

@@ -67,6 +67,7 @@
              [:ctx/id-counter :some]
              [:ctx/entity-ids :some]
              [:ctx/potential-field-cache :some]
+             [:ctx/factions-iterations :some]
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
@@ -140,7 +141,8 @@
                                                                       (constantly false)))
                     :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})
-                    :ctx/potential-field-cache (atom nil)})
+                    :ctx/potential-field-cache (atom nil)
+                    :ctx/factions-iterations (:potential-field-factions-iterations config)})
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
                                                             start-position
                                                             (:player-props config)))]
@@ -462,9 +464,10 @@
 
 (defn- update-potential-fields!
   [{:keys [ctx/potential-field-cache
+           ctx/factions-iterations
            ctx/grid
            ctx/active-entities]}]
-  (doseq [[faction max-iterations] ctx/factions-iterations]
+  (doseq [[faction max-iterations] factions-iterations]
     (potential-fields.update/tick! potential-field-cache
                                    grid
                                    faction
@@ -543,7 +546,8 @@
     (graphics/handle-draws! graphics (draw-tile-grid* graphics))))
 
 (defn- draw-cell-debug* [{:keys [ctx/graphics
-                                 ctx/grid]}]
+                                 ctx/grid
+                                 ctx/factions-iterations]}]
   (apply concat
          (for [[x y] (graphics/visible-tiles graphics)
                :let [cell (grid/cell grid [x y])]
@@ -556,7 +560,7 @@
             (when-let [faction show-potential-field-colors?]
               (let [{:keys [distance]} (faction cell*)]
                 (when distance
-                  (let [ratio (/ distance (ctx/factions-iterations faction))]
+                  (let [ratio (/ distance (factions-iterations faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn- draw-cell-debug [{:keys [ctx/graphics]
