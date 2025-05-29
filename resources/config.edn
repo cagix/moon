@@ -1,4 +1,4 @@
-{:cdq.application/create!  cdq.create/do!
+{:cdq.application/create!  cdq.game/do!
  :cdq.application/dispose! cdq.dispose/do!
  :cdq.application/render!  cdq.render/do!
  :cdq.application/resize!  cdq.resize/do!

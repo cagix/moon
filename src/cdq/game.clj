@@ -1,4 +1,4 @@
-(ns cdq.create
+(ns cdq.game
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.ctx :as ctx]
