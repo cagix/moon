@@ -16,11 +16,9 @@
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
-            [cdq.stacktrace :as stacktrace]
             [cdq.malli :as m]
             [cdq.state :as state]
             [cdq.potential-fields.movement :as potential-fields.movement]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory :as inventory-window]
@@ -370,108 +368,6 @@
   (viewport/update! ui-viewport width height)
   (viewport/update! (:world-viewport (:ctx/graphics ctx)) width height))
 
-(defn- remove-destroyed-entities! [{:keys [ctx/entity-ids] :as ctx}]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @entity-ids))]
-    (g/context-entity-remove! ctx eid)
-    (doseq [component @eid]
-      (g/handle-txs! ctx (entity/destroy! component eid ctx))))
-  nil)
-
-(defn- camera-controls! [{:keys [ctx/config
-                                 ctx/graphics
-                                 ctx/input]}]
-  (let [controls (:controls config)
-        zoom-speed (:zoom-speed config)]
-    (when (input/key-pressed? input (:zoom-in controls))  (graphics/inc-zoom! graphics    zoom-speed))
-    (when (input/key-pressed? input (:zoom-out controls)) (graphics/inc-zoom! graphics (- zoom-speed)))))
-
-(defn- pause-game? [{:keys [ctx/config
-                            ctx/input
-                            ctx/player-eid]}]
-  (let [controls (:controls config)]
-    (or #_error
-        (and (:pausing? config)
-             (state/pause-game? (entity/state-obj @player-eid))
-             (not (or (input/key-just-pressed? input (:unpause-once controls))
-                      (input/key-pressed? input (:unpause-continously controls))))))))
-
-(defn- assoc-paused [ctx]
-  (assoc ctx :ctx/paused? (pause-game? ctx)))
-
-(defn- tick-entities!
-  [{:keys [ctx/active-entities] :as ctx}]
-  ; precaution in case a component gets removed by another component
-  ; the question is do we still want to update nil components ?
-  ; should be contains? check ?
-  ; but then the 'order' is important? in such case dependent components
-  ; should be moved together?
-  (try
-   (doseq [eid active-entities]
-     (try
-      (doseq [k (keys @eid)]
-        (try (when-let [v (k @eid)]
-               (g/handle-txs! ctx (entity/tick! [k v] eid ctx)))
-             (catch Throwable t
-               (throw (ex-info "entity-tick" {:k k} t)))))
-      (catch Throwable t
-        (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t)))))
-   (catch Throwable t
-     (stacktrace/pretty-pst t)
-     (g/open-error-window! ctx t)
-     #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-  )
-
-(defn- assoc-delta-time
-  [{:keys [ctx/graphics]
-    :as ctx}]
-  (assoc ctx :ctx/delta-time (min (graphics/delta-time graphics) ctx/max-delta)))
-
-(defn- update-elapsed-time
-  [{:keys [ctx/delta-time]
-    :as ctx}]
-  (update ctx :ctx/elapsed-time + delta-time))
-
-(defn- update-potential-fields!
-  [{:keys [ctx/potential-field-cache
-           ctx/factions-iterations
-           ctx/grid
-           ctx/active-entities]}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (potential-fields.update/tick! potential-field-cache
-                                   grid
-                                   faction
-                                   active-entities
-                                   max-iterations)))
-
-(defn- update-mouseover-entity! [{:keys [ctx/player-eid
-                                         ctx/mouseover-eid
-                                         ctx/grid
-                                         ctx/render-z-order]
-                                  :as ctx}]
-  (let [new-eid (if (g/mouseover-actor ctx)
-                  nil
-                  (let [player @player-eid
-                        hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (g/world-mouse-position ctx)))]
-                    (->> render-z-order
-                         (utils/sort-by-order hits #(:z-order @%))
-                         reverse
-                         (filter #(g/line-of-sight? ctx player @%))
-                         first)))]
-    (when-let [eid mouseover-eid]
-      (swap! eid dissoc :entity/mouseover?))
-    (when new-eid
-      (swap! new-eid assoc :entity/mouseover? true))
-    (assoc ctx :ctx/mouseover-eid new-eid)))
-
-(defn- player-state-handle-click! [{:keys [ctx/player-eid] :as ctx}]
-  (g/handle-txs! ctx
-                 (state/manual-tick (entity/state-obj @player-eid)
-                                    player-eid
-                                    ctx))
-  nil)
-
 (def render-fns
   '[
     cdq.render.assoc-active-entities/do!
@@ -480,31 +376,22 @@
     cdq.render.draw-world-map/do!
     cdq.render.draw-on-world-viewport/do!
     cdq.render.ui/do!
+    cdq.render.player-state-handle-click/do!
+    cdq.render.update-mouseover-entity/do!
+    cdq.render.assoc-paused/do!
+    cdq.render.update-time/do!
+    cdq.render.update-potential-fields/do!
+    cdq.render.tick-entities/do!
+    cdq.render.remove-destroyed-entities/do!
+    cdq.render.camera-controls/do!
     ])
 
-(defn render! [{:keys [ctx/graphics
-                       ctx/player-eid
-                       ctx/stage]
-                :as ctx}]
+(defn render! [ctx]
   (m/validate-humanize schema ctx)
   (let [render-fns (map requiring-resolve render-fns)
         ctx (reduce (fn [ctx render!]
                       (render! ctx))
                     ctx
                     render-fns)]
-
-    (player-state-handle-click! ctx)
-    (let [ctx (update-mouseover-entity! ctx)
-          ctx (assoc-paused ctx)
-          ctx (if (:ctx/paused? ctx)
-                ctx
-                (let [ctx (-> ctx
-                              assoc-delta-time
-                              update-elapsed-time)]
-                  (update-potential-fields! ctx)
-                  (tick-entities! ctx)
-                  ctx))]
-      (remove-destroyed-entities! ctx) ; do not pause as pickup item should be destroyed
-      (camera-controls! ctx)
-      (m/validate-humanize schema ctx)
-      ctx)))
+    (m/validate-humanize schema ctx)
+    ctx))
