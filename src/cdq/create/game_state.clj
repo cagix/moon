@@ -1,6 +1,7 @@
 (ns cdq.create.game-state
   (:require [cdq.content-grid :as content-grid]
             [cdq.g :as g]
+            [cdq.game]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]

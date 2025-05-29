@@ -125,8 +125,8 @@
                   (int w)
                   (int h)))
 
-(defmulti draw! (fn [[k] _this]
-                  k))
+(defmulti ^:private draw! (fn [[k] _this]
+                            k))
 
 (defrecord Graphics [^com.badlogic.gdx.Graphics graphics
                      ^SpriteBatch batch

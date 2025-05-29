@@ -2,6 +2,7 @@
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
+            [cdq.game]
             [cdq.g :as g]
             [cdq.g.info]
             [cdq.g.player-movement-vector]
