@@ -21,9 +21,3 @@
 (def render-z-order (utils/define-order z-orders))
 
 (def factions-iterations {:good 15 :evil 5})
-
-(def ^:dbg-flag show-tile-grid? false)
-(def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
-(def ^:dbg-flag show-cell-entities? false)
-(def ^:dbg-flag show-cell-occupied? false)
-(def ^:dbg-flag show-body-bounds? false)

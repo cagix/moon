@@ -37,6 +37,12 @@
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
+(def ^:dbg-flag show-tile-grid? false)
+(def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
+(def ^:dbg-flag show-cell-entities? false)
+(def ^:dbg-flag show-cell-occupied? false)
+(def ^:dbg-flag show-body-bounds? false)
+
 (q/defrecord Context [ctx/assets
                       ctx/graphics
                       ctx/stage])
@@ -384,7 +390,7 @@
             :when (or (= z-order :z-order/effect)
                       (g/line-of-sight? ctx player entity))]
       (try
-       (when ctx/show-body-bounds?
+       (when show-body-bounds?
          (graphics/handle-draws! graphics (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
          (graphics/handle-draws! graphics (render! component entity ctx)))
@@ -533,7 +539,7 @@
       [1 1 1 0.8]]]))
 
 (defn- draw-tile-grid [{:keys [ctx/graphics]}]
-  (when ctx/show-tile-grid?
+  (when show-tile-grid?
     (graphics/handle-draws! graphics (draw-tile-grid* graphics))))
 
 (defn- draw-cell-debug* [{:keys [ctx/graphics
@@ -543,11 +549,11 @@
                :let [cell (grid/cell grid [x y])]
                :when cell
                :let [cell* @cell]]
-           [(when (and ctx/show-cell-entities? (seq (:entities cell*)))
+           [(when (and show-cell-entities? (seq (:entities cell*)))
               [:draw/filled-rectangle x y 1 1 [1 0 0 0.6]])
-            (when (and ctx/show-cell-occupied? (seq (:occupied cell*)))
+            (when (and show-cell-occupied? (seq (:occupied cell*)))
               [:draw/filled-rectangle x y 1 1 [0 0 1 0.6]])
-            (when-let [faction ctx/show-potential-field-colors?]
+            (when-let [faction show-potential-field-colors?]
               (let [{:keys [distance]} (faction cell*)]
                 (when distance
                   (let [ratio (/ distance (ctx/factions-iterations faction))]
