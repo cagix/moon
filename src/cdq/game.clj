@@ -479,6 +479,7 @@
     cdq.render.clear-screen/do!
     cdq.render.draw-world-map/do!
     cdq.render.draw-on-world-viewport/do!
+    cdq.render.ui/do!
     ])
 
 (defn render! [{:keys [ctx/graphics
@@ -492,8 +493,6 @@
                     ctx
                     render-fns)]
 
-    (ui/act! stage ctx)
-    (ui/draw! stage ctx)
     (player-state-handle-click! ctx)
     (let [ctx (update-mouseover-entity! ctx)
           ctx (assoc-paused ctx)
