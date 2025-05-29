@@ -6,6 +6,7 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.input :as input]
+            [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [clojure.string :as str]
             [gdl.audio.sound]
@@ -13,21 +14,25 @@
             [gdl.graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input]
-            [gdl.utils :as utils]
-            [gdl.ui :as ui]
-            [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx ApplicationAdapter
+            [gdl.utils :as utils] ; only safe-get & mapvals
+            [gdl.ui :as ui] ; <- only used here stuff (ui/load! & ui/stage!)
+            [gdl.viewport :as viewport]) ; <- only used here stuff
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationAdapter
                              Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
-                                      Pixmap$Format)
+                                      Pixmap$Format
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)))
+                                   ScreenUtils)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
@@ -375,13 +380,58 @@
     (fn []
       (gdl.graphics/handle-draws! this draws))))
 
+(defn- fit-viewport [width height camera {:keys [center-camera?]}]
+  (let [this (FitViewport. width height camera)]
+    (reify
+      viewport/Viewport
+      (update! [_ width height]
+        (.update this width height center-camera?))
+
+      ; touch coordinates are y-down, while screen coordinates are y-up
+      ; so the clamping of y is reverse, but as black bars are equal it does not matter
+      ; TODO clamping only works for gui-viewport ?
+      ; TODO ? "Can be negative coordinates, undefined cells."
+      (unproject [_ [x y]]
+        (let [clamped-x (math-utils/clamp x
+                                          (.getLeftGutterWidth this)
+                                          (.getRightGutterX    this))
+              clamped-y (math-utils/clamp y
+                                          (.getTopGutterHeight this)
+                                          (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. clamped-x clamped-y))]
+            [(.x v2) (.y v2)])))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this
+          :width  (.getWorldWidth  this)
+          :height (.getWorldHeight this)
+          :camera (.getCamera      this))))))
+
+(defn- ui-viewport [{:keys [width height]}]
+  (fit-viewport width
+                height
+                (OrthographicCamera.)
+                {:center-camera? true}))
+
+(defn- world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width
+                  world-height
+                  camera
+                  {:center-camera? false})))
+
 (defn- make-graphics [graphics config]
   (map->Graphics
    (let [{:keys [tile-size
                  cursor-path-format
                  cursors
-                 default-font
-                 world-viewport]} config
+                 default-font]} config
          batch (SpriteBatch.)
          shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                              (.setColor Color/WHITE)
@@ -404,14 +454,14 @@
                     cursor))
                 cursors)
       :default-font (truetype-font default-font)
-      :world-viewport (viewport/world-viewport world-unit-scale world-viewport)
+      :world-viewport (world-viewport world-unit-scale (:world-viewport config))
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
 (defn- create-context [config]
   (ui/load! (:ui config))
   (let [graphics (make-graphics Gdx/graphics config)
-        ui-viewport (viewport/ui-viewport (:ui-viewport config))
+        ui-viewport (ui-viewport (:ui-viewport config))
         stage (ui/stage (:java-object ui-viewport)
                         (:batch graphics))]
     (.setInputProcessor Gdx/input stage)
