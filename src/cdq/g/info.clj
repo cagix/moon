@@ -5,7 +5,6 @@
             [cdq.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.colors :as colors]
             [gdl.utils :refer [sort-by-k-order

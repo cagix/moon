@@ -10,7 +10,6 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/gdx :some]
              [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/graphics :some]
@@ -39,7 +38,6 @@
 
 (def create-fns
   '[
-    cdq.create.gdx/do!
     cdq.create.input/do!
     cdq.create.files/do!
     cdq.create.extend-types/do!

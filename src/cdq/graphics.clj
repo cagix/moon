@@ -4,17 +4,18 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.files :as files]
-            [gdl.graphics :as graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics Color
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
                                       Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.utils Disposable)))
+           (com.badlogic.gdx.utils Disposable
+                                   ScreenUtils)))
 
 (defprotocol PGraphics
   (delta-time [_])
@@ -77,7 +78,7 @@
 (defmulti draw! (fn [[k] _this]
                   k))
 
-(defrecord Graphics [graphics
+(defrecord Graphics [^com.badlogic.gdx.Graphics graphics
                      ^SpriteBatch batch
                      unit-scale
                      world-unit-scale
@@ -96,16 +97,16 @@
 
   PGraphics
   (delta-time [_]
-    (graphics/delta-time graphics))
+    (.getDeltaTime graphics))
 
   (set-cursor! [_ cursor]
-    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
+    (.setCursor graphics (utils/safe-get cursors cursor)))
 
   (frames-per-second [_]
-    (graphics/frames-per-second graphics))
+    (.getFramesPerSecond graphics))
 
   (clear-screen! [_]
-    (graphics/clear-screen! graphics))
+    (ScreenUtils/clear Color/BLACK))
 
   (handle-draws! [this draws]
     (doseq [component draws
@@ -188,7 +189,7 @@
                       ctx/files]
                :as ctx}]
   (map->Graphics
-   (let [graphics (:clojure.gdx/graphics (:ctx/gdx ctx))
+   (let [graphics Gdx/graphics
          {:keys [tile-size
                  cursor-path-format
                  cursors
@@ -211,7 +212,7 @@
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
-                        cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+                        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
                     (.dispose pixmap)
                     cursor))
                 cursors)
