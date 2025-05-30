@@ -1,6 +1,7 @@
 (ns cdq.game
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
+            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.g.info]
@@ -508,24 +509,25 @@
 
 (def create-fns
   '[
-    cdq.create.db/do!
     cdq.create.game-state/do!
     ])
 
 (defn- create! [config]
   (ui/load! (:ui config))
   (let [create-fns (map requiring-resolve create-fns)
-        initial-context (merge (map->Context {:ctx/config config})
-                               (let [graphics (make-graphics Gdx/graphics config)
-                                     ui-viewport (ui-viewport (:ui-viewport config))
-                                     stage (ui/stage (:java-object ui-viewport)
-                                                     (:batch graphics))]
-                                 (.setInputProcessor Gdx/input stage)
-                                 {:ctx/input (make-input Gdx/input)
-                                  :ctx/graphics graphics
-                                  :ctx/assets (make-assets (:assets config))
-                                  :ctx/ui-viewport ui-viewport
-                                  :ctx/stage stage}))
+        initial-context (map->Context
+                         (let [graphics (make-graphics Gdx/graphics config)
+                               ui-viewport (ui-viewport (:ui-viewport config))
+                               stage (ui/stage (:java-object ui-viewport)
+                                               (:batch graphics))]
+                           (.setInputProcessor Gdx/input stage)
+                           {:ctx/config config
+                            :ctx/input (make-input Gdx/input)
+                            :ctx/graphics graphics
+                            :ctx/assets (make-assets (:assets config))
+                            :ctx/ui-viewport ui-viewport
+                            :ctx/stage stage
+                            :ctx/db (db/create (:db config))}))
         ctx (reduce (fn [ctx create!]
                       (create! ctx))
                     initial-context
