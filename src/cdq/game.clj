@@ -58,8 +58,12 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (q/defrecord Context [ctx/assets
+                      ctx/db
+                      ctx/config
                       ctx/graphics
-                      ctx/stage])
+                      ctx/input
+                      ctx/stage
+                      ctx/ui-viewport])
 
 (def ^:private schema
   (m/schema [:map {:closed true}
@@ -591,18 +595,19 @@
 
 (defn- create! [config]
   (ui/load! (:ui config))
-  (let [ctx (merge (map->Context {:ctx/config config})
-                   (let [graphics (make-graphics Gdx/graphics config)
-                         ui-viewport (ui-viewport (:ui-viewport config))
-                         stage (ui/stage (:java-object ui-viewport)
-                                         (:batch graphics))]
-                     (.setInputProcessor Gdx/input stage)
-                     {:ctx/input (make-input Gdx/input)
-                      :ctx/graphics graphics
-                      :ctx/assets (make-assets (:assets config))
-                      :ctx/ui-viewport ui-viewport
-                      :ctx/stage stage
-                      :ctx/db (db/create (:db config))}))
+  (let [ctx (map->Context
+             (let [graphics (make-graphics Gdx/graphics config)
+                   ui-viewport (ui-viewport (:ui-viewport config))
+                   stage (ui/stage (:java-object ui-viewport)
+                                   (:batch graphics))]
+               (.setInputProcessor Gdx/input stage)
+               {:config config
+                :input (make-input Gdx/input)
+                :graphics graphics
+                :assets (make-assets (:assets config))
+                :ui-viewport ui-viewport
+                :stage stage
+                :db (db/create (:db config))}))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
     ctx))
