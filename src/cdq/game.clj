@@ -11,10 +11,14 @@
             [cdq.g.spawn-creature]
             [cdq.g.handle-txs]
             [cdq.grid :as grid]
+            [cdq.grid-impl :as grid-impl]
+            [cdq.grid2d :as g2d]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
+            [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
+            [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
             [clojure.gdx.assets.asset-manager :as asset-manager]
@@ -31,6 +35,7 @@
             [gdl.graphics :as graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input]
+            [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.ui :as ui]
             [gdl.viewport :as viewport]
@@ -507,30 +512,98 @@
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
-(def create-fns
-  '[
-    cdq.create.game-state/do!
-    ])
+(defn- player-entity-props [start-position {:keys [creature-id
+                                                   free-skill-points
+                                                   click-distance-tiles]}]
+  {:position start-position
+   :creature-id creature-id
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? {:state-changed! (fn [new-state-obj]
+                                                   (when-let [cursor (state/cursor new-state-obj)]
+                                                     [[:tx/set-cursor cursor]]))
+                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
+                                                 (action-bar/add-skill! (:action-bar stage)
+                                                                        skill))
+                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
+                                                   (action-bar/remove-skill! (:action-bar stage)
+                                                                             skill))
+                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
+                                              (-> (:windows stage)
+                                                  :inventory-window
+                                                  (inventory-window/set-item! inventory-cell item)))
+                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
+                                                  (-> (:windows stage)
+                                                      :inventory-window
+                                                      (inventory-window/remove-item! inventory-cell)))}
+                :entity/free-skill-points free-skill-points
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles click-distance-tiles}})
+
+(defn- spawn-player-entity [ctx start-position player-props]
+  (g/spawn-creature! ctx
+                     (player-entity-props (utils/tile->middle start-position)
+                                          player-props)))
+
+(defn- spawn-enemies [tiled-map]
+  (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                {:position position
+                 :creature-id (keyword creature-id)
+                 :components {:entity/fsm {:fsm :fsms/npc
+                                           :initial-state :npc-sleeping}
+                              :entity/faction :evil}})]
+    [:tx/spawn-creature (update props :position utils/tile->middle)]))
+
+(defn- create-game-state [{:keys [ctx/config
+                                  ctx/stage]
+                           :as ctx}
+                          world-fn]
+  (ui/clear! stage)
+  (run! #(ui/add! stage %) ((:create-actors config) ctx))
+  (let [{:keys [tiled-map
+                start-position]} (world-fn ctx)
+        grid (grid-impl/create tiled-map)
+        z-orders [:z-order/on-ground
+                  :z-order/ground
+                  :z-order/flying
+                  :z-order/effect]
+        ctx (merge ctx
+                   {:ctx/tiled-map tiled-map
+                    :ctx/elapsed-time 0
+                    :ctx/grid grid
+                    :ctx/raycaster (raycaster/create grid)
+                    :ctx/content-grid (content-grid/create tiled-map (:content-grid-cell-size config))
+                    :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+                                                                      (tiled/tm-height tiled-map)
+                                                                      (constantly false)))
+                    :ctx/id-counter (atom 0)
+                    :ctx/entity-ids (atom {})
+                    :ctx/potential-field-cache (atom nil)
+                    :ctx/factions-iterations (:potential-field-factions-iterations config)
+                    :ctx/z-orders z-orders
+                    :ctx/render-z-order (utils/define-order z-orders)})
+        ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
+                                                            start-position
+                                                            (:player-props config)))]
+    (g/handle-txs! ctx (spawn-enemies tiled-map))
+    ctx))
 
 (defn- create! [config]
   (ui/load! (:ui config))
-  (let [create-fns (map requiring-resolve create-fns)
-        initial-context (merge (map->Context {:ctx/config config})
-                               (let [graphics (make-graphics Gdx/graphics config)
-                                     ui-viewport (ui-viewport (:ui-viewport config))
-                                     stage (ui/stage (:java-object ui-viewport)
-                                                     (:batch graphics))]
-                                 (.setInputProcessor Gdx/input stage)
-                                 {:ctx/input (make-input Gdx/input)
-                                  :ctx/graphics graphics
-                                  :ctx/assets (make-assets (:assets config))
-                                  :ctx/ui-viewport ui-viewport
-                                  :ctx/stage stage
-                                  :ctx/db (db/create (:db config))}))
-        ctx (reduce (fn [ctx create!]
-                      (create! ctx))
-                    initial-context
-                    create-fns)]
+  (let [ctx (merge (map->Context {:ctx/config config})
+                   (let [graphics (make-graphics Gdx/graphics config)
+                         ui-viewport (ui-viewport (:ui-viewport config))
+                         stage (ui/stage (:java-object ui-viewport)
+                                         (:batch graphics))]
+                     (.setInputProcessor Gdx/input stage)
+                     {:ctx/input (make-input Gdx/input)
+                      :ctx/graphics graphics
+                      :ctx/assets (make-assets (:assets config))
+                      :ctx/ui-viewport ui-viewport
+                      :ctx/stage stage
+                      :ctx/db (db/create (:db config))}))
+        ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
     ctx))
 
@@ -777,3 +850,8 @@
   g/Creatures
   (spawn-creature! [ctx opts]
     (cdq.g.spawn-creature/spawn-creature! ctx opts)))
+
+(extend-type Context
+  g/Game
+  (reset-game-state! [ctx world-fn]
+    (create-game-state ctx world-fn)))
