@@ -495,19 +495,6 @@
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
-(defn- create-context [config]
-  (ui/load! (:ui config))
-  (let [graphics (make-graphics Gdx/graphics config)
-        ui-viewport (ui-viewport (:ui-viewport config))
-        stage (ui/stage (:java-object ui-viewport)
-                        (:batch graphics))]
-    (.setInputProcessor Gdx/input stage)
-    {:ctx/input (make-input Gdx/input)
-     :ctx/graphics graphics
-     :ctx/assets (make-assets config)
-     :ctx/ui-viewport ui-viewport
-     :ctx/stage stage}))
-
 (def create-fns
   '[
     cdq.create.extend-types/do!
@@ -516,9 +503,19 @@
     ])
 
 (defn- create! [config]
+  (ui/load! (:ui config))
   (let [create-fns (map requiring-resolve create-fns)
         initial-context (merge (map->Context {:ctx/config config})
-                               (create-context config))
+                               (let [graphics (make-graphics Gdx/graphics config)
+                                     ui-viewport (ui-viewport (:ui-viewport config))
+                                     stage (ui/stage (:java-object ui-viewport)
+                                                     (:batch graphics))]
+                                 (.setInputProcessor Gdx/input stage)
+                                 {:ctx/input (make-input Gdx/input)
+                                  :ctx/graphics graphics
+                                  :ctx/assets (make-assets config)
+                                  :ctx/ui-viewport ui-viewport
+                                  :ctx/stage stage}))
         ctx (reduce (fn [ctx create!]
                       (create! ctx))
                     initial-context
@@ -527,7 +524,7 @@
     ctx))
 
 (defn- dispose! [{:keys [ctx/assets
-                        ctx/graphics]}]
+                         ctx/graphics]}]
   (Disposable/.dispose assets)
   (Disposable/.dispose graphics)
   ; TODO vis-ui dispose
