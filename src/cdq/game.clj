@@ -515,19 +515,18 @@
 (defn- create! [config]
   (ui/load! (:ui config))
   (let [create-fns (map requiring-resolve create-fns)
-        initial-context (map->Context
-                         (let [graphics (make-graphics Gdx/graphics config)
-                               ui-viewport (ui-viewport (:ui-viewport config))
-                               stage (ui/stage (:java-object ui-viewport)
-                                               (:batch graphics))]
-                           (.setInputProcessor Gdx/input stage)
-                           {:ctx/config config
-                            :ctx/input (make-input Gdx/input)
-                            :ctx/graphics graphics
-                            :ctx/assets (make-assets (:assets config))
-                            :ctx/ui-viewport ui-viewport
-                            :ctx/stage stage
-                            :ctx/db (db/create (:db config))}))
+        initial-context (merge (map->Context {:ctx/config config})
+                               (let [graphics (make-graphics Gdx/graphics config)
+                                     ui-viewport (ui-viewport (:ui-viewport config))
+                                     stage (ui/stage (:java-object ui-viewport)
+                                                     (:batch graphics))]
+                                 (.setInputProcessor Gdx/input stage)
+                                 {:ctx/input (make-input Gdx/input)
+                                  :ctx/graphics graphics
+                                  :ctx/assets (make-assets (:assets config))
+                                  :ctx/ui-viewport ui-viewport
+                                  :ctx/stage stage
+                                  :ctx/db (db/create (:db config))}))
         ctx (reduce (fn [ctx create!]
                       (create! ctx))
                     initial-context
