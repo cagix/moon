@@ -43,6 +43,7 @@
   (spawn-creature! [_ {:keys [position creature-id components]}]))
 
 (defprotocol Graphics
+  (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])

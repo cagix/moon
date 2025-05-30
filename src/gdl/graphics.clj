@@ -8,7 +8,6 @@
   (draw-tiled-map! [_ tiled-map color-setter])
   (handle-draws! [_ draws])
   (draw-on-world-viewport! [_ f])
-  (pixels->world-units [_ pixels])
   (sprite [_ texture])
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])

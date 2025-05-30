@@ -239,9 +239,6 @@
         (reset! unit-scale 1)))
     (.end batch))
 
-  (pixels->world-units [_ pixels]
-    (* pixels world-unit-scale))
-
   (sprite [_ texture]
     (create-sprite (TextureRegion. ^Texture texture)
                    world-unit-scale))
@@ -745,6 +742,9 @@
 
 (extend-type Context
   g/Graphics
+  (pixels->world-units [{:keys [ctx/graphics]} pixels]
+    (* pixels (:world-unit-scale graphics)))
+
   (sprite [ctx texture-path]
     (graphics/sprite (:ctx/graphics ctx)
                      (g/texture ctx texture-path)))
