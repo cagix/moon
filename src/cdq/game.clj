@@ -208,9 +208,6 @@
   (delta-time [_]
     (.getDeltaTime graphics))
 
-  (set-cursor! [_ cursor]
-    (.setCursor graphics (utils/safe-get cursors cursor)))
-
   (frames-per-second [_]
     (.getFramesPerSecond graphics))
 
@@ -221,12 +218,6 @@
     (doseq [component draws
             :when component]
       (draw! component this)))
-
-  (draw-tiled-map! [_ tiled-map color-setter]
-    (tiled-map-renderer/draw! (tiled-map-renderer tiled-map)
-                              tiled-map
-                              color-setter
-                              (:camera world-viewport)))
 
   (draw-on-world-viewport! [_ f]
     (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
@@ -742,6 +733,16 @@
 
 (extend-type Context
   g/Graphics
+  (draw-tiled-map! [{:keys [ctx/graphics]} tiled-map color-setter]
+    (tiled-map-renderer/draw! ((:tiled-map-renderer graphics) tiled-map)
+                              tiled-map
+                              color-setter
+                              (:camera (:world-viewport graphics))))
+
+  (set-cursor! [{:keys [ctx/graphics]} cursor]
+    (.setCursor (:graphics graphics)
+                (utils/safe-get (:cursors graphics) cursor)))
+
   (pixels->world-units [{:keys [ctx/graphics]} pixels]
     (* pixels (:world-unit-scale graphics)))
 

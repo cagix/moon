@@ -2,10 +2,8 @@
 
 (defprotocol Graphics
   (delta-time [_])
-  (set-cursor! [_ cursor])
   (frames-per-second [_])
   (clear-screen! [_])
-  (draw-tiled-map! [_ tiled-map color-setter])
   (handle-draws! [_ draws])
   (draw-on-world-viewport! [_ f])
   (sprite [_ texture])

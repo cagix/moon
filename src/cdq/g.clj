@@ -43,6 +43,8 @@
   (spawn-creature! [_ {:keys [position creature-id components]}]))
 
 (defprotocol Graphics
+  (draw-tiled-map! [_ tiled-map color-setter])
+  (set-cursor! [_ cursor])
   (pixels->world-units [_ pixels])
   (sprite [_ texture-path])
   (sub-sprite [_ sprite [x y w h]])

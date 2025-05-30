@@ -11,7 +11,6 @@
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
-            [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
@@ -43,9 +42,8 @@
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
-(defmethod handle-tx! :tx/set-cursor [[_ cursor-key]
-                                      {:keys [ctx/graphics]}]
-  (graphics/set-cursor! graphics cursor-key))
+(defmethod handle-tx! :tx/set-cursor [[_ cursor-key] c]
+  (g/set-cursor! c cursor-key))
 
 (defmethod handle-tx! :tx/show-message [[_ message] {:keys [ctx/stage]}]
   (-> stage
