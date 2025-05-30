@@ -1,5 +1,6 @@
 (ns cdq.game
-  (:require [cdq.malli :as m]
+  (:require [cdq.g :as g]
+            [cdq.malli :as m]
             [clojure.gdx.assets.asset-manager :as asset-manager]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
@@ -11,7 +12,6 @@
             [clojure.string :as str]
             [gdl.application :as application]
             [gdl.audio.sound]
-            [gdl.assets]
             [gdl.graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input]
@@ -82,36 +82,32 @@
           :else
           (recur remaining result))))
 
-(defn- make-assets [config]
-  (let [{:keys [folder
-                asset-type-extensions]} (:assets config)
-        manager (asset-manager/create
-                 (for [[asset-type extensions] asset-type-extensions
-                       file (map #(str/replace-first % folder "")
-                                 (recursively-search (.internal Gdx/files folder) extensions))]
-                   [file (case asset-type
-                           :sound Sound
-                           :texture Texture)]))]
-    (reify
-      Disposable
-      (dispose [_]
-        (Disposable/.dispose manager))
+(defn- make-assets [{:keys [folder
+                            asset-type-extensions]}]
+  (asset-manager/create
+   (for [[asset-type extensions] asset-type-extensions
+         file (map #(str/replace-first % folder "")
+                   (recursively-search (.internal Gdx/files folder) extensions))]
+     [file (case asset-type
+             :sound Sound
+             :texture Texture)])))
 
-      gdl.assets/Assets
-      (sound [_ path]
-        (let [sound (asset-manager/safe-get manager path)]
-          (reify gdl.audio.sound/Sound
-            (play! [_]
-              (Sound/.play sound)))))
+(extend-type Context
+  g/Assets
+  (sound [{:keys [ctx/assets]} path]
+    (let [sound (asset-manager/safe-get assets path)]
+      (reify gdl.audio.sound/Sound
+        (play! [_]
+          (Sound/.play sound)))))
 
-      (texture [_ path]
-        (asset-manager/safe-get manager path))
+  (texture [{:keys [ctx/assets]} path]
+    (asset-manager/safe-get assets path))
 
-      (all-sounds [_]
-        (asset-manager/all-of-type manager Sound))
+  (all-sounds [{:keys [ctx/assets]}]
+    (asset-manager/all-of-type assets Sound))
 
-      (all-textures [_]
-        (asset-manager/all-of-type manager Texture)))))
+  (all-textures [{:keys [ctx/assets]}]
+    (asset-manager/all-of-type assets Texture)))
 
 (defn- make-input [input]
   (reify gdl.input/Input
@@ -513,7 +509,7 @@
                                  (.setInputProcessor Gdx/input stage)
                                  {:ctx/input (make-input Gdx/input)
                                   :ctx/graphics graphics
-                                  :ctx/assets (make-assets config)
+                                  :ctx/assets (make-assets (:assets config))
                                   :ctx/ui-viewport ui-viewport
                                   :ctx/stage stage}))
         ctx (reduce (fn [ctx create!]

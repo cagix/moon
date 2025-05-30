@@ -1,6 +1,5 @@
 (ns cdq.g.handle-txs
   (:require [gdl.audio.sound :as sound]
-            [gdl.assets :as assets]
             [cdq.animation :as animation]
             [cdq.db :as db]
             [cdq.effect :as effect]
@@ -17,10 +16,10 @@
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
-(defn- play-sound! [{:keys [ctx/assets]} sound-name]
+(defn- play-sound! [ctx sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       (assets/sound assets)
+       (g/sound ctx)
        sound/play!))
 
 (defn- spawn-effect! [{:keys [ctx/config] :as ctx} position components]

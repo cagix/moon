@@ -4,13 +4,11 @@
             [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]))
 
-(defn create [{:keys [ctx/assets
-                      ctx/config
+(defn create [{:keys [ctx/config
                       ctx/db] :as ctx}]
   (menu/create
    {:menus [{:label "World"
@@ -29,11 +27,11 @@
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (entity/id entity)))
-                     :icon (assets/texture assets "images/mouseover.png")}
+                     :icon (g/texture ctx "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [ctx]
                                   (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
-                     :icon (assets/texture assets "images/clock.png")}
+                     :icon (g/texture ctx "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
@@ -45,7 +43,7 @@
                                   (mapv int (g/world-mouse-position ctx)))}
                     {:label "Zoom"
                      :update-fn (comp graphics/camera-zoom :ctx/graphics)
-                     :icon (assets/texture assets "images/zoom.png")}
+                     :icon (g/texture ctx "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (comp graphics/frames-per-second :ctx/graphics)
-                     :icon (assets/texture assets "images/fps.png")}]}))
+                     :icon (g/texture ctx "images/fps.png")}]}))

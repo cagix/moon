@@ -16,7 +16,6 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
             [cdq.vector2 :as v]
-            [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.ui :as ui]
@@ -95,18 +94,18 @@
 
 (extend-type Context
   g/Graphics
-  (sprite [{:keys [ctx/assets] :as ctx} texture-path] ; <- textures should be inside graphics, makes this easier.
+  (sprite [ctx texture-path]
     (graphics/sprite (:ctx/graphics ctx)
-                     (assets/texture assets texture-path)))
+                     (g/texture ctx texture-path)))
 
   (sub-sprite [ctx sprite [x y w h]]
     (graphics/sub-sprite (:ctx/graphics ctx)
                          sprite
                          [x y w h]))
 
-  (sprite-sheet [{:keys [ctx/assets] :as ctx} texture-path tilew tileh]
+  (sprite-sheet [ctx texture-path tilew tileh]
     (graphics/sprite-sheet (:ctx/graphics ctx)
-                           (assets/texture assets texture-path)
+                           (g/texture ctx texture-path)
                            tilew
                            tileh))
 
