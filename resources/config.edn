@@ -1,13 +1,9 @@
-{:cdq.start/create!  cdq.game/create!
- :cdq.start/dispose! cdq.game/dispose!
- :cdq.start/render!  cdq.game/render!
- :cdq.start/resize!  cdq.game/resize!
- :cdq.start/lwjgl-app-config {:title "Cyber Dungeon Quest"
-                              :windowed-mode {:width 1440
-                                              :height 900}
-                              :foreground-fps 60
-                              :mac-os {:glfw-async? true
-                                       :dock-icon "moon.png"}}
+{:lwjgl-application {:title "Cyber Dungeon Quest"
+                     :windowed-mode {:width 1440
+                                     :height 900}
+                     :foreground-fps 60
+                     :mac-os {:glfw-async? true
+                              :dock-icon "moon.png"}}
  :ui {:skin-scale :x1}
  :tile-size 48
  :ui-viewport {:width 1440
