@@ -593,6 +593,11 @@
     (g/handle-txs! ctx (spawn-enemies tiled-map))
     ctx))
 
+(extend-type Context
+  g/Game
+  (reset-game-state! [ctx world-fn]
+    (create-game-state ctx world-fn)))
+
 (defn- create! [config]
   (ui/load! (:ui config))
   (let [ctx (map->Context
@@ -855,8 +860,3 @@
   g/Creatures
   (spawn-creature! [ctx opts]
     (cdq.g.spawn-creature/spawn-creature! ctx opts)))
-
-(extend-type Context
-  g/Game
-  (reset-game-state! [ctx world-fn]
-    (create-game-state ctx world-fn)))
