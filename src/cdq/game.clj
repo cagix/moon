@@ -18,6 +18,7 @@
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
+            [cdq.ui.editor]
             [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.hp-mana-bar]
@@ -877,3 +878,11 @@
   g/Creatures
   (spawn-creature! [ctx opts]
     (cdq.g.spawn-creature/spawn-creature! ctx opts)))
+
+(extend-type Context
+  g/EditorWindow
+  (open-editor-window! [ctx property-type]
+    (cdq.ui.editor/open-editor-window! ctx property-type))
+
+  (edit-property! [{:keys [ctx/stage] :as ctx} property]
+    (ui/add! stage (cdq.ui.editor/editor-window property ctx))))

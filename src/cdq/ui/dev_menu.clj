@@ -2,7 +2,6 @@
   (:require [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.ui.editor :as editor]
             [clojure.string :as str]
             [gdl.application :as application]
             [gdl.utils :as utils]))
@@ -20,7 +19,7 @@
             :items (for [property-type (sort (db/property-types db))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn [_actor ctx]
-                                  (editor/open-editor-window! ctx property-type))})}]
+                                  (g/open-editor-window! ctx property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]

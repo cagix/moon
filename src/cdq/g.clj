@@ -76,3 +76,7 @@
   (texture [_ path])
   (all-sounds [_])
   (all-textures [_]))
+
+(defprotocol EditorWindow
+  (open-editor-window! [_ property-type])
+  (edit-property! [_ property]))
