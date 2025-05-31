@@ -5,7 +5,6 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [gdl.application :as application]
-            [gdl.input :as input]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
@@ -50,9 +49,8 @@
                                                                              (fn [_actor ctx]
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/input]
-                                                         :as ctx}]
-                                        (when (input/key-just-pressed? input :enter)
+    (.addActor window (ui/actor {:act (fn [_this _delta ctx]
+                                        (when (g/key-just-pressed? ctx :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))

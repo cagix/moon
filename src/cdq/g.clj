@@ -1,5 +1,11 @@
 (ns cdq.g)
 
+(defprotocol Input
+  (button-just-pressed? [_ button])
+  (key-pressed? [_ key])
+  (key-just-pressed? [_ key])
+  (mouse-position [_]))
+
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
 

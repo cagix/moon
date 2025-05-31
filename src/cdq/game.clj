@@ -32,13 +32,11 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.input :as input]
             [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.application :as application]
             [gdl.graphics :as graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.input]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.ui :as ui]
@@ -112,20 +110,6 @@
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
-
-(defn- make-input [input]
-  (reify gdl.input/Input
-    (button-just-pressed? [_ button]
-      (input/button-just-pressed? input button))
-
-    (key-pressed? [_ key]
-      (input/key-pressed? input key))
-
-    (key-just-pressed? [_ key]
-      (input/key-just-pressed? input key))
-
-    (mouse-position [_]
-      (input/mouse-position input))))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -484,7 +468,6 @@
                                    batch)]
                (.setInputProcessor Gdx/input stage)
                {:config config
-                :input (make-input Gdx/input)
                 :ui-viewport ui-viewport
                 :stage stage
                 :db (db/create (:db config))
@@ -509,7 +492,9 @@
                       (f ctx))
                     ctx
                     (map requiring-resolve
-                         '[cdq.create.assets/do!]))
+                         '[cdq.create.assets/do!
+                           cdq.create.input/do!
+                           ]))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
     ctx))
@@ -581,15 +566,11 @@
 
 (extend-type Context
   g/MouseViewports
-  (world-mouse-position [{:keys [ctx/world-viewport
-                                 ctx/input]}]
-    (viewport/unproject world-viewport
-                        (gdl.input/mouse-position input)))
+  (world-mouse-position [{:keys [ctx/world-viewport] :as ctx}]
+    (viewport/unproject world-viewport (g/mouse-position ctx)))
 
-  (ui-mouse-position [{:keys [ctx/ui-viewport
-                              ctx/input]}]
-    (viewport/unproject ui-viewport
-                        (gdl.input/mouse-position input))))
+  (ui-mouse-position [{:keys [ctx/ui-viewport] :as ctx}]
+    (viewport/unproject ui-viewport (g/mouse-position ctx))))
 
 (extend-type Context
   g/Stage
@@ -808,8 +789,8 @@
 
 (extend-type Context
   g/PlayerMovementInput
-  (player-movement-vector [{:keys [ctx/input]}]
-    (cdq.g.player-movement-vector/WASD-movement-vector input)))
+  (player-movement-vector [ctx]
+    (cdq.g.player-movement-vector/WASD-movement-vector ctx)))
 
 (extend-type Context
   g/InteractionState
