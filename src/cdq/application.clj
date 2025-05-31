@@ -1,7 +1,7 @@
-(ns cdq.create
-  (:require [cdq.g :as g]
-            [cdq.malli :as m]
-            [qrecord.core :as q]))
+(ns cdq.application
+  (:require [cdq.malli :as m]
+            [qrecord.core :as q])
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (q/defrecord Context [ctx/assets
                       ctx/batch
@@ -56,12 +56,7 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
-(extend-type Context
-  g/ContextSchema
-  (validate-humanize [ctx]
-    (m/validate-humanize schema ctx)))
-
-(defn do! [config]
+(defn- create* [config]
   (let [ctx (map->Context {:config config})
         ctx (reduce (fn [ctx f]
                       (f ctx))
@@ -79,5 +74,71 @@
                            cdq.create.interaction-state/do!
                            cdq.create.editor/do!
                            ]))]
-    (g/validate-humanize ctx)
+    (m/validate-humanize schema ctx)
     ctx))
+
+(defn- dispose* [{:keys [ctx/assets
+                         ctx/batch
+                         ctx/cursors
+                         ctx/default-font
+                         ctx/shape-drawer-texture]}]
+  (Disposable/.dispose assets)
+  (Disposable/.dispose batch)
+  (run! Disposable/.dispose (vals cursors))
+  (Disposable/.dispose default-font)
+  (Disposable/.dispose shape-drawer-texture)
+  ; TODO vis-ui dispose
+  ; TODO dispose world tiled-map/level resources?
+  )
+
+(def render-fns
+  '[
+    cdq.render.assoc-active-entities/do!
+    cdq.render.set-camera-on-player/do!
+    cdq.render.clear-screen/do!
+    cdq.render.draw-world-map/do!
+    cdq.render.draw-on-world-viewport/do!
+    cdq.g/render-stage!
+    cdq.render.player-state-handle-click/do!
+    cdq.render.update-mouseover-entity/do!
+    cdq.render.assoc-paused/do!
+    cdq.render.update-time/do!
+    cdq.render.update-potential-fields/do!
+    cdq.render.tick-entities/do!
+    cdq.render.remove-destroyed-entities/do!
+    cdq.render.camera-controls/do!
+    ])
+
+(defn- render* [ctx]
+  (m/validate-humanize schema ctx)
+  (let [render-fns (map requiring-resolve render-fns)
+        ctx (reduce (fn [ctx render!]
+                      (render! ctx))
+                    ctx
+                    render-fns)]
+    (m/validate-humanize schema ctx)
+    ctx))
+
+(defprotocol Resizable
+  (resize! [_ width height]))
+
+(defn- resize* [{:keys [ctx/ui-viewport
+                        ctx/world-viewport]}
+                width
+                height]
+  (resize! ui-viewport    width height)
+  (resize! world-viewport width height))
+
+(def state (atom nil))
+
+(defn create! [config]
+  (reset! state (create* config)))
+
+(defn dispose! []
+  (dispose* @state))
+
+(defn render! []
+  (swap! state render*))
+
+(defn resize! [width height]
+  (resize* @state width height))

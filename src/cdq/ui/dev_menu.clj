@@ -1,7 +1,7 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.game :as application]
+            [cdq.application :as application]
             [clojure.string :as str]
             [gdl.utils :as utils]))
 

@@ -1,7 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.g :as g]
-            [cdq.create]
-            [cdq.resize :as resize]
+            [cdq.application :as application]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -10,7 +9,7 @@
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (cdq.create Context)
+  (:import (cdq.application Context)
            (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
@@ -212,7 +211,7 @@
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
-      resize/Resizable
+      application/Resizable
       (resize! [_ width height]
         (.update this width height center-camera?))
 

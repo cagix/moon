@@ -1,6 +1,6 @@
 (ns cdq.ui.editor
-  (:require [cdq.g :as g]
-            [cdq.game :as application]
+  (:require [cdq.application :as application]
+            [cdq.g :as g]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]

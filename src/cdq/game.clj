@@ -46,22 +46,20 @@
                       (:height (:windowed-mode config)))
     (.setForegroundFPS (:foreground-fps config))))
 
-(def state (atom nil))
-
 (defn -main [config-path]
   (let [config (create-config config-path)]
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (set-mac-os-config! (:mac-os config)))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (reset! state ((:create! config) config)))
+                            ((:create! config) config))
 
                           (dispose []
-                            ((:dispose! config) @state))
+                            ((:dispose! config)))
 
                           (render []
-                            (swap! state (:render! config)))
+                            ((:render! config)))
 
                           (resize [width height]
-                            ((:resize! config) @state width height)))
+                            ((:resize! config) width height)))
                         (lwjgl3-config (:lwjgl3-config config)))))

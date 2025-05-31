@@ -1,8 +1,8 @@
 (ns cdq.create.game-state
-  (:require [cdq.cell :as cell]
+  (:require [cdq.application]
+            [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
-            [cdq.create]
             [cdq.g :as g]
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
@@ -15,7 +15,7 @@
             [cdq.vector2 :as v]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils])
-  (:import (cdq.create Context)))
+  (:import (cdq.application Context)))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
