@@ -19,7 +19,6 @@
             [cdq.ui.editor]
             [cdq.ui.editor.overview-table]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.inventory :as inventory-window]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -350,20 +349,10 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added! (fn [{:keys [ctx/stage]} skill]
-                                                 (action-bar/add-skill! (:action-bar stage)
-                                                                        skill))
-                                 :skill-removed! (fn [{:keys [ctx/stage]} skill]
-                                                   (action-bar/remove-skill! (:action-bar stage)
-                                                                             skill))
-                                 :item-set! (fn [{:keys [ctx/stage]} inventory-cell item]
-                                              (-> (:windows stage)
-                                                  :inventory-window
-                                                  (inventory-window/set-item! inventory-cell item)))
-                                 :item-removed! (fn [{:keys [ctx/stage]} inventory-cell]
-                                                  (-> (:windows stage)
-                                                      :inventory-window
-                                                      (inventory-window/remove-item! inventory-cell)))}
+                                 :skill-added! g/add-skill!
+                                 :skill-removed! g/remove-skill!
+                                 :item-set! g/set-item!
+                                 :item-removed! g/remove-item!}
                 :entity/free-skill-points free-skill-points
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})

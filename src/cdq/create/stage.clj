@@ -1,10 +1,10 @@
 (ns cdq.create.stage
   (:require [cdq.g :as g]
-            [cdq.ui.action-bar]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
             [cdq.ui.hp-mana-bar]
-            [cdq.ui.inventory]
+            [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message]
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
@@ -15,7 +15,7 @@
 (defn- create-actors [{:keys [ctx/ui-viewport]
                        :as ctx}]
   [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
-   (cdq.ui.action-bar/create :id :action-bar)
+   (action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
                                80 ; action-bar-icon-size
                                ]
@@ -81,6 +81,18 @@
 
      :toggle-inventory-visible! (fn [ctx]
                                   (-> ctx -k :windows :inventory-window ui/toggle-visible!))
+
+     :add-skill! (fn [ctx skill]
+                   (-> ctx -k :action-bar (action-bar/add-skill! skill)))
+
+     :remove-skill! (fn [ctx skill]
+                      (-> ctx -k :action-bar (action-bar/remove-skill! skill)))
+
+     :set-item! (fn [ctx inventory-cell item]
+                  (-> ctx -k :windows :inventory-window (inventory-window/set-item! inventory-cell item)))
+
+     :remove-item! (fn [ctx inventory-cell]
+                     (-> ctx -k :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
      })
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]

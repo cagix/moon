@@ -77,7 +77,11 @@
   (show-message! [_ message])
   (show-modal! [_ {:keys [title text button-text on-click]}])
   (inventory-window-visible? [_])
-  (toggle-inventory-visible! [_]))
+  (toggle-inventory-visible! [_])
+  (add-skill! [_ skill])
+  (remove-skill! [_ skill])
+  (set-item! [_ inventory-cell item])
+  (remove-item! [_ inventory-cell]))
 
 (defprotocol MouseViewports
   (world-mouse-position [_])
