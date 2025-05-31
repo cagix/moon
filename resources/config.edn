@@ -1,13 +1,13 @@
-{:lwjgl-application {:title "Cyber Dungeon Quest"
-                     :windowed-mode {:width 1440
-                                     :height 900}
-                     :foreground-fps 60
-                     :mac-os {:glfw-async? true
-                              :dock-icon "moon.png"}}
- :create! cdq.create/do!
+{:mac-os {:glfw-async? true
+          :dock-icon "moon.png"}
+ :lwjgl3-config {:title "Cyber Dungeon Quest"
+                 :windowed-mode {:width 1440
+                                 :height 900}
+                 :foreground-fps 60}
+ :create!  cdq.create/do!
  :dispose! cdq.dispose/do!
- :render! cdq.render/do!
- :resize! cdq.resize/do!
+ :render!  cdq.render/do!
+ :resize!  cdq.resize/do!
  :ui {:skin-scale :x1}
  :tile-size 48
  :ui-viewport {:width 1440
