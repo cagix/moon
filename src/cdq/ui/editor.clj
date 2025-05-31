@@ -52,11 +52,10 @@
     (.pack window)
     window))
 
-(defn- edit-property [id {:keys [ctx/stage] :as ctx}]
-  (ui/add! stage (editor-window (g/get-raw ctx id) ctx)))
+(defn- edit-property [id ctx]
+  (g/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
 
-(defn open-editor-window! [{:keys [ctx/stage] :as ctx}
-                           property-type]
+(defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"
                            :modal? true
                            :close-button? true
@@ -64,4 +63,4 @@
                            :close-on-escape? true})]
     (ui/add! window (g/property-overview-table ctx property-type edit-property))
     (.pack window)
-    (ui/add! stage window)))
+    (g/add-actor! ctx window)))

@@ -462,13 +462,9 @@
                                           (.dispose pixmap)
                                           texture)
                    world-unit-scale (float (/ tile-size))
-                   ui-viewport (ui-viewport (:ui-viewport config))
-                   stage (ui/stage (:java-object ui-viewport)
-                                   batch)]
-               (.setInputProcessor Gdx/input stage)
+                   ui-viewport (ui-viewport (:ui-viewport config))]
                {:config config
                 :ui-viewport ui-viewport
-                :stage stage
                 :graphics graphics
                 :batch batch
                 :unit-scale (atom 1)
@@ -493,6 +489,7 @@
                          '[cdq.create.assets/do!
                            cdq.create.input/do!
                            cdq.create.db/do!
+                           cdq.create.stage/do!
                            ]))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
@@ -570,11 +567,6 @@
 
   (ui-mouse-position [{:keys [ctx/ui-viewport] :as ctx}]
     (viewport/unproject ui-viewport (g/mouse-position ctx))))
-
-(extend-type Context
-  g/Stage
-  (mouseover-actor [{:keys [ctx/stage] :as ctx}]
-    (ui/hit stage (g/ui-mouse-position ctx))))
 
 (extend-type Context
   g/Context
