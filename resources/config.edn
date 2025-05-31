@@ -33,7 +33,6 @@
                 :quality-scaling 2}
  :world-viewport {:width 1440
                   :height 900}
- :create-actors cdq.create.actors/create-actors
  :world-fn cdq.level.vampire/create
  :content-grid-cell-size 16
  :player-props {:creature-id :creatures/vampire

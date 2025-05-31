@@ -17,8 +17,13 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.dev-menu]
+            [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
+            [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
+            [cdq.ui.player-state-draw]
+            [cdq.ui.windows]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
             [clojure.gdx.assets.asset-manager :as asset-manager]
@@ -76,20 +81,20 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/assets :some]
-             [:ctx/batch :some]
-             [:ctx/config :some]
-             [:ctx/cursors :some]
-             [:ctx/db :some]
-             [:ctx/default-font :some]
-             [:ctx/graphics :some]
-             [:ctx/input :some]
-             [:ctx/stage :some]
-             [:ctx/ui-viewport :some]
-             [:ctx/unit-scale :some]
-             [:ctx/shape-drawer :some]
-             [:ctx/shape-drawer-texture :some]
-             [:ctx/tiled-map-renderer :some]
+             [:ctx/assets :some] ; ok
+             [:ctx/batch :some] ; ok
+             [:ctx/config :some] ; TODO
+             [:ctx/cursors :some] ; ok
+             [:ctx/db :some] ; TODO
+             [:ctx/default-font :some] ; ok
+             [:ctx/graphics :some] ; ok
+             [:ctx/input :some] ; TODO
+             [:ctx/stage :some] ; TODO
+             [:ctx/ui-viewport :some] ; TODO
+             [:ctx/unit-scale :some] ; ok
+             [:ctx/shape-drawer :some] ; ok
+             [:ctx/shape-drawer-texture :some] ; ok
+             [:ctx/tiled-map-renderer :some] ; ok
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
              [:ctx/elapsed-time :some]
@@ -444,12 +449,29 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
+(defn- create-actors [{:keys [ctx/ui-viewport]
+                       :as ctx}]
+  [(cdq.ui.dev-menu/create ctx)
+   (cdq.ui.action-bar/create :id :action-bar)
+   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
+                               80 ; action-bar-icon-size
+                               ]
+                              ctx)
+   (cdq.ui.windows/create :id :windows
+                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
+                                   (cdq.ui.inventory/create ctx
+                                                            :id :inventory-window
+                                                            :position [(:width ui-viewport)
+                                                                       (:height ui-viewport)])])
+   (cdq.ui.player-state-draw/create)
+   (cdq.ui.message/create :name "player-message")])
+
 (defn- create-game-state [{:keys [ctx/config
                                   ctx/stage]
                            :as ctx}
                           world-fn]
   (ui/clear! stage)
-  (run! #(ui/add! stage %) ((:create-actors config) ctx))
+  (run! #(ui/add! stage %) (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
