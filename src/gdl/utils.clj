@@ -1,11 +1,8 @@
 (ns gdl.utils
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.pprint :as pprint]
-            [clojure.walk :as walk])
-  (:import (clojure.lang ILookup
-                         PersistentVector
-                         Var)))
+            [clojure.pprint :as pprint])
+  (:import (clojure.lang PersistentVector)))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -186,26 +183,3 @@
             (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
           m
           (keys m)))
-
-(defn require-symbols [form log?]
-  (walk/postwalk (fn [form]
-                   (if (symbol? form)
-                     (if (namespace form)
-                       (do
-                        (when log?
-                          (println "requiring-resolve " form))
-                        (requiring-resolve form))
-                       (do
-                        (when log?
-                          (println "require " form))
-                        (require form)
-                        form))
-                     form))
-                 form))
-
-(defn create-config [path & {:keys [log?]}]
-  (let [m (require-symbols (io-slurp-edn path)
-                           log?)]
-    (reify ILookup
-      (valAt [_ k]
-        (safe-get m k)))))
