@@ -1,8 +1,8 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.game :as application]
             [clojure.string :as str]
-            [gdl.application :as application]
             [gdl.utils :as utils]))
 
 (defn create [{:keys [ctx/config] :as ctx}]

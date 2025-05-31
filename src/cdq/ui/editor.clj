@@ -1,10 +1,10 @@
 (ns cdq.ui.editor
   (:require [cdq.g :as g]
+            [cdq.game :as application]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [gdl.application :as application]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]
