@@ -8,9 +8,7 @@
             [cdq.timer :as timer]
             [cdq.g :as g]
             [cdq.projectile :as projectile]
-            [cdq.ui.message]
             [cdq.vector2 :as v]
-            [gdl.ui :as ui]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
@@ -44,37 +42,14 @@
 (defmethod handle-tx! :tx/set-cursor [[_ cursor-key] c]
   (g/set-cursor! c cursor-key))
 
-(defmethod handle-tx! :tx/show-message [[_ message] {:keys [ctx/stage]}]
-  (-> stage
-      ui/root
-      (ui/find-actor "player-message")
-      (cdq.ui.message/show! message)))
+(defmethod handle-tx! :tx/show-message [[_ message] ctx]
+  (g/show-message! ctx message))
 
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defmethod handle-tx! :tx/show-modal [[_ {:keys [title text button-text on-click]}]
-                                      {:keys [ctx/ui-viewport
-                                              ctx/stage]}]
-  (assert (not (::modal stage)))
-  (ui/add! stage
-           (ui/window {:title title
-                       :rows [[(ui/label text)]
-                              [(ui/text-button button-text
-                                               (fn [_actor _ctx]
-                                                 (ui/remove! (::modal stage))
-                                                 (on-click)))]]
-                       :id ::modal
-                       :modal? true
-                       :center-position [(/ (:width ui-viewport) 2)
-                                         (* (:height ui-viewport) (/ 3 4))]
-                       :pack? true})))
+(defmethod handle-tx! :tx/show-modal [[_ opts] ctx]
+  (g/show-modal! ctx opts))
 
-(defmethod handle-tx! :tx/toggle-inventory-visible [_ {:keys [ctx/stage]}]
-  (-> (:windows stage)
-      :inventory-window
-      ui/toggle-visible!))
+(defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]
+  (g/toggle-inventory-visible! ctx))
 
 (defmethod handle-tx! :tx/audiovisual [[_ position audiovisual] ctx]
   (let [{:keys [tx/sound

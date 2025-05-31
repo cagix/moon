@@ -16,15 +16,10 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.dev-menu]
             [cdq.ui.editor]
             [cdq.ui.editor.overview-table]
-            [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.windows]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -39,7 +34,6 @@
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.ui :as ui]
-            [gdl.ui.menu :as menu]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
@@ -388,29 +382,8 @@
                               :entity/faction :evil}})]
     [:tx/spawn-creature (update props :position utils/tile->middle)]))
 
-(defn- create-actors [{:keys [ctx/ui-viewport]
-                       :as ctx}]
-  [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
-   (cdq.ui.action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
-
-(defn- create-game-state [{:keys [ctx/config
-                                  ctx/stage]
-                           :as ctx}
-                          world-fn]
-  (ui/clear! stage)
-  (run! #(ui/add! stage %) (create-actors ctx))
+(defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
+  (g/reset-actors! ctx)
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
@@ -451,7 +424,6 @@
                         cursors
                         default-font]
                  :as config}]
-  (ui/load! (:ui config))
   (let [graphics Gdx/graphics
         ctx (map->Context
              (let [batch (SpriteBatch.)

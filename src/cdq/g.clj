@@ -71,8 +71,13 @@
   (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol Stage
+  (reset-actors! [_])
   (add-actor! [_ actor])
-  (mouseover-actor [_]))
+  (mouseover-actor [_])
+  (show-message! [_ message])
+  (show-modal! [_ {:keys [title text button-text on-click]}])
+  (inventory-window-visible? [_])
+  (toggle-inventory-visible! [_]))
 
 (defprotocol MouseViewports
   (world-mouse-position [_])
