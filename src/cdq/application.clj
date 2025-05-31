@@ -61,19 +61,7 @@
         ctx (reduce (fn [ctx f]
                       (f ctx))
                     ctx
-                    (map requiring-resolve
-                         '[cdq.create.assets/do!
-                           cdq.create.input/do!
-                           cdq.create.db/do!
-                           cdq.create.graphics/do!
-                           cdq.create.stage/do!
-                           cdq.create.handle-txs/do!
-                           cdq.create.game-state/do!
-                           cdq.create.info/do!
-                           cdq.create.player-movement-vector/do!
-                           cdq.create.interaction-state/do!
-                           cdq.create.editor/do!
-                           ]))]
+                    (:create-fns config))]
     (m/validate-humanize schema ctx)
     ctx))
 
@@ -91,31 +79,12 @@
   ; TODO dispose world tiled-map/level resources?
   )
 
-(def render-fns
-  '[
-    cdq.render.assoc-active-entities/do!
-    cdq.render.set-camera-on-player/do!
-    cdq.render.clear-screen/do!
-    cdq.render.draw-world-map/do!
-    cdq.render.draw-on-world-viewport/do!
-    cdq.g/render-stage!
-    cdq.render.player-state-handle-click/do!
-    cdq.render.update-mouseover-entity/do!
-    cdq.render.assoc-paused/do!
-    cdq.render.update-time/do!
-    cdq.render.update-potential-fields/do!
-    cdq.render.tick-entities/do!
-    cdq.render.remove-destroyed-entities/do!
-    cdq.render.camera-controls/do!
-    ])
-
-(defn- render* [ctx]
+(defn- render* [{:keys [ctx/config] :as ctx}]
   (m/validate-humanize schema ctx)
-  (let [render-fns (map requiring-resolve render-fns)
-        ctx (reduce (fn [ctx render!]
+  (let [ctx (reduce (fn [ctx render!]
                       (render! ctx))
                     ctx
-                    render-fns)]
+                    (:render-fns config))]
     (m/validate-humanize schema ctx)
     ctx))
 
