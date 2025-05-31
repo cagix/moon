@@ -62,7 +62,7 @@
              widget)
     :left? true}])
 
-(defn- open-add-component-window! [{:keys [ctx/stage] :as ctx} schema map-widget-table]
+(defn- open-add-component-window! [ctx schema map-widget-table]
   (let [schemas (g/schemas ctx)
         window (ui/window {:title "Choose"
                            :modal? true
@@ -85,7 +85,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (ui/add! stage window)))
+    (g/add-actor! ctx window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])
