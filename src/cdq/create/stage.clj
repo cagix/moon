@@ -39,7 +39,12 @@
   (ui/load! (:ui config))
   (extend (class ctx)
     g/Stage
-    {:reset-actors! (fn [ctx]
+    {:render-stage! (fn [ctx]
+                      (ui/act! (-k ctx) ctx)
+                      (ui/draw! (-k ctx) ctx)
+                      ctx)
+
+     :reset-actors! (fn [ctx]
                       (let [stage (-k ctx)]
                         (ui/clear! stage)
                         (run! #(ui/add! stage %) (create-actors ctx))))

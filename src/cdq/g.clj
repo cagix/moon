@@ -67,6 +67,7 @@
   (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol Stage
+  (render-stage! [_])
   (reset-actors! [_])
   (add-actor! [_ actor])
   (mouseover-actor [_])

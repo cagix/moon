@@ -474,7 +474,7 @@
     cdq.render.clear-screen/do!
     cdq.render.draw-world-map/do!
     cdq.render.draw-on-world-viewport/do!
-    cdq.render.ui/do!
+    cdq.g/render-stage!
     cdq.render.player-state-handle-click/do!
     cdq.render.update-mouseover-entity/do!
     cdq.render.assoc-paused/do!
