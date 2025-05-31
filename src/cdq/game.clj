@@ -43,6 +43,7 @@
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
             [gdl.ui :as ui]
+            [gdl.ui.menu :as menu]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
@@ -451,7 +452,7 @@
 
 (defn- create-actors [{:keys [ctx/ui-viewport]
                        :as ctx}]
-  [(cdq.ui.dev-menu/create ctx)
+  [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
    (cdq.ui.action-bar/create :id :action-bar)
    (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
                                80 ; action-bar-icon-size
