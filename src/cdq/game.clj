@@ -28,7 +28,6 @@
             [cdq.ui.windows]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
-            [clojure.gdx.assets.asset-manager :as asset-manager]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
@@ -36,9 +35,7 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
-            [clojure.string :as str]
             [gdl.application :as application]
-            [gdl.audio.sound]
             [gdl.graphics :as graphics]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input]
@@ -51,8 +48,6 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter
                              Gdx)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
@@ -117,48 +112,6 @@
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
-
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- make-assets [{:keys [folder
-                            asset-type-extensions]}]
-  (asset-manager/create
-   (for [[asset-type extensions] asset-type-extensions
-         file (map #(str/replace-first % folder "")
-                   (recursively-search (.internal Gdx/files folder) extensions))]
-     [file (case asset-type
-             :sound Sound
-             :texture Texture)])))
-
-(extend-type Context
-  g/Assets
-  (sound [{:keys [ctx/assets]} path]
-    (let [sound (asset-manager/safe-get assets path)]
-      (reify gdl.audio.sound/Sound
-        (play! [_]
-          (Sound/.play sound)))))
-
-  (texture [{:keys [ctx/assets]} path]
-    (asset-manager/safe-get assets path))
-
-  (all-sounds [{:keys [ctx/assets]}]
-    (asset-manager/all-of-type assets Sound))
-
-  (all-textures [{:keys [ctx/assets]}]
-    (asset-manager/all-of-type assets Texture)))
 
 (defn- make-input [input]
   (reify gdl.input/Input
@@ -508,6 +461,8 @@
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
 
+; We _need to create stepwise because otherwise the file becomes too big ... _
+
 (defn- create! [{:keys [tile-size
                         cursor-path-format
                         cursors
@@ -530,7 +485,6 @@
                (.setInputProcessor Gdx/input stage)
                {:config config
                 :input (make-input Gdx/input)
-                :assets (make-assets (:assets config))
                 :ui-viewport ui-viewport
                 :stage stage
                 :db (db/create (:db config))
@@ -551,6 +505,11 @@
                 :world-viewport (world-viewport world-unit-scale (:world-viewport config))
                 :tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))}))
+        ctx (reduce (fn [ctx f]
+                      (f ctx))
+                    ctx
+                    (map requiring-resolve
+                         '[cdq.create.assets/do!]))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
     ctx))
