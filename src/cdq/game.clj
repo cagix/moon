@@ -15,10 +15,8 @@
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
-            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.editor]
             [cdq.ui.editor.overview-table]
-            [cdq.ui.error-window :as error-window]
             [cdq.vector2 :as v]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -32,7 +30,6 @@
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]
-            [gdl.ui :as ui]
             [gdl.viewport :as viewport]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
@@ -559,14 +556,6 @@
     (grid/position-changed! grid eid)))
 
 (extend-type Context
-  g/StageActors
-  (open-error-window! [{:keys [ctx/stage]} throwable]
-    (ui/add! stage (error-window/create throwable)))
-
-  (selected-skill [{:keys [ctx/stage]}]
-    (action-bar/selected-skill (:action-bar stage))))
-
-(extend-type Context
   cdq.g/Grid
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
@@ -777,8 +766,8 @@
   (open-editor-window! [ctx property-type]
     (cdq.ui.editor/open-editor-window! ctx property-type))
 
-  (edit-property! [{:keys [ctx/stage] :as ctx} property]
-    (ui/add! stage (cdq.ui.editor/editor-window property ctx)))
+  (edit-property! [ctx property]
+    (g/add-actor! ctx (cdq.ui.editor/editor-window property ctx)))
 
   (property-overview-table [ctx property-type clicked-id-fn]
     (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn)))

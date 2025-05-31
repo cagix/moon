@@ -3,6 +3,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
+            [cdq.ui.error-window :as error-window]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message]
@@ -93,6 +94,13 @@
 
      :remove-item! (fn [ctx inventory-cell]
                      (-> ctx -k :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
+
+     :open-error-window! (fn [ctx throwable]
+                           (ui/add! (-k ctx) (error-window/create throwable)))
+
+     :selected-skill (fn [ctx]
+                       (action-bar/selected-skill (:action-bar (-k ctx))))
+
      })
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]

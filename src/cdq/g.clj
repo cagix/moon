@@ -14,10 +14,6 @@
   (context-entity-remove! [_ eid])
   (context-entity-moved! [_ eid]))
 
-(defprotocol StageActors
-  (open-error-window! [_ throwable])
-  (selected-skill [_]))
-
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
 
@@ -81,7 +77,9 @@
   (add-skill! [_ skill])
   (remove-skill! [_ skill])
   (set-item! [_ inventory-cell item])
-  (remove-item! [_ inventory-cell]))
+  (remove-item! [_ inventory-cell])
+  (open-error-window! [_ throwable])
+  (selected-skill [_]))
 
 (defprotocol MouseViewports
   (world-mouse-position [_])
