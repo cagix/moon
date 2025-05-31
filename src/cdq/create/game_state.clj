@@ -2,7 +2,7 @@
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
-            [cdq.game]
+            [cdq.create]
             [cdq.g :as g]
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
@@ -15,7 +15,7 @@
             [cdq.vector2 :as v]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils])
-  (:import (cdq.game Context)))
+  (:import (cdq.create Context)))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points

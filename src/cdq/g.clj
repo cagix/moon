@@ -1,5 +1,8 @@
 (ns cdq.g)
 
+(defprotocol ContextSchema
+  (validate-humanize [_]))
+
 (defprotocol Input
   (button-just-pressed? [_ button])
   (key-pressed? [_ key])
