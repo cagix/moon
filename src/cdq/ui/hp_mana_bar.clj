@@ -2,7 +2,6 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.val-max :as val-max]
-            [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
@@ -40,6 +39,5 @@
                           (render-hpmana-bar ctx x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                           (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP"))))]
     (ui/actor
-     {:draw (fn [_this {:keys [ctx/graphics]
-                        :as ctx}]
-              (graphics/handle-draws! graphics (create-draws ctx)))})))
+     {:draw (fn [_this ctx]
+              (g/handle-draws! ctx (create-draws ctx)))})))

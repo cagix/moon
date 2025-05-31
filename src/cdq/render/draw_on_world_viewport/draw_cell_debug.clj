@@ -1,16 +1,16 @@
 (ns cdq.render.draw-on-world-viewport.draw-cell-debug
-  (:require [cdq.grid :as grid]
-            [gdl.graphics :as graphics]))
+  (:require [cdq.g :as g]
+            [cdq.grid :as grid]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
 (def ^:dbg-flag show-cell-occupied? false)
 
-(defn- draw-cell-debug* [{:keys [ctx/graphics
-                                 ctx/grid
-                                 ctx/factions-iterations]}]
+(defn- draw-cell-debug* [{:keys [ctx/grid
+                                 ctx/factions-iterations]
+                          :as ctx}]
   (apply concat
-         (for [[x y] (graphics/visible-tiles graphics)
+         (for [[x y] (g/visible-tiles ctx)
                :let [cell (grid/cell grid [x y])]
                :when cell
                :let [cell* @cell]]
@@ -24,6 +24,5 @@
                   (let [ratio (/ distance (factions-iterations faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
-(defn do! [{:keys [ctx/graphics]
-            :as ctx}]
-  (graphics/handle-draws! graphics (draw-cell-debug* ctx)))
+(defn do! [ctx]
+  (g/handle-draws! ctx (draw-cell-debug* ctx)))

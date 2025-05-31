@@ -4,7 +4,6 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
@@ -33,14 +32,13 @@
 (defn- draw-rect-actor []
   (ui/widget
    {:draw
-    (fn [actor {:keys [ctx/graphics
-                       ctx/player-eid] :as ctx}]
-      (graphics/handle-draws! graphics
-                              (draw-cell-rect @player-eid
-                                              (ui/get-x actor)
-                                              (ui/get-y actor)
-                                              (ui/hit actor (g/ui-mouse-position ctx))
-                                              (ui/user-object (ui/parent actor)))))}))
+    (fn [actor {:keys [ctx/player-eid] :as ctx}]
+      (g/handle-draws! ctx
+                       (draw-cell-rect @player-eid
+                                       (ui/get-x actor)
+                                       (ui/get-y actor)
+                                       (ui/hit actor (g/ui-mouse-position ctx))
+                                       (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

@@ -58,22 +58,40 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (q/defrecord Context [ctx/assets
-                      ctx/db
+                      ctx/batch
                       ctx/config
+                      ctx/cursors
+                      ctx/db
+                      ctx/default-font
                       ctx/graphics
                       ctx/input
                       ctx/stage
-                      ctx/ui-viewport])
+                      ctx/ui-viewport
+                      ctx/unit-scale
+                      ctx/shape-drawer
+                      ctx/shape-drawer-texture
+                      ctx/tiled-map-renderer
+                      ctx/world-unit-scale
+                      ctx/world-viewport])
 
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/assets :some]
+             [:ctx/batch :some]
+             [:ctx/config :some]
+             [:ctx/cursors :some]
+             [:ctx/db :some]
+             [:ctx/default-font :some]
              [:ctx/graphics :some]
              [:ctx/input :some]
-             [:ctx/ui-viewport :some]
              [:ctx/stage :some]
-             [:ctx/config :some]
-             [:ctx/db :some]
+             [:ctx/ui-viewport :some]
+             [:ctx/unit-scale :some]
+             [:ctx/shape-drawer :some]
+             [:ctx/shape-drawer-texture :some]
+             [:ctx/tiled-map-renderer :some]
+             [:ctx/world-unit-scale :some]
+             [:ctx/world-viewport :some]
              [:ctx/elapsed-time :some]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/paused? {:optional true} :boolean]
@@ -187,94 +205,6 @@
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
 
-(defrecord Graphics [^com.badlogic.gdx.Graphics graphics
-                     ^SpriteBatch batch
-                     unit-scale
-                     world-unit-scale
-                     shape-drawer-texture
-                     shape-drawer
-                     cursors
-                     default-font
-                     world-viewport
-                     tiled-map-renderer]
-  Disposable
-  (dispose [_]
-    (Disposable/.dispose batch)
-    (Disposable/.dispose shape-drawer-texture)
-    (run! Disposable/.dispose (vals cursors))
-    (Disposable/.dispose default-font))
-
-  gdl.graphics/Graphics
-  (delta-time [_]
-    (.getDeltaTime graphics))
-
-  (frames-per-second [_]
-    (.getFramesPerSecond graphics))
-
-  (clear-screen! [_]
-    (ScreenUtils/clear Color/BLACK))
-
-  (handle-draws! [this draws]
-    (doseq [component draws
-            :when component]
-      (draw! component this)))
-
-  (draw-on-world-viewport! [_ f]
-    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
-    (.begin batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (fn []
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
-    (.end batch))
-
-  (sprite [_ texture]
-    (create-sprite (TextureRegion. ^Texture texture)
-                   world-unit-scale))
-
-  (sub-sprite [_ sprite [x y w h]]
-    (create-sprite (sub-region (:texture-region sprite) x y w h)
-                   world-unit-scale))
-
-  (sprite-sheet [_ texture tilew tileh]
-    {:image (create-sprite (TextureRegion. ^Texture texture)
-                           world-unit-scale)
-     :tilew tilew
-     :tileh tileh})
-
-  (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
-    (gdl.graphics/sub-sprite this image
-                             [(* x tilew)
-                              (* y tileh)
-                              tilew
-                              tileh]))
-
-  (set-camera-position! [_ position]
-    (camera/set-position! (:camera world-viewport) position))
-
-  (world-viewport-width [_]
-    (:width world-viewport))
-
-  (world-viewport-height [_]
-    (:height world-viewport))
-
-  (camera-position [_]
-    (camera/position (:camera world-viewport)))
-
-  (inc-zoom! [_ amount]
-    (camera/inc-zoom! (:camera world-viewport) amount))
-
-  (camera-frustum [_]
-    (camera/frustum (:camera world-viewport)))
-
-  (visible-tiles [_]
-    (camera/visible-tiles (:camera world-viewport)))
-
-  (camera-zoom [_]
-    (camera/zoom (:camera world-viewport))))
-
 (defn- truetype-font [{:keys [file size quality-scaling]}]
   (let [font (freetype/generate (.internal Gdx/files file)
                                 {:size (* size quality-scaling)})]
@@ -320,18 +250,17 @@
                            rotation
                            color))))
 
-
 (defmethod draw! :draw/image [[_ sprite position]
-                              {:keys [batch
-                                      unit-scale]}]
+                              {:keys [ctx/batch
+                                      ctx/unit-scale]}]
   (draw-sprite! batch
                 @unit-scale
                 sprite
                 position))
 
 (defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
-                                         {:keys [batch
-                                                 unit-scale]}]
+                                         {:keys [ctx/batch
+                                                 ctx/unit-scale]}]
   (draw-sprite! batch
                 @unit-scale
                 sprite
@@ -346,9 +275,9 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
-                             {:keys [default-font
-                                     batch
-                                     unit-scale]}]
+                             {:keys [ctx/default-font
+                                     ctx/batch
+                                     ctx/unit-scale]}]
   (bitmap-font/draw! (or font default-font)
                      batch
                      {:scale (* (float @unit-scale)
@@ -360,47 +289,47 @@
                       :up? up?}))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
-                                {:keys [shape-drawer]}]
+                                {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/filled-ellipse [[_ [x y] radius-x radius-y color]
-                                       {:keys [shape-drawer]}]
+                                       {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/circle [[_ [x y] radius color]
-                               {:keys [shape-drawer]}]
+                               {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/filled-circle [[_ [x y] radius color]
-                                      {:keys [shape-drawer]}]
+                                      {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/rectangle [[_ x y w h color]
-                                  {:keys [shape-drawer]}]
+                                  {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/filled-rectangle [[_ x y w h color]
-                                         {:keys [shape-drawer]}]
+                                         {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/arc [[_ [center-x center-y] radius start-angle degree color]
-                            {:keys [shape-drawer]}]
+                            {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/arc! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/sector [[_ [center-x center-y] radius start-angle degree color]
-                               {:keys [shape-drawer]}]
+                               {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/sector! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/line [[_ [sx sy] [ex ey] color]
-                             {:keys [shape-drawer]}]
+                             {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/line! shape-drawer sx sy ex ey))
 
@@ -417,10 +346,10 @@
       (draw! [:draw/line [leftx liney] [rightx liney] color] this))))
 
 (defmethod draw! :draw/with-line-width [[_ width draws]
-                                        {:keys [shape-drawer] :as this}]
+                                        {:keys [ctx/shape-drawer] :as this}]
   (sd/with-line-width shape-drawer width
     (fn []
-      (gdl.graphics/handle-draws! this draws))))
+      (g/handle-draws! this draws))))
 
 (defprotocol Resizable
   (resize! [_ width height]))
@@ -471,38 +400,6 @@
                   world-height
                   camera
                   {:center-camera? false})))
-
-(defn- make-graphics [graphics config]
-  (map->Graphics
-   (let [{:keys [tile-size
-                 cursor-path-format
-                 cursors
-                 default-font]} config
-         batch (SpriteBatch.)
-         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                             (.setColor Color/WHITE)
-                                             (.drawPixel 0 0))
-                                    texture (Texture. pixmap)]
-                                (.dispose pixmap)
-                                texture)
-         world-unit-scale (float (/ tile-size))]
-     {:graphics graphics
-      :batch batch
-      :unit-scale (atom 1)
-      :world-unit-scale world-unit-scale
-      :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-      :cursors (utils/mapvals
-                (fn [[file [hotspot-x hotspot-y]]]
-                  (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
-                    (.dispose pixmap)
-                    cursor))
-                cursors)
-      :default-font (truetype-font default-font)
-      :world-viewport (world-viewport world-unit-scale (:world-viewport config))
-      :tiled-map-renderer (memoize (fn [tiled-map]
-                                     (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
@@ -586,29 +483,63 @@
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
 
-(defn- create! [config]
+(defn- create! [{:keys [tile-size
+                        cursor-path-format
+                        cursors
+                        default-font]
+                 :as config}]
   (ui/load! (:ui config))
-  (let [ctx (map->Context
-             (let [graphics (make-graphics Gdx/graphics config)
+  (let [graphics Gdx/graphics
+        ctx (map->Context
+             (let [batch (SpriteBatch.)
+                   shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                                       (.setColor Color/WHITE)
+                                                       (.drawPixel 0 0))
+                                              texture (Texture. pixmap)]
+                                          (.dispose pixmap)
+                                          texture)
+                   world-unit-scale (float (/ tile-size))
                    ui-viewport (ui-viewport (:ui-viewport config))
                    stage (ui/stage (:java-object ui-viewport)
-                                   (:batch graphics))]
+                                   batch)]
                (.setInputProcessor Gdx/input stage)
                {:config config
                 :input (make-input Gdx/input)
-                :graphics graphics
                 :assets (make-assets (:assets config))
                 :ui-viewport ui-viewport
                 :stage stage
-                :db (db/create (:db config))}))
+                :db (db/create (:db config))
+                :graphics graphics
+                :batch batch
+                :unit-scale (atom 1)
+                :world-unit-scale world-unit-scale
+                :shape-drawer-texture shape-drawer-texture
+                :shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+                :cursors (utils/mapvals
+                          (fn [[file [hotspot-x hotspot-y]]]
+                            (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                                  cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+                              (.dispose pixmap)
+                              cursor))
+                          cursors)
+                :default-font (truetype-font default-font)
+                :world-viewport (world-viewport world-unit-scale (:world-viewport config))
+                :tiled-map-renderer (memoize (fn [tiled-map]
+                                               (tiled-map-renderer/create tiled-map world-unit-scale batch)))}))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
     ctx))
 
 (defn- dispose! [{:keys [ctx/assets
-                         ctx/graphics]}]
+                         ctx/batch
+                         ctx/cursors
+                         ctx/default-font
+                         ctx/shape-drawer-texture]}]
   (Disposable/.dispose assets)
-  (Disposable/.dispose graphics)
+  (Disposable/.dispose batch)
+  (run! Disposable/.dispose (vals cursors))
+  (Disposable/.dispose default-font)
+  (Disposable/.dispose shape-drawer-texture)
   ; TODO vis-ui dispose
   ; TODO dispose world tiled-map/level resources?
   )
@@ -641,12 +572,12 @@
     (m/validate-humanize schema ctx)
     ctx))
 
-(defn- resize!* [{:keys [ctx/graphics
-                         ctx/ui-viewport]}
+(defn- resize!* [{:keys [ctx/ui-viewport
+                         ctx/world-viewport]}
                  width
                  height]
-  (resize! ui-viewport                width height)
-  (resize! (:world-viewport graphics) width height))
+  (resize! ui-viewport    width height)
+  (resize! world-viewport width height))
 
 (defn -main [config-path]
   (let [config (utils/create-config config-path)]
@@ -666,9 +597,9 @@
 
 (extend-type Context
   g/MouseViewports
-  (world-mouse-position [{:keys [ctx/graphics
+  (world-mouse-position [{:keys [ctx/world-viewport
                                  ctx/input]}]
-    (viewport/unproject (:world-viewport graphics)
+    (viewport/unproject world-viewport
                         (gdl.input/mouse-position input)))
 
   (ui-mouse-position [{:keys [ctx/ui-viewport
@@ -733,38 +664,101 @@
 
 (extend-type Context
   g/Graphics
-  (draw-tiled-map! [{:keys [ctx/graphics]} tiled-map color-setter]
-    (tiled-map-renderer/draw! ((:tiled-map-renderer graphics) tiled-map)
+  (delta-time [{:keys [ctx/graphics]}]
+    (.getDeltaTime graphics))
+
+  (frames-per-second [{:keys [ctx/graphics]}]
+    (.getFramesPerSecond graphics))
+
+  (clear-screen! [_]
+    (ScreenUtils/clear Color/BLACK))
+
+  (handle-draws! [this draws]
+    (doseq [component draws
+            :when component]
+      (draw! component this)))
+
+  (draw-on-world-viewport! [{:keys [ctx/batch
+                                    ctx/world-viewport
+                                    ctx/shape-drawer
+                                    ctx/world-unit-scale
+                                    ctx/unit-scale]}
+                            f]
+    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
+    (.begin batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (.end batch))
+
+  (sprite [{:keys [ctx/world-unit-scale] :as ctx} texture-path]
+    (create-sprite (TextureRegion. ^Texture (g/texture ctx texture-path))
+                   world-unit-scale))
+
+  (sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
+    (create-sprite (sub-region (:texture-region sprite) x y w h)
+                   world-unit-scale))
+
+  (sprite-sheet [{:keys [ctx/world-unit-scale]
+                  :as ctx}
+                 texture-path
+                 tilew
+                 tileh]
+    {:image (create-sprite (TextureRegion. ^Texture (g/texture ctx texture-path))
+                           world-unit-scale)
+     :tilew tilew
+     :tileh tileh})
+
+  (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
+    (g/sub-sprite this image
+                  [(* x tilew)
+                   (* y tileh)
+                   tilew
+                   tileh]))
+
+  (set-camera-position! [{:keys [ctx/world-viewport]} position]
+    (camera/set-position! (:camera world-viewport) position))
+
+  (world-viewport-width [{:keys [ctx/world-viewport]}]
+    (:width world-viewport))
+
+  (world-viewport-height [{:keys [ctx/world-viewport]}]
+    (:height world-viewport))
+
+  (camera-position [{:keys [ctx/world-viewport]}]
+    (camera/position (:camera world-viewport)))
+
+  (inc-zoom! [{:keys [ctx/world-viewport]} amount]
+    (camera/inc-zoom! (:camera world-viewport) amount))
+
+  (camera-frustum [{:keys [ctx/world-viewport]}]
+    (camera/frustum (:camera world-viewport)))
+
+  (visible-tiles [{:keys [ctx/world-viewport]}]
+    (camera/visible-tiles (:camera world-viewport)))
+
+  (camera-zoom [{:keys [ctx/world-viewport]}]
+    (camera/zoom (:camera world-viewport)))
+
+  (draw-tiled-map! [{:keys [ctx/tiled-map-renderer
+                            ctx/world-viewport]}
+                    tiled-map
+                    color-setter]
+    (tiled-map-renderer/draw! (tiled-map-renderer tiled-map)
                               tiled-map
                               color-setter
-                              (:camera (:world-viewport graphics))))
+                              (:camera world-viewport)))
 
-  (set-cursor! [{:keys [ctx/graphics]} cursor]
-    (.setCursor (:graphics graphics)
-                (utils/safe-get (:cursors graphics) cursor)))
+  (set-cursor! [{:keys [ctx/graphics
+                        ctx/cursors]}
+                cursor]
+    (.setCursor graphics (utils/safe-get cursors cursor)))
 
-  (pixels->world-units [{:keys [ctx/graphics]} pixels]
-    (* pixels (:world-unit-scale graphics)))
-
-  (sprite [ctx texture-path]
-    (graphics/sprite (:ctx/graphics ctx)
-                     (g/texture ctx texture-path)))
-
-  (sub-sprite [ctx sprite [x y w h]]
-    (graphics/sub-sprite (:ctx/graphics ctx)
-                         sprite
-                         [x y w h]))
-
-  (sprite-sheet [ctx texture-path tilew tileh]
-    (graphics/sprite-sheet (:ctx/graphics ctx)
-                           (g/texture ctx texture-path)
-                           tilew
-                           tileh))
-
-  (sprite-sheet->sprite [ctx sprite-sheet [x y]]
-    (graphics/sprite-sheet->sprite (:ctx/graphics ctx)
-                                   sprite-sheet
-                                   [x y])))
+  (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
+    (* pixels world-unit-scale)))
 
 (extend-type Context
   g/EffectContext
@@ -793,18 +787,18 @@
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
-(defn- on-screen? [graphics position]
+(defn- on-screen? [ctx position]
   (let [[x y] position
         x (float x)
         y (float y)
-        [cx cy] (graphics/camera-position graphics)
+        [cx cy] (g/camera-position ctx)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (graphics/world-viewport-width graphics))  2)))
-     (<= ydist (inc (/ (float (graphics/world-viewport-height graphics)) 2))))))
+     (<= xdist (inc (/ (float (g/world-viewport-width  ctx))  2)))
+     (<= ydist (inc (/ (float (g/world-viewport-height ctx)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see
@@ -814,12 +808,11 @@
   g/LineOfSight
   ; does not take into account size of entity ...
   ; => assert bodies <1 width then
-  (line-of-sight? [{:keys [ctx/graphics
-                           ctx/raycaster]}
+  (line-of-sight? [{:keys [ctx/raycaster] :as ctx}
                    source
                    target]
     (and (or (not (:entity/player? source))
-             (on-screen? graphics (entity/position target)))
+             (on-screen? ctx (entity/position target)))
          (not (and los-checks?
                    (raycaster/blocked? raycaster
                                        (entity/position source)

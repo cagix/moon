@@ -1,14 +1,12 @@
 (ns cdq.render.update-time
   (:require [cdq.ctx :as ctx]
-            [gdl.graphics :as graphics]))
+            [cdq.g :as g]))
 
-(defn do! [{:keys [ctx/graphics
-                   ctx/paused?]
+(defn do! [{:keys [ctx/paused?]
             :as ctx}]
   (if paused?
     ctx
-    (let [delta-ms (min (graphics/delta-time graphics)
-                        ctx/max-delta)]
+    (let [delta-ms (min (g/delta-time ctx) ctx/max-delta)]
       (-> ctx
           (assoc :ctx/delta-time delta-ms)
           (update :ctx/elapsed-time + delta-ms)))))

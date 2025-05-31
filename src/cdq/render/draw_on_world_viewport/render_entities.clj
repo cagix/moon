@@ -2,7 +2,6 @@
   (:require [cdq.g :as g]
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
-            [gdl.graphics :as graphics]
             [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)
@@ -11,8 +10,7 @@
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
-(defn do! [{:keys [ctx/graphics
-                   ctx/active-entities
+(defn do! [{:keys [ctx/active-entities
                    ctx/player-eid
                    ctx/render-z-order]
             :as ctx}]
@@ -30,9 +28,9 @@
                       (g/line-of-sight? ctx player entity))]
       (try
        (when show-body-bounds?
-         (graphics/handle-draws! graphics (draw-body-rect entity (if (:collides? entity) :white :gray))))
+         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
-         (graphics/handle-draws! graphics (render! component entity ctx)))
+         (g/handle-draws! ctx (render! component entity ctx)))
        (catch Throwable t
-         (graphics/handle-draws! graphics (draw-body-rect entity :red))
+         (g/handle-draws! ctx (draw-body-rect entity :red))
          (stacktrace/pretty-pst t))))))

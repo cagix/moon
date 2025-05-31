@@ -4,7 +4,6 @@
             [cdq.g :as g]
             [cdq.ui.editor :as editor]
             [clojure.string :as str]
-            [gdl.graphics :as graphics]
             [gdl.ui.menu :as menu]
             [gdl.utils :as utils]))
 
@@ -42,8 +41,8 @@
                      :update-fn (fn [ctx]
                                   (mapv int (g/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn (comp graphics/camera-zoom :ctx/graphics)
+                     :update-fn g/camera-zoom
                      :icon (g/texture ctx "images/zoom.png")}
                     {:label "FPS"
-                     :update-fn (comp graphics/frames-per-second :ctx/graphics)
+                     :update-fn g/frames-per-second
                      :icon (g/texture ctx "images/fps.png")}]}))

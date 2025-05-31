@@ -1,8 +1,7 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
   (:require [cdq.g :as g]
             [cdq.grid :as grid]
-            [cdq.math :as math]
-            [gdl.graphics :as graphics]))
+            [cdq.math :as math]))
 
 (defn- geom-test* [{:keys [ctx/grid] :as ctx}]
   (let [position (g/world-mouse-position ctx)
@@ -16,6 +15,5 @@
                  :keys [width height]} (math/circle->outer-rectangle circle)]
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
-(defn do! [{:keys [ctx/graphics]
-            :as ctx}]
-  (graphics/handle-draws! graphics (geom-test* ctx)))
+(defn do! [ctx]
+  (g/handle-draws! ctx (geom-test* ctx)))
