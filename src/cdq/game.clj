@@ -1,12 +1,5 @@
 (ns cdq.game
   (:require [cdq.resizable]
-            [cdq.g :as g]
-            [cdq.g.info]
-            [cdq.g.player-movement-vector]
-            [cdq.g.interaction-state]
-            [cdq.g.handle-txs]
-            [cdq.ui.editor]
-            [cdq.ui.editor.overview-table]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdl.application :as application]
@@ -80,7 +73,13 @@
                            cdq.create.db/do!
                            cdq.create.graphics/do!
                            cdq.create.stage/do!
-                           cdq.create.game-state/do!]))]
+                           cdq.create.handle-txs/do!
+                           cdq.create.game-state/do!
+                           cdq.create.info/do!
+                           cdq.create.player-movement-vector/do!
+                           cdq.create.interaction-state/do!
+                           cdq.create.editor/do!
+                           ]))]
     (m/validate-humanize schema ctx)
     ctx))
 
@@ -148,42 +147,3 @@
 
                          (resize [width height]
                            (resize! @application/state width height))))))
-
-(extend-type Context
-  g/InfoText
-  (info-text [ctx object]
-    (cdq.g.info/text ctx object)))
-
-(extend-type Context
-  g/PlayerMovementInput
-  (player-movement-vector [ctx]
-    (cdq.g.player-movement-vector/WASD-movement-vector ctx)))
-
-(extend-type Context
-  g/InteractionState
-  (interaction-state [ctx eid]
-    (cdq.g.interaction-state/create ctx eid)))
-
-(extend-type Context
-  g/EffectHandler
-  (handle-txs! [ctx transactions]
-    (doseq [transaction transactions
-            :when transaction
-            :let [_ (assert (vector? transaction)
-                            (pr-str transaction))
-                  ; TODO also should be with namespace 'tx' the first is a keyword
-                  ]]
-      (try (cdq.g.handle-txs/handle-tx! transaction ctx)
-           (catch Throwable t
-             (throw (ex-info "" {:transaction transaction} t)))))))
-
-(extend-type Context
-  g/EditorWindow
-  (open-editor-window! [ctx property-type]
-    (cdq.ui.editor/open-editor-window! ctx property-type))
-
-  (edit-property! [ctx property]
-    (g/add-actor! ctx (cdq.ui.editor/editor-window property ctx)))
-
-  (property-overview-table [ctx property-type clicked-id-fn]
-    (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn)))

@@ -4,8 +4,6 @@
             [cdq.entity :as entity]
             [cdq.game]
             [cdq.g :as g]
-            [cdq.g.player-movement-vector]
-            [cdq.g.interaction-state]
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
             [cdq.grid :as grid]
@@ -43,14 +41,14 @@
                      (player-entity-props (utils/tile->middle start-position)
                                           player-props)))
 
-(defn- spawn-enemies [tiled-map]
-  (for [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                {:position position
-                 :creature-id (keyword creature-id)
-                 :components {:entity/fsm {:fsm :fsms/npc
-                                           :initial-state :npc-sleeping}
-                              :entity/faction :evil}})]
-    [:tx/spawn-creature (update props :position utils/tile->middle)]))
+(defn- spawn-enemies! [ctx tiled-map]
+  (doseq [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)
+          :let [props {:position position
+                       :creature-id (keyword creature-id)
+                       :components {:entity/fsm {:fsm :fsms/npc
+                                                 :initial-state :npc-sleeping}
+                                    :entity/faction :evil}}]]
+    (g/spawn-creature! ctx (update props :position utils/tile->middle))))
 
 (defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
   (g/reset-actors! ctx)
@@ -79,7 +77,7 @@
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx
                                                             start-position
                                                             (:player-props config)))]
-    (g/handle-txs! ctx (spawn-enemies tiled-map))
+    (spawn-enemies! ctx tiled-map)
     ctx))
 
 (defn do! [{:keys [ctx/config] :as ctx}]
