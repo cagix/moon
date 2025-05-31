@@ -896,6 +896,9 @@
   (get-raw [{:keys [ctx/db]} property-id]
     (db/get-raw db property-id))
 
+  (build-all [{:keys [ctx/db] :as ctx} property-type]
+    (db/build-all db property-type ctx))
+
   (update-property [ctx property]
     (update ctx :ctx/db db/update! property))
 
