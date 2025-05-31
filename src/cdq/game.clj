@@ -886,3 +886,14 @@
 
   (edit-property! [{:keys [ctx/stage] :as ctx} property]
     (ui/add! stage (cdq.ui.editor/editor-window property ctx))))
+
+(extend-type Context
+  g/Database
+  (get-raw [{:keys [ctx/db]} property-id]
+    (db/get-raw db property-id))
+
+  (update-property [ctx property]
+    (update ctx :ctx/db db/update! property))
+
+  (delete-property [ctx property-id]
+    (update ctx :ctx/db db/delete! property-id)))

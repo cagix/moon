@@ -80,3 +80,8 @@
 (defprotocol EditorWindow
   (open-editor-window! [_ property-type])
   (edit-property! [_ property]))
+
+(defprotocol Database
+  (get-raw [_ property-id])
+  (update-property [_ property])
+  (delete-property [_ property-id]))

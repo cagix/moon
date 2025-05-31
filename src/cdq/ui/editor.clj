@@ -1,6 +1,5 @@
 (ns cdq.ui.editor
-  (:require [cdq.db :as db]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -9,12 +8,6 @@
             [gdl.application :as application]
             [gdl.input :as input]
             [gdl.ui :as ui]))
-
-(defn- update-property! [ctx property]
-  (update ctx :ctx/db db/update! property))
-
-(defn- delete-property! [ctx property-id]
-  (update ctx :ctx/db db/delete! property-id))
 
 (defn- apply-context-fn [window f]
   (fn [ctx]
@@ -42,11 +35,11 @@
         widget (widget/create schema props ctx)
         save!   (apply-context-fn window (fn [ctx]
                                            (swap! application/state
-                                                  update-property!
+                                                  g/update-property
                                                   (widget/value schema widget (:schemas db)))))
         delete! (apply-context-fn window (fn [_ctx]
                                            (swap! application/state
-                                                  delete-property!
+                                                  g/delete-property
                                                   (:property/id props))))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
                                                    [[{:actor widget :colspan 2}]
@@ -65,10 +58,8 @@
     (.pack window)
     window))
 
-(defn- edit-property [id
-                      {:keys [ctx/db
-                              ctx/stage] :as ctx}]
-  (ui/add! stage (editor-window (db/get-raw db id) ctx)))
+(defn- edit-property [id {:keys [ctx/stage] :as ctx}]
+  (ui/add! stage (editor-window (g/get-raw ctx id) ctx)))
 
 (defn open-editor-window! [{:keys [ctx/stage] :as ctx}
                            property-type]
