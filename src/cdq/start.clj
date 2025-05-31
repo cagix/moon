@@ -1,4 +1,4 @@
-(ns cdq.game
+(ns cdq.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.walk :as walk])
@@ -32,12 +32,12 @@
                 (str "Config key not found: " k))
         (get m k)))))
 
-(defn- set-mac-os-config! [{:keys [glfw-async?
-                                   dock-icon]}]
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+(defn- set-mac-os-config! [config]
+  (when (:glfw-async? config)
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource dock-icon))))
+                            (io/resource (:dock-icon config)))))
 
 (defn- lwjgl3-config [config]
   (doto (Lwjgl3ApplicationConfiguration.)
