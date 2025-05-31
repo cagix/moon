@@ -19,6 +19,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.editor]
+            [cdq.ui.editor.overview-table]
             [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.hp-mana-bar]
@@ -885,7 +886,10 @@
     (cdq.ui.editor/open-editor-window! ctx property-type))
 
   (edit-property! [{:keys [ctx/stage] :as ctx} property]
-    (ui/add! stage (cdq.ui.editor/editor-window property ctx))))
+    (ui/add! stage (cdq.ui.editor/editor-window property ctx)))
+
+  (property-overview-table [ctx property-type clicked-id-fn]
+    (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn)))
 
 (extend-type Context
   g/Database

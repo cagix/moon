@@ -3,7 +3,6 @@
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
-            [cdq.ui.editor.overview-table :as overview-table]
             [cdq.ui.editor.widget :as widget]
             [gdl.application :as application]
             [gdl.input :as input]
@@ -68,6 +67,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (ui/add! window (overview-table/create ctx property-type edit-property))
+    (ui/add! window (g/property-overview-table ctx property-type edit-property))
     (.pack window)
     (ui/add! stage window)))

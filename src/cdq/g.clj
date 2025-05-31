@@ -79,7 +79,8 @@
 
 (defprotocol EditorWindow
   (open-editor-window! [_ property-type])
-  (edit-property! [_ property]))
+  (edit-property! [_ property])
+  (property-overview-table [_ property-type clicked-id-fn]))
 
 (defprotocol Database
   (get-raw [_ property-id])
