@@ -1,7 +1,6 @@
 (ns cdq.g.handle-txs
   (:require [gdl.audio.sound :as sound]
             [cdq.animation :as animation]
-            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
@@ -77,12 +76,10 @@
       :inventory-window
       ui/toggle-visible!))
 
-(defmethod handle-tx! :tx/audiovisual [[_ position audiovisual]
-                                       {:keys [ctx/db]
-                                        :as ctx}]
+(defmethod handle-tx! :tx/audiovisual [[_ position audiovisual] ctx]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
-                                     (db/build db audiovisual ctx)
+                                     (g/build ctx audiovisual)
                                      audiovisual)]
     (play-sound! ctx sound)
     (spawn-effect! ctx

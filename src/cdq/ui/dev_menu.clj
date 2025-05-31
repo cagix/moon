@@ -1,13 +1,11 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.db :as db]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [clojure.string :as str]
             [gdl.application :as application]
             [gdl.utils :as utils]))
 
-(defn create [{:keys [ctx/config
-                      ctx/db] :as ctx}]
+(defn create [{:keys [ctx/config] :as ctx}]
   {:menus [{:label "World"
             :items (for [world-fn (:world-fns config)]
                      {:label (str "Start " world-fn)
@@ -16,7 +14,7 @@
            {:label "Help"
             :items [{:label (:info config)}]}
            {:label "Objects"
-            :items (for [property-type (sort (db/property-types db))]
+            :items (for [property-type (sort (g/property-types ctx))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn [_actor ctx]
                                   (g/open-editor-window! ctx property-type))})}]

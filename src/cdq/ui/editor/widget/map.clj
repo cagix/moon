@@ -31,10 +31,9 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] table schemas)))
 
-(defn- rebuild-editor-window! [{:keys [ctx/db
-                                       ctx/stage] :as ctx}]
+(defn- rebuild-editor-window! [{:keys [ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
-        prop-value (window->property-value window (:schemas db))]
+        prop-value (window->property-value window (g/schemas ctx))]
     (ui/remove! window)
     (g/edit-property! ctx prop-value)))
 
@@ -63,11 +62,8 @@
              widget)
     :left? true}])
 
-(defn- open-add-component-window! [{:keys [ctx/db
-                                           ctx/stage]}
-                                   schema
-                                   map-widget-table]
-  (let [schemas (:schemas db)
+(defn- open-add-component-window! [{:keys [ctx/stage] :as ctx} schema map-widget-table]
+  (let [schemas (g/schemas ctx)
         window (ui/window {:title "Choose"
                            :modal? true
                            :close-button? true
@@ -97,7 +93,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m {:keys [ctx/db] :as ctx}]
+(defmethod widget/create :s/map [schema m ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -105,12 +101,12 @@
                                            (component-row ctx
                                                           [k v]
                                                           schema
-                                                          (:schemas db)
+                                                          (g/schemas ctx)
                                                           table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
+        opt? (seq (set/difference (schemas/optional-keyset (g/schemas ctx) schema)
                                   (set (keys m))))]
     (ui/add-rows!
      table

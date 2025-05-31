@@ -1,7 +1,6 @@
 (ns cdq.game
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.g.info]
@@ -470,7 +469,6 @@
                {:config config
                 :ui-viewport ui-viewport
                 :stage stage
-                :db (db/create (:db config))
                 :graphics graphics
                 :batch batch
                 :unit-scale (atom 1)
@@ -494,6 +492,7 @@
                     (map requiring-resolve
                          '[cdq.create.assets/do!
                            cdq.create.input/do!
+                           cdq.create.db/do!
                            ]))
         ctx (create-game-state ctx (:world-fn config))]
     (m/validate-humanize schema ctx)
@@ -830,17 +829,3 @@
 
   (property-overview-table [ctx property-type clicked-id-fn]
     (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn)))
-
-(extend-type Context
-  g/Database
-  (get-raw [{:keys [ctx/db]} property-id]
-    (db/get-raw db property-id))
-
-  (build-all [{:keys [ctx/db] :as ctx} property-type]
-    (db/build-all db property-type ctx))
-
-  (update-property [ctx property]
-    (update ctx :ctx/db db/update! property))
-
-  (delete-property [ctx property-id]
-    (update ctx :ctx/db db/delete! property-id)))
