@@ -66,20 +66,20 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/assets :some] ; ok
-             [:ctx/batch :some] ; ok
-             [:ctx/config :some] ; TODO
-             [:ctx/cursors :some] ; ok
-             [:ctx/db :some] ; TODO
-             [:ctx/default-font :some] ; ok
-             [:ctx/graphics :some] ; ok
-             [:ctx/input :some] ; TODO
-             [:ctx/stage :some] ; TODO
-             [:ctx/ui-viewport :some] ; TODO
-             [:ctx/unit-scale :some] ; ok
-             [:ctx/shape-drawer :some] ; ok
-             [:ctx/shape-drawer-texture :some] ; ok
-             [:ctx/tiled-map-renderer :some] ; ok
+             [:ctx/assets :some]
+             [:ctx/batch :some]
+             [:ctx/config :some]
+             [:ctx/cursors :some]
+             [:ctx/db :some]
+             [:ctx/default-font :some]
+             [:ctx/graphics :some]
+             [:ctx/input :some]
+             [:ctx/stage :some]
+             [:ctx/ui-viewport :some]
+             [:ctx/unit-scale :some]
+             [:ctx/shape-drawer :some]
+             [:ctx/shape-drawer-texture :some]
+             [:ctx/tiled-map-renderer :some]
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
              [:ctx/elapsed-time :some]
