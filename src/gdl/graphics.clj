@@ -2,8 +2,10 @@
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+           (com.badlogic.gdx.graphics Color
+                                      Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -42,3 +44,41 @@
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
+
+(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
+
+(defn- unit-dimensions [sprite unit-scale]
+  (if (= unit-scale 1)
+    (:pixel-dimensions sprite)
+    (:world-unit-dimensions sprite)))
+
+(defn draw-sprite!
+  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
+   (draw-texture-region! batch
+                         texture-region
+                         position
+                         (unit-dimensions sprite unit-scale)
+                         0 ; rotation
+                         color))
+  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
+   (let [[w h] (unit-dimensions sprite unit-scale)]
+     (draw-texture-region! batch
+                           texture-region
+                           [(- (float x) (/ (float w) 2))
+                            (- (float y) (/ (float h) 2))]
+                           [w h]
+                           rotation
+                           color))))

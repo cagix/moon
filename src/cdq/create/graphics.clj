@@ -29,60 +29,22 @@
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
 
-(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
-
-(defn- unit-dimensions [sprite unit-scale]
-  (if (= unit-scale 1)
-    (:pixel-dimensions sprite)
-    (:world-unit-dimensions sprite)))
-
-(defn- draw-sprite!
-  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
-   (draw-texture-region! batch
-                         texture-region
-                         position
-                         (unit-dimensions sprite unit-scale)
-                         0 ; rotation
-                         color))
-  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
-   (let [[w h] (unit-dimensions sprite unit-scale)]
-     (draw-texture-region! batch
-                           texture-region
-                           [(- (float x) (/ (float w) 2))
-                            (- (float y) (/ (float h) 2))]
-                           [w h]
-                           rotation
-                           color))))
-
 (defmethod draw! :draw/image [[_ sprite position]
                               {:keys [ctx/batch
                                       ctx/unit-scale]}]
-  (draw-sprite! batch
-                @unit-scale
-                sprite
-                position))
+  (graphics/draw-sprite! batch
+                         @unit-scale
+                         sprite
+                         position))
 
 (defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
                                          {:keys [ctx/batch
                                                  ctx/unit-scale]}]
-  (draw-sprite! batch
-                @unit-scale
-                sprite
-                position
-                rotation))
+  (graphics/draw-sprite! batch
+                         @unit-scale
+                         sprite
+                         position
+                         rotation))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
