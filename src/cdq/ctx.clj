@@ -12,3 +12,6 @@
 
 (defprotocol InfoText
   (info-text [_ object]))
+
+(defprotocol TileColorSetter
+  (tile-color-setter [_]))

@@ -1,7 +1,5 @@
 (ns cdq.create.ctx-extenders
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.interaction-state]
-            [gdl.utils :as utils]))
+  (:require [gdl.utils :as utils]))
 
 (defn- create-method-map [protocol]
   (let [{:keys [sigs

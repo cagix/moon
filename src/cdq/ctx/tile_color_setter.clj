@@ -1,14 +1,18 @@
-(ns cdq.tile-color-setter
-  (:require [cdq.raycaster :as raycaster]
+(ns cdq.ctx.tile-color-setter
+  (:require [cdq.graphics :as g]
+            [cdq.raycaster :as raycaster]
             [gdl.graphics.color :as color]))
 
-(defn create [{:keys [raycaster
-                      explored-tile-corners
-                      light-position
-                      explored-tile-color
-                      see-all-tiles?]}]
+(def see-all-tiles? false)
+
+(def explored-tile-color (color/create 0.5 0.5 0.5 1))
+
+(defn tile-color-setter [{:keys [ctx/raycaster
+                                 ctx/explored-tile-corners]
+                          :as ctx}]
   #_(reset! do-once false)
-  (let [light-cache (atom {})]
+  (let [light-position (g/camera-position ctx)
+        light-cache (atom {})]
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
