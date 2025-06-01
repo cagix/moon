@@ -3,6 +3,7 @@
             [cdq.assets :as assets]
             [cdq.graphics :as g]
             [cdq.input :as input]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.graphics :as graphics]
@@ -12,8 +13,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
-  (:import (cdq.application Context)
-           (com.badlogic.gdx Gdx)))
+  (:import (cdq.application Context)))
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
@@ -122,7 +122,7 @@
 (defn do! [{:keys [ctx/config]
             :as ctx}]
   (merge ctx
-         (let [graphics Gdx/graphics
+         (let [graphics (gdx/graphics)
                {:keys [tile-size
                        cursor-path-format
                        cursors

@@ -1,12 +1,12 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.math.math-utils :as math-utils]
             [gdl.viewport :as viewport])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx
-                             Graphics)
+           (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Texture$TextureFilter
@@ -64,7 +64,7 @@
       map->Sprite))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal Gdx/files file)
+  (let [font (freetype/generate (.internal (gdx/files) file)
                                 {:size (* size quality-scaling)
                                  :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
                                  :mag-filter Texture$TextureFilter/Linear})]
@@ -119,8 +119,8 @@
     texture))
 
 (defn create-cursor [file [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal Gdx/files file))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+  (let [pixmap (Pixmap. (.internal (gdx/files) file))
+        cursor (.newCursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
 
