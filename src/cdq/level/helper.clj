@@ -15,6 +15,11 @@
        (tiled/put! (tiled/m-props tile) "id" id)
        tile))))
 
+(defn add-creatures-layer! [tiled-map spawn-positions]
+  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)]
+    (doseq [[position creature-property] spawn-positions]
+      (tiled/set-tile! layer position (creature-tile creature-property)))))
+
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)
                    (* (g2d/height grid) h)

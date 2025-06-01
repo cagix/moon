@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
-            [cdq.level.helper :refer [creature-tile
+            [cdq.level.helper :refer [add-creatures-layer!
                                       wgt-grid->tiled-map
                                       adjacent-wall-positions
                                       scalegrid
@@ -19,14 +19,6 @@
 
 (defn- rand-0-5 []
   (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
-
-(defn- set-creatures-tiles [creature-properties spawn-rate tiled-map spawn-positions]
-  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        level (inc (rand-int 6))
-        creatures (filter #(= level (:creature/level %)) creature-properties)]
-    (doseq [position spawn-positions
-            :when (<= (rand) spawn-rate)]
-      (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))
 
 (def ^:private tm-tile
   (memoize
@@ -120,11 +112,13 @@
         tiled-map (generate-tiled-map texture grid)
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
-        spawn-positions (flood-fill grid start-position can-spawn?)]
-    (set-creatures-tiles creature-properties
-                         spawn-rate
-                         tiled-map
-                         spawn-positions)
+        level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
+        creatures (filter #(= level (:creature/level %)) creature-properties)
+        spawn-positions (flood-fill grid start-position can-spawn?)
+        creatures (for [position spawn-positions
+                        :when (<= (rand) spawn-rate)]
+                    [position (rand-nth creatures)])]
+    (add-creatures-layer! tiled-map creatures)
     {:tiled-map tiled-map
      :start-position start-position}))
 

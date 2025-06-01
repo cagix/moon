@@ -1,7 +1,7 @@
 (ns cdq.level.modules
   (:require [cdq.db :as db]
             [cdq.grid2d :as g2d]
-            [cdq.level.helper :refer [creature-tile
+            [cdq.level.helper :refer [add-creatures-layer!
                                       scale-grid
                                       cave-grid
                                       adjacent-wall-positions
@@ -58,17 +58,6 @@
           {:steps steps
            :area-level-grid grid})))))
 
-(defn- place-creatures! [creature-properties spawn-rate tiled-map spawn-positions area-level-grid]
-  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)]
-    (doseq [position spawn-positions
-            :let [area-level (get area-level-grid position)]
-            :when (and (number? area-level)
-                       (<= (rand) spawn-rate))]
-      (let [creatures (filter #(= area-level (:creature/level %))
-                              creature-properties)]
-        (when (seq creatures)
-          (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))))
-
 (defn- generate-modules
   "The generated tiled-map needs to be disposed."
   [{:keys [world/map-size
@@ -119,12 +108,16 @@
                                               (and (= area-level (get scaled-area-level-grid p))
                                                    (#{:no-cell :undefined}
                                                     (tiled/property-value tiled-map :creatures p :id))))
-                                            spawn-positions)))]
-    (place-creatures! creature-properties
-                      spawn-rate
-                      tiled-map
-                      spawn-positions
-                      scaled-area-level-grid)
+                                            spawn-positions)))
+        creatures (for [position spawn-positions
+                        :let [area-level (get scaled-area-level-grid position)
+                              creatures (filter #(= area-level (:creature/level %))
+                                                creature-properties)]
+                        :when (and (number? area-level)
+                                   (<= (rand) spawn-rate)
+                                   (seq creatures))]
+                    [position (rand-nth creatures)])]
+    (add-creatures-layer! tiled-map creatures)
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
