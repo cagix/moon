@@ -1,9 +1,12 @@
 (ns cdq.levelgen
   (:require [cdq.create.assets]
             [cdq.create.db]
-            [cdq.level.modules :as modules]))
+            [cdq.level.modules :as modules])
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (defrecord Context [])
+
+(def state (atom nil))
 
 (defn create! [config]
   (let [ctx (->Context)
@@ -14,9 +17,12 @@
         ctx (cdq.create.db/do!     ctx)
         ctx (cdq.create.assets/do! ctx)
         level (modules/create ctx)]
+    (reset! state ctx)
     (println level)))
 
-(defn dispose! [])
+(defn dispose! []
+  (let [{:keys [ctx/assets]} @state]
+    (Disposable/.dispose assets)))
 
 (defn render! [])
 
