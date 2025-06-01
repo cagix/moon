@@ -1,13 +1,10 @@
-(ns cdq.create.stage
+(ns gdl.create.stage
   (:require [clojure.gdx.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
-; * find by name string ( TEST msg )
-
-; => then we can remove stage from gdl.ui ????
-
-; also outdated context -> pass directly atom state?
+; FIXME also outdated context at input-processors outside of stage/render!
+; -> pass directly atom state to stage?
 ; swap! at each render?
 
 (defn do! [{:keys [ctx/batch
