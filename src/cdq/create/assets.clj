@@ -1,6 +1,5 @@
 (ns cdq.create.assets
   (:require [cdq.assets]
-            [cdq.g :as g]
             [gdl.assets :as assets]))
 
 (def ^:private -k :ctx/assets)
