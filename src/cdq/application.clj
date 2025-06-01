@@ -1,6 +1,7 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
-            [qrecord.core :as q])
+            [qrecord.core :as q]
+            [gdl.viewport :as viewport])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (q/defrecord Context [ctx/assets
@@ -88,16 +89,6 @@
     (m/validate-humanize schema ctx)
     ctx))
 
-(defprotocol Resizable
-  (resize! [_ width height]))
-
-(defn- resize* [{:keys [ctx/ui-viewport
-                        ctx/world-viewport]}
-                width
-                height]
-  (resize! ui-viewport    width height)
-  (resize! world-viewport width height))
-
 (def state (atom nil))
 
 (defn create! [config]
@@ -110,4 +101,7 @@
   (swap! state render*))
 
 (defn resize! [width height]
-  (resize* @state width height))
+  (let [{:keys [ctx/ui-viewport
+                ctx/world-viewport]} @state]
+    (viewport/resize! ui-viewport    width height)
+    (viewport/resize! world-viewport width height)))

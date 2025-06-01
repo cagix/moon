@@ -1,5 +1,5 @@
 (ns cdq.create.graphics
-  (:require [cdq.application :as application]
+  (:require [cdq.application]
             [cdq.assets :as assets]
             [cdq.graphics :as g]
             [cdq.input :as input]
@@ -127,11 +127,10 @@
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
-      application/Resizable
+      viewport/Viewport
       (resize! [_ width height]
         (.update this width height center-camera?))
 
-      viewport/Viewport
       ; touch coordinates are y-down, while screen coordinates are y-up
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
       ; TODO clamping only works for gui-viewport ?
