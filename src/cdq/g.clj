@@ -33,8 +33,3 @@
 
 (defprotocol Creatures
   (spawn-creature! [_ {:keys [position creature-id components]}]))
-
-(defprotocol EditorWindow
-  (open-editor-window! [_ property-type])
-  (edit-property! [_ property])
-  (property-overview-table [_ property-type clicked-id-fn]))

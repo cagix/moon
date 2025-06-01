@@ -1,12 +1,12 @@
 (ns cdq.create.editor
-  (:require [cdq.g :as g]
+  (:require [cdq.editor]
             [cdq.stage :as stage]
             [cdq.ui.editor]
             [cdq.ui.editor.overview-table]))
 
 (defn do! [ctx]
   (extend (class ctx)
-    g/EditorWindow
+    cdq.editor/Editor
     {:open-editor-window! cdq.ui.editor/open-editor-window!
      :edit-property! (fn [ctx property]
                        (stage/add-actor! ctx (cdq.ui.editor/editor-window property ctx)))

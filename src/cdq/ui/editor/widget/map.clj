@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.map
   (:require [cdq.db :as db]
-            [cdq.g :as g]
+            [cdq.editor :as editor]
             [cdq.schemas :as schemas]
             [cdq.stage :as stage]
             [cdq.ui.editor.widget :as widget]
@@ -37,7 +37,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (db/schemas ctx))]
     (ui/remove! window)
-    (g/edit-property! ctx prop-value)))
+    (editor/edit-property! ctx prop-value)))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]

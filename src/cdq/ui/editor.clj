@@ -1,7 +1,7 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
-            [cdq.g :as g]
+            [cdq.editor :as editor]
             [cdq.input :as input]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
@@ -64,6 +64,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (ui/add! window (g/property-overview-table ctx property-type edit-property))
+    (ui/add! window (editor/property-overview-table ctx property-type edit-property))
     (.pack window)
     (stage/add-actor! ctx window)))

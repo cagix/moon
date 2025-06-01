@@ -2,8 +2,8 @@
   (:require [cdq.application :as application]
             [cdq.assets :as assets]
             [cdq.db :as db]
+            [cdq.editor :as editor]
             [cdq.entity :as entity]
-            [cdq.g :as g]
             [cdq.game]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
@@ -21,7 +21,7 @@
             :items (for [property-type (sort (db/property-types ctx))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn [_actor ctx]
-                                  (g/open-editor-window! ctx property-type))})}]
+                                  (editor/open-editor-window! ctx property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
