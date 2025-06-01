@@ -14,6 +14,8 @@
                 (:schemas (-k ctx)))
      :get-raw (fn [ctx property-id]
                 (db/get-raw (-k ctx) property-id))
+     :all-raw (fn [ctx property-type]
+                (db/all-raw (-k ctx) property-type))
      :build (fn [ctx property-id]
               (db/build (-k ctx) property-id ctx))
      :build-all (fn [ctx property-type]
