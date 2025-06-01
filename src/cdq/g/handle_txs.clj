@@ -5,6 +5,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
             [cdq.inventory :as inventory]
             [cdq.stage :as stage]
             [cdq.state :as state]
@@ -43,7 +44,7 @@
   (play-sound! ctx sound-name))
 
 (defmethod handle-tx! :tx/set-cursor [[_ cursor-key] c]
-  (g/set-cursor! c cursor-key))
+  (graphics/set-cursor! c cursor-key))
 
 (defmethod handle-tx! :tx/show-message [[_ message] ctx]
   (stage/show-message! ctx message))

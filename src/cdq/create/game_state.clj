@@ -4,6 +4,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
             [cdq.grid :as grid]
@@ -138,7 +139,7 @@
                       eid]
     (let [target-position (or (and mouseover-eid
                                    (entity/position @mouseover-eid))
-                              (g/world-mouse-position ctx))]
+                              (graphics/world-mouse-position ctx))]
       {:effect/source eid
        :effect/target mouseover-eid
        :effect/target-position target-position
@@ -162,14 +163,14 @@
   (let [[x y] position
         x (float x)
         y (float y)
-        [cx cy] (g/camera-position ctx)
+        [cx cy] (graphics/camera-position ctx)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (g/world-viewport-width  ctx))  2)))
-     (<= ydist (inc (/ (float (g/world-viewport-height ctx)) 2))))))
+     (<= xdist (inc (/ (float (graphics/world-viewport-width  ctx))  2)))
+     (<= ydist (inc (/ (float (graphics/world-viewport-height ctx)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

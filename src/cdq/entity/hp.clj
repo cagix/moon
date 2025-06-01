@@ -1,6 +1,6 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.graphics :as g]
             [cdq.val-max :as val-max]
             [gdl.utils :refer [defcomponent]]))
 

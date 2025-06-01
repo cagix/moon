@@ -1,6 +1,6 @@
 (ns cdq.schemas-impl
   (:require [cdq.animation :as animation]
-            [cdq.g :as g]
+            [cdq.graphics :as g]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]

@@ -1,5 +1,5 @@
 (ns cdq.create.stage
-  (:require [cdq.g :as g]
+  (:require [cdq.graphics :as g]
             [cdq.input :as input]
             [cdq.stage]
             [cdq.ui.action-bar :as action-bar]

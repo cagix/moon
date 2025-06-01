@@ -1,9 +1,10 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.assets :as assets]
+  (:require [cdq.application :as application]
+            [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.application :as application]
+            [cdq.graphics :as graphics]
             [clojure.string :as str]
             [gdl.utils :as utils]))
 
@@ -34,13 +35,13 @@
                                  paused?)}
                    {:label "GUI"
                     :update-fn (fn [ctx]
-                                 (mapv int (g/ui-mouse-position ctx)))}
+                                 (mapv int (graphics/ui-mouse-position ctx)))}
                    {:label "World"
                     :update-fn (fn [ctx]
-                                 (mapv int (g/world-mouse-position ctx)))}
+                                 (mapv int (graphics/world-mouse-position ctx)))}
                    {:label "Zoom"
-                    :update-fn g/camera-zoom
+                    :update-fn graphics/camera-zoom
                     :icon (assets/texture ctx "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn g/frames-per-second
+                    :update-fn graphics/frames-per-second
                     :icon (assets/texture ctx "images/fps.png")}]})

@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
-  (:require [cdq.g :as g]
+  (:require [cdq.graphics :as g]
             [cdq.grid :as grid]
             [cdq.math :as math]))
 

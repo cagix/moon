@@ -1,11 +1,11 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
+            [cdq.graphics :as g]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.vector2 :as v]
-            [cdq.g :as g]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 

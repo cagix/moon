@@ -1,6 +1,6 @@
 (ns cdq.render.clear-screen
-  (:require [cdq.g :as g]))
+  (:require [cdq.graphics :as graphics]))
 
-(defn do! [c]
-  (g/clear-screen! c)
-  c)
+(defn do! [ctx]
+  (graphics/clear-screen! ctx)
+  ctx)

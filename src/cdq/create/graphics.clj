@@ -1,8 +1,8 @@
 (ns cdq.create.graphics
-  (:require [cdq.assets :as assets]
-            [cdq.g :as g]
+  (:require [cdq.application :as application]
+            [cdq.assets :as assets]
+            [cdq.graphics :as g]
             [cdq.input :as input]
-            [cdq.application :as application]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]

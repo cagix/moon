@@ -1,5 +1,6 @@
 (ns cdq.render.draw-on-world-viewport.render-entities
   (:require [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
             [gdl.utils :as utils]))
@@ -28,9 +29,9 @@
                       (g/line-of-sight? ctx player entity))]
       (try
        (when show-body-bounds?
-         (g/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+         (graphics/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
        (doseq [component entity]
-         (g/handle-draws! ctx (render! component entity ctx)))
+         (graphics/handle-draws! ctx (render! component entity ctx)))
        (catch Throwable t
-         (g/handle-draws! ctx (draw-body-rect entity :red))
+         (graphics/handle-draws! ctx (draw-body-rect entity :red))
          (stacktrace/pretty-pst t))))))

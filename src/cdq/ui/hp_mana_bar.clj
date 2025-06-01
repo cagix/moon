@@ -1,6 +1,6 @@
 (ns cdq.ui.hp-mana-bar
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.graphics :as g]
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))

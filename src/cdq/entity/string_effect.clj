@@ -1,6 +1,6 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.graphics :as g]
             [cdq.timer :as timer]
             [gdl.utils :refer [defcomponent]]))
 

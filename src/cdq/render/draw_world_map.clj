@@ -1,5 +1,5 @@
 (ns cdq.render.draw-world-map
-  (:require [cdq.g :as g]
+  (:require [cdq.graphics :as g]
             [cdq.tile-color-setter :as tile-color-setter]
             [gdl.graphics.color :as color]))
 
