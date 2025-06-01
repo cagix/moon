@@ -1,4 +1,4 @@
-(ns cdq.assets
+(ns gdl.assets
   (:require [clojure.string :as str]
             [gdl.audio.sound])
   (:import (com.badlogic.gdx Gdx)
