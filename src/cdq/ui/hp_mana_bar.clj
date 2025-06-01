@@ -11,8 +11,12 @@
                :y (+ y 2)
                :up? true}])
 
-(defn create [[x y-mana] ctx]
-  (let [rahmen      (g/sprite ctx "images/rahmen.png")
+(defn create [{:keys [ctx/ui-viewport]
+               :as ctx}]
+  (let [[x y-mana] [(/ (:width ui-viewport) 2)
+                    80 ; action-bar-icon-size
+                    ]
+        rahmen      (g/sprite ctx "images/rahmen.png")
         hpcontent   (g/sprite ctx "images/hp.png")
         manacontent (g/sprite ctx "images/mana.png" )
         [rahmenw rahmenh] (:pixel-dimensions rahmen)

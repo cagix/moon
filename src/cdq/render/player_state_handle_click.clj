@@ -1,12 +1,12 @@
 (ns cdq.render.player-state-handle-click
-  (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
             [cdq.state :as state]))
 
 (defn do! [{:keys [ctx/player-eid]
             :as ctx}]
-  (g/handle-txs! ctx
-                 (state/manual-tick (entity/state-obj @player-eid)
-                                    player-eid
-                                    ctx))
+  (ctx/handle-txs! ctx
+                   (state/manual-tick (entity/state-obj @player-eid)
+                                      player-eid
+                                      ctx))
   ctx)

@@ -1,7 +1,7 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.ctx :as ctx]
             [cdq.state :as state]
             [cdq.world :as world]
             [gdl.utils :refer [defcomponent]]))
@@ -18,7 +18,7 @@
 
 (defcomponent :npc-idle
   (entity/tick! [_ eid ctx]
-    (let [effect-ctx (g/npc-effect-ctx ctx eid)]
+    (let [effect-ctx (ctx/npc-effect-ctx ctx eid)]
       (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
         [[:tx/event eid :movement-direction (or (world/potential-field-find-direction ctx eid)

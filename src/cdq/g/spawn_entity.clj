@@ -1,7 +1,7 @@
 (ns cdq.g.spawn-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.ctx :as ctx]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
             [cdq.world :as world]
@@ -224,5 +224,5 @@
                                             (create-vs ctx)))))]
     (world/context-entity-add! ctx eid)
     (doseq [component @eid]
-      (g/handle-txs! ctx (entity/create! component eid ctx)))
+      (ctx/handle-txs! ctx (entity/create! component eid ctx)))
     eid))

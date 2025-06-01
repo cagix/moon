@@ -26,6 +26,12 @@
               cdq.create.interaction-state/do!
               ]
  :game-state-fns [cdq.game.actors/do!]
+ :actor-create-fns [cdq.ui.dev-menu/create
+                    cdq.ui.action-bar/create
+                    cdq.ui.hp-mana-bar/create
+                    cdq.ui.windows/create
+                    cdq.ui.player-state-draw/create
+                    cdq.ui.message/create]
  :render-fns [cdq.render.assoc-active-entities/do!
               cdq.render.set-camera-on-player/do!
               gdl.render.clear-screen/do!

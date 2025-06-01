@@ -4,7 +4,7 @@
             [cdq.state :as state]
             [gdl.ui :as ui]))
 
-(defn create []
+(defn create [_ctx]
   (ui/actor
    {:draw (fn [_this {:keys [ctx/player-eid] :as ctx}]
             (g/handle-draws! ctx

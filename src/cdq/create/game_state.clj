@@ -3,7 +3,7 @@
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.ctx]
             [cdq.game]
             [cdq.graphics :as graphics]
             [cdq.g.spawn-entity]
@@ -171,7 +171,7 @@
     (potential-fields.movement/find-direction grid eid)))
 
 (extend-type Context
-  g/EffectContext
+  cdq.ctx/EffectContext
   (player-effect-ctx [{:keys [ctx/mouseover-eid]
                        :as ctx}
                       eid]

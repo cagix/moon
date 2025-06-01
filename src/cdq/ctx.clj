@@ -1,6 +1,4 @@
-(ns cdq.g)
-; TODO cdq.graphics always as 'g'
-; and 'g' as 'world' ?!?
+(ns cdq.ctx)
 
 (defprotocol EffectHandler
   (handle-txs! [_ transactions]))

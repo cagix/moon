@@ -6,7 +6,7 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.g :as g]
+            [cdq.ctx :as ctx]
             [cdq.projectile :as projectile]
             [cdq.ui.message]
             [cdq.vector2 :as v]
@@ -150,7 +150,7 @@
                                                         :piercing? piercing?}})))
 
 (defmethod handle-tx! :tx/effect [[_ effect-ctx effects] ctx]
-  (run! #(g/handle-txs! ctx (effect/handle % effect-ctx ctx))
+  (run! #(ctx/handle-txs! ctx (effect/handle % effect-ctx ctx))
         (effect/filter-applicable? effect-ctx effects)))
 
 (defmethod handle-tx! :tx/event [[_ eid event params] ctx]
@@ -165,13 +165,13 @@
                                                           [new-state-k eid])
                                                         ctx)]]
           (when (:entity/player? @eid)
-            (g/handle-txs! ctx ((:state-changed! (:entity/player? @eid)) new-state-obj)))
+            (ctx/handle-txs! ctx ((:state-changed! (:entity/player? @eid)) new-state-obj)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (g/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-          (g/handle-txs! ctx (state/enter! new-state-obj eid)))))))
+          (ctx/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+          (ctx/handle-txs! ctx (state/enter! new-state-obj eid)))))))
 
 (defmethod handle-tx! :tx/mark-destroyed [[_ eid] _ctx]
   (swap! eid assoc :entity/destroyed? true))

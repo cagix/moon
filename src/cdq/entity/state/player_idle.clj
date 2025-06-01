@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.controls :as controls]
-            [cdq.g :as g]
+            [cdq.ctx :as ctx]
             [cdq.state :as state]
             [gdl.input :as input]
             [gdl.utils :refer [defcomponent]]))
@@ -11,7 +11,7 @@
   (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
-      (let [[cursor on-click] (g/interaction-state ctx eid)]
+      (let [[cursor on-click] (ctx/interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]
               (when (input/button-just-pressed? input :left)
                 on-click)))))

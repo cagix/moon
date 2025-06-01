@@ -1,10 +1,10 @@
 (ns cdq.create.handle-txs
-  (:require [cdq.g :as g]
+  (:require [cdq.ctx :as ctx]
             [cdq.g.handle-txs]))
 
 (defn do! [ctx]
   (extend (class ctx)
-    g/EffectHandler
+    ctx/EffectHandler
     {:handle-txs!
      (fn [ctx transactions]
        (doseq [transaction transactions

@@ -14,11 +14,11 @@
                         :user-object :horizontal-group
                         :actors [(button-group-container)]}))
 
-(defn create [& {:keys [id]}]
+(defn create [_ctx]
   (ui/table {:rows [[{:actor (horizontal-group)
                       :expand? true
                       :bottom? true}]]
-             :id id
+             :id :action-bar
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 

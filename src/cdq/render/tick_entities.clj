@@ -1,6 +1,6 @@
 (ns cdq.render.tick-entities
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.ctx :as ctx]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
             [gdl.ui.stage :as stage]))
@@ -19,7 +19,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (g/handle-txs! ctx (entity/tick! [k v] eid ctx)))
+               (ctx/handle-txs! ctx (entity/tick! [k v] eid ctx)))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t

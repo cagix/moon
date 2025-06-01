@@ -1,6 +1,6 @@
 (ns cdq.ui.inventory
-  (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+  (:require [cdq.ctx]
+            [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
@@ -79,9 +79,9 @@
       (.setUserObject cell)
       (.addListener (ui/click-listener
                       (fn [{:keys [ctx/player-eid] :as ctx}]
-                        (g/handle-txs! ctx (-> @player-eid
-                                               entity/state-obj
-                                               (state/clicked-inventory-cell player-eid cell)))))))))
+                        (cdq.ctx/handle-txs! ctx (-> @player-eid
+                                                     entity/state-obj
+                                                     (state/clicked-inventory-cell player-eid cell)))))))))
 
 (defn- inventory-table [ctx]
   (ui/table {:id ::table

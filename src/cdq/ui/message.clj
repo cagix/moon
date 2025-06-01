@@ -10,7 +10,7 @@
                  :scale 2.5
                  :up? true}]))
 
-(defn create [& {:keys [name]}]
+(defn create [_ctx]
   (ui/actor {:draw (fn [this {:keys [ctx/ui-viewport] :as ctx}]
                      (g/handle-draws! ctx
                                       [(draw-message (ui/user-object this)
@@ -21,7 +21,7 @@
                         (swap! state update :counter + delta)
                         (when (>= (:counter @state) 1.5)
                           (reset! state nil)))))
-             :name name
+             :name "player-message"
              :user-object (atom nil)}))
 
 (defn show! [message-actor text]
