@@ -1,9 +1,13 @@
 (ns clojure.gdx
-  (:require [clojure.gdx.files :as files])
+  (:require [clojure.gdx.app :as app]
+            [clojure.gdx.files :as files])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn app []
-  Gdx/app)
+  (let [this Gdx/app]
+    (reify app/App
+      (post-runnable! [_ runnable]
+        (.postRunnable this runnable)))))
 
 (defn files []
   (let [this Gdx/files]

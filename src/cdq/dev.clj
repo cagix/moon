@@ -3,11 +3,12 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [clojure.gdx :as gdx]
+            [clojure.gdx.app :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
 (defmacro post-runnable! [& exprs]
-  `(.postRunnable (gdx/app) (fn [] ~@exprs)))
+  `(app/postRunnable (gdx/app) (fn [] ~@exprs)))
 
 #_(defn post-txs! [txs]
   (post-runnable!
