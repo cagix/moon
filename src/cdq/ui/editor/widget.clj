@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget
-  (:require [cdq.schema :as schema]))
+  (:require [gdl.schema :as schema]))
 
 (defn- widget-type [schema]
   (let [stype (schema/type schema)]

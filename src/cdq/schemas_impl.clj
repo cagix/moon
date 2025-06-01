@@ -1,11 +1,11 @@
 (ns cdq.schemas-impl
   (:require [cdq.animation :as animation]
             [cdq.graphics :as g]
-            [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.malli :as m]
             [cdq.val-max :as val-max]
+            [gdl.schema :as schema]
+            [gdl.schemas :as schemas]
             [gdl.utils :as utils]))
 
 (defmulti malli-form (fn [schema _schemas] (schema/type schema)))

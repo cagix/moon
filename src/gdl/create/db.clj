@@ -1,11 +1,11 @@
 (ns gdl.create.db
-  (:require [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
-            [cdq.schemas-impl :as schemas-impl]
+  (:require [cdq.schemas-impl :as schemas-impl]
             [cdq.property :as property]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.db :as db]
+            [gdl.schema :as schema]
+            [gdl.schemas :as schemas]
             [gdl.utils :as utils]))
 
 (defn- save! [{:keys [data file]}]

@@ -1,4 +1,4 @@
-(ns cdq.schemas)
+(ns gdl.schemas)
 
 (defprotocol Schemas
   (property-types [_])

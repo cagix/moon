@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.image
-  (:require [cdq.schema :as schema]
-            [cdq.ui.editor.widget :as widget]
+  (:require [cdq.ui.editor.widget :as widget]
+            [gdl.schema :as schema]
             [gdl.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?

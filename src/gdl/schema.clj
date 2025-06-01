@@ -1,4 +1,4 @@
-(ns cdq.schema
+(ns gdl.schema
   (:refer-clojure :exclude [type]))
 
 (defn type [schema]

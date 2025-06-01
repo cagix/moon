@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.map
   (:require [cdq.editor :as editor]
-            [cdq.schemas :as schemas]
             [cdq.stage :as stage]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
             [gdl.db :as db]
+            [gdl.schemas :as schemas]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
