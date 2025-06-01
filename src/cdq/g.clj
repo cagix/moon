@@ -28,9 +28,6 @@
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))
 
-(defprotocol InfoText
-  (info-text [_ object]))
-
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components]))
 

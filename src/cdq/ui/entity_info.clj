@@ -1,5 +1,5 @@
 (ns cdq.ui.entity-info
-  (:require [cdq.g :as g]
+  (:require [cdq.info :as info]
             [gdl.ui :as ui]))
 
 (comment
@@ -24,7 +24,7 @@
 
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (g/info-text ctx (apply dissoc entity disallowed-keys)))
+  (info/text ctx (apply dissoc entity disallowed-keys)))
 
 (defn create [position]
   (let [label (ui/label "")
