@@ -171,6 +171,8 @@
 (defn visible? [layer]
   (TiledMapTileLayer/.isVisible layer))
 
+; TODO this code below is -- not part of the API
+
 ; TODO performance bottleneck -> every time getting same layers
 ; takes 600 ms to read movement-properties
 ; lazy seqs??
