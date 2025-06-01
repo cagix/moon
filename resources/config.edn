@@ -9,7 +9,7 @@
  :render!  cdq.application/render!
  :resize!  cdq.application/resize!
  :create-fns [gdl.create.assets/do!
-              cdq.create.input/do!
+              gdl.create.input/do!
               gdl.create.db/do!
               cdq.create.graphics/do!
               gdl.create.stage/do!
