@@ -1,6 +1,7 @@
 (ns gdl.utils
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.pprint :as pprint])
   (:import (clojure.lang PersistentVector)))
 
@@ -183,3 +184,9 @@
             (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
           m
           (keys m)))
+
+(defn pascal->kebab [s]
+  (-> s
+      (str/replace #"([a-z])([A-Z])" "$1-$2")
+      (str/replace #"([A-Z]+)([A-Z][a-z])" "$1-$2")
+      (str/lower-case)))
