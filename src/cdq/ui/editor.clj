@@ -1,6 +1,6 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
-            [cdq.editor :as editor]
+            [cdq.ui.editor.overview-table]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -69,6 +69,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (ui/add! window (editor/property-overview-table ctx property-type edit-property))
+    (ui/add! window (cdq.ui.editor.overview-table/create ctx property-type edit-property))
     (.pack window)
     (stage/add! stage window)))

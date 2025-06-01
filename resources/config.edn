@@ -18,7 +18,7 @@
               cdq.create.info/do!
               cdq.create.player-movement-vector/do!
               cdq.create.interaction-state/do!
-              cdq.create.editor/do!]
+              ]
  :render-fns [cdq.render.assoc-active-entities/do!
               cdq.render.set-camera-on-player/do!
               cdq.render.clear-screen/do!

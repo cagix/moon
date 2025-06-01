@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.one-to-one
-  (:require [cdq.editor :as editor]
+  (:require [cdq.ui.editor.overview-table]
             [cdq.ui.editor.widget :as widget]
             [gdl.db :as db]
             [gdl.property :as property]
@@ -25,7 +25,7 @@
                                  clicked-id-fn (fn [id ctx]
                                                  (.remove window)
                                                  (redo-rows ctx id))]
-                             (ui/add! window (editor/property-overview-table ctx property-type clicked-id-fn))
+                             (ui/add! window (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
                              (stage/add! stage window)))))]
       [(when property-id
