@@ -1,6 +1,7 @@
 (ns gdl.graphics
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -111,7 +112,7 @@
 
 (defn create-cursor [file [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. (files/internal (gdx/files) file))
-        cursor (.newCursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
+        cursor (graphics/cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
 

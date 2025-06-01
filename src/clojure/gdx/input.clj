@@ -1,19 +1,8 @@
-(ns clojure.gdx.input
-  (:require [clojure.gdx.interop :as interop])
-  (:import (com.badlogic.gdx Input)))
+(ns clojure.gdx.input)
 
-(defn button-just-pressed? [^Input input button]
-  (.isButtonJustPressed input (interop/k->input-button button)))
-
-(defn key-pressed? [^Input input key]
-  (.isKeyPressed input (interop/k->input-key key)))
-
-(defn key-just-pressed? [^Input input key]
-  (.isKeyJustPressed input (interop/k->input-key key)))
-
-(defn set-processor! [^Input input input-processor]
-  (.setInputProcessor input input-processor))
-
-(defn mouse-position [^Input input]
-  [(.getX input)
-   (.getY input)])
+(defprotocol Input
+  (button-just-pressed? [_ button])
+  (key-pressed? [_ key])
+  (key-just-pressed? [_ key])
+  (set-processor! [_ input-processor])
+  (mouse-position [_]))
