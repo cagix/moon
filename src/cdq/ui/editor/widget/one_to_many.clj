@@ -1,9 +1,9 @@
 (ns cdq.ui.editor.widget.one-to-many
-  (:require [cdq.db :as db]
-            [cdq.editor :as editor]
+  (:require [cdq.editor :as editor]
             [cdq.stage :as stage]
             [cdq.property :as property]
             [cdq.ui.editor.widget :as widget]
+            [gdl.db :as db]
             [gdl.ui :as ui]
             [gdl.utils :refer [pprint-to-str]]))
 

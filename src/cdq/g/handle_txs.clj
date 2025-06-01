@@ -1,7 +1,6 @@
 (ns cdq.g.handle-txs
   (:require [gdl.audio.sound :as sound]
             [cdq.animation :as animation]
-            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
@@ -14,6 +13,7 @@
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.assets :as assets]
+            [gdl.db :as db]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 

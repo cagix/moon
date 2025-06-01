@@ -1,4 +1,4 @@
-(ns cdq.db)
+(ns gdl.db)
 
 (defprotocol Database
   (property-types [_])

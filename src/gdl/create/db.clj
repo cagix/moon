@@ -1,5 +1,5 @@
-(ns cdq.create.db
-  (:require [cdq.db]
+(ns gdl.create.db
+  (:require [gdl.db]
             [cdq.db-impl :as db]))
 
 (def ^:private -k :ctx/db)
@@ -7,7 +7,7 @@
 (defn do! [{:keys [ctx/config]
             :as ctx}]
   (extend (class ctx)
-    cdq.db/Database
+    gdl.db/Database
     {:property-types (fn [ctx]
                        (db/property-types (-k ctx)))
      :schemas (fn [ctx]

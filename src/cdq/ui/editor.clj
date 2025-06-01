@@ -1,6 +1,5 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
-            [cdq.db :as db]
             [cdq.editor :as editor]
             [cdq.input :as input]
             [cdq.property :as property]
@@ -8,6 +7,7 @@
             [cdq.stage :as stage]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
+            [gdl.db :as db]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]

@@ -1,6 +1,6 @@
 (ns cdq.g.spawn-creature
-  (:require [cdq.db :as db]
-            [cdq.world :as world]
+  (:require [cdq.world :as world]
+            [gdl.db :as db]
             [gdl.utils :as utils]))
 
 ; # :z-order/flying has no effect for now
