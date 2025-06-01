@@ -186,20 +186,22 @@
                                       (f)
                                       (reset! unit-scale 1))))))
 
-  (sprite [{:keys [ctx/world-unit-scale] :as ctx} texture-path]
-    (graphics/create-sprite (texture/region (assets/texture ctx texture-path))
+  (sprite [{:keys [ctx/assets
+                   ctx/world-unit-scale]}
+           texture-path]
+    (graphics/create-sprite (texture/region (assets/texture assets texture-path))
                             world-unit-scale))
 
   (sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
     (graphics/create-sprite (texture/sub-region (:texture-region sprite) x y w h)
                             world-unit-scale))
 
-  (sprite-sheet [{:keys [ctx/world-unit-scale]
-                  :as ctx}
+  (sprite-sheet [{:keys [ctx/assets
+                         ctx/world-unit-scale]}
                  texture-path
                  tilew
                  tileh]
-    {:image (graphics/create-sprite (texture/region (assets/texture ctx texture-path))
+    {:image (graphics/create-sprite (texture/region (assets/texture assets texture-path))
                                     world-unit-scale)
      :tilew tilew
      :tileh tileh})

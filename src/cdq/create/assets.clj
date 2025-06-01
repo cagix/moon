@@ -1,14 +1,48 @@
 (ns cdq.create.assets
-  (:require [cdq.assets]
-            [gdl.assets :as assets]))
+  (:require [cdq.assets :as assets]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.assets.manager :as manager]
+            [clojure.gdx.files :as files]
+            [clojure.gdx.utils.files :as utils.files]
+            [clojure.string :as str]
+            [gdl.audio.sound])
+  (:import (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.utils Disposable)))
 
-(def ^:private -k :ctx/assets)
+(defn- create-assets [{:keys [folder asset-type-extensions]}]
+  (let [manager (manager/create
+                 (for [[asset-type extensions] asset-type-extensions
+                       file (map #(str/replace-first % folder "")
+                                 (utils.files/recursively-search (files/internal (gdx/files) folder)
+                                                                 extensions))]
+                   [file (case asset-type
+                           :sound Sound
+                           :texture Texture)]))]
+    (reify
+      Disposable
+      (dispose [_]
+        (Disposable/.dispose manager))
+
+      ;clojure.lang.IFn
+      ;(invoke [_ path])
+      ; => but then how 2 do with sounds?
+
+      assets/Assets
+      (sound [_ path]
+        (let [sound (manager/safe-get manager path)]
+          (reify gdl.audio.sound/Sound
+            (play! [_]
+              (Sound/.play sound)))))
+
+      (texture [_ path]
+        (manager/safe-get manager path))
+
+      (all-sounds [_]
+        (manager/all-of-type manager Sound))
+
+      (all-textures [_]
+        (manager/all-of-type manager Texture)))))
 
 (defn do! [{:keys [ctx/config] :as ctx}]
-  (extend (class ctx)
-    cdq.assets/Assets
-    {:sound        (fn [ctx path] (assets/sound        (-k ctx) path))
-     :texture      (fn [ctx path] (assets/texture      (-k ctx) path))
-     :all-sounds   (fn [ctx]      (assets/all-sounds   (-k ctx)))
-     :all-textures (fn [ctx]      (assets/all-textures (-k ctx)))})
-  (assoc ctx -k (assets/create (:assets config))))
+  (assoc ctx :ctx/assets (create-assets (:assets config))))

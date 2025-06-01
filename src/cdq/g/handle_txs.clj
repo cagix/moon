@@ -17,10 +17,10 @@
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
-(defn- play-sound! [ctx sound-name]
+(defn- play-sound! [{:keys [ctx/assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       (assets/sound ctx)
+       (assets/sound assets)
        sound/play!))
 
 (defn- spawn-effect! [{:keys [ctx/config] :as ctx} position components]

@@ -9,18 +9,19 @@
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]))
 
-(defn- creature->texture-region [ctx creature]
+(defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)
-        texture (assets/texture ctx file)]
+        texture (assets/texture assets file)]
     (if sub-image-bounds
       (apply texture/region texture sub-image-bounds)
       (texture/region texture))))
 
-(defn prepare-creature-properties [ctx]
+(defn prepare-creature-properties [{:keys [ctx/assets]
+                                    :as ctx}]
   (for [creature (db/all-raw ctx :properties/creatures)]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
-                       :tile/texture-region (creature->texture-region ctx creature)})))
+                       :tile/texture-region (creature->texture-region assets creature)})))
 
 (def creature-tile
   (memoize

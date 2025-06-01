@@ -9,7 +9,9 @@
             [clojure.string :as str]
             [gdl.utils :as utils]))
 
-(defn create [{:keys [ctx/config] :as ctx}]
+(defn create [{:keys [ctx/assets
+                      ctx/config]
+               :as ctx}]
   {:menus [{:label "World"
             :items (for [world-fn (:world-fns config)]
                      {:label (str "Start " world-fn)
@@ -26,11 +28,11 @@
                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
                                    (entity/id entity)))
-                    :icon (assets/texture ctx "images/mouseover.png")}
+                    :icon (assets/texture assets "images/mouseover.png")}
                    {:label "elapsed-time"
                     :update-fn (fn [ctx]
                                  (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
-                    :icon (assets/texture ctx "images/clock.png")}
+                    :icon (assets/texture assets "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [{:keys [ctx/paused?]}]
                                  paused?)}
@@ -42,7 +44,7 @@
                                  (mapv int (graphics/world-mouse-position ctx)))}
                    {:label "Zoom"
                     :update-fn graphics/camera-zoom
-                    :icon (assets/texture ctx "images/zoom.png")}
+                    :icon (assets/texture assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn graphics/frames-per-second
-                    :icon (assets/texture ctx "images/fps.png")}]})
+                    :icon (assets/texture assets "images/fps.png")}]})

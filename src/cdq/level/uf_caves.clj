@@ -122,8 +122,9 @@
     {:tiled-map tiled-map
      :start-position start-position}))
 
-(defn create [ctx]
+(defn create [{:keys [ctx/assets]
+               :as ctx}]
   (create* {:map-size 200,
             :spawn-rate 0.01}
            (prepare-creature-properties ctx)
-           (assets/texture ctx "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+           (assets/texture assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

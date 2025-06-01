@@ -8,13 +8,16 @@
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"
-                  (fn [_actor ctx]
-                    (sound/play! (assets/sound ctx sound-name)))))
+                  (fn [_actor {:keys [ctx/assets]}]
+                    (sound/play! (assets/sound assets sound-name)))))
 
 (declare columns)
 
-(defn- open-choose-sound-window! [table {:keys [ctx/ui-viewport] :as ctx}]
-  (let [rows (for [sound-name (assets/all-sounds ctx)]
+(defn- open-choose-sound-window! [table
+                                  {:keys [ctx/assets
+                                          ctx/ui-viewport]
+                                   :as ctx}]
+  (let [rows (for [sound-name (assets/all-sounds assets)]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (ui/clear-children! table)
