@@ -2,23 +2,23 @@
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as manager]
             [clojure.gdx.files :as files]
+            [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]
             [gdl.audio.sound])
   (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
 
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (fh/list folder)
          result []]
     (cond (nil? file)
           result
 
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
 
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
 
           :else
           (recur remaining result))))
