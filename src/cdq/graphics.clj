@@ -1,8 +1,6 @@
 (ns cdq.graphics)
 
 (defprotocol Graphics
-  (delta-time [_])
-  (frames-per-second [_])
   (handle-draws! [_ draws])
   (set-camera-position! [_ position])
   (world-viewport-width [_])
