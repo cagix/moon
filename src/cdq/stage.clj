@@ -1,7 +1,6 @@
 (ns cdq.stage)
 
 (defprotocol Stage
-  (render-stage! [_])
   (reset-actors! [_])
   (add-actor! [_ actor])
   (mouseover-actor [_])

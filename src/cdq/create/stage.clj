@@ -58,10 +58,7 @@
   (ui/load! (:ui config))
   (extend (class ctx)
     cdq.stage/Stage
-    {:render-stage! (fn [ctx]
-                      (gdl.ui.stage/render! (-k ctx) ctx))
-
-     :reset-actors! (fn [ctx]
+    {:reset-actors! (fn [ctx]
                       (let [stage (-k ctx)]
                         (gdl.ui.stage/clear! stage)
                         (run! #(gdl.ui.stage/add! stage %) (create-actors ctx))))
