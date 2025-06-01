@@ -1,5 +1,6 @@
 (ns gdl.graphics
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -64,7 +65,7 @@
       map->Sprite))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal (gdx/files) file)
+  (let [font (freetype/generate (files/internal (gdx/files) file)
                                 {:size (* size quality-scaling)
                                  :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
                                  :mag-filter Texture$TextureFilter/Linear})]
@@ -119,7 +120,7 @@
     texture))
 
 (defn create-cursor [file [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal (gdx/files) file))
+  (let [pixmap (Pixmap. (files/internal (gdx/files) file))
         cursor (.newCursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
