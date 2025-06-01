@@ -3,7 +3,6 @@
 (defprotocol Graphics
   (delta-time [_])
   (frames-per-second [_])
-  (clear-screen! [_])
   (handle-draws! [_ draws])
   (draw-on-world-viewport! [_ f])
   (set-camera-position! [_ position])

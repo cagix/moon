@@ -24,7 +24,7 @@
               ]
  :render-fns [cdq.render.assoc-active-entities/do!
               cdq.render.set-camera-on-player/do!
-              cdq.render.clear-screen/do!
+              gdl.render.clear-screen/do!
               cdq.render.draw-world-map/do!
               cdq.render.draw-on-world-viewport/do!
               cdq.render.stage/do!

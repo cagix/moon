@@ -7,7 +7,6 @@
             [gdl.assets :as assets]
             [gdl.files :as files]
             [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.graphics.shape-drawer :as sd]
@@ -24,9 +23,6 @@
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
-
-(defn- create-cursor [file [hotspot-x hotspot-y]]
-  )
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
@@ -163,9 +159,6 @@
 
 (extend-type Context
   g/Graphics
-  (clear-screen! [_]
-    (graphics/clear-screen! color/black))
-
   (handle-draws! [this draws]
     (doseq [component draws
             :when component]

@@ -11,6 +11,7 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
             [gdl.input :as input]
+            [gdl.render.clear-screen]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.viewport :as viewport]))
@@ -140,7 +141,7 @@
   (ui/draw! stage ctx))
 
 (defn render! []
-  (graphics/clear-screen! color/black)
+  (gdl.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)

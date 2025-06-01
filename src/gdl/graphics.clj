@@ -12,7 +12,6 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defprotocol Graphics
@@ -20,9 +19,6 @@
   (frames-per-second [_])
   (new-cursor [_ pixmap hotspot-x hotspot-y])
   (set-cursor! [_ cursor]))
-
-(defn clear-screen! [color]
-  (ScreenUtils/clear color))
 
 (defn sprite-batch []
   (SpriteBatch.))
