@@ -1,8 +1,8 @@
 (ns cdq.modifiers
   (:refer-clojure :exclude [remove])
   (:require [cdq.op :as op]
-            [cdq.malli :as m]
-            [cdq.val-max :as val-max]))
+            [cdq.val-max :as val-max]
+            [gdl.malli :as m]))
 
 (defn get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}

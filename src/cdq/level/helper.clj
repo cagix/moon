@@ -2,10 +2,10 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
-            [cdq.property :as property]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics.texture :as texture]
+            [gdl.property :as property]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]))
 

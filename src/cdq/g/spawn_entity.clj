@@ -2,10 +2,10 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.malli :as m]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
             [cdq.world :as world]
+            [gdl.malli :as m]
             [gdl.math :as math]
             [gdl.utils :as utils]))
 

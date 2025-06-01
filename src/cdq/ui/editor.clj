@@ -2,12 +2,12 @@
   (:require [cdq.application :as application]
             [cdq.editor :as editor]
             [cdq.input :as input]
-            [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.stage :as stage]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [gdl.db :as db]
+            [gdl.property :as property]
             [gdl.ui :as ui]))
 
 (defn- apply-context-fn [window f]

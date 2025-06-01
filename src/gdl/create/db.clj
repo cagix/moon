@@ -1,14 +1,11 @@
 (ns gdl.create.db
-  (:require [cdq.animation :as animation]
-            [cdq.graphics :as g]
-            [cdq.property :as property]
-            [cdq.malli :as m]
-            [cdq.val-max :as val-max]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.db :as db]
+            [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.schemas :as schemas]
+            [gdl.property :as property]
             [gdl.utils :as utils]))
 
 (defn- save! [{:keys [data file]}]
@@ -152,25 +149,11 @@
 (defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
   (set (map #(db/build db % ctx) property-ids)))
 
-(defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
 (defmethod malli-form :s/number  [_ _schemas] number?)
 (defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
 (defmethod malli-form :s/int     [_ _schemas] int?)
 (defmethod malli-form :s/pos     [_ _schemas] pos?)
 (defmethod malli-form :s/pos-int [_ _schemas] pos-int?)
-
-(defmethod malli-form :s/sound [_ _schemas] :string)
-
-(defmethod malli-form :s/image [_ _schemas]
-  [:map {:closed true}
-   [:file :string]
-   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
-
-(defmethod malli-form :s/animation [_ _schemas]
-  [:map {:closed true}
-   [:frames :some] ; FIXME actually images
-   [:frame-duration pos?]
-   [:looping? :boolean]])
 
 (defn- type->id-namespace [property-type]
   (keyword (name property-type)))
@@ -213,20 +196,3 @@
   (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
               schemas))
 
-(defn- edn->sprite [{:keys [file sub-image-bounds]} ctx]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (g/sprite-sheet->sprite ctx
-                              (g/sprite-sheet ctx file tilew tileh)
-                              [(int (/ sprite-x tilew))
-                               (int (/ sprite-y tileh))]))
-    (g/sprite ctx file)))
-
-(defmethod schema/edn->value :s/image [_ edn ctx]
-  (edn->sprite edn ctx))
-
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} ctx]
-  (animation/create (map #(edn->sprite % ctx) frames)
-                    :frame-duration frame-duration
-                    :looping? looping?))

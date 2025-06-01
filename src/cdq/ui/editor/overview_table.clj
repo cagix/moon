@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.property :as property]
-            [gdl.ui :as ui]
+  (:require [gdl.ui :as ui]
             [gdl.db :as db]
+            [gdl.property :as property]
             [gdl.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties
