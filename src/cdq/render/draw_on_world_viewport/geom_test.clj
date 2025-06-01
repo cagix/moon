@@ -1,10 +1,11 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
   (:require [cdq.graphics :as g]
             [cdq.grid :as grid]
-            [cdq.math :as math]))
+            [cdq.math :as math]
+            [gdl.ctx :as ctx]))
 
 (defn- geom-test* [{:keys [ctx/grid] :as ctx}]
-  (let [position (g/world-mouse-position ctx)
+  (let [position (ctx/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]

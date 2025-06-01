@@ -1,11 +1,11 @@
 (ns cdq.g.interaction-state
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
+            [gdl.ctx :as ctx]
             [gdl.ui :as ui]))
 
 (defmulti ^:private on-clicked

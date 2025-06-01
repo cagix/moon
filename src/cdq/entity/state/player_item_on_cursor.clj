@@ -1,11 +1,11 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.graphics :as g]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [clojure.gdx.input :as input]
+            [gdl.ctx :as ctx]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 
@@ -57,7 +57,7 @@
 
 (defn- item-place-position [ctx entity]
   (placement-point (entity/position entity)
-                   (g/world-mouse-position ctx)
+                   (ctx/world-mouse-position ctx)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -102,4 +102,4 @@
     (when (not (world-item? ctx))
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
-        (g/ui-mouse-position ctx)]])))
+        (ctx/ui-mouse-position ctx)]])))

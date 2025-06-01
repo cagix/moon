@@ -6,6 +6,7 @@
             [cdq.ui.editor]
             [clojure.string :as str]
             [gdl.assets :as assets]
+            [gdl.ctx :as ctx]
             [gdl.db :as db]
             [gdl.utils :as utils]))
 
@@ -38,10 +39,10 @@
                                  paused?)}
                    {:label "GUI"
                     :update-fn (fn [ctx]
-                                 (mapv int (graphics/ui-mouse-position ctx)))}
+                                 (mapv int (ctx/ui-mouse-position ctx)))}
                    {:label "World"
                     :update-fn (fn [ctx]
-                                 (mapv int (graphics/world-mouse-position ctx)))}
+                                 (mapv int (ctx/world-mouse-position ctx)))}
                    {:label "Zoom"
                     :update-fn graphics/camera-zoom
                     :icon (assets/texture assets "images/zoom.png")}

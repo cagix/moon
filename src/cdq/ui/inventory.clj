@@ -6,6 +6,7 @@
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
+            [gdl.ctx :as ctx]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
@@ -39,7 +40,7 @@
                               (draw-cell-rect @player-eid
                                               (ui/get-x actor)
                                               (ui/get-y actor)
-                                              (ui/hit actor (graphics/ui-mouse-position ctx))
+                                              (ui/hit actor (ctx/ui-mouse-position ctx))
                                               (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx

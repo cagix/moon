@@ -5,15 +5,13 @@
             [clojure.gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.input :as input]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.utils :as utils]
-            [gdl.viewport :as viewport])
+            [gdl.utils :as utils])
   (:import (cdq.application Context)))
 
 (defmulti ^:private draw! (fn [[k] _this]
@@ -146,16 +144,6 @@
             :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
-
-(extend-type Context
-  g/MouseViewports
-  (world-mouse-position [{:keys [ctx/input
-                                 ctx/world-viewport]}]
-    (viewport/unproject world-viewport (input/mouse-position input)))
-
-  (ui-mouse-position [{:keys [ctx/input
-                              ctx/ui-viewport]}]
-    (viewport/unproject ui-viewport (input/mouse-position input))))
 
 (extend-type Context
   g/Graphics

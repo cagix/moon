@@ -24,6 +24,7 @@
             [cdq.ui.player-state-draw]
             [cdq.vector2 :as v]
             [cdq.world :as world]
+            [gdl.ctx :as ctx]
             [gdl.tiled :as tiled]
             [gdl.ui.stage :as stage]
             [gdl.ui.menu]
@@ -201,7 +202,7 @@
                       eid]
     (let [target-position (or (and mouseover-eid
                                    (entity/position @mouseover-eid))
-                              (graphics/world-mouse-position ctx))]
+                              (ctx/world-mouse-position ctx))]
       {:effect/source eid
        :effect/target mouseover-eid
        :effect/target-position target-position
