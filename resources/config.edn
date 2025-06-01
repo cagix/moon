@@ -11,6 +11,7 @@
  :create-fns [gdl.create.assets/do!
               gdl.create.input/do!
               gdl.create.db/do!
+              gdl.create.graphics/do!
               cdq.create.graphics/do!
               gdl.create.stage/do!
               cdq.create.handle-txs/do!

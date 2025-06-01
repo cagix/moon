@@ -27,10 +27,7 @@
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
 
 (defn- create-cursor [file [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (files/internal (gdx/files) file))
-        cursor (graphics/new-cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
+  )
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
@@ -136,11 +133,11 @@
     (fn []
       (g/handle-draws! this draws))))
 
-(defn do! [{:keys [ctx/config]
+(defn do! [{:keys [ctx/config
+                   ctx/graphics]
             :as ctx}]
   (merge ctx
-         (let [graphics (gdx/graphics)
-               {:keys [tile-size
+         (let [{:keys [tile-size
                        cursor-path-format
                        cursors
                        default-font]} config
@@ -148,15 +145,17 @@
                shape-drawer-texture (graphics/white-pixel-texture)
                world-unit-scale (float (/ tile-size))]
            {:ctx/ui-viewport (graphics/ui-viewport (:ui-viewport config))
-            :ctx/graphics graphics
             :ctx/batch batch
             :ctx/unit-scale (atom 1)
             :ctx/world-unit-scale world-unit-scale
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
-            :ctx/cursors (utils/mapvals (fn [[file hotspot]]
-                                          (create-cursor (format cursor-path-format file)
-                                                         hotspot))
+            :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                          (let [pixmap (Pixmap. (files/internal (gdx/files)
+                                                                                (format cursor-path-format file)))
+                                                cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+                                            (.dispose pixmap)
+                                            cursor))
                                         cursors)
             :ctx/default-font (truetype-font default-font)
             :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
@@ -165,12 +164,6 @@
 
 (extend-type Context
   g/Graphics
-  (delta-time [{:keys [ctx/graphics]}]
-    (graphics/delta-time graphics))
-
-  (frames-per-second [{:keys [ctx/graphics]}]
-    (graphics/frames-per-second graphics))
-
   (clear-screen! [_]
     (graphics/clear-screen! color/black))
 
@@ -253,11 +246,6 @@
                               tiled-map
                               color-setter
                               (:camera world-viewport)))
-
-  (set-cursor! [{:keys [ctx/graphics
-                        ctx/cursors]}
-                cursor]
-    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
 
   (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
     (* pixels world-unit-scale)))

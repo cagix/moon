@@ -3,7 +3,6 @@
             [cdq.animation :as animation]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.timer :as timer]
@@ -14,6 +13,7 @@
             [cdq.world :as world]
             [gdl.assets :as assets]
             [gdl.db :as db]
+            [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils :as utils]
@@ -67,8 +67,10 @@
 (defmethod handle-tx! :tx/sound [[_ sound-name] ctx]
   (play-sound! ctx sound-name))
 
-(defmethod handle-tx! :tx/set-cursor [[_ cursor-key] c]
-  (graphics/set-cursor! c cursor-key))
+(defmethod handle-tx! :tx/set-cursor [[_ cursor-key]
+                                      {:keys [ctx/graphics
+                                              ctx/cursors]}]
+  (graphics/set-cursor! graphics (utils/safe-get cursors cursor-key)))
 
 (defmethod handle-tx! :tx/show-message [[_ message]
                                         {:keys [ctx/stage]}]

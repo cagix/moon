@@ -2,12 +2,13 @@
   (:require [cdq.application :as application]
             [cdq.entity :as entity]
             [cdq.game]
-            [cdq.graphics :as graphics]
+            [cdq.graphics]
             [cdq.ui.editor]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.ctx :as ctx]
             [gdl.db :as db]
+            [gdl.graphics :as graphics]
             [gdl.utils :as utils]))
 
 (defn create [{:keys [ctx/assets
@@ -44,8 +45,8 @@
                     :update-fn (fn [ctx]
                                  (mapv int (ctx/world-mouse-position ctx)))}
                    {:label "Zoom"
-                    :update-fn graphics/camera-zoom
+                    :update-fn cdq.graphics/camera-zoom
                     :icon (assets/texture assets "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn graphics/frames-per-second
+                    :update-fn (comp graphics/frames-per-second :ctx/graphics)
                     :icon (assets/texture assets "images/fps.png")}]})
