@@ -1,17 +1,23 @@
 (ns gdl.graphics
   (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype])
-  (:import (com.badlogic.gdx Gdx
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.gdx.math.math-utils :as math-utils]
+            [gdl.viewport :as viewport])
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx
                              Graphics)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Texture$TextureFilter
                                       Pixmap
-                                      Pixmap$Format)
+                                      Pixmap$Format
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.utils ScreenUtils)))
+           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils ScreenUtils)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn delta-time [^Graphics graphics]
   (.getDeltaTime graphics))
@@ -124,3 +130,49 @@
   (.begin batch)
   (f)
   (.end batch))
+
+(defn- fit-viewport [width height camera {:keys [center-camera?]}]
+  (let [this (FitViewport. width height camera)]
+    (reify
+      viewport/Viewport
+      (resize! [_ width height]
+        (.update this width height center-camera?))
+
+      ; touch coordinates are y-down, while screen coordinates are y-up
+      ; so the clamping of y is reverse, but as black bars are equal it does not matter
+      ; TODO clamping only works for gui-viewport ?
+      ; TODO ? "Can be negative coordinates, undefined cells."
+      (unproject [_ [x y]]
+        (let [clamped-x (math-utils/clamp x
+                                          (.getLeftGutterWidth this)
+                                          (.getRightGutterX    this))
+              clamped-y (math-utils/clamp y
+                                          (.getTopGutterHeight this)
+                                          (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. clamped-x clamped-y))]
+            [(.x v2) (.y v2)])))
+
+      ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this
+          :width  (.getWorldWidth  this)
+          :height (.getWorldHeight this)
+          :camera (.getCamera      this))))))
+
+(defn ui-viewport [{:keys [width height]}]
+  (fit-viewport width
+                height
+                (OrthographicCamera.)
+                {:center-camera? true}))
+
+(defn world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width
+                  world-height
+                  camera
+                  {:center-camera? false})))
