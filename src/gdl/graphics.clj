@@ -1,16 +1,11 @@
 (ns gdl.graphics
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.math.math-utils :as math-utils]
             [gdl.viewport :as viewport])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Color
                                       Texture
-                                      Texture$TextureFilter
                                       Pixmap
                                       Pixmap$Format
                                       OrthographicCamera)
@@ -19,6 +14,12 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
+
+(defprotocol Graphics
+  (delta-time [_])
+  (frames-per-second [_])
+  (new-cursor [_ pixmap hotspot-x hotspot-y])
+  (set-cursor! [_ cursor]))
 
 (defn clear-screen! [color]
   (ScreenUtils/clear color))
@@ -54,15 +55,6 @@
   (-> {:texture-region texture-region}
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
-
-(defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (files/internal (gdx/files) file)
-                                {:size (* size quality-scaling)
-                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
-                                 :mag-filter Texture$TextureFilter/Linear})]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? true
-                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -109,12 +101,6 @@
         texture (Texture. pixmap)]
     (.dispose pixmap)
     texture))
-
-(defn create-cursor [file [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (files/internal (gdx/files) file))
-        cursor (graphics/cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
 
 (defn draw-on-viewport! [^SpriteBatch batch viewport f]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering

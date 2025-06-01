@@ -2,11 +2,11 @@
   (:require [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
-            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.utils.disposable :as disposable]
             [gdl.create.assets]
             [gdl.create.db]
+            [gdl.create.input]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
@@ -75,6 +75,7 @@
                                              :asset-type-extensions {:texture #{"png" "bmp"}}}})
         ctx (gdl.create.db/do!     ctx)
         ctx (gdl.create.assets/do! ctx)
+        ctx (gdl.create.input/do!  ctx)
         world-unit-scale (float (/ tile-size))
         world-viewport (graphics/world-viewport world-unit-scale
                                                 {:width 1440
@@ -84,10 +85,8 @@
                                            :height 900})
         stage (ui/stage (:java-object ui-viewport)
                         batch)
-        input (gdx/input)
         ctx (assoc ctx
                    :ctx/batch batch
-                   :ctx/input input
                    :ctx/world-unit-scale world-unit-scale
                    :ctx/world-viewport world-viewport
                    :ctx/camera (:camera world-viewport)
@@ -97,7 +96,7 @@
                    :ctx/stage stage
                    :ctx/ui-viewport ui-viewport)
         ctx (generate-level ctx cdq.level.modules/create)]
-    (input/set-processor! input stage)
+    (input/set-processor! (:ctx/input ctx) stage)
     (ui/add! stage (edit-window))
     (reset! state ctx)))
 

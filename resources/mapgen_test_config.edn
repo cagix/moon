@@ -6,4 +6,5 @@
  :dispose! cdq.levelgen/dispose!
  :render! cdq.levelgen/render!
  :resize! cdq.levelgen/resize!
+ :requires [cdq.schemas-impl] ; invalid schema :s/sound when reading db.
  }

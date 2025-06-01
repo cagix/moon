@@ -2,17 +2,35 @@
   (:require [cdq.application]
             [cdq.graphics :as g]
             [clojure.gdx :as gdx]
-            [clojure.gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [gdl.assets :as assets]
+            [gdl.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.utils :as utils])
-  (:import (cdq.application Context)))
+  (:import (cdq.application Context)
+           (com.badlogic.gdx.graphics Pixmap
+                                      Texture$TextureFilter)))
+
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (files/internal (gdx/files) file)
+                                {:size (* size quality-scaling)
+                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
+                                 :mag-filter Texture$TextureFilter/Linear})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
+
+(defn- create-cursor [file [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. (files/internal (gdx/files) file))
+        cursor (graphics/new-cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
@@ -137,10 +155,10 @@
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file hotspot]]
-                                          (graphics/create-cursor (format cursor-path-format file)
-                                                                  hotspot))
+                                          (create-cursor (format cursor-path-format file)
+                                                         hotspot))
                                         cursors)
-            :ctx/default-font (graphics/truetype-font default-font)
+            :ctx/default-font (truetype-font default-font)
             :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
@@ -148,10 +166,10 @@
 (extend-type Context
   g/Graphics
   (delta-time [{:keys [ctx/graphics]}]
-    (clojure.gdx.graphics/delta-time graphics))
+    (graphics/delta-time graphics))
 
   (frames-per-second [{:keys [ctx/graphics]}]
-    (clojure.gdx.graphics/frames-per-second graphics))
+    (graphics/frames-per-second graphics))
 
   (clear-screen! [_]
     (graphics/clear-screen! color/black))
@@ -239,7 +257,7 @@
   (set-cursor! [{:keys [ctx/graphics
                         ctx/cursors]}
                 cursor]
-    (clojure.gdx.graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
+    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
 
   (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
     (* pixels world-unit-scale)))

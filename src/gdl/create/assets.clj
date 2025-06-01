@@ -1,10 +1,10 @@
 (ns gdl.create.assets
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as manager]
-            [clojure.gdx.files :as files]
             [clojure.gdx.utils.files :as utils.files]
             [clojure.string :as str]
             [gdl.assets :as assets]
+            [gdl.files :as files]
             [gdl.audio.sound])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
