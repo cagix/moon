@@ -1,0 +1,9 @@
+{:mac-os {:glfw-async? true}
+ :lwjgl3-config {:title "Mapgen Test"
+                 :windowed-mode {:width 1440
+                                 :height 900}}
+ :create! cdq.levelgen/create!
+ :dispose! cdq.levelgen/dispose!
+ :render! cdq.levelgen/render!
+ :resize! cdq.levelgen/resize!
+ }

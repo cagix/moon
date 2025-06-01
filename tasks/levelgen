@@ -1,0 +1,1 @@
+lein run -m clojure.dev-loop "((requiring-resolve 'cdq.start/-main) \"mapgen_test_config.edn\")"
