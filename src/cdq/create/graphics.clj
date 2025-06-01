@@ -6,24 +6,18 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.math.math-utils :as math-utils]
-            [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.graphics :as graphics]
+            [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
   (:import (cdq.application Context)
            (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color
-                                      Texture
-                                      Pixmap
-                                      Pixmap$Format
-                                      OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
+           (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defmulti ^:private draw! (fn [[k] _this]
@@ -185,13 +179,8 @@
                        cursor-path-format
                        cursors
                        default-font]} config
-               batch (SpriteBatch.)
-               shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                                   (.setColor Color/WHITE)
-                                                   (.drawPixel 0 0))
-                                          texture (Texture. pixmap)]
-                                      (.dispose pixmap)
-                                      texture)
+               batch (graphics/sprite-batch)
+               shape-drawer-texture (graphics/white-pixel-texture)
                world-unit-scale (float (/ tile-size))]
            {:ctx/ui-viewport (ui-viewport (:ui-viewport config))
             :ctx/graphics graphics
@@ -199,14 +188,11 @@
             :ctx/unit-scale (atom 1)
             :ctx/world-unit-scale world-unit-scale
             :ctx/shape-drawer-texture shape-drawer-texture
-            :ctx/shape-drawer (sd/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-            :ctx/cursors (utils/mapvals
-                          (fn [[file [hotspot-x hotspot-y]]]
-                            (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                                  cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
-                              (.dispose pixmap)
-                              cursor))
-                          cursors)
+            :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
+            :ctx/cursors (utils/mapvals (fn [[file hotspot]]
+                                          (graphics/create-cursor (format cursor-path-format file)
+                                                                  hotspot))
+                                        cursors)
             :ctx/default-font (graphics/truetype-font default-font)
             :ctx/world-viewport (world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
@@ -223,13 +209,13 @@
 (extend-type Context
   g/Graphics
   (delta-time [{:keys [ctx/graphics]}]
-    (.getDeltaTime graphics))
+    (graphics/delta-time graphics))
 
   (frames-per-second [{:keys [ctx/graphics]}]
-    (.getFramesPerSecond graphics))
+    (graphics/frames-per-second graphics))
 
   (clear-screen! [_]
-    (ScreenUtils/clear Color/BLACK))
+    (graphics/clear-screen! color/black))
 
   (handle-draws! [this draws]
     (doseq [component draws
@@ -242,18 +228,17 @@
                                     ctx/world-unit-scale
                                     ctx/unit-scale]}
                             f]
-    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
-    (.begin batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (fn []
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
-    (.end batch))
+    (graphics/draw-on-viewport! batch
+                                world-viewport
+                                (fn []
+                                  (sd/with-line-width shape-drawer world-unit-scale
+                                    (fn []
+                                      (reset! unit-scale world-unit-scale)
+                                      (f)
+                                      (reset! unit-scale 1))))))
 
   (sprite [{:keys [ctx/world-unit-scale] :as ctx} texture-path]
-    (graphics/create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
+    (graphics/create-sprite (texture/region (assets/texture ctx texture-path))
                             world-unit-scale))
 
   (sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
@@ -265,7 +250,7 @@
                  texture-path
                  tilew
                  tileh]
-    {:image (graphics/create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
+    {:image (graphics/create-sprite (texture/region (assets/texture ctx texture-path))
                                     world-unit-scale)
      :tilew tilew
      :tileh tileh})
@@ -313,7 +298,7 @@
   (set-cursor! [{:keys [ctx/graphics
                         ctx/cursors]}
                 cursor]
-    (.setCursor graphics (utils/safe-get cursors cursor)))
+    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
 
   (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
     (* pixels world-unit-scale)))

@@ -1,11 +1,32 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx Gdx
+                             Graphics)
            (com.badlogic.gdx.graphics Color
-                                      Texture$TextureFilter)
+                                      Texture
+                                      Texture$TextureFilter
+                                      Pixmap
+                                      Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)))
+                                          TextureRegion)
+           (com.badlogic.gdx.utils ScreenUtils)))
+
+(defn delta-time [^Graphics graphics]
+  (.getDeltaTime graphics))
+
+(defn frames-per-second [^Graphics graphics]
+  (.getFramesPerSecond graphics))
+
+(defn set-cursor! [^Graphics graphics cursor]
+  (.setCursor graphics cursor))
+
+(defn clear-screen! [color]
+  (ScreenUtils/clear color))
+
+(defn sprite-batch []
+  (SpriteBatch.))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -82,3 +103,24 @@
                            [w h]
                            rotation
                            color))))
+
+(defn white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
+
+(defn create-cursor [file [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. (.internal Gdx/files file))
+        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
+
+(defn draw-on-viewport! [^SpriteBatch batch viewport f]
+  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
+  (.begin batch)
+  (f)
+  (.end batch))
