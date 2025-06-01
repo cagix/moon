@@ -1,8 +1,3 @@
-
-; Remove vars / hardcoded stuff !
-; => modeling becomes better
-; => also testability?
-
 (ns cdq.create.game-state
   (:require [cdq.application]
             [cdq.cell :as cell]
@@ -18,20 +13,19 @@
             [cdq.grid2d :as g2d]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
-            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.ui.dev-menu]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.windows]
             [cdq.ui.entity-info]
-            [cdq.ui.inventory]
+            [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message]
             [cdq.ui.player-state-draw]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.tiled :as tiled]
-            [gdl.ui.stage]
+            [gdl.ui.stage :as stage]
             [gdl.ui.menu]
             [gdl.utils :as utils])
   (:import (cdq.application Context)))
@@ -53,6 +47,18 @@
    (cdq.ui.player-state-draw/create)
    (cdq.ui.message/create :name "player-message")])
 
+(defn- add-skill! [ctx skill]
+  (-> ctx :ctx/stage :action-bar (action-bar/add-skill! skill)))
+
+(defn- remove-skill! [ctx skill]
+  (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! skill)))
+
+(defn- set-item! [ctx inventory-cell item]
+  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/set-item! inventory-cell item)))
+
+(defn- remove-item! [ctx inventory-cell]
+  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
+
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
                                                    click-distance-tiles]}]
@@ -64,10 +70,10 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added!   stage/add-skill!
-                                 :skill-removed! stage/remove-skill!
-                                 :item-set!      stage/set-item!
-                                 :item-removed!  stage/remove-item!}
+                                 :skill-added!   add-skill!
+                                 :skill-removed! remove-skill!
+                                 :item-set!      set-item!
+                                 :item-removed!  remove-item!}
                 :entity/free-skill-points free-skill-points
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})
@@ -96,8 +102,8 @@
                                   ctx/stage]
                            :as ctx}
                           world-fn]
-  (gdl.ui.stage/clear! stage)
-  (run! #(gdl.ui.stage/add! stage %) (create-actors ctx))
+  (stage/clear! stage)
+  (run! #(stage/add! stage %) (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)

@@ -1,8 +1,9 @@
 (ns cdq.g.interaction-state
-  (:require [cdq.entity :as entity]
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
-            [cdq.stage :as stage]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
             [gdl.ui :as ui]))
@@ -11,10 +12,12 @@
   (fn [ctx eid]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [{:keys [ctx/player-eid] :as ctx} eid]
+(defmethod on-clicked :clickable/item [{:keys [ctx/player-eid
+                                               ctx/stage]}
+                                       eid]
   (let [item (:entity/item @eid)]
     (cond
-     (stage/inventory-window-visible? ctx)
+     (-> stage :windows :inventory-window ui/visible?)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]
@@ -55,11 +58,12 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(defn create [{:keys [ctx/mouseover-eid]
+(defn create [{:keys [ctx/mouseover-eid
+                      ctx/stage]
                :as ctx}
               eid]
   (let [entity @eid
-        mouseover-actor (stage/mouseover-actor ctx)]
+        mouseover-actor (ctx/mouseover-actor ctx)]
     (cond
      mouseover-actor
      [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
@@ -70,7 +74,7 @@
      (clickable-entity-interaction ctx entity mouseover-eid)
 
      :else
-     (if-let [skill-id (stage/selected-skill ctx)]
+     (if-let [skill-id (action-bar/selected-skill (:action-bar stage))]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (g/player-effect-ctx ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]

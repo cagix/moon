@@ -2,10 +2,13 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.stacktrace :as stacktrace]
-            [cdq.stage :as stage]))
+            [cdq.ui.error-window :as error-window]
+            [gdl.ui.stage :as stage]))
 
 (defn- tick-entities!
-  [{:keys [ctx/active-entities] :as ctx}]
+  [{:keys [ctx/active-entities
+           ctx/stage]
+    :as ctx}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
@@ -23,7 +26,7 @@
         (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t)))))
    (catch Throwable t
      (stacktrace/pretty-pst t)
-     (stage/open-error-window! ctx t)
+     (stage/add! stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 

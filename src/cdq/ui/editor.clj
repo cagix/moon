@@ -2,8 +2,8 @@
   (:require [cdq.application :as application]
             [cdq.editor :as editor]
             [cdq.input :as input]
-            [cdq.stage]
             [cdq.stacktrace :as stacktrace]
+            [cdq.ui.error-window :as error-window]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [gdl.db :as db]
@@ -12,12 +12,12 @@
             [gdl.ui.stage :as stage]))
 
 (defn- apply-context-fn [window f]
-  (fn [ctx]
+  (fn [{:keys [ctx/stage] :as ctx}]
     (try (f ctx)
          (ui/remove! window)
          (catch Throwable t
            (stacktrace/pretty-pst t)
-           (cdq.stage/open-error-window! ctx t)))))
+           (stage/add! stage (error-window/create t))))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn

@@ -5,17 +5,40 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.inventory :as inventory]
-            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.g :as g]
             [cdq.projectile :as projectile]
+            [cdq.ui.message]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.assets :as assets]
             [gdl.db :as db]
+            [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn- show-modal! [{:keys [ctx/ui-viewport
+                            ctx/stage]}
+                    {:keys [title text button-text on-click]}]
+  (assert (not (::modal stage)))
+  (stage/add! stage
+              (ui/window {:title title
+                          :rows [[(ui/label text)]
+                                 [(ui/text-button button-text
+                                                  (fn [_actor _ctx]
+                                                    (ui/remove! (::modal stage))
+                                                    (on-click)))]]
+                          :id ::modal
+                          :modal? true
+                          :center-position [(/ (:width ui-viewport) 2)
+                                            (* (:height ui-viewport) (/ 3 4))]
+                          :pack? true})))
 
 (defn- play-sound! [{:keys [ctx/assets]} sound-name]
   (->> sound-name
@@ -47,14 +70,17 @@
 (defmethod handle-tx! :tx/set-cursor [[_ cursor-key] c]
   (graphics/set-cursor! c cursor-key))
 
-(defmethod handle-tx! :tx/show-message [[_ message] ctx]
-  (stage/show-message! ctx message))
+(defmethod handle-tx! :tx/show-message [[_ message]
+                                        {:keys [ctx/stage]}]
+  (-> stage
+      (stage/find-actor "player-message")
+      (cdq.ui.message/show! message)))
 
 (defmethod handle-tx! :tx/show-modal [[_ opts] ctx]
-  (stage/show-modal! ctx opts))
+  (show-modal! ctx opts))
 
-(defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]
-  (stage/toggle-inventory-visible! ctx))
+(defmethod handle-tx! :tx/toggle-inventory-visible [_ {:keys [ctx/stage]}]
+  (-> stage :windows :inventory-window ui/toggle-visible!))
 
 (defmethod handle-tx! :tx/audiovisual [[_ position audiovisual]
                                        {:keys [ctx/db]
