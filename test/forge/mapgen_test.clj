@@ -99,7 +99,7 @@
       (swap! current-data update :show-grid-lines not))
   #_(if (input/key-just-pressed? input :m)
       (swap! current-data update :show-movement-properties not))
-  #_(camera-controls input c/camera))
+  )
 
 (comment
  (atom {:tiled-map (tiled/load-tmx-map modules/file)

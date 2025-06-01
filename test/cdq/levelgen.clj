@@ -29,6 +29,12 @@
 
 (def tile-size 48)
 
+
+
+; when generating modules - I dispose right ? static tiled map tiles maybe not thrown?
+;                java.lang.OutOfMemoryError: Java heap space
+; com.badlogic.gdx.utils.GdxRuntimeException: java.lang.OutOfMemoryError: Java heap space
+
 (defn- generate-level [{:keys [ctx/tiled-map
                                ctx/batch
                                ctx/world-unit-scale]
@@ -37,10 +43,13 @@
   (when tiled-map
     (disposable/dispose! tiled-map))
   (let [level (level-fn ctx)
-        tiled-map (:tiled-map level)]
-    (assoc ctx
-           :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
-           :ctx/tiled-map tiled-map)))
+        tiled-map (:tiled-map level)
+        ctx (assoc ctx
+                   :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
+                   :ctx/tiled-map tiled-map)]
+    (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)
+    (show-whole-map! ctx)
+    ctx))
 
 (def state (atom nil))
 
@@ -89,7 +98,6 @@
                    :ctx/ui-viewport ui-viewport)
         ctx (generate-level ctx cdq.level.modules/create)]
     (input/set-processor! input stage)
-    (show-whole-map! ctx)
     (ui/add! stage (edit-window))
     (reset! state ctx)))
 
