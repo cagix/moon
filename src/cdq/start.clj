@@ -45,7 +45,7 @@
     (.setTitle (:title config))
     (.setWindowedMode (:width (:windowed-mode config))
                       (:height (:windowed-mode config)))
-    (.setForegroundFPS (:foreground-fps config))))
+    (.setForegroundFPS (or (:foreground-fps config) 60))))
 
 (defn -main [config-path]
   (let [config (create-config config-path)]
