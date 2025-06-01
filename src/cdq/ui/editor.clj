@@ -1,11 +1,11 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
             [cdq.editor :as editor]
-            [cdq.input :as input]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
+            [clojure.gdx.input :as input]
             [gdl.db :as db]
             [gdl.property :as property]
             [gdl.ui :as ui]
@@ -52,8 +52,8 @@
                                                                              (fn [_actor ctx]
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta ctx]
-                                        (when (input/key-just-pressed? ctx :enter)
+    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/input]}]
+                                        (when (input/key-just-pressed? input :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))

@@ -2,10 +2,10 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.graphics :as g]
-            [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.vector2 :as v]
+            [clojure.gdx.input :as input]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 
@@ -89,8 +89,9 @@
          [:tx/dissoc eid :entity/item-on-cursor]
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [_ eid ctx]
-    (when (and (input/button-just-pressed? ctx :left)
+  (state/manual-tick [_ eid {:keys [ctx/input]
+                             :as ctx}]
+    (when (and (input/button-just-pressed? input :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 

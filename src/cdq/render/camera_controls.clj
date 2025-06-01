@@ -1,11 +1,12 @@
 (ns cdq.render.camera-controls
   (:require [cdq.graphics :as g]
-            [cdq.input :as input]))
+            [clojure.gdx.input :as input]))
 
-(defn do! [{:keys [ctx/config]
+(defn do! [{:keys [ctx/config
+                   ctx/input]
             :as ctx}]
   (let [controls (:controls config)
         zoom-speed (:zoom-speed config)]
-    (when (input/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
-    (when (input/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed))))
+    (when (input/key-pressed? input (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
+    (when (input/key-pressed? input (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed))))
   ctx)

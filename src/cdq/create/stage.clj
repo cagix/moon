@@ -1,5 +1,5 @@
 (ns cdq.create.stage
-  (:require [cdq.input :as input]
+  (:require [clojure.gdx.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
@@ -10,14 +10,15 @@
 ; also outdated context -> pass directly atom state?
 ; swap! at each render?
 
-(defn do! [{:keys [ctx/ui-viewport
-                   ctx/batch
-                   ctx/config]
+(defn do! [{:keys [ctx/batch
+                   ctx/config
+                   ctx/input
+                   ctx/ui-viewport]
             :as ctx}]
   (ui/load! (:ui config))
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]
-    (input/set-processor! ctx stage)
+    (input/set-processor! input stage)
     (assoc ctx :ctx/stage (reify
                             ; TODO is disposable but not sure if needed as we handle batch ourself.
                             clojure.lang.ILookup
