@@ -35,9 +35,10 @@
 (defn- set-mac-os-config! [config]
   (when (:glfw-async? config)
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource (:dock-icon config)))))
+  (when-let [icon (:dock-icon config)]
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource icon)))))
 
 (defn- lwjgl3-config [config]
   (doto (Lwjgl3ApplicationConfiguration.)
