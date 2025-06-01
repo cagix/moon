@@ -187,9 +187,6 @@
                    tilew
                    tileh]))
 
-  (set-camera-position! [{:keys [ctx/world-viewport]} position]
-    (camera/set-position! (:camera world-viewport) position))
-
   (world-viewport-width [{:keys [ctx/world-viewport]}]
     (:width world-viewport))
 

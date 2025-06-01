@@ -2,7 +2,6 @@
 
 (defprotocol Graphics
   (handle-draws! [_ draws])
-  (set-camera-position! [_ position])
   (world-viewport-width [_])
   (world-viewport-height [_])
   (camera-position [_])
