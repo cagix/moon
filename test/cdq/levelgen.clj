@@ -2,11 +2,24 @@
   (:require [cdq.create.assets]
             [cdq.create.db]
             [cdq.level.modules :as modules]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.utils.disposable :as disposable]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
+            [gdl.tiled :as tiled]
             [gdl.viewport :as viewport]))
+
+(defn- show-whole-map! [camera tiled-map]
+  (camera/set-position! camera
+                        [(/ (tiled/tm-width  tiled-map) 2)
+                         (/ (tiled/tm-height tiled-map) 2)])
+  (camera/set-zoom! camera
+                    (camera/calculate-zoom camera
+                                           :left [0 0]
+                                           :top [0 (tiled/tm-height tiled-map)]
+                                           :right [(tiled/tm-width tiled-map) 0]
+                                           :bottom [0 0])))
 
 (def tile-size 48)
 
@@ -24,9 +37,9 @@
         ctx (cdq.create.assets/do! ctx)
         level (modules/create ctx)
         world-unit-scale (float (/ tile-size))
-        ctx (assoc ctx :ctx/world-viewport (graphics/world-viewport world-unit-scale
-                                                                    {:width 1440
-                                                                     :height 900}))
+        world-viewport (graphics/world-viewport world-unit-scale
+                                                {:width 1440
+                                                 :height 900})
         tiled-map (:tiled-map level)
         batch (graphics/sprite-batch)
         tm-renderer (tm-renderer/create tiled-map
@@ -34,22 +47,33 @@
                                         batch)
         ctx (assoc ctx
                    :ctx/tm-renderer tm-renderer
-                   :ctx/tiled-map tiled-map)]
+                   :ctx/tiled-map tiled-map
+                   :ctx/world-viewport world-viewport
+                   :ctx/color-setter (constantly color/white))]
+    (show-whole-map! (:camera world-viewport) tiled-map)
     (reset! state ctx)
     (println level)))
 
 (defn dispose! []
-  (let [{:keys [ctx/assets]} @state]
-    (disposable/dispose! assets)))
+  (let [{:keys [ctx/assets
+                ctx/tiled-map]} @state]
+    (disposable/dispose! assets)
+    (disposable/dispose! tiled-map)))
+
+(defn- draw-tiled-map! [{:keys [ctx/tm-renderer
+                                ctx/tiled-map
+                                ctx/world-viewport
+                                ctx/color-setter]}]
+  (tm-renderer/draw! tm-renderer
+                     tiled-map
+                     color-setter
+                     (:camera world-viewport)))
 
 (defn render! []
-  (let [{:keys [ctx/tm-renderer
-                ctx/tiled-map
-                ctx/world-viewport]} @state]
-    (tm-renderer/draw! tm-renderer
-                       tiled-map
-                       (constantly color/white)
-                       (:camera world-viewport))))
+  (draw-tiled-map! @state)
+  ;(when (input/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
+  ;(when (input/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))
+  )
 
 (defn resize! [width height]
   (let [{:keys [ctx/world-viewport]} @state]

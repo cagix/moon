@@ -2,26 +2,7 @@
   (:require [cdq.level.modules-core :as modules]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.graphics.camera :as camera]
-            [gdl.tiled :as tiled]))
-
-(def state (atom nil))
-
-#_(defn- show-whole-map! [camera tiled-map]
-  (camera/set-position! camera
-                        [(/ (tiled/tm-width  tiled-map) 2)
-                         (/ (tiled/tm-height tiled-map) 2)])
-  (camera/set-zoom! camera
-                    (camera/calculate-zoom camera
-                                           :left [0 0]
-                                           :top [0 (tiled/tm-height tiled-map)]
-                                           :right [(tiled/tm-width tiled-map) 0]
-                                           :bottom [0 0])))
-
-(defn- current-data [] ; TODO just use vars
-  #_(-> (screen/current)
-        :sub-screen
-        :current-data))
+            ))
 
 (def ^:private infotext
   "L: grid lines
@@ -140,8 +121,6 @@
   #_(camera/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(graphics/draw-tiled-map (:tiled-map @current-data)
-                             (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? input :l)
       (swap! current-data update :show-grid-lines not))
