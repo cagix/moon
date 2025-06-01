@@ -10,6 +10,7 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
             [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
             [gdl.viewport :as viewport]))
 
 (defn- show-whole-map! [camera tiled-map]
@@ -30,6 +31,7 @@
 (def state (atom nil))
 
 (defn create! [config]
+  (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
         ctx (assoc ctx :ctx/config {:db {:schemas "schema.edn"
                                          :properties "properties.edn"}
@@ -47,15 +49,22 @@
         tm-renderer (tm-renderer/create tiled-map
                                         world-unit-scale
                                         batch)
+        ui-viewport (graphics/ui-viewport {:width 1440
+                                           :height 900})
+        stage (ui/stage (:java-object ui-viewport)
+                        batch)
+        input (gdx/input)
         ctx (assoc ctx
-                   :ctx/input (gdx/input)
+                   :ctx/input input
                    :ctx/tm-renderer tm-renderer
                    :ctx/tiled-map tiled-map
                    :ctx/world-viewport world-viewport
                    :ctx/camera (:camera world-viewport)
                    :ctx/color-setter (constantly color/white)
                    :ctx/zoom-speed 0.1
-                   :ctx/camera-movement-speed 1)]
+                   :ctx/camera-movement-speed 1
+                   :ctx/stage stage)]
+    (input/set-processor! input stage)
     (show-whole-map! (:camera world-viewport) tiled-map)
     (reset! state ctx)
     (println level)))
@@ -94,11 +103,17 @@
   (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
+(defn- render-stage! [{:keys [ctx/stage]
+                       :as ctx}]
+  (ui/act!  stage ctx)
+  (ui/draw! stage ctx))
+
 (defn render! []
   (graphics/clear-screen! color/black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
-  (camera-movement-controls! @state))
+  (camera-movement-controls! @state)
+  (render-stage! @state))
 
 (defn resize! [width height]
   (let [{:keys [ctx/world-viewport]} @state]
