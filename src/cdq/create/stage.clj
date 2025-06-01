@@ -1,5 +1,6 @@
 (ns cdq.create.stage
   (:require [cdq.g :as g]
+            [cdq.input :as input]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
@@ -108,5 +109,5 @@
      })
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]
-    (g/set-processor! ctx stage)
+    (input/set-processor! ctx stage)
     (assoc ctx -k stage)))

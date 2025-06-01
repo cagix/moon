@@ -1,5 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.g :as g]
+            [cdq.input :as input]
             [cdq.application :as application]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
@@ -296,10 +297,10 @@
 (extend-type Context
   g/MouseViewports
   (world-mouse-position [{:keys [ctx/world-viewport] :as ctx}]
-    (viewport/unproject world-viewport (g/mouse-position ctx)))
+    (viewport/unproject world-viewport (input/mouse-position ctx)))
 
   (ui-mouse-position [{:keys [ctx/ui-viewport] :as ctx}]
-    (viewport/unproject ui-viewport (g/mouse-position ctx))))
+    (viewport/unproject ui-viewport (input/mouse-position ctx))))
 
 (extend-type Context
   g/Graphics

@@ -1,4 +1,5 @@
-(ns cdq.create.input)
+(ns cdq.create.input
+  (:require [cdq.input]))
 
 (defn protocol? [object]
   (:sigs object))
@@ -73,7 +74,7 @@
 
 (defn do! [ctx]
   (extend-context ctx
-                  {:protocol cdq.g/Input
+                  {:protocol cdq.input/Input
                    :impl-namespace 'clojure.gdx.input
                    :ctx-k :ctx/input
                    :create-k-value 'clojure.gdx/input}))

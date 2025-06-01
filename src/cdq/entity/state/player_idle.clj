@@ -1,5 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.g :as g]
+            [cdq.input :as input]
             [cdq.state :as state]
             [gdl.utils :refer [defcomponent]]))
 
@@ -11,7 +12,7 @@
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (g/interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]
-              (when (g/button-just-pressed? ctx :left)
+              (when (input/button-just-pressed? ctx :left)
                 on-click)))))
 
   (state/clicked-inventory-cell [_ eid cell]

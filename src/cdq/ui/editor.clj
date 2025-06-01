@@ -1,6 +1,7 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
             [cdq.g :as g]
+            [cdq.input :as input]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -47,7 +48,7 @@
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
     (.addActor window (ui/actor {:act (fn [_this _delta ctx]
-                                        (when (g/key-just-pressed? ctx :enter)
+                                        (when (input/key-just-pressed? ctx :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))

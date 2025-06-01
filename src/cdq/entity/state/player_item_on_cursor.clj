@@ -1,5 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
+            [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.vector2 :as v]
@@ -88,7 +89,7 @@
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
   (state/manual-tick [_ eid ctx]
-    (when (and (g/button-just-pressed? ctx :left)
+    (when (and (input/button-just-pressed? ctx :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 
