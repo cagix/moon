@@ -4,6 +4,7 @@
             [cdq.graphics :as g]
             [cdq.input :as input]
             [clojure.gdx :as gdx]
+            [clojure.gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.graphics :as graphics]
@@ -157,10 +158,10 @@
 (extend-type Context
   g/Graphics
   (delta-time [{:keys [ctx/graphics]}]
-    (graphics/delta-time graphics))
+    (clojure.gdx.graphics/delta-time graphics))
 
   (frames-per-second [{:keys [ctx/graphics]}]
-    (graphics/frames-per-second graphics))
+    (clojure.gdx.graphics/frames-per-second graphics))
 
   (clear-screen! [_]
     (graphics/clear-screen! color/black))
@@ -246,7 +247,7 @@
   (set-cursor! [{:keys [ctx/graphics
                         ctx/cursors]}
                 cursor]
-    (graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
+    (clojure.gdx.graphics/set-cursor! graphics (utils/safe-get cursors cursor)))
 
   (pixels->world-units [{:keys [ctx/world-unit-scale]} pixels]
     (* pixels world-unit-scale)))

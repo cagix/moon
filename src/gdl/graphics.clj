@@ -7,7 +7,6 @@
             [clojure.gdx.math.math-utils :as math-utils]
             [gdl.viewport :as viewport])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Texture$TextureFilter
@@ -19,15 +18,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
-
-(defn delta-time [^Graphics graphics]
-  (.getDeltaTime graphics))
-
-(defn frames-per-second [^Graphics graphics]
-  (.getFramesPerSecond graphics))
-
-(defn set-cursor! [^Graphics graphics cursor]
-  (.setCursor graphics cursor))
 
 (defn clear-screen! [color]
   (ScreenUtils/clear color))

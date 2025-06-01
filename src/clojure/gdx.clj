@@ -1,6 +1,7 @@
 (ns clojure.gdx
   (:require [clojure.gdx.app :as app]
-            [clojure.gdx.files :as files])
+            [clojure.gdx.files :as files]
+            [clojure.gdx.graphics :as graphics])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn app []
@@ -16,7 +17,16 @@
         (.internal this path)))))
 
 (defn graphics []
-  Gdx/graphics)
+  (let [this Gdx/graphics]
+    (reify graphics/Graphics
+      (delta-time [_]
+        (.getDeltaTime this))
+
+      (frames-per-second [_]
+        (.getFramesPerSecond this))
+
+      (set-cursor! [_ cursor]
+        (.setCursor this cursor)))))
 
 (defn input []
   Gdx/input)
