@@ -8,3 +8,10 @@
                   (int y)
                   (int w)
                   (int h)))
+
+(defn sub-region [^TextureRegion texture-region x y w h]
+  (TextureRegion. texture-region
+                  (int x)
+                  (int y)
+                  (int w)
+                  (int h)))

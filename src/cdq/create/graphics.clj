@@ -8,6 +8,8 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.texture :as texture]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils :as utils]
             [gdl.viewport :as viewport])
@@ -25,42 +27,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
-
-(defn- scale-dimensions [dimensions scale]
-  (mapv (comp float (partial * scale)) dimensions))
-
-(defn- assoc-dimensions
-  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [^TextureRegion texture-region] :as image} scale world-unit-scale]
-  {:pre [(or (number? scale)
-             (and (vector? scale)
-                  (number? (scale 0))
-                  (number? (scale 1))))]}
-  (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions [(.getRegionWidth  texture-region)
-                                              (.getRegionHeight texture-region)]
-                                             scale)
-                           scale)]
-    (assoc image
-           :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
-
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
-(defn- create-sprite [texture-region world-unit-scale]
-  (-> {:texture-region texture-region}
-      (assoc-dimensions 1 world-unit-scale) ; = scale 1
-      map->Sprite))
-
-(defn- sub-region [^TextureRegion texture-region x y w h]
-  (TextureRegion. texture-region
-                  (int x)
-                  (int y)
-                  (int w)
-                  (int h)))
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
@@ -336,20 +302,20 @@
     (.end batch))
 
   (sprite [{:keys [ctx/world-unit-scale] :as ctx} texture-path]
-    (create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
-                   world-unit-scale))
+    (graphics/create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
+                            world-unit-scale))
 
   (sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
-    (create-sprite (sub-region (:texture-region sprite) x y w h)
-                   world-unit-scale))
+    (graphics/create-sprite (texture/sub-region (:texture-region sprite) x y w h)
+                            world-unit-scale))
 
   (sprite-sheet [{:keys [ctx/world-unit-scale]
                   :as ctx}
                  texture-path
                  tilew
                  tileh]
-    {:image (create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
-                           world-unit-scale)
+    {:image (graphics/create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
+                                    world-unit-scale)
      :tilew tilew
      :tileh tileh})
 
