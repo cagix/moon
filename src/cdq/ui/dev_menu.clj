@@ -4,6 +4,7 @@
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.game]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
             [gdl.utils :as utils]))
@@ -13,7 +14,7 @@
             :items (for [world-fn (:world-fns config)]
                      {:label (str "Start " world-fn)
                       :on-click (fn [_actor _ctx]
-                                  (swap! application/state g/reset-game-state! world-fn))})}
+                                  (swap! application/state cdq.game/reset-game-state! world-fn))})}
            {:label "Help"
             :items [{:label (:info config)}]}
            {:label "Objects"

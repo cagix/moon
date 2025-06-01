@@ -4,6 +4,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.game]
             [cdq.graphics :as graphics]
             [cdq.g.spawn-entity]
             [cdq.g.spawn-creature]
@@ -86,7 +87,7 @@
   (create-game-state ctx (:world-fn config)))
 
 (extend-type Context
-  g/Game
+  cdq.game/Game
   (reset-game-state! [ctx world-fn]
     (create-game-state ctx world-fn)))
 

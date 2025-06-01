@@ -2,9 +2,6 @@
 ; TODO cdq.graphics always as 'g'
 ; and 'g' as 'world' ?!?
 
-(defprotocol Game
-  (reset-game-state! [_ world-fn]))
-
 (defprotocol Context
   (context-entity-add! [_ eid])
   (context-entity-remove! [_ eid])
