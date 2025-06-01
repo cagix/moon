@@ -19,11 +19,9 @@
               gdl.create.viewport/world
               cdq.create.graphics/do!
               gdl.create.stage/do!
-              cdq.create.handle-txs/do!
+              cdq.create.ctx-extenders/do!
               cdq.create.game-state/do!
-              cdq.create.info/do!
               cdq.create.player-movement-vector/do!
-              cdq.create.interaction-state/do!
               ]
  :game-state-fns [cdq.game.actors/do!]
  :actor-create-fns [cdq.ui.dev-menu/create

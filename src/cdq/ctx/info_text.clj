@@ -1,4 +1,4 @@
-(ns cdq.ctx.info
+(ns cdq.ctx.info-text
   (:require [cdq.entity :as entity]
             [cdq.op :as op]
             [cdq.timer :as timer]
@@ -59,7 +59,7 @@
                          k))
 (defmethod info-segment :default [_ _entity ctx])
 
-(defn text
+(defn info-text
   "Creates a formatted informational text representation of components."
   [ctx components]
   (->> components
@@ -81,7 +81,7 @@
                         (str "[" color "]" s "[]")
                         s))
                     (when (map? v)
-                      (str "\n" (text ctx v))))))
+                      (str "\n" (info-text ctx v))))))
        (str/join "\n")
        remove-newlines))
 

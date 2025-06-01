@@ -3,7 +3,6 @@
             [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
-            [cdq.ctx]
             [cdq.game]
             [cdq.graphics :as graphics]
             [cdq.ctx.spawn-entity]
@@ -16,7 +15,6 @@
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.ctx :as ctx]
             [gdl.tiled :as tiled]
@@ -169,31 +167,6 @@
 
   (potential-field-find-direction [{:keys [ctx/grid]} eid]
     (potential-fields.movement/find-direction grid eid)))
-
-(extend-type Context
-  cdq.ctx/EffectContext
-  (player-effect-ctx [{:keys [ctx/mouseover-eid]
-                       :as ctx}
-                      eid]
-    (let [target-position (or (and mouseover-eid
-                                   (entity/position @mouseover-eid))
-                              (ctx/world-mouse-position ctx))]
-      {:effect/source eid
-       :effect/target mouseover-eid
-       :effect/target-position target-position
-       :effect/target-direction (v/direction (entity/position @eid) target-position)}))
-
-  (npc-effect-ctx [ctx eid]
-    (let [entity @eid
-          target (world/nearest-enemy ctx entity)
-          target (when (and target
-                            (world/line-of-sight? ctx entity @target))
-                   target)]
-      {:effect/source eid
-       :effect/target target
-       :effect/target-direction (when target
-                                  (v/direction (entity/position entity)
-                                               (entity/position @target)))})))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

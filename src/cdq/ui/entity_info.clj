@@ -1,12 +1,12 @@
 (ns cdq.ui.entity-info
-  (:require [cdq.info :as info]
+  (:require [cdq.ctx :as ctx]
             [gdl.ui :as ui]))
 
 (comment
 
  ; items then have 2x pretty-name
  #_(.setText (.getTitleLabel window)
-             (info/text [:property/pretty-name (:property/pretty-name entity)])
+             (ctx/info-text [:property/pretty-name (:property/pretty-name entity)])
              "Entity Info")
  )
 
@@ -24,7 +24,7 @@
 
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (info/text ctx (apply dissoc entity disallowed-keys)))
+  (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn create [position]
   (let [label (ui/label "")
