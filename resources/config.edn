@@ -25,6 +25,7 @@
               cdq.create.player-movement-vector/do!
               cdq.create.interaction-state/do!
               ]
+ :game-state-fns [cdq.game.actors/do!]
  :render-fns [cdq.render.assoc-active-entities/do!
               cdq.render.set-camera-on-player/do!
               gdl.render.clear-screen/do!

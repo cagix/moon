@@ -14,39 +14,15 @@
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
-            [cdq.ui.dev-menu]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.hp-mana-bar]
-            [cdq.ui.windows]
-            [cdq.ui.entity-info]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.message]
-            [cdq.ui.player-state-draw]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.ctx :as ctx]
             [gdl.tiled :as tiled]
             [gdl.ui.stage :as stage]
-            [gdl.ui.menu]
             [gdl.utils :as utils])
   (:import (cdq.application Context)))
-
-(defn- create-actors [{:keys [ctx/ui-viewport]
-                       :as ctx}]
-  [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
-   (action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
 
 (defn- add-skill! [ctx skill]
   (-> ctx :ctx/stage :action-bar (action-bar/add-skill! skill)))
@@ -99,13 +75,12 @@
 
 ; => entity/tick! -> line of sight breaks world
 
-(defn- create-game-state [{:keys [ctx/config
-                                  ctx/stage]
-                           :as ctx}
-                          world-fn]
-  (stage/clear! stage)
-  (run! #(stage/add! stage %) (create-actors ctx))
-  (let [{:keys [tiled-map
+(defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
+  (let [ctx (reduce (fn [ctx f]
+                      (f ctx))
+                    ctx
+                    (:game-state-fns config))
+        {:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
