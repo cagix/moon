@@ -1,6 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.create.assets]
-            [cdq.create.db]
+  (:require [cdq.create.db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
@@ -8,6 +7,7 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.input :as input]
             [clojure.gdx.utils.disposable :as disposable]
+            [gdl.create.assets]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
@@ -74,7 +74,7 @@
                                     :assets {:folder "resources/"
                                              :asset-type-extensions {:texture #{"png" "bmp"}}}})
         ctx (cdq.create.db/do!     ctx)
-        ctx (cdq.create.assets/do! ctx)
+        ctx (gdl.create.assets/do! ctx)
         world-unit-scale (float (/ tile-size))
         world-viewport (graphics/world-viewport world-unit-scale
                                                 {:width 1440

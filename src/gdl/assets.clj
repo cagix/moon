@@ -1,4 +1,4 @@
-(ns cdq.assets)
+(ns gdl.assets)
 
 (defprotocol Assets
   (sound [_ path])

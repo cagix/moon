@@ -1,12 +1,12 @@
 (ns cdq.create.graphics
   (:require [cdq.application]
-            [cdq.assets :as assets]
             [cdq.graphics :as g]
             [cdq.input :as input]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdl.assets :as assets]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]

@@ -1,6 +1,5 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.assets :as assets]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
@@ -9,6 +8,7 @@
                                       scalegrid
                                       cave-grid
                                       flood-fill]]
+            [gdl.assets :as assets]
             [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]))
 

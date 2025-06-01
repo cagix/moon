@@ -1,12 +1,12 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.editor :as editor]
             [cdq.entity :as entity]
             [cdq.game]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
+            [gdl.assets :as assets]
             [gdl.utils :as utils]))
 
 (defn create [{:keys [ctx/assets
