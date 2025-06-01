@@ -1,3 +1,8 @@
+
+; Remove vars / hardcoded stuff !
+; => modeling becomes better
+; => also testability?
+
 (ns cdq.create.game-state
   (:require [cdq.application]
             [cdq.cell :as cell]
@@ -79,9 +84,9 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
         ctx (merge ctx
-                   {:ctx/tiled-map tiled-map
-                    :ctx/elapsed-time 0
-                    :ctx/grid grid
+                   {:ctx/tiled-map tiled-map ; only @ cdq.render.draw-world-map -> pass graphics??
+                    :ctx/elapsed-time 0 ; -> everywhere
+                    :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
                     :ctx/content-grid (content-grid/create tiled-map (:content-grid-cell-size config))
                     :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)

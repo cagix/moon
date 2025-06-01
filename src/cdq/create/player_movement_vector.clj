@@ -4,7 +4,7 @@
             [cdq.vector2 :as v]))
 
 (defn- WASD-movement-vector [ctx]
-  (let [r (when (input/key-pressed? ctx :d) [1  0])
+  (let [r (when (input/key-pressed? ctx :d) [1  0]) ; <- hardcoded values
         l (when (input/key-pressed? ctx :a) [-1 0])
         u (when (input/key-pressed? ctx :w) [0  1])
         d (when (input/key-pressed? ctx :s) [0 -1])]
