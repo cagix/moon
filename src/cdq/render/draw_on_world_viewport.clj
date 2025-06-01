@@ -1,5 +1,8 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [cdq.graphics :as g]))
+  (:require [clojure.gdx.graphics.camera :as camera]
+            [gdl.graphics.shape-drawer :as sd])
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.graphics.g2d Batch)))
 
 (def draw-fns
   '[
@@ -10,10 +13,21 @@
     cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!
     ])
 
-(defn do! [ctx]
+(defn do! [{:keys [^Batch ctx/batch
+                   ctx/world-viewport
+                   ctx/shape-drawer
+                   ctx/world-unit-scale
+                   ctx/unit-scale]
+            :as ctx}]
   (let [draw-fns (map requiring-resolve draw-fns)]
-    (g/draw-on-world-viewport! ctx
-                               (fn []
-                                 (doseq [f draw-fns]
-                                   (f ctx)))))
+    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
+    (.begin batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (doseq [f draw-fns]
+          (f ctx))
+        (reset! unit-scale 1)))
+    (.end batch))
   ctx)

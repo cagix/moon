@@ -160,21 +160,6 @@
             :when component]
       (draw! component this)))
 
-  (draw-on-world-viewport! [{:keys [ctx/batch
-                                    ctx/world-viewport
-                                    ctx/shape-drawer
-                                    ctx/world-unit-scale
-                                    ctx/unit-scale]}
-                            f]
-    (graphics/draw-on-viewport! batch
-                                world-viewport
-                                (fn []
-                                  (sd/with-line-width shape-drawer world-unit-scale
-                                    (fn []
-                                      (reset! unit-scale world-unit-scale)
-                                      (f)
-                                      (reset! unit-scale 1))))))
-
   (sprite [{:keys [ctx/assets
                    ctx/world-unit-scale]}
            texture-path]

@@ -4,7 +4,6 @@
   (delta-time [_])
   (frames-per-second [_])
   (handle-draws! [_ draws])
-  (draw-on-world-viewport! [_ f])
   (set-camera-position! [_ position])
   (world-viewport-width [_])
   (world-viewport-height [_])

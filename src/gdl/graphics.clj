@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font])
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
@@ -91,10 +90,3 @@
         texture (Texture. pixmap)]
     (.dispose pixmap)
     texture))
-
-(defn draw-on-viewport! [^SpriteBatch batch viewport f]
-  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
-  (.begin batch)
-  (f)
-  (.end batch))
