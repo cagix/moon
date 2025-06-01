@@ -16,6 +16,7 @@
             [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.vector2 :as v]
+            [cdq.world :as world]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils])
   (:import (cdq.application Context)))
@@ -40,9 +41,9 @@
                 :entity/click-distance-tiles click-distance-tiles}})
 
 (defn- spawn-player-entity [ctx start-position player-props]
-  (g/spawn-creature! ctx
-                     (player-entity-props (utils/tile->middle start-position)
-                                          player-props)))
+  (world/spawn-creature! ctx
+                         (player-entity-props (utils/tile->middle start-position)
+                                              player-props)))
 
 (defn- spawn-enemies! [ctx tiled-map]
   (doseq [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)
@@ -51,7 +52,13 @@
                        :components {:entity/fsm {:fsm :fsms/npc
                                                  :initial-state :npc-sleeping}
                                     :entity/faction :evil}}]]
-    (g/spawn-creature! ctx (update props :position utils/tile->middle))))
+    (world/spawn-creature! ctx (update props :position utils/tile->middle))))
+
+; create 'world' record with data abstracted
+; only problem probably spawn-entity! & inventory/ui callbacks?
+; => return as 'txs' or 'events' to the main game!?
+
+; => entity/tick! -> line of sight breaks world
 
 (defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
   (stage/reset-actors! ctx)
@@ -104,7 +111,7 @@
     (create-game-state ctx world-fn)))
 
 (extend-type Context
-  g/Context
+  world/Context
   (context-entity-add! [{:keys [ctx/entity-ids
                                 ctx/content-grid
                                 ctx/grid]}
@@ -133,7 +140,7 @@
     (grid/position-changed! grid eid)))
 
 (extend-type Context
-  cdq.g/Grid
+  world/Grid
   (nearest-enemy-distance [{:keys [ctx/grid]} entity]
     (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
                                   (entity/enemy entity)))
@@ -160,9 +167,9 @@
 
   (npc-effect-ctx [ctx eid]
     (let [entity @eid
-          target (g/nearest-enemy ctx entity)
+          target (world/nearest-enemy ctx entity)
           target (when (and target
-                            (g/line-of-sight? ctx entity @target))
+                            (world/line-of-sight? ctx entity @target))
                    target)]
       {:effect/source eid
        :effect/target target
@@ -190,7 +197,7 @@
 (def ^:private ^:dbg-flag los-checks? true)
 
 (extend-type Context
-  g/LineOfSight
+  world/LineOfSight
   ; does not take into account size of entity ...
   ; => assert bodies <1 width then
   (line-of-sight? [{:keys [ctx/raycaster] :as ctx}
@@ -204,11 +211,11 @@
                                        (entity/position target)))))))
 
 (extend-type Context
-  g/SpawnEntity
+  world/SpawnEntity
   (spawn-entity! [ctx position body components]
     (cdq.g.spawn-entity/spawn-entity! ctx position body components)))
 
 (extend-type Context
-  g/Creatures
+  world/Creatures
   (spawn-creature! [ctx opts]
     (cdq.g.spawn-creature/spawn-creature! ctx opts)))

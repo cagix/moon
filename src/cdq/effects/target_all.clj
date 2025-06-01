@@ -1,7 +1,7 @@
 (ns cdq.effects.target-all
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.g :as g]
+            [cdq.world :as world]
             [gdl.utils :refer [defcomponent]]))
 
 (defn- creatures-in-los-of-player [{:keys [ctx/active-entities
@@ -9,7 +9,7 @@
                                     :as ctx}]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(g/line-of-sight? ctx @player-eid @%))
+       (filter #(world/line-of-sight? ctx @player-eid @%))
        (remove #(:entity/player? @%))))
 
 (defcomponent :effects/target-all

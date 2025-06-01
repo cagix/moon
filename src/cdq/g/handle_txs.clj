@@ -13,6 +13,7 @@
             [cdq.g :as g]
             [cdq.projectile :as projectile]
             [cdq.vector2 :as v]
+            [cdq.world :as world]
             [gdl.utils :as utils]
             [reduce-fsm :as fsm]))
 
@@ -23,10 +24,10 @@
        sound/play!))
 
 (defn- spawn-effect! [{:keys [ctx/config] :as ctx} position components]
-  (g/spawn-entity! ctx
-                   position
-                   (:effect-body-props config)
-                   components))
+  (world/spawn-entity! ctx
+                       position
+                       (:effect-body-props config)
+                       components))
 
 (defmulti handle-tx! (fn [[k & _params] _ctx]
                        k))
@@ -75,18 +76,18 @@
                    :faction faction}}))
 
 (defmethod handle-tx! :tx/spawn-creature [[_ opts] ctx]
-  (g/spawn-creature! ctx opts))
+  (world/spawn-creature! ctx opts))
 
 (defmethod handle-tx! :tx/spawn-item [[_ position item] ctx]
-  (g/spawn-entity! ctx
-                   position
-                   {:width 0.75
-                    :height 0.75
-                    :z-order :z-order/on-ground}
-                   {:entity/image (:entity/image item)
-                    :entity/item item
-                    :entity/clickable {:type :clickable/item
-                                       :text (:property/pretty-name item)}}))
+  (world/spawn-entity! ctx
+                       position
+                       {:width 0.75
+                        :height 0.75
+                        :z-order :z-order/on-ground}
+                       {:entity/image (:entity/image item)
+                        :entity/item item
+                        :entity/clickable {:type :clickable/item
+                                           :text (:property/pretty-name item)}}))
 
 (defmethod handle-tx! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] ctx]
   (spawn-effect! ctx
@@ -103,20 +104,20 @@
                                                      projectile/piercing?] :as projectile}]
                                             ctx]
   (let [size (projectile/size projectile)]
-    (g/spawn-entity! ctx
-                     position
-                     {:width size
-                      :height size
-                      :z-order :z-order/flying
-                      :rotation-angle (v/angle-from-vector direction)}
-                     {:entity/movement {:direction direction
-                                        :speed speed}
-                      :entity/image image
-                      :entity/faction faction
-                      :entity/delete-after-duration (/ max-range speed)
-                      :entity/destroy-audiovisual :audiovisuals/hit-wall
-                      :entity/projectile-collision {:entity-effects entity-effects
-                                                    :piercing? piercing?}})))
+    (world/spawn-entity! ctx
+                         position
+                         {:width size
+                          :height size
+                          :z-order :z-order/flying
+                          :rotation-angle (v/angle-from-vector direction)}
+                         {:entity/movement {:direction direction
+                                            :speed speed}
+                          :entity/image image
+                          :entity/faction faction
+                          :entity/delete-after-duration (/ max-range speed)
+                          :entity/destroy-audiovisual :audiovisuals/hit-wall
+                          :entity/projectile-collision {:entity-effects entity-effects
+                                                        :piercing? piercing?}})))
 
 (defmethod handle-tx! :tx/effect [[_ effect-ctx effects] ctx]
   (run! #(g/handle-txs! ctx (effect/handle % effect-ctx ctx))
@@ -157,7 +158,7 @@
   (swap! eid entity/mod-remove modifiers))
 
 (defmethod handle-tx! :tx/move-entity [[_ eid body direction rotate-in-movement-direction?] ctx]
-  (g/context-entity-moved! ctx eid)
+  (world/context-entity-moved! ctx eid)
   (swap! eid assoc
          :position (:position body)
          :left-bottom (:left-bottom body))

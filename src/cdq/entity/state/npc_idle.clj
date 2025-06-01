@@ -3,6 +3,7 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.state :as state]
+            [cdq.world :as world]
             [gdl.utils :refer [defcomponent]]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]
@@ -20,5 +21,5 @@
     (let [effect-ctx (g/npc-effect-ctx ctx eid)]
       (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (or (g/potential-field-find-direction ctx eid)
+        [[:tx/event eid :movement-direction (or (world/potential-field-find-direction ctx eid)
                                                 [0 0])]]))))
