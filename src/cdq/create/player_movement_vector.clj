@@ -1,5 +1,5 @@
 (ns cdq.create.player-movement-vector
-  (:require [cdq.g :as g]
+  (:require [cdq.controls :as controls]
             [cdq.input :as input]
             [cdq.vector2 :as v]))
 
@@ -15,6 +15,6 @@
 
 (defn do! [ctx]
   (extend (class ctx)
-    g/PlayerMovementInput
+    controls/PlayerMovementInput
     {:player-movement-vector WASD-movement-vector})
   ctx)

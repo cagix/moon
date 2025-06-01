@@ -1,5 +1,6 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.g :as g]
+  (:require [cdq.controls :as controls]
+            [cdq.g :as g]
             [cdq.input :as input]
             [cdq.state :as state]
             [gdl.utils :refer [defcomponent]]))
@@ -8,7 +9,7 @@
   (state/pause-game? [_] true)
 
   (state/manual-tick [_ eid ctx]
-    (if-let [movement-vector (g/player-movement-vector ctx)]
+    (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (g/interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]

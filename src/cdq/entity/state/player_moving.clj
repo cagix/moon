@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-moving
-  (:require [cdq.entity :as entity]
-            [cdq.g :as g]
+  (:require [cdq.controls :as controls]
+            [cdq.entity :as entity]
             [cdq.state :as state]
             [gdl.utils :refer [defcomponent]]))
 
@@ -9,7 +9,7 @@
     {:movement-vector movement-vector})
 
   (entity/tick! [[_ {:keys [movement-vector]}] eid ctx]
-    (if-let [movement-vector (g/player-movement-vector ctx)]
+    (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/set-movement eid movement-vector]]
       [[:tx/event eid :no-movement-input]]))
 
