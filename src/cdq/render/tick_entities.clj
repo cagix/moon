@@ -1,7 +1,8 @@
 (ns cdq.render.tick-entities
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.stacktrace :as stacktrace]))
+            [cdq.stacktrace :as stacktrace]
+            [cdq.stage :as stage]))
 
 (defn- tick-entities!
   [{:keys [ctx/active-entities] :as ctx}]
@@ -22,7 +23,7 @@
         (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t)))))
    (catch Throwable t
      (stacktrace/pretty-pst t)
-     (g/open-error-window! ctx t)
+     (stage/open-error-window! ctx t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 

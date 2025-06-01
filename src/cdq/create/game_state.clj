@@ -11,6 +11,7 @@
             [cdq.grid2d :as g2d]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
+            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [gdl.tiled :as tiled]
@@ -28,10 +29,10 @@
                 :entity/player? {:state-changed! (fn [new-state-obj]
                                                    (when-let [cursor (state/cursor new-state-obj)]
                                                      [[:tx/set-cursor cursor]]))
-                                 :skill-added! g/add-skill!
-                                 :skill-removed! g/remove-skill!
-                                 :item-set! g/set-item!
-                                 :item-removed! g/remove-item!}
+                                 :skill-added!   stage/add-skill!
+                                 :skill-removed! stage/remove-skill!
+                                 :item-set!      stage/set-item!
+                                 :item-removed!  stage/remove-item!}
                 :entity/free-skill-points free-skill-points
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})
@@ -51,7 +52,7 @@
     (g/spawn-creature! ctx (update props :position utils/tile->middle))))
 
 (defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
-  (g/reset-actors! ctx)
+  (stage/reset-actors! ctx)
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)

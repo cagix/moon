@@ -1,6 +1,7 @@
 (ns cdq.ui.editor.widget.one-to-one
   (:require [cdq.db :as db]
             [cdq.g :as g]
+            [cdq.stage :as stage]
             [cdq.property :as property]
             [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]
@@ -26,7 +27,7 @@
                                                  (redo-rows ctx id))]
                              (ui/add! window (g/property-overview-table ctx property-type clicked-id-fn))
                              (.pack window)
-                             (g/add-actor! ctx window)))))]
+                             (stage/add-actor! ctx window)))))]
       [(when property-id
          (let [property (db/build ctx property-id)
                image-widget (ui/image->widget (property/image property)

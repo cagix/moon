@@ -2,6 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.inventory :as inventory]
+            [cdq.stage :as stage]
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
             [gdl.ui :as ui]))
@@ -13,7 +14,7 @@
 (defmethod on-clicked :clickable/item [{:keys [ctx/player-eid] :as ctx} eid]
   (let [item (:entity/item @eid)]
     (cond
-     (g/inventory-window-visible? ctx)
+     (stage/inventory-window-visible? ctx)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]
@@ -58,7 +59,7 @@
                :as ctx}
               eid]
   (let [entity @eid
-        mouseover-actor (g/mouseover-actor ctx)]
+        mouseover-actor (stage/mouseover-actor ctx)]
     (cond
      mouseover-actor
      [(mouseover-actor->cursor mouseover-actor (:entity/inventory entity))
@@ -69,7 +70,7 @@
      (clickable-entity-interaction ctx entity mouseover-eid)
 
      :else
-     (if-let [skill-id (g/selected-skill ctx)]
+     (if-let [skill-id (stage/selected-skill ctx)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (g/player-effect-ctx ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]

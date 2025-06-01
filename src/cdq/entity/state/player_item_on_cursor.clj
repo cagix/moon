@@ -2,6 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
+            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [cdq.g :as g]
@@ -43,7 +44,7 @@
       [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn- world-item? [ctx]
-  (not (g/mouseover-actor ctx)))
+  (not (stage/mouseover-actor ctx)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners

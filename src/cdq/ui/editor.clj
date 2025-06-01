@@ -5,6 +5,7 @@
             [cdq.input :as input]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
+            [cdq.stage :as stage]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]))
@@ -15,7 +16,7 @@
          (ui/remove! window)
          (catch Throwable t
            (stacktrace/pretty-pst t)
-           (g/open-error-window! ctx t)))))
+           (stage/open-error-window! ctx t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -55,7 +56,7 @@
     window))
 
 (defn- edit-property [id ctx]
-  (g/add-actor! ctx (editor-window (db/get-raw ctx id) ctx)))
+  (stage/add-actor! ctx (editor-window (db/get-raw ctx id) ctx)))
 
 (defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"
@@ -65,4 +66,4 @@
                            :close-on-escape? true})]
     (ui/add! window (g/property-overview-table ctx property-type edit-property))
     (.pack window)
-    (g/add-actor! ctx window)))
+    (stage/add-actor! ctx window)))

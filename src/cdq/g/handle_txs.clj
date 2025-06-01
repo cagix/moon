@@ -6,6 +6,7 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
+            [cdq.stage :as stage]
             [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.g :as g]
@@ -45,13 +46,13 @@
   (g/set-cursor! c cursor-key))
 
 (defmethod handle-tx! :tx/show-message [[_ message] ctx]
-  (g/show-message! ctx message))
+  (stage/show-message! ctx message))
 
 (defmethod handle-tx! :tx/show-modal [[_ opts] ctx]
-  (g/show-modal! ctx opts))
+  (stage/show-modal! ctx opts))
 
 (defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]
-  (g/toggle-inventory-visible! ctx))
+  (stage/toggle-inventory-visible! ctx))
 
 (defmethod handle-tx! :tx/audiovisual [[_ position audiovisual] ctx]
   (let [{:keys [tx/sound

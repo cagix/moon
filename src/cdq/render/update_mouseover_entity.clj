@@ -1,6 +1,7 @@
 (ns cdq.render.update-mouseover-entity
   (:require [cdq.g :as g]
             [cdq.grid :as grid]
+            [cdq.stage :as stage]
             [gdl.utils :as utils]))
 
 (defn do! [{:keys [ctx/player-eid
@@ -8,7 +9,7 @@
                    ctx/grid
                    ctx/render-z-order]
             :as ctx}]
-  (let [new-eid (if (g/mouseover-actor ctx)
+  (let [new-eid (if (stage/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)

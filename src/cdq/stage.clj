@@ -1,0 +1,17 @@
+(ns cdq.stage)
+
+(defprotocol Stage
+  (render-stage! [_])
+  (reset-actors! [_])
+  (add-actor! [_ actor])
+  (mouseover-actor [_])
+  (show-message! [_ message])
+  (show-modal! [_ {:keys [title text button-text on-click]}])
+  (inventory-window-visible? [_])
+  (toggle-inventory-visible! [_])
+  (add-skill! [_ skill])
+  (remove-skill! [_ skill])
+  (set-item! [_ inventory-cell item])
+  (remove-item! [_ inventory-cell])
+  (open-error-window! [_ throwable])
+  (selected-skill [_]))

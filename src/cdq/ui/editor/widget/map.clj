@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.g :as g]
             [cdq.schemas :as schemas]
+            [cdq.stage :as stage]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
             [gdl.ui :as ui]
@@ -86,7 +87,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (g/add-actor! ctx window)))
+    (stage/add-actor! ctx window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])

@@ -1,6 +1,7 @@
 (ns cdq.create.stage
   (:require [cdq.g :as g]
             [cdq.input :as input]
+            [cdq.stage]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info]
@@ -38,7 +39,7 @@
             :as ctx}]
   (ui/load! (:ui config))
   (extend (class ctx)
-    g/Stage
+    cdq.stage/Stage
     {:render-stage! (fn [ctx]
                       (ui/act! (-k ctx) ctx)
                       (ui/draw! (-k ctx) ctx)
