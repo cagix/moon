@@ -13,7 +13,8 @@
             [gdl.ui :as ui]
             [gdl.viewport :as viewport]))
 
-(defn- show-whole-map! [camera tiled-map]
+(defn- show-whole-map! [{:keys [ctx/camera
+                                ctx/tiled-map]}]
   (camera/set-position! camera
                         [(/ (tiled/tm-width  tiled-map) 2)
                          (/ (tiled/tm-height tiled-map) 2)])
@@ -26,7 +27,19 @@
 
 (def tile-size 48)
 
-(defn- generate-level [ctx])
+(defn- generate-level [{:keys [ctx/tiled-map
+                               ctx/batch
+                               ctx/world-unit-scale]
+                        :as ctx}]
+  (when tiled-map
+    (disposable/dispose! tiled-map))
+  (let [level (modules/create ctx)
+        tiled-map (:tiled-map level)]
+    (assoc ctx
+           :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
+           :ctx/tiled-map tiled-map)))
+
+(def state (atom nil))
 
 (defn- edit-window []
   (ui/window {:title "Edit"
@@ -34,13 +47,10 @@
               :rows [[(ui/label "MY LABEL")]
                      [(ui/text-button "Generate"
                                       (fn [_actor _ctx]
-                                        (println "Clicked generate")
-                                        ))]]
+                                        (swap! state generate-level)))]]
               :pack? true}))
 
 (defrecord Context [])
-
-(def state (atom nil))
 
 (defn create! [config]
   (ui/load! {:skin-scale :x1})
@@ -51,33 +61,30 @@
                                              :asset-type-extensions {:texture #{"png" "bmp"}}}})
         ctx (cdq.create.db/do!     ctx)
         ctx (cdq.create.assets/do! ctx)
-        level (modules/create ctx)
         world-unit-scale (float (/ tile-size))
         world-viewport (graphics/world-viewport world-unit-scale
                                                 {:width 1440
                                                  :height 900})
-        tiled-map (:tiled-map level)
         batch (graphics/sprite-batch)
-        tm-renderer (tm-renderer/create tiled-map
-                                        world-unit-scale
-                                        batch)
         ui-viewport (graphics/ui-viewport {:width 1440
                                            :height 900})
         stage (ui/stage (:java-object ui-viewport)
                         batch)
         input (gdx/input)
         ctx (assoc ctx
+                   :ctx/batch batch
                    :ctx/input input
-                   :ctx/tm-renderer tm-renderer
-                   :ctx/tiled-map tiled-map
+                   :ctx/world-unit-scale world-unit-scale
                    :ctx/world-viewport world-viewport
                    :ctx/camera (:camera world-viewport)
                    :ctx/color-setter (constantly color/white)
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1
-                   :ctx/stage stage)]
+                   :ctx/stage stage
+                   :ctx/ui-viewport ui-viewport)
+        ctx (generate-level ctx)]
     (input/set-processor! input stage)
-    (show-whole-map! (:camera world-viewport) tiled-map)
+    (show-whole-map! ctx)
     (ui/add! stage (edit-window))
     (reset! state ctx)))
 
@@ -128,5 +135,7 @@
   (render-stage! @state))
 
 (defn resize! [width height]
-  (let [{:keys [ctx/world-viewport]} @state]
+  (let [{:keys [ctx/ui-viewport
+                ctx/world-viewport]} @state]
+    (viewport/resize! ui-viewport    width height)
     (viewport/resize! world-viewport width height)))
