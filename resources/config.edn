@@ -85,6 +85,8 @@
              cdq.level.modules/create]
  :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
  :requires [
+            cdq.schemas-impl
+
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
             cdq.effects.target.damage
