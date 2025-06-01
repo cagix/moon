@@ -1,17 +1,34 @@
 (ns cdq.level.helper
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.assets :as assets]
+            [cdq.db :as db]
+            [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.property :as property]
+            [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]
             [gdl.utils :as utils]))
 
+(defn- creature->texture-region [ctx creature]
+  (let [{:keys [file sub-image-bounds]} (property/image creature)
+        texture (assets/texture ctx file)]
+    (if sub-image-bounds
+      (apply texture/region texture sub-image-bounds)
+      (texture/region texture))))
+
+(defn prepare-creature-properties [ctx]
+  (for [creature (db/all-raw ctx :properties/creatures)]
+    (utils/safe-merge creature
+                      {:tile/id (:property/id creature)
+                       :tile/texture-region (creature->texture-region ctx creature)})))
+
 (def creature-tile
   (memoize
-   (fn [{:keys [property/id] :as property}]
-     (assert id)
-     (let [image (property/image property)
-           tile (tiled/static-tiled-map-tile (:texture-region image))]
+   (fn [{:keys [tile/id
+                tile/texture-region]}]
+     (assert (and id
+                  texture-region))
+     (let [tile (tiled/static-tiled-map-tile texture-region)]
        (tiled/put! (tiled/m-props tile) "id" id)
        tile))))
 

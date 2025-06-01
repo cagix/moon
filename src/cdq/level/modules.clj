@@ -1,7 +1,7 @@
 (ns cdq.level.modules
-  (:require [cdq.db :as db]
-            [cdq.grid2d :as g2d]
-            [cdq.level.helper :refer [add-creatures-layer!
+  (:require [cdq.grid2d :as g2d]
+            [cdq.level.helper :refer [prepare-creature-properties
+                                      add-creatures-layer!
                                       scale-grid
                                       cave-grid
                                       adjacent-wall-positions
@@ -126,4 +126,4 @@
   (generate-modules {:world/map-size 5,
                      :world/max-area-level 3,
                      :world/spawn-rate 0.05}
-                    (db/build-all ctx :properties/creatures)))
+                    (prepare-creature-properties ctx)))
