@@ -8,7 +8,9 @@
  :dispose! cdq.application/dispose!
  :render!  cdq.application/render!
  :resize!  cdq.application/resize!
- :create-fns [gdl.create.assets/do!
+ :create-fns [gdl.create.app/do!
+              gdl.create.files/do!
+              gdl.create.assets/do!
               gdl.create.input/do!
               gdl.create.db/do!
               gdl.create.graphics/do!

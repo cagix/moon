@@ -23,6 +23,8 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
+             [:ctx/app :some]
+             [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/batch :some]
              [:ctx/config :some]

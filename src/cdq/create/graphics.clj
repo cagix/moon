@@ -1,7 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.application]
             [cdq.graphics :as g]
-            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -17,8 +16,8 @@
            (com.badlogic.gdx.graphics Pixmap
                                       Texture$TextureFilter)))
 
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (files/internal (gdx/files) file)
+(defn- truetype-font [files {:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (files/internal files file)
                                 {:size (* size quality-scaling)
                                  :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
                                  :mag-filter Texture$TextureFilter/Linear})]
@@ -134,6 +133,7 @@
       (g/handle-draws! this draws))))
 
 (defn do! [{:keys [ctx/config
+                   ctx/files
                    ctx/graphics]
             :as ctx}]
   (merge ctx
@@ -151,13 +151,12 @@
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                          (let [pixmap (Pixmap. (files/internal (gdx/files)
-                                                                                (format cursor-path-format file)))
+                                          (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                                             (.dispose pixmap)
                                             cursor))
                                         cursors)
-            :ctx/default-font (truetype-font default-font)
+            :ctx/default-font (truetype-font files default-font)
             :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))

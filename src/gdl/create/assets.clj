@@ -1,6 +1,5 @@
 (ns gdl.create.assets
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.assets.manager :as manager]
+  (:require [clojure.gdx.assets.manager :as manager]
             [clojure.gdx.utils.files :as utils.files]
             [clojure.string :as str]
             [gdl.assets :as assets]
@@ -10,11 +9,11 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.utils Disposable)))
 
-(defn- create-assets [{:keys [folder asset-type-extensions]}]
+(defn- create-assets [files {:keys [folder asset-type-extensions]}]
   (let [manager (manager/create
                  (for [[asset-type extensions] asset-type-extensions
                        file (map #(str/replace-first % folder "")
-                                 (utils.files/recursively-search (files/internal (gdx/files) folder)
+                                 (utils.files/recursively-search (files/internal files folder)
                                                                  extensions))]
                    [file (case asset-type
                            :sound Sound
@@ -44,5 +43,7 @@
       (all-textures [_]
         (manager/all-of-type manager Texture)))))
 
-(defn do! [{:keys [ctx/config] :as ctx}]
-  (assoc ctx :ctx/assets (create-assets (:assets config))))
+(defn do! [{:keys [ctx/config
+                   ctx/files]
+            :as ctx}]
+  (assoc ctx :ctx/assets (create-assets files (:assets config))))
