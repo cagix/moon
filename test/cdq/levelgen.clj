@@ -1,7 +1,9 @@
 (ns cdq.levelgen
   (:require [cdq.create.assets]
             [cdq.create.db]
-            [cdq.level.modules :as modules]
+            [cdq.level.modules]
+            [cdq.level.uf-caves]
+            [cdq.level.vampire]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.input :as input]
@@ -30,10 +32,11 @@
 (defn- generate-level [{:keys [ctx/tiled-map
                                ctx/batch
                                ctx/world-unit-scale]
-                        :as ctx}]
+                        :as ctx}
+                       level-fn]
   (when tiled-map
     (disposable/dispose! tiled-map))
-  (let [level (modules/create ctx)
+  (let [level (level-fn ctx)
         tiled-map (:tiled-map level)]
     (assoc ctx
            :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
@@ -44,10 +47,12 @@
 (defn- edit-window []
   (ui/window {:title "Edit"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label "MY LABEL")]
-                     [(ui/text-button "Generate"
-                                      (fn [_actor _ctx]
-                                        (swap! state generate-level)))]]
+              :rows (for [level-fn [#'cdq.level.modules/create
+                                    #'cdq.level.uf-caves/create
+                                    #'cdq.level.vampire/create]]
+                      [(ui/text-button (str "Generate " level-fn)
+                                       (fn [_actor _ctx]
+                                         (swap! state generate-level level-fn)))])
               :pack? true}))
 
 (defrecord Context [])
@@ -82,7 +87,7 @@
                    :ctx/camera-movement-speed 1
                    :ctx/stage stage
                    :ctx/ui-viewport ui-viewport)
-        ctx (generate-level ctx)]
+        ctx (generate-level ctx cdq.level.modules/create)]
     (input/set-processor! input stage)
     (show-whole-map! ctx)
     (ui/add! stage (edit-window))
