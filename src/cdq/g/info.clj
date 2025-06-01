@@ -1,6 +1,5 @@
 (ns cdq.g.info
   (:require [cdq.entity :as entity]
-            [cdq.g :as g]
             [cdq.op :as op]
             [cdq.timer :as timer]
             [clojure.math :as math]
