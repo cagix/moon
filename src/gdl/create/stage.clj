@@ -1,5 +1,5 @@
 (ns gdl.create.stage
-  (:require [clojure.gdx.input :as input]
+  (:require [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 

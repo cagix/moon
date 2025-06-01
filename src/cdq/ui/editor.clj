@@ -5,8 +5,8 @@
             [cdq.ui.error-window :as error-window]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [clojure.gdx.input :as input]
             [gdl.db :as db]
+            [gdl.input :as input]
             [gdl.property :as property]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))

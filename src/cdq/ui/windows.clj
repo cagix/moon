@@ -1,5 +1,5 @@
 (ns cdq.ui.windows
-  (:require [clojure.gdx.input :as input]
+  (:require [gdl.input :as input]
             [gdl.ui :as ui]))
 
 (defn- check-escape-close-windows [input windows]

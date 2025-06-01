@@ -4,8 +4,8 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.vector2 :as v]
-            [clojure.gdx.input :as input]
             [gdl.ctx :as ctx]
+            [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.utils :refer [defcomponent]]))
 

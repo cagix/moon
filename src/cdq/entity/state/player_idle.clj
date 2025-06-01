@@ -2,7 +2,7 @@
   (:require [cdq.controls :as controls]
             [cdq.g :as g]
             [cdq.state :as state]
-            [clojure.gdx.input :as input]
+            [gdl.input :as input]
             [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :player-idle

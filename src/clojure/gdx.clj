@@ -2,7 +2,7 @@
   (:require [clojure.gdx.app :as app]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.input :as input]
+            [gdl.input :as input]
             [clojure.gdx.interop :as interop])
   (:import (com.badlogic.gdx Gdx)))
 
