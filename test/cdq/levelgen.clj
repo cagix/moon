@@ -26,6 +26,18 @@
 
 (def tile-size 48)
 
+(defn- generate-level [ctx])
+
+(defn- edit-window []
+  (ui/window {:title "Edit"
+              :cell-defaults {:pad 10}
+              :rows [[(ui/label "MY LABEL")]
+                     [(ui/text-button "Generate"
+                                      (fn [_actor _ctx]
+                                        (println "Clicked generate")
+                                        ))]]
+              :pack? true}))
+
 (defrecord Context [])
 
 (def state (atom nil))
@@ -66,8 +78,8 @@
                    :ctx/stage stage)]
     (input/set-processor! input stage)
     (show-whole-map! (:camera world-viewport) tiled-map)
-    (reset! state ctx)
-    (println level)))
+    (ui/add! stage (edit-window))
+    (reset! state ctx)))
 
 (defn dispose! []
   (let [{:keys [ctx/assets
