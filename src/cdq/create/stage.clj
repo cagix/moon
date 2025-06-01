@@ -36,8 +36,8 @@
   (ui/load! (:ui config))
   (extend (class ctx)
     cdq.stage/Stage
-    {:mouseover-actor (fn [ctx]
-                        (gdl.ui.stage/hit (-k ctx) (g/ui-mouse-position ctx)))
+    {:mouseover-actor (fn [{:keys [ctx/stage] :as ctx}]
+                        (gdl.ui.stage/hit stage (g/ui-mouse-position ctx)))
 
      :show-message! (fn [ctx message]
                       (-> (-k ctx)
