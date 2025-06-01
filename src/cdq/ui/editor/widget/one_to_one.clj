@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.widget.one-to-one
-  (:require [cdq.g :as g]
+  (:require [cdq.db :as db]
+            [cdq.g :as g]
             [cdq.property :as property]
             [cdq.ui.editor.widget :as widget]
             [gdl.ui :as ui]
@@ -27,7 +28,7 @@
                              (.pack window)
                              (g/add-actor! ctx window)))))]
       [(when property-id
-         (let [property (g/build ctx property-id)
+         (let [property (db/build ctx property-id)
                image-widget (ui/image->widget (property/image property)
                                               {:id property-id})]
            (ui/add-tooltip! image-widget (pprint-to-str property))

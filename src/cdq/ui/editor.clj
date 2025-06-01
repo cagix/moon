@@ -1,5 +1,6 @@
 (ns cdq.ui.editor
   (:require [cdq.application :as application]
+            [cdq.db :as db]
             [cdq.g :as g]
             [cdq.input :as input]
             [cdq.property :as property]
@@ -20,7 +21,7 @@
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn editor-window [props {:keys [ctx/ui-viewport] :as ctx}]
-  (let [schema (get (g/schemas ctx) (property/type props))
+  (let [schema (get (db/schemas ctx) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -31,11 +32,11 @@
         widget (widget/create schema props ctx)
         save!   (apply-context-fn window (fn [ctx]
                                            (swap! application/state
-                                                  g/update-property
-                                                  (widget/value schema widget (g/schemas ctx)))))
+                                                  db/update-property
+                                                  (widget/value schema widget (db/schemas ctx)))))
         delete! (apply-context-fn window (fn [_ctx]
                                            (swap! application/state
-                                                  g/delete-property
+                                                  db/delete-property
                                                   (:property/id props))))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
                                                    [[{:actor widget :colspan 2}]
@@ -54,7 +55,7 @@
     window))
 
 (defn- edit-property [id ctx]
-  (g/add-actor! ctx (editor-window (g/get-raw ctx id) ctx)))
+  (g/add-actor! ctx (editor-window (db/get-raw ctx id) ctx)))
 
 (defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"

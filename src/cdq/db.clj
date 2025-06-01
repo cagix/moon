@@ -1,93 +1,10 @@
-(ns cdq.db
-  (:require [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
-            [cdq.schemas-impl :as schemas-impl]
-            [cdq.property :as property]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [gdl.utils :as utils]))
+(ns cdq.db)
 
-(defprotocol PDB
+(defprotocol Database
   (property-types [_])
-  (update! [_ property]
-          "Validates the given property, throws an error if invalid and asserts its id is contained in the database.
-
-          Writes the database to disk asynchronously.
-
-          Returns a new database with the property updated.")
-  (delete! [_ property-id]
-          "Asserts if a property with property-id is contained in the database.
-
-          Writes the database to disk asynchronously.
-
-          Returns a new database with the property removed.")
-  (get-raw [_ property-id]
-           "Returns the property value without schema based transformations.")
-  (all-raw [_ property-type]
-           "Returns all properties with type without schema-based transformations.")
-  (build [_ property-id ctx]
-         "Returns the property with schema-based transformations.")
-  (build-all [_ property-type ctx]
-             "Returns all properties with type with schema-based transformations."))
-
-(defn- save! [{:keys [data file]}]
-  ; TODO validate them again!?
-  (->> data
-       vals
-       (sort-by property/type)
-       (map utils/recur-sort-map)
-       doall
-       (utils/async-pprint-spit! file)))
-
-(defrecord DB [data file schemas]
-  PDB
-  (property-types [_]
-    (schemas/property-types schemas))
-
-  (update! [this {:keys [property/id] :as property}]
-    (assert (contains? property :property/id))
-    (assert (contains? data id))
-    (schemas/validate schemas property)
-    (let [new-db (update this :data assoc id property)]
-      (save! new-db)
-      new-db))
-
-  (delete! [this property-id]
-    (assert (contains? data property-id))
-    (let [new-db (update this :data dissoc property-id)]
-      (save! new-db)
-      new-db))
-
-  (get-raw [_ property-id]
-    (utils/safe-get data property-id))
-
-  (all-raw [_ property-type]
-    (->> (vals data)
-         (filter #(= property-type (property/type %)))))
-
-  (build [this property-id ctx]
-    (schemas/transform schemas
-                       (get-raw this property-id)
-                       ctx))
-
-  (build-all [this property-type ctx]
-    (map #(schemas/transform schemas % ctx)
-         (all-raw this property-type))))
-
-(defn create [{:keys [schemas
-                      properties]}]
-  (let [schemas (schemas-impl/create (utils/io-slurp-edn schemas))
-        properties-file (io/resource properties) ; TODO required from existing?
-        properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! (partial schemas/validate schemas) properties)
-    (map->DB {:data (zipmap (map :property/id properties) properties)
-              :file properties-file
-              :schemas schemas})))
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
-  (build db property-id ctx))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
-  (set (map #(build db % ctx) property-ids)))
+  (schemas [_])
+  (get-raw [_ property-id])
+  (build [_ property-id])
+  (build-all [_ property-type])
+  (update-property [_ property])
+  (delete-property [_ property-id]))

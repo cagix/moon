@@ -84,12 +84,3 @@
   (open-editor-window! [_ property-type])
   (edit-property! [_ property])
   (property-overview-table [_ property-type clicked-id-fn]))
-
-(defprotocol Database
-  (property-types [_])
-  (schemas [_])
-  (get-raw [_ property-id])
-  (build [_ property-id])
-  (build-all [_ property-type])
-  (update-property [_ property])
-  (delete-property [_ property-id]))

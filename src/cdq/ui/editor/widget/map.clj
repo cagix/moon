@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.g :as g]
+  (:require [cdq.db :as db]
+            [cdq.g :as g]
             [cdq.schemas :as schemas]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
@@ -33,7 +34,7 @@
 
 (defn- rebuild-editor-window! [{:keys [ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
-        prop-value (window->property-value window (g/schemas ctx))]
+        prop-value (window->property-value window (db/schemas ctx))]
     (ui/remove! window)
     (g/edit-property! ctx prop-value)))
 
@@ -63,7 +64,7 @@
     :left? true}])
 
 (defn- open-add-component-window! [ctx schema map-widget-table]
-  (let [schemas (g/schemas ctx)
+  (let [schemas (db/schemas ctx)
         window (ui/window {:title "Choose"
                            :modal? true
                            :close-button? true
@@ -101,12 +102,12 @@
                                            (component-row ctx
                                                           [k v]
                                                           schema
-                                                          (g/schemas ctx)
+                                                          (db/schemas ctx)
                                                           table))
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (seq (set/difference (schemas/optional-keyset (g/schemas ctx) schema)
+        opt? (seq (set/difference (schemas/optional-keyset (db/schemas ctx) schema)
                                   (set (keys m))))]
     (ui/add-rows!
      table

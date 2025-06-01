@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.assets :as assets]
+            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.application :as application]
@@ -15,7 +16,7 @@
            {:label "Help"
             :items [{:label (:info config)}]}
            {:label "Objects"
-            :items (for [property-type (sort (g/property-types ctx))]
+            :items (for [property-type (sort (db/property-types ctx))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn [_actor ctx]
                                   (g/open-editor-window! ctx property-type))})}]

@@ -1,5 +1,5 @@
 (ns cdq.level.modules
-  (:require [cdq.g :as g]
+  (:require [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [creature-tile
                                       scale-grid
@@ -133,4 +133,4 @@
   (generate-modules {:world/map-size 5,
                      :world/max-area-level 3,
                      :world/spawn-rate 0.05}
-                    (g/build-all ctx :properties/creatures)))
+                    (db/build-all ctx :properties/creatures)))

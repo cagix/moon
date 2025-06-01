@@ -2,6 +2,7 @@
   (:require [gdl.audio.sound :as sound]
             [cdq.assets :as assets]
             [cdq.animation :as animation]
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]
@@ -55,7 +56,7 @@
 (defmethod handle-tx! :tx/audiovisual [[_ position audiovisual] ctx]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
-                                     (g/build ctx audiovisual)
+                                     (db/build ctx audiovisual)
                                      audiovisual)]
     (play-sound! ctx sound)
     (spawn-effect! ctx
