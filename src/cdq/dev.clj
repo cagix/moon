@@ -1,6 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [clojure.gdx :as gdx]
             [clojure.gdx.app :as app]

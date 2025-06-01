@@ -1,6 +1,5 @@
 (ns cdq.entity.movement
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.vector2 :as v]
             [gdl.utils :refer [defcomponent]]))
@@ -36,8 +35,9 @@
                      :as movement}]
                  eid
                  {:keys [ctx/delta-time
+                         ctx/max-speed
                          ctx/grid]}]
-    (assert (<= 0 speed ctx/max-speed)
+    (assert (<= 0 speed max-speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
                 (v/normalised? direction))

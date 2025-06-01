@@ -1,6 +1,5 @@
 (ns cdq.g.spawn-entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.malli :as m]
@@ -198,7 +197,8 @@
           components))
 
 (defn spawn-entity! [{:keys [ctx/id-counter
-                             ctx/z-orders]
+                             ctx/z-orders
+                             ctx/minimum-size]
                       :as ctx}
                      position
                      body
@@ -208,7 +208,7 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      (create-body ctx/minimum-size z-orders)
+                      (create-body minimum-size z-orders)
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
