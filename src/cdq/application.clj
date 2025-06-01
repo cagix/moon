@@ -1,8 +1,8 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
+            [clojure.gdx.utils.disposable :as disposable]
             [qrecord.core :as q]
-            [gdl.viewport :as viewport])
-  (:import (com.badlogic.gdx.utils Disposable)))
+            [gdl.viewport :as viewport]))
 
 (q/defrecord Context [ctx/assets
                       ctx/batch
@@ -71,11 +71,11 @@
                          ctx/cursors
                          ctx/default-font
                          ctx/shape-drawer-texture]}]
-  (Disposable/.dispose assets)
-  (Disposable/.dispose batch)
-  (run! Disposable/.dispose (vals cursors))
-  (Disposable/.dispose default-font)
-  (Disposable/.dispose shape-drawer-texture)
+  (disposable/dispose! assets)
+  (disposable/dispose! batch)
+  (run! disposable/dispose! (vals cursors))
+  (disposable/dispose! default-font)
+  (disposable/dispose! shape-drawer-texture)
   ; TODO vis-ui dispose
   ; TODO dispose world tiled-map/level resources?
   )
