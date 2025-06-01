@@ -20,11 +20,37 @@
             [cdq.raycaster :as raycaster]
             [cdq.stage :as stage]
             [cdq.state :as state]
+            [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.hp-mana-bar]
+            [cdq.ui.windows]
+            [cdq.ui.entity-info]
+            [cdq.ui.inventory]
+            [cdq.ui.message]
+            [cdq.ui.player-state-draw]
             [cdq.vector2 :as v]
             [cdq.world :as world]
             [gdl.tiled :as tiled]
+            [gdl.ui.stage]
+            [gdl.ui.menu]
             [gdl.utils :as utils])
   (:import (cdq.application Context)))
+
+(defn- create-actors [{:keys [ctx/ui-viewport]
+                       :as ctx}]
+  [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
+   (action-bar/create :id :action-bar)
+   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
+                               80 ; action-bar-icon-size
+                               ]
+                              ctx)
+   (cdq.ui.windows/create :id :windows
+                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
+                                   (cdq.ui.inventory/create ctx
+                                                            :id :inventory-window
+                                                            :position [(:width ui-viewport)
+                                                                       (:height ui-viewport)])])
+   (cdq.ui.player-state-draw/create)
+   (cdq.ui.message/create :name "player-message")])
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
@@ -65,8 +91,12 @@
 
 ; => entity/tick! -> line of sight breaks world
 
-(defn- create-game-state [{:keys [ctx/config] :as ctx} world-fn]
-  (stage/reset-actors! ctx)
+(defn- create-game-state [{:keys [ctx/config
+                                  ctx/stage]
+                           :as ctx}
+                          world-fn]
+  (gdl.ui.stage/clear! stage)
+  (run! #(gdl.ui.stage/add! stage %) (create-actors ctx))
   (let [{:keys [tiled-map
                 start-position]} (world-fn ctx)
         grid (grid-impl/create tiled-map)

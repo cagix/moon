@@ -4,33 +4,11 @@
             [cdq.stage]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.dev-menu]
-            [cdq.ui.entity-info]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.hp-mana-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message]
-            [cdq.ui.player-state-draw]
-            [cdq.ui.windows]
             [gdl.ui :as ui]
-            [gdl.ui.stage]
-            [gdl.ui.menu :as menu]))
-
-(defn- create-actors [{:keys [ctx/ui-viewport]
-                       :as ctx}]
-  [(gdl.ui.menu/create (cdq.ui.dev-menu/create ctx))
-   (action-bar/create :id :action-bar)
-   (cdq.ui.hp-mana-bar/create [(/ (:width ui-viewport) 2)
-                               80 ; action-bar-icon-size
-                               ]
-                              ctx)
-   (cdq.ui.windows/create :id :windows
-                          :actors [(cdq.ui.entity-info/create [(:width ui-viewport) 0])
-                                   (cdq.ui.inventory/create ctx
-                                                            :id :inventory-window
-                                                            :position [(:width ui-viewport)
-                                                                       (:height ui-viewport)])])
-   (cdq.ui.player-state-draw/create)
-   (cdq.ui.message/create :name "player-message")])
+            [gdl.ui.stage]))
 
 (def ^:private -k :ctx/stage)
 
@@ -58,12 +36,7 @@
   (ui/load! (:ui config))
   (extend (class ctx)
     cdq.stage/Stage
-    {:reset-actors! (fn [ctx]
-                      (let [stage (-k ctx)]
-                        (gdl.ui.stage/clear! stage)
-                        (run! #(gdl.ui.stage/add! stage %) (create-actors ctx))))
-
-     :add-actor! (fn [ctx actor]
+    {:add-actor! (fn [ctx actor]
                    (gdl.ui.stage/add! (-k ctx) actor))
 
      :mouseover-actor (fn [ctx]
