@@ -5,7 +5,6 @@
             [cdq.input :as input]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.math.math-utils :as math-utils]
             [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.graphics :as graphics]
@@ -18,7 +17,6 @@
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Texture
-                                      Texture$TextureFilter
                                       Pixmap
                                       Pixmap$Format
                                       OrthographicCamera)
@@ -30,15 +28,6 @@
 
 (defmulti ^:private draw! (fn [[k] _this]
                             k))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (.internal Gdx/files file)
-                                {:size (* size quality-scaling)
-                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
-                                 :mag-filter Texture$TextureFilter/Linear})]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? true
-                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -256,7 +245,7 @@
                               (.dispose pixmap)
                               cursor))
                           cursors)
-            :ctx/default-font (truetype-font default-font)
+            :ctx/default-font (graphics/truetype-font default-font)
             :ctx/world-viewport (world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))

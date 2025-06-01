@@ -1,5 +1,9 @@
 (ns gdl.graphics
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -29,3 +33,12 @@
   (-> {:texture-region texture-region}
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
+
+(defn truetype-font [{:keys [file size quality-scaling]}]
+  (let [font (freetype/generate (.internal Gdx/files file)
+                                {:size (* size quality-scaling)
+                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
+                                 :mag-filter Texture$TextureFilter/Linear})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
