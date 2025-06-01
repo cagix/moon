@@ -5,8 +5,11 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.utils.disposable :as disposable]
             [gdl.create.assets]
+            [gdl.create.files]
             [gdl.create.db]
             [gdl.create.input]
+            [gdl.create.viewport]
+            [gdl.create.world-unit-scale]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled-map-renderer :as tm-renderer]
@@ -73,29 +76,30 @@
         ctx (assoc ctx :ctx/config {:db {:schemas "schema.edn"
                                          :properties "properties.edn"}
                                     :assets {:folder "resources/"
-                                             :asset-type-extensions {:texture #{"png" "bmp"}}}})
+                                             :asset-type-extensions {:texture #{"png" "bmp"}}}
+                                    :tile-size 48
+                                    :ui-viewport {:width 1440
+                                                  :height 900}
+                                    :world-viewport {:width 1440
+                                                     :height 900}
+                                    })
         ctx (gdl.create.db/do!     ctx)
+        ctx (gdl.create.files/do!  ctx)
         ctx (gdl.create.assets/do! ctx)
         ctx (gdl.create.input/do!  ctx)
-        world-unit-scale (float (/ tile-size))
-        world-viewport (graphics/world-viewport world-unit-scale
-                                                {:width 1440
-                                                 :height 900})
+        ctx (gdl.create.viewport/ui ctx)
+        ctx (gdl.create.world-unit-scale/do! ctx)
+        ctx (gdl.create.viewport/world ctx)
         batch (graphics/sprite-batch)
-        ui-viewport (graphics/ui-viewport {:width 1440
-                                           :height 900})
-        stage (ui/stage (:java-object ui-viewport)
+        stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)
         ctx (assoc ctx
                    :ctx/batch batch
-                   :ctx/world-unit-scale world-unit-scale
-                   :ctx/world-viewport world-viewport
-                   :ctx/camera (:camera world-viewport)
+                   :ctx/camera (:camera (:ctx/world-viewport ctx))
                    :ctx/color-setter (constantly color/white)
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1
-                   :ctx/stage stage
-                   :ctx/ui-viewport ui-viewport)
+                   :ctx/stage stage)
         ctx (generate-level ctx cdq.level.modules/create)]
     (input/set-processor! (:ctx/input ctx) stage)
     (ui/add! stage (edit-window))

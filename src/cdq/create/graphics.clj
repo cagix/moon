@@ -130,20 +130,17 @@
 
 (defn do! [{:keys [ctx/config
                    ctx/files
-                   ctx/graphics]
+                   ctx/graphics
+                   ctx/world-unit-scale]
             :as ctx}]
   (merge ctx
-         (let [{:keys [tile-size
-                       cursor-path-format
+         (let [{:keys [cursor-path-format
                        cursors
                        default-font]} config
                batch (graphics/sprite-batch)
-               shape-drawer-texture (graphics/white-pixel-texture)
-               world-unit-scale (float (/ tile-size))]
-           {:ctx/ui-viewport (graphics/ui-viewport (:ui-viewport config))
-            :ctx/batch batch
+               shape-drawer-texture (graphics/white-pixel-texture)]
+           {:ctx/batch batch
             :ctx/unit-scale (atom 1)
-            :ctx/world-unit-scale world-unit-scale
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
@@ -153,13 +150,12 @@
                                             cursor))
                                         cursors)
             :ctx/default-font (truetype-font files default-font)
-            :ctx/world-viewport (graphics/world-viewport world-unit-scale (:world-viewport config))
             :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                                (tiled-map-renderer/create tiled-map world-unit-scale batch)))})))
 
 (extend-type Context
   g/Graphics
-  (handle-draws! [this draws]
+  (handle-draws! [this draws] ; batch, unit-scale, default-font, shape-drawer.
     (doseq [component draws
             :when component]
       (draw! component this)))

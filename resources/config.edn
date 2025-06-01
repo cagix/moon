@@ -14,6 +14,9 @@
               gdl.create.input/do!
               gdl.create.db/do!
               gdl.create.graphics/do!
+              gdl.create.world-unit-scale/do!
+              gdl.create.viewport/ui
+              gdl.create.viewport/world
               cdq.create.graphics/do!
               gdl.create.stage/do!
               cdq.create.handle-txs/do!
