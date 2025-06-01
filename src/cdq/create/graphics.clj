@@ -14,6 +14,7 @@
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color
                                       Texture
+                                      Texture$TextureFilter
                                       Pixmap
                                       Pixmap$Format
                                       OrthographicCamera)
@@ -64,7 +65,9 @@
 
 (defn- truetype-font [{:keys [file size quality-scaling]}]
   (let [font (freetype/generate (.internal Gdx/files file)
-                                {:size (* size quality-scaling)})]
+                                {:size (* size quality-scaling)
+                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
+                                 :mag-filter Texture$TextureFilter/Linear})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
