@@ -1,7 +1,6 @@
 (ns cdq.stage)
 
 (defprotocol Stage
-  (add-actor! [_ actor])
   (mouseover-actor [_])
   (show-message! [_ message])
   (show-modal! [_ {:keys [title text button-text on-click]}])

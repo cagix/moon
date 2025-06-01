@@ -1,11 +1,11 @@
 (ns cdq.ui.editor.widget.map
   (:require [cdq.editor :as editor]
-            [cdq.stage :as stage]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
             [gdl.db :as db]
             [gdl.schemas :as schemas]
             [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [gdl.utils :as utils]))
 
 (def ^:private property-k-sort-order
@@ -66,7 +66,8 @@
              widget)
     :left? true}])
 
-(defn- open-add-component-window! [{:keys [ctx/db] :as ctx}
+(defn- open-add-component-window! [{:keys [ctx/db
+                                           ctx/stage]}
                                    schema
                                    map-widget-table]
   (let [schemas (:schemas db)
@@ -91,7 +92,7 @@
                                                                          map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
-    (stage/add-actor! ctx window)))
+    (stage/add! stage window)))
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])

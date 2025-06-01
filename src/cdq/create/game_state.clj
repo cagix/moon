@@ -20,6 +20,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.stage :as stage]
             [cdq.state :as state]
+            [cdq.ui.dev-menu]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.windows]

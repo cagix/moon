@@ -36,10 +36,7 @@
   (ui/load! (:ui config))
   (extend (class ctx)
     cdq.stage/Stage
-    {:add-actor! (fn [ctx actor]
-                   (gdl.ui.stage/add! (-k ctx) actor))
-
-     :mouseover-actor (fn [ctx]
+    {:mouseover-actor (fn [ctx]
                         (gdl.ui.stage/hit (-k ctx) (g/ui-mouse-position ctx)))
 
      :show-message! (fn [ctx message]

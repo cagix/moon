@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.one-to-one
   (:require [cdq.editor :as editor]
-            [cdq.stage :as stage]
             [cdq.ui.editor.widget :as widget]
             [gdl.db :as db]
             [gdl.property :as property]
             [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [gdl.utils :refer [pprint-to-str]]))
 
 (defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]
@@ -16,7 +16,7 @@
      table
      [[(when-not property-id
          (ui/text-button "+"
-                         (fn [_actor ctx]
+                         (fn [_actor {:keys [ctx/stage] :as ctx}]
                            (let [window (ui/window {:title "Choose"
                                                     :modal? true
                                                     :close-button? true
@@ -27,7 +27,7 @@
                                                  (redo-rows ctx id))]
                              (ui/add! window (editor/property-overview-table ctx property-type clicked-id-fn))
                              (.pack window)
-                             (stage/add-actor! ctx window)))))]
+                             (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/build db property-id ctx)
                image-widget (ui/image->widget (property/image property)
