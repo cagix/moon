@@ -2,7 +2,9 @@
   (:require [cdq.create.assets]
             [cdq.create.db]
             [cdq.level.modules :as modules]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.input :as input]
             [clojure.gdx.utils.disposable :as disposable]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
@@ -46,10 +48,13 @@
                                         world-unit-scale
                                         batch)
         ctx (assoc ctx
+                   :ctx/input (gdx/input)
                    :ctx/tm-renderer tm-renderer
                    :ctx/tiled-map tiled-map
                    :ctx/world-viewport world-viewport
-                   :ctx/color-setter (constantly color/white))]
+                   :ctx/camera (:camera world-viewport)
+                   :ctx/color-setter (constantly color/white)
+                   :ctx/zoom-speed 0.1)]
     (show-whole-map! (:camera world-viewport) tiled-map)
     (reset! state ctx)
     (println level)))
@@ -62,18 +67,23 @@
 
 (defn- draw-tiled-map! [{:keys [ctx/tm-renderer
                                 ctx/tiled-map
-                                ctx/world-viewport
+                                ctx/camera
                                 ctx/color-setter]}]
   (tm-renderer/draw! tm-renderer
                      tiled-map
                      color-setter
-                     (:camera world-viewport)))
+                     camera))
+
+(defn- camera-zoom-controls! [{:keys [ctx/input
+                                      ctx/camera
+                                      ctx/zoom-speed]}]
+  (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
+  (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render! []
+  (graphics/clear-screen! color/black)
   (draw-tiled-map! @state)
-  ;(when (input/key-pressed? ctx (:zoom-in controls))  (g/inc-zoom! ctx    zoom-speed))
-  ;(when (input/key-pressed? ctx (:zoom-out controls)) (g/inc-zoom! ctx (- zoom-speed)))
-  )
+  (camera-zoom-controls! @state))
 
 (defn resize! [width height]
   (let [{:keys [ctx/world-viewport]} @state]
