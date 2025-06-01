@@ -42,21 +42,6 @@
                            (.pack window)))))
     (.setPosition window 0 (c/ui-viewport-height ctx)) window))
 
-(def ^:private camera-movement-speed 1)
-
-; TODO textfield takes control !
-; PLUS symbol shift & = symbol on keyboard not registered
-#_(defn- camera-controls [camera]
-  (let [apply-position (fn [idx f]
-                         (camera/set-position! camera
-                                               (update (camera/position camera)
-                                                       idx
-                                                       #(f % camera-movement-speed))))]
-    (if (input/key-pressed? input :left)  (apply-position 0 -))
-    (if (input/key-pressed? input :right) (apply-position 0 +))
-    (if (input/key-pressed? input :up)    (apply-position 1 +))
-    (if (input/key-pressed? input :down)  (apply-position 1 -))))
-
 #_(defn- render-on-map [_context]
   (let [{:keys [tiled-map
                 area-level-grid
@@ -108,29 +93,13 @@
                                                       (println t))))]]
               :pack? true}))
 
-(def ^:private zoom-speed 0.025)
-
-#_(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
-  (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera    zoom-speed))
-  (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
-
-(defn enter [_]
-  #_(show-whole-map! c/camera (:tiled-map @current-data)))
-
-(defn exit [_]
-  #_(camera/reset-zoom! c/camera))
-
 (defn render [_]
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? input :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (input/key-just-pressed? input :m)
       (swap! current-data update :show-movement-properties not))
-  #_(adjust-zoom input c/camera)
   #_(camera-controls input c/camera))
-
-#_(defn dispose [_]
-  #_(dispose (:tiled-map @current-data)))
 
 (comment
  (atom {:tiled-map (tiled/load-tmx-map modules/file)

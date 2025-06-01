@@ -54,7 +54,8 @@
                    :ctx/world-viewport world-viewport
                    :ctx/camera (:camera world-viewport)
                    :ctx/color-setter (constantly color/white)
-                   :ctx/zoom-speed 0.1)]
+                   :ctx/zoom-speed 0.1
+                   :ctx/camera-movement-speed 1)]
     (show-whole-map! (:camera world-viewport) tiled-map)
     (reset! state ctx)
     (println level)))
@@ -74,6 +75,19 @@
                      color-setter
                      camera))
 
+(defn- camera-movement-controls! [{:keys [ctx/input
+                                          ctx/camera
+                                          ctx/camera-movement-speed]}]
+  (let [apply-position (fn [idx f]
+                         (camera/set-position! camera
+                                               (update (camera/position camera)
+                                                       idx
+                                                       #(f % camera-movement-speed))))]
+    (if (input/key-pressed? input :left)  (apply-position 0 -))
+    (if (input/key-pressed? input :right) (apply-position 0 +))
+    (if (input/key-pressed? input :up)    (apply-position 1 +))
+    (if (input/key-pressed? input :down)  (apply-position 1 -))))
+
 (defn- camera-zoom-controls! [{:keys [ctx/input
                                       ctx/camera
                                       ctx/zoom-speed]}]
@@ -83,7 +97,8 @@
 (defn render! []
   (graphics/clear-screen! color/black)
   (draw-tiled-map! @state)
-  (camera-zoom-controls! @state))
+  (camera-zoom-controls! @state)
+  (camera-movement-controls! @state))
 
 (defn resize! [width height]
   (let [{:keys [ctx/world-viewport]} @state]
