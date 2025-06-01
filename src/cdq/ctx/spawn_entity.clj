@@ -1,4 +1,4 @@
-(ns cdq.g.spawn-entity
+(ns cdq.ctx.spawn-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.ctx :as ctx]

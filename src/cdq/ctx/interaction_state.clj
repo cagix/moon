@@ -1,4 +1,4 @@
-(ns cdq.g.interaction-state
+(ns cdq.ctx.interaction-state
   (:require [cdq.entity :as entity]
             [cdq.ctx]
             [cdq.inventory :as inventory]
@@ -58,10 +58,10 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
-(defn create [{:keys [ctx/mouseover-eid
-                      ctx/stage]
-               :as ctx}
-              eid]
+(defn interaction-state [{:keys [ctx/mouseover-eid
+                                 ctx/stage]
+                          :as ctx}
+                         eid]
   (let [entity @eid
         mouseover-actor (ctx/mouseover-actor ctx)]
     (cond

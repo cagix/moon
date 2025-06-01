@@ -155,5 +155,40 @@
             cdq.ui.editor.widget.one-to-many
             cdq.ui.editor.widget.image
             cdq.ui.editor.widget.animation
-            cdq.ui.editor.widget.map]
+            cdq.ui.editor.widget.map
+
+            cdq.tx.add-skill
+            cdq.tx.add-text-effect
+            cdq.tx.assoc
+            cdq.tx.assoc-in
+            cdq.tx.audiovisual
+            cdq.tx.dissoc
+            cdq.tx.effect
+            cdq.tx.event
+            cdq.tx.mark-destroyed
+            cdq.tx.mod-add
+            cdq.tx.mod-remove
+            cdq.tx.move-entity
+            cdq.tx.pay-mana-cost
+            cdq.tx.pickup-item
+            cdq.tx.remove-item
+            cdq.tx.remove-one-item
+            cdq.tx.remove-skill
+            cdq.tx.set-cooldown
+            cdq.tx.set-cursor
+            cdq.tx.set-item
+            cdq.tx.set-movement
+            cdq.tx.show-message
+            cdq.tx.show-modal
+            cdq.tx.sound
+            cdq.tx.spawn-alert
+            cdq.tx.spawn-creature
+            cdq.tx.spawn-effect
+            cdq.tx.spawn-item
+            cdq.tx.spawn-line
+            cdq.tx.spawn-projectile
+            cdq.tx.stack-item
+            cdq.tx.toggle-inventory-visible
+            cdq.tx.update-animation
+            ]
  }

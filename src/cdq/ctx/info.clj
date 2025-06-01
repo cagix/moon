@@ -1,4 +1,4 @@
-(ns cdq.g.info
+(ns cdq.ctx.info
   (:require [cdq.entity :as entity]
             [cdq.op :as op]
             [cdq.timer :as timer]

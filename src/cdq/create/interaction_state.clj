@@ -1,9 +1,9 @@
 (ns cdq.create.interaction-state
   (:require [cdq.ctx :as ctx]
-            [cdq.g.interaction-state]))
+            [cdq.ctx.interaction-state]))
 
 (defn do! [ctx]
   (extend (class ctx)
     ctx/InteractionState
-    {:interaction-state cdq.g.interaction-state/create})
+    {:interaction-state cdq.ctx.interaction-state/interaction-state})
   ctx)

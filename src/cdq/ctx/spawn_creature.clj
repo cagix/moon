@@ -1,4 +1,4 @@
-(ns cdq.g.spawn-creature
+(ns cdq.ctx.spawn-creature
   (:require [cdq.world :as world]
             [gdl.db :as db]
             [gdl.utils :as utils]))

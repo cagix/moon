@@ -6,8 +6,8 @@
             [cdq.ctx]
             [cdq.game]
             [cdq.graphics :as graphics]
-            [cdq.g.spawn-entity]
-            [cdq.g.spawn-creature]
+            [cdq.ctx.spawn-entity]
+            [cdq.ctx.spawn-creature]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
@@ -231,9 +231,9 @@
 (extend-type Context
   world/SpawnEntity
   (spawn-entity! [ctx position body components]
-    (cdq.g.spawn-entity/spawn-entity! ctx position body components)))
+    (cdq.ctx.spawn-entity/spawn-entity! ctx position body components)))
 
 (extend-type Context
   world/Creatures
   (spawn-creature! [ctx opts]
-    (cdq.g.spawn-creature/spawn-creature! ctx opts)))
+    (cdq.ctx.spawn-creature/spawn-creature! ctx opts)))
