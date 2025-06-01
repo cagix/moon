@@ -1,14 +1,18 @@
-(ns cdq.levelgen)
+(ns cdq.levelgen
+  (:require [cdq.create.db :as create.db]
+            [cdq.level.modules :as modules]))
+
+(defrecord Context [])
 
 (defn create! [config]
-  ; camera (world-viewport) -> untangle viewport logic (calculations & actions) -> TESTS are amazing -> TEST EVERYTHING!
-  ; => tested gdl game library for simple 2d games with space invaders !
-  ; or simple roguelike hand drawn.
-  ; input (world-mouse pos)
-  ; stage ( ui -> ui-viewport )
-  ; graphics ...
-  ; database ...
-  )
+  ; 1. generate level
+  (let [ctx (->Context)
+        ctx (assoc ctx :ctx/config
+                   {:db {:schemas "schema.edn"
+                         :properties "properties.edn"}})
+        ctx (create.db/do! ctx)
+        level (modules/create ctx)]
+    (println level)))
 
 (defn dispose! [])
 
