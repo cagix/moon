@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.entity :as entity]
+  (:require [cdq.assets :as assets]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.application :as application]
             [clojure.string :as str]
@@ -22,11 +23,11 @@
                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
                                    (entity/id entity)))
-                    :icon (g/texture ctx "images/mouseover.png")}
+                    :icon (assets/texture ctx "images/mouseover.png")}
                    {:label "elapsed-time"
                     :update-fn (fn [ctx]
                                  (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
-                    :icon (g/texture ctx "images/clock.png")}
+                    :icon (assets/texture ctx "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [{:keys [ctx/paused?]}]
                                  paused?)}
@@ -38,7 +39,7 @@
                                  (mapv int (g/world-mouse-position ctx)))}
                    {:label "Zoom"
                     :update-fn g/camera-zoom
-                    :icon (g/texture ctx "images/zoom.png")}
+                    :icon (assets/texture ctx "images/zoom.png")}
                    {:label "FPS"
                     :update-fn g/frames-per-second
-                    :icon (g/texture ctx "images/fps.png")}]})
+                    :icon (assets/texture ctx "images/fps.png")}]})

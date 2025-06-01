@@ -1,5 +1,6 @@
 (ns cdq.create.graphics
-  (:require [cdq.g :as g]
+  (:require [cdq.assets :as assets]
+            [cdq.g :as g]
             [cdq.input :as input]
             [cdq.application :as application]
             [clojure.gdx.graphics.camera :as camera]
@@ -335,7 +336,7 @@
     (.end batch))
 
   (sprite [{:keys [ctx/world-unit-scale] :as ctx} texture-path]
-    (create-sprite (TextureRegion. ^Texture (g/texture ctx texture-path))
+    (create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
                    world-unit-scale))
 
   (sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
@@ -347,7 +348,7 @@
                  texture-path
                  tilew
                  tileh]
-    {:image (create-sprite (TextureRegion. ^Texture (g/texture ctx texture-path))
+    {:image (create-sprite (TextureRegion. ^Texture (assets/texture ctx texture-path))
                            world-unit-scale)
      :tilew tilew
      :tileh tileh})

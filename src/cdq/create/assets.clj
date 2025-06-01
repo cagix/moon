@@ -1,12 +1,13 @@
 (ns cdq.create.assets
-  (:require [gdl.assets :as assets]
-            [cdq.g :as g]))
+  (:require [cdq.assets]
+            [cdq.g :as g]
+            [gdl.assets :as assets]))
 
 (def ^:private -k :ctx/assets)
 
 (defn do! [{:keys [ctx/config] :as ctx}]
   (extend (class ctx)
-    g/Assets
+    cdq.assets/Assets
     {:sound        (fn [ctx path] (assets/sound        (-k ctx) path))
      :texture      (fn [ctx path] (assets/texture      (-k ctx) path))
      :all-sounds   (fn [ctx]      (assets/all-sounds   (-k ctx)))
