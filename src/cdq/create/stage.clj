@@ -10,8 +10,7 @@
             [cdq.ui.player-state-draw]
             [cdq.ui.windows]
             [gdl.ui :as ui]
-            [gdl.ui.menu :as menu])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdl.ui.menu :as menu]))
 
 (defn- create-actors [{:keys [ctx/ui-viewport]
                        :as ctx}]
@@ -109,5 +108,5 @@
      })
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]
-    (.setInputProcessor Gdx/input stage)
+    (g/set-processor! ctx stage)
     (assoc ctx -k stage)))
