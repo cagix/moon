@@ -17,8 +17,10 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn spawn-creature! [ctx {:keys [position creature-id components]}]
-  (let [props (db/build ctx creature-id)]
+(defn spawn-creature! [{:keys [ctx/db]
+                        :as ctx}
+                       {:keys [position creature-id components]}]
+  (let [props (db/build db creature-id ctx)]
     (world/spawn-entity! ctx
                          position
                          (create-creature-body (:entity/body props))

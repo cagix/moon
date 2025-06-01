@@ -7,7 +7,9 @@
             [gdl.ui :as ui]
             [gdl.utils :refer [pprint-to-str]]))
 
-(defn- add-one-to-many-rows [ctx table property-type property-ids]
+(defn- add-one-to-many-rows [{:keys [ctx/db]
+                              :as ctx}
+                             table property-type property-ids]
   (let [redo-rows (fn [ctx property-ids]
                     (ui/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
@@ -28,7 +30,7 @@
                            (.pack window)
                            (stage/add-actor! ctx window))))]
       (for [property-id property-ids]
-        (let [property (db/build ctx property-id)
+        (let [property (db/build db property-id ctx)
               image-widget (ui/image->widget (property/image property)
                                              {:id property-id})]
           (ui/add-tooltip! image-widget (pprint-to-str property))))

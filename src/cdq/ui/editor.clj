@@ -21,8 +21,10 @@
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
-(defn editor-window [props {:keys [ctx/ui-viewport] :as ctx}]
-  (let [schema (get (db/schemas ctx) (property/type props))
+(defn editor-window [props {:keys [ctx/db
+                                   ctx/ui-viewport]
+                            :as ctx}]
+  (let [schema (get (:schemas db) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -31,13 +33,13 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (widget/create schema props ctx)
-        save!   (apply-context-fn window (fn [ctx]
-                                           (swap! application/state
-                                                  db/update-property
-                                                  (widget/value schema widget (db/schemas ctx)))))
+        save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
+                                           (swap! application/state update :ctx/db
+                                                  db/update!
+                                                  (widget/value schema widget (:schemas db)))))
         delete! (apply-context-fn window (fn [_ctx]
-                                           (swap! application/state
-                                                  db/delete-property
+                                           (swap! application/state update :ctx/db
+                                                  db/delete!
                                                   (:property/id props))))]
     (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
                                                    [[{:actor widget :colspan 2}]
@@ -55,8 +57,8 @@
     (.pack window)
     window))
 
-(defn- edit-property [id ctx]
-  (stage/add-actor! ctx (editor-window (db/get-raw ctx id) ctx)))
+(defn- edit-property [id {:keys [ctx/db] :as ctx}]
+  (stage/add-actor! ctx (editor-window (db/get-raw db id) ctx)))
 
 (defn open-editor-window! [ctx property-type]
   (let [window (ui/window {:title "Edit"

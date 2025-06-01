@@ -5,30 +5,8 @@
             [cdq.property :as property]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [gdl.db :as db]
             [gdl.utils :as utils]))
-
-(defprotocol PDB
-  (property-types [_])
-  (update! [_ property]
-          "Validates the given property, throws an error if invalid and asserts its id is contained in the database.
-
-          Writes the database to disk asynchronously.
-
-          Returns a new database with the property updated.")
-  (delete! [_ property-id]
-          "Asserts if a property with property-id is contained in the database.
-
-          Writes the database to disk asynchronously.
-
-          Returns a new database with the property removed.")
-  (get-raw [_ property-id]
-           "Returns the property value without schema based transformations.")
-  (all-raw [_ property-type]
-           "Returns all properties with type without schema-based transformations.")
-  (build [_ property-id ctx]
-         "Returns the property with schema-based transformations.")
-  (build-all [_ property-type ctx]
-             "Returns all properties with type with schema-based transformations."))
 
 (defn- save! [{:keys [data file]}]
   ; TODO validate them again!?
@@ -40,7 +18,7 @@
        (utils/async-pprint-spit! file)))
 
 (defrecord DB [data file schemas]
-  PDB
+  db/Database
   (property-types [_]
     (schemas/property-types schemas))
 
@@ -65,19 +43,24 @@
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
+  ; why this needs ctx?
+  ; or we build the db at start?
+  ; need to pass whole ctx at every creature spawn ....
+  ; we had some problem with relationships
+  ; why we don't just use datomic ?
   (build [this property-id ctx]
     (schemas/transform schemas
-                       (get-raw this property-id)
+                       (db/get-raw this property-id)
                        ctx))
 
   (build-all [this property-type ctx]
     (map #(schemas/transform schemas % ctx)
-         (all-raw this property-type))))
+         (db/all-raw this property-type))))
 
 (defn create [{:keys [schemas
                       properties]}]
   (let [schemas (schemas-impl/create (utils/io-slurp-edn schemas))
-        properties-file (io/resource properties) ; TODO required from existing?
+        properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
@@ -86,8 +69,17 @@
               :file properties-file
               :schemas schemas})))
 
+; why do I do transform edn->value in the middle of running game need full ctx graphics/assets
+; and db to spawn a creature ?
+; how is it related to editor (we dont want to build everything, work with raw data there)
+; and how is it related with relationships, why not just add create skill/item work with id?
+; what was the reason for this?
+; also for the info texts there is too much showing
+; => observability -> tiles/context/app-values-tree/stage ui elements/entity see in game
+; right click map tree view step by step.
+
 (defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
-  (build db property-id ctx))
+  (db/build db property-id ctx))
 
 (defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
-  (set (map #(build db % ctx) property-ids)))
+  (set (map #(db/build db % ctx) property-ids)))

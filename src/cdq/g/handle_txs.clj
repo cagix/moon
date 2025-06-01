@@ -56,10 +56,12 @@
 (defmethod handle-tx! :tx/toggle-inventory-visible [_ ctx]
   (stage/toggle-inventory-visible! ctx))
 
-(defmethod handle-tx! :tx/audiovisual [[_ position audiovisual] ctx]
+(defmethod handle-tx! :tx/audiovisual [[_ position audiovisual]
+                                       {:keys [ctx/db]
+                                        :as ctx}]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
-                                     (db/build ctx audiovisual)
+                                     (db/build db audiovisual ctx)
                                      audiovisual)]
     (play-sound! ctx sound)
     (spawn-effect! ctx

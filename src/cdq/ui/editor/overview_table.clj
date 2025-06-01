@@ -47,14 +47,16 @@
     (ui/set-touchable! top-widget :disabled)
     stack))
 
-(defn create [ctx property-type clicked-id-fn]
+(defn create [{:keys [ctx/db]
+               :as ctx}
+              property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all ctx property-type)
+        properties (db/build-all db property-type ctx)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]

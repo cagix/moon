@@ -16,14 +16,14 @@
       (apply texture/region texture sub-image-bounds)
       (texture/region texture))))
 
-(defn prepare-creature-properties [{:keys [ctx/assets]
-                                    :as ctx}]
-  (for [creature (db/all-raw ctx :properties/creatures)]
+(defn prepare-creature-properties [{:keys [ctx/assets
+                                           ctx/db]}]
+  (for [creature (db/all-raw db :properties/creatures)]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
                        :tile/texture-region (creature->texture-region assets creature)})))
 
-(def creature-tile
+(def creature-tile ; TODO this is probably not memoized properly as each texture region new java object
   (memoize
    (fn [{:keys [tile/id
                 tile/texture-region]}]
