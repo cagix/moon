@@ -1,6 +1,7 @@
 (ns clojure.ui
+  (:require [clojure.graphics.texture :as texture])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+           (clojure.graphics.texture Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
@@ -364,8 +365,8 @@
 (defmethod image* Drawable [^Drawable drawable]
   (VisImage. drawable))
 
-(defmethod image* Texture [^Texture texture]
-  (VisImage. (TextureRegion. texture)))
+(defmethod image* Texture [texture]
+  (VisImage. (texture/region texture)))
 
 (defmethod image* TextureRegion [^TextureRegion tr]
   (VisImage. tr))

@@ -3,10 +3,12 @@
             [clojure.audio.sound :as sound]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
+            [clojure.graphics.texture :as texture]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils Disposable)))
 
 (defn- recursively-search [folder extensions]
@@ -24,6 +26,17 @@
           :else
           (recur remaining result))))
 
+(defn- get-assets-to-load [files
+                           {:keys [folder
+                                   asset-type-extensions]}]
+  (for [[asset-type extensions] asset-type-extensions
+        file (map #(str/replace-first % folder "")
+                  (recursively-search (files/internal files folder)
+                                      extensions))]
+    [file (case asset-type
+            :sound Sound
+            :texture Texture)]))
+
 (defn- create-manager [assets]
   (let [manager (AssetManager.)]
     (doseq [[file class] assets]
@@ -31,29 +44,37 @@
     (.finishLoading manager)
     manager))
 
-(defn- safe-get [^AssetManager this path]
+(defn safe-get [^AssetManager this path]
   (if (.contains this path)
-    (let [asset (.get this ^String path)]
-      (if (= (.getAssetType this path) Sound)
-        (reify sound/Sound
-          (play! [_]
-            (Sound/.play asset)))
-        asset))
+    (.get this ^String path)
     (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
 
-(defn- all-of-type [^AssetManager assets class]
+(defn all-of-class [^AssetManager assets class]
   (filter #(= (.getAssetType assets %) class)
           (.getAssetNames assets)))
 
-(defn- create-assets [files {:keys [folder asset-type-extensions]}]
-  (let [manager (create-manager
-                 (for [[asset-type extensions] asset-type-extensions
-                       file (map #(str/replace-first % folder "")
-                                 (recursively-search (files/internal files folder)
-                                                     extensions))]
-                   [file (case asset-type
-                           :sound Sound
-                           :texture Texture)]))]
+; no wait -> clojure.gdx.assets.manager reifies clojure.graphics.texture/clojure.audio.sound ....
+; so we only pass assets-to-load ...
+; 'gdx/asset-manager' ?
+; its already IFn ... and implements clojure.assets.manager/all-of-class & disposable
+; which I can make again as protocol ... !?
+(defn- reify-asset [asset]
+  (if (instance? Sound asset)
+    (reify sound/Sound
+      (play! [_]
+        (Sound/.play asset)))
+    (reify texture/Texture
+      (region [_]
+        (TextureRegion. ^Texture asset))
+      (region [_ x y w h]
+        (TextureRegion. ^Texture asset
+                        (int x)
+                        (int y)
+                        (int w)
+                        (int h))))))
+
+(defn- create-assets [files config]
+  (let [manager (create-manager (get-assets-to-load files config))]
     (reify
       Disposable
       (dispose [_]
@@ -61,14 +82,14 @@
 
       clojure.lang.IFn
       (invoke [_ path]
-        (safe-get manager path))
+        (reify-asset (safe-get manager path)))
 
       assets/Assets
       (all-sounds [_]
-        (all-of-type manager Sound))
+        (all-of-class manager Sound))
 
       (all-textures [_]
-        (all-of-type manager Texture)))))
+        (all-of-class manager Texture)))))
 
 (defn do! [{:keys [ctx/config
                    ctx/files]
