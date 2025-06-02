@@ -5,7 +5,7 @@
 
 (defn -main [config-path]
   (let [config (utils/load-edn-config config-path)]
-    (lwjgl/application (:lwjgl3-config config)
+    (lwjgl/application (:clojure.gdx.backends.lwjgl/application config)
                        (proxy [ApplicationAdapter] []
                          (create []
                            ((:create! config) config))
