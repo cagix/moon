@@ -328,7 +328,7 @@
 
 (defn- k->class ^Class [asset-type-k]
   (case asset-type-k
-    :sound Sound ; namespaced k ?
+    :sound Sound
     :texture Texture))
 
 (defn- reify-asset [asset]
@@ -346,14 +346,13 @@
                         (int w)
                         (int h))))))
 
-; but it is still secretly using global 'Gdx' state .... which we will not touch simply ...
 (defn asset-manager [assets]
   (let [this (AssetManager.)]
     (doseq [[file asset-type-k] assets]
       (.load this ^String file (k->class asset-type-k)))
     (.finishLoading this)
     (reify
-      Disposable ; -> here I can reify the protocol stuffs
+      Disposable
       (dispose [_]
         (Disposable/.dispose this))
 
