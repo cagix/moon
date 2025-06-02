@@ -131,7 +131,7 @@
     (ui/remove-tooltip! cell-widget)))
 
 (defn cell-with-item?
-  "Ff the actor is an inventory-cell, returns the inventory slot."
+  "If the actor is an inventory-cell, returns the inventory slot."
   [actor]
   {:pre [actor]}
   (and (ui/parent actor)
