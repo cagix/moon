@@ -2,15 +2,18 @@
   (:require [clojure.assets :as assets]
             [clojure.audio.sound :as sound]
             [clojure.files :as files]
+            [clojure.files.file-handle :as file-handle]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
             [clojure.input :as input])
-  (:import (clojure.lang IFn)
+  (:import (clojure.lang IFn
+                         ILookup)
            (com.badlogic.gdx Gdx
                              Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -379,11 +382,27 @@
         [(.getX this)
          (.getY this)]))))
 
+(defn- reify-file-handle [^FileHandle fh]
+  (reify
+    ILookup
+    (valAt [_ k]
+      (case k
+        :java-object fh))
+    file-handle/FileHandle
+    (list [_]
+      (map reify-file-handle (.list fh)))
+    (directory? [_]
+      (.isDirectory fh))
+    (extension [_]
+      (.extension fh))
+    (path [_]
+      (.path fh))))
+
 (defn files []
   (let [this Gdx/files]
     (reify files/Files
       (internal [_ path]
-        (.internal this path)))))
+        (reify-file-handle (.internal this path))))))
 
 (defn graphics []
   (let [this Gdx/graphics]

@@ -1,5 +1,4 @@
 (ns clojure.graphics
-  (:require [clojure.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap

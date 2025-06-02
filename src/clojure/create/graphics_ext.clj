@@ -11,7 +11,7 @@
                                       Texture$TextureFilter)))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (files/internal files file)
+  (let [font (freetype/generate (:java-object (files/internal files file))
                                 {:size (* size quality-scaling)
                                  :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
                                  :mag-filter Texture$TextureFilter/Linear})]
@@ -35,7 +35,7 @@
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                          (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
+                                          (let [pixmap (Pixmap. (:java-object (files/internal files (format cursor-path-format file))))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                                             (.dispose pixmap)
                                             cursor))
