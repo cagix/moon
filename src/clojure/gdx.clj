@@ -1,8 +1,17 @@
 (ns clojure.gdx
-  (:import (com.badlogic.gdx Input$Buttons
+  (:require [clojure.assets :as assets]
+            [clojure.audio.sound :as sound]
+            [clojure.graphics.texture :as texture])
+  (:import (clojure.lang IFn)
+           (com.badlogic.gdx Input$Buttons
                              Input$Keys)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Color
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.utils Align
+                                   Disposable)))
 
 (comment
 
@@ -298,3 +307,50 @@
     :center Align/center
     :left   Align/left
     :right  Align/right))
+
+(defn- k->class ^Class [asset-type-k]
+  (case asset-type-k
+    :sound Sound ; namespaced k ?
+    :texture Texture))
+
+; no wait -> clojure.gdx.assets.manager reifies clojure.graphics.texture/clojure.audio.sound ....
+; so we only pass assets-to-load ...
+; 'gdx/asset-manager' ?
+; its already IFn ... and implements clojure.assets.manager/all-of-class & disposable
+; which I can make again as protocol ... !?
+(defn- reify-asset [asset]
+  (if (instance? Sound asset)
+    (reify sound/Sound
+      (play! [_]
+        (Sound/.play asset)))
+    (reify texture/Texture
+      (region [_]
+        (TextureRegion. ^Texture asset))
+      (region [_ x y w h]
+        (TextureRegion. ^Texture asset
+                        (int x)
+                        (int y)
+                        (int w)
+                        (int h))))))
+
+(defn asset-manager [assets]
+  (let [this (AssetManager.)]
+    (doseq [[file asset-type-k] assets]
+      (.load this ^String file (k->class asset-type-k)))
+    (.finishLoading this)
+    (reify
+      Disposable ; -> here I can reify the protocol stuffs
+      (dispose [_]
+        (Disposable/.dispose this))
+
+      IFn
+      (invoke [_ path]
+        (-> (if (.contains this path)
+              (.get this ^String path)
+              (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))
+            reify-asset))
+
+      assets/Assets
+      (all-of-type [_ asset-type-k]
+        (filter #(= (.getAssetType this %) (k->class asset-type-k))
+                (.getAssetNames this))))))
