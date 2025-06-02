@@ -1,13 +1,13 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.entity :as entity]
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.world :as world]
             [gdl.utils :refer [defcomponent]]))
 
 (defcomponent :npc-sleeping
   (entity/tick! [_ eid ctx]
     (let [entity @eid]
-      (when-let [distance (world/nearest-enemy-distance ctx entity)]
+      (when-let [distance (ctx/nearest-enemy-distance ctx entity)]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           [[:tx/event eid :alert]]))))
 

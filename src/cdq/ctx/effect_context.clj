@@ -1,7 +1,7 @@
 (ns cdq.ctx.effect-context
-  (:require [cdq.entity :as entity]
+  (:require [cdq.ctx]
+            [cdq.entity :as entity]
             [cdq.vector2 :as v]
-            [cdq.world :as world]
             [gdl.ctx :as ctx]))
 
 (defn player-effect-ctx [{:keys [ctx/mouseover-eid]
@@ -17,9 +17,9 @@
 
 (defn npc-effect-ctx [ctx eid]
   (let [entity @eid
-        target (world/nearest-enemy ctx entity)
+        target (cdq.ctx/nearest-enemy ctx entity)
         target (when (and target
-                          (world/line-of-sight? ctx entity @target))
+                          (cdq.ctx/line-of-sight? ctx entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

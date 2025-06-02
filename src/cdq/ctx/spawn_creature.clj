@@ -1,5 +1,5 @@
 (ns cdq.ctx.spawn-creature
-  (:require [cdq.world :as world]
+  (:require [cdq.ctx]
             [gdl.db :as db]
             [gdl.utils :as utils]))
 
@@ -21,10 +21,10 @@
                         :as ctx}
                        {:keys [position creature-id components]}]
   (let [props (db/build db creature-id ctx)]
-    (world/spawn-entity! ctx
-                         position
-                         (create-creature-body (:entity/body props))
-                         (-> props
-                             (dissoc :entity/body)
-                             (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                             (utils/safe-merge components)))))
+    (cdq.ctx/spawn-entity! ctx
+                           position
+                           (create-creature-body (:entity/body props))
+                           (-> props
+                               (dissoc :entity/body)
+                               (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                               (utils/safe-merge components)))))

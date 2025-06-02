@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-viewport.render-entities
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx :as ctx]
+            [cdq.graphics :as graphics]
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
-            [cdq.world :as world]
             [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)
@@ -26,7 +26,7 @@
                      #'entity/render-info!]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (world/line-of-sight? ctx player entity))]
+                      (ctx/line-of-sight? ctx player entity))]
       (try
        (when show-body-bounds?
          (graphics/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))

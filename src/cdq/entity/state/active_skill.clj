@@ -1,9 +1,9 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.effect :as effect]
+  (:require [cdq.ctx :as ctx]
+            [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.world :as world]
             [gdl.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -27,7 +27,7 @@
   [ctx {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? ctx @source @target))
+           (ctx/line-of-sight? ctx @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 

@@ -4,7 +4,6 @@
             [cdq.ctx :as ctx]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
-            [cdq.world :as world]
             [gdl.malli :as m]
             [gdl.math :as math]
             [gdl.utils :as utils]))
@@ -222,7 +221,7 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
-    (world/context-entity-add! ctx eid)
+    (ctx/context-entity-add! ctx eid)
     (doseq [component @eid]
       (ctx/handle-txs! ctx (entity/create! component eid ctx)))
     eid))
