@@ -1,13 +1,13 @@
-{:clojure.gdx.backends.lwjgl/application {:title "Cyber Dungeon Quest"
-                                          :windowed-mode {:width 1440
-                                                          :height 900}
-                                          :foreground-fps 60
-                                          :mac-os {:glfw-async? true
-                                                   :dock-icon "moon.png"}}
- :create!  clojure.application/create!
- :dispose! clojure.application/dispose!
- :render!  clojure.application/render!
- :resize!  clojure.application/resize!
+{:clojure.lwjgl/config {:title "Cyber Dungeon Quest"
+                        :windowed-mode {:width 1440
+                                        :height 900}
+                        :foreground-fps 60
+                        :mac-os {:glfw-async? true
+                                 :dock-icon "moon.png"}}
+ :clojure.lwjgl/create!  clojure.application/create!
+ :clojure.lwjgl/dispose! clojure.application/dispose!
+ :clojure.lwjgl/render!  clojure.application/render!
+ :clojure.lwjgl/resize!  clojure.application/resize!
  :create-fns [clojure.create.app/do!
               clojure.create.files/do!
               clojure.create.assets/do!
