@@ -1,9 +1,13 @@
 (ns clojure.gdx
   (:require [clojure.assets :as assets]
             [clojure.audio.sound :as sound]
-            [clojure.graphics.texture :as texture])
+            [clojure.files :as files]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.texture :as texture]
+            [clojure.input :as input])
   (:import (clojure.lang IFn)
-           (com.badlogic.gdx Input$Buttons
+           (com.badlogic.gdx Gdx
+                             Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
@@ -333,6 +337,7 @@
                         (int w)
                         (int h))))))
 
+; but it is still secretly using global 'Gdx' state .... which we will not touch simply ...
 (defn asset-manager [assets]
   (let [this (AssetManager.)]
     (doseq [[file asset-type-k] assets]
@@ -354,3 +359,43 @@
       (all-of-type [_ asset-type-k]
         (filter #(= (.getAssetType this %) (k->class asset-type-k))
                 (.getAssetNames this))))))
+
+(defn input []
+  (let [this Gdx/input]
+    (reify input/Input
+      (button-just-pressed? [_ button]
+        (.isButtonJustPressed this (k->input-button button)))
+
+      (key-pressed? [_ key]
+        (.isKeyPressed this (k->input-key key)))
+
+      (key-just-pressed? [_ key]
+        (.isKeyJustPressed this (k->input-key key)))
+
+      (set-processor! [_ input-processor]
+        (.setInputProcessor this input-processor))
+
+      (mouse-position [_]
+        [(.getX this)
+         (.getY this)]))))
+
+(defn files []
+  (let [this Gdx/files]
+    (reify files/Files
+      (internal [_ path]
+        (.internal this path)))))
+
+(defn graphics []
+  (let [this Gdx/graphics]
+    (reify graphics/Graphics
+      (delta-time [_]
+        (.getDeltaTime this))
+
+      (frames-per-second [_]
+        (.getFramesPerSecond this))
+
+      (new-cursor [_ pixmap hotspot-x hotspot-y]
+        (.newCursor this pixmap hotspot-x hotspot-y))
+
+      (set-cursor! [_ cursor]
+        (.setCursor this cursor)))))

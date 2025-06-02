@@ -1,9 +1,5 @@
 (ns clojure.create.files
-  (:require [clojure.files :as files])
-  (:import (com.badlogic.gdx Gdx)))
+  (:require [clojure.gdx :as gdx]))
 
 (defn do! [ctx]
-  (assoc ctx :ctx/files (let [this Gdx/files]
-                          (reify files/Files
-                            (internal [_ path]
-                              (.internal this path))))))
+  (assoc ctx :ctx/files (gdx/files)))
