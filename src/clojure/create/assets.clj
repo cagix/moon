@@ -33,25 +33,7 @@
         file (map #(str/replace-first % folder "")
                   (recursively-search (files/internal files folder)
                                       extensions))]
-    [file (case asset-type
-            :sound Sound
-            :texture Texture)]))
-
-(defn- create-manager [assets]
-  (let [manager (AssetManager.)]
-    (doseq [[file class] assets]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
-(defn safe-get [^AssetManager this path]
-  (if (.contains this path)
-    (.get this ^String path)
-    (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
-
-(defn all-of-class [^AssetManager assets class]
-  (filter #(= (.getAssetType assets %) class)
-          (.getAssetNames assets)))
+    [file asset-type]))
 
 ; no wait -> clojure.gdx.assets.manager reifies clojure.graphics.texture/clojure.audio.sound ....
 ; so we only pass assets-to-load ...
@@ -73,25 +55,34 @@
                         (int w)
                         (int h))))))
 
-(defn- create-assets [files config]
-  (let [manager (create-manager (get-assets-to-load files config))]
+(defn- k->class ^Class [asset-type-k]
+  (case asset-type-k
+    :sound Sound ; namespaced k ?
+    :texture Texture))
+
+(defn- asset-manager [assets]
+  (let [this (AssetManager.)]
+    (doseq [[file asset-type-k] assets]
+      (.load this ^String file (k->class asset-type-k)))
+    (.finishLoading this)
     (reify
-      Disposable
+      Disposable ; -> here I can reify the protocol stuffs
       (dispose [_]
-        (Disposable/.dispose manager))
+        (Disposable/.dispose this))
 
       clojure.lang.IFn
       (invoke [_ path]
-        (reify-asset (safe-get manager path)))
+        (-> (if (.contains this path)
+              (.get this ^String path)
+              (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))
+            reify-asset))
 
       assets/Assets
-      (all-sounds [_]
-        (all-of-class manager Sound))
-
-      (all-textures [_]
-        (all-of-class manager Texture)))))
+      (all-of-type [_ asset-type-k]
+        (filter #(= (.getAssetType this %) (k->class asset-type-k))
+                (.getAssetNames this))))))
 
 (defn do! [{:keys [ctx/config
                    ctx/files]
             :as ctx}]
-  (assoc ctx :ctx/assets (create-assets files (:assets config))))
+  (assoc ctx :ctx/assets (asset-manager (get-assets-to-load files (:assets config)))))

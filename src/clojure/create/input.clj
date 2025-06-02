@@ -1,5 +1,5 @@
 (ns clojure.create.input
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx] ; -> its _all_ in clojure.gdx the creation fns .... !
             [clojure.input :as input])
   (:import (com.badlogic.gdx Gdx)))
 

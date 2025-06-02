@@ -17,7 +17,7 @@
                                   {:keys [ctx/assets
                                           ctx/stage
                                           ctx/ui-viewport]}]
-  (let [rows (for [sound-name (assets/all-sounds assets)]
+  (let [rows (for [sound-name (assets/all-of-type assets :sound)]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (ui/clear-children! table)

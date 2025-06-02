@@ -7,7 +7,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows [ctx]
-    (for [file (sort (assets/all-textures ctx))]
+    (for [file (sort (assets/all-of-type ctx :texture))]
       [(ui/image-button (image file)
                         (fn [_actor _ctx]))]
       #_[(ui/text-button file
