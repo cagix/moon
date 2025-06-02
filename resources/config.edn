@@ -8,8 +8,7 @@
  :clojure.lwjgl/dispose! clojure.application/dispose!
  :clojure.lwjgl/render!  clojure.application/render!
  :clojure.lwjgl/resize!  clojure.application/resize!
- :create-fns [clojure.create.app/do!
-              clojure.create.files/do!
+ :create-fns [clojure.create.files/do!
               clojure.create.assets/do!
               clojure.create.input/do!
               clojure.create.db/do!

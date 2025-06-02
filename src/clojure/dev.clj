@@ -3,12 +3,11 @@
             [clojure.entity :as entity]
             [clojure.ctx :as ctx]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [clojure.app :as app]))
+            [clojure.pprint :refer [pprint]])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable! [& exprs]
-  `(app/post-runnable! (:ctx/app @application/state)
-                       (fn [] ~@exprs)))
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (comment
 
