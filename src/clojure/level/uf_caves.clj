@@ -1,17 +1,14 @@
 (ns clojure.level.uf-caves
-  (:require [clojure.grid2d :as g2d]
-            [clojure.rand :refer [get-rand-weighted-item]]
+  (:require [clojure.graphics.texture :as texture]
+            [clojure.grid2d :as g2d]
             [clojure.level.helper :refer [prepare-creature-properties
-                                      add-creatures-layer!
-                                      wgt-grid->tiled-map
-                                      adjacent-wall-positions
-                                      scalegrid
-                                      cave-grid
-                                      flood-fill]]
-            [clojure.graphics.texture :as texture]
+                                          add-creatures-layer!
+                                          wgt-grid->tiled-map
+                                          adjacent-wall-positions
+                                          scalegrid
+                                          flood-fill]]
+            [clojure.rand :refer [get-rand-weighted-item]]
             [clojure.tiled :as tiled]))
-
-(def ^:private scaling 4)
 
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
@@ -102,11 +99,14 @@
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
-(defn- create* [{:keys [map-size spawn-rate]}
-                creature-properties
-                texture]
-  (let [{:keys [start grid]} (cave-grid :size map-size)
-        {:keys [start-position grid]} (scale-grid grid start scaling)
+(defn- create* [{:keys [level/grid
+                        level/start
+                        level/spawn-rate
+                        level/creature-properties
+                        level/texture
+                        level/scaling]}]
+  (assert (= #{:wall :ground} (set (g2d/cells grid))))
+  (let [{:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
         tiled-map (generate-tiled-map texture grid)
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
@@ -121,9 +121,42 @@
     {:tiled-map tiled-map
      :start-position start-position}))
 
+(require '[clojure.level.caves :as caves])
+
+(defn initial-grid-creation [{:keys [level/size
+                                     level/cave-style
+                                     level/random]
+                              :as level}]
+  (let [{:keys [start grid]} (caves/create random size size cave-style)]
+    (assert (= #{:wall :ground} (set (g2d/cells grid))))
+    (assoc level
+           :level/start start
+           :level/grid grid)))
+
+(require '[clojure.level.nads :as nads])
+
+(defn fix-nads [{:keys [level/grid]
+                 :as level}]
+  (assert (= #{:wall :ground} (set (g2d/cells grid))))
+  (let [grid (nads/fix-nads grid)]
+    (assert (= #{:wall :ground} (set (g2d/cells grid))))
+    (assoc level :level/grid grid)))
+
+(def level-generator-steps [initial-grid-creation
+                            fix-nads
+                            create*])
+
+; => TODO params for each step?
+
 (defn create [{:keys [ctx/assets]
                :as ctx}]
-  (create* {:map-size 200,
-            :spawn-rate 0.01}
-           (prepare-creature-properties ctx)
-           (assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+  (reduce (fn [level f]
+            (f level))
+          {:level/texture (assets "maps/uf_terrain.png")
+           :level/random (java.util.Random.)
+           :level/size 200
+           :level/cave-style :wide
+           :level/spawn-rate 0.02
+           :level/scaling 3
+           :level/creature-properties (prepare-creature-properties ctx)}
+          level-generator-steps))
