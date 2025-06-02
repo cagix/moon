@@ -15,8 +15,10 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+                                      Texture
+                                      Pixmap)
+           (com.badlogic.gdx.graphics.g2d TextureRegion
+                                          SpriteBatch)
            (com.badlogic.gdx.utils Align
                                    Disposable)))
 
@@ -320,11 +322,6 @@
     :sound Sound ; namespaced k ?
     :texture Texture))
 
-; no wait -> clojure.gdx.assets.manager reifies clojure.graphics.texture/clojure.audio.sound ....
-; so we only pass assets-to-load ...
-; 'gdx/asset-manager' ?
-; its already IFn ... and implements clojure.assets.manager/all-of-class & disposable
-; which I can make again as protocol ... !?
 (defn- reify-asset [asset]
   (if (instance? Sound asset)
     (reify sound/Sound
@@ -387,7 +384,7 @@
     ILookup
     (valAt [_ k]
       (case k
-        :java-object fh))
+        :java-object fh)) ; Pixmap. & FreeTypeFontGenerator.
     file-handle/FileHandle
     (list [_]
       (map reify-file-handle (.list fh)))
@@ -418,3 +415,19 @@
 
       (set-cursor! [_ cursor]
         (.setCursor this cursor)))))
+
+(defn sprite-batch []
+  (SpriteBatch.))
+
+; dispose
+; shape drawer create
+; tiled-map-renderer/create
+; ui/stage
+; bitmap-font/draw!
+; draw-texture-region! ( draw & set-color )
+; draw-on-world-viewport -> set-projection-matrix / begin / end
+
+(defn pixmap [file-handle]
+  (Pixmap. (:java-object file-handle)))
+
+; => dispose ...

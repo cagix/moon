@@ -3,17 +3,13 @@
                                       Texture
                                       Pixmap
                                       Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)))
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defprotocol Graphics
   (delta-time [_])
   (frames-per-second [_])
   (new-cursor [_ pixmap hotspot-x hotspot-y])
   (set-cursor! [_ cursor]))
-
-(defn sprite-batch []
-  (SpriteBatch.))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -44,7 +40,7 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
-(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation color]
+(defn- draw-texture-region! [^com.badlogic.gdx.graphics.g2d.Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
   (.draw batch
          texture-region

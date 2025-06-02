@@ -2,6 +2,7 @@
   (:require [clojure.level.modules]
             [clojure.level.uf-caves]
             [clojure.level.vampire]
+            [clojure.gdx :as gdx]
             [clojure.graphics.camera :as camera]
             [clojure.create.assets]
             [clojure.create.files]
@@ -90,7 +91,7 @@
         ctx (clojure.create.viewport/ui ctx)
         ctx (clojure.create.world-unit-scale/do! ctx)
         ctx (clojure.create.viewport/world ctx)
-        batch (graphics/sprite-batch)
+        batch (gdx/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)
         ctx (assoc ctx

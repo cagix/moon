@@ -1,20 +1,19 @@
 (ns clojure.create.graphics-ext
   (:require [clojure.files :as files]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.freetype :as freetype]
             [clojure.graphics :as graphics]
             [clojure.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.graphics.g2d.freetype :as freetype]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.shape-drawer :as sd]
-            [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.graphics Pixmap
-                                      Texture$TextureFilter)))
+            [clojure.utils :as utils]))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (:java-object (files/internal files file))
+  (let [font (freetype/generate (files/internal files file)
                                 {:size (* size quality-scaling)
-                                 :min-filter Texture$TextureFilter/Linear ; because scaling to world-units
-                                 :mag-filter Texture$TextureFilter/Linear})]
+                                 :min-filter :texture-filter/linear ; because scaling to world-units
+                                 :mag-filter :texture-filter/linear})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
@@ -28,16 +27,16 @@
          (let [{:keys [cursor-path-format
                        cursors
                        default-font]} config
-               batch (graphics/sprite-batch)
+               batch (gdx/sprite-batch)
                shape-drawer-texture (graphics/white-pixel-texture)]
            {:ctx/batch batch
             :ctx/unit-scale (atom 1)
             :ctx/shape-drawer-texture shape-drawer-texture
             :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                          (let [pixmap (Pixmap. (:java-object (files/internal files (format cursor-path-format file))))
+                                          (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                            (.dispose pixmap)
+                                            (utils/dispose! pixmap)
                                             cursor))
                                         cursors)
             :ctx/default-font (truetype-font files default-font)
