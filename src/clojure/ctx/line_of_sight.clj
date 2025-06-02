@@ -1,7 +1,7 @@
 (ns clojure.ctx.line-of-sight
   (:require [clojure.entity :as entity]
-            [clojure.raycaster :as raycaster]
-            [clojure.gdx.graphics.camera :as camera]))
+            [clojure.graphics.camera :as camera]
+            [clojure.raycaster :as raycaster]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

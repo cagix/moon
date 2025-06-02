@@ -1,5 +1,5 @@
 (ns clojure.create.input
-  (:require [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx :as gdx]
             [clojure.input :as input])
   (:import (com.badlogic.gdx Gdx)))
 
@@ -7,13 +7,13 @@
   (assoc ctx :ctx/input (let [this Gdx/input]
                           (reify input/Input
                             (button-just-pressed? [_ button]
-                              (.isButtonJustPressed this (interop/k->input-button button)))
+                              (.isButtonJustPressed this (gdx/k->input-button button)))
 
                             (key-pressed? [_ key]
-                              (.isKeyPressed this (interop/k->input-key key)))
+                              (.isKeyPressed this (gdx/k->input-key key)))
 
                             (key-just-pressed? [_ key]
-                              (.isKeyJustPressed this (interop/k->input-key key)))
+                              (.isKeyJustPressed this (gdx/k->input-key key)))
 
                             (set-processor! [_ input-processor]
                               (.setInputProcessor this input-processor))

@@ -1,6 +1,6 @@
 (ns clojure.render.draw-on-world-viewport.draw-tile-grid
   (:require [clojure.ctx :as ctx]
-            [clojure.gdx.graphics.camera :as camera]))
+            [clojure.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-tile-grid? false)
 

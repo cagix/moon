@@ -1,10 +1,10 @@
 (ns clojure.create.assets
-  (:require [clojure.gdx.assets.manager :as manager]
-            [clojure.gdx.utils.files :as utils.files]
-            [clojure.string :as str]
-            [clojure.assets :as assets]
+  (:require [clojure.assets :as assets]
+            [clojure.assets.manager :as manager]
+            [clojure.audio.sound]
             [clojure.files :as files]
-            [clojure.audio.sound])
+            [clojure.string :as str]
+            [clojure.utils.files :as utils.files])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.utils Disposable)))

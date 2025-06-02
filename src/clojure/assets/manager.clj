@@ -1,4 +1,4 @@
-(ns clojure.gdx.assets.manager
+(ns clojure.assets.manager
   (:import (com.badlogic.gdx.assets AssetManager)))
 
 (defn create [assets]

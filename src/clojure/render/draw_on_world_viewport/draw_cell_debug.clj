@@ -1,7 +1,7 @@
 (ns clojure.render.draw-on-world-viewport.draw-cell-debug
   (:require [clojure.ctx :as ctx]
-            [clojure.grid :as grid]
-            [clojure.gdx.graphics.camera :as camera]))
+            [clojure.graphics.camera :as camera]
+            [clojure.grid :as grid]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)

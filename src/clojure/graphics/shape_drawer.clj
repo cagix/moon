@@ -1,13 +1,13 @@
 (ns clojure.graphics.shape-drawer
-  (:require [clojure.gdx.math.math-utils :as math-utils]
-            [clojure.gdx.interop :as interop])
+  (:require [clojure.gdx :as gdx]
+            [clojure.math.math-utils :as math-utils])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
 (defn set-color! [^ShapeDrawer this color]
-  (.setColor this (interop/->color color)))
+  (.setColor this (gdx/->color color)))
 
 (defn ellipse! [^ShapeDrawer this x y radius-x radius-y]
   (.ellipse this

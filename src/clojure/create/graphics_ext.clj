@@ -1,8 +1,8 @@
 (ns clojure.create.graphics-ext
-  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.files :as files]
+  (:require [clojure.files :as files]
             [clojure.graphics :as graphics]
+            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.graphics.g2d.freetype :as freetype]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.shape-drawer :as sd]

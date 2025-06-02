@@ -1,5 +1,5 @@
 (ns clojure.render.camera-controls
-  (:require [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.graphics.camera :as camera]
             [clojure.input :as input]))
 
 (defn do! [{:keys [ctx/config

@@ -1,8 +1,8 @@
 (ns clojure.ctx.graphics
-  (:require [clojure.ctx :as ctx]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.assets :as assets]
+  (:require [clojure.assets :as assets]
+            [clojure.ctx :as ctx]
             [clojure.graphics :as graphics]
+            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.shape-drawer :as sd]))
 

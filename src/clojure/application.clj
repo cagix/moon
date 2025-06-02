@@ -1,8 +1,8 @@
 (ns clojure.application
-  (:require [clojure.gdx.utils.disposable :as disposable]
-            [qrecord.core :as q]
-            [clojure.malli :as m]
-            [clojure.viewport :as viewport]))
+  (:require [clojure.malli :as m]
+            [clojure.viewport :as viewport]
+            [clojure.utils.disposable :as disposable]
+            [qrecord.core :as q]))
 
 (q/defrecord Context [ctx/assets
                       ctx/batch

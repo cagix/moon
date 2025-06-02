@@ -1,4 +1,4 @@
-(ns clojure.gdx.utils.disposable
+(ns clojure.utils.disposable
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def dispose! Disposable/.dispose)

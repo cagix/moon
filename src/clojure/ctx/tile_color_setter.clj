@@ -1,6 +1,6 @@
 (ns clojure.ctx.tile-color-setter
   (:require [clojure.raycaster :as raycaster]
-            [clojure.gdx.graphics.camera :as camera]
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.color :as color]))
 
 (def see-all-tiles? false)

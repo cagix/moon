@@ -1,6 +1,6 @@
 (ns clojure.render.set-camera-on-player
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.entity :as entity]))
+  (:require [clojure.entity :as entity]
+            [clojure.graphics.camera :as camera]))
 
 (defn do! [{:keys [ctx/player-eid
                    ctx/world-viewport]

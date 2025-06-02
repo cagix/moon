@@ -1,5 +1,5 @@
 (ns clojure.create.viewport
-  (:require [clojure.gdx.math.math-utils :as math-utils]
+  (:require [clojure.math.math-utils :as math-utils]
             [clojure.viewport :as viewport])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics OrthographicCamera)

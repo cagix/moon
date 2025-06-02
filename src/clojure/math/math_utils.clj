@@ -1,4 +1,4 @@
-(ns clojure.gdx.math.math-utils
+(ns clojure.math.math-utils
   (:import (com.badlogic.gdx.math MathUtils)))
 
 (defn degree->radians [degree]

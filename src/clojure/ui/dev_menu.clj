@@ -2,7 +2,7 @@
   (:require [clojure.application :as application]
             [clojure.entity :as entity]
             [clojure.ui.editor]
-            [clojure.gdx.graphics.camera :as camera]
+            [clojure.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.assets :as assets]
             [clojure.ctx :as ctx]
