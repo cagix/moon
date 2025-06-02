@@ -1,20 +1,51 @@
 (ns clojure.create.assets
   (:require [clojure.assets :as assets]
-            [clojure.assets.manager :as manager]
-            [clojure.audio.sound]
+            [clojure.audio.sound :as sound]
             [clojure.files :as files]
-            [clojure.string :as str]
-            [clojure.utils.files :as utils.files])
-  (:import (com.badlogic.gdx.audio Sound)
+            [clojure.files.file-handle :as fh]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.utils Disposable)))
 
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (fh/list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
+
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- create-manager [assets]
+  (let [manager (AssetManager.)]
+    (doseq [[file class] assets]
+      (.load manager ^String file ^Class class))
+    (.finishLoading manager)
+    manager))
+
+(defn- safe-get [^AssetManager this path]
+  (if (.contains this path)
+    (.get this ^String path)
+    (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
+
+(defn- all-of-type [^AssetManager assets class]
+  (filter #(= (.getAssetType assets %) class)
+          (.getAssetNames assets)))
+
 (defn- create-assets [files {:keys [folder asset-type-extensions]}]
-  (let [manager (manager/create
+  (let [manager (create-manager
                  (for [[asset-type extensions] asset-type-extensions
                        file (map #(str/replace-first % folder "")
-                                 (utils.files/recursively-search (files/internal files folder)
-                                                                 extensions))]
+                                 (recursively-search (files/internal files folder)
+                                                     extensions))]
                    [file (case asset-type
                            :sound Sound
                            :texture Texture)]))]
@@ -29,19 +60,19 @@
 
       assets/Assets
       (sound [_ path]
-        (let [sound (manager/safe-get manager path)]
-          (reify clojure.audio.sound/Sound
+        (let [sound (safe-get manager path)]
+          (reify sound/Sound
             (play! [_]
               (Sound/.play sound)))))
 
       (texture [_ path]
-        (manager/safe-get manager path))
+        (safe-get manager path))
 
       (all-sounds [_]
-        (manager/all-of-type manager Sound))
+        (all-of-type manager Sound))
 
       (all-textures [_]
-        (manager/all-of-type manager Texture)))))
+        (all-of-type manager Texture)))))
 
 (defn do! [{:keys [ctx/config
                    ctx/files]
