@@ -6,11 +6,11 @@
 
 (defn -main []
   #_(let [display-mode (lwjgl/display-mode)]
-    (println "display-mode: " display-mode)
-    (println "primary monitor: " (lwjgl/primary-monitor))
-    (lwjgl/application {:fullscreen-mode display-mode
-                        :mac-os {:glfw-async? true}}))
+      (println "display-mode: " display-mode)
+      (println "primary monitor: " (lwjgl/primary-monitor))
+      (lwjgl/application {:fullscreen-mode display-mode
+                          :mac-os {:glfw-async? true}}))
 
-  (lwjgl/application {:mac-os {:glfw-async? true}}
+  #_(lwjgl/application {:mac-os {:glfw-async? true}}
                      (proxy [com.badlogic.gdx.ApplicationAdapter] []))
   )

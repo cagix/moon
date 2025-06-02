@@ -1,18 +1,9 @@
-(ns clojure.ctx
-  (:require [clojure.input :as input]
-            [clojure.ui.stage :as stage]
-            [clojure.viewport :as viewport]))
+(ns clojure.ctx)
 
-(defn world-mouse-position [{:keys [ctx/input
-                                    ctx/world-viewport]}]
-  (viewport/unproject world-viewport (input/mouse-position input)))
-
-(defn ui-mouse-position [{:keys [ctx/input
-                                 ctx/ui-viewport]}]
-  (viewport/unproject ui-viewport (input/mouse-position input)))
-
-(defn mouseover-actor [{:keys [ctx/stage] :as ctx}]
-  (stage/hit stage (ui-mouse-position ctx)))
+(defprotocol MouseOver
+  (world-mouse-position [_])
+  (ui-mouse-position [_])
+  (mouseover-actor [_]))
 
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
