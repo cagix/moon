@@ -8,7 +8,6 @@
                                       scalegrid
                                       cave-grid
                                       flood-fill]]
-            [clojure.assets :as assets]
             [clojure.graphics.texture :as texture]
             [clojure.tiled :as tiled]))
 
@@ -127,4 +126,4 @@
   (create* {:map-size 200,
             :spawn-rate 0.01}
            (prepare-creature-properties ctx)
-           (assets/texture assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+           (assets "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?

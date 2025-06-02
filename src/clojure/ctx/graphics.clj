@@ -1,6 +1,5 @@
 (ns clojure.ctx.graphics
-  (:require [clojure.assets :as assets]
-            [clojure.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [clojure.graphics :as graphics]
             [clojure.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.graphics.texture :as texture]
@@ -118,7 +117,7 @@
 (defn sprite [{:keys [ctx/assets
                       ctx/world-unit-scale]}
               texture-path]
-  (graphics/create-sprite (texture/region (assets/texture assets texture-path))
+  (graphics/create-sprite (texture/region (assets texture-path))
                           world-unit-scale))
 
 (defn sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
@@ -130,7 +129,7 @@
                     texture-path
                     tilew
                     tileh]
-  {:image (graphics/create-sprite (texture/region (assets/texture assets texture-path))
+  {:image (graphics/create-sprite (texture/region (assets texture-path))
                                   world-unit-scale)
    :tilew tilew
    :tileh tileh})

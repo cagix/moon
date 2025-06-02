@@ -2,7 +2,6 @@
   (:require [clojure.grid2d :as g2d]
             [clojure.level.caves :as caves]
             [clojure.level.nads :as nads]
-            [clojure.assets :as assets]
             [clojure.db :as db]
             [clojure.graphics.texture :as texture]
             [clojure.property :as property]
@@ -11,7 +10,7 @@
 
 (defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)
-        texture (assets/texture assets file)]
+        texture (assets file)]
     (if sub-image-bounds
       (apply texture/region texture sub-image-bounds)
       (texture/region texture))))

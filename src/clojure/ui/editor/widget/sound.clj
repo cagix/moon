@@ -9,7 +9,7 @@
 (defn- play-button [sound-name]
   (ui/text-button "play!"
                   (fn [_actor {:keys [ctx/assets]}]
-                    (sound/play! (assets/sound assets sound-name)))))
+                    (sound/play! (assets sound-name)))))
 
 (declare columns)
 

@@ -1,12 +1,13 @@
 (ns clojure.ui.editor.widget.image
-  (:require [clojure.ui.editor.widget :as widget]
+  (:require [clojure.assets :as assets]
+            [clojure.ui.editor.widget :as widget]
             [clojure.schema :as schema]
             [clojure.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows [ctx]
-    (for [file (sort (c/all-textures ctx))]
+    (for [file (sort (assets/all-textures ctx))]
       [(ui/image-button (image file)
                         (fn [_actor _ctx]))]
       #_[(ui/text-button file

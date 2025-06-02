@@ -33,7 +33,12 @@
 
 (defn- safe-get [^AssetManager this path]
   (if (.contains this path)
-    (.get this ^String path)
+    (let [asset (.get this ^String path)]
+      (if (= (.getAssetType this path) Sound)
+        (reify sound/Sound
+          (play! [_]
+            (Sound/.play asset)))
+        asset))
     (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
 
 (defn- all-of-type [^AssetManager assets class]
@@ -54,20 +59,11 @@
       (dispose [_]
         (Disposable/.dispose manager))
 
-      ;clojure.lang.IFn
-      ;(invoke [_ path])
-      ; => but then how 2 do with sounds?
-
-      assets/Assets
-      (sound [_ path]
-        (let [sound (safe-get manager path)]
-          (reify sound/Sound
-            (play! [_]
-              (Sound/.play sound)))))
-
-      (texture [_ path]
+      clojure.lang.IFn
+      (invoke [_ path]
         (safe-get manager path))
 
+      assets/Assets
       (all-sounds [_]
         (all-of-type manager Sound))
 

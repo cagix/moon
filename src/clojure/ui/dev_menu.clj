@@ -4,7 +4,6 @@
             [clojure.ui.editor]
             [clojure.graphics.camera :as camera]
             [clojure.string :as str]
-            [clojure.assets :as assets]
             [clojure.ctx :as ctx]
             [clojure.db :as db]
             [clojure.graphics :as graphics]
@@ -31,11 +30,11 @@
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
                                     (entity/id entity)))
-                     :icon (assets/texture assets "images/mouseover.png")}
+                     :icon (assets "images/mouseover.png")}
                     {:label "elapsed-time"
                      :update-fn (fn [ctx]
                                   (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
-                     :icon (assets/texture assets "images/clock.png")}
+                     :icon (assets "images/clock.png")}
                     {:label "paused?"
                      :update-fn (fn [{:keys [ctx/paused?]}]
                                   paused?)}
@@ -47,7 +46,7 @@
                                   (mapv int (ctx/world-mouse-position ctx)))}
                     {:label "Zoom"
                      :update-fn (comp camera/zoom :camera :ctx/world-viewport)
-                     :icon (assets/texture assets "images/zoom.png")}
+                     :icon (assets "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (comp graphics/frames-per-second :ctx/graphics)
-                     :icon (assets/texture assets "images/fps.png")}]}))
+                     :icon (assets "images/fps.png")}]}))
