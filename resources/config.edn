@@ -24,6 +24,8 @@
               clojure.create.player-movement-vector/do!
               ]
  :game-state-fns [clojure.game.actors/do!]
+ :clojure.ui.windows/create-actors [clojure.ui.windows.entity-info/create
+                                    clojure.ui.windows.inventory/create]
  :actor-create-fns [clojure.ui.dev-menu/create
                     clojure.ui.action-bar/create
                     clojure.ui.hp-mana-bar/create
@@ -43,7 +45,8 @@
               clojure.render.update-potential-fields/do!
               clojure.render.tick-entities/do!
               clojure.render.remove-destroyed-entities/do!
-              clojure.render.camera-controls/do!]
+              clojure.render.camera-controls/do!
+              clojure.render.check-window-hotkeys/do!]
  :ui {:skin-scale :x1}
  :tile-size 48
  :ui-viewport {:width 1440

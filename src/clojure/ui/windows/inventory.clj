@@ -1,4 +1,4 @@
-(ns clojure.ui.inventory
+(ns clojure.ui.windows.inventory
   (:require [clojure.entity :as entity]
             [clojure.grid2d :as g2d]
             [clojure.inventory :as inventory]
@@ -101,12 +101,14 @@
                              (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
                                (->cell ctx :inventory.slot/bag :position [x y]))))}))
 
-(defn create [ctx & {:keys [id position]}]
+(defn create [{:keys [ctx/ui-viewport]
+               :as ctx}]
   (ui/window {:title "Inventory"
-              :id id
+              :id :inventory-window
               :visible? false
               :pack? true
-              :position position
+              :position [(:width ui-viewport)
+                         (:height ui-viewport)]
               :rows [[{:actor (inventory-table ctx)
                        :pad 4}]]}))
 

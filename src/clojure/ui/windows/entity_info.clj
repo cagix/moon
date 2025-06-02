@@ -1,4 +1,4 @@
-(ns clojure.ui.entity-info
+(ns clojure.ui.windows.entity-info
   (:require [clojure.ctx :as ctx]
             [clojure.ui :as ui]))
 
@@ -26,7 +26,7 @@
   ; don't use select-keys as it loses Entity record type
   (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
 
-(defn create [position]
+(defn- create* [position]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
@@ -42,3 +42,6 @@
                                                                "")))
                                         (.pack window))}))
     window))
+
+(defn create [{:keys [ctx/ui-viewport]}]
+  (create* [(:width ui-viewport) 0]))

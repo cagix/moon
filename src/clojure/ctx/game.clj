@@ -6,7 +6,7 @@
             [clojure.raycaster :as raycaster]
             [clojure.state :as state]
             [clojure.ui.action-bar :as action-bar]
-            [clojure.ui.inventory :as inventory-window]
+            [clojure.ui.windows.inventory :as inventory-window]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]))
 
