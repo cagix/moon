@@ -106,9 +106,21 @@
                         level/texture
                         level/scaling]}]
   (assert (= #{:wall :ground} (set (g2d/cells grid))))
-  (let [{:keys [start-position grid]} (scale-grid grid start scaling)
+  (let [
+
+        ; - next step scaling -
+        {:keys [start-position grid]} (scale-grid grid start scaling)
+        ; -
+
+        ; - next step transition cells -
         grid (assoc-transition-cells grid)
+        ; -
+
+        ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
         tiled-map (generate-tiled-map texture grid)
+        ; -
+
+        ; - calculate spawn positions -
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
@@ -117,7 +129,9 @@
         creatures (for [position spawn-positions
                         :when (<= (rand) spawn-rate)]
                     [position (rand-nth creatures)])]
+    ; - add creature layer -
     (add-creatures-layer! tiled-map creatures)
+    ; - finished -
     {:tiled-map tiled-map
      :start-position start-position}))
 
@@ -152,6 +166,8 @@
                :as ctx}]
   (reduce (fn [level f]
             (f level))
+          ; TODO add uf-caves info
+          ; and probabilities for each tile
           {:level/texture (assets "maps/uf_terrain.png")
            :level/random (java.util.Random.)
            :level/size 200

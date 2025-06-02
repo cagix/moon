@@ -1,3 +1,7 @@
+; #1 complected: interaction-state (depends on concrete inventory/action-bar code)
+; #2 this one
+; #3 uf-caves & module generation -> make steps!
+; lein hiera :layout :horizontal :ignore "#{clojure.ctx.interaction-state, clojure.ctx.game}"
 (ns clojure.ctx.game
   (:require [clojure.ctx :as ctx]
             [clojure.content-grid :as content-grid]
