@@ -7,7 +7,19 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.shape-drawer :as sd]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (com.badlogic.gdx.graphics Color
+                                      Texture
+                                      Pixmap
+                                      Pixmap$Format)))
+
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
   (let [font (freetype/generate (files/internal files file)
@@ -28,7 +40,7 @@
                        cursors
                        default-font]} config
                batch (gdx/sprite-batch)
-               shape-drawer-texture (graphics/white-pixel-texture)]
+               shape-drawer-texture (white-pixel-texture)]
            {:ctx/batch batch
             :ctx/unit-scale (atom 1)
             :ctx/shape-drawer-texture shape-drawer-texture
