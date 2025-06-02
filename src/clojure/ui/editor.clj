@@ -1,6 +1,5 @@
 (ns clojure.ui.editor
   (:require [clojure.application :as application]
-            [clojure.ui.editor.overview-table]
             [clojure.ui.error-window :as error-window]
             [clojure.ui.editor.scroll-pane :as scroll-pane]
             [clojure.ui.editor.widget :as widget]
@@ -57,18 +56,3 @@
                                           (save! ctx)))}))
     (.pack window)
     window))
-
-(defn- edit-property [id {:keys [ctx/db
-                                 ctx/stage]
-                          :as ctx}]
-  (stage/add! stage (editor-window (db/get-raw db id) ctx)))
-
-(defn open-editor-window! [{:keys [ctx/stage] :as ctx} property-type]
-  (let [window (ui/window {:title "Edit"
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true})]
-    (ui/add! window (clojure.ui.editor.overview-table/create ctx property-type edit-property))
-    (.pack window)
-    (stage/add! stage window)))

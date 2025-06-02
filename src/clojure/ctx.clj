@@ -49,3 +49,6 @@
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite [x y]]))
+
+(defprotocol Editor
+  (open-editor-overview-window! [_ property-type]))

@@ -1,12 +1,11 @@
 (ns clojure.ui.dev-menu
   (:require [clojure.application :as application]
-            [clojure.entity :as entity]
-            [clojure.ui.editor]
-            [clojure.graphics.camera :as camera]
-            [clojure.string :as str]
             [clojure.ctx :as ctx]
             [clojure.db :as db]
+            [clojure.entity :as entity]
             [clojure.graphics :as graphics]
+            [clojure.graphics.camera :as camera]
+            [clojure.string :as str]
             [clojure.ui.menu :as menu]
             [clojure.utils :as utils]))
 
@@ -25,7 +24,7 @@
              :items (for [property-type (sort (db/property-types db))]
                       {:label (str/capitalize (name property-type))
                        :on-click (fn [_actor ctx]
-                                   (clojure.ui.editor/open-editor-window! ctx property-type))})}]
+                                   (ctx/open-editor-overview-window! ctx property-type))})}]
     :update-labels [{:label "Mouseover-entity id"
                      :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                                   (when-let [entity (and mouseover-eid @mouseover-eid)]
