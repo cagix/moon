@@ -17,13 +17,13 @@
         :members
         (filter #(= field-type (:type %)))))
 
- (defn- ->cdq-symbol [field]
+ (defn- ->clojure-symbol [field]
    (-> field :name name str/lower-case (str/replace #"_" "-") symbol))
 
  (defn create-mapping [class-str field-type]
    (sort-by first
             (for [field (relevant-fields class-str field-type)]
-              [(keyword (->cdq-symbol field))
+              [(keyword (->clojure-symbol field))
                (symbol class-str (str (:name field)))])))
 
  (defn generate-mapping [class-str field-type]

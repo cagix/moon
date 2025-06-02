@@ -1,7 +1,7 @@
 (ns clojure.ctx.info-text
-  (:require [cdq.entity :as entity]
-            [cdq.op :as op]
-            [cdq.timer :as timer]
+  (:require [clojure.entity :as entity]
+            [clojure.op :as op]
+            [clojure.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.graphics.color :as color]

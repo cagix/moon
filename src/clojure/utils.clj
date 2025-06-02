@@ -1,5 +1,6 @@
 (ns clojure.utils
-  (:require [clojure.edn :as edn]
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
@@ -112,7 +113,7 @@
     m
     (apply assoc m (interleave ks (repeat v)))))
 
-(defn- indexed ; from cdq.contrib.seq-utils (discontinued in 1.3)
+(defn- indexed ; from clojure.contrib.seq-utils (discontinued in 1.3)
   "Returns a lazy sequence of [index, item] pairs, where items come
   from 's' and indexes count up from zero.
 
@@ -120,7 +121,7 @@
   [s]
   (map vector (iterate inc 0) s))
 
-; from cdq.contrib.seq-utils (discontinued in 1.3)
+; from clojure.contrib.seq-utils (discontinued in 1.3)
 (defn positions
   "Returns a lazy sequence containing the positions at which pred
   is true for items in coll."
@@ -213,3 +214,7 @@
         (assert (contains? m k)
                 (str "Config key not found: " k))
         (get m k)))))
+
+(defn pretty-pst [t]
+  (binding [*print-level* 3]
+    (pretty-repl/pretty-pst t 24)))

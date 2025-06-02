@@ -1,9 +1,9 @@
 (ns clojure.ctx.interaction-state
-  (:require [cdq.entity :as entity]
-            [cdq.inventory :as inventory]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.inventory]
-            [cdq.vector2 :as v]
+  (:require [clojure.entity :as entity]
+            [clojure.inventory :as inventory]
+            [clojure.ui.action-bar :as action-bar]
+            [clojure.ui.inventory]
+            [clojure.vector2 :as v]
             [clojure.ctx :as ctx]
             [clojure.ui :as ui]))
 
@@ -49,7 +49,7 @@
                                              [:tx/show-message "Too far away"]]]))
 
 (defn- mouseover-actor->cursor [actor player-entity-inventory]
-  (let [inventory-slot (cdq.ui.inventory/cell-with-item? actor)]
+  (let [inventory-slot (clojure.ui.inventory/cell-with-item? actor)]
     (cond
      (and inventory-slot
          (get-in player-entity-inventory inventory-slot)) :cursors/hand-before-grab

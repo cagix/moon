@@ -1,9 +1,9 @@
 (ns clojure.ctx.spawn-entity
-  (:require [cdq.effect :as effect]
-            [cdq.entity :as entity]
+  (:require [clojure.effect :as effect]
+            [clojure.entity :as entity]
             [clojure.ctx :as ctx]
-            [cdq.modifiers :as modifiers]
-            [cdq.vector2 :as v]
+            [clojure.modifiers :as modifiers]
+            [clojure.vector2 :as v]
             [clojure.malli :as m]
             [clojure.math.geom :as geom]
             [clojure.utils :as utils]))

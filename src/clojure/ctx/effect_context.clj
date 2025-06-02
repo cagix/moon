@@ -1,6 +1,6 @@
 (ns clojure.ctx.effect-context
-  (:require [cdq.entity :as entity]
-            [cdq.vector2 :as v]
+  (:require [clojure.entity :as entity]
+            [clojure.vector2 :as v]
             [clojure.ctx :as ctx]))
 
 (defn player-effect-ctx [{:keys [ctx/mouseover-eid]

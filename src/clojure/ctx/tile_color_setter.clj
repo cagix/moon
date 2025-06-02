@@ -1,5 +1,5 @@
 (ns clojure.ctx.tile-color-setter
-  (:require [cdq.raycaster :as raycaster]
+  (:require [clojure.raycaster :as raycaster]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.graphics.color :as color]))
 

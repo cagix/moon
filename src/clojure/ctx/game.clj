@@ -1,12 +1,12 @@
 (ns clojure.ctx.game
   (:require [clojure.ctx :as ctx]
-            [cdq.content-grid :as content-grid]
-            [cdq.grid2d :as g2d]
-            [cdq.grid-impl :as grid-impl]
-            [cdq.raycaster :as raycaster]
-            [cdq.state :as state]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.inventory :as inventory-window]
+            [clojure.content-grid :as content-grid]
+            [clojure.grid2d :as g2d]
+            [clojure.grid-impl :as grid-impl]
+            [clojure.raycaster :as raycaster]
+            [clojure.state :as state]
+            [clojure.ui.action-bar :as action-bar]
+            [clojure.ui.inventory :as inventory-window]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]))
 
@@ -77,7 +77,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
         ctx (merge ctx
-                   {:ctx/tiled-map tiled-map ; only @ cdq.render.draw-world-map -> pass graphics??
+                   {:ctx/tiled-map tiled-map ; only @ clojure.render.draw-world-map -> pass graphics??
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)

@@ -4,10 +4,10 @@
                                           :foreground-fps 60
                                           :mac-os {:glfw-async? true
                                                    :dock-icon "moon.png"}}
- :create!  cdq.application/create!
- :dispose! cdq.application/dispose!
- :render!  cdq.application/render!
- :resize!  cdq.application/resize!
+ :create!  clojure.application/create!
+ :dispose! clojure.application/dispose!
+ :render!  clojure.application/render!
+ :resize!  clojure.application/resize!
  :create-fns [clojure.create.app/do!
               clojure.create.files/do!
               clojure.create.assets/do!
@@ -19,31 +19,31 @@
               clojure.create.viewport/world
               cdq.create.graphics/do!
               clojure.create.stage/do!
-              cdq.create.ctx-extenders/do!
-              cdq.create.game-state/do!
-              cdq.create.player-movement-vector/do!
+              clojure.create.ctx-extenders/do!
+              clojure.create.game-state/do!
+              clojure.create.player-movement-vector/do!
               ]
- :game-state-fns [cdq.game.actors/do!]
- :actor-create-fns [cdq.ui.dev-menu/create
-                    cdq.ui.action-bar/create
-                    cdq.ui.hp-mana-bar/create
-                    cdq.ui.windows/create
-                    cdq.ui.player-state-draw/create
-                    cdq.ui.message/create]
- :render-fns [cdq.render.assoc-active-entities/do!
-              cdq.render.set-camera-on-player/do!
+ :game-state-fns [clojure.game.actors/do!]
+ :actor-create-fns [clojure.ui.dev-menu/create
+                    clojure.ui.action-bar/create
+                    clojure.ui.hp-mana-bar/create
+                    clojure.ui.windows/create
+                    clojure.ui.player-state-draw/create
+                    clojure.ui.message/create]
+ :render-fns [clojure.render.assoc-active-entities/do!
+              clojure.render.set-camera-on-player/do!
               clojure.render.clear-screen/do!
-              cdq.render.draw-world-map/do!
-              cdq.render.draw-on-world-viewport/do!
-              cdq.render.stage/do!
-              cdq.render.player-state-handle-click/do!
-              cdq.render.update-mouseover-entity/do!
-              cdq.render.assoc-paused/do!
-              cdq.render.update-time/do!
-              cdq.render.update-potential-fields/do!
-              cdq.render.tick-entities/do!
-              cdq.render.remove-destroyed-entities/do!
-              cdq.render.camera-controls/do!]
+              clojure.render.draw-world-map/do!
+              clojure.render.draw-on-world-viewport/do!
+              clojure.render.stage/do!
+              clojure.render.player-state-handle-click/do!
+              clojure.render.update-mouseover-entity/do!
+              clojure.render.assoc-paused/do!
+              clojure.render.update-time/do!
+              clojure.render.update-potential-fields/do!
+              clojure.render.tick-entities/do!
+              clojure.render.remove-destroyed-entities/do!
+              clojure.render.camera-controls/do!]
  :ui {:skin-scale :x1}
  :tile-size 48
  :ui-viewport {:width 1440
@@ -73,7 +73,7 @@
                 :quality-scaling 2}
  :world-viewport {:width 1440
                   :height 900}
- :world-fn cdq.level.vampire/create
+ :world-fn clojure.level.vampire/create
  :content-grid-cell-size 16
  :player-props {:creature-id :creatures/vampire
                 :free-skill-points 3
@@ -91,102 +91,102 @@
  :content-grid-cells-size 16
  :potential-field-factions-iterations {:good 15
                                        :evil 5}
- :world-fns [cdq.level.vampire/create
-             cdq.level.uf-caves/create
-             cdq.level.modules/create]
+ :world-fns [clojure.level.vampire/create
+             clojure.level.uf-caves/create
+             clojure.level.modules/create]
  :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
  :requires [
-            cdq.schemas-impl
+            clojure.schemas-impl
 
-            cdq.effects.target.audiovisual
-            cdq.effects.target.convert
-            cdq.effects.target.damage
-            cdq.effects.target.kill
-            cdq.effects.target.melee-damage
-            cdq.effects.target.spiderweb
-            cdq.effects.target.stun
+            clojure.effects.target.audiovisual
+            clojure.effects.target.convert
+            clojure.effects.target.damage
+            clojure.effects.target.kill
+            clojure.effects.target.melee-damage
+            clojure.effects.target.spiderweb
+            clojure.effects.target.stun
 
-            cdq.effects.audiovisual
-            cdq.effects.projectile
-            cdq.effects.sound
-            cdq.effects.spawn
-            cdq.effects.target-all
-            cdq.effects.target-entity
+            clojure.effects.audiovisual
+            clojure.effects.projectile
+            clojure.effects.sound
+            clojure.effects.spawn
+            clojure.effects.target-all
+            clojure.effects.target-entity
 
-            cdq.entity.state.active-skill
-            cdq.entity.state.npc-dead
-            cdq.entity.state.npc-idle
-            cdq.entity.state.npc-moving
-            cdq.entity.state.npc-sleeping
-            cdq.entity.state.player-dead
-            cdq.entity.state.player-idle
-            cdq.entity.state.player-item-on-cursor
-            cdq.entity.state.player-moving
-            cdq.entity.state.stunned
+            clojure.entity.state.active-skill
+            clojure.entity.state.npc-dead
+            clojure.entity.state.npc-idle
+            clojure.entity.state.npc-moving
+            clojure.entity.state.npc-sleeping
+            clojure.entity.state.player-dead
+            clojure.entity.state.player-idle
+            clojure.entity.state.player-item-on-cursor
+            clojure.entity.state.player-moving
+            clojure.entity.state.stunned
 
-            cdq.entity.alert-friendlies-after-duration
-            cdq.entity.animation
-            cdq.entity.clickable
-            cdq.entity.delete-after-animation-stopped
-            cdq.entity.delete-after-duration
-            cdq.entity.destroy-audiovisual
-            cdq.entity.fsm
-            cdq.entity.hp
-            cdq.entity.image
-            cdq.entity.inventory
-            cdq.entity.line-render
-            cdq.entity.mana
-            cdq.entity.mouseover
-            cdq.entity.movement
-            cdq.entity.projectile-collision
-            cdq.entity.skills
-            cdq.entity.string-effect
-            cdq.entity.temp-modifier
+            clojure.entity.alert-friendlies-after-duration
+            clojure.entity.animation
+            clojure.entity.clickable
+            clojure.entity.delete-after-animation-stopped
+            clojure.entity.delete-after-duration
+            clojure.entity.destroy-audiovisual
+            clojure.entity.fsm
+            clojure.entity.hp
+            clojure.entity.image
+            clojure.entity.inventory
+            clojure.entity.line-render
+            clojure.entity.mana
+            clojure.entity.mouseover
+            clojure.entity.movement
+            clojure.entity.projectile-collision
+            clojure.entity.skills
+            clojure.entity.string-effect
+            clojure.entity.temp-modifier
 
-            cdq.ui.editor.widget.default
-            cdq.ui.editor.widget.edn
-            cdq.ui.editor.widget.string
-            cdq.ui.editor.widget.boolean
-            cdq.ui.editor.widget.enum
-            cdq.ui.editor.widget.sound
-            cdq.ui.editor.widget.one-to-one
-            cdq.ui.editor.widget.one-to-many
-            cdq.ui.editor.widget.image
-            cdq.ui.editor.widget.animation
-            cdq.ui.editor.widget.map
+            clojure.ui.editor.widget.default
+            clojure.ui.editor.widget.edn
+            clojure.ui.editor.widget.string
+            clojure.ui.editor.widget.boolean
+            clojure.ui.editor.widget.enum
+            clojure.ui.editor.widget.sound
+            clojure.ui.editor.widget.one-to-one
+            clojure.ui.editor.widget.one-to-many
+            clojure.ui.editor.widget.image
+            clojure.ui.editor.widget.animation
+            clojure.ui.editor.widget.map
 
-            cdq.tx.add-skill
-            cdq.tx.add-text-effect
-            cdq.tx.assoc
-            cdq.tx.assoc-in
-            cdq.tx.audiovisual
-            cdq.tx.dissoc
-            cdq.tx.effect
-            cdq.tx.event
-            cdq.tx.mark-destroyed
-            cdq.tx.mod-add
-            cdq.tx.mod-remove
-            cdq.tx.move-entity
-            cdq.tx.pay-mana-cost
-            cdq.tx.pickup-item
-            cdq.tx.remove-item
-            cdq.tx.remove-one-item
-            cdq.tx.remove-skill
-            cdq.tx.set-cooldown
-            cdq.tx.set-cursor
-            cdq.tx.set-item
-            cdq.tx.set-movement
-            cdq.tx.show-message
-            cdq.tx.show-modal
-            cdq.tx.sound
-            cdq.tx.spawn-alert
-            cdq.tx.spawn-creature
-            cdq.tx.spawn-effect
-            cdq.tx.spawn-item
-            cdq.tx.spawn-line
-            cdq.tx.spawn-projectile
-            cdq.tx.stack-item
-            cdq.tx.toggle-inventory-visible
-            cdq.tx.update-animation
+            clojure.tx.add-skill
+            clojure.tx.add-text-effect
+            clojure.tx.assoc
+            clojure.tx.assoc-in
+            clojure.tx.audiovisual
+            clojure.tx.dissoc
+            clojure.tx.effect
+            clojure.tx.event
+            clojure.tx.mark-destroyed
+            clojure.tx.mod-add
+            clojure.tx.mod-remove
+            clojure.tx.move-entity
+            clojure.tx.pay-mana-cost
+            clojure.tx.pickup-item
+            clojure.tx.remove-item
+            clojure.tx.remove-one-item
+            clojure.tx.remove-skill
+            clojure.tx.set-cooldown
+            clojure.tx.set-cursor
+            clojure.tx.set-item
+            clojure.tx.set-movement
+            clojure.tx.show-message
+            clojure.tx.show-modal
+            clojure.tx.sound
+            clojure.tx.spawn-alert
+            clojure.tx.spawn-creature
+            clojure.tx.spawn-effect
+            clojure.tx.spawn-item
+            clojure.tx.spawn-line
+            clojure.tx.spawn-projectile
+            clojure.tx.stack-item
+            clojure.tx.toggle-inventory-visible
+            clojure.tx.update-animation
             ]
  }

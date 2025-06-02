@@ -1,7 +1,7 @@
 (ns clojure.ctx.context
-  (:require [cdq.content-grid :as content-grid]
-            [cdq.entity :as entity]
-            [cdq.grid :as grid]))
+  (:require [clojure.content-grid :as content-grid]
+            [clojure.entity :as entity]
+            [clojure.grid :as grid]))
 
 (defn context-entity-add! [{:keys [ctx/entity-ids
                                    ctx/content-grid
