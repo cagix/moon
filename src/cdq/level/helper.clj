@@ -2,12 +2,12 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
-            [gdl.assets :as assets]
-            [gdl.db :as db]
-            [gdl.graphics.texture :as texture]
-            [gdl.property :as property]
-            [gdl.tiled :as tiled]
-            [gdl.utils :as utils]))
+            [clojure.assets :as assets]
+            [clojure.db :as db]
+            [clojure.graphics.texture :as texture]
+            [clojure.property :as property]
+            [clojure.tiled :as tiled]
+            [clojure.utils :as utils]))
 
 (defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)

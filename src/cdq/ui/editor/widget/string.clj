@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.string
   (:require [cdq.ui.editor.widget :as widget]
-            [gdl.ui :as ui]))
+            [clojure.ui :as ui]))
 
 (defmethod widget/create :string [schema v _ctx]
   (ui/add-tooltip! (ui/text-field v {})

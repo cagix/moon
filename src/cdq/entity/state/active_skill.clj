@@ -4,7 +4,7 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

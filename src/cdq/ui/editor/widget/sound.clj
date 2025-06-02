@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [gdl.assets :as assets]
-            [gdl.audio.sound :as sound]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [clojure.assets :as assets]
+            [clojure.audio.sound :as sound]
+            [clojure.ui :as ui]
+            [clojure.ui.stage :as stage]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"

@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.vector2 :as v]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (let [order (grid/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

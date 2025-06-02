@@ -2,7 +2,7 @@
   (:require [cdq.controls :as controls]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :player-moving
   (entity/create [[_ eid movement-vector] _ctx]

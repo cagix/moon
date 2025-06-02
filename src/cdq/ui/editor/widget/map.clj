@@ -2,11 +2,11 @@
   (:require [cdq.ui.editor]
             [cdq.ui.editor.widget :as widget]
             [clojure.set :as set]
-            [gdl.db :as db]
-            [gdl.schemas :as schemas]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :as utils]))
+            [clojure.db :as db]
+            [clojure.schemas :as schemas]
+            [clojure.ui :as ui]
+            [clojure.ui.stage :as stage]
+            [clojure.utils :as utils]))
 
 (def ^:private property-k-sort-order
   [:property/id

@@ -1,12 +1,12 @@
 (ns cdq.create.graphics
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [gdl.files :as files]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.texture :as texture]
-            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.utils :as utils])
+            [clojure.files :as files]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.utils :as utils])
   (:import (com.badlogic.gdx.graphics Pixmap
                                       Texture$TextureFilter)))
 

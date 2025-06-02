@@ -8,17 +8,17 @@
  :dispose! cdq.application/dispose!
  :render!  cdq.application/render!
  :resize!  cdq.application/resize!
- :create-fns [gdl.create.app/do!
-              gdl.create.files/do!
-              gdl.create.assets/do!
-              gdl.create.input/do!
-              gdl.create.db/do!
-              gdl.create.graphics/do!
-              gdl.create.world-unit-scale/do!
-              gdl.create.viewport/ui
-              gdl.create.viewport/world
+ :create-fns [clojure.create.app/do!
+              clojure.create.files/do!
+              clojure.create.assets/do!
+              clojure.create.input/do!
+              clojure.create.db/do!
+              clojure.create.graphics/do!
+              clojure.create.world-unit-scale/do!
+              clojure.create.viewport/ui
+              clojure.create.viewport/world
               cdq.create.graphics/do!
-              gdl.create.stage/do!
+              clojure.create.stage/do!
               cdq.create.ctx-extenders/do!
               cdq.create.game-state/do!
               cdq.create.player-movement-vector/do!
@@ -32,7 +32,7 @@
                     cdq.ui.message/create]
  :render-fns [cdq.render.assoc-active-entities/do!
               cdq.render.set-camera-on-player/do!
-              gdl.render.clear-screen/do!
+              clojure.render.clear-screen/do!
               cdq.render.draw-world-map/do!
               cdq.render.draw-on-world-viewport/do!
               cdq.render.stage/do!

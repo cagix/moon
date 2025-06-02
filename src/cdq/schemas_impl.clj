@@ -2,8 +2,8 @@
   (:require [cdq.animation :as animation]
             [clojure.ctx :as ctx]
             [cdq.val-max :as val-max]
-            [gdl.create.db :refer [malli-form]]
-            [gdl.schema :as schema]))
+            [clojure.create.db :refer [malli-form]]
+            [clojure.schema :as schema]))
 
 (defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
 

@@ -4,20 +4,20 @@
             [cdq.level.vampire]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.utils.disposable :as disposable]
-            [gdl.create.assets]
-            [gdl.create.files]
-            [gdl.create.db]
-            [gdl.create.input]
-            [gdl.create.viewport]
-            [gdl.create.world-unit-scale]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]
-            [gdl.graphics.tiled-map-renderer :as tm-renderer]
-            [gdl.input :as input]
-            [gdl.render.clear-screen]
-            [gdl.tiled :as tiled]
-            [gdl.ui :as ui]
-            [gdl.viewport :as viewport]))
+            [clojure.create.assets]
+            [clojure.create.files]
+            [clojure.create.db]
+            [clojure.create.input]
+            [clojure.create.viewport]
+            [clojure.create.world-unit-scale]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.color :as color]
+            [clojure.graphics.tiled-map-renderer :as tm-renderer]
+            [clojure.input :as input]
+            [clojure.render.clear-screen]
+            [clojure.tiled :as tiled]
+            [clojure.ui :as ui]
+            [clojure.viewport :as viewport]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -83,13 +83,13 @@
                                     :world-viewport {:width 1440
                                                      :height 900}
                                     })
-        ctx (gdl.create.db/do!     ctx)
-        ctx (gdl.create.files/do!  ctx)
-        ctx (gdl.create.assets/do! ctx)
-        ctx (gdl.create.input/do!  ctx)
-        ctx (gdl.create.viewport/ui ctx)
-        ctx (gdl.create.world-unit-scale/do! ctx)
-        ctx (gdl.create.viewport/world ctx)
+        ctx (clojure.create.db/do!     ctx)
+        ctx (clojure.create.files/do!  ctx)
+        ctx (clojure.create.assets/do! ctx)
+        ctx (clojure.create.input/do!  ctx)
+        ctx (clojure.create.viewport/ui ctx)
+        ctx (clojure.create.world-unit-scale/do! ctx)
+        ctx (clojure.create.viewport/world ctx)
         batch (graphics/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)
@@ -145,7 +145,7 @@
   (ui/draw! stage ctx))
 
 (defn render! []
-  (gdl.render.clear-screen/do! @state)
+  (clojure.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)

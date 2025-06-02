@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.vector2 :as v]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]

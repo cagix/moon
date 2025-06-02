@@ -3,7 +3,7 @@
             [clojure.ctx :as ctx]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
-            [gdl.ui.stage :as stage]))
+            [clojure.ui.stage :as stage]))
 
 (defn- tick-entities!
   [{:keys [ctx/active-entities

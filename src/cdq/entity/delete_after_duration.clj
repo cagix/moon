@@ -1,7 +1,7 @@
 (ns cdq.entity.delete-after-duration
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration] {:keys [ctx/elapsed-time]}]

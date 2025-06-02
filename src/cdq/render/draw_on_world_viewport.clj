@@ -1,6 +1,6 @@
 (ns cdq.render.draw-on-world-viewport
   (:require [clojure.gdx.graphics.camera :as camera]
-            [gdl.graphics.shape-drawer :as sd])
+            [clojure.graphics.shape-drawer :as sd])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)))
 

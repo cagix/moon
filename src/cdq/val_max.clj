@@ -1,5 +1,5 @@
 (ns cdq.val-max
-  (:require [gdl.malli :as m]))
+  (:require [clojure.malli :as m]))
 
 (def schema
   (m/schema [:and

@@ -1,11 +1,11 @@
 (ns cdq.ui.editor.widget.one-to-one
   (:require [cdq.ui.editor.overview-table]
             [cdq.ui.editor.widget :as widget]
-            [gdl.db :as db]
-            [gdl.property :as property]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :refer [pprint-to-str]]))
+            [clojure.db :as db]
+            [clojure.property :as property]
+            [clojure.ui :as ui]
+            [clojure.ui.stage :as stage]
+            [clojure.utils :refer [pprint-to-str]]))
 
 (defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]
   (let [redo-rows (fn [ctx id]

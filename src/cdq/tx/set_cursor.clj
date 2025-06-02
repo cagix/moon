@@ -1,7 +1,7 @@
 (ns cdq.tx.set-cursor
   (:require [clojure.ctx.effect-handler :refer [do!]]
-            [gdl.graphics :as graphics]
-            [gdl.utils :as utils]))
+            [clojure.graphics :as graphics]
+            [clojure.utils :as utils]))
 
 (defmethod do! :tx/set-cursor [[_ cursor-key]
                                {:keys [ctx/graphics

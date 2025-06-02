@@ -1,7 +1,7 @@
 (ns clojure.ctx.spawn-creature
   (:require [clojure.ctx]
-            [gdl.db :as db]
-            [gdl.utils :as utils]))
+            [clojure.db :as db]
+            [clojure.utils :as utils]))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)

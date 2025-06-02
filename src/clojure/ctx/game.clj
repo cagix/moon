@@ -7,8 +7,8 @@
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [gdl.tiled :as tiled]
-            [gdl.utils :as utils]))
+            [clojure.tiled :as tiled]
+            [clojure.utils :as utils]))
 
 (defn- add-skill! [ctx skill]
   (-> ctx :ctx/stage :action-bar (action-bar/add-skill! skill)))

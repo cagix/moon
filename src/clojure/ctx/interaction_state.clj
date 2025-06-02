@@ -5,7 +5,7 @@
             [cdq.ui.inventory]
             [cdq.vector2 :as v]
             [clojure.ctx :as ctx]
-            [gdl.ui :as ui]))
+            [clojure.ui :as ui]))
 
 (defmulti ^:private on-clicked
   (fn [ctx eid]

@@ -4,9 +4,9 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.math :as math]
-            [gdl.math]
-            [gdl.tiled :as tiled]
-            [gdl.utils :as utils]))
+            [clojure.math.geom :as geom]
+            [clojure.tiled :as tiled]
+            [clojure.utils :as utils]))
 
 (defn- set-touched-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
@@ -58,10 +58,8 @@
     (->> (grid/circle->cells this circle)
          (map deref)
          (grid/cells->entities this)
-         (filter #(gdl.math/overlaps?
-                   (gdl.math/circle (position 0)
-                                    (position 1)
-                                    radius)
+         (filter #(geom/overlaps?
+                   (geom/circle (position 0) (position 1) radius)
                    (entity/rectangle @%)))))
 
   (cells->entities [_ cells]
@@ -76,7 +74,7 @@
 
   (point->entities [this position]
     (when-let [cell (grid/cell this (mapv int position))]
-      (filter #(gdl.math/contains? (entity/rectangle @%) position)
+      (filter #(geom/contains? (entity/rectangle @%) position)
               (:entities @cell))))
 
   (add-entity! [this eid]

@@ -8,7 +8,7 @@
                                       flood-fill
                                       grid->tiled-map
                                       transition-idx-value]]
-            [gdl.tiled :as tiled]))
+            [clojure.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
 (def modules-width  32) ; usd @ test

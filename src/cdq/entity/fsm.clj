@@ -1,6 +1,6 @@
 (ns cdq.entity.fsm
   (:require [cdq.entity :as entity]
-            [gdl.utils :refer [defcomponent]]
+            [clojure.utils :refer [defcomponent]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm

@@ -1,7 +1,7 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/string-effect
   (entity/tick! [[k {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]

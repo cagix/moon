@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/alert-friendlies-after-duration
   (entity/tick! [[_ {:keys [counter faction]}]

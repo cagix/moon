@@ -4,7 +4,7 @@
             [cdq.projectile :as projectile]
             [cdq.raycaster :as raycaster]
             [cdq.vector2 :as v]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defn- start-point [entity direction size]
   (v/add (entity/position entity)

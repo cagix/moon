@@ -1,7 +1,7 @@
 (ns cdq.effects.target.spiderweb
   (:require [cdq.effect :as effect]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]

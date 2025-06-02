@@ -1,7 +1,7 @@
 (ns cdq.render.update-mouseover-entity
   (:require [cdq.grid :as grid]
             [clojure.ctx :as ctx]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn do! [{:keys [ctx/player-eid
                    ctx/mouseover-eid

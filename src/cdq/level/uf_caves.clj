@@ -8,9 +8,9 @@
                                       scalegrid
                                       cave-grid
                                       flood-fill]]
-            [gdl.assets :as assets]
-            [gdl.graphics.texture :as texture]
-            [gdl.tiled :as tiled]))
+            [clojure.assets :as assets]
+            [clojure.graphics.texture :as texture]
+            [clojure.tiled :as tiled]))
 
 (def ^:private scaling 4)
 

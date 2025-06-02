@@ -1,5 +1,5 @@
 (ns cdq.game.actors
-  (:require [gdl.ui.stage :as stage]))
+  (:require [clojure.ui.stage :as stage]))
 
 (defn do! [{:keys [ctx/config
                    ctx/stage] :as ctx}]

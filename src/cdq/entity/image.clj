@@ -1,6 +1,6 @@
 (ns cdq.entity.image
   (:require [cdq.entity :as entity]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/image
   (entity/render-default! [[_ image] entity _ctx]

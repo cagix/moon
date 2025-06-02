@@ -1,7 +1,7 @@
 (ns clojure.ctx
-  (:require [gdl.input :as input]
-            [gdl.ui.stage :as stage]
-            [gdl.viewport :as viewport]))
+  (:require [clojure.input :as input]
+            [clojure.ui.stage :as stage]
+            [clojure.viewport :as viewport]))
 
 (defn world-mouse-position [{:keys [ctx/input
                                     ctx/world-viewport]}]

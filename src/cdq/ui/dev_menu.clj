@@ -4,12 +4,12 @@
             [cdq.ui.editor]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
-            [gdl.assets :as assets]
+            [clojure.assets :as assets]
             [clojure.ctx :as ctx]
-            [gdl.db :as db]
-            [gdl.graphics :as graphics]
-            [gdl.ui.menu :as menu]
-            [gdl.utils :as utils]))
+            [clojure.db :as db]
+            [clojure.graphics :as graphics]
+            [clojure.ui.menu :as menu]
+            [clojure.utils :as utils]))
 
 (defn create [{:keys [ctx/assets
                       ctx/config

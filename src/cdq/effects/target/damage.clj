@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 ; is the problem private functions?
 ; we are _hiding_ this

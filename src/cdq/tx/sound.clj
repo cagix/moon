@@ -1,7 +1,7 @@
 (ns cdq.tx.sound
   (:require [clojure.ctx.effect-handler :refer [do!]]
-            [gdl.assets :as assets]
-            [gdl.audio.sound :as sound]))
+            [clojure.assets :as assets]
+            [clojure.audio.sound :as sound]))
 
 (defmethod do! :tx/sound [[_ sound-name]
                           {:keys [ctx/assets]}]

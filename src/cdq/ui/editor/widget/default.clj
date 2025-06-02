@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.default
   (:require [cdq.ui.editor.widget :as widget]
-            [gdl.ui :as ui]
-            [gdl.utils :refer [truncate
+            [clojure.ui :as ui]
+            [clojure.utils :refer [truncate
                                ->edn-str]]))
 
 (defmethod widget/create :default [_ v _ctx]

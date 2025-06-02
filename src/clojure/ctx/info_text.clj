@@ -4,10 +4,10 @@
             [cdq.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.graphics.color :as color]
-            [gdl.graphics.colors :as colors]
-            [gdl.utils :refer [sort-by-k-order
-                               readable-number]]))
+            [clojure.graphics.color :as color]
+            [clojure.graphics.colors :as colors]
+            [clojure.utils :refer [sort-by-k-order
+                                   readable-number]]))
 
 (colors/put! "PRETTY_NAME" (color/create 0.84 0.8 0.52 1))
 

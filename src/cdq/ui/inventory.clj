@@ -4,9 +4,9 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [clojure.ctx :as ctx]
-            [gdl.graphics.color :as color]
-            [gdl.ui :as ui]
-            [gdl.utils :as utils]))
+            [clojure.graphics.color :as color]
+            [clojure.ui :as ui]
+            [clojure.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...

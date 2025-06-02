@@ -2,7 +2,7 @@
   (:require [clojure.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defn- creatures-in-los-of-player [{:keys [ctx/active-entities
                                            ctx/player-eid]

@@ -5,11 +5,11 @@
             [cdq.ui.error-window :as error-window]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [gdl.db :as db]
-            [gdl.input :as input]
-            [gdl.property :as property]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]))
+            [clojure.db :as db]
+            [clojure.input :as input]
+            [clojure.property :as property]
+            [clojure.ui :as ui]
+            [clojure.ui.stage :as stage]))
 
 (defn- apply-context-fn [window f]
   (fn [{:keys [ctx/stage] :as ctx}]

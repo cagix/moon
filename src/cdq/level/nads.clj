@@ -1,6 +1,6 @@
 (ns cdq.level.nads
   (:require [cdq.grid2d :as g2d]
-            [gdl.utils :refer [assoc-ks]]))
+            [clojure.utils :refer [assoc-ks]]))
 
 (comment
   (def found (atom false))

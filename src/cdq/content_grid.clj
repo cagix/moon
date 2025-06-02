@@ -1,7 +1,7 @@
 (ns cdq.content-grid
   (:require [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
-            [gdl.tiled :as tiled]))
+            [clojure.tiled :as tiled]))
 
 (defn create [tiled-map cell-size]
   (let [width  (tiled/tm-width  tiled-map)

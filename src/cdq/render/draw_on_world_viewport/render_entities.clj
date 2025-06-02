@@ -2,7 +2,7 @@
   (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.stacktrace :as stacktrace]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)
 

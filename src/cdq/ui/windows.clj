@@ -1,8 +1,8 @@
 (ns cdq.ui.windows
   (:require [cdq.ui.entity-info]
             [cdq.ui.inventory]
-            [gdl.input :as input]
-            [gdl.ui :as ui]))
+            [clojure.input :as input]
+            [clojure.ui :as ui]))
 
 (defn- check-escape-close-windows [input windows]
   (when (input/key-just-pressed? input :escape)

@@ -1,6 +1,6 @@
 (ns cdq.entity.destroy-audiovisual
   (:require [cdq.entity :as entity]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid _ctx]

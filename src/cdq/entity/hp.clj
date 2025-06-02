@@ -1,7 +1,7 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]

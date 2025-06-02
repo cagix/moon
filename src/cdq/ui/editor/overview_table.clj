@@ -1,8 +1,8 @@
 (ns cdq.ui.editor.overview-table
-  (:require [gdl.ui :as ui]
-            [gdl.db :as db]
-            [gdl.property :as property]
-            [gdl.utils :refer [pprint-to-str]]))
+  (:require [clojure.ui :as ui]
+            [clojure.db :as db]
+            [clojure.property :as property]
+            [clojure.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties
 

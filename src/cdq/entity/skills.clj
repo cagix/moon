@@ -1,7 +1,7 @@
 (ns cdq.entity.skills
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :entity/skills
   (entity/create! [[k skills] eid _ctx]

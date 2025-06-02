@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :npc-moving
   (entity/create [[_ eid movement-vector] {:keys [ctx/elapsed-time]}]

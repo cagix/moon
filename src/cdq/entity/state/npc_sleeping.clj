@@ -2,7 +2,7 @@
   (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :npc-sleeping
   (entity/tick! [_ eid ctx]

@@ -4,7 +4,7 @@
             [clojure.ctx :as ctx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.app :as app]))
+            [clojure.app :as app]))
 
 (defmacro post-runnable! [& exprs]
   `(app/post-runnable! (:ctx/app @application/state)

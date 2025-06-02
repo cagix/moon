@@ -1,5 +1,5 @@
 (ns cdq.create.ctx-extenders
-  (:require [gdl.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 (defn- create-method-map [protocol]
   (let [{:keys [sigs

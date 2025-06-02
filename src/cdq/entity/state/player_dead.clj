@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-dead
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :player-dead
   (state/cursor [_] :cursors/black-x)

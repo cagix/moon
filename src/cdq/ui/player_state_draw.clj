@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [clojure.ctx :as ctx]
             [cdq.state :as state]
-            [gdl.ui :as ui]))
+            [clojure.ui :as ui]))
 
 (defn create [_ctx]
   (ui/actor

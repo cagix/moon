@@ -1,10 +1,10 @@
 (ns clojure.ctx.graphics
   (:require [clojure.ctx :as ctx]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [gdl.assets :as assets]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.texture :as texture]
-            [gdl.graphics.shape-drawer :as sd]))
+            [clojure.assets :as assets]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.shape-drawer :as sd]))
 
 (defmulti draw! (fn [[k] _this]
                   k))

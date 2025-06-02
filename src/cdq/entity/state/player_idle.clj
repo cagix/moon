@@ -2,8 +2,8 @@
   (:require [cdq.controls :as controls]
             [clojure.ctx :as ctx]
             [cdq.state :as state]
-            [gdl.input :as input]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.input :as input]
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :player-idle
   (state/pause-game? [_] true)

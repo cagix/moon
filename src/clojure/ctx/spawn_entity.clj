@@ -4,9 +4,9 @@
             [clojure.ctx :as ctx]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
-            [gdl.malli :as m]
-            [gdl.math :as math]
-            [gdl.utils :as utils]))
+            [clojure.malli :as m]
+            [clojure.math.geom :as geom]
+            [clojure.utils :as utils]))
 
 ; TODO what about components which get added later/??
 ; => validate?
@@ -86,10 +86,10 @@
 
   (rectangle [_]
     (let [[x y] left-bottom]
-      (math/rectangle x y width height)))
+      (geom/rectangle x y width height)))
 
   (overlaps? [this other-entity]
-    (math/overlaps? (entity/rectangle this)
+    (geom/overlaps? (entity/rectangle this)
                     (entity/rectangle other-entity)))
 
   (in-range? [entity target* maxrange] ; == circle-collides?

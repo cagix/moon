@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defcomponent :stunned
   (entity/create [[_ _eid duration] {:keys [ctx/elapsed-time]}]

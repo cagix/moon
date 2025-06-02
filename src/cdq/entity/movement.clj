@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.vector2 :as v]
-            [gdl.utils :refer [defcomponent]]))
+            [clojure.utils :refer [defcomponent]]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

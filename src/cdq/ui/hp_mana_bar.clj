@@ -2,8 +2,8 @@
   (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [gdl.ui :as ui]
-            [gdl.utils :as utils]))
+            [clojure.ui :as ui]
+            [clojure.utils :as utils]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   [:draw/text {:text infostr
