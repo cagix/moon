@@ -437,12 +437,12 @@
 
 (defn pixmap
   ([file-handle]
-   (Pixmap. (:java-object file-handle)) ; reify ?
-
+   (Pixmap. ^FileHandle (:java-object file-handle)) ; reify ?
    )
   ([width height format]
-   (let [this (Pixmap. width
-                       height
+   (let [this (Pixmap. (int width)
+                       (int height)
+                       ^Pixmap$Format
                        (case format
                          :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))]
      (reify
@@ -455,7 +455,7 @@
            :pixmap/java-object this))
        pixmap/Pixmap
        (set-color! [_ color]
-         (.setColor this color))
+         (.setColor this ^Color color))
        (draw-pixel! [_ x y]
          (.drawPixel this x y))))))
 
