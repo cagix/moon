@@ -5,6 +5,7 @@
             [clojure.files.file-handle :as file-handle]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
+            [clojure.graphics.pixmap :as pixmap]
             [clojure.input :as input]
             [clojure.math.math-utils :as math-utils]
             [clojure.viewport :as viewport])
@@ -19,6 +20,7 @@
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       Pixmap
+                                      Pixmap$Format
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion
                                           SpriteBatch)
@@ -433,10 +435,32 @@
 ; draw-texture-region! ( draw & set-color )
 ; draw-on-world-viewport -> set-projection-matrix / begin / end
 
-(defn pixmap [file-handle]
-  (Pixmap. (:java-object file-handle)))
+(defn pixmap
+  ([file-handle]
+   (Pixmap. (:java-object file-handle)) ; reify ?
 
-; => dispose ...
+   )
+  ([width height format]
+   (let [this (Pixmap. width
+                       height
+                       (case format
+                         :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))]
+     (reify
+       Disposable
+       (dispose [_]
+         (.dispose this))
+       ILookup
+       (valAt [_ k]
+         (case k
+           :pixmap/java-object this))
+       pixmap/Pixmap
+       (set-color! [_ color]
+         (.setColor this color))
+       (draw-pixel! [_ x y]
+         (.drawPixel this x y))))))
+
+(defn texture [pixmap]
+  (Texture. ^Pixmap (:pixmap/java-object pixmap)))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]

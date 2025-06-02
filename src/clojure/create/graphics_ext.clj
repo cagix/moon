@@ -3,22 +3,20 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
             [clojure.graphics :as graphics]
+            [clojure.graphics.color :as color]
             [clojure.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [clojure.graphics.pixmap :as pixmap]
             [clojure.gdx.shape-drawer :as shape-drawer]
-            [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.graphics Color
-                                      Texture
-                                      Pixmap
-                                      Pixmap$Format)))
+            [clojure.utils :as utils]))
 
 (defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
+  (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
+                 (pixmap/set-color! color/white)
+                 (pixmap/draw-pixel! 0 0))
+        texture (gdx/texture pixmap)]
+    (utils/dispose! pixmap)
     texture))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
