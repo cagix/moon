@@ -6,7 +6,7 @@
             [clojure.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [clojure.graphics.shape-drawer :as sd]
+            [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx.graphics Color
                                       Texture
@@ -44,7 +44,7 @@
            {:ctx/batch batch
             :ctx/unit-scale (atom 1)
             :ctx/shape-drawer-texture shape-drawer-texture
-            :ctx/shape-drawer (sd/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
+            :ctx/shape-drawer (shape-drawer/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
                                           (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
