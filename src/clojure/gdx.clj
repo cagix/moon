@@ -338,6 +338,17 @@
     (play! [_]
       (.play this))))
 
+; create-sprite ( :texture-region key grep ) -> use namespaced keyword. ( 45 hits, same @ entity)
+; draw-texture-region!
+; .getRegionWidth / .getRegionHeight
+; texture/sub-region
+; ShapeDrawer.
+; ui/image->widget
+; ui/image-button ( DONT USE SPRITES HERE !)
+; TextureRegionDrawable.
+; tiled/static-tiled-map-tile
+; VisImage.
+
 (defmethod reify-asset Texture [^Texture this]
   (reify texture/Texture
     (region [_]
