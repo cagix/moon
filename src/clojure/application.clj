@@ -1,7 +1,7 @@
 (ns clojure.application
   (:require [clojure.malli :as m]
             [clojure.viewport :as viewport]
-            [clojure.utils.disposable :as disposable]
+            [clojure.utils :as utils]
             [qrecord.core :as q]))
 
 (q/defrecord Context [ctx/assets
@@ -79,11 +79,11 @@
                 ctx/cursors
                 ctx/default-font
                 ctx/shape-drawer-texture]} @state]
-    (disposable/dispose! assets)
-    (disposable/dispose! batch)
-    (run! disposable/dispose! (vals cursors))
-    (disposable/dispose! default-font)
-    (disposable/dispose! shape-drawer-texture)
+    (utils/dispose! assets)
+    (utils/dispose! batch)
+    (run! utils/dispose! (vals cursors))
+    (utils/dispose! default-font)
+    (utils/dispose! shape-drawer-texture)
     ; TODO vis-ui dispose
     ; TODO dispose world tiled-map/level resources?
     ))

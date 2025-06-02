@@ -6,7 +6,10 @@
             [clojure.pprint :as pprint]
             [clojure.walk :as walk])
   (:import (clojure.lang ILookup
-                         PersistentVector)))
+                         PersistentVector)
+           (com.badlogic.gdx.utils Disposable)))
+
+(def dispose! Disposable/.dispose)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

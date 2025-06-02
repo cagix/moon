@@ -3,7 +3,6 @@
             [clojure.level.uf-caves]
             [clojure.level.vampire]
             [clojure.graphics.camera :as camera]
-            [clojure.utils.disposable :as disposable]
             [clojure.create.assets]
             [clojure.create.files]
             [clojure.create.db]
@@ -17,7 +16,8 @@
             [clojure.render.clear-screen]
             [clojure.tiled :as tiled]
             [clojure.ui :as ui]
-            [clojure.viewport :as viewport]))
+            [clojure.viewport :as viewport]
+            [clojure.utils :as utils]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -45,7 +45,7 @@
                         :as ctx}
                        level-fn]
   (when tiled-map
-    (disposable/dispose! tiled-map))
+    (utils/dispose! tiled-map))
   (let [level (level-fn ctx)
         tiled-map (:tiled-map level)
         ctx (assoc ctx
@@ -108,8 +108,8 @@
 (defn dispose! []
   (let [{:keys [ctx/assets
                 ctx/tiled-map]} @state]
-    (disposable/dispose! assets)
-    (disposable/dispose! tiled-map)))
+    (utils/dispose! assets)
+    (utils/dispose! tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/tm-renderer
                                 ctx/tiled-map
