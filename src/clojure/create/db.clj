@@ -195,4 +195,3 @@
 (defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
   (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
               schemas))
-
