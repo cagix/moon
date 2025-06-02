@@ -8,7 +8,7 @@
 (defn- open-property-editor-window! [id {:keys [ctx/db
                                                 ctx/stage]
                                          :as ctx}]
-  (stage/add! stage (clojure.ui.editor/editor-window (db/get-raw db id) ctx)))
+  (stage/add! stage (clojure.ui.editor/create-editor-window (db/get-raw db id) ctx)))
 
 (defn open-editor-overview-window! [{:keys [ctx/stage] :as ctx} property-type]
   (let [window (ui/window {:title "Edit"

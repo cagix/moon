@@ -21,9 +21,11 @@
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
-(defn editor-window [props {:keys [ctx/db
-                                   ctx/ui-viewport]
-                            :as ctx}]
+(defn create-editor-window
+  [props
+   {:keys [ctx/db
+           ctx/ui-viewport]
+    :as ctx}]
   (let [schema (get (:schemas db) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window

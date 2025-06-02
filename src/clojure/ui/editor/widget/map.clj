@@ -39,7 +39,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (ui/remove! window)
-    (stage/add! stage (clojure.ui.editor/editor-window prop-value ctx))))
+    (stage/add! stage (clojure.ui.editor/create-editor-window prop-value ctx))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
