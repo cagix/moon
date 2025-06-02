@@ -4,7 +4,6 @@
             [clojure.gdx.freetype :as freetype]
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
-            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.pixmap :as pixmap]
@@ -20,13 +19,13 @@
     texture))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (let [font (freetype/generate (files/internal files file)
-                                {:size (* size quality-scaling)
-                                 :min-filter :texture-filter/linear ; because scaling to world-units
-                                 :mag-filter :texture-filter/linear})]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? true
-                                  :use-integer-positions? false}))) ; false, otherwise scaling to world-units not visible
+  (freetype/generate (files/internal files file)
+                     {:size (* size quality-scaling)
+                      :scale (/ quality-scaling)
+                      :min-filter :texture-filter/linear ; because scaling to world-units
+                      :mag-filter :texture-filter/linear
+                      :enable-markup? true
+                      :use-integer-positions? false})) ; false, otherwise scaling to world-units not visible
 
 (defn do! [{:keys [ctx/config
                    ctx/files
