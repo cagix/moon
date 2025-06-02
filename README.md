@@ -1,3 +1,6 @@
+# 'Clojure' - a language for writing 'clojure'
+
+
 # TODO
 
 * namespace graph

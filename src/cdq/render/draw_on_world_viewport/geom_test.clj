@@ -1,8 +1,7 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
-  (:require [clojure.ctx]
-            [cdq.grid :as grid]
+  (:require [cdq.grid :as grid]
             [cdq.math :as math]
-            [gdl.ctx :as ctx]))
+            [clojure.ctx :as ctx]))
 
 (defn- geom-test* [{:keys [ctx/grid] :as ctx}]
   (let [position (ctx/world-mouse-position ctx)
@@ -17,4 +16,4 @@
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
 (defn do! [ctx]
-  (clojure.ctx/handle-draws! ctx (geom-test* ctx)))
+  (ctx/handle-draws! ctx (geom-test* ctx)))

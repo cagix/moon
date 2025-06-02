@@ -1,7 +1,6 @@
 (ns cdq.render.update-mouseover-entity
   (:require [cdq.grid :as grid]
-            [clojure.ctx]
-            [gdl.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [gdl.utils :as utils]))
 
 (defn do! [{:keys [ctx/player-eid
@@ -17,7 +16,7 @@
                     (->> render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(clojure.ctx/line-of-sight? ctx player @%))
+                         (filter #(ctx/line-of-sight? ctx player @%))
                          first)))]
     (when-let [eid mouseover-eid]
       (swap! eid dissoc :entity/mouseover?))
