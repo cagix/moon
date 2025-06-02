@@ -17,7 +17,7 @@
               clojure.create.world-unit-scale/do!
               clojure.create.viewport/ui
               clojure.create.viewport/world
-              cdq.create.graphics/do!
+              clojure.create.graphics-ext/do!
               clojure.create.stage/do!
               clojure.create.ctx-extenders/do!
               clojure.create.game-state/do!

@@ -1,4 +1,4 @@
-(ns cdq.create.graphics
+(ns clojure.create.graphics-ext
   (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.files :as files]
