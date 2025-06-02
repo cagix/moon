@@ -1,7 +1,6 @@
 (ns clojure.render.clear-screen
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils ScreenUtils)))
+  (:require [clojure.gdx :as gdx]))
 
 (defn do! [ctx]
-  (ScreenUtils/clear Color/BLACK)
+  (gdx/clear-screen!)
   ctx)

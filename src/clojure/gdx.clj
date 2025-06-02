@@ -24,7 +24,8 @@
                                           SpriteBatch)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align
-                                   Disposable)
+                                   Disposable
+                                   ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (comment
@@ -296,9 +297,9 @@
     (throw (IllegalArgumentException. (str "Unknown " exception-name ": " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
 
-(def k->input-button (partial static-field Input$Buttons-mapping "Button"))
-(def k->input-key    (partial static-field Input$Keys-mapping    "Key"))
-(def k->color        (partial static-field Color-mapping         "Color"))
+(def ^:private k->input-button (partial static-field Input$Buttons-mapping "Button"))
+(def ^:private k->input-key    (partial static-field Input$Keys-mapping    "Key"))
+(def ^:private k->color        (partial static-field Color-mapping         "Color"))
 
 (defn- create-color
   ([r g b]
@@ -482,3 +483,9 @@
                   world-height
                   camera
                   {:center-camera? false})))
+
+(defmacro post-runnable! [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+(defn clear-screen! []
+  (ScreenUtils/clear Color/BLACK))
