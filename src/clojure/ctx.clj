@@ -53,3 +53,6 @@
 (defprotocol Editor
   (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))
+
+(defprotocol ClickableEntity
+  (clickable-entity-interaction [_ player-entity clicked-eid]))
