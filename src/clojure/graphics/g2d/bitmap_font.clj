@@ -21,7 +21,7 @@
         wrap? false]
     (set-scale! font (* old-scale (float scale)))
     (.draw font
-           batch
+           (:sprite-batch/java-object batch)
            text
            (float x)
            (float (+ y (if up? (text-height font text) 0)))

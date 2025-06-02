@@ -4,6 +4,7 @@
             [clojure.files :as files]
             [clojure.files.file-handle :as file-handle]
             [clojure.graphics :as graphics]
+            [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.pixmap :as pixmap]
             [clojure.input :as input]
@@ -425,19 +426,54 @@
         (.setCursor this cursor)))))
 
 (defn sprite-batch []
-  (SpriteBatch.))
+  (let [this (SpriteBatch.)]
+    (reify
+       ILookup
+       (valAt [_ k]
+         (case k
+           :sprite-batch/java-object this))
 
-; dispose
-; shape drawer create
-; tiled-map-renderer/create
-; ui/stage
-; bitmap-font/draw!
-; draw-texture-region! ( draw & set-color )
-; draw-on-world-viewport -> set-projection-matrix / begin / end
+      Disposable
+      (dispose [_]
+        (.dispose this))
+
+      batch/Batch
+      (set-color! [_ color]
+        (.setColor this ^Color color))
+
+      (draw! [_ texture-region {:keys [x
+                                       y
+                                       origin-x
+                                       origin-y
+                                       width
+                                       height
+                                       scale-x
+                                       scale-y
+                                       rotation]}]
+        (.draw this
+               texture-region
+               x
+               y
+               origin-x
+               origin-y
+               width
+               height
+               scale-x
+               scale-y
+               rotation))
+
+      (begin! [_]
+        (.begin this))
+
+      (end! [_]
+        (.end this))
+
+      (set-projection-matrix! [_ matrix]
+        (.setProjectionMatrix this matrix)))))
 
 (defn pixmap
   ([file-handle]
-   (Pixmap. ^FileHandle (:java-object file-handle)) ; reify ?
+   (Pixmap. ^FileHandle (:java-object file-handle)) ; reify ? used @ create-cursor ...
    )
   ([width height format]
    (let [this (Pixmap. (int width)

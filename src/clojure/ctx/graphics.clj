@@ -1,25 +1,25 @@
 (ns clojure.ctx.graphics
-  (:require [clojure.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.graphics.color :as color]
+            [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
-            [clojure.graphics.shape-drawer :as sd])
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.graphics.g2d Batch
-                                          TextureRegion)))
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.g2d.bitmap-font :as bitmap-font])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(defn- draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
+(defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
+  (if color (batch/set-color! batch color))
+  (batch/draw! batch
+               texture-region
+               {:x x
+                :y y
+                :origin-x (/ (float w) 2)
+                :origin-y (/ (float h) 2)
+                :width w
+                :height h
+                :scale-x 1
+                :scale-y 1
+                :rotation rotation})
+  (if color (batch/set-color! batch color/white)))
 
 (defn- unit-dimensions [sprite unit-scale]
   (if (= unit-scale 1)

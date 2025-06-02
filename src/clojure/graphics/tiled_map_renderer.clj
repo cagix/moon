@@ -6,7 +6,7 @@
 (defn create [tiled-map world-unit-scale batch]
   (OrthogonalTiledMapRenderer. tiled-map
                                (float world-unit-scale)
-                               batch))
+                               (:sprite-batch/java-object batch)))
 
 (defn draw! [^OrthogonalTiledMapRenderer renderer tiled-map color-setter camera]
   (.setColorSetter renderer (reify ColorSetter
