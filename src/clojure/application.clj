@@ -62,48 +62,41 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
-(defn- create* [config]
+(def state (atom nil))
+
+(defn create! [config]
   (let [ctx (map->Context {:config config})
         ctx (reduce (fn [ctx f]
                       (f ctx))
                     ctx
                     (:create-fns config))]
     (m/validate-humanize schema ctx)
-    ctx))
-
-(defn- dispose* [{:keys [ctx/assets
-                         ctx/batch
-                         ctx/cursors
-                         ctx/default-font
-                         ctx/shape-drawer-texture]}]
-  (disposable/dispose! assets)
-  (disposable/dispose! batch)
-  (run! disposable/dispose! (vals cursors))
-  (disposable/dispose! default-font)
-  (disposable/dispose! shape-drawer-texture)
-  ; TODO vis-ui dispose
-  ; TODO dispose world tiled-map/level resources?
-  )
-
-(defn- render* [{:keys [ctx/config] :as ctx}]
-  (m/validate-humanize schema ctx)
-  (let [ctx (reduce (fn [ctx render!]
-                      (render! ctx))
-                    ctx
-                    (:render-fns config))]
-    (m/validate-humanize schema ctx)
-    ctx))
-
-(def state (atom nil))
-
-(defn create! [config]
-  (reset! state (create* config)))
+    (reset! state ctx)))
 
 (defn dispose! []
-  (dispose* @state))
+  (let [{:keys [ctx/assets
+                ctx/batch
+                ctx/cursors
+                ctx/default-font
+                ctx/shape-drawer-texture]} @state]
+    (disposable/dispose! assets)
+    (disposable/dispose! batch)
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font)
+    (disposable/dispose! shape-drawer-texture)
+    ; TODO vis-ui dispose
+    ; TODO dispose world tiled-map/level resources?
+    ))
 
 (defn render! []
-  (swap! state render*))
+  (swap! state (fn [{:keys [ctx/config] :as ctx}]
+                 (m/validate-humanize schema ctx)
+                 (let [ctx (reduce (fn [ctx render!]
+                                     (render! ctx))
+                                   ctx
+                                   (:render-fns config))]
+                   (m/validate-humanize schema ctx)
+                   ctx))))
 
 (defn resize! [width height]
   (let [{:keys [ctx/ui-viewport
