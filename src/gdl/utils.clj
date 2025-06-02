@@ -2,8 +2,10 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.pprint :as pprint])
-  (:import (clojure.lang PersistentVector)))
+            [clojure.pprint :as pprint]
+            [clojure.walk :as walk])
+  (:import (clojure.lang ILookup
+                         PersistentVector)))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -190,3 +192,24 @@
       (str/replace #"([a-z])([A-Z])" "$1-$2")
       (str/replace #"([A-Z]+)([A-Z][a-z])" "$1-$2")
       (str/lower-case)))
+
+(defn require-symbols [form]
+  (walk/postwalk (fn [form]
+                   (if (symbol? form)
+                     (if (namespace form)
+                       (requiring-resolve form)
+                       (do (require form) form))
+                     form))
+                 form))
+
+(defn load-edn-config [path]
+  (let [m (->> path
+               io/resource
+               slurp
+               edn/read-string
+               require-symbols)]
+    (reify clojure.lang.ILookup
+      (valAt [_ k]
+        (assert (contains? m k)
+                (str "Config key not found: " k))
+        (get m k)))))
