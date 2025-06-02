@@ -1,7 +1,7 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [cdq.state :as state]
             [gdl.utils :refer [defcomponent]]))
 

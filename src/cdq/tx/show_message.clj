@@ -1,5 +1,5 @@
 (ns cdq.tx.show-message
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [cdq.ui.message]
             [gdl.ui.stage :as stage]))
 

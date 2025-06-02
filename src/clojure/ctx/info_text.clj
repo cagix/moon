@@ -1,4 +1,4 @@
-(ns cdq.ctx.info-text
+(ns clojure.ctx.info-text
   (:require [cdq.entity :as entity]
             [cdq.op :as op]
             [cdq.timer :as timer]

@@ -1,5 +1,5 @@
-(ns cdq.ctx.graphics
-  (:require [cdq.ctx :as ctx]
+(ns clojure.ctx.graphics
+  (:require [clojure.ctx :as ctx]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.assets :as assets]
             [gdl.graphics :as graphics]

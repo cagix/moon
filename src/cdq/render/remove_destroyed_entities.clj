@@ -1,5 +1,5 @@
 (ns cdq.render.remove-destroyed-entities
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]))
 
 ; do not pause as pickup item should be destroyed

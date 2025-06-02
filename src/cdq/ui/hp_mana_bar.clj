@@ -1,5 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]

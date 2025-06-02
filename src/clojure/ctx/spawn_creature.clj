@@ -1,5 +1,5 @@
-(ns cdq.ctx.spawn-creature
-  (:require [cdq.ctx]
+(ns clojure.ctx.spawn-creature
+  (:require [clojure.ctx]
             [gdl.db :as db]
             [gdl.utils :as utils]))
 
@@ -21,7 +21,7 @@
                         :as ctx}
                        {:keys [position creature-id components]}]
   (let [props (db/build db creature-id ctx)]
-    (cdq.ctx/spawn-entity! ctx
+    (clojure.ctx/spawn-entity! ctx
                            position
                            (create-creature-body (:entity/body props))
                            (-> props

@@ -1,5 +1,5 @@
 (ns cdq.tx.remove-one-item
-  (:require [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx.effect-handler :refer [do!]]))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

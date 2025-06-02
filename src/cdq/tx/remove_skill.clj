@@ -1,5 +1,5 @@
 (ns cdq.tx.remove-skill
-  (:require [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx.effect-handler :refer [do!]]))
 
 #_(defn remove-skill [eid {:keys [property/id] :as skill}]
     {:pre [(contains? (:entity/skills @eid) id)]}

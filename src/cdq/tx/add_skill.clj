@@ -1,5 +1,5 @@
 (ns cdq.tx.add-skill
-  (:require [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx.effect-handler :refer [do!]]))
 
 (defmethod do! :tx/add-skill [[_ eid {:keys [property/id] :as skill}] ctx]
   {:pre [(not (contains? (:entity/skills @eid) id))]}

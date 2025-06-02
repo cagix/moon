@@ -1,10 +1,10 @@
 (ns cdq.render.draw-on-world-viewport.highlight-mouseover-tile
-  (:require [cdq.ctx]
+  (:require [clojure.ctx]
             [cdq.grid :as grid]
             [gdl.ctx :as ctx]))
 
 (defn do! [{:keys [ctx/grid] :as ctx}]
-  (cdq.ctx/handle-draws! ctx
+  (clojure.ctx/handle-draws! ctx
                          (let [[x y] (mapv int (ctx/world-mouse-position ctx))
                                cell (grid/cell grid [x y])]
                            (when (and cell (#{:air :none} (:movement @cell)))

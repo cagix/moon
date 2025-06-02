@@ -1,6 +1,6 @@
 (ns cdq.tx.move-entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx :as ctx]
+            [clojure.ctx.effect-handler :refer [do!]]
             [cdq.vector2 :as v]))
 
 (defmethod do! :tx/move-entity [[_ eid body direction rotate-in-movement-direction?] ctx]

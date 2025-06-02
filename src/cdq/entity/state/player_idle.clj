@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.controls :as controls]
-            [cdq.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [cdq.state :as state]
             [gdl.input :as input]
             [gdl.utils :refer [defcomponent]]))

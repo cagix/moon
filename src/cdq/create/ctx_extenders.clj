@@ -6,14 +6,14 @@
                 var]} protocol]
     (into {}
           (for [[k signature] sigs]
-            [k (requiring-resolve (symbol (str "cdq.ctx."
+            [k (requiring-resolve (symbol (str "clojure.ctx."
                                                (utils/pascal->kebab (name (symbol var)))
                                                "/"
                                                (:name signature))))]))))
 
 (defn do! [ctx]
   (let [protocols (map (comp deref second)
-                       (filter #(:sigs @(% 1)) (ns-publics 'cdq.ctx)))]
+                       (filter #(:sigs @(% 1)) (ns-publics 'clojure.ctx)))]
     (doseq [protocol protocols]
       ;(println)
       ;(println "Extending protocol: " (:on protocol))

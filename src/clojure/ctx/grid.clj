@@ -1,4 +1,4 @@
-(ns cdq.ctx.grid
+(ns clojure.ctx.grid
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]

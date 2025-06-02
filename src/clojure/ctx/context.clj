@@ -1,4 +1,4 @@
-(ns cdq.ctx.context
+(ns clojure.ctx.context
   (:require [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.grid :as grid]))

@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-line
-  (:require [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx.effect-handler :refer [do!]]))
 
 (defmethod do! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] ctx]
   (do! [:tx/spawn-effect

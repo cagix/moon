@@ -1,6 +1,6 @@
 (ns cdq.tx.spawn-projectile
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx :as ctx]
+            [clojure.ctx.effect-handler :refer [do!]]
             [cdq.projectile :as projectile]
             [cdq.vector2 :as v]))
 

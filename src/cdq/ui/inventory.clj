@@ -1,5 +1,5 @@
 (ns cdq.ui.inventory
-  (:require [cdq.ctx]
+  (:require [clojure.ctx]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
@@ -34,7 +34,7 @@
   (ui/widget
    {:draw
     (fn [actor {:keys [ctx/player-eid] :as ctx}]
-      (cdq.ctx/handle-draws! ctx
+      (clojure.ctx/handle-draws! ctx
                              (draw-cell-rect @player-eid
                                              (ui/get-x actor)
                                              (ui/get-y actor)
@@ -56,8 +56,8 @@
 
 ; TODO actually we can pass this whole map into inventory-window ...
 (defn- slot->sprite [ctx slot]
-  (cdq.ctx/sprite-sheet->sprite ctx
-                                (cdq.ctx/sprite-sheet ctx "images/items.png" 48 48)
+  (clojure.ctx/sprite-sheet->sprite ctx
+                                (clojure.ctx/sprite-sheet ctx "images/items.png" 48 48)
                                 [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]
@@ -77,7 +77,7 @@
       (.setUserObject cell)
       (.addListener (ui/click-listener
                       (fn [{:keys [ctx/player-eid] :as ctx}]
-                        (cdq.ctx/handle-txs! ctx (-> @player-eid
+                        (clojure.ctx/handle-txs! ctx (-> @player-eid
                                                      entity/state-obj
                                                      (state/clicked-inventory-cell player-eid cell)))))))))
 
@@ -121,7 +121,7 @@
                                      :width cell-size
                                      :height cell-size)]
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(cdq.ctx/info-text % item))))
+    (ui/add-tooltip! cell-widget #(clojure.ctx/info-text % item))))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get-cell-widget inventory-window cell)

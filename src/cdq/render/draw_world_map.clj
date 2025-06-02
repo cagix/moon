@@ -1,5 +1,5 @@
 (ns cdq.render.draw-world-map
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]))
 
 (defn do! [{:keys [ctx/tiled-map

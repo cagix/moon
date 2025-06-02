@@ -1,6 +1,6 @@
 (ns cdq.render.tick-entities
   (:require [cdq.entity :as entity]
-            [cdq.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
             [gdl.ui.stage :as stage]))

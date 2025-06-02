@@ -1,4 +1,4 @@
-(ns cdq.ctx)
+(ns clojure.ctx)
 
 (defprotocol Game
   (reset-game-state! [_ world-fn]))

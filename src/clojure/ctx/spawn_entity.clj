@@ -1,7 +1,7 @@
-(ns cdq.ctx.spawn-entity
+(ns clojure.ctx.spawn-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [cdq.modifiers :as modifiers]
             [cdq.vector2 :as v]
             [gdl.malli :as m]

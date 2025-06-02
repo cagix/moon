@@ -1,6 +1,6 @@
-(ns cdq.ctx.interaction-state
+(ns clojure.ctx.interaction-state
   (:require [cdq.entity :as entity]
-            [cdq.ctx]
+            [clojure.ctx]
             [cdq.inventory :as inventory]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory]
@@ -76,7 +76,7 @@
      :else
      (if-let [skill-id (action-bar/selected-skill (:action-bar stage))]
        (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (cdq.ctx/player-effect-ctx ctx eid)
+             effect-ctx (clojure.ctx/player-effect-ctx ctx eid)
              state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight

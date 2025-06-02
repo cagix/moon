@@ -1,4 +1,4 @@
-(ns cdq.ctx.tile-color-setter
+(ns clojure.ctx.tile-color-setter
   (:require [cdq.raycaster :as raycaster]
             [clojure.gdx.graphics.camera :as camera]
             [gdl.graphics.color :as color]))

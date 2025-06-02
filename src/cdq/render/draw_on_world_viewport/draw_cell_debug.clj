@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport.draw-cell-debug
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.grid :as grid]
             [clojure.gdx.graphics.camera :as camera]))
 

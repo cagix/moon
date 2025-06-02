@@ -1,5 +1,5 @@
 (ns cdq.effects.target-all
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [gdl.utils :refer [defcomponent]]))

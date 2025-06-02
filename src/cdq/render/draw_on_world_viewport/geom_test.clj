@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
-  (:require [cdq.ctx]
+  (:require [clojure.ctx]
             [cdq.grid :as grid]
             [cdq.math :as math]
             [gdl.ctx :as ctx]))
@@ -17,4 +17,4 @@
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
 (defn do! [ctx]
-  (cdq.ctx/handle-draws! ctx (geom-test* ctx)))
+  (clojure.ctx/handle-draws! ctx (geom-test* ctx)))

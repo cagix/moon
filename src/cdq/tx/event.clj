@@ -1,6 +1,6 @@
 (ns cdq.tx.event
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx :as ctx]
+            [clojure.ctx.effect-handler :refer [do!]]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [reduce-fsm :as fsm]))

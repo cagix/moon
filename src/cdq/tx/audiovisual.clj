@@ -1,5 +1,5 @@
 (ns cdq.tx.audiovisual
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [gdl.db :as db]))
 
 (defmethod do! :tx/audiovisual [[_ position audiovisual]

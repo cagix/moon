@@ -1,5 +1,5 @@
 (ns cdq.tx.stack-item
-  (:require [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx.effect-handler :refer [do!]]))
 
 ; TODO no items which stack are available
 #_(defn stack-item [eid cell item]

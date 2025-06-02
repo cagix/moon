@@ -1,5 +1,5 @@
-(ns cdq.ctx.effect-context
-  (:require [cdq.ctx]
+(ns clojure.ctx.effect-context
+  (:require [clojure.ctx]
             [cdq.entity :as entity]
             [cdq.vector2 :as v]
             [gdl.ctx :as ctx]))
@@ -17,9 +17,9 @@
 
 (defn npc-effect-ctx [ctx eid]
   (let [entity @eid
-        target (cdq.ctx/nearest-enemy ctx entity)
+        target (clojure.ctx/nearest-enemy ctx entity)
         target (when (and target
-                          (cdq.ctx/line-of-sight? ctx entity @target))
+                          (clojure.ctx/line-of-sight? ctx entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

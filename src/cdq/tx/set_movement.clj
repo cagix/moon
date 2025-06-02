@@ -1,5 +1,5 @@
 (ns cdq.tx.set-movement
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [cdq.entity :as entity]))
 
 ; we cannot just set/unset movement direction

@@ -1,4 +1,4 @@
-(ns cdq.ctx.line-of-sight
+(ns clojure.ctx.line-of-sight
   (:require [cdq.entity :as entity]
             [cdq.raycaster :as raycaster]
             [clojure.gdx.graphics.camera :as camera]))

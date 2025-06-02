@@ -1,5 +1,5 @@
 (ns cdq.ui.action-bar
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [gdl.ui :as ui]
             [gdl.ui.button-group :as button-group]))
 
@@ -50,6 +50,6 @@
     nil))
 
 (comment
- (keys (:entity/skills @cdq.ctx/player-eid))
+ (keys (:entity/skills @clojure.ctx/player-eid))
 
- (remove-skill! (:action-bar cdq.ctx/stage) {:property/id :skills/spawn}))
+ (remove-skill! (:action-bar clojure.ctx/stage) {:property/id :skills/spawn}))

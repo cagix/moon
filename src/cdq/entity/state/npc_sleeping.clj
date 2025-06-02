@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.state :as state]
             [gdl.utils :refer [defcomponent]]))

@@ -1,5 +1,5 @@
 (ns cdq.tx.sound
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]))
 

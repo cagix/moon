@@ -1,5 +1,5 @@
-(ns cdq.ctx.game
-  (:require [cdq.ctx :as ctx]
+(ns clojure.ctx.game
+  (:require [clojure.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.grid2d :as g2d]
             [cdq.grid-impl :as grid-impl]

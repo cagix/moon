@@ -1,6 +1,6 @@
 (ns cdq.tx.spawn-item
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [clojure.ctx :as ctx]
+            [clojure.ctx.effect-handler :refer [do!]]))
 
 (defmethod do! :tx/spawn-item [[_ position item] ctx]
   (ctx/spawn-entity! ctx

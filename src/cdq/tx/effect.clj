@@ -1,6 +1,6 @@
 (ns cdq.tx.effect
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx :as ctx]
+            [clojure.ctx.effect-handler :refer [do!]]
             [cdq.effect :as effect]))
 
 (defmethod do! :tx/effect [[_ effect-ctx effects] ctx]

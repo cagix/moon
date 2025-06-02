@@ -1,5 +1,5 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.ctx :as ctx]
+  (:require [clojure.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.state :as state]

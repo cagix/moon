@@ -1,5 +1,5 @@
 (ns cdq.tx.remove-item
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [cdq.entity :as entity]
             [cdq.inventory :as inventory]))
 

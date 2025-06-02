@@ -1,5 +1,5 @@
 (ns cdq.tx.pickup-item
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [cdq.inventory :as inventory]))
 
 (defmethod do! :tx/pickup-item [[_ eid item] ctx]

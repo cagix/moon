@@ -1,7 +1,7 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
             [cdq.entity :as entity]
-            [cdq.ctx :as ctx]
+            [clojure.ctx :as ctx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :as app]))

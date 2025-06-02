@@ -1,5 +1,5 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.ctx.effect-handler :refer [do!]]
+  (:require [clojure.ctx.effect-handler :refer [do!]]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
