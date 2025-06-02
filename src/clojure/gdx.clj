@@ -331,20 +331,23 @@
     :sound Sound
     :texture Texture))
 
-(defn- reify-asset [asset]
-  (if (instance? Sound asset)
-    (reify sound/Sound
-      (play! [_]
-        (Sound/.play asset)))
-    (reify texture/Texture
-      (region [_]
-        (TextureRegion. ^Texture asset))
-      (region [_ x y w h]
-        (TextureRegion. ^Texture asset
-                        (int x)
-                        (int y)
-                        (int w)
-                        (int h))))))
+(defmulti ^:private reify-asset class)
+
+(defmethod reify-asset Sound [^Sound this]
+  (reify sound/Sound
+    (play! [_]
+      (.play this))))
+
+(defmethod reify-asset Texture [^Texture this]
+  (reify texture/Texture
+    (region [_]
+      (TextureRegion. this))
+    (region [_ x y w h]
+      (TextureRegion. this
+                      (int x)
+                      (int y)
+                      (int w)
+                      (int h)))))
 
 (defn asset-manager [assets]
   (let [this (AssetManager.)]
