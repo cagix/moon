@@ -5,19 +5,21 @@
             [clojure.ui.editor.overview-table]
             [clojure.ui.stage :as stage]))
 
-(defn- open-property-editor-window! [id {:keys [ctx/db
-                                                ctx/stage]
-                                         :as ctx}]
-  (stage/add! stage (clojure.ui.editor/create-editor-window (db/get-raw db id) ctx)))
+(defn open-property-editor-window! [{:keys [ctx/stage]
+                                     :as ctx}
+                                    property]
+  (stage/add! stage (clojure.ui.editor/create-editor-window property ctx)))
 
 (defn open-editor-overview-window! [{:keys [ctx/stage] :as ctx} property-type]
   (let [window (ui/window {:title "Edit"
                            :modal? true
                            :close-button? true
                            :center? true
-                           :close-on-escape? true})]
+                           :close-on-escape? true})
+        on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
+                        (open-property-editor-window! ctx (db/get-raw db id)))]
     (ui/add! window (clojure.ui.editor.overview-table/create ctx
                                                              property-type
-                                                             open-property-editor-window!))
+                                                             on-clicked-id))
     (.pack window)
     (stage/add! stage window)))

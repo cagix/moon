@@ -51,4 +51,5 @@
   (sprite-sheet->sprite [_ sprite [x y]]))
 
 (defprotocol Editor
+  (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))

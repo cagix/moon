@@ -1,10 +1,10 @@
 (ns clojure.ui.editor.widget.map
-  (:require [clojure.ui.editor]
-            [clojure.ui.editor.widget :as widget]
-            [clojure.set :as set]
+  (:require [clojure.ctx :as ctx]
             [clojure.db :as db]
             [clojure.schemas :as schemas]
+            [clojure.set :as set]
             [clojure.ui :as ui]
+            [clojure.ui.editor.widget :as widget]
             [clojure.ui.stage :as stage]
             [clojure.utils :as utils]))
 
@@ -34,12 +34,11 @@
    (widget/value [:s/map] table schemas)))
 
 (defn- rebuild-editor-window! [{:keys [ctx/db
-                                       ctx/stage]
-                                :as ctx}]
+                                       ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (ui/remove! window)
-    (stage/add! stage (clojure.ui.editor/create-editor-window prop-value ctx))))
+    (ctx/open-property-editor-window! ctx prop-value)))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
