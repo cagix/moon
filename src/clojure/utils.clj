@@ -1,5 +1,5 @@
 (ns clojure.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]
+  (:require [clj-commons.pretty.repl :as pretty-repl] ; no deps other than clj
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -7,7 +7,7 @@
             [clojure.walk :as walk])
   (:import (clojure.lang ILookup
                          PersistentVector)
-           (com.badlogic.gdx.utils Disposable)))
+           (com.badlogic.gdx.utils Disposable))) ; no deps
 
 (def dispose! Disposable/.dispose)
 
@@ -17,7 +17,7 @@
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
 
-(defn mapvals [f m]
+(defn mapvals [f m] ; update-vals
   (into {} (for [[k v] m]
              [k (f v)])))
 
@@ -26,7 +26,7 @@
 
 (def overwrite-warnings? false)
 
-(defmacro defcomponent [k & sys-impls]
+(defmacro defcomponent [k & sys-impls] ; == defmethods
   `(do
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)]]
@@ -116,6 +116,7 @@
     m
     (apply assoc m (interleave ks (repeat v)))))
 
+; private thingy ...
 (defn- indexed ; from clojure.contrib.seq-utils (discontinued in 1.3)
   "Returns a lazy sequence of [index, item] pairs, where items come
   from 's' and indexes count up from zero.
@@ -220,4 +221,4 @@
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24)))
+    (pretty-repl/pretty-pst t 24))) ; hardcoded values

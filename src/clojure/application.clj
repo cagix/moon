@@ -21,18 +21,26 @@
                       ctx/world-unit-scale
                       ctx/world-viewport])
 
+; 6-8 context keys only ...
+
 (def ^:private schema
   (m/schema [:map {:closed true}
+             [:ctx/config :some] ; -> ?? depends on what ??
+             [:ctx/db :some] ; -> part of game ?
+
              [:ctx/files :some]
-             [:ctx/assets :some]
+
+             [:ctx/assets :some] ; - actually textures (graphics) & audio (sound )
+
+             [:ctx/input :some] ; -> 'controls together w. config
+
+             [:ctx/stage :some] ; -> user-interface protocol w. stage actor functions
+
+             ;; graphics
              [:ctx/batch :some]
-             [:ctx/config :some]
              [:ctx/cursors :some]
-             [:ctx/db :some]
              [:ctx/default-font :some]
              [:ctx/graphics :some]
-             [:ctx/input :some]
-             [:ctx/stage :some]
              [:ctx/ui-viewport :some]
              [:ctx/unit-scale :some]
              [:ctx/shape-drawer :some]
@@ -40,6 +48,9 @@
              [:ctx/tiled-map-renderer :some]
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
+             ;;
+
+             ;; below is only world/game related
              [:ctx/elapsed-time number?]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/max-delta number?]
@@ -59,7 +70,9 @@
              [:ctx/render-z-order :some]
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
-             [:ctx/active-entities {:optional true} :some]]))
+             [:ctx/active-entities {:optional true} :some]
+             ;;
+             ]))
 
 (def state (atom nil))
 
@@ -85,6 +98,7 @@
     (utils/dispose! shape-drawer-texture)
     ; TODO vis-ui dispose
     ; TODO dispose world tiled-map/level resources?
+    ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
 
 (defn render! []

@@ -14,7 +14,7 @@
 ; => :entity/id ... body
 (def ^:private components-schema
   (m/schema [:map {:closed true}
-             [:entity/image {:optional true} :some]
+             [:entity/image {:optional true} :some] ; what do we really want to do - draw a creature or projectile as of 'type' ??? game world logic should not contain graphical representation ...
              [:entity/animation {:optional true} :some]
              [:entity/delete-after-animation-stopped? {:optional true} :some]
              [:entity/alert-friendlies-after-duration {:optional true} :some]

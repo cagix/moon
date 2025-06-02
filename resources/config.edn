@@ -52,9 +52,10 @@
                :height 900}
  :db {:schemas "schema.edn"
       :properties "properties.edn"}
- :assets {:folder "resources/"
-          :asset-type-extensions {:sound   #{"wav"}
-                                  :texture #{"png" "bmp"}}}
+ :clojure.create.assets/get-assets-to-load [clojure.assets-to-load/create
+                                            {:folder "resources/"
+                                             :asset-type-extensions {:sound   #{"wav"}
+                                                                     :texture #{"png" "bmp"}}}]
  :cursor-path-format "cursors/%s.png"
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
