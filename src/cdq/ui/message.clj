@@ -1,5 +1,5 @@
 (ns cdq.ui.message
-  (:require [cdq.graphics :as g]
+  (:require [cdq.ctx :as ctx]
             [gdl.ui :as ui]))
 
 (defn- draw-message [state viewport]
@@ -12,9 +12,9 @@
 
 (defn create [_ctx]
   (ui/actor {:draw (fn [this {:keys [ctx/ui-viewport] :as ctx}]
-                     (g/handle-draws! ctx
-                                      [(draw-message (ui/user-object this)
-                                                     ui-viewport)]))
+                     (ctx/handle-draws! ctx
+                                        [(draw-message (ui/user-object this)
+                                                       ui-viewport)]))
              :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)

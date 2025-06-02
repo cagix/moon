@@ -1,19 +1,20 @@
 (ns cdq.render.draw-on-world-viewport.draw-tile-grid
-  (:require [cdq.graphics :as g]))
+  (:require [cdq.ctx :as ctx]
+            [clojure.gdx.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-tile-grid? false)
 
-(defn- draw-tile-grid* [ctx]
-  (let [[left-x _right-x bottom-y _top-y] (g/camera-frustum ctx)]
+(defn- draw-tile-grid* [world-viewport]
+  (let [[left-x _right-x bottom-y _top-y] (camera/frustum (:camera world-viewport))]
     [[:draw/grid
       (int left-x)
       (int bottom-y)
-      (inc (int (g/world-viewport-width ctx)))
-      (+ 2 (int (g/world-viewport-height ctx)))
+      (inc (int (:width world-viewport)))
+      (+ 2 (int (:height world-viewport)))
       1
       1
       [1 1 1 0.8]]]))
 
-(defn do! [ctx]
+(defn do! [{:keys [ctx/world-viewport] :as ctx}]
   (when show-tile-grid?
-    (g/handle-draws! ctx (draw-tile-grid* ctx))))
+    (ctx/handle-draws! ctx (draw-tile-grid* world-viewport))))

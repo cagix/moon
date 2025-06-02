@@ -2,8 +2,8 @@
   (:require [cdq.application :as application]
             [cdq.ctx]
             [cdq.entity :as entity]
-            [cdq.graphics]
             [cdq.ui.editor]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.ctx :as ctx]
@@ -47,7 +47,7 @@
                      :update-fn (fn [ctx]
                                   (mapv int (ctx/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn cdq.graphics/camera-zoom
+                     :update-fn (comp camera/zoom :camera :ctx/world-viewport)
                      :icon (assets/texture assets "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (comp graphics/frames-per-second :ctx/graphics)

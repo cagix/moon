@@ -1,6 +1,5 @@
 (ns cdq.entity.string-effect
   (:require [cdq.entity :as entity]
-            [cdq.graphics :as g]
             [cdq.timer :as timer]
             [gdl.utils :refer [defcomponent]]))
 
@@ -9,12 +8,14 @@
     (when (timer/stopped? elapsed-time counter)
       [[:tx/dissoc eid k]]))
 
-  (entity/render-above! [[_ {:keys [text]}] entity c]
+  (entity/render-above! [[_ {:keys [text]}]
+                         entity
+                         {:keys [ctx/world-unit-scale]}]
     (let [[x y] (entity/position entity)]
       [[:draw/text {:text text
                     :x x
                     :y (+ y
                           (:half-height entity)
-                          (g/pixels->world-units c 5))
+                          (* 5 world-unit-scale))
                     :scale 2
                     :up? true}]])))

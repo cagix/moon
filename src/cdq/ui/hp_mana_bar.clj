@@ -1,6 +1,6 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.entity :as entity]
-            [cdq.graphics :as g]
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]
             [gdl.utils :as utils]))
@@ -16,17 +16,17 @@
   (let [[x y-mana] [(/ (:width ui-viewport) 2)
                     80 ; action-bar-icon-size
                     ]
-        rahmen      (g/sprite ctx "images/rahmen.png")
-        hpcontent   (g/sprite ctx "images/hp.png")
-        manacontent (g/sprite ctx "images/mana.png" )
+        rahmen      (ctx/sprite ctx "images/rahmen.png")
+        hpcontent   (ctx/sprite ctx "images/hp.png")
+        manacontent (ctx/sprite ctx "images/mana.png" )
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [ctx x y contentimage minmaxval name]
                             [[:draw/image rahmen [x y]]
                              [:draw/image
-                              (g/sub-sprite ctx
-                                            contentimage
-                                            [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                              (ctx/sub-sprite ctx
+                                              contentimage
+                                              [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                               [x y]]
                              (render-infostr-on-bar (str (utils/readable-number (minmaxval 0))
                                                          "/"
@@ -44,4 +44,4 @@
                           (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP"))))]
     (ui/actor
      {:draw (fn [_this ctx]
-              (g/handle-draws! ctx (create-draws ctx)))})))
+              (ctx/handle-draws! ctx (create-draws ctx)))})))

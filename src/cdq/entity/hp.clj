@@ -1,6 +1,5 @@
 (ns cdq.entity.hp
   (:require [cdq.entity :as entity]
-            [cdq.graphics :as g]
             [cdq.val-max :as val-max]
             [gdl.utils :refer [defcomponent]]))
 
@@ -21,15 +20,15 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [c
+(defn- draw-hpbar [{:keys [ctx/world-unit-scale]}
                    {:keys [width half-width half-height]
                     :as entity}
                    ratio]
   (let [[x y] (entity/position entity)]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units c 5)
-          border (g/pixels->world-units c borders-px)]
+          height (* 5          world-unit-scale)
+          border (* borders-px world-unit-scale)]
       [[:draw/filled-rectangle x y width height :black]
        [:draw/filled-rectangle
         (+ x border)

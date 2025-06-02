@@ -1,6 +1,6 @@
 (ns cdq.ctx.tile-color-setter
-  (:require [cdq.graphics :as g]
-            [cdq.raycaster :as raycaster]
+  (:require [cdq.raycaster :as raycaster]
+            [clojure.gdx.graphics.camera :as camera]
             [gdl.graphics.color :as color]))
 
 (def see-all-tiles? false)
@@ -8,10 +8,10 @@
 (def explored-tile-color (color/create 0.5 0.5 0.5 1))
 
 (defn tile-color-setter [{:keys [ctx/raycaster
-                                 ctx/explored-tile-corners]
-                          :as ctx}]
+                                 ctx/explored-tile-corners
+                                 ctx/world-viewport]}]
   #_(reset! do-once false)
-  (let [light-position (g/camera-position ctx)
+  (let [light-position (camera/position (:camera world-viewport))
         light-cache (atom {})]
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]

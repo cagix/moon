@@ -1,6 +1,5 @@
 (ns cdq.render.update-mouseover-entity
-  (:require [cdq.graphics :as graphics]
-            [cdq.grid :as grid]
+  (:require [cdq.grid :as grid]
             [cdq.ctx]
             [gdl.ctx :as ctx]
             [gdl.utils :as utils]))
