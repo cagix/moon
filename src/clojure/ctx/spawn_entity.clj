@@ -6,7 +6,8 @@
             [clojure.vector2 :as v]
             [clojure.malli :as m]
             [clojure.math.geom :as geom]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [qrecord.core :as q]))
 
 ; TODO what about components which get added later/??
 ; => validate?
@@ -67,19 +68,18 @@
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
 
-; TODO we can finally use namespaced keys here !!
-(defrecord Body [position
-                 left-bottom
+(q/defrecord Body [position
+                   left-bottom
 
-                 width
-                 height
-                 half-width
-                 half-height
-                 radius
+                   width
+                   height
+                   half-width
+                   half-height
+                   radius
 
-                 collides?
-                 z-order
-                 rotation-angle]
+                   collides?
+                   z-order
+                   rotation-angle]
   entity/Entity
   (position [_]
     position)
