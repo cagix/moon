@@ -3,8 +3,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.java.awt :as awt]
-            [clojure.utils :as utils])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+            [clojure.utils :as utils]))
 
 (defn -main [config-path]
   (let [config (utils/load-edn-config config-path)]

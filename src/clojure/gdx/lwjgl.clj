@@ -64,10 +64,10 @@
       (application/resize! listener width height))
 
     (pause []
-      (application/pause!))
+      (application/pause! listener))
 
     (resume []
-      (application/resume!))))
+      (application/resume! listener))))
 
 (defn start-application! [listener config]
   (Lwjgl3Application. (proxy-listener listener)
