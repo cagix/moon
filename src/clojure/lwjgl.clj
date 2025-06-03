@@ -26,5 +26,8 @@
                                   ((::render! config)))
 
                                 (resize [width height]
-                                  ((::resize! config) width height)))
+                                  ((::resize! config) width height))
+
+                                ; pause & resume also used ....
+                                )
                               (dissoc (::config config) :mac-os))))
