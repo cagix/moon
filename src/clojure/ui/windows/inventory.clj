@@ -75,10 +75,10 @@
       (.setName "inventory-cell")
       (.setUserObject cell)
       (.addListener (ui/click-listener
-                      (fn [{:keys [ctx/player-eid] :as ctx}]
-                        (clojure.ctx/handle-txs! ctx (-> @player-eid
-                                                     entity/state-obj
-                                                     (state/clicked-inventory-cell player-eid cell)))))))))
+                     (fn [{:keys [ctx/player-eid] :as ctx}]
+                       (clojure.ctx/handle-txs! ctx (-> @player-eid
+                                                        entity/state-obj
+                                                        (state/clicked-inventory-cell player-eid cell)))))))))
 
 (defn- inventory-table [ctx]
   (ui/table {:id ::table
