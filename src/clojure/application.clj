@@ -1,6 +1,6 @@
 (ns clojure.application
-  (:require [clojure.malli :as m]
-            [clojure.viewport :as viewport]
+  (:require [clojure.graphics.viewport :as viewport]
+            [clojure.malli :as m]
             [clojure.utils :as utils]
             [qrecord.core :as q]))
 

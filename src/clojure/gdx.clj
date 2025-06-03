@@ -7,9 +7,9 @@
             [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.pixmap :as pixmap]
+            [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
-            [clojure.math.math-utils :as math-utils]
-            [clojure.viewport :as viewport])
+            [clojure.math.math-utils :as math-utils])
   (:import (clojure.lang IFn
                          ILookup)
            (com.badlogic.gdx Gdx
