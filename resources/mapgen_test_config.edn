@@ -1,10 +1,10 @@
-{:clojure.lwjgl/config {:title "Mapgen Test"
+{:cdq.lwjgl/config {:title "Mapgen Test"
                         :windowed-mode {:width 1440
                                         :height 900}
                         :mac-os {:glfw-async? true}}
- :clojure.lwjgl/create!  clojure.levelgen/create!
- :clojure.lwjgl/dispose! clojure.levelgen/dispose!
- :clojure.lwjgl/render!  clojure.levelgen/render!
- :clojure.lwjgl/resize!  clojure.levelgen/resize!
- :requires [clojure.schemas-impl] ; invalid schema :s/sound when reading db.
+ :cdq.lwjgl/create!  cdq.levelgen/create!
+ :cdq.lwjgl/dispose! cdq.levelgen/dispose!
+ :cdq.lwjgl/render!  cdq.levelgen/render!
+ :cdq.lwjgl/resize!  cdq.levelgen/resize!
+ :requires [cdq.schemas-impl] ; invalid schema :s/sound when reading db.
  }

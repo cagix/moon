@@ -1,0 +1,23 @@
+(ns cdq.entity.state.npc-sleeping
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]
+            [cdq.state :as state]
+            [cdq.utils :refer [defcomponent]]))
+
+(defcomponent :npc-sleeping
+  (entity/tick! [_ eid ctx]
+    (let [entity @eid]
+      (when-let [distance (ctx/nearest-enemy-distance ctx entity)]
+        (when (<= distance (entity/stat entity :entity/aggro-range))
+          [[:tx/event eid :alert]]))))
+
+  (state/exit! [_ eid _ctx]
+    [[:tx/spawn-alert (entity/position @eid) (entity/faction @eid) 0.2]
+     [:tx/add-text-effect eid "[WHITE]!"]])
+
+  (entity/render-above! [_ entity _ctx]
+    (let [[x y] (entity/position entity)]
+      [[:draw/text {:text "zzz"
+                    :x x
+                    :y (+ y (:half-height entity))
+                    :up? true}]])))

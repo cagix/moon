@@ -1,1 +1,1 @@
-lein run -m clojure.dev-loop "((requiring-resolve 'clojure.lwjgl/-main) \"config.edn\")"
+lein run -m clojure.dev-loop "((requiring-resolve 'cdq.lwjgl/-main) \"config.edn\")"
