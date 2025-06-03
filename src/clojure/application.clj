@@ -90,14 +90,16 @@
                 ctx/batch
                 ctx/cursors
                 ctx/default-font
+                ctx/tiled-map
                 ctx/shape-drawer-texture]} @state]
     (utils/dispose! assets)
     (utils/dispose! batch)
     (run! utils/dispose! (vals cursors))
     (utils/dispose! default-font)
     (utils/dispose! shape-drawer-texture)
+    (utils/dispose! tiled-map)
     ; TODO vis-ui dispose
-    ; TODO dispose world tiled-map/level resources?
+    ; TODO what else disposable?
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
 
