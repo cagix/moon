@@ -76,13 +76,17 @@
   (let [ctx (->Context)
         ctx (assoc ctx :ctx/config {:db {:schemas "schema.edn"
                                          :properties "properties.edn"}
-                                    :assets {:folder "resources/"
-                                             :asset-type-extensions {:texture #{"png" "bmp"}}}
                                     :tile-size 48
                                     :ui-viewport {:width 1440
                                                   :height 900}
                                     :world-viewport {:width 1440
                                                      :height 900}
+
+                                    :clojure.create.assets/get-assets-to-load [(requiring-resolve 'clojure.assets-to-load/create)
+                                                                               {:folder "resources/"
+                                                                                :asset-type-extensions {:sound   #{"wav"}
+                                                                                                        :texture #{"png" "bmp"}}}]
+
                                     })
         ctx (clojure.create.db/do!     ctx)
         ctx (clojure.create.files/do!  ctx)
