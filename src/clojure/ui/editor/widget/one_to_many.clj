@@ -31,8 +31,8 @@
                            (stage/add! stage window))))]
       (for [property-id property-ids]
         (let [property (db/build db property-id ctx)
-              image-widget (ui/image->widget (property/image property)
-                                             {:id property-id})]
+              image-widget (ui/image-widget (:texture-region (property/image property))
+                                            {:id property-id})]
           (ui/add-tooltip! image-widget (pprint-to-str property))))
       (for [id property-ids]
         (ui/text-button "-"

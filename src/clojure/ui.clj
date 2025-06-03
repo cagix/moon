@@ -386,11 +386,6 @@
         image)
       (set-opts! opts)))
 
-(defn image->widget
-  "Same opts as [[image-widget]]."
-  [image opts]
-  (image-widget (:texture-region image) opts))
-
 (defn scroll-pane [actor]
   (doto (VisScrollPane. actor)
     (set-user-object! :scroll-pane)
