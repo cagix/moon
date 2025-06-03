@@ -13,11 +13,11 @@
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.graphics.tiled-map-renderer :as tm-renderer]
+            [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
             [clojure.render.clear-screen]
             [clojure.tiled :as tiled]
             [clojure.ui :as ui]
-            [clojure.viewport :as viewport]
             [clojure.utils :as utils]
             [clojure.utils.camera :as camera-utils]))
 
