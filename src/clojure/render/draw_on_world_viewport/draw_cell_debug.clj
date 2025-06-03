@@ -1,7 +1,7 @@
 (ns clojure.render.draw-on-world-viewport.draw-cell-debug
   (:require [clojure.ctx :as ctx]
-            [clojure.graphics.camera :as camera]
-            [clojure.grid :as grid]))
+            [clojure.grid :as grid]
+            [clojure.utils.camera :as camera-utils]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
@@ -11,7 +11,7 @@
                                  ctx/factions-iterations
                                  ctx/world-viewport]}]
   (apply concat
-         (for [[x y] (camera/visible-tiles (:camera world-viewport))
+         (for [[x y] (camera-utils/visible-tiles (:camera world-viewport))
                :let [cell (grid/cell grid [x y])]
                :when cell
                :let [cell* @cell]]

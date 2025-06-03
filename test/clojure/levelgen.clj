@@ -18,7 +18,8 @@
             [clojure.tiled :as tiled]
             [clojure.ui :as ui]
             [clojure.viewport :as viewport]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [clojure.utils.camera :as camera-utils]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -26,11 +27,11 @@
                         [(/ (tiled/tm-width  tiled-map) 2)
                          (/ (tiled/tm-height tiled-map) 2)])
   (camera/set-zoom! camera
-                    (camera/calculate-zoom camera
-                                           :left [0 0]
-                                           :top [0 (tiled/tm-height tiled-map)]
-                                           :right [(tiled/tm-width tiled-map) 0]
-                                           :bottom [0 0])))
+                    (camera-utils/calculate-zoom camera
+                                                 :left [0 0]
+                                                 :top [0 (tiled/tm-height tiled-map)]
+                                                 :right [(tiled/tm-width tiled-map) 0]
+                                                 :bottom [0 0])))
 
 (def tile-size 48)
 

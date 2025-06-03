@@ -1,7 +1,7 @@
 #_(ns clojure.mapgen-test
   (:require [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            ))
+            [clojure.utils.camera :as camera-utils]))
 
 (def ^:private infotext
   "L: grid lines
@@ -47,7 +47,7 @@
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (camera/visible-tiles (:camera world-viewport))
+        visible-tiles (camera-utils/visible-tiles (:camera world-viewport))
         [x y] (mapv int (g/world-mouse-position ctx))]
     (graphics/rectangle x y 1 1 :white)
     (when start-position
