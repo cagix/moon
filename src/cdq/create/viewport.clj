@@ -1,5 +1,5 @@
 (ns cdq.create.viewport
-  (:require [gdl.gdx :as gdx]))
+  (:require [clojure.gdx :as gdx]))
 
 (defn ui [{:keys [ctx/config] :as ctx}]
   (assoc ctx :ctx/ui-viewport (gdx/ui-viewport (:ui-viewport config))))

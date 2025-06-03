@@ -1,5 +1,5 @@
 (ns cdq.create.assets
-  (:require [gdl.gdx :as gdx]))
+  (:require [clojure.gdx :as gdx]))
 
 (defn do! [{:keys [ctx/config
                    ctx/files]

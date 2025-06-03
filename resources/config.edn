@@ -24,7 +24,7 @@
               ]
  :game-state-fns [cdq.game.actors/do!]
  :cdq.ui.windows/create-actors [cdq.ui.windows.entity-info/create
-                                    cdq.ui.windows.inventory/create]
+                                cdq.ui.windows.inventory/create]
  :actor-create-fns [cdq.ui.dev-menu/create
                     cdq.ui.action-bar/create
                     cdq.ui.hp-mana-bar/create

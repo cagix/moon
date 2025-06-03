@@ -1,5 +1,5 @@
 (ns cdq.level.modules
-  (:require [gdl.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
@@ -9,7 +9,7 @@
                                       flood-fill
                                       grid->tiled-map
                                       transition-idx-value]]
-            [gdl.tiled :as tiled]))
+            [clojure.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
 (def modules-width  32) ; usd @ test

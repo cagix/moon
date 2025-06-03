@@ -1,12 +1,12 @@
 (ns cdq.level.helper
-  (:require [gdl.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.db :as db]
-            [gdl.graphics.texture :as texture]
+            [clojure.graphics.texture :as texture]
             [cdq.property :as property]
-            [gdl.tiled :as tiled]
+            [clojure.tiled :as tiled]
             [cdq.utils :as utils]))
 
 (defn- creature->texture-region [assets creature]

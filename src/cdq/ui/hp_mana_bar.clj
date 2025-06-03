@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.utils :as utils]))
 
 (defn- render-infostr-on-bar [infostr x y h]

@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [gdl.gdx :as gdx]
-            [gdl.graphics.batch :as batch]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.shape-drawer :as sd]))
+  (:require [clojure.gdx :as gdx]
+            [clojure.graphics.batch :as batch]
+            [clojure.graphics.camera :as camera]
+            [clojure.graphics.shape-drawer :as sd]))
 
 (def draw-fns
   '[

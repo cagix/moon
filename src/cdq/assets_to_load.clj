@@ -1,6 +1,6 @@
 (ns cdq.assets-to-load
-  (:require [gdl.files :as files]
-            [gdl.files.file-handle :as fh]
+  (:require [clojure.files :as files]
+            [clojure.files.file-handle :as fh]
             [clojure.string :as str]))
 
 (defn- recursively-search [folder extensions]

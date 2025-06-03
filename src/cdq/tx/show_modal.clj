@@ -1,6 +1,6 @@
 (ns cdq.tx.show-modal
   (:require [cdq.ctx.effect-handler :refer [do!]]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.ui.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle

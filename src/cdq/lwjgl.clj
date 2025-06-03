@@ -1,9 +1,9 @@
 (ns cdq.lwjgl
-  (:require [gdl.application-listener :as application]
-            [gdl.gdx :as gdx]
-            [gdl.gdx.lwjgl :as lwjgl]
-            [cdq.java.awt :as awt]
-            [cdq.utils :as utils]))
+  (:require [cdq.java.awt :as awt]
+            [cdq.utils :as utils]
+            [clojure.application-listener :as application]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.lwjgl :as lwjgl]))
 
 (defn -main [config-path]
   (let [config (utils/load-edn-config config-path)]

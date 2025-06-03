@@ -1,8 +1,8 @@
 (ns cdq.ui.editor.widget.image
-  (:require [gdl.assets :as assets]
+  (:require [clojure.assets :as assets]
             [cdq.ui.editor.widget :as widget]
             [cdq.schema :as schema]
-            [gdl.ui :as ui]))
+            [clojure.gdx.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...

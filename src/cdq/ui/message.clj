@@ -1,6 +1,6 @@
 (ns cdq.ui.message
   (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]))
+            [clojure.gdx.ui :as ui]))
 
 (defn- draw-message [state viewport]
   (when-let [text (:text @state)]

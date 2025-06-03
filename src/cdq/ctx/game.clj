@@ -11,7 +11,7 @@
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
-            [gdl.tiled :as tiled]
+            [clojure.tiled :as tiled]
             [cdq.utils :as utils]))
 
 (defn- add-skill! [ctx skill]

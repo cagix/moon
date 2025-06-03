@@ -1,11 +1,11 @@
 (ns cdq.ui.windows.inventory
-  (:require [gdl.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.ctx :as ctx]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them

@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]))
+            [clojure.gdx.ui :as ui]))
 
 (comment
 

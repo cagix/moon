@@ -1,6 +1,6 @@
 (ns cdq.render.check-window-hotkeys
-  (:require [gdl.input :as input]
-            [gdl.ui :as ui]))
+  (:require [clojure.input :as input]
+            [clojure.gdx.ui :as ui]))
 
 (defn- check-escape-close-windows [input windows]
   (when (input/key-just-pressed? input :escape)

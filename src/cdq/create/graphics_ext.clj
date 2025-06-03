@@ -1,13 +1,13 @@
 (ns cdq.create.graphics-ext
-  (:require [gdl.files :as files]
-            [gdl.gdx :as gdx]
-            [gdl.gdx.freetype :as freetype]
-            [gdl.gdx.shape-drawer :as shape-drawer]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.texture :as texture]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.graphics.pixmap :as pixmap]
-            [cdq.utils :as utils]))
+  (:require [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [cdq.utils :as utils]
+            [clojure.files :as files]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.shape-drawer :as shape-drawer]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.pixmap :as pixmap]))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)

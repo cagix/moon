@@ -1,5 +1,5 @@
 (ns cdq.utils.camera
-  (:require [gdl.graphics.camera :as camera]))
+  (:require [clojure.graphics.camera :as camera]))
 
 (defn visible-tiles [camera]
   (let [[left-x right-x bottom-y top-y] (camera/frustum camera)]

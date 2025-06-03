@@ -1,5 +1,5 @@
 (ns cdq.ui.windows
-  (:require [gdl.ui :as ui]))
+  (:require [clojure.gdx.ui :as ui]))
 
 (defn create [{:keys [ctx/config] :as ctx}]
   (let [group (ui/group {:id :windows})]

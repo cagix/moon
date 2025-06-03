@@ -4,8 +4,8 @@
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [cdq.ctx :as ctx]
-            [gdl.input :as input]
-            [gdl.ui :as ui]
+            [clojure.input :as input]
+            [clojure.gdx.ui :as ui]
             [cdq.utils :refer [defcomponent]]))
 
 (defn- clicked-cell [eid cell]

@@ -1,9 +1,9 @@
 (ns cdq.ctx.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
-            [gdl.input :as input]
+            [clojure.input :as input]
             [cdq.property :as property]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.ui.editor.overview-table]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]

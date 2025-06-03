@@ -1,6 +1,6 @@
 (ns cdq.ctx.mouse-over
-  (:require [gdl.graphics.viewport :as viewport]
-            [gdl.input :as input]
+  (:require [clojure.graphics.viewport :as viewport]
+            [clojure.input :as input]
             [cdq.ui.stage :as stage]))
 
 (defn world-mouse-position [{:keys [ctx/input

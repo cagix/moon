@@ -1,6 +1,6 @@
 (ns cdq.create.stage
-  (:require [gdl.input :as input]
-            [gdl.ui :as ui]
+  (:require [clojure.input :as input]
+            [clojure.gdx.ui :as ui]
             [cdq.ui.stage :as stage]))
 
 ; FIXME also outdated context at input-processors outside of stage/render!
@@ -28,7 +28,7 @@
                               (ui/draw! stage ctx)
                               ctx)
 
-                            (add! [_ actor] ; -> re-use clojure.ui/add! ?
+                            (add! [_ actor] ; -> re-use clojure.gdx.ui/add! ?
                               (ui/add! stage actor))
 
                             (clear! [_]

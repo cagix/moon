@@ -2,7 +2,7 @@
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [gdl.gdx :refer [post-runnable!]]
+            [clojure.gdx :refer [post-runnable!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 

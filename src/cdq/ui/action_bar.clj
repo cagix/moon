@@ -1,7 +1,7 @@
 (ns cdq.ui.action-bar
   (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]
-            [gdl.ui.button-group :as button-group]))
+            [clojure.gdx.ui :as ui]
+            [clojure.gdx.ui.button-group :as button-group]))
 
 (defn- button-group-container []
   (ui/actor {:name "button-group-container"

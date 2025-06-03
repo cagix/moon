@@ -3,7 +3,7 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.db :as db]
             [cdq.property :as property]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [pprint-to-str]]))
 

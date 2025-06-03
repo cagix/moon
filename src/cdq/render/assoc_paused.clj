@@ -1,7 +1,7 @@
 (ns cdq.render.assoc-paused
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
-            [gdl.input :as input]))
+            [clojure.input :as input]))
 
 (defn- pause-game? [{:keys [ctx/input
                             ctx/config

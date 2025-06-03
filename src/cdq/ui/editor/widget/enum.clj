@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.enum
   (:require [cdq.ui.editor.widget :as widget]
             [clojure.edn :as edn]
-            [gdl.ui :as ui]
+            [clojure.gdx.ui :as ui]
             [cdq.utils :refer [->edn-str]]))
 
 (defmethod widget/create :enum [schema v _ctx]

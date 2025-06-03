@@ -3,7 +3,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ctx :as ctx]
-            [gdl.ui :as ui]))
+            [clojure.gdx.ui :as ui]))
 
 (defn- mouseover-actor->cursor [actor player-entity-inventory]
   (let [inventory-slot (inventory-window/cell-with-item? actor)]

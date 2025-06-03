@@ -4,7 +4,7 @@
             [cdq.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.gdx :as gdx]
+            [clojure.gdx :as gdx]
             [cdq.utils :refer [sort-by-k-order
                                    readable-number]]))
 
