@@ -21,7 +21,9 @@
                                  (g/world-mouse-position ctx)
                                  [modules/width modules/height])))
           (when area-level-grid
-            (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
+            (str "Creature id: " (tiled/property-value (tiled/get-layer tiled-map "creatures")
+                                                       tile
+                                                       "id")))
           (when area-level-grid
             (let [level (get area-level-grid tile)]
               (when (number? level)
@@ -65,8 +67,8 @@
     (when show-grid-lines
       (graphics/grid 0
                0
-               (tiled/tm-width  tiled-map)
-               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
+               (:tiled-map/width  tiled-map)
+               (:tiled-map/height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 
@@ -79,7 +81,7 @@
            ;:area-level-grid area-level-grid
            :start-position start-position)
     (show-whole-map! (:camera world-viewport) tiled-map)
-    (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
+    (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)))
 
 #_(defn ->generate-map-window [c level-id]
   (ui/window {:title "Properties"

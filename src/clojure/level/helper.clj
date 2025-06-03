@@ -1,5 +1,6 @@
 (ns clojure.level.helper
-  (:require [clojure.grid2d :as g2d]
+  (:require [clojure.gdx :as gdx]
+            [clojure.grid2d :as g2d]
             [clojure.level.caves :as caves]
             [clojure.level.nads :as nads]
             [clojure.db :as db]
@@ -22,20 +23,21 @@
                       {:tile/id (:property/id creature)
                        :tile/texture-region (creature->texture-region assets creature)})))
 
-(def creature-tile ; TODO this is probably not memoized properly as each texture region new java object
+; out of memory error -> each texture region is a new object
+; so either memoize on id or property/image already calculated !? idk
+(def creature-tile
   (memoize
    (fn [{:keys [tile/id
                 tile/texture-region]}]
      (assert (and id
                   texture-region))
-     (let [tile (tiled/static-tiled-map-tile texture-region)]
-       (tiled/put! (tiled/m-props tile) "id" id)
-       tile))))
+     (gdx/static-tiled-map-tile texture-region "id" id))))
 
 (defn add-creatures-layer! [tiled-map spawn-positions]
-  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)]
-    (doseq [[position creature-property] spawn-positions]
-      (tiled/set-tile! layer position (creature-tile creature-property)))))
+  (tiled/add-layer! tiled-map {:name "creatures"
+                               :visible? false
+                               :tiles (for [[position creature-property] spawn-positions]
+                                        [position (creature-tile creature-property)])}))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)
@@ -145,38 +147,29 @@
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (let [tiled-map (tiled/empty-tiled-map)
-        properties (tiled/m-props tiled-map)]
-    (tiled/put-all! properties (tiled/m-props schema-tiled-map))
-    (tiled/put! properties "width"  (g2d/width  grid))
-    (tiled/put! properties "height" (g2d/height grid))
-    (doseq [layer (tiled/layers schema-tiled-map)
-            :let [new-layer (tiled/add-layer! tiled-map
-                                              :name (tiled/layer-name layer)
-                                              :visible (tiled/visible? layer)
-                                              :properties (tiled/m-props layer))]]
-      (doseq [position (g2d/posis grid)
-              :let [local-position (get grid position)]
-              :when local-position]
-        (when (vector? local-position)
-          (when-let [cell (tiled/cell-at schema-tiled-map layer local-position)]
-            (tiled/set-tile! new-layer
-                             position
-                             (tiled/copy-tile (tiled/cell->tile cell)))))))
-    tiled-map))
+  (gdx/create-tiled-map
+   {:properties (merge (tiled/map-properties schema-tiled-map)
+                       {"width" (g2d/width grid)
+                        "height" (g2d/height grid)})
+    :layers (for [layer (tiled/layers schema-tiled-map)]
+              {:name (tiled/layer-name layer)
+               :visible? (tiled/visible? layer)
+               :properties (tiled/map-properties layer)
+               :tiles (for [position (g2d/posis grid)
+                            :let [local-position (get grid position)]
+                            :when local-position]
+                        (when (vector? local-position)
+                          (when-let [tile (tiled/tile-at layer local-position)]
+                            [position (gdx/copy-tile tile)])))})}))
 
 (defn wgt-grid->tiled-map [tile-size grid position->tile]
-  (let [tiled-map (tiled/empty-tiled-map)
-        properties (tiled/m-props tiled-map)]
-    (tiled/put! properties "width"  (g2d/width  grid))
-    (tiled/put! properties "height" (g2d/height grid))
-    (tiled/put! properties "tilewidth"  tile-size)
-    (tiled/put! properties "tileheight" tile-size)
-    (let [layer (tiled/add-layer! tiled-map :name "ground" :visible true)
-          properties (tiled/m-props layer)]
-      (tiled/put! properties "movement-properties" true)
-      (doseq [position (g2d/posis grid)
-              :let [value (get grid position)
-                    cell (tiled/cell-at tiled-map layer position)]]
-        (tiled/set-tile! layer position (position->tile position))))
-    tiled-map))
+  (gdx/create-tiled-map
+   {:properties {"width"  (g2d/width  grid)
+                 "height" (g2d/height grid)
+                 "tilewidth"  tile-size
+                 "tileheight" tile-size}
+    :layers [{:name "ground"
+              :visible? true
+              :properties {"movement-properties" true} ; TODO 'movement-layer'/'collision-layer'
+              :tiles (for [position (g2d/posis grid)]
+                       [position (position->tile position)])}]}))

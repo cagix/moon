@@ -148,8 +148,8 @@
 
 (defn create [tiled-map]
   (->Grid
-   (g2d/create-grid (tiled/tm-width  tiled-map)
-                    (tiled/tm-height tiled-map)
+   (g2d/create-grid (:tiled-map/width  tiled-map)
+                    (:tiled-map/height tiled-map)
                     (fn [position]
                       (create-grid-cell position
                                         (case (tiled/movement-property tiled-map position)

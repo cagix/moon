@@ -70,9 +70,9 @@
                     unscaled-grid
                     unscaled-floor-positions
                     unscaled-transition-positions]
-  (let [_ (assert (and (= (tiled/tm-width modules-tiled-map)
+  (let [_ (assert (and (= (:tiled-map/width modules-tiled-map)
                           (* number-modules-x (+ modules-width module-offset-tiles)))
-                       (= (tiled/tm-height modules-tiled-map)
+                       (= (:tiled-map/height modules-tiled-map)
                           (* number-modules-y (+ modules-height module-offset-tiles)))))
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
                               (place-module* scaled-grid unscaled-position :transition? false))
@@ -194,7 +194,9 @@
                                             (fn [p]
                                               (and (= area-level (get scaled-area-level-grid p))
                                                    (#{:no-cell :undefined}
-                                                    (tiled/property-value tiled-map :creatures p :id))))
+                                                    (tiled/property-value (tiled/get-layer tiled-map "creatures")
+                                                                          p
+                                                                          "id"))))
                                             spawn-positions)))
         creatures (for [position spawn-positions
                         :let [area-level (get scaled-area-level-grid position)

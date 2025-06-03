@@ -51,7 +51,8 @@
                                             player-props)))
 
 (defn- spawn-enemies! [ctx tiled-map]
-  (doseq [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)
+  ; generate this at level generation, so we do all tiled stuff there
+  (doseq [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")
           :let [props {:position position
                        :creature-id (keyword creature-id)
                        :components {:entity/fsm {:fsm :fsms/npc
@@ -85,9 +86,11 @@
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
-                    :ctx/content-grid (content-grid/create tiled-map (:content-grid-cell-size config))
-                    :ctx/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                                      (tiled/tm-height tiled-map)
+                    :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                           (:tiled-map/height tiled-map)
+                                                           (:content-grid-cell-size config))
+                    :ctx/explored-tile-corners (atom (g2d/create-grid (:tiled-map/width  tiled-map)
+                                                                      (:tiled-map/height tiled-map)
                                                                       (constantly false)))
                     :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})

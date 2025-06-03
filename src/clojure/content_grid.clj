@@ -1,19 +1,16 @@
 (ns clojure.content-grid
   (:require [clojure.entity :as entity]
-            [clojure.grid2d :as g2d]
-            [clojure.tiled :as tiled]))
+            [clojure.grid2d :as g2d]))
 
-(defn create [tiled-map cell-size]
-  (let [width  (tiled/tm-width  tiled-map)
-        height (tiled/tm-height tiled-map)]
-    {:grid (g2d/create-grid
-            (inc (int (/ width  cell-size))) ; inc because corners
-            (inc (int (/ height cell-size)))
-            (fn [idx]
-              (atom {:idx idx,
-                     :entities #{}})))
-     :cell-w cell-size
-     :cell-h cell-size}))
+(defn create [width height cell-size]
+  {:grid (g2d/create-grid
+          (inc (int (/ width  cell-size))) ; inc because corners
+          (inc (int (/ height cell-size)))
+          (fn [idx]
+            (atom {:idx idx,
+                   :entities #{}})))
+   :cell-w cell-size
+   :cell-h cell-size})
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [clojure.content-grid/content-cell] :as entity} @eid

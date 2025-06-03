@@ -23,13 +23,13 @@
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
   (camera/set-position! camera
-                        [(/ (tiled/tm-width  tiled-map) 2)
-                         (/ (tiled/tm-height tiled-map) 2)])
+                        [(/ (:tiled-map/width  tiled-map) 2)
+                         (/ (:tiled-map/height tiled-map) 2)])
   (camera/set-zoom! camera
                     (camera-utils/calculate-zoom camera
                                                  :left [0 0]
-                                                 :top [0 (tiled/tm-height tiled-map)]
-                                                 :right [(tiled/tm-width tiled-map) 0]
+                                                 :top [0 (:tiled-map/height tiled-map)]
+                                                 :right [(:tiled-map/width tiled-map) 0]
                                                  :bottom [0 0])))
 
 (def tile-size 48)
@@ -52,7 +52,7 @@
         ctx (assoc ctx
                    :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
                    :ctx/tiled-map tiled-map)]
-    (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)
+    (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
     (show-whole-map! ctx)
     ctx))
 

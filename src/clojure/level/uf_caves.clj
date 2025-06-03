@@ -1,5 +1,6 @@
 (ns clojure.level.uf-caves
-  (:require [clojure.graphics.texture :as texture]
+  (:require [clojure.gdx :as gdx]
+            [clojure.graphics.texture :as texture]
             [clojure.grid2d :as g2d]
             [clojure.level.helper :refer [prepare-creature-properties
                                           add-creatures-layer!
@@ -20,9 +21,7 @@
   (memoize
    (fn [texture-region movement]
      {:pre [#{"all" "air" "none"} movement]}
-     (let [tile (tiled/static-tiled-map-tile texture-region)]
-       (tiled/put! (tiled/m-props tile) "movement" movement)
-       tile))))
+     (gdx/static-tiled-map-tile texture-region "movement" movement))))
 
 (def ^:private sprite-size 48)
 

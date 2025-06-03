@@ -1,10 +1,10 @@
 (ns clojure.graphics.tiled-map-renderer
   (:require [clojure.tiled :as tiled])
   (:import (clojure.graphics OrthogonalTiledMapRenderer
-                         ColorSetter)))
+                             ColorSetter)))
 
 (defn create [tiled-map world-unit-scale batch]
-  (OrthogonalTiledMapRenderer. tiled-map
+  (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                (float world-unit-scale)
                                (:sprite-batch/java-object batch)))
 
