@@ -1,5 +1,6 @@
 #_(ns clojure.graphics.tiled-map-renderer-test
-  (:require [clojure.tiled :as tiled]
+  (:require [clojure.gdx :as gdx]
+            [clojure.tiled :as tiled]
             [clojure.graphics.camera :as camera])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)
@@ -25,7 +26,7 @@
   (Lwjgl3Application.
    (proxy [ApplicationAdapter] []
      (create []
-       (def tiled-map (tiled/load-tmx-map tiled-map-path))
+       (def tiled-map (gdx/tmx-tiled-map tiled-map-path))
        (def batch (SpriteBatch.))
        (def camera (doto (OrthographicCamera.)
                      (.setToOrtho false ; y-down?

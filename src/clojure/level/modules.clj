@@ -1,5 +1,6 @@
 (ns clojure.level.modules
-  (:require [clojure.grid2d :as g2d]
+  (:require [clojure.gdx :as gdx]
+            [clojure.grid2d :as g2d]
             [clojure.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
                                       scale-grid
@@ -163,7 +164,7 @@
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules-scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (place-module (tiled/load-tmx-map modules-file)
+        tiled-map (place-module (gdx/tmx-tiled-map modules-file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))

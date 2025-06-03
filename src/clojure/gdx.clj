@@ -28,6 +28,7 @@
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion
                                           SpriteBatch)
+           (com.badlogic.gdx.maps.tiled TmxMapLoader)
            (com.badlogic.gdx.math Frustum
                                   Vector2
                                   Vector3)
@@ -642,3 +643,16 @@
 (defn operating-system []
   (let [os SharedLibraryLoader/os]
     (cond (= os Os/MacOsX) :operating-system/mac)))
+
+(defn tmx-tiled-map
+  "Loads the TiledMap from the given file. The file is resolved via the FileHandleResolver set in the constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate system.
+
+  Parameters:
+  file-name - the filename
+
+  Returns:
+  the TiledMap
+
+  Has to be disposed because it loads textures."
+  [file-name]
+  (.load (TmxMapLoader.) file-name))

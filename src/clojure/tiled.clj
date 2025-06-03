@@ -9,19 +9,6 @@
                                         TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
 
-(defn load-tmx-map
-  "Loads the TiledMap from the given file. The file is resolved via the FileHandleResolver set in the constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate system.
-
-  Parameters:
-  file-name - the filename
-
-  Returns:
-  the TiledMap
-
-  Has to be disposed because it loads textures."
-  [file-name]
-  (.load (TmxMapLoader.) file-name))
-
 (defn layer-name ^String [layer]
   (if (keyword? layer)
     (name layer)
