@@ -4,6 +4,7 @@
             [clojure.files :as files]
             [clojure.files.file-handle :as file-handle]
             [clojure.graphics :as graphics]
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.pixmap :as pixmap]
@@ -18,14 +19,17 @@
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
+           (com.badlogic.gdx.graphics Camera
+                                      Color
                                       Texture
                                       Pixmap
                                       Pixmap$Format
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion
                                           SpriteBatch)
-           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.math Frustum
+                                  Vector2
+                                  Vector3)
            (com.badlogic.gdx.utils Align
                                    Disposable
                                    Os
@@ -519,6 +523,61 @@
        (texture [_]
          (reify-texture (Texture. this)))))))
 
+(defn- vector3->clj-vec [^Vector3 v3]
+  [(.x v3)
+   (.y v3)
+   (.z v3)])
+
+(defn- frustum-plane-points [^Frustum frustum]
+  (map vector3->clj-vec (.planePoints frustum)))
+
+(defn- reify-camera [^OrthographicCamera this]
+  (reify
+    ILookup
+    (valAt [_ k]
+      (case k
+        :camera/java-object this))
+
+    camera/Camera
+    (zoom [_]
+      (.zoom this))
+
+    (position [_]
+      [(.x (.position this))
+       (.y (.position this))])
+
+    (combined [_]
+      (.combined this))
+
+    (frustum [_]
+      (let [frustum-points (take 4 (frustum-plane-points (.frustum this)))
+            left-x   (apply min (map first  frustum-points))
+            right-x  (apply max (map first  frustum-points))
+            bottom-y (apply min (map second frustum-points))
+            top-y    (apply max (map second frustum-points))]
+        [left-x right-x bottom-y top-y]))
+
+    (set-position! [_ [x y]]
+      (set! (.x (.position this)) (float x))
+      (set! (.y (.position this)) (float y))
+      (.update this))
+
+    (set-zoom! [_ amount]
+      (set! (.zoom this) amount)
+      (.update this))
+
+    (viewport-width [_]
+      (.viewportWidth this))
+
+    (viewport-height [_]
+      (.viewportHeight this))
+
+    (reset-zoom! [cam]
+      (camera/set-zoom! cam 1))
+
+    (inc-zoom! [cam by]
+      (camera/set-zoom! cam (max 0.1 (+ (camera/zoom cam) by)))) ))
+
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
     (reify
@@ -546,7 +605,7 @@
           :java-object this
           :width  (.getWorldWidth  this)
           :height (.getWorldHeight this)
-          :camera (.getCamera      this))))))
+          :camera (reify-camera (.getCamera this)))))))
 
 (defn ui-viewport [{:keys [width height]}]
   (fit-viewport width

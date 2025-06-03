@@ -12,7 +12,7 @@
   (.setColorSetter renderer (reify ColorSetter
                               (apply [_ color x y]
                                 (color-setter color x y))))
-  (.setView renderer camera)
+  (.setView renderer (:camera/java-object camera))
   ; there is also:
   ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
   ; but right order / visible only ?
