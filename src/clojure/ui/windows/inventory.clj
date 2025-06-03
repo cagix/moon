@@ -60,7 +60,7 @@
                             [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]
-  (ui/create-drawable (slot->sprite ctx slot)
+  (ui/create-drawable (:texture-region (slot->sprite ctx slot))
                       :width cell-size
                       :height cell-size
                       :tint-color (color/create 1 1 1 0.4)))
@@ -118,7 +118,7 @@
 (defn set-item! [inventory-window cell item]
   (let [cell-widget (get-cell-widget inventory-window cell)
         image-widget (ui/find-actor cell-widget "image-widget")
-        drawable (ui/create-drawable (:entity/image item)
+        drawable (ui/create-drawable (:texture-region (:entity/image item))
                                      :width cell-size
                                      :height cell-size)]
     (ui/set-drawable! image-widget drawable)

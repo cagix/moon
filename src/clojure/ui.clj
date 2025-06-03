@@ -501,7 +501,7 @@
       (f @(.ctx ^CtxStage (.getStage event))))))
 
 (defn create-drawable
-  [{:keys [texture-region] :as _sprite}
+  [texture-region
    & {:keys [width
              height
              tint-color]}]
