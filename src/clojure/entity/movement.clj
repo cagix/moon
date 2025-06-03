@@ -9,7 +9,7 @@
 
 (defn- move-body [body movement]
   (-> body
-      (update :position    move-position movement)
+      (update :entity/position move-position movement)
       (update :left-bottom move-position movement)))
 
 (defn- try-move [grid body movement]

@@ -70,7 +70,7 @@
 
 ; :body/foo ?
 
-(q/defrecord Body [position
+(q/defrecord Body [entity/position
                    left-bottom ; dry
 
                    width
