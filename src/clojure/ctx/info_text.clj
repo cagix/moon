@@ -4,12 +4,11 @@
             [clojure.timer :as timer]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.graphics.color :as color]
-            [clojure.graphics.colors :as colors]
+            [clojure.gdx :as gdx]
             [clojure.utils :refer [sort-by-k-order
                                    readable-number]]))
 
-(colors/put! "PRETTY_NAME" (color/create 0.84 0.8 0.52 1))
+(gdx/add-markdown-color! "PRETTY_NAME" [0.84 0.8 0.52 1])
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"

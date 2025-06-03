@@ -21,6 +21,7 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Camera
                                       Color
+                                      Colors
                                       Texture
                                       Pixmap
                                       Pixmap$Format
@@ -321,6 +322,9 @@
         (keyword? c) (k->color c)
         (vector? c) (apply create-color c)
         :else (throw (ex-info "Cannot understand color" c))))
+
+(defn add-markdown-color! [name color]
+  (Colors/put name (->color color)))
 
 (defn k->align
   "Returns the `com.badlogic.gdx.utils.Align` enum for keyword `k`.

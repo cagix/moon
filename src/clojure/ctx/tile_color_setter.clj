@@ -1,11 +1,14 @@
 (ns clojure.ctx.tile-color-setter
-  (:require [clojure.raycaster :as raycaster]
+  (:require [clojure.gdx :as gdx]
             [clojure.graphics.camera :as camera]
-            [clojure.graphics.color :as color]))
+            [clojure.raycaster :as raycaster]))
 
 (def see-all-tiles? false)
 
-(def explored-tile-color (color/create 0.5 0.5 0.5 1))
+(def explored-tile-color (gdx/->color [0.5 0.5 0.5 1]))
+
+(def white (gdx/->color :white))
+(def black (gdx/->color :black))
 
 (defn tile-color-setter [{:keys [ctx/raycaster
                                  ctx/explored-tile-corners
@@ -18,7 +21,7 @@
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
             base-color (if explored?
                          explored-tile-color
-                         color/black)
+                         black)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
                        (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -29,11 +32,11 @@
             (swap! ray-positions conj position))
         (if blocked?
           (if see-all-tiles?
-            color/white
+            white
             base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              color/white))))))
+              white))))))
 
 (comment
  (def ^:private count-rays? false)

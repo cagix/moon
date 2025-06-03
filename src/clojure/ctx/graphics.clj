@@ -1,5 +1,5 @@
 (ns clojure.ctx.graphics
-  (:require [clojure.graphics.color :as color]
+  (:require [clojure.gdx :as gdx]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.shape-drawer :as sd]
@@ -19,7 +19,7 @@
                 :scale-x 1
                 :scale-y 1
                 :rotation rotation})
-  (if color (batch/set-color! batch color/white)))
+  (if color (batch/set-color! batch (gdx/->color :white))))
 
 (defn- unit-dimensions [sprite unit-scale]
   (if (= unit-scale 1)

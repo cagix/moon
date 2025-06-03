@@ -3,7 +3,6 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
             [clojure.graphics :as graphics]
-            [clojure.graphics.color :as color]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.pixmap :as pixmap]
@@ -12,7 +11,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
-                 (pixmap/set-color! color/white)
+                 (pixmap/set-color! (gdx/->color :white))
                  (pixmap/draw-pixel! 0 0))
         texture (pixmap/texture pixmap)]
     (utils/dispose! pixmap)
