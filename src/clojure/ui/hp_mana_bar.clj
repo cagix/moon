@@ -19,7 +19,7 @@
         rahmen      (ctx/sprite ctx "images/rahmen.png")
         hpcontent   (ctx/sprite ctx "images/hp.png")
         manacontent (ctx/sprite ctx "images/mana.png" )
-        [rahmenw rahmenh] (:pixel-dimensions rahmen)
+        [rahmenw rahmenh] (:sprite/pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [ctx x y contentimage minmaxval name]
                             [[:draw/image rahmen [x y]]

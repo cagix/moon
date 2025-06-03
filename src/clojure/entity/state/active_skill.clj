@@ -7,7 +7,7 @@
             [clojure.utils :refer [defcomponent]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions image)
+  (let [[width height] (:sprite/world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))

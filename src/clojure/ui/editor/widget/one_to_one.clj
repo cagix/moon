@@ -30,7 +30,7 @@
                              (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/build db property-id ctx)
-               image-widget (ui/image-widget (:texture-region (property/image property))
+               image-widget (ui/image-widget (:sprite/texture-region (property/image property))
                                              {:id property-id})]
            (ui/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]

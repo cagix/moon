@@ -3,7 +3,8 @@
             [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.shape-drawer :as sd]
-            [clojure.graphics.g2d.bitmap-font :as bitmap-font])
+            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
+            [qrecord.core :as q])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
@@ -23,18 +24,18 @@
 
 (defn- unit-dimensions [sprite unit-scale]
   (if (= unit-scale 1)
-    (:pixel-dimensions sprite)
-    (:world-unit-dimensions sprite)))
+    (:sprite/pixel-dimensions sprite)
+    (:sprite/world-unit-dimensions sprite)))
 
 (defn- draw-sprite!
-  ([batch unit-scale {:keys [texture-region color] :as sprite} position]
+  ([batch unit-scale {:keys [sprite/texture-region sprite/color] :as sprite} position]
    (draw-texture-region! batch
                          texture-region
                          position
                          (unit-dimensions sprite unit-scale)
                          0 ; rotation
                          color))
-  ([batch unit-scale {:keys [texture-region color] :as sprite} [x y] rotation]
+  ([batch unit-scale {:keys [sprite/texture-region sprite/color] :as sprite} [x y] rotation]
    (let [[w h] (unit-dimensions sprite unit-scale)]
      (draw-texture-region! batch
                            texture-region
@@ -156,32 +157,27 @@
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
 
-(defn- assoc-dimensions
-  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [^TextureRegion texture-region] :as image} scale world-unit-scale]
-  {:pre [(or (number? scale)
-             (and (vector? scale)
-                  (number? (scale 0))
-                  (number? (scale 1))))]}
-  (let [pixel-dimensions (if (number? scale)
+(q/defrecord Sprite [sprite/texture-region
+                     sprite/pixel-dimensions
+                     sprite/world-unit-dimensions
+                     sprite/color]) ; optional
+
+(defn- create-sprite
+  [^TextureRegion texture-region
+   world-unit-scale]
+  (let [scale 1 ; "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+        _ (assert (or (number? scale)
+                      (and (vector? scale)
+                           (number? (scale 0))
+                           (number? (scale 1)))))
+        pixel-dimensions (if (number? scale)
                            (scale-dimensions [(.getRegionWidth  texture-region)
                                               (.getRegionHeight texture-region)]
                                              scale)
                            scale)]
-    (assoc image
-           :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
-
-
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
-(defn- create-sprite [texture-region world-unit-scale]
-  (-> {:texture-region texture-region}
-      (assoc-dimensions 1 world-unit-scale) ; = scale 1
-      map->Sprite))
+    (map->Sprite {:texture-region texture-region
+                  :pixel-dimensions pixel-dimensions
+                  :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
 
 (defn sprite [{:keys [ctx/assets
                       ctx/world-unit-scale]}
@@ -190,7 +186,7 @@
                  world-unit-scale))
 
 (defn sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
-  (create-sprite (texture/sub-region (:texture-region sprite) x y w h)
+  (create-sprite (texture/sub-region (:sprite/texture-region sprite) x y w h)
                  world-unit-scale))
 
 (defn sprite-sheet [{:keys [ctx/assets

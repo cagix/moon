@@ -14,7 +14,7 @@
                          (fn [_actor _ctx]))]))
 
 (defmethod widget/create :s/image [schema image ctx]
-  (ui/image-button (:texture-region (schema/edn->value schema image ctx))
+  (ui/image-button (:sprite/texture-region (schema/edn->value schema image ctx))
                    (fn [_actor _ctx])
                    {:scale 2})
   #_(ui/image-button image
