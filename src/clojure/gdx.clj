@@ -28,7 +28,9 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align
                                    Disposable
-                                   ScreenUtils)
+                                   Os
+                                   ScreenUtils
+                                   SharedLibraryLoader)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (comment
@@ -564,3 +566,7 @@
 
 (defn clear-screen! []
   (ScreenUtils/clear Color/BLACK))
+
+(defn operating-system []
+  (let [os SharedLibraryLoader/os]
+    (cond (= os Os/MacOsX) :operating-system/mac)))

@@ -1,9 +1,3 @@
-; This is the first step - interop - it is plain 'calculations'
-; and will never change
-; also use namespaced keywords as of what it is .... 'clojure.gdx.graphics.monitor/foo'
-; or gl-emulation/foobar
-; => helps with the 'no private' mantra -> re-use at 'clojure.gdx.i'
-; make everything public then you know what you have.
 (ns clojure.gdx.lwjgl.interop
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application$GLDebugMessageSeverity
                                              Lwjgl3ApplicationConfiguration
