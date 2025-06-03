@@ -16,14 +16,11 @@
   file-name - the filename
 
   Returns:
-  the TiledMap "
+  the TiledMap
+
+  Has to be disposed because it loads textures."
   [file-name]
   (.load (TmxMapLoader.) file-name))
-
-(defn dispose
-  "Disposes all resources like Texture instances that the map may own."
-  [tiled-map]
-  (TiledMap/.dispose tiled-map))
 
 (defn layer-name ^String [layer]
   (if (keyword? layer)
