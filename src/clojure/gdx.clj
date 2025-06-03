@@ -339,6 +339,8 @@
       (.play this))))
 
 ; create-sprite ( :texture-region key grep ) -> use namespaced keyword. ( 45 hits, same @ entity)
+; => hard to find usages of sprite and also entity position/body keys as not namespaced
+; => fix that first... where body is used ?!
 ; draw-texture-region!
 ; .getRegionWidth / .getRegionHeight
 ; texture/sub-region

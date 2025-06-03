@@ -68,14 +68,16 @@
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
 
+; :body/foo ?
+
 (q/defrecord Body [position
-                   left-bottom
+                   left-bottom ; dry
 
                    width
                    height
-                   half-width
-                   half-height
-                   radius
+                   half-width ; dry
+                   half-height ; dry
+                   radius ; ??
 
                    collides?
                    z-order
