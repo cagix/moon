@@ -1,8 +1,8 @@
 (ns clojure.ui
   (:require [clojure.graphics.texture :as texture])
   (:import (clojure.lang ILookup)
-           (clojure.graphics.texture Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (clojure.graphics.texture Texture
+                                     TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Stage
@@ -368,10 +368,10 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (texture/region texture)))
+  (VisImage. (:texture-region/java-object (texture/region texture))))
 
-(defmethod image* TextureRegion [^TextureRegion tr]
-  (VisImage. tr))
+(defmethod image* TextureRegion [texture-region]
+  (VisImage. (:texture-region/java-object texture-region)))
 
 (defn image-widget ; TODO widget also make, for fill parent
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
@@ -401,15 +401,17 @@
   (doto (VisTextButton. (str text))
     (.addListener (change-listener on-clicked))))
 
+(defn texture-region-drawable [texture-region]
+  (TextureRegionDrawable. (:texture-region/java-object texture-region)))
+
 (defn image-button
   ([texture-region on-clicked]
    (image-button texture-region on-clicked {}))
-  ([^TextureRegion texture-region on-clicked {:keys [scale]}]
-   (let [drawable (TextureRegionDrawable. texture-region)
+  ([texture-region on-clicked {:keys [scale]}]
+   (let [drawable (texture-region-drawable texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale
-       (let [[w h] [(.getRegionWidth  texture-region)
-                    (.getRegionHeight texture-region)]]
+       (let [[w h] (:texture-region/dimensions texture-region)]
          (BaseDrawable/.setMinSize drawable
                                    (float (* scale w))
                                    (float (* scale h)))))
@@ -500,7 +502,7 @@
    & {:keys [width
              height
              tint-color]}]
-  (let [drawable (doto (TextureRegionDrawable. ^TextureRegion texture-region)
+  (let [drawable (doto (texture-region-drawable texture-region)
                    (BaseDrawable/.setMinSize (float width)
                                              (float height)))]
     (if tint-color

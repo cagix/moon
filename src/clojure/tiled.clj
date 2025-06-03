@@ -1,6 +1,5 @@
 (ns clojure.tiled
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.maps MapLayer
+  (:import (com.badlogic.gdx.maps MapLayer
                                   MapLayers
                                   MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader
@@ -133,8 +132,8 @@
      (StaticTiledMapTile. tile))))
 
 (defn static-tiled-map-tile [texture-region]
-  (assert texture-region)
-  (StaticTiledMapTile. ^TextureRegion texture-region))
+  (assert (:texture-region/java-object texture-region))
+  (StaticTiledMapTile. (:texture-region/java-object texture-region)))
 
 (defn set-tile! [^TiledMapTileLayer layer [x y] tile]
   (let [cell (TiledMapTileLayer$Cell.)]

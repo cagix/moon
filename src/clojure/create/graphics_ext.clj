@@ -14,7 +14,7 @@
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
                  (pixmap/set-color! color/white)
                  (pixmap/draw-pixel! 0 0))
-        texture (gdx/texture pixmap)]
+        texture (pixmap/texture pixmap)]
     (utils/dispose! pixmap)
     texture))
 
@@ -41,7 +41,7 @@
            {:ctx/batch batch
             :ctx/unit-scale (atom 1)
             :ctx/shape-drawer-texture shape-drawer-texture
-            :ctx/shape-drawer (shape-drawer/create batch (texture/->sub-region shape-drawer-texture 1 0 1 1))
+            :ctx/shape-drawer (shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
                                           (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]

@@ -4,8 +4,7 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.g2d.bitmap-font :as bitmap-font]
-            [qrecord.core :as q])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
+            [qrecord.core :as q]))
 
 (defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
   (if color (batch/set-color! batch color))
@@ -163,7 +162,7 @@
                      sprite/color]) ; optional
 
 (defn- create-sprite
-  [^TextureRegion texture-region
+  [texture-region
    world-unit-scale]
   (let [scale 1 ; "scale can be a number for multiplying the texture-region-dimensions or [w h]."
         _ (assert (or (number? scale)
@@ -171,9 +170,7 @@
                            (number? (scale 0))
                            (number? (scale 1)))))
         pixel-dimensions (if (number? scale)
-                           (scale-dimensions [(.getRegionWidth  texture-region)
-                                              (.getRegionHeight texture-region)]
-                                             scale)
+                           (scale-dimensions (:texture-region/dimensions texture-region) scale)
                            scale)]
     (map->Sprite {:texture-region texture-region
                   :pixel-dimensions pixel-dimensions

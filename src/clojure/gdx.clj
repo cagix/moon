@@ -328,41 +328,47 @@
     :left   Align/left
     :right  Align/right))
 
+(defn- reify-texture-region [^TextureRegion this]
+  (reify
+    ILookup
+    (valAt [_ k]
+      (case k
+        :texture-region/dimensions [(.getRegionWidth  this)
+                                    (.getRegionHeight this)]
+        :texture-region/java-object this))
+
+    texture/TextureRegion
+    (sub-region [_ x y w h]
+      (reify-texture-region (TextureRegion. this
+                                            (int x)
+                                            (int y)
+                                            (int w)
+                                            (int h))))))
+
+(defn- reify-texture [^Texture this]
+  (reify texture/Texture
+    (region [_]
+      (reify-texture-region (TextureRegion. this)))
+    (region [_ x y w h]
+      (reify-texture-region (TextureRegion. this
+                                            (int x)
+                                            (int y)
+                                            (int w)
+                                            (int h))))))
+
+(defn- reify-sound [^Sound this]
+  (reify sound/Sound
+    (play! [_]
+      (.play this))))
+
 (defn- k->class ^Class [asset-type-k]
   (case asset-type-k
     :sound Sound
     :texture Texture))
 
 (defmulti ^:private reify-asset class)
-
-(defmethod reify-asset Sound [^Sound this]
-  (reify sound/Sound
-    (play! [_]
-      (.play this))))
-
-; create-sprite ( :texture-region key grep ) -> use namespaced keyword. ( 45 hits, same @ entity)
-; => hard to find usages of sprite and also entity position/body keys as not namespaced
-; => fix that first... where body is used ?!
-; draw-texture-region!
-; .getRegionWidth / .getRegionHeight
-; texture/sub-region
-; ShapeDrawer.
-; ui/image->widget
-; ui/image-button ( DONT USE SPRITES HERE !)
-; TextureRegionDrawable.
-; tiled/static-tiled-map-tile
-; VisImage.
-
-(defmethod reify-asset Texture [^Texture this]
-  (reify texture/Texture
-    (region [_]
-      (TextureRegion. this))
-    (region [_ x y w h]
-      (TextureRegion. this
-                      (int x)
-                      (int y)
-                      (int w)
-                      (int h)))))
+(defmethod reify-asset Sound   [this] (reify-sound   this))
+(defmethod reify-asset Texture [this] (reify-texture this))
 
 (defn asset-manager [assets]
   (let [this (AssetManager.)]
@@ -468,7 +474,7 @@
                                        scale-y
                                        rotation]}]
         (.draw this
-               texture-region
+               (:texture-region/java-object texture-region)
                x
                y
                origin-x
@@ -490,8 +496,7 @@
 
 (defn pixmap
   ([file-handle]
-   (Pixmap. ^FileHandle (:java-object file-handle)) ; reify ? used @ create-cursor ...
-   )
+   (Pixmap. ^FileHandle (:java-object file-handle))) ; used @ create-cursor -> reify?
   ([width height format]
    (let [this (Pixmap. (int width)
                        (int height)
@@ -510,10 +515,9 @@
        (set-color! [_ color]
          (.setColor this ^Color color))
        (draw-pixel! [_ x y]
-         (.drawPixel this x y))))))
-
-(defn texture [pixmap]
-  (Texture. ^Pixmap (:pixmap/java-object pixmap)))
+         (.drawPixel this x y))
+       (texture [_]
+         (reify-texture (Texture. this)))))))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
