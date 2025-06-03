@@ -4,6 +4,8 @@
             [clojure.utils :as utils]
             [qrecord.core :as q]))
 
+; => this whole thing is my application listener itself !?
+; config == the application listener type ?!
 (q/defrecord Context [ctx/assets
                       ctx/batch
                       ctx/config
@@ -49,6 +51,13 @@
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
              ;;
+
+             ; # 1 complexity - game context - make in one field ?
+             ; but then there is also entity stats #1 #1 complexity !
+             ; @ spawn-entity !
+             ; and there the # 1 problem is body has non-namespaced keys .... fix that first
+             ; and make body separate component !?
+
 
              ;; below is only world/game related
              [:ctx/elapsed-time number?]

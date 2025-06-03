@@ -70,6 +70,16 @@
 
 ; :body/foo ?
 
+
+; 1. make namespaced keys
+; start with position !!!
+
+; also cell ...  !! impossible to find ...
+; what other 'records' /key words do I have ?
+
+; math.geom rectangle->tiles uses actually entity / body !
+; with 'left-bottom' ...
+
 (q/defrecord Body [entity/position
                    left-bottom ; dry
 

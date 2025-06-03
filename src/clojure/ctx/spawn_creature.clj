@@ -22,9 +22,9 @@
                        {:keys [position creature-id components]}]
   (let [props (db/build db creature-id ctx)]
     (clojure.ctx/spawn-entity! ctx
-                           position
-                           (create-creature-body (:entity/body props))
-                           (-> props
-                               (dissoc :entity/body)
-                               (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                               (utils/safe-merge components)))))
+                               position
+                               (create-creature-body (:entity/body props))
+                               (-> props
+                                   (dissoc :entity/body)
+                                   (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                                   (utils/safe-merge components)))))

@@ -171,6 +171,9 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (user-object %)) actors))))
 
+; => pass app/state to stage and click handlers do 'swap!'
+; so each render step has to be a separate swap! also ? confusing
+
 (defn draw! [stage ctx]
   (reset! (.ctx stage) ctx)
   (Stage/.draw stage)

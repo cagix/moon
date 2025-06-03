@@ -2,11 +2,11 @@
   (:require [clojure.files :as files]
             [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.graphics.pixmap :as pixmap]
-            [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.utils :as utils]))
 
 (defn- white-pixel-texture []
