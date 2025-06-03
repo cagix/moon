@@ -11,7 +11,6 @@
             [clojure.create.viewport]
             [clojure.create.world-unit-scale]
             [clojure.graphics :as graphics]
-            [clojure.graphics.color :as color]
             [clojure.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
@@ -102,7 +101,7 @@
         ctx (assoc ctx
                    :ctx/batch batch
                    :ctx/camera (:camera (:ctx/world-viewport ctx))
-                   :ctx/color-setter (constantly color/white)
+                   :ctx/color-setter (constantly (gdx/->color :white))
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1
                    :ctx/stage stage)
