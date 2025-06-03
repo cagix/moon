@@ -10,7 +10,6 @@
             [cdq.create.world-unit-scale]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.render.clear-screen]
-            [cdq.utils :as utils]
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx :as gdx]
             [clojure.gdx.ui :as ui]
@@ -18,7 +17,8 @@
             [clojure.graphics :as graphics]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
-            [clojure.tiled :as tiled]))
+            [clojure.tiled :as tiled]
+            [clojure.utils.disposable :as disp]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -46,7 +46,7 @@
                         :as ctx}
                        level-fn]
   (when tiled-map
-    (utils/dispose! tiled-map))
+    (disp/dispose! tiled-map))
   (let [level (level-fn ctx)
         tiled-map (:tiled-map level)
         ctx (assoc ctx
@@ -113,8 +113,8 @@
 (defn dispose! []
   (let [{:keys [ctx/assets
                 ctx/tiled-map]} @state]
-    (utils/dispose! assets)
-    (utils/dispose! tiled-map)))
+    (disp/dispose! assets)
+    (disp/dispose! tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/tm-renderer
                                 ctx/tiled-map

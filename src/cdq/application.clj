@@ -1,7 +1,7 @@
 (ns cdq.application
-  (:require [clojure.graphics.viewport :as viewport]
-            [cdq.malli :as m]
-            [cdq.utils :as utils]
+  (:require [cdq.malli :as m]
+            [clojure.graphics.viewport :as viewport]
+            [clojure.utils.disposable :as disp]
             [qrecord.core :as q]))
 
 ; => this whole thing is my application listener itself !?
@@ -101,12 +101,12 @@
                 ctx/default-font
                 ctx/tiled-map
                 ctx/shape-drawer-texture]} @state]
-    (utils/dispose! assets)
-    (utils/dispose! batch)
-    (run! utils/dispose! (vals cursors))
-    (utils/dispose! default-font)
-    (utils/dispose! shape-drawer-texture)
-    (utils/dispose! tiled-map)
+    (disp/dispose! assets)
+    (disp/dispose! batch)
+    (run! disp/dispose! (vals cursors))
+    (disp/dispose! default-font)
+    (disp/dispose! shape-drawer-texture)
+    (disp/dispose! tiled-map)
     ; TODO vis-ui dispose
     ; TODO what else disposable?
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.

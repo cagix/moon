@@ -1,14 +1,14 @@
 (ns cdq.level.uf-caves
-  (:require [clojure.gdx :as gdx]
-            [clojure.graphics.texture :as texture]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
-                                          add-creatures-layer!
-                                          wgt-grid->tiled-map
-                                          adjacent-wall-positions
-                                          scalegrid
-                                          flood-fill]]
+                                      add-creatures-layer!
+                                      wgt-grid->tiled-map
+                                      adjacent-wall-positions
+                                      scalegrid
+                                      flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
+            [clojure.gdx :as gdx]
+            [clojure.graphics.texture :as texture]
             [clojure.tiled :as tiled]))
 
 (defn- rand-0-3 []

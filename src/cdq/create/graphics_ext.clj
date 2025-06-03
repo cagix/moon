@@ -7,14 +7,15 @@
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
-            [clojure.graphics.pixmap :as pixmap]))
+            [clojure.graphics.pixmap :as pixmap]
+            [clojure.utils.disposable :as disp]))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
                  (pixmap/set-color! (gdx/->color :white))
                  (pixmap/draw-pixel! 0 0))
         texture (pixmap/texture pixmap)]
-    (utils/dispose! pixmap)
+    (disp/dispose! pixmap)
     texture))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
@@ -44,7 +45,7 @@
             :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
                                           (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
                                                 cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                            (utils/dispose! pixmap)
+                                            (disp/dispose! pixmap)
                                             cursor))
                                         cursors)
             :ctx/default-font (truetype-font files default-font)

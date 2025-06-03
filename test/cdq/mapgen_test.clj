@@ -75,7 +75,7 @@
 #_(defn- generate-screen-ctx [c properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build db world-id ctx))
         atom-data (current-data)]
-    (utils/dispose! (:tiled-map @atom-data))
+    (disp/dispose! (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
