@@ -1,6 +1,8 @@
 (ns clojure.gdx.lwjgl
-  (:require [clojure.gdx.lwjgl.interop :as i])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+  (:require [clojure.application-listener :as application]
+            [clojure.gdx.lwjgl.interop :as i])
+  (:import (com.badlogic.gdx ApplicationListener)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3WindowConfiguration)
            (org.lwjgl.system Configuration)))
@@ -47,8 +49,28 @@
   (Lwjgl3Application/setGLDebugMessageControl (i/k->gl-debug-message-severity severity)
                                               (boolean enabled?)))
 
+(defn- proxy-listener [listener]
+  (proxy [ApplicationListener] []
+    (create []
+      (application/create! listener))
+
+    (dispose []
+      (application/dispose! listener))
+
+    (render []
+      (application/render! listener))
+
+    (resize [width height]
+      (application/resize! listener width height))
+
+    (pause []
+      (application/pause!))
+
+    (resume []
+      (application/resume!))))
+
 (defn start-application! [listener config]
-  (Lwjgl3Application. listener
+  (Lwjgl3Application. (proxy-listener listener)
                       (let [obj (Lwjgl3ApplicationConfiguration.)]
                         (doseq [[k v] config]
                           (i/set-application-config-key! obj k v))

@@ -1,5 +1,6 @@
 (ns clojure.lwjgl
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.application-listener :as application]
+            [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.java.awt :as awt]
             [clojure.utils :as utils])
@@ -15,19 +16,15 @@
             (lwjgl/set-glfw-async!))
           (when dock-icon
             (awt/set-taskbar-icon! dock-icon)))))
-    (lwjgl/start-application! (proxy [ApplicationAdapter] []
-                                (create []
+    (lwjgl/start-application! (reify application/Listener
+                                (create! [_]
                                   ((::create! config) config))
-
-                                (dispose []
+                                (dispose! [_]
                                   ((::dispose! config)))
-
-                                (render []
+                                (render! [_]
                                   ((::render! config)))
-
-                                (resize [width height]
+                                (resize! [_ width height]
                                   ((::resize! config) width height))
-
-                                ; pause & resume also used ....
-                                )
+                                (pause! [_])
+                                (resume! [_]))
                               (dissoc (::config config) :mac-os))))
