@@ -354,7 +354,12 @@
                                             (int h))))))
 
 (defn- reify-texture [^Texture this]
-  (reify texture/Texture
+  (reify
+    Disposable
+    (dispose [_]
+      (.dispose this))
+
+    texture/Texture
     (region [_]
       (reify-texture-region (TextureRegion. this)))
     (region [_ x y w h]
