@@ -10,5 +10,5 @@
     (concat (clojure.tx.remove-item/do! eid cell)
             (clojure.tx.set-item/do! eid cell (update cell-item :count + (:count item))))))
 
-(defn do! [ctx eid cell item]
+#_(defn do! [ctx eid cell item]
   #_(tx/stack-item ctx eid cell item))

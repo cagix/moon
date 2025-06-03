@@ -152,6 +152,7 @@
                     (:tiled-map/height tiled-map)
                     (fn [position]
                       (create-grid-cell position
+                                        ; also do at level creation, here no tiled foozaboozls.
                                         (case (tiled/movement-property tiled-map position)
                                           "none" :none
                                           "air"  :air
