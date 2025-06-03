@@ -33,7 +33,7 @@
 
 (defn add-skill! [action-bar {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (ui/image-button image
+        button (ui/image-button (:texture-region image)
                                 (fn [_actor _ctx])
                                 {:scale 2})]
     (ui/set-user-object! button id)

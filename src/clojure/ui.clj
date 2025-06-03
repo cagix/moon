@@ -407,9 +407,9 @@
     (.addListener (change-listener on-clicked))))
 
 (defn image-button
-  ([image on-clicked]
-   (image-button image on-clicked {}))
-  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+  ([texture-region on-clicked]
+   (image-button texture-region on-clicked {}))
+  ([^TextureRegion texture-region on-clicked {:keys [scale]}]
    (let [drawable (TextureRegionDrawable. texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale

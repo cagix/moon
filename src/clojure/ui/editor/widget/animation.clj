@@ -5,7 +5,7 @@
 
 (defmethod widget/create :s/animation [_ animation ctx]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (ui/image-button (schema/edn->value :s/image image ctx)
+                      (ui/image-button (:texture-region (schema/edn->value :s/image image ctx))
                                        (fn [_actor _ctx])
                                        {:scale 2}))]
              :cell-defaults {:pad 1}}))

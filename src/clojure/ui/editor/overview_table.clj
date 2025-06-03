@@ -33,7 +33,7 @@
   (let [on-clicked (fn [_actor ctx]
                      (clicked-id-fn id ctx))
         button (if-let [image (property/image props)]
-                 (ui/image-button image
+                 (ui/image-button (:texture-region image)
                                   on-clicked
                                   {:scale scale})
                  (ui/text-button (name id)
