@@ -9,14 +9,14 @@
  :cdq.lwjgl/render!  cdq.application/render!
  :cdq.lwjgl/resize!  cdq.application/resize!
  :create-fns [cdq.create.files/do!
+              cdq.create.input/do!
+              cdq.create.graphics/do!
               [cdq.create.assets/do! [cdq.assets-to-load/create
                                       {:folder "resources/"
                                        :asset-type-extensions {:sound   #{"wav"}
                                                                :texture #{"png" "bmp"}}}]]
-              cdq.create.input/do!
               [cdq.create.db/do! {:schemas "schema.edn"
                                   :properties "properties.edn"}]
-              cdq.create.graphics/do!
               cdq.create.world-unit-scale/do!
               cdq.create.viewport/ui
               cdq.create.viewport/world
