@@ -23,7 +23,7 @@
               cdq.create.graphics-ext/do!
               cdq.create.stage/do!
               [cdq.create.extend-protocols/do! cdq.ctx]
-              cdq.create.game-state/do!
+              [cdq.ctx/reset-game-state! cdq.level.vampire/create]
               cdq.create.player-movement-vector/do!
               ]
  :game-state-fns [cdq.game.actors/do!]
@@ -74,7 +74,6 @@
                 :quality-scaling 2}
  :world-viewport {:width 1440
                   :height 900}
- :world-fn cdq.level.vampire/create
  :content-grid-cell-size 16
  :player-props {:creature-id :creatures/vampire
                 :free-skill-points 3
