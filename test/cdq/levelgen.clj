@@ -81,16 +81,13 @@
                                                   :height 900}
                                     :world-viewport {:width 1440
                                                      :height 900}
-
-                                    :cdq.create.assets/get-assets-to-load [(requiring-resolve 'cdq.assets-to-load/create)
-                                                                               {:folder "resources/"
-                                                                                :asset-type-extensions {:sound   #{"wav"}
-                                                                                                        :texture #{"png" "bmp"}}}]
-
                                     })
         ctx (cdq.create.db/do!     ctx)
         ctx (cdq.create.files/do!  ctx)
-        ctx (cdq.create.assets/do! ctx)
+        ctx (cdq.create.assets/do! ctx [(requiring-resolve 'cdq.assets-to-load/create)
+                                        {:folder "resources/"
+                                         :asset-type-extensions {:sound   #{"wav"}
+                                                                 :texture #{"png" "bmp"}}}])
         ctx (cdq.create.input/do!  ctx)
         ctx (cdq.create.viewport/ui ctx)
         ctx (cdq.create.world-unit-scale/do! ctx)

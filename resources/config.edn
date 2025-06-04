@@ -9,7 +9,10 @@
  :cdq.lwjgl/render!  cdq.application/render!
  :cdq.lwjgl/resize!  cdq.application/resize!
  :create-fns [cdq.create.files/do!
-              cdq.create.assets/do!
+              [cdq.create.assets/do! [cdq.assets-to-load/create
+                                      {:folder "resources/"
+                                       :asset-type-extensions {:sound   #{"wav"}
+                                                               :texture #{"png" "bmp"}}}]]
               cdq.create.input/do!
               cdq.create.db/do!
               cdq.create.graphics/do!
@@ -52,10 +55,6 @@
                :height 900}
  :db {:schemas "schema.edn"
       :properties "properties.edn"}
- :cdq.create.assets/get-assets-to-load [cdq.assets-to-load/create
-                                            {:folder "resources/"
-                                             :asset-type-extensions {:sound   #{"wav"}
-                                                                     :texture #{"png" "bmp"}}}]
  :cursor-path-format "cursors/%s.png"
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]

@@ -88,7 +88,10 @@
 (defn create! [config]
   (let [ctx (map->Context {:config config})
         ctx (reduce (fn [ctx f]
-                      (f ctx))
+                      (if (vector? f)
+                        (let [[f params] f]
+                          (f ctx params))
+                        (f ctx)))
                     ctx
                     (:create-fns config))]
     (m/validate-humanize schema ctx)
