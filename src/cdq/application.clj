@@ -94,13 +94,13 @@
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
 
-(defn render! []
-  (swap! state (fn [{:keys [ctx/config] :as ctx}]
+(defn render! [render-fns]
+  (swap! state (fn [ctx]
                  (m/validate-humanize schema ctx)
                  (let [ctx (reduce (fn [ctx render!]
                                      (render! ctx))
                                    ctx
-                                   (:render-fns config))]
+                                   render-fns)]
                    (m/validate-humanize schema ctx)
                    ctx))))
 

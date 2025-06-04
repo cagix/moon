@@ -5,6 +5,9 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]))
 
+(defn invoke [[f params]]
+  (f params))
+
 (defn -main [config-path]
   (let [config (utils/load-edn-config config-path)]
     (when-let [mac-settings (:mac-os (::config config))]
@@ -21,7 +24,7 @@
                                 (dispose! [_]
                                   ((::dispose! config)))
                                 (render! [_]
-                                  ((::render! config)))
+                                  (invoke (::render! config)))
                                 (resize! [_ width height]
                                   ((::resize! config) width height))
                                 (pause! [_])

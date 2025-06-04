@@ -6,7 +6,21 @@
                              :dock-icon "moon.png"}}
  :cdq.lwjgl/create!  cdq.application/create!
  :cdq.lwjgl/dispose! cdq.application/dispose!
- :cdq.lwjgl/render!  cdq.application/render!
+ :cdq.lwjgl/render! [cdq.application/render! [cdq.render.assoc-active-entities/do!
+                                              cdq.render.set-camera-on-player/do!
+                                              cdq.render.clear-screen/do!
+                                              cdq.render.draw-world-map/do!
+                                              cdq.render.draw-on-world-viewport/do!
+                                              cdq.render.stage/do!
+                                              cdq.render.player-state-handle-click/do!
+                                              cdq.render.update-mouseover-entity/do!
+                                              cdq.render.assoc-paused/do!
+                                              cdq.render.update-time/do!
+                                              cdq.render.update-potential-fields/do!
+                                              cdq.render.tick-entities/do!
+                                              cdq.render.remove-destroyed-entities/do!
+                                              cdq.render.camera-controls/do!
+                                              cdq.render.check-window-hotkeys/do!]]
  :cdq.lwjgl/resize!  cdq.application/resize!
  :create-fns [cdq.create.files/do!
               cdq.create.input/do!
@@ -35,21 +49,6 @@
                     cdq.ui.windows/create
                     cdq.ui.player-state-draw/create
                     cdq.ui.message/create]
- :render-fns [cdq.render.assoc-active-entities/do!
-              cdq.render.set-camera-on-player/do!
-              cdq.render.clear-screen/do!
-              cdq.render.draw-world-map/do!
-              cdq.render.draw-on-world-viewport/do!
-              cdq.render.stage/do!
-              cdq.render.player-state-handle-click/do!
-              cdq.render.update-mouseover-entity/do!
-              cdq.render.assoc-paused/do!
-              cdq.render.update-time/do!
-              cdq.render.update-potential-fields/do!
-              cdq.render.tick-entities/do!
-              cdq.render.remove-destroyed-entities/do!
-              cdq.render.camera-controls/do!
-              cdq.render.check-window-hotkeys/do!]
  :tile-size 48
  :ui-viewport {:width 1440
                :height 900}
