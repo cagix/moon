@@ -72,7 +72,7 @@
 
 (defrecord Context [])
 
-(defn create! []
+(defn create! [_config]
   (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
