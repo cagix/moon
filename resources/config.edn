@@ -14,7 +14,7 @@
                                               cdq.render.stage/do!
                                               cdq.render.player-state-handle-click/do!
                                               cdq.render.update-mouseover-entity/do!
-                                              cdq.render.assoc-paused/do!
+                                              [cdq.render.assoc-paused/do! {:pausing? false}]
                                               cdq.render.update-time/do!
                                               cdq.render.update-potential-fields/do!
                                               cdq.render.tick-entities/do!
@@ -81,7 +81,6 @@
             :zoom-out :equals
             :unpause-once :p
             :unpause-continously :space}
- :pausing? true
  :zoom-speed 0.025
  :world-fns [cdq.level.vampire/create
              cdq.level.uf-caves/create

@@ -67,7 +67,7 @@
 
 (defn create! [config]
   (let [ctx (map->Context {:config config})
-        ctx (reduce utils/create* ctx (:create-fns config))]
+        ctx (reduce utils/render* ctx (:create-fns config))]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
 
@@ -92,10 +92,7 @@
 (defn render! [render-fns]
   (swap! state (fn [ctx]
                  (m/validate-humanize schema ctx) ; <- isnt this just another step? -- context fn -- not in render needed?
-                 (let [ctx (reduce (fn [ctx render!]
-                                     (render! ctx))
-                                   ctx
-                                   render-fns)]
+                 (let [ctx (reduce utils/render* ctx render-fns)]
                    (m/validate-humanize schema ctx)
                    ctx))))
 

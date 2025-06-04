@@ -8,7 +8,7 @@
   (:import (clojure.lang ILookup
                          PersistentVector)))
 
-(defn create* [ctx f]
+(defn render* [ctx f]
   (if (vector? f)
     (let [[f params] f]
       (f ctx params))
