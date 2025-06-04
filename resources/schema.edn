@@ -83,6 +83,20 @@
  :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
  :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
 
+ :creature/stats [:s/map [[:entity/modifiers    {:optional true}]
+
+                          :entity/hp
+                          [:entity/mana         {:optional true}]
+
+                          :entity/movement-speed
+                          :entity/aggro-range
+                          :entity/reaction-time
+                          [:entity/strength     {:optional true}]
+                          [:entity/cast-speed   {:optional true}]
+                          [:entity/attack-speed {:optional true}]
+                          [:entity/armor-save   {:optional true}]
+                          [:entity/armor-pierce {:optional true}]]]
+
  :entity/inventory [:s/one-to-many :properties/items],
  :entity/skills    [:s/one-to-many :properties/skills],
 
@@ -94,19 +108,7 @@
                                 :entity/animation
                                 :entity/skills
                                 [:entity/inventory    {:optional true}]
-                                ;; stats:
-                                :entity/hp
-                                :entity/movement-speed
-                                :entity/aggro-range
-                                :entity/reaction-time
-                                [:entity/mana         {:optional true}]
-                                [:entity/strength     {:optional true}]
-                                [:entity/cast-speed   {:optional true}]
-                                [:entity/attack-speed {:optional true}]
-                                [:entity/armor-save   {:optional true}]
-                                [:entity/armor-pierce {:optional true}]
-                                ;;
-                                [:entity/modifiers    {:optional true}]
+                                :creature/stats
                                 ]],
 
  :entity/image :s/image,

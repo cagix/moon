@@ -8,14 +8,17 @@
             [cdq.property :as property]
             [cdq.utils :as utils]))
 
-(defn- save! [{:keys [data file]}]
-  ; TODO validate them again!?
-  (->> data
-       vals
+(defn save-vals! [data-vals file]
+  (->> data-vals
        (sort-by property/type)
        (map utils/recur-sort-map)
        doall
        (utils/async-pprint-spit! file)))
+
+(defn- save! [{:keys [data file]}]
+  ; TODO validate them again!?
+  (save-vals! (vals data)
+              file))
 
 (defrecord DB [data file schemas]
   db/Database

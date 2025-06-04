@@ -130,15 +130,14 @@
             cdq.entity.delete-after-duration
             cdq.entity.destroy-audiovisual
             cdq.entity.fsm
-            cdq.entity.hp
             cdq.entity.image
             cdq.entity.inventory
             cdq.entity.line-render
-            cdq.entity.mana
             cdq.entity.mouseover
             cdq.entity.movement
             cdq.entity.projectile-collision
             cdq.entity.skills
+            cdq.entity.stats
             cdq.entity.string-effect
             cdq.entity.temp-modifier
 

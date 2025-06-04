@@ -1,4 +1,4 @@
-(ns cdq.entity.hp
+(ns cdq.entity.stats
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
             [cdq.utils :refer [defcomponent]]))
@@ -37,9 +37,15 @@
         (- height          (* 2 border))
         (hpbar-color ratio)]])))
 
-(defcomponent :entity/hp
-  (entity/create [[_ v] _ctx]
-    [v v])
+(defcomponent :creature/stats
+  (entity/create [[_ stats] _ctx]
+    (-> (if (:entity/mana stats)
+          (update stats :entity/mana (fn [v] [v v]))
+          stats)
+        (update :entity/hp   (fn [v] [v v])))
+    #_(-> stats
+        (update :entity/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
+        (update :entity/hp   (fn [v] [v v]))))
 
   (entity/render-info! [_ entity c]
     (let [ratio (val-max/ratio (entity/hitpoints entity))]

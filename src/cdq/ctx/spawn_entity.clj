@@ -33,39 +33,11 @@
              [:entity/species {:optional true} :some]
              [:entity/movement {:optional true} :some]
              [:entity/skills {:optional true} :some]
-
-             ; Should each stat have its own modifiers
-             ; or :entity/stats with modifiers in one place & all stats?
-             ; => first isolate stats/modifiers from the rest of the code
-             ; => also how it is used (whats the 'API' for my stats -> info-text also etc?)
-
-
-             ; vimgrep/entity\/\(attack-speed\|cast-speed\|aggro-range\|movement-speed\|strength\|reaction-time\|hp\|mana\|armor-save\|armor-pierce\|modifiers\)/g src/** test/**
-
-             [:entity/hp {:optional true} :some]
-             ; -> is not only used as stat but also @ damage altered/checked
-             ; => damage == function inside creature stats, not effect ....
-
-             [:entity/mana {:optional true} :some]
-             ; current value read/ changed
-
-             [:entity/movement-speed {:optional true} :some]
-             [:entity/aggro-range {:optional true} :some]
-             [:entity/reaction-time {:optional true} :some]
-             [:entity/strength     {:optional true} :some]
-             [:entity/cast-speed   {:optional true} :some]
-             [:entity/attack-speed {:optional true} :some]
-             [:entity/armor-save   {:optional true} :some]
-             [:entity/armor-pierce {:optional true} :some]
-
-             [:entity/modifiers    {:optional true} :some]
-
+             [:creature/stats {:optional true} :some] ; only for creatures thats why optional -> create separate schema ther
              [:entity/inventory    {:optional true} :some]
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-(defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (and cost (> cost (entity/mana-val entity))))
 
 ; :body/foo ?
 
@@ -135,7 +107,7 @@
      cooling-down?
      :cooldown
 
-     (not-enough-mana? entity skill)
+     (modifiers/not-enough-mana? (:creature/stats entity) skill)
      :not-enough-mana
 
      (not (effect/some-applicable? effect-ctx effects))
@@ -144,27 +116,23 @@
      :else
      :usable))
 
-  (mod-add    [entity mods] (update entity :entity/modifiers modifiers/add    mods))
-  (mod-remove [entity mods] (update entity :entity/modifiers modifiers/remove mods))
+  (mod-add    [entity mods] (update entity :creature/stats modifiers/add    mods))
+  (mod-remove [entity mods] (update entity :creature/stats modifiers/remove mods))
 
   (stat [this k]
-    (modifiers/get-stat-value this k))
+    (modifiers/get-stat-value (:creature/stats this) k))
 
   (mana [entity]
-    (modifiers/get-mana entity))
+    (modifiers/get-mana (:creature/stats entity)))
 
   (mana-val [entity]
-    (if (:entity/mana entity)
-      ((entity/mana entity) 0)
-      0))
+    (modifiers/mana-val (:creature/stats entity)))
 
   (hitpoints [entity]
-    (modifiers/get-hitpoints entity))
+    (modifiers/get-hitpoints (:creature/stats entity)))
 
   (pay-mana-cost [entity cost]
-    (let [mana-val ((entity/mana entity) 0)]
-      (assert (<= cost mana-val))
-      (assoc-in entity [:entity/mana 0] (- mana-val cost)))))
+    (update entity :creature/stats modifiers/pay-mana-cost cost)))
 
 (defn- create-body [{[x y] :position
                      :keys [position
