@@ -7,17 +7,7 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]))
 
-(defmulti  render-below! (fn [[k] entity ctx] k))
-(defmethod render-below! :default [_ _entity ctx])
-
-(defmulti  render-default! (fn [[k] entity ctx] k))
-(defmethod render-default! :default [_ _entity ctx])
-
-(defmulti  render-above! (fn [[k] entity ctx] k))
-(defmethod render-above! :default [_ _entity ctx])
-
-(defmulti  render-info! (fn [[k] entity ctx] k))
-(defmethod render-info! :default [_ _entity ctx])
+;; helpers
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:sprite/world-unit-dimensions image)
@@ -51,7 +41,7 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [ctx/world-unit-scale]}
+(defn- draw-hpbar [world-unit-scale
                    {:keys [width half-width half-height]
                     :as entity}
                    ratio]
@@ -72,6 +62,22 @@
 (def ^:private enemy-color    [1 0 0 outline-alpha])
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
+
+;;
+
+(defmulti  render-below! (fn [[k] entity ctx] k))
+(defmethod render-below! :default [_ _entity ctx])
+
+(defmulti  render-default! (fn [[k] entity ctx] k))
+(defmethod render-default! :default [_ _entity ctx])
+
+(defmulti  render-above! (fn [[k] entity ctx] k))
+(defmethod render-above! :default [_ _entity ctx])
+
+(defmulti  render-info! (fn [[k] entity ctx] k))
+(defmethod render-info! :default [_ _entity ctx])
+
+;;
 
 (defmethod render-below! :entity/mouseover? [_
                                              entity
@@ -147,10 +153,10 @@
                   :scale 2
                   :up? true}]]))
 
-(defmethod render-info! :creature/stats [_ entity c]
+(defmethod render-info! :creature/stats [_ entity {:keys [ctx/world-unit-scale]}]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar c entity ratio))))
+      (draw-hpbar world-unit-scale entity ratio))))
 
 (defn- render-active-effect [ctx effect-ctx effect]
   (mapcat #(effect/render % effect-ctx ctx) effect))
@@ -175,6 +181,14 @@
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
+
+; Keys used:
+; ctx/elapsed-time
+; ctx/world-unit-scale
+; @ render effects lets see
+; ctx/player-eid
+; cdq.entity.state.player-item-on-cursor/world-item?
+; cdq.entity.state.player-item-on-cursor/item-place-position
 
 (defn do! [{:keys [ctx/active-entities
                    ctx/player-eid
