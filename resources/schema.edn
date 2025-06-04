@@ -52,13 +52,6 @@
  :body/flying? :boolean,
 
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
-
- :entity/color [:enum
-                :entity.color/black
-                :entity.color/white
-                :entity.color/green
-                :entity.color/blue
-                :entity.color/red]
  :entity/hp :s/pos-int,
  :entity/movement-speed :s/pos,
  :entity/aggro-range :s/nat-int,
@@ -115,7 +108,7 @@
 
                                 [:entity/inventory    {:optional true}]
 
-                                [:entity/color        {:optional true}]]], ; unused
+                                ]],
 
  :entity/image :s/image,
  :item/slot [:enum
