@@ -52,17 +52,21 @@
  :body/flying? :boolean,
 
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
+
+ ;; stats
  :entity/hp :s/pos-int,
  :entity/movement-speed :s/pos,
  :entity/aggro-range :s/nat-int,
  :entity/reaction-time :s/pos-int,
- :entity/skills [:s/one-to-many :properties/skills],
  :entity/mana :s/nat-int,
  :entity/strength :s/nat-int,
  :entity/cast-speed :s/pos,
  :entity/attack-speed :s/pos,
  :entity/armor-save :s/number,
  :entity/armor-pierce :s/number,
+ ;;
+
+ :entity/modifiers [:s/components-ns :modifier],
 
  :op/inc  :s/int,
  :op/mult :s/int,
@@ -79,9 +83,8 @@
  :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
  :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
 
- :entity/modifiers [:s/components-ns :modifier],
-
  :entity/inventory [:s/one-to-many :properties/items],
+ :entity/skills    [:s/one-to-many :properties/skills],
 
  :properties/creatures [:s/map [:property/id
                                 :property/pretty-name
@@ -90,7 +93,7 @@
                                 :entity/body
                                 :entity/animation
                                 :entity/skills
-
+                                [:entity/inventory    {:optional true}]
                                 ;; stats:
                                 :entity/hp
                                 :entity/movement-speed
@@ -103,11 +106,7 @@
                                 [:entity/armor-save   {:optional true}]
                                 [:entity/armor-pierce {:optional true}]
                                 ;;
-
                                 [:entity/modifiers    {:optional true}]
-
-                                [:entity/inventory    {:optional true}]
-
                                 ]],
 
  :entity/image :s/image,
