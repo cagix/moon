@@ -91,7 +91,7 @@
 
 (defn render! [render-fns]
   (swap! state (fn [ctx]
-                 (m/validate-humanize schema ctx) ; <- isnt this just another step? -- context fn -- not in render needed?
+                 (m/validate-humanize schema ctx)
                  (let [ctx (reduce utils/render* ctx render-fns)]
                    (m/validate-humanize schema ctx)
                    ctx))))

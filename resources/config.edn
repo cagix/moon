@@ -6,7 +6,8 @@
                              :dock-icon "moon.png"}}
  :cdq.lwjgl/create!  cdq.application/create!
  :cdq.lwjgl/dispose! cdq.application/dispose!
- :cdq.lwjgl/render! [cdq.application/render! [cdq.render.assoc-active-entities/do!
+
+ :cdq.lwjgl/render! [cdq.application/render! [[:assoc :ctx/active-entities cdq.render.assoc-active-entities/calculate-active-entities]
                                               cdq.render.set-camera-on-player/do!
                                               cdq.render.clear-screen/do!
                                               cdq.render.draw-world-map/do!
@@ -14,7 +15,7 @@
                                               cdq.render.stage/do!
                                               cdq.render.player-state-handle-click/do!
                                               cdq.render.update-mouseover-entity/do!
-                                              [cdq.render.assoc-paused/do! {:pausing? false}]
+                                              [cdq.render.assoc-paused/do! {:pausing? true}]
                                               cdq.render.update-time/do!
                                               cdq.render.update-potential-fields/do!
                                               cdq.render.tick-entities/do!
@@ -22,9 +23,9 @@
                                               cdq.render.camera-controls/do!
                                               cdq.render.check-window-hotkeys/do!]]
  :cdq.lwjgl/resize!  cdq.application/resize!
- :create-fns [cdq.create.files/do!
-              cdq.create.input/do!
-              cdq.create.graphics/do!
+ :create-fns [[:assoc :ctx/files cdq.create.files/do!]
+              [:assoc :ctx/input cdq.create.input/do!]
+              [:assoc :ctx/graphics cdq.create.graphics/do!]
               [cdq.create.assets/do! [cdq.assets-to-load/create
                                       {:folder "resources/"
                                        :asset-type-extensions {:sound   #{"wav"}

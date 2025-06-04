@@ -8,11 +8,16 @@
   (:import (clojure.lang ILookup
                          PersistentVector)))
 
-(defn render* [ctx f]
-  (if (vector? f)
-    (let [[f params] f]
-      (f ctx params))
-    (f ctx)))
+(defn render* [ctx render-element]
+  (if (vector? render-element)
+    (let [[f params] render-element]
+      (if (= :assoc f)
+        (let [[_ k f] render-element
+              result (f ctx)]
+          ;(println "assoc ctx " k " - " result)
+          (assoc ctx k result))
+        (f ctx params)))
+    (render-element ctx)))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

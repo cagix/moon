@@ -10,9 +10,6 @@
        (keep grid)
        (mapcat (comp :entities deref))))
 
-(defn do! [{:keys [ctx/content-grid
-                   ctx/player-eid]
-            :as ctx}]
-  (assoc ctx
-         :ctx/active-entities
-         (active-entities content-grid @player-eid)))
+(defn calculate-active-entities [{:keys [ctx/content-grid
+                                         ctx/player-eid]}]
+  (active-entities content-grid @player-eid))
