@@ -5,6 +5,7 @@
             [cdq.grid-impl :as grid-impl]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
+            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.tiled :as tiled]
@@ -100,3 +101,15 @@
 (defn calculate-active-entities [{:keys [ctx/content-grid
                                          ctx/player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
+
+(defn update-potential-fields!
+  [{:keys [ctx/potential-field-cache
+           ctx/factions-iterations
+           ctx/grid
+           ctx/active-entities]}]
+  (doseq [[faction max-iterations] factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations)))
