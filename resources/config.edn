@@ -7,7 +7,7 @@
  :cdq.lwjgl/create!  cdq.application/create!
  :cdq.lwjgl/dispose! cdq.application/dispose!
 
- :cdq.lwjgl/render! [cdq.application/render! [[:assoc :ctx/active-entities cdq.render.assoc-active-entities/calculate-active-entities]
+ :cdq.lwjgl/render! [cdq.application/render! [[:assoc :ctx/active-entities cdq.world/calculate-active-entities]
                                               cdq.render.set-camera-on-player/do!
                                               cdq.render.clear-screen/do!
                                               cdq.render.draw-world-map/do!

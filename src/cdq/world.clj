@@ -96,3 +96,7 @@
         ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position (:player-props config)))]
     (spawn-enemies! ctx tiled-map)
     ctx))
+
+(defn calculate-active-entities [{:keys [ctx/content-grid
+                                         ctx/player-eid]}]
+  (content-grid/active-entities content-grid @player-eid))
