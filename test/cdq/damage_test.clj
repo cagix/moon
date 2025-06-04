@@ -22,10 +22,12 @@
          #:damage{:min-max [0 15]})))
 
 (deftest modify-damage
+  ; fails
   (is (= (get-damage {:entity/modifiers {:modifier/damage-deal-min {:op/mult -100}
                                          :modifier/damage-deal-max {:op/inc 5}}}
                      {:entity/modifiers {:modifier/damage-receive-max {:op/mult -50}}}
                      {:damage/min-max [5 10]})
+         ; returns [5 5] FIXME
          #:damage{:min-max [0 7]})))
 
 (deftest max-reduces-min

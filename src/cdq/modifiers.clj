@@ -15,6 +15,7 @@
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
 
+; TODO can just pass ops instead of modifiers modifier-k
 (defn- apply-max [val-max modifiers modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
@@ -22,6 +23,7 @@
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
+; TODO can just pass ops instead of modifiers modifier-k
 (defn- apply-min [val-max modifiers modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
