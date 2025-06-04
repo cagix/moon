@@ -12,10 +12,8 @@
   (if (vector? render-element)
     (let [[f params] render-element]
       (if (= :assoc f)
-        (let [[_ k f] render-element
-              result (f ctx)]
-          ;(println "assoc ctx " k " - " result)
-          (assoc ctx k result))
+        (let [[_ k f*] render-element]
+          (assoc ctx k (render* ctx f*)))
         (f ctx params)))
     (render-element ctx)))
 

@@ -15,7 +15,7 @@
                                               cdq.render.stage/do!
                                               cdq.render.player-state-handle-click/do!
                                               cdq.render.update-mouseover-entity/do!
-                                              [cdq.render.assoc-paused/do! {:pausing? true}]
+                                              [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]
                                               cdq.render.update-time/do!
                                               cdq.render.update-potential-fields/do!
                                               cdq.render.tick-entities/do!
@@ -26,17 +26,17 @@
  :create-fns [[:assoc :ctx/files cdq.create.files/do!]
               [:assoc :ctx/input cdq.create.input/do!]
               [:assoc :ctx/graphics cdq.create.graphics/do!]
-              [cdq.create.assets/do! [cdq.assets-to-load/create
-                                      {:folder "resources/"
-                                       :asset-type-extensions {:sound   #{"wav"}
-                                                               :texture #{"png" "bmp"}}}]]
-              [cdq.create.db/do! {:schemas "schema.edn"
-                                  :properties "properties.edn"}]
-              [cdq.create.world-unit-scale/do! {:tile-size 48}]
-              [cdq.create.viewport/ui {:width 1440
-                                       :height 900}]
-              [cdq.create.viewport/world {:width 1440
-                                          :height 900}]
+              [:assoc :ctx/assets [cdq.create.assets/do! [cdq.assets-to-load/create
+                                                          {:folder "resources/"
+                                                           :asset-type-extensions {:sound   #{"wav"}
+                                                                                   :texture #{"png" "bmp"}}}]]]
+              [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
+                                                  :properties "properties.edn"}]]
+              [:assoc :ctx/world-unit-scale [cdq.create.world-unit-scale/do! {:tile-size 48}]]
+              [:assoc :ctx/ui-viewport [cdq.create.viewport/ui {:width 1440
+                                                                :height 900}]]
+              [:assoc :ctx/world-viewport [cdq.create.viewport/world {:width 1440
+                                                                      :height 900}]]
               [cdq.create.graphics-ext/do! {:cursor-path-format "cursors/%s.png"
                                             :cursors {:cursors/bag                   ["bag001"       [0   0]]
                                                       :cursors/black-x               ["black_x"      [0   0]]
@@ -55,7 +55,7 @@
                                             :default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                                            :size 16
                                                            :quality-scaling 2}}]
-              [cdq.create.stage/do! {:vis-ui {:skin-scale :x1}}]
+              [:assoc :ctx/stage [cdq.create.stage/do! {:vis-ui {:skin-scale :x1}}]]
               [cdq.create.extend-protocols/do! cdq.ctx]
               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
               cdq.create.player-movement-vector/do!
