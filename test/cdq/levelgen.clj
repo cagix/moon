@@ -74,13 +74,6 @@
 (defn create! [config]
   (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
-        ctx (assoc ctx :ctx/config {
-                                    :tile-size 48
-                                    :ui-viewport {:width 1440
-                                                  :height 900}
-                                    :world-viewport {:width 1440
-                                                     :height 900}
-                                    })
         ctx (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                         :properties "properties.edn"})
         ctx (cdq.create.files/do!  ctx)
@@ -89,9 +82,11 @@
                                          :asset-type-extensions {:sound   #{"wav"}
                                                                  :texture #{"png" "bmp"}}}])
         ctx (cdq.create.input/do!  ctx)
-        ctx (cdq.create.viewport/ui ctx)
-        ctx (cdq.create.world-unit-scale/do! ctx)
-        ctx (cdq.create.viewport/world ctx)
+        ctx (cdq.create.viewport/ui ctx {:width 1440
+                                         :height 900})
+        ctx (cdq.create.world-unit-scale/do! ctx {:tile-size 48})
+        ctx (cdq.create.viewport/world ctx {:width 1440
+                                            :height 900})
         batch (gdx/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)
@@ -146,7 +141,7 @@
   (ui/act!  stage ctx)
   (ui/draw! stage ctx))
 
-(defn render! []
+(defn render! [_]
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
