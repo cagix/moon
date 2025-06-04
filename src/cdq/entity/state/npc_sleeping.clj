@@ -13,11 +13,4 @@
 
   (state/exit! [_ eid _ctx]
     [[:tx/spawn-alert (entity/position @eid) (entity/faction @eid) 0.2]
-     [:tx/add-text-effect eid "[WHITE]!"]])
-
-  (entity/render-above! [_ entity _ctx]
-    (let [[x y] (entity/position entity)]
-      [[:draw/text {:text "zzz"
-                    :x x
-                    :y (+ y (:half-height entity))
-                    :up? true}]])))
+     [:tx/add-text-effect eid "[WHITE]!"]]))

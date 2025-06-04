@@ -6,21 +6,6 @@
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]))
 
-(defn- draw-skill-image [image entity [x y] action-counter-ratio]
-  (let [[width height] (:sprite/world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
-        center [x (+ y radius)]]
-    [[:draw/filled-circle center radius [1 1 1 0.125]]
-     [:draw/sector
-      center
-      radius
-      90 ; start-angle
-      (* (float action-counter-ratio) 360) ; degree
-      [1 1 1 0.5]]
-     [:draw/image image [(- (float x) radius) y]]]))
-
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."
@@ -35,9 +20,6 @@
   (/ action-time
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
-
-(defn- render-active-effect [ctx effect-ctx effect]
-  (mapcat #(effect/render % effect-ctx ctx) effect))
 
 (defcomponent :active-skill
   (entity/create [[_ eid [skill effect-ctx]]
@@ -73,19 +55,4 @@
        [:tx/set-cooldown eid skill])
      (when (and (:skill/cost skill)
                 (not (zero? (:skill/cost skill))))
-       [:tx/pay-mana-cost eid (:skill/cost skill)])])
-
-  (entity/render-info! [[_ {:keys [skill effect-ctx counter]}]
-                        entity
-                        {:keys [ctx/elapsed-time] :as ctx}]
-    (let [{:keys [entity/image skill/effects]} skill]
-      (concat (draw-skill-image image
-                                entity
-                                (entity/position entity)
-                                (timer/ratio elapsed-time counter))
-              (render-active-effect ctx
-                                    effect-ctx ; TODO !!!
-                                    ; !! FIXME !!
-                                    ; (update-effect-ctx effect-ctx)
-                                    ; - render does not need to update .. update inside active-skill
-                                    effects)))))
+       [:tx/pay-mana-cost eid (:skill/cost skill)])]))

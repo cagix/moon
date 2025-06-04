@@ -42,7 +42,7 @@
       [:tx/event eid :dropped-item]
       [:tx/event eid :pickup-item item-in-cell]])))
 
-(defn- world-item? [ctx]
+(defn world-item? [ctx]
   (not (ctx/mouseover-actor ctx)))
 
 ; It is possible to put items out of sight, losing them.
@@ -54,7 +54,7 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [ctx entity]
+(defn item-place-position [ctx entity]
   (placement-point (entity/position entity)
                    (ctx/world-mouse-position ctx)
                    ; so you cannot put it out of your own reach
@@ -63,12 +63,6 @@
 (defcomponent :player-item-on-cursor
   (entity/create [[_ eid item] _ctx]
     {:item item})
-
-  (entity/render-below! [[_ {:keys [item]}] entity ctx]
-    (when (world-item? ctx)
-      [[:draw/centered
-        (:entity/image item)
-        (item-place-position ctx entity)]]))
 
   (state/cursor [_] :cursors/hand-grab)
 

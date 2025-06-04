@@ -14,7 +14,4 @@
 
   (state/cursor [_] :cursors/denied)
 
-  (state/pause-game? [_] false)
-
-  (entity/render-below! [_ entity _ctx]
-    [[:draw/circle (entity/position entity) 0.5 [1 1 1 0.6]]]))
+  (state/pause-game? [_] false))

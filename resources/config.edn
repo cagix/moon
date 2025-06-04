@@ -123,15 +123,11 @@
 
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
-            cdq.entity.clickable
             cdq.entity.delete-after-animation-stopped
             cdq.entity.delete-after-duration
             cdq.entity.destroy-audiovisual
             cdq.entity.fsm
-            cdq.entity.image
             cdq.entity.inventory
-            cdq.entity.line-render
-            cdq.entity.mouseover
             cdq.entity.movement
             cdq.entity.projectile-collision
             cdq.entity.skills

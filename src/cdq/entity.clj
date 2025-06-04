@@ -17,18 +17,6 @@
                   k))
 (defmethod tick! :default [_ eid ctx])
 
-(defmulti  render-below! (fn [[k] entity ctx] k))
-(defmethod render-below! :default [_ _entity ctx])
-
-(defmulti  render-default! (fn [[k] entity ctx] k))
-(defmethod render-default! :default [_ _entity ctx])
-
-(defmulti  render-above! (fn [[k] entity ctx] k))
-(defmethod render-above! :default [_ _entity ctx])
-
-(defmulti  render-info! (fn [[k] entity ctx] k))
-(defmethod render-info! :default [_ _entity ctx])
-
 (defprotocol Entity
   (position [_])
   (in-range? [_ target maxrange])
