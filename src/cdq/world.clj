@@ -6,41 +6,13 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.potential-fields.update :as potential-fields.update]
-            [clojure.tiled :as tiled]
             [cdq.utils :as utils]))
 
-(defn- player-entity-props [start-position {:keys [creature-id
-                                                   free-skill-points
-                                                   click-distance-tiles]}]
-  {:position start-position
-   :creature-id creature-id
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? true
-                :entity/free-skill-points free-skill-points
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles click-distance-tiles}})
-
-(defn- spawn-player-entity [ctx start-position player-props]
-  (ctx/spawn-creature! ctx
-                       (player-entity-props (utils/tile->middle start-position)
-                                            player-props)))
-
-(defn- spawn-enemies! [ctx tiled-map]
-  ; generate this at level generation, so we do all tiled stuff there
-  (doseq [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")
-          :let [props {:position position
-                       :creature-id (keyword creature-id)
-                       :components {:entity/fsm {:fsm :fsms/npc
-                                                 :initial-state :npc-sleeping}
-                                    :entity/faction :evil}}]]
-    (ctx/spawn-creature! ctx (update props :position utils/tile->middle))))
-
-(defn create [ctx config world-fn]
-  (let [{:keys [tiled-map
-                start-position]} (world-fn ctx)
-        grid (grid-impl/create tiled-map)
+(defn create [ctx config {:keys [tiled-map
+                                 start-position
+                                 creatures
+                                 player-entity]}]
+  (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
                   :z-order/flying
@@ -74,8 +46,8 @@
                     :ctx/minimum-size minimum-size
                     :ctx/max-delta max-delta
                     :ctx/max-speed max-speed})
-        ctx (assoc ctx :ctx/player-eid (spawn-player-entity ctx start-position (:player-props config)))]
-    (spawn-enemies! ctx tiled-map)
+        ctx (assoc ctx :ctx/player-eid (ctx/spawn-creature! ctx player-entity))]
+    (run! (partial ctx/spawn-creature! ctx) creatures)
     ctx))
 
 (defn calculate-active-entities [{:keys [ctx/content-grid

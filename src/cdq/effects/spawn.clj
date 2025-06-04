@@ -8,11 +8,11 @@
     (and (entity/faction @source)
          target-position))
 
-  (effect/handle [[_ {:keys [property/id]}]
+  (effect/handle [[_ {:keys [property/id] :as property}]
                   {:keys [effect/source effect/target-position]}
                   _ctx]
     [[:tx/spawn-creature {:position target-position
-                          :creature-id id ; already properties/get called through one-to-one, now called again.
+                          :creature-property property
                           :components {:entity/fsm {:fsm :fsms/npc
                                                     :initial-state :npc-idle}
                                        :entity/faction (entity/faction @source)}}]]))
