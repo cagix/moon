@@ -10,14 +10,13 @@
 
 (defn -main [config-path]
   (let [config (utils/load-edn-config config-path)]
-    (when-let [mac-settings (:mac-os (::config config))]
-      (when (= (gdx/operating-system) :operating-system/mac)
-        (let [{:keys [glfw-async?
-                      dock-icon]} mac-settings]
-          (when glfw-async?
-            (lwjgl/set-glfw-async!))
-          (when dock-icon
-            (awt/set-taskbar-icon! dock-icon)))))
+    (when (= (gdx/operating-system) :operating-system/mac)
+      (let [{:keys [glfw-async?
+                    dock-icon]} (:mac-os (::config config))]
+        (when glfw-async?
+          (lwjgl/set-glfw-async!))
+        (when dock-icon
+          (awt/set-taskbar-icon! dock-icon))))
     (lwjgl/start-application! (reify application/Listener
                                 (create! [_]
                                   ((::create! config) config))
