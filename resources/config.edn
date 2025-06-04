@@ -31,9 +31,11 @@
                                                                :texture #{"png" "bmp"}}}]]
               [cdq.create.db/do! {:schemas "schema.edn"
                                   :properties "properties.edn"}]
-              cdq.create.world-unit-scale/do!
-              cdq.create.viewport/ui
-              cdq.create.viewport/world
+              [cdq.create.world-unit-scale/do! {:tile-size 48}]
+              [cdq.create.viewport/ui {:width 1440
+                                       :height 900}]
+              [cdq.create.viewport/world {:width 1440
+                                          :height 900}]
               [cdq.create.graphics-ext/do! {:cursor-path-format "cursors/%s.png"
                                             :cursors {:cursors/bag                   ["bag001"       [0   0]]
                                                       :cursors/black-x               ["black_x"      [0   0]]
@@ -66,11 +68,6 @@
                     cdq.ui.windows/create
                     cdq.ui.player-state-draw/create
                     cdq.ui.message/create]
- :tile-size 48
- :ui-viewport {:width 1440
-               :height 900}
- :world-viewport {:width 1440
-                  :height 900}
  :content-grid-cell-size 16
  :player-props {:creature-id :creatures/vampire
                 :free-skill-points 3
