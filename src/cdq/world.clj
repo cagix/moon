@@ -6,22 +6,8 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.potential-fields.update :as potential-fields.update]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.windows.inventory :as inventory-window]
             [clojure.tiled :as tiled]
             [cdq.utils :as utils]))
-
-(defn- add-skill! [ctx skill]
-  (-> ctx :ctx/stage :action-bar (action-bar/add-skill! skill)))
-
-(defn- remove-skill! [ctx skill]
-  (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! skill)))
-
-(defn- set-item! [ctx inventory-cell item]
-  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/set-item! inventory-cell item)))
-
-(defn- remove-item! [ctx inventory-cell]
-  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
 
 (defn- player-entity-props [start-position {:keys [creature-id
                                                    free-skill-points
@@ -31,13 +17,7 @@
    :components {:entity/fsm {:fsm :fsms/player
                              :initial-state :player-idle}
                 :entity/faction :good
-                :entity/player? {:state-changed! (fn [new-state-obj]
-                                                   (when-let [cursor (state/cursor new-state-obj)]
-                                                     [[:tx/set-cursor cursor]]))
-                                 :skill-added!   add-skill!
-                                 :skill-removed! remove-skill!
-                                 :item-set!      set-item!
-                                 :item-removed!  remove-item!}
+                :entity/player? true
                 :entity/free-skill-points free-skill-points
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles click-distance-tiles}})

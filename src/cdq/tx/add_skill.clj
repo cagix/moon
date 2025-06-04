@@ -1,10 +1,11 @@
 (ns cdq.tx.add-skill
   (:require [cdq.ctx.effect-handler :refer [do!]]))
 
-(defmethod do! :tx/add-skill [[_ eid {:keys [property/id] :as skill}] ctx]
-  {:pre [(not (contains? (:entity/skills @eid) id))]}
-  (swap! eid assoc-in [:entity/skills id] skill)
+(defn- add-skill [skills {:keys [property/id] :as skill}]
+  {:pre [(not (contains? skills id))]}
+  (assoc skills id skill))
+
+(defmethod do! :tx/add-skill [[_ eid skill] ctx]
+  (swap! eid update :entity/skills add-skill skill)
   (when (:entity/player? @eid)
-    ((:skill-added! (:entity/player? @eid)) ctx skill))
-  (when (:entity/player? @eid)
-    [:world.event/player-skill-added (:property/id skill)]))
+    [:world.event/player-skill-added skill]))
