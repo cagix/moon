@@ -21,7 +21,7 @@
               cdq.create.viewport/world
               cdq.create.graphics-ext/do!
               cdq.create.stage/do!
-              cdq.create.ctx-extenders/do!
+              [cdq.create.extend-protocols/do! cdq.ctx]
               cdq.create.game-state/do!
               cdq.create.player-movement-vector/do!
               ]
