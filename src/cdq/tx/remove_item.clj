@@ -11,4 +11,6 @@
       ((:item-removed! (:entity/player? entity)) ctx cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-remove (:entity/modifiers item)))))
+      (swap! eid entity/mod-remove (:entity/modifiers item)))
+    (when (:entity/player? entity)
+      [:world.event/player-item-removed cell])))

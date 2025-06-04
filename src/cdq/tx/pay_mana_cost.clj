@@ -3,4 +3,5 @@
             [cdq.entity :as entity]))
 
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
-  (swap! eid entity/pay-mana-cost cost))
+  (swap! eid entity/pay-mana-cost cost)
+  nil)

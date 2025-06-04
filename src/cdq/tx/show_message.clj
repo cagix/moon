@@ -7,4 +7,5 @@
                                  {:keys [ctx/stage]}]
   (-> stage
       (stage/find-actor "player-message")
-      (cdq.ui.message/show! message)))
+      (cdq.ui.message/show! message))
+  nil)

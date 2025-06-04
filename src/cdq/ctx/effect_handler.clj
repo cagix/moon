@@ -7,6 +7,11 @@
   (doseq [transaction transactions
           :when transaction]
     (assert (vector? transaction) (pr-str transaction))
-    (try (do! transaction ctx)
+    (try (let [result (do! transaction ctx)]
+           (if result
+             ; (println result)
+             ; & _has_ to be handled ...
+             )
+           )
          (catch Throwable t
            (throw (ex-info "" {:transaction transaction} t))))))

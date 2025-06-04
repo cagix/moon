@@ -11,4 +11,5 @@
                      {:entity/image (:entity/image item)
                       :entity/item item
                       :entity/clickable {:type :clickable/item
-                                         :text (:property/pretty-name item)}}))
+                                         :text (:property/pretty-name item)}})
+  nil)

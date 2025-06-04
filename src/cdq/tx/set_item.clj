@@ -12,4 +12,6 @@
       ((:item-set! (:entity/player? entity)) ctx cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-add (:entity/modifiers item)))))
+      (swap! eid entity/mod-add (:entity/modifiers item)))
+    (when (:entity/player? entity)
+      [:world.event/player-item-set cell item])))

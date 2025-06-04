@@ -9,4 +9,5 @@
         {:entity/alert-friendlies-after-duration
          {:counter (timer/create elapsed-time duration)
           :faction faction}}]
-       ctx))
+       ctx)
+  nil)

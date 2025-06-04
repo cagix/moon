@@ -10,4 +10,5 @@
     (if (inventory/stackable? item cell-item)
       (do
        #_(tx/stack-item ctx eid cell item))
-      (do! [:tx/set-item eid cell item] ctx))))
+      (do! [:tx/set-item eid cell item] ctx)))
+  nil)

@@ -5,5 +5,6 @@
     {:pre [(contains? (:entity/skills @eid) id)]}
     (when (:entity/player? @eid)
       ((:skill-removed! (:entity/player? @eid)) ctx skill))
-    (swap! eid update :entity/skills dissoc id))
+    (swap! eid update :entity/skills dissoc id)
+    nil)
 

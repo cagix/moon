@@ -13,4 +13,5 @@
             :counter (timer/create elapsed-time 0.4)})))
 
 (defmethod do! :tx/add-text-effect [[_ eid text] ctx]
-  (swap! eid add-text-effect* text ctx))
+  (swap! eid add-text-effect* text ctx)
+  nil)

@@ -6,4 +6,5 @@
         start
         {:entity/line-render {:thick? thick? :end end :color color}
          :entity/delete-after-duration duration}]
-       ctx))
+       ctx)
+  nil)

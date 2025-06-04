@@ -7,4 +7,5 @@
   (->> sound-name
        (format "sounds/%s.wav")
        assets
-       sound/play!))
+       sound/play!)
+  nil)

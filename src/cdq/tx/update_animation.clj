@@ -5,4 +5,5 @@
 (defmethod do! :tx/update-animation [[_ eid animation] {:keys [ctx/delta-time]}]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
-                  (assoc :entity/animation (animation/tick animation delta-time)))))
+                  (assoc :entity/animation (animation/tick animation delta-time))))
+  nil)

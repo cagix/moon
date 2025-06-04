@@ -9,4 +9,5 @@
   (ctx/spawn-entity! ctx
                      position
                      (:effect-body-props config)
-                     components))
+                     components)
+  nil)

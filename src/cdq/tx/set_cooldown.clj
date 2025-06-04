@@ -5,4 +5,5 @@
 (defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/elapsed-time]}]
   (swap! eid assoc-in
          [:entity/skills (:property/id skill) :skill/cooling-down?]
-         (timer/create elapsed-time (:skill/cooldown skill))))
+         (timer/create elapsed-time (:skill/cooldown skill)))
+  nil)

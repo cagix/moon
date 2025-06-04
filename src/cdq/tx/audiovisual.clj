@@ -15,4 +15,5 @@
           position
           {:entity/animation animation
            :entity/delete-after-animation-stopped? true}]
-         ctx)))
+         ctx)
+    nil))

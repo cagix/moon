@@ -25,4 +25,5 @@
                           :pack? true})))
 
 (defmethod do! :tx/show-modal [[_ opts] ctx]
-  (show-modal! ctx opts))
+  (show-modal! ctx opts)
+  nil)

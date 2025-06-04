@@ -9,4 +9,5 @@
          :entity/position (:entity/position body)
          :left-bottom (:left-bottom body))
   (when rotate-in-movement-direction?
-    (swap! eid assoc :rotation-angle (v/angle-from-vector direction))))
+    (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
+  nil)

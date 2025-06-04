@@ -12,4 +12,5 @@
                                   :speed (or (entity/stat entity :entity/movement-speed) 0)}))
 
 (defmethod do! :tx/set-movement [[_ eid movement-vector] _ctx]
-  (swap! eid set-movement* movement-vector))
+  (swap! eid set-movement* movement-vector)
+  nil)

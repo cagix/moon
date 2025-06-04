@@ -23,4 +23,6 @@
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
           (ctx/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-          (ctx/handle-txs! ctx (state/enter! new-state-obj eid)))))))
+          (ctx/handle-txs! ctx (state/enter! new-state-obj eid))
+          (when (:entity/player? @eid)
+            [:world.event/player-state-changed new-state-obj]))))))
