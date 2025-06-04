@@ -2,11 +2,10 @@
   (:require [cdq.entity :as entity]
             [cdq.op :as op]
             [cdq.timer :as timer]
-            [clojure.math :as math]
-            [clojure.string :as str]
+            [cdq.utils :as utils]
             [clojure.gdx :as gdx]
-            [cdq.utils :refer [sort-by-k-order
-                                   readable-number]]))
+            [clojure.math :as math]
+            [clojure.string :as str]))
 
 (gdx/add-markdown-color! "PRETTY_NAME" [0.84 0.8 0.52 1])
 
@@ -62,7 +61,7 @@
   "Creates a formatted informational text representation of components."
   [ctx components]
   (->> components
-       (sort-by-k-order k-order)
+       (utils/sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (let [entity components
                           s (try (info-segment component entity ctx)
@@ -127,11 +126,11 @@
     :entity/attack-speed "Attack"))
 
 (defmethod info-segment :skill/action-time [[_ v] _entity _ctx]
-  (str "Action-Time: " (readable-number v) " seconds"))
+  (str "Action-Time: " (utils/readable-number v) " seconds"))
 
 (defmethod info-segment :skill/cooldown [[_ v] _entity _ctx]
   (when-not (zero? v)
-    (str "Cooldown: " (readable-number v) " seconds")))
+    (str "Cooldown: " (utils/readable-number v) " seconds")))
 
 (defmethod info-segment :skill/cost [[_ v] _entity _ctx]
   (when-not (zero? v)
@@ -187,13 +186,13 @@
   )
 
 (defmethod info-segment :effects.target/stun [[_ duration] _entity _ctx]
-  (str "Stuns for " (readable-number duration) " seconds"))
+  (str "Stuns for " (utils/readable-number duration) " seconds"))
 
 (defmethod info-segment :effects/target-all [_ _entity _ctx]
   "All visible targets")
 
 (defmethod info-segment :entity/delete-after-duration [[_ counter] _entity {:keys [ctx/elapsed-time]}]
-  (str "Remaining: " (readable-number (timer/ratio elapsed-time counter)) "/1"))
+  (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
 
 (defmethod info-segment :entity/faction [[_ faction] _entity _ctx]
   (str "Faction: " (name faction)))
@@ -216,7 +215,7 @@
   (str "Creature - " (str/capitalize (name species))))
 
 (defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity {:keys [ctx/elapsed-time]}]
-  (str "Spiderweb - remaining: " (readable-number (timer/ratio elapsed-time counter)) "/1"))
+  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
 
 #_(defmethod info-segment :entity/skills [skills _ctx]
   ; => recursive info-text leads to endless text wall
