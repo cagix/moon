@@ -8,11 +8,11 @@
 ; swap! at each render?
 
 (defn do! [{:keys [ctx/batch
-                   ctx/config
                    ctx/input
                    ctx/ui-viewport]
-            :as ctx}]
-  (ui/load! (:ui config))
+            :as ctx}
+           config]
+  (ui/load! (:vis-ui config))
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]
     (input/set-processor! input stage)

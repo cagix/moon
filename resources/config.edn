@@ -21,7 +21,7 @@
               cdq.create.viewport/ui
               cdq.create.viewport/world
               cdq.create.graphics-ext/do!
-              cdq.create.stage/do!
+              [cdq.create.stage/do! {:vis-ui {:skin-scale :x1}}]
               [cdq.create.extend-protocols/do! cdq.ctx]
               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
               cdq.create.player-movement-vector/do!
@@ -50,7 +50,6 @@
               cdq.render.remove-destroyed-entities/do!
               cdq.render.camera-controls/do!
               cdq.render.check-window-hotkeys/do!]
- :ui {:skin-scale :x1}
  :tile-size 48
  :ui-viewport {:width 1440
                :height 900}
