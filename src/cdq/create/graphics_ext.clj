@@ -27,16 +27,15 @@
                       :enable-markup? true
                       :use-integer-positions? false})) ; false, otherwise scaling to world-units not visible
 
-(defn do! [{:keys [ctx/config
-                   ctx/files
+(defn do! [{:keys [ctx/files
                    ctx/graphics
                    ctx/world-unit-scale]
-            :as ctx}]
+            :as ctx}
+           {:keys [cursor-path-format
+                   cursors
+                   default-font]}]
   (merge ctx
-         (let [{:keys [cursor-path-format
-                       cursors
-                       default-font]} config
-               batch (gdx/sprite-batch)
+         (let [batch (gdx/sprite-batch)
                shape-drawer-texture (white-pixel-texture)]
            {:ctx/batch batch
             :ctx/unit-scale (atom 1)
