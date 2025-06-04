@@ -4,8 +4,6 @@
             [clojure.utils.disposable :as disp]
             [qrecord.core :as q]))
 
-; => this whole thing is my application listener itself !?
-; config == the application listener type ?!
 (q/defrecord Context [ctx/assets
                       ctx/batch
                       ctx/config
@@ -23,22 +21,14 @@
                       ctx/world-unit-scale
                       ctx/world-viewport])
 
-; 6-8 context keys only ...
-
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/config :some] ; -> ?? depends on what ??
-             [:ctx/db :some] ; -> part of game ?
-
+             [:ctx/config :some]
+             [:ctx/db :some]
              [:ctx/files :some]
-
-             [:ctx/assets :some] ; - actually textures (graphics) & audio (sound )
-
-             [:ctx/input :some] ; -> 'controls together w. config
-
-             [:ctx/stage :some] ; -> user-interface protocol w. stage actor functions
-
-             ;; graphics
+             [:ctx/assets :some]
+             [:ctx/input :some]
+             [:ctx/stage :some]
              [:ctx/batch :some]
              [:ctx/cursors :some]
              [:ctx/default-font :some]
@@ -50,16 +40,6 @@
              [:ctx/tiled-map-renderer :some]
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
-             ;;
-
-             ; # 1 complexity - game context - make in one field ?
-             ; but then there is also entity stats #1 #1 complexity !
-             ; @ spawn-entity !
-             ; and there the # 1 problem is body has non-namespaced keys .... fix that first
-             ; and make body separate component !?
-
-
-             ;; below is only world/game related
              [:ctx/elapsed-time number?]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/max-delta number?]
@@ -80,7 +60,6 @@
              [:ctx/mouseover-eid {:optional true} :any]
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]
-             ;;
              ]))
 
 (def state (atom nil))
