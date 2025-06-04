@@ -14,12 +14,12 @@
                       ctx/db]}]
   (menu/create
    {:menus [{:label "World"
-             :items (for [world-fn (:world-fns config)]
+             :items (for [world-fn (:cdq.ui.dev-menu/world-fns config)]
                       {:label (str "Start " world-fn)
                        :on-click (fn [_actor _ctx]
                                    (swap! application/state ctx/reset-game-state! world-fn))})}
             {:label "Help"
-             :items [{:label (:info config)}]}
+             :items [{:label (:cdq.ui.dev-menu/info config)}]}
             {:label "Objects"
              :items (for [property-type (sort (db/property-types db))]
                       {:label (str/capitalize (name property-type))

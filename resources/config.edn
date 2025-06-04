@@ -20,7 +20,7 @@
                                               cdq.render.update-potential-fields/do!
                                               cdq.render.tick-entities/do!
                                               cdq.render.remove-destroyed-entities/do!
-                                              cdq.render.camera-controls/do!
+                                              [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
                                               cdq.render.check-window-hotkeys/do!]]
  :cdq.lwjgl/resize!  cdq.application/resize!
  :create-fns [[:assoc :ctx/files cdq.create.files/do!]
@@ -74,19 +74,24 @@
                       :player-props {:creature-id :creatures/vampire
                                      :free-skill-points 3
                                      :click-distance-tiles 1.5}}
+
+
  :effect-body-props {:width 0.5
                      :height 0.5
                      :z-order :z-order/effect}
+
  :sound-path-format "sounds/%s.wav"
+
  :controls {:zoom-in :minus
             :zoom-out :equals
             :unpause-once :p
             :unpause-continously :space}
- :zoom-speed 0.025
- :world-fns [cdq.level.vampire/create
-             cdq.level.uf-caves/create
-             cdq.level.modules/create]
- :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
+
+ :cdq.ui.dev-menu/world-fns [cdq.level.vampire/create
+                             cdq.level.uf-caves/create
+                             cdq.level.modules/create]
+ :cdq.ui.dev-menu/info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
+
  :requires [
             cdq.schemas-impl
 
