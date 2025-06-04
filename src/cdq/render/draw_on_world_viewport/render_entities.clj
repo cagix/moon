@@ -7,7 +7,54 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]))
 
-;; helpers
+(def ^:private outline-alpha 0.4)
+(def ^:private enemy-color    [1 0 0 outline-alpha])
+(def ^:private friendly-color [0 1 0 outline-alpha])
+(def ^:private neutral-color  [1 1 1 outline-alpha])
+
+(def ^:private mouseover-ellipse-width 5)
+
+(def stunned-circle-width 0.5)
+(def stunned-circle-color [1 1 1 0.6])
+
+(defn draw-item-on-cursor-state [{:keys [item]} entity ctx]
+  (when (cdq.entity.state.player-item-on-cursor/world-item? ctx)
+    [[:draw/centered
+      (:entity/image item)
+      (cdq.entity.state.player-item-on-cursor/item-place-position ctx entity)]]))
+
+(defn draw-mouseover-highlighting [_ entity {:keys [ctx/player-eid]}]
+  (let [player @player-eid
+        faction (entity/faction entity)]
+    [[:draw/with-line-width mouseover-ellipse-width
+      [[:draw/ellipse
+        (entity/position entity)
+        (:half-width entity)
+        (:half-height entity)
+        (cond (= faction (entity/enemy player))
+              enemy-color
+              (= faction (entity/faction player))
+              friendly-color
+              :else
+              neutral-color)]]]]))
+
+(defn draw-stunned-state [_ entity _ctx]
+  [[:draw/circle
+    (entity/position entity)
+    stunned-circle-width
+    stunned-circle-color]])
+
+(defn draw-clickable-mouseover-text [{:keys [text]} {:keys [entity/mouseover?] :as entity} _ctx]
+  (when (and mouseover? text)
+    (let [[x y] (entity/position entity)]
+      [[:draw/text {:text text
+                    :x x
+                    :y (+ y (:half-height entity))
+                    :up? true}]])))
+
+(defn- draw-body-rect [entity color]
+  (let [[x y] (:left-bottom entity)]
+    [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:sprite/world-unit-dimensions image)
@@ -23,6 +70,57 @@
       (* (float action-counter-ratio) 360) ; degree
       [1 1 1 0.5]]
      [:draw/image image [(- (float x) radius) y]]]))
+
+(defn- render-active-effect [ctx effect-ctx effect]
+  (mapcat #(effect/render % effect-ctx ctx) effect))
+
+(defn draw-active-skill [{:keys [skill effect-ctx counter]}
+                         entity
+                         {:keys [ctx/elapsed-time] :as ctx}]
+  (let [{:keys [entity/image skill/effects]} skill]
+    (concat (draw-skill-image image
+                              entity
+                              (entity/position entity)
+                              (timer/ratio elapsed-time counter))
+            (render-active-effect ctx
+                                  effect-ctx ; TODO !!!
+                                  ; !! FIXME !!
+                                  ; (update-effect-ctx effect-ctx)
+                                  ; - render does not need to update .. update inside active-skill
+                                  effects))))
+
+(defn draw-centered-rotated-image [image entity _ctx]
+  [[:draw/rotated-centered
+    image
+    (or (:rotation-angle entity) 0)
+    (entity/position entity)]])
+
+(defn draw-line-entity [{:keys [thick? end color]} entity _ctx]
+  (let [position (entity/position entity)]
+    (if thick?
+      [[:draw/with-line-width 4 [[:draw/line position end color]]]]
+      [[:draw/line position end color]])))
+
+(defn draw-sleeping-state [_ entity _ctx]
+  (let [[x y] (entity/position entity)]
+    [[:draw/text {:text "zzz"
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true}]]))
+
+; TODO draw opacity as of counter ratio?
+(defn draw-temp-modifiers [_ entity _ctx]
+  [[:draw/filled-circle (entity/position entity) 0.5 [0.5 0.5 0.5 0.4]]])
+
+(defn- draw-text-over-entity [{:keys [text]} entity {:keys [ctx/world-unit-scale]}]
+  (let [[x y] (entity/position entity)]
+    [[:draw/text {:text text
+                  :x x
+                  :y (+ y
+                        (:half-height entity)
+                        (* 5 world-unit-scale))
+                  :scale 2
+                  :up? true}]]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -58,159 +156,56 @@
         (- height          (* 2 border))
         (hpbar-color ratio)]])))
 
-(def ^:private outline-alpha 0.4)
-(def ^:private enemy-color    [1 0 0 outline-alpha])
-(def ^:private friendly-color [0 1 0 outline-alpha])
-(def ^:private neutral-color  [1 1 1 outline-alpha])
-
-;;
-
-(defmulti  render-below! (fn [[k] entity ctx] k))
-(defmethod render-below! :default [_ _entity ctx])
-
-(defmulti  render-default! (fn [[k] entity ctx] k))
-(defmethod render-default! :default [_ _entity ctx])
-
-(defmulti  render-above! (fn [[k] entity ctx] k))
-(defmethod render-above! :default [_ _entity ctx])
-
-(defmulti  render-info! (fn [[k] entity ctx] k))
-(defmethod render-info! :default [_ _entity ctx])
-
-;;
-
-(defmethod render-below! :entity/mouseover? [_
-                                             entity
-                                             {:keys [ctx/player-eid]}]
-  (let [player @player-eid
-        faction (entity/faction entity)]
-    [[:draw/with-line-width 3
-      [[:draw/ellipse
-        (entity/position entity)
-        (:half-width entity)
-        (:half-height entity)
-        (cond (= faction (entity/enemy player))
-              enemy-color
-              (= faction (entity/faction player))
-              friendly-color
-              :else
-              neutral-color)]]]]))
-
-(defmethod render-below! :stunned [_ entity _ctx]
-  [[:draw/circle (entity/position entity) 0.5 [1 1 1 0.6]]])
-
-(defmethod render-below! :player-item-on-cursor [[_ {:keys [item]}] entity ctx]
-  (when (cdq.entity.state.player-item-on-cursor/world-item? ctx)
-    [[:draw/centered
-      (:entity/image item)
-      (cdq.entity.state.player-item-on-cursor/item-place-position ctx entity)]]))
-
-(defmethod render-default! :entity/clickable [[_ {:keys [text]}]
-                                              {:keys [entity/mouseover?] :as entity}
-                                              _ctx]
-  (when (and mouseover? text)
-    (let [[x y] (entity/position entity)]
-      [[:draw/text {:text text
-                    :x x
-                    :y (+ y (:half-height entity))
-                    :up? true}]])))
-
-(defmethod render-default! :entity/image [[_ image] entity _ctx]
-  [[:draw/rotated-centered
-    image
-    (or (:rotation-angle entity) 0)
-    (entity/position entity)]])
-
-(defmethod render-default! :entity/line-render
-  [[_ {:keys [thick? end color]}]
-   entity
-   _ctx]
-  (let [position (entity/position entity)]
-    (if thick?
-      [[:draw/with-line-width 4 [[:draw/line position end color]]]]
-      [[:draw/line position end color]])))
-
-(defmethod render-above! :npc-sleeping [_ entity _ctx]
-  (let [[x y] (entity/position entity)]
-    [[:draw/text {:text "zzz"
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true}]]))
-
-; TODO draw opacity as of counter ratio?
-(defmethod render-above! :entity/temp-modifier [_ entity _ctx]
-  [[:draw/filled-circle (entity/position entity) 0.5 [0.5 0.5 0.5 0.4]]])
-
-(defmethod render-above! :entity/string-effect [[_ {:keys [text]}]
-                                                entity
-                                                {:keys [ctx/world-unit-scale]}]
-  (let [[x y] (entity/position entity)]
-    [[:draw/text {:text text
-                  :x x
-                  :y (+ y
-                        (:half-height entity)
-                        (* 5 world-unit-scale))
-                  :scale 2
-                  :up? true}]]))
-
-(defmethod render-info! :creature/stats [_ entity {:keys [ctx/world-unit-scale]}]
-  (let [ratio (val-max/ratio (entity/hitpoints entity))]
+(defn draw-stats [_ entity {:keys [ctx/world-unit-scale]}]
+  (let [ratio (val-max/ratio (entity/hitpoints entity))] ; <- use stats directly?
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar world-unit-scale entity ratio))))
 
-(defn- render-active-effect [ctx effect-ctx effect]
-  (mapcat #(effect/render % effect-ctx ctx) effect))
+(def render-below {:entity/mouseover? draw-mouseover-highlighting
+                   :stunned draw-stunned-state
+                   :player-item-on-cursor draw-item-on-cursor-state})
 
-(defmethod render-info! :active-skill [[_ {:keys [skill effect-ctx counter]}]
-                                       entity
-                                       {:keys [ctx/elapsed-time] :as ctx}]
-  (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image image
-                              entity
-                              (entity/position entity)
-                              (timer/ratio elapsed-time counter))
-            (render-active-effect ctx
-                                  effect-ctx ; TODO !!!
-                                  ; !! FIXME !!
-                                  ; (update-effect-ctx effect-ctx)
-                                  ; - render does not need to update .. update inside active-skill
-                                  effects))))
+(def render-default {:entity/clickable draw-clickable-mouseover-text
+                     :entity/image draw-centered-rotated-image
+                     :entity/line-render draw-line-entity})
+
+(def render-above {:npc-sleeping draw-sleeping-state
+                   :entity/temp-modifier draw-temp-modifiers
+                   :entity/string-effect draw-text-over-entity})
+
+(def render-info {:creature/stats draw-stats
+                  :active-skill draw-active-skill})
 
 (def ^:dbg-flag show-body-bounds? false)
 
-(defn- draw-body-rect [entity color]
-  (let [[x y] (:left-bottom entity)]
-    [[:draw/rectangle x y (:width entity) (:height entity) color]]))
-
-; Keys used:
-; ctx/elapsed-time
-; ctx/world-unit-scale
-; @ render effects lets see
-; ctx/player-eid
-; cdq.entity.state.player-item-on-cursor/world-item?
-; cdq.entity.state.player-item-on-cursor/item-place-position
+(defn- draw-entity [ctx entity render-layer]
+  (try
+   (when show-body-bounds?
+     (ctx/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+   (doseq [[k v] entity
+           :let [draw-fn (get render-layer k)]
+           :when draw-fn]
+     (ctx/handle-draws! ctx (draw-fn v entity ctx)))
+   (catch Throwable t
+     (ctx/handle-draws! ctx (draw-body-rect entity :red))
+     (utils/pretty-pst t))))
 
 (defn do! [{:keys [ctx/active-entities
                    ctx/player-eid
                    ctx/render-z-order]
             :as ctx}]
   (let [entities (map deref active-entities)
-        player @player-eid]
+        player @player-eid
+        should-draw? (fn [entity z-order]
+                       (or (= z-order :z-order/effect)
+                           (ctx/line-of-sight? ctx player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
                                                     render-z-order)
-            render! [#'render-below!
-                     #'render-default!
-                     #'render-above!
-                     #'render-info!]
+            render-layer [render-below
+                          render-default
+                          render-above
+                          render-info]
             entity entities
-            :when (or (= z-order :z-order/effect)
-                      (ctx/line-of-sight? ctx player entity))]
-      (try
-       (when show-body-bounds?
-         (ctx/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
-       (doseq [component entity]
-         (ctx/handle-draws! ctx (render! component entity ctx)))
-       (catch Throwable t
-         (ctx/handle-draws! ctx (draw-body-rect entity :red))
-         (utils/pretty-pst t))))))
+            :when (should-draw? entity z-order)]
+      (draw-entity ctx entity render-layer))))
