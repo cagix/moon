@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.level.modules]
+  (:require cdq.schemas-impl ; invalid schema :s/sound when reading db.
+            [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
             [cdq.create.assets]
@@ -71,22 +72,22 @@
 
 (defrecord Context [])
 
-(defn create! [config]
+(defn create! []
   (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
-        ctx (cdq.create.db/do!     ctx {:schemas "schema.edn"
-                                        :properties "properties.edn"})
-        ctx (cdq.create.files/do!  ctx)
-        ctx (cdq.create.assets/do! ctx [(requiring-resolve 'cdq.assets-to-load/create)
-                                        {:folder "resources/"
-                                         :asset-type-extensions {:sound   #{"wav"}
-                                                                 :texture #{"png" "bmp"}}}])
-        ctx (cdq.create.input/do!  ctx)
-        ctx (cdq.create.viewport/ui ctx {:width 1440
-                                         :height 900})
-        ctx (cdq.create.world-unit-scale/do! ctx {:tile-size 48})
-        ctx (cdq.create.viewport/world ctx {:width 1440
-                                            :height 900})
+        ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
+                                                           :properties "properties.edn"}))
+        ctx (assoc ctx :ctx/files (cdq.create.files/do!  ctx))
+        ctx (assoc ctx :ctx/assets (cdq.create.assets/do! ctx [(requiring-resolve 'cdq.assets-to-load/create)
+                                                               {:folder "resources/"
+                                                                :asset-type-extensions {:sound   #{"wav"}
+                                                                                        :texture #{"png" "bmp"}}}]))
+        ctx (assoc ctx :ctx/input (cdq.create.input/do!  ctx))
+        ctx (assoc ctx :ctx/ui-viewport (cdq.create.viewport/ui ctx {:width 1440
+                                                                     :height 900}))
+        ctx (assoc ctx :ctx/world-unit-scale (cdq.create.world-unit-scale/do! ctx {:tile-size 48}))
+        ctx (assoc ctx :ctx/world-viewport (cdq.create.viewport/world ctx {:width 1440
+                                                                           :height 900}))
         batch (gdx/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)
@@ -141,7 +142,7 @@
   (ui/act!  stage ctx)
   (ui/draw! stage ctx))
 
-(defn render! [_]
+(defn render! []
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
