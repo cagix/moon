@@ -59,19 +59,20 @@
               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
               cdq.create.player-movement-vector/do!
               ]
- :game-state-fns [cdq.game.actors/do!]
+ :cdq.ctx.game/ui-actors [cdq.ui.dev-menu/create
+                          cdq.ui.action-bar/create
+                          cdq.ui.hp-mana-bar/create
+                          cdq.ui.windows/create
+                          cdq.ui.player-state-draw/create
+                          cdq.ui.message/create]
  :cdq.ui.windows/create-actors [cdq.ui.windows.entity-info/create
                                 cdq.ui.windows.inventory/create]
- :actor-create-fns [cdq.ui.dev-menu/create
-                    cdq.ui.action-bar/create
-                    cdq.ui.hp-mana-bar/create
-                    cdq.ui.windows/create
-                    cdq.ui.player-state-draw/create
-                    cdq.ui.message/create]
- :content-grid-cell-size 16
- :player-props {:creature-id :creatures/vampire
-                :free-skill-points 3
-                :click-distance-tiles 1.5}
+ :cdq.ctx.game/world {:content-grid-cell-size 16
+                      :potential-field-factions-iterations {:good 15
+                                                            :evil 5}
+                      :player-props {:creature-id :creatures/vampire
+                                     :free-skill-points 3
+                                     :click-distance-tiles 1.5}}
  :effect-body-props {:width 0.5
                      :height 0.5
                      :z-order :z-order/effect}
@@ -82,9 +83,6 @@
             :unpause-continously :space}
  :pausing? true
  :zoom-speed 0.025
- :content-grid-cells-size 16
- :potential-field-factions-iterations {:good 15
-                                       :evil 5}
  :world-fns [cdq.level.vampire/create
              cdq.level.uf-caves/create
              cdq.level.modules/create]

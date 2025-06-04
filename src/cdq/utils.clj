@@ -8,6 +8,12 @@
   (:import (clojure.lang ILookup
                          PersistentVector)))
 
+(defn create* [ctx f]
+  (if (vector? f)
+    (let [[f params] f]
+      (f ctx params))
+    (f ctx)))
+
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)

@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
+            [cdq.utils :as utils]
             [clojure.graphics.viewport :as viewport]
             [clojure.utils.disposable :as disp]
             [qrecord.core :as q]))
@@ -66,13 +67,7 @@
 
 (defn create! [config]
   (let [ctx (map->Context {:config config})
-        ctx (reduce (fn [ctx f]
-                      (if (vector? f)
-                        (let [[f params] f]
-                          (f ctx params))
-                        (f ctx)))
-                    ctx
-                    (:create-fns config))]
+        ctx (reduce utils/create* ctx (:create-fns config))]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
 
@@ -96,7 +91,7 @@
 
 (defn render! [render-fns]
   (swap! state (fn [ctx]
-                 (m/validate-humanize schema ctx)
+                 (m/validate-humanize schema ctx) ; <- isnt this just another step? -- context fn -- not in render needed?
                  (let [ctx (reduce (fn [ctx render!]
                                      (render! ctx))
                                    ctx
