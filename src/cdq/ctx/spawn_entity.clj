@@ -149,10 +149,7 @@
   (mod-remove [entity mods] (update entity :entity/modifiers modifiers/remove mods))
 
   (stat [this k]
-    (when-let [base-value (k this)]
-      (modifiers/get-value base-value
-                           (:entity/modifiers this)
-                           (keyword "modifier" (name k)))))
+    (modifiers/get-stat-value this k))
 
   (mana [entity]
     (modifiers/get-mana entity))

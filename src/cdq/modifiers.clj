@@ -4,10 +4,16 @@
             [cdq.val-max :as val-max]
             [cdq.malli :as m]))
 
-(defn get-value [base-value modifiers modifier-k]
+(defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (op/apply (modifier-k modifiers)
             base-value))
+
+(defn get-stat-value [entity stat-k]
+  (when-let [base-value (stat-k entity)]
+    (get-value base-value
+               (:entity/modifiers entity)
+               (keyword "modifier" (name stat-k)))))
 
 (defn add    [mods other-mods] (merge-with op/add    mods other-mods))
 (defn remove [mods other-mods] (merge-with op/remove mods other-mods))
