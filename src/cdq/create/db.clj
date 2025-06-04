@@ -131,8 +131,8 @@
               :file properties-file
               :schemas schemas})))
 
-(defn do! [{:keys [ctx/config] :as ctx}]
-  (assoc ctx :ctx/db (create-db (:db config))))
+(defn do! [ctx config]
+  (assoc ctx :ctx/db (create-db config)))
 
 ; why do I do transform edn->value in the middle of running game need full ctx graphics/assets
 ; and db to spawn a creature ?

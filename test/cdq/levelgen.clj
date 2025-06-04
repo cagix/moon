@@ -74,15 +74,15 @@
 (defn create! [config]
   (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
-        ctx (assoc ctx :ctx/config {:db {:schemas "schema.edn"
-                                         :properties "properties.edn"}
+        ctx (assoc ctx :ctx/config {
                                     :tile-size 48
                                     :ui-viewport {:width 1440
                                                   :height 900}
                                     :world-viewport {:width 1440
                                                      :height 900}
                                     })
-        ctx (cdq.create.db/do!     ctx)
+        ctx (cdq.create.db/do!     ctx {:schemas "schema.edn"
+                                        :properties "properties.edn"})
         ctx (cdq.create.files/do!  ctx)
         ctx (cdq.create.assets/do! ctx [(requiring-resolve 'cdq.assets-to-load/create)
                                         {:folder "resources/"

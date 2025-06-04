@@ -14,7 +14,8 @@
                                        :asset-type-extensions {:sound   #{"wav"}
                                                                :texture #{"png" "bmp"}}}]]
               cdq.create.input/do!
-              cdq.create.db/do!
+              [cdq.create.db/do! {:schemas "schema.edn"
+                                  :properties "properties.edn"}]
               cdq.create.graphics/do!
               cdq.create.world-unit-scale/do!
               cdq.create.viewport/ui
@@ -53,8 +54,6 @@
  :tile-size 48
  :ui-viewport {:width 1440
                :height 900}
- :db {:schemas "schema.edn"
-      :properties "properties.edn"}
  :cursor-path-format "cursors/%s.png"
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]
