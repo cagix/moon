@@ -150,6 +150,7 @@
             cdq.tx.assoc
             cdq.tx.assoc-in
             cdq.tx.audiovisual
+            cdq.tx.deal-damage
             cdq.tx.dissoc
             cdq.tx.effect
             cdq.tx.event
