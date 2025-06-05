@@ -1,20 +1,12 @@
 (ns clojure.gdx
-  (:require [clojure.assets :as assets]
-            [clojure.audio.sound :as sound]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.texture :as texture]
-            [clojure.tiled :as tiled]
+  (:require [clojure.tiled :as tiled]
             [clojure.utils.disposable :as disposable])
-  (:import (clojure.lang IFn
-                         ILookup)
+  (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx
                              Input$Buttons
                              Input$Keys)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color
-                                      Colors
-                                      Texture)
+                                      Colors)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap
@@ -23,13 +15,7 @@
                                         TmxMapLoader)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.utils Align
-                                   Disposable
                                    ScreenUtils)))
-
-(extend-type Disposable
-  disposable/Disposable
-  (dispose! [object]
-    (.dispose object)))
 
 (comment
 
@@ -328,92 +314,6 @@
     :center Align/center
     :left   Align/left
     :right  Align/right))
-
-(defn- reify-texture-region [^TextureRegion this]
-  (reify
-    ILookup
-    (valAt [_ k]
-      (case k
-        :texture-region/dimensions [(.getRegionWidth  this)
-                                    (.getRegionHeight this)]
-        :texture-region/java-object this))
-
-    texture/TextureRegion
-    (sub-region [_ x y w h]
-      (reify-texture-region (TextureRegion. this
-                                            (int x)
-                                            (int y)
-                                            (int w)
-                                            (int h))))))
-
-(defn- reify-texture [^Texture this]
-  (reify
-    disposable/Disposable
-    (dispose! [_]
-      (.dispose this))
-
-    texture/Texture
-    (region [_]
-      (reify-texture-region (TextureRegion. this)))
-    (region [_ x y w h]
-      (reify-texture-region (TextureRegion. this
-                                            (int x)
-                                            (int y)
-                                            (int w)
-                                            (int h))))))
-
-(defn- reify-sound [^Sound this]
-  (reify sound/Sound
-    (play! [_]
-      (.play this))))
-
-(defn- k->class ^Class [asset-type-k]
-  (case asset-type-k
-    :sound Sound
-    :texture Texture))
-
-(defmulti ^:private reify-asset class)
-(defmethod reify-asset Sound   [this] (reify-sound   this))
-(defmethod reify-asset Texture [this] (reify-texture this))
-
-; why not just :ctx/sounds / :ctx/textures ??
-
-(defn asset-manager [assets]
-  (let [this (AssetManager.)]
-    (doseq [[file asset-type-k] assets]
-      (.load this ^String file (k->class asset-type-k)))
-    (.finishLoading this)
-    (reify
-      disposable/Disposable
-      (dispose! [_]
-        (.dispose this))
-
-      IFn
-      (invoke [_ path]
-        (-> (if (.contains this path)
-              (.get this ^String path)
-              (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))
-            reify-asset))
-
-      assets/Assets
-      (all-of-type [_ asset-type-k]
-        (filter #(= (.getAssetType this %) (k->class asset-type-k))
-                (.getAssetNames this))))))
-
-(defn graphics []
-  (let [this Gdx/graphics]
-    (reify graphics/Graphics
-      (delta-time [_]
-        (.getDeltaTime this))
-
-      (frames-per-second [_]
-        (.getFramesPerSecond this))
-
-      (new-cursor [_ pixmap hotspot-x hotspot-y]
-        (.newCursor this pixmap hotspot-x hotspot-y))
-
-      (set-cursor! [_ cursor]
-        (.setCursor this cursor)))))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))

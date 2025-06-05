@@ -1,5 +1,7 @@
 (ns gdl.start
-  (:require [clojure.edn :as edn]
+  (:require [clojure.assets :as assets]
+            [clojure.audio.sound :as sound]
+            [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.freetype :as freetype]
@@ -15,11 +17,13 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.java.io :as io]
-            [clojure.utils.disposable :as disp]
+            [clojure.utils.disposable :as disposable]
             [gdl.ui.stage :as stage])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
            (com.badlogic.gdx ApplicationListener
                              Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Pixmap
@@ -36,6 +40,95 @@
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
+
+(extend-type Disposable
+  disposable/Disposable
+  (dispose! [object]
+    (.dispose object)))
+
+(defn- reify-texture-region [^TextureRegion this]
+  (reify
+    clojure.lang.ILookup
+    (valAt [_ k]
+      (case k
+        :texture-region/dimensions [(.getRegionWidth  this)
+                                    (.getRegionHeight this)]
+        :texture-region/java-object this))
+
+    texture/TextureRegion
+    (sub-region [_ x y w h]
+      (reify-texture-region (TextureRegion. this
+                                            (int x)
+                                            (int y)
+                                            (int w)
+                                            (int h))))))
+
+(defn- reify-texture [^Texture this]
+  (reify
+    disposable/Disposable
+    (dispose! [_]
+      (.dispose this))
+
+    texture/Texture
+    (region [_]
+      (reify-texture-region (TextureRegion. this)))
+    (region [_ x y w h]
+      (reify-texture-region (TextureRegion. this
+                                            (int x)
+                                            (int y)
+                                            (int w)
+                                            (int h))))))
+
+(defn- reify-sound [^Sound this]
+  (reify sound/Sound
+    (play! [_]
+      (.play this))))
+
+(defn- k->class ^Class [asset-type-k]
+  (case asset-type-k
+    :sound Sound
+    :texture Texture))
+
+(defmulti ^:private reify-asset class)
+(defmethod reify-asset Sound   [this] (reify-sound   this))
+(defmethod reify-asset Texture [this] (reify-texture this))
+
+(defn- create-asset-manager [assets]
+  (let [this (AssetManager.)]
+    (doseq [[file asset-type-k] assets]
+      (.load this ^String file (k->class asset-type-k)))
+    (.finishLoading this)
+    (reify
+      disposable/Disposable
+      (dispose! [_]
+        (.dispose this))
+
+      clojure.lang.IFn
+      (invoke [_ path]
+        (-> (if (.contains this path)
+              (.get this ^String path)
+              (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))
+            reify-asset))
+
+      assets/Assets
+      (all-of-type [_ asset-type-k]
+        (filter #(= (.getAssetType this %) (k->class asset-type-k))
+                (.getAssetNames this))))))
+
+(defn- create-graphics []
+  (let [this Gdx/graphics]
+    (reify graphics/Graphics
+      (delta-time [_]
+        (.getDeltaTime this))
+
+      (frames-per-second [_]
+        (.getFramesPerSecond this))
+
+      (new-cursor [_ pixmap hotspot-x hotspot-y]
+        (.newCursor this pixmap hotspot-x hotspot-y))
+
+      (set-cursor! [_ cursor]
+        (.setCursor this cursor)))))
 
 (defn- create-input []
   (let [this Gdx/input]
@@ -287,8 +380,8 @@
         ui-viewport (create-ui-viewport ui-viewport)]
     (ui/load! ui)
     {:ctx/input (create-input)
-     :ctx/graphics (gdx/graphics)
-     :ctx/assets (gdx/asset-manager (assets-to-load assets))
+     :ctx/graphics (create-graphics)
+     :ctx/assets (create-asset-manager (assets-to-load assets))
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
