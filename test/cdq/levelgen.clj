@@ -3,7 +3,6 @@
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
-            [cdq.create.gdx]
             [cdq.create.db]
 
             ; remove
@@ -71,19 +70,9 @@
 
 ; FIX use existing memoized tiled map renderer
 
-(defn create! [_config]
-  (let [ctx (->Context)
-        ctx (cdq.create.gdx/do! ctx
-                                {:assets {:folder "resources/"
-                                          :asset-type-extensions {:sound   #{"wav"}
-                                                                  :texture #{"png" "bmp"}}}
-                                 :tile-size 48
-                                 :ui-viewport {:width 1440
-                                               :height 900}
-                                 :world-viewport {:width 1440
-                                                  :height 900}
-                                 :ui {:skin-scale :x1}
-                                 })
+(defn create! [context]
+  (let [ctx (merge (->Context)
+                   context)
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx

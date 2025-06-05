@@ -68,9 +68,9 @@
 
 (def state (atom nil))
 
-(defn create! [config]
-  (let [config (utils/load-edn-config config)
-        ctx (map->Context {:config config})
+(defn create! [ctx]
+  (let [{:keys [ctx/config] :as ctx} (update ctx :ctx/config utils/load-edn-config)
+        ctx (merge (map->Context {}) ctx)
         ctx (reduce utils/render* ctx (:cdq.application/create-fns config))]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
@@ -101,6 +101,7 @@
                    ctx))))
 
 (defn resize! [width height]
+  (m/validate-humanize schema @state)
   (let [{:keys [ctx/ui-viewport
                 ctx/world-viewport]} @state]
     (viewport/resize! ui-viewport    width height)

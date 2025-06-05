@@ -2,6 +2,15 @@
  :clojure.gdx.lwjgl/config {:title "Mapgen Test"
                             :windowed-mode {:width 1440
                                             :height 900}}
+ :gdl.application/context {:assets {:folder "resources/"
+                                    :asset-type-extensions {:sound   #{"wav"}
+                                                            :texture #{"png" "bmp"}}}
+                           :tile-size 48
+                           :ui-viewport {:width 1440
+                                         :height 900}
+                           :world-viewport {:width 1440
+                                            :height 900}
+                           :ui {:skin-scale :x1}}
  :clojure.gdx.lwjgl/create!  cdq.levelgen/create!
  :clojure.gdx.lwjgl/dispose! cdq.levelgen/dispose!
  :clojure.gdx.lwjgl/render!  cdq.levelgen/render!
