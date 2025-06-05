@@ -17,7 +17,8 @@
            (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap
+           (com.badlogic.gdx.graphics Color
+                                      Pixmap
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -27,7 +28,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor (gdx/->color :white))
+                 (.setColor Color/WHITE)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -103,15 +104,13 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [graphics (gdx/graphics)
-        input (gdx/input)
-        batch (gdx/sprite-batch)
+  (let [batch (gdx/sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (gdx/ui-viewport ui-viewport)]
     (ui/load! ui)
-    {:ctx/input input
-     :ctx/graphics graphics
+    {:ctx/input (gdx/input)
+     :ctx/graphics (gdx/graphics)
      :ctx/assets (gdx/asset-manager (assets-to-load assets))
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
