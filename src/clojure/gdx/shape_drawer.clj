@@ -5,8 +5,7 @@
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
-  (let [this (ShapeDrawer. (:sprite-batch/java-object batch)
-                           (:texture-region/java-object texture-region))]
+  (let [this (ShapeDrawer. (:sprite-batch/java-object batch) texture-region)]
     (reify clojure.graphics.shape-drawer/ShapeDrawer
       (set-color! [_ color]
         (.setColor this (gdx/->color color)))

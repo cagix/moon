@@ -8,7 +8,6 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
-            [clojure.graphics.pixmap :as pixmap]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.java.io :as io]
@@ -18,16 +17,20 @@
            (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Pixmap
+                                      Pixmap$Format
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
 
 (defn- white-pixel-texture []
-  (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
-                 (pixmap/set-color! (gdx/->color :white))
-                 (pixmap/draw-pixel! 0 0))
-        texture (pixmap/texture pixmap)]
-    (disp/dispose! pixmap)
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor (gdx/->color :white))
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
     texture))
 
 (defn- truetype-font [{:keys [file size quality-scaling]}]
@@ -116,14 +119,15 @@
      :ctx/batch batch
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))
+     :ctx/shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (gdx/pixmap (.internal Gdx/files (format cursor-path-format file)))
-                                       cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                   (disp/dispose! pixmap)
+                                 (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                                       cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                   (.dispose pixmap)
                                    cursor)))
-     :ctx/default-font (when default-font (truetype-font default-font))
+     :ctx/default-font (when default-font
+                         (truetype-font default-font))
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)

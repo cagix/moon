@@ -5,7 +5,6 @@
             [clojure.graphics.camera :as camera]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
-            [clojure.graphics.pixmap :as pixmap]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
             [clojure.tiled :as tiled]
@@ -22,8 +21,6 @@
                                       Color
                                       Colors
                                       Texture
-                                      Pixmap
-                                      Pixmap$Format
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion
                                           SpriteBatch)
@@ -494,31 +491,6 @@
 
       (set-projection-matrix! [_ matrix]
         (.setProjectionMatrix this matrix)))))
-
-(defn pixmap
-  ([file-handle]
-   (Pixmap. file-handle))
-  ([width height format]
-   (let [this (Pixmap. (int width)
-                       (int height)
-                       ^Pixmap$Format
-                       (case format
-                         :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))]
-     (reify
-       disposable/Disposable
-       (dispose! [_]
-         (.dispose this))
-       ILookup
-       (valAt [_ k]
-         (case k
-           :pixmap/java-object this))
-       pixmap/Pixmap
-       (set-color! [_ color]
-         (.setColor this ^Color color))
-       (draw-pixel! [_ x y]
-         (.drawPixel this x y))
-       (texture [_]
-         (reify-texture (Texture. this)))))))
 
 (defn- vector3->clj-vec [^Vector3 v3]
   [(.x v3)
