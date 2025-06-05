@@ -83,11 +83,9 @@
                                  })
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
-        batch (gdx/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
-                        batch)
+                        (:ctx/batch ctx))
         ctx (assoc ctx
-                   :ctx/batch batch
                    :ctx/camera (:camera (:ctx/world-viewport ctx))
                    :ctx/color-setter (constantly (gdx/->color :white))
                    :ctx/zoom-speed 0.1
