@@ -4,9 +4,9 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationListener)
-           (java.awt Taskbar ; not a libgdx denendency, doesnt have to be in libgdx project !!!
+           (java.awt Taskbar
                      Toolkit)
-           (org.lwjgl.system Configuration))) ; doesnt depend on libgdx, so doesnt have to be in that project -> match files ...
+           (org.lwjgl.system Configuration)))
 
 (defn- set-glfw-async! []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
@@ -24,9 +24,6 @@
     (set-taskbar-icon! dock-icon)))
 
 (defn -main [app-edn-path]
-  (println "architecture: " (shared-library-loader/architecture))
-  (println "bitness:" (shared-library-loader/bitness))
-  (println "os: " (shared-library-loader/os))
   (let [config (-> app-edn-path
                    io/resource
                    slurp
