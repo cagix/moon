@@ -21,7 +21,7 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
-            [clojure.utils.disposable :as disp]))
+            [gdl.utils.disposable :as disp]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
