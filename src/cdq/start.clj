@@ -1,12 +1,12 @@
 (ns cdq.start
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationListener)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
-           (java.awt Taskbar
+           (java.awt Taskbar ; not a libgdx denendency, doesnt have to be in libgdx project !!!
                      Toolkit)
-           (org.lwjgl.system Configuration)))
+           (org.lwjgl.system Configuration))) ; doesnt depend on libgdx, so doesnt have to be in that project -> match files ...
 
 (defn- set-glfw-async! []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
@@ -16,10 +16,6 @@
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource io-resource))))
 
-(defn- operating-system []
-  (let [os SharedLibraryLoader/os]
-    (cond (= os Os/MacOsX) :operating-system/mac)))
-
 (defn- set-mac-os-config! [{:keys [glfw-async?
                                    dock-icon]}]
   (when glfw-async?
@@ -28,6 +24,9 @@
     (set-taskbar-icon! dock-icon)))
 
 (defn -main [app-edn-path]
+  (println "architecture: " (shared-library-loader/architecture))
+  (println "bintess:" (shared-library-loader/bitness))
+  (println "os: " (shared-library-loader/os))
   (let [config (-> app-edn-path
                    io/resource
                    slurp
@@ -35,7 +34,7 @@
         req-resolve-call (fn [k & params]
                            (when-let [f (k config)]
                              (apply (requiring-resolve f) params)))]
-    (when (= (operating-system) :operating-system/mac)
+    (when (= (shared-library-loader/os) :os/mac-osx)
       (set-mac-os-config! (:mac-os config)))
     (lwjgl/application! (:clojure.gdx.lwjgl/config config)
                         (proxy [ApplicationListener] []
