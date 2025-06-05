@@ -3,11 +3,6 @@
   (:import (cdq.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
 
-(defn create [tiled-map world-unit-scale batch]
-  (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                               (float world-unit-scale)
-                               (:sprite-batch/java-object batch)))
-
 (defn draw! [^OrthogonalTiledMapRenderer renderer tiled-map color-setter camera]
   (.setColorSetter renderer (reify ColorSetter
                               (apply [_ color x y]

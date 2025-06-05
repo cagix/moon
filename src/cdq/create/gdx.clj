@@ -2,8 +2,7 @@
 ; -> pass directly atom state to stage?
 ; swap! at each render?
 (ns cdq.create.gdx
-  (:require [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [cdq.ui.stage :as stage]
+  (:require [cdq.ui.stage :as stage]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx :as gdx]
@@ -15,7 +14,8 @@
             [clojure.graphics.pixmap :as pixmap]
             [clojure.input :as input]
             [clojure.string :as str]
-            [clojure.utils.disposable :as disp]))
+            [clojure.utils.disposable :as disp])
+  (:import (cdq.graphics OrthogonalTiledMapRenderer)))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
@@ -94,7 +94,9 @@
                                          cursor)))
            :ctx/default-font (when default-font (truetype-font files default-font))
            :ctx/tiled-map-renderer (memoize (fn [tiled-map]
-                                              (tiled-map-renderer/create tiled-map world-unit-scale batch)))
+                                              (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                           (float world-unit-scale)
+                                                                           (:sprite-batch/java-object batch))))
            :ctx/stage (let [stage (ui/stage (:java-object ui-viewport)
                                             batch)]
                         (input/set-processor! input stage)
