@@ -68,9 +68,7 @@
 
 (defrecord Context [])
 
-; FIX use existing memoized tiled map renderer
-
-(defn create! [context]
+(defn create! [context _config]
   (let [ctx (merge (->Context)
                    context)
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"

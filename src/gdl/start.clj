@@ -97,16 +97,15 @@
             ui/root
             (ui/find-actor actor-name))))))
 
-(defn- create-context [config]
-  (let [{:keys [assets
-                tile-size
-                ui-viewport
-                world-viewport
-                cursor-path-format ; optional
-                cursors ; optional
-                default-font ; optional, could use gdx included (BitmapFont.)
-                ui]} (:gdl.application/context config)
-        files (gdx/files)
+(defn- create-context [{:keys [assets
+                               tile-size
+                               ui-viewport
+                               world-viewport
+                               cursor-path-format ; optional
+                               cursors ; optional
+                               default-font ; optional, could use gdx included (BitmapFont.)
+                               ui]}]
+  (let [files (gdx/files)
         graphics (gdx/graphics)
         input (gdx/input)
         batch (gdx/sprite-batch)
@@ -114,8 +113,7 @@
         world-unit-scale (float (/ tile-size))
         ui-viewport (gdx/ui-viewport ui-viewport)]
     (ui/load! ui)
-    {:ctx/config config
-     :ctx/input input
+    {:ctx/input input
      :ctx/graphics graphics
      :ctx/assets (gdx/asset-manager (assets-to-load files assets))
      :ctx/world-unit-scale world-unit-scale
@@ -167,7 +165,8 @@
                         (proxy [ApplicationListener] []
                           (create  []
                             ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-                             (create-context config)))
+                             (create-context (:gdl.application/context config))
+                             config))
                           (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
                           (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
                           (resize  [width height] (req-resolve-call :clojure.gdx.lwjgl/resize! width height))
