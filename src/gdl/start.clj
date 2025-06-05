@@ -5,10 +5,13 @@
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
+            [clojure.gdx.math-utils :as math-utils]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.graphics :as graphics]
             [clojure.graphics.batch :as batch]
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.texture :as texture]
+            [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.java.io :as io]
@@ -21,13 +24,119 @@
            (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
-                                      Texture)
+                                      Texture
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
+           (com.badlogic.gdx.math Frustum
+                                  Vector2
+                                  Vector3)
            (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- vector3->clj-vec [^Vector3 v3]
+  [(.x v3)
+   (.y v3)
+   (.z v3)])
+
+(defn- frustum-plane-points [^Frustum frustum]
+  (map vector3->clj-vec (.planePoints frustum)))
+
+(defn- reify-camera [^OrthographicCamera this]
+  (reify
+    clojure.lang.ILookup
+    (valAt [_ k]
+      (case k
+        :camera/java-object this))
+
+    camera/Camera
+    (zoom [_]
+      (.zoom this))
+
+    (position [_]
+      [(.x (.position this))
+       (.y (.position this))])
+
+    (combined [_]
+      (.combined this))
+
+    (frustum [_]
+      (let [frustum-points (take 4 (frustum-plane-points (.frustum this)))
+            left-x   (apply min (map first  frustum-points))
+            right-x  (apply max (map first  frustum-points))
+            bottom-y (apply min (map second frustum-points))
+            top-y    (apply max (map second frustum-points))]
+        [left-x right-x bottom-y top-y]))
+
+    (set-position! [_ [x y]]
+      (set! (.x (.position this)) (float x))
+      (set! (.y (.position this)) (float y))
+      (.update this))
+
+    (set-zoom! [_ amount]
+      (set! (.zoom this) amount)
+      (.update this))
+
+    (viewport-width [_]
+      (.viewportWidth this))
+
+    (viewport-height [_]
+      (.viewportHeight this))
+
+    (reset-zoom! [cam]
+      (camera/set-zoom! cam 1))
+
+    (inc-zoom! [cam by]
+      (camera/set-zoom! cam (max 0.1 (+ (camera/zoom cam) by)))) ))
+
+(defn- fit-viewport [width height camera {:keys [center-camera?]}]
+  (let [this (FitViewport. width height camera)]
+    (reify
+      viewport/Viewport
+      (resize! [_ width height]
+        (.update this width height center-camera?))
+
+      ; touch coordinates are y-down, while screen coordinates are y-up
+      ; so the clamping of y is reverse, but as black bars are equal it does not matter
+      ; TODO clamping only works for gui-viewport ?
+      ; TODO ? "Can be negative coordinates, undefined cells."
+      (unproject [_ [x y]]
+        (let [clamped-x (math-utils/clamp x
+                                          (.getLeftGutterWidth this)
+                                          (.getRightGutterX    this))
+              clamped-y (math-utils/clamp y
+                                          (.getTopGutterHeight this)
+                                          (.getTopGutterY      this))]
+          (let [v2 (.unproject this (Vector2. clamped-x clamped-y))]
+            [(.x v2) (.y v2)])))
+
+      clojure.lang.ILookup
+      (valAt [_ key]
+        (case key
+          :java-object this
+          :width  (.getWorldWidth  this)
+          :height (.getWorldHeight this)
+          :camera (reify-camera (.getCamera this)))))))
+
+(defn- create-ui-viewport [{:keys [width height]}]
+  (fit-viewport width
+                height
+                (OrthographicCamera.)
+                {:center-camera? true}))
+
+(defn- create-world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width
+                  world-height
+                  camera
+                  {:center-camera? false})))
 
 (defn- sprite-batch []
   (let [this (SpriteBatch.)]
@@ -156,14 +265,14 @@
   (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (gdx/ui-viewport ui-viewport)]
+        ui-viewport (create-ui-viewport ui-viewport)]
     (ui/load! ui)
     {:ctx/input (gdx/input)
      :ctx/graphics (gdx/graphics)
      :ctx/assets (gdx/asset-manager (assets-to-load assets))
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
-     :ctx/world-viewport (gdx/world-viewport world-unit-scale world-viewport)
+     :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
      :ctx/batch batch
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
