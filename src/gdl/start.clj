@@ -1,4 +1,6 @@
-(ns cdq.start
+; make this together with cdq.create.gdx & clojure.gdx into 'gdl.start'
+; 'clojure.gdx.*' == ! interop-helper !
+(ns gdl.start
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]

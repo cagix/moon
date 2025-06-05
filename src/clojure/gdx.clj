@@ -394,6 +394,8 @@
 (defmethod reify-asset Sound   [this] (reify-sound   this))
 (defmethod reify-asset Texture [this] (reify-texture this))
 
+; why not just :ctx/sounds / :ctx/textures ??
+
 (defn asset-manager [assets]
   (let [this (AssetManager.)]
     (doseq [[file asset-type-k] assets]
