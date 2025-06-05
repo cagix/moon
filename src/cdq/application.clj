@@ -28,7 +28,6 @@
              [:ctx/db :some]
 
              ;; all gdx related stuff & backend is one _type_
-             [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/input :some]
              [:ctx/stage :some]

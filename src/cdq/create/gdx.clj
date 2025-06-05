@@ -77,7 +77,6 @@
         world-unit-scale (float (/ tile-size))
         ui-viewport (gdx/ui-viewport ui-viewport)]
     (assoc ctx
-           :ctx/files files
            :ctx/input input
            :ctx/graphics graphics
            :ctx/assets (gdx/asset-manager (assets-to-load files assets))
