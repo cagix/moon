@@ -1,4 +1,4 @@
-(ns clojure.graphics.camera)
+(ns gdl.graphics.camera)
 
 (defprotocol Camera
   (zoom [_])

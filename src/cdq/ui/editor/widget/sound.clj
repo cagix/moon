@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [clojure.assets :as assets]
+            [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
             [clojure.gdx.ui :as ui]
             [gdl.ui.stage :as stage]))

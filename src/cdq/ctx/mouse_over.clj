@@ -1,5 +1,5 @@
 (ns cdq.ctx.mouse-over
-  (:require [clojure.graphics.viewport :as viewport]
+  (:require [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.ui.stage :as stage]))
 

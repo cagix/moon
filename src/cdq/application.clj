@@ -1,7 +1,7 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
-            [clojure.graphics.viewport :as viewport]
+            [gdl.graphics.viewport :as viewport]
             [clojure.utils.disposable :as disp]
             [qrecord.core :as q]))
 

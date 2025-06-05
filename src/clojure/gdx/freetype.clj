@@ -1,6 +1,6 @@
 (ns clojure.gdx.freetype
   (:require [clojure.gdx :as gdx]
-            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont)

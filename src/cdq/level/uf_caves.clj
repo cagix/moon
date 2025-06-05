@@ -8,8 +8,8 @@
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
             [clojure.gdx :as gdx]
-            [clojure.graphics.texture :as texture]
-            [clojure.tiled :as tiled]))
+            [gdl.graphics.texture :as texture]
+            [gdl.tiled :as tiled]))
 
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))

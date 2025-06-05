@@ -3,8 +3,8 @@
             [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.camera :as camera]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.gdx.ui.menu :as menu]
             [cdq.utils :as utils]))

@@ -1,9 +1,9 @@
 (ns cdq.ctx.graphics
   (:require [clojure.gdx :as gdx]
-            [clojure.graphics.batch :as batch]
-            [clojure.graphics.texture :as texture]
-            [clojure.graphics.shape-drawer :as sd]
-            [clojure.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdl.graphics.batch :as batch]
+            [gdl.graphics.texture :as texture]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [qrecord.core :as q]))
 
 (defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]

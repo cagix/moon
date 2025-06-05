@@ -1,5 +1,5 @@
 (ns clojure.gdx
-  (:require [clojure.tiled :as tiled]
+  (:require [gdl.tiled :as tiled]
             [clojure.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx

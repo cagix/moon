@@ -4,7 +4,7 @@
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.math.geom :as geom]
-            [clojure.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [cdq.utils :as utils]))
 
 (defn- set-touched-cells! [grid eid]

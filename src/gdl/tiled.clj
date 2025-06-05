@@ -1,4 +1,4 @@
-(ns clojure.tiled)
+(ns gdl.tiled)
 
 (defprotocol HasMapProperties
   (map-properties [_]))

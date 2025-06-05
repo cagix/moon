@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.image
-  (:require [clojure.assets :as assets]
+  (:require [gdl.assets :as assets]
             [cdq.ui.editor.widget :as widget]
             [cdq.schema :as schema]
             [clojure.gdx.ui :as ui]))

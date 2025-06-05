@@ -1,23 +1,23 @@
 (ns gdl.start
-  (:require [clojure.assets :as assets]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.freetype :as freetype] ; only used here
-            [clojure.gdx.shape-drawer :as shape-drawer] ; only used here
-            [clojure.gdx.ui :as ui] ; some stuff only used here
-            [clojure.gdx.math-utils :as math-utils] ; dito
+            [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.shape-drawer :as shape-drawer]
+            [clojure.gdx.ui :as ui]
+            [clojure.gdx.math-utils :as math-utils]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader] ; dito
-            [clojure.graphics :as graphics] ;dito
-            [clojure.graphics.batch :as batch] ; graphcis foozo
-            [clojure.graphics.camera :as camera]
-            [clojure.graphics.texture :as texture]
-            [clojure.graphics.viewport :as viewport]
-            [gdl.input :as input]
             [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.utils.disposable :as disposable]
+            [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
+            [gdl.graphics :as graphics] ;dito
+            [gdl.graphics.batch :as batch] ; graphcis foozo
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.texture :as texture]
+            [gdl.graphics.viewport :as viewport]
+            [gdl.input :as input]
             [gdl.ui.stage :as stage])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
            (com.badlogic.gdx ApplicationListener
@@ -366,6 +366,11 @@
             ui/root
             (ui/find-actor actor-name))))))
 
+#_(defn- create-audio [sounds-to-load]
+  (into {}
+        (for [file sounds-to-load]
+          (.newSound Gdx/audio (.internal Gdx/files file)))))
+
 (defn- create-context [{:keys [assets
                                tile-size
                                ui-viewport
@@ -380,11 +385,8 @@
         ui-viewport (create-ui-viewport ui-viewport)]
     (ui/load! ui)
     {:ctx/input (create-input)
-
-     ; < - AUDIO / SOUNDS / TEXTURES >
+     ;:ctx/audio (create-audio)
      :ctx/assets (create-asset-manager (assets-to-load assets))
-
-     ; GRAPHICS
      :ctx/graphics (create-graphics)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport

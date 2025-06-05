@@ -1,4 +1,4 @@
-(ns clojure.graphics.batch)
+(ns gdl.graphics.batch)
 
 (defprotocol Batch
   (set-color! [_ color])

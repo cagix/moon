@@ -1,5 +1,5 @@
 (ns cdq.render.camera-controls
-  (:require [clojure.graphics.camera :as camera]
+  (:require [gdl.graphics.camera :as camera]
             [gdl.input :as input]))
 
 (defn do! [{:keys [ctx/config

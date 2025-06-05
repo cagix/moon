@@ -16,11 +16,11 @@
 
             [clojure.gdx.ui :as ui]
 
-            [clojure.graphics.camera :as camera]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.viewport :as viewport]
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
-            [clojure.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [clojure.utils.disposable :as disp]))
 
 (defn- show-whole-map! [{:keys [ctx/camera

@@ -1,7 +1,7 @@
 (ns clojure.gdx.ui
-  (:require [clojure.graphics.texture :as texture])
+  (:require [gdl.graphics.texture :as texture])
   (:import (clojure.lang ILookup)
-           (clojure.graphics.texture Texture
+           (gdl.graphics.texture Texture
                                  TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group

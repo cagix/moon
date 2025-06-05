@@ -6,8 +6,8 @@
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.gdx :as gdx]
-            [clojure.graphics.texture :as texture]
-            [clojure.tiled :as tiled]))
+            [gdl.graphics.texture :as texture]
+            [gdl.tiled :as tiled]))
 
 (defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)
