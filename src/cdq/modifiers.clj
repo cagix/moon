@@ -83,3 +83,21 @@
            apply-max
            (:entity/modifiers target)
            :modifier/damage-receive-max)))
+
+; I don't see it triggering with 10 armor save ... !
+(defn effective-armor-save [source-stats target-stats]
+  (max (- (or (get-stat-value source-stats :entity/armor-save)   0)
+          (or (get-stat-value target-stats :entity/armor-pierce) 0))
+       0))
+
+(effective-armor-save {} {:entity/modifiers {:modifiers/armor-save {:op/inc 10}}
+                       :entity/armor-save 0
+                       }
+                      )
+
+(comment
+ ; broken
+ (let [source* {:entity/armor-pierce 0.4}
+       target* {:entity/armor-save   0.5}]
+   (effective-armor-save source* target*))
+ )

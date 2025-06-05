@@ -4,21 +4,6 @@
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]))
 
-(defn- effective-armor-save [source* target*]
-  (max (- (or (entity/stat target* :entity/armor-save)   0)
-          (or (entity/stat source* :entity/armor-pierce) 0))
-       0))
-
-(comment
- ; broken
- (let [source* {:entity/armor-pierce 0.4}
-       target* {:entity/armor-save   0.5}]
-   (effective-armor-save source* target*))
- )
-
-(defn- armor-saves? [source* target*]
-  (< (rand) (effective-armor-save source* target*)))
-
 (defmethod do! :tx/deal-damage [[_ source target damage] ctx]
   (let [source* @source
         target* @target
@@ -28,7 +13,8 @@
                   (zero? (hp 0))
                   nil
 
-                  (armor-saves? source* target*) ; TODO BUG ALWAYS ARMOR ?
+                  (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
+                                                            (:creature/stats target*)))
                   [[:tx/add-text-effect target "[WHITE]ARMOR"]]
 
                   :else

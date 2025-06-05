@@ -161,7 +161,9 @@
                              [:skill/cost     {:optional true}]]],
 
  :damage/min-max :s/val-max,
- :effects.target/damage [:s/map [:damage/min-max]],
+ :effects.target/damage [:s/map [:damage/min-max
+                                 ; audiovisual
+                                 ]],
 
  :effects/sound :s/sound
  :effects/audiovisual [:s/one-to-one :properties/audiovisuals]
@@ -169,7 +171,10 @@
  :effects/spawn      [:s/one-to-one :properties/creatures],
 
  :maxrange :s/pos,
- :effects/target-entity [:s/map [:entity-effects :maxrange]],
+ :effects/target-entity [:s/map [:entity-effects
+                                 :maxrange
+                                 ; audiovisual
+                                 ]],
 
  :effects/target-all [:s/map [:entity-effects]],
 
