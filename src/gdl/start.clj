@@ -7,6 +7,7 @@
             [clojure.gdx.ui :as ui]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.graphics :as graphics]
+            [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.input :as input]
             [clojure.string :as str]
@@ -21,10 +22,58 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
+           (com.badlogic.gdx.utils Disposable)
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- sprite-batch []
+  (let [this (SpriteBatch.)]
+    (reify
+      clojure.lang.ILookup
+      (valAt [_ k]
+        (case k
+          :sprite-batch/java-object this))
+
+      Disposable
+      (dispose [_]
+        (.dispose this))
+
+      batch/Batch
+      (set-color! [_ color]
+        (.setColor this ^Color color))
+
+      (draw! [_ texture-region {:keys [x
+                                       y
+                                       origin-x
+                                       origin-y
+                                       width
+                                       height
+                                       scale-x
+                                       scale-y
+                                       rotation]}]
+        (.draw this
+               (:texture-region/java-object texture-region)
+               x
+               y
+               origin-x
+               origin-y
+               width
+               height
+               scale-x
+               scale-y
+               rotation))
+
+      (begin! [_]
+        (.begin this))
+
+      (end! [_]
+        (.end this))
+
+      (set-projection-matrix! [_ matrix]
+        (.setProjectionMatrix this matrix)))))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -104,7 +153,7 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [batch (gdx/sprite-batch)
+  (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (gdx/ui-viewport ui-viewport)]

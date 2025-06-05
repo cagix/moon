@@ -3,7 +3,6 @@
             [clojure.audio.sound :as sound]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]
-            [clojure.graphics.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport :as viewport]
             [clojure.input :as input]
@@ -22,8 +21,7 @@
                                       Colors
                                       Texture
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d TextureRegion
-                                          SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
@@ -445,52 +443,6 @@
 
       (set-cursor! [_ cursor]
         (.setCursor this cursor)))))
-
-(defn sprite-batch []
-  (let [this (SpriteBatch.)]
-    (reify
-       ILookup
-       (valAt [_ k]
-         (case k
-           :sprite-batch/java-object this))
-
-      disposable/Disposable
-      (dispose! [_]
-        (.dispose this))
-
-      batch/Batch
-      (set-color! [_ color]
-        (.setColor this ^Color color))
-
-      (draw! [_ texture-region {:keys [x
-                                       y
-                                       origin-x
-                                       origin-y
-                                       width
-                                       height
-                                       scale-x
-                                       scale-y
-                                       rotation]}]
-        (.draw this
-               (:texture-region/java-object texture-region)
-               x
-               y
-               origin-x
-               origin-y
-               width
-               height
-               scale-x
-               scale-y
-               rotation))
-
-      (begin! [_]
-        (.begin this))
-
-      (end! [_]
-        (.end this))
-
-      (set-projection-matrix! [_ matrix]
-        (.setProjectionMatrix this matrix)))))
 
 (defn- vector3->clj-vec [^Vector3 v3]
   [(.x v3)
