@@ -37,6 +37,25 @@
                      Toolkit)
            (org.lwjgl.system Configuration)))
 
+(defn- create-input []
+  (let [this Gdx/input]
+    (reify input/Input
+      (button-just-pressed? [_ button]
+        (.isButtonJustPressed this (gdx/k->input-button button)))
+
+      (key-pressed? [_ key]
+        (.isKeyPressed this (gdx/k->input-key key)))
+
+      (key-just-pressed? [_ key]
+        (.isKeyJustPressed this (gdx/k->input-key key)))
+
+      (set-processor! [_ input-processor]
+        (.setInputProcessor this input-processor))
+
+      (mouse-position [_]
+        [(.getX this)
+         (.getY this)]))))
+
 (defn- vector3->clj-vec [^Vector3 v3]
   [(.x v3)
    (.y v3)
@@ -267,7 +286,7 @@
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)]
     (ui/load! ui)
-    {:ctx/input (gdx/input)
+    {:ctx/input (create-input)
      :ctx/graphics (gdx/graphics)
      :ctx/assets (gdx/asset-manager (assets-to-load assets))
      :ctx/world-unit-scale world-unit-scale

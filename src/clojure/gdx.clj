@@ -3,7 +3,6 @@
             [clojure.audio.sound :as sound]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
-            [clojure.input :as input]
             [clojure.tiled :as tiled]
             [clojure.utils.disposable :as disposable])
   (:import (clojure.lang IFn
@@ -301,8 +300,8 @@
     (throw (IllegalArgumentException. (str "Unknown " exception-name ": " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
 
-(def ^:private k->input-button (partial static-field Input$Buttons-mapping "Button"))
-(def ^:private k->input-key    (partial static-field Input$Keys-mapping    "Key"))
+(def k->input-button (partial static-field Input$Buttons-mapping "Button"))
+(def k->input-key    (partial static-field Input$Keys-mapping    "Key"))
 (def ^:private k->color        (partial static-field Color-mapping         "Color"))
 
 (defn- create-color
@@ -400,25 +399,6 @@
       (all-of-type [_ asset-type-k]
         (filter #(= (.getAssetType this %) (k->class asset-type-k))
                 (.getAssetNames this))))))
-
-(defn input []
-  (let [this Gdx/input]
-    (reify input/Input
-      (button-just-pressed? [_ button]
-        (.isButtonJustPressed this (k->input-button button)))
-
-      (key-pressed? [_ key]
-        (.isKeyPressed this (k->input-key key)))
-
-      (key-just-pressed? [_ key]
-        (.isKeyJustPressed this (k->input-key key)))
-
-      (set-processor! [_ input-processor]
-        (.setInputProcessor this input-processor))
-
-      (mouse-position [_]
-        [(.getX this)
-         (.getY this)]))))
 
 (defn graphics []
   (let [this Gdx/graphics]
