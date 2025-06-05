@@ -9,11 +9,9 @@
  :clojure.gdx.lwjgl/render!  cdq.application/render!
  :clojure.gdx.lwjgl/resize!  cdq.application/resize!
  :cdq.application/create-fns [
-                              cdq.create.gdx/do!
-                              [:assoc :ctx/assets [cdq.create.assets/do! [cdq.assets-to-load/create
-                                                                          {:folder "resources/"
-                                                                           :asset-type-extensions {:sound   #{"wav"}
-                                                                                                   :texture #{"png" "bmp"}}}]]]
+                              [cdq.create.gdx/do! {:assets {:folder "resources/"
+                                                            :asset-type-extensions {:sound   #{"wav"}
+                                                                                    :texture #{"png" "bmp"}}}}]
                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                                   :properties "properties.edn"}]]
                               [:assoc :ctx/world-unit-scale [cdq.create.world-unit-scale/do! {:tile-size 48}]]

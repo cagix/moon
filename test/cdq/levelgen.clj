@@ -3,7 +3,7 @@
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
-            [cdq.create.assets]
+            [cdq.create.gdx]
             [cdq.create.db]
             [cdq.create.viewport]
             [cdq.create.world-unit-scale]
@@ -73,13 +73,12 @@
 (defn create! [_config]
   (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
-        ctx (cdq.create.gdx/do! ctx)
+        ctx (cdq.create.gdx/do! ctx
+                                {:assets {:folder "resources/"
+                                          :asset-type-extensions {:sound   #{"wav"}
+                                                                  :texture #{"png" "bmp"}}}})
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
-        ctx (assoc ctx :ctx/assets (cdq.create.assets/do! ctx [(requiring-resolve 'cdq.assets-to-load/create)
-                                                               {:folder "resources/"
-                                                                :asset-type-extensions {:sound   #{"wav"}
-                                                                                        :texture #{"png" "bmp"}}}]))
         ctx (assoc ctx :ctx/ui-viewport (cdq.create.viewport/ui ctx {:width 1440
                                                                      :height 900}))
         ctx (assoc ctx :ctx/world-unit-scale (cdq.create.world-unit-scale/do! ctx {:tile-size 48}))

@@ -1,6 +1,7 @@
-(ns cdq.assets-to-load
+(ns cdq.create.gdx
   (:require [clojure.files :as files]
             [clojure.files.file-handle :as fh]
+            [clojure.gdx :as gdx]
             [clojure.string :as str]))
 
 (defn- recursively-search [folder extensions]
@@ -18,11 +19,20 @@
           :else
           (recur remaining result))))
 
-(defn create [files
-              {:keys [folder
-                      asset-type-extensions]}]
+(defn- assets-to-load [files
+                       {:keys [folder
+                               asset-type-extensions]}]
   (for [[asset-type extensions] asset-type-extensions
         file (map #(str/replace-first % folder "")
                   (recursively-search (files/internal files folder)
                                       extensions))]
     [file asset-type]))
+
+(defn do! [ctx {:keys [assets]}]
+  (let [files (gdx/files)]
+    (assoc ctx
+           :ctx/files files
+           :ctx/input (gdx/input)
+           :ctx/graphics (gdx/graphics)
+           :ctx/assets (gdx/asset-manager (assets-to-load files assets))
+           )))
