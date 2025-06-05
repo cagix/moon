@@ -1,9 +1,9 @@
-{:clojure.gdx.lwjgl/config {:title "Cyber Dungeon Quest"
+{:mac-os {:glfw-async? true
+          :dock-icon "moon.png"}
+ :clojure.gdx.lwjgl/config {:title "Cyber Dungeon Quest"
                             :windowed-mode {:width 1440
                                             :height 900}
-                            :foreground-fps 60
-                            :mac-os {:glfw-async? true
-                                     :dock-icon "moon.png"}}
+                            :foreground-fps 60}
  :clojure.gdx.lwjgl/create!  cdq.application/create!
  :clojure.gdx.lwjgl/dispose! cdq.application/dispose!
  :clojure.gdx.lwjgl/render!  cdq.application/render!

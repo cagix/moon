@@ -1,7 +1,7 @@
-{:clojure.gdx.lwjgl/config {:title "Mapgen Test"
-                    :windowed-mode {:width 1440
-                                    :height 900}
-                    :mac-os {:glfw-async? true}}
+{:mac-os {:glfw-async? true}
+ :clojure.gdx.lwjgl/config {:title "Mapgen Test"
+                            :windowed-mode {:width 1440
+                                            :height 900}}
  :clojure.gdx.lwjgl/create!  cdq.levelgen/create!
  :clojure.gdx.lwjgl/dispose! cdq.levelgen/dispose!
  :clojure.gdx.lwjgl/render!  cdq.levelgen/render!
