@@ -1,5 +1,10 @@
 (ns cdq.ctx)
 
+(defprotocol MouseOver
+  (world-mouse-position [_])
+  (ui-mouse-position [_])
+  (mouseover-actor [_]))
+
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
 

@@ -1,9 +1,9 @@
 (ns cdq.ctx.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
+            [clojure.input :as input]
             [cdq.property :as property]
             [clojure.gdx.ui :as ui]
-            [clojure.x :as x]
             [cdq.ui.editor.overview-table]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
@@ -54,8 +54,8 @@
                                                                              (fn [_actor ctx]
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
-    (.addActor window (ui/actor {:act (fn [_this _delta ctx]
-                                        (when (x/key-just-pressed? ctx :enter)
+    (.addActor window (ui/actor {:act (fn [_this _delta {:keys [ctx/input]}]
+                                        (when (input/key-just-pressed? input :enter)
                                           (save! ctx)))}))
     (.pack window)
     window))

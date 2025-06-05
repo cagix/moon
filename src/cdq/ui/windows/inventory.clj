@@ -5,9 +5,8 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.ctx :as ctx]
-            [cdq.utils :as utils]
             [clojure.gdx.ui :as ui]
-            [clojure.x :as x]))
+            [cdq.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -38,7 +37,7 @@
                          (draw-cell-rect @player-eid
                                          (ui/get-x actor)
                                          (ui/get-y actor)
-                                         (ui/hit actor (x/ui-mouse-position ctx))
+                                         (ui/hit actor (ctx/ui-mouse-position ctx))
                                          (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
