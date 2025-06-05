@@ -7,6 +7,7 @@
             [gdl.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.gdx.ui.menu :as menu]
+            [gdl.c :as c]
             [cdq.utils :as utils]))
 
 (defn create [{:keys [ctx/assets
@@ -39,10 +40,10 @@
                                   paused?)}
                     {:label "GUI"
                      :update-fn (fn [ctx]
-                                  (mapv int (ctx/ui-mouse-position ctx)))}
+                                  (mapv int (c/ui-mouse-position ctx)))}
                     {:label "World"
                      :update-fn (fn [ctx]
-                                  (mapv int (ctx/world-mouse-position ctx)))}
+                                  (mapv int (c/world-mouse-position ctx)))}
                     {:label "Zoom"
                      :update-fn (comp camera/zoom :camera :ctx/world-viewport)
                      :icon (assets "images/zoom.png")}

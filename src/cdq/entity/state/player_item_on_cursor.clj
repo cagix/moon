@@ -3,10 +3,10 @@
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.vector2 :as v]
-            [cdq.ctx :as ctx]
-            [gdl.input :as input]
+            [cdq.utils :refer [defcomponent]]
             [clojure.gdx.ui :as ui]
-            [cdq.utils :refer [defcomponent]]))
+            [gdl.c :as c]
+            [gdl.input :as input]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -43,7 +43,7 @@
       [:tx/event eid :pickup-item item-in-cell]])))
 
 (defn world-item? [ctx]
-  (not (ctx/mouseover-actor ctx)))
+  (not (c/mouseover-actor ctx)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -56,7 +56,7 @@
 
 (defn item-place-position [ctx entity]
   (placement-point (entity/position entity)
-                   (ctx/world-mouse-position ctx)
+                   (c/world-mouse-position ctx)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -95,4 +95,4 @@
     (when (not (world-item? ctx))
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
-        (ctx/ui-mouse-position ctx)]])))
+        (c/ui-mouse-position ctx)]])))

@@ -1,9 +1,9 @@
 (ns cdq.schemas-impl
   (:require [cdq.animation :as animation]
-            [cdq.ctx :as ctx]
             [cdq.val-max :as val-max]
             [cdq.create.db :refer [malli-form]]
-            [cdq.schema :as schema]))
+            [cdq.schema :as schema]
+            [gdl.c :as c]))
 
 (defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
 
@@ -11,11 +11,11 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (ctx/sprite-sheet->sprite ctx
-                                (ctx/sprite-sheet ctx file tilew tileh)
-                                [(int (/ sprite-x tilew))
-                                 (int (/ sprite-y tileh))]))
-    (ctx/sprite ctx file)))
+      (c/sprite-sheet->sprite ctx
+                              (c/sprite-sheet ctx file tilew tileh)
+                              [(int (/ sprite-x tilew))
+                               (int (/ sprite-y tileh))]))
+    (c/sprite ctx file)))
 
 (defmethod malli-form :s/sound [_ _schemas] :string)
 

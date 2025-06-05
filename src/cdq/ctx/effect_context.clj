@@ -1,14 +1,15 @@
 (ns cdq.ctx.effect-context
   (:require [cdq.entity :as entity]
             [cdq.vector2 :as v]
-            [cdq.ctx :as ctx]))
+            [cdq.ctx :as ctx]
+            [gdl.c :as c]))
 
 (defn player-effect-ctx [{:keys [ctx/mouseover-eid]
                           :as ctx}
                          eid]
   (let [target-position (or (and mouseover-eid
                                  (entity/position @mouseover-eid))
-                            (ctx/world-mouse-position ctx))]
+                            (c/world-mouse-position ctx))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position

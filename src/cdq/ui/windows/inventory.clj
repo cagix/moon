@@ -6,6 +6,7 @@
             [cdq.state :as state]
             [cdq.ctx :as ctx]
             [clojure.gdx.ui :as ui]
+            [gdl.c :as c]
             [cdq.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -33,12 +34,12 @@
   (ui/widget
    {:draw
     (fn [actor {:keys [ctx/player-eid] :as ctx}]
-      (ctx/handle-draws! ctx
-                         (draw-cell-rect @player-eid
-                                         (ui/get-x actor)
-                                         (ui/get-y actor)
-                                         (ui/hit actor (ctx/ui-mouse-position ctx))
-                                         (ui/user-object (ui/parent actor)))))}))
+      (c/handle-draws! ctx
+                       (draw-cell-rect @player-eid
+                                       (ui/get-x actor)
+                                       (ui/get-y actor)
+                                       (ui/hit actor (c/ui-mouse-position ctx))
+                                       (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -55,9 +56,9 @@
 
 ; TODO actually we can pass this whole map into inventory-window ...
 (defn- slot->sprite [ctx slot]
-  (ctx/sprite-sheet->sprite ctx
-                            (ctx/sprite-sheet ctx "images/items.png" 48 48)
-                            [21 (+ (slot->y-sprite-idx slot) 2)]))
+  (c/sprite-sheet->sprite ctx
+                          (c/sprite-sheet ctx "images/items.png" 48 48)
+                          [21 (+ (slot->y-sprite-idx slot) 2)]))
 
 (defn- slot->background [ctx slot]
   (ui/create-drawable (:sprite/texture-region (slot->sprite ctx slot))

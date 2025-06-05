@@ -5,7 +5,8 @@
             [cdq.entity.state.player-item-on-cursor]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
-            [cdq.val-max :as val-max]))
+            [cdq.val-max :as val-max]
+            [gdl.c :as c]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -181,13 +182,13 @@
 (defn- draw-entity [ctx entity render-layer]
   (try
    (when show-body-bounds?
-     (ctx/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+     (c/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
-     (ctx/handle-draws! ctx (draw-fn v entity ctx)))
+     (c/handle-draws! ctx (draw-fn v entity ctx)))
    (catch Throwable t
-     (ctx/handle-draws! ctx (draw-body-rect entity :red))
+     (c/handle-draws! ctx (draw-body-rect entity :red))
      (utils/pretty-pst t))))
 
 (defn do! [{:keys [ctx/active-entities

@@ -4,7 +4,8 @@
             [cdq.entity :as entity]
             [clojure.gdx :refer [post-runnable!]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]]
+            [gdl.c :as c]))
 
 (comment
 
@@ -82,7 +83,7 @@
   (clojure.tx.spawn-item/do! (entity/position @ctx/player-eid) (db/build db item-id ctx)))
 
 (defn- mouseover-grid-cell [{:keys [ctx/grid] :as ctx}]
-  #_@(grid/cell grid (mapv int (ctx/world-mouse-position ctx))))
+  #_@(grid/cell grid (mapv int (c/world-mouse-position ctx))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

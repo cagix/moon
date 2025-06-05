@@ -1,10 +1,24 @@
-(ns cdq.ctx.graphics
+(ns gdl.c
   (:require [clojure.gdx :as gdx]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdl.graphics.viewport :as viewport]
+            [gdl.input :as input]
+            [gdl.ui.stage :as stage]
             [qrecord.core :as q]))
+
+(defn world-mouse-position [{:keys [ctx/input
+                                    ctx/world-viewport]}]
+  (viewport/unproject world-viewport (input/mouse-position input)))
+
+(defn ui-mouse-position [{:keys [ctx/input
+                                 ctx/ui-viewport]}]
+  (viewport/unproject ui-viewport (input/mouse-position input)))
+
+(defn mouseover-actor [{:keys [ctx/stage] :as ctx}]
+  (stage/hit stage (ui-mouse-position ctx)))
 
 (defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
   (if color (batch/set-color! batch color))

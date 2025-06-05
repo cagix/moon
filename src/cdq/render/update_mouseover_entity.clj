@@ -1,18 +1,19 @@
 (ns cdq.render.update-mouseover-entity
   (:require [cdq.grid :as grid]
             [cdq.ctx :as ctx]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [gdl.c :as c]))
 
 (defn do! [{:keys [ctx/player-eid
                    ctx/mouseover-eid
                    ctx/grid
                    ctx/render-z-order]
             :as ctx}]
-  (let [new-eid (if (ctx/mouseover-actor ctx)
+  (let [new-eid (if (c/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (ctx/world-mouse-position ctx)))]
+                                     (grid/point->entities grid (c/world-mouse-position ctx)))]
                     (->> render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse

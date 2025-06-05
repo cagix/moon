@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport.draw-tile-grid
-  (:require [cdq.ctx :as ctx]
+  (:require [gdl.c :as c]
             [gdl.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-tile-grid? false)
@@ -17,4 +17,4 @@
 
 (defn do! [{:keys [ctx/world-viewport] :as ctx}]
   (when show-tile-grid?
-    (ctx/handle-draws! ctx (draw-tile-grid* world-viewport))))
+    (c/handle-draws! ctx (draw-tile-grid* world-viewport))))
