@@ -1,4 +1,4 @@
-(ns clojure.audio.sound)
+(ns gdl.audio.sound)
 
 (defprotocol Sound
   (play! [_]))

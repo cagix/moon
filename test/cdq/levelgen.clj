@@ -19,7 +19,7 @@
             [clojure.graphics.camera :as camera]
             [clojure.graphics :as graphics]
             [clojure.graphics.viewport :as viewport]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [clojure.tiled :as tiled]
             [clojure.utils.disposable :as disp]))
 

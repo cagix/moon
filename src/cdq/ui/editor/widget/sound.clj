@@ -2,7 +2,7 @@
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [clojure.assets :as assets]
-            [clojure.audio.sound :as sound]
+            [gdl.audio.sound :as sound]
             [clojure.gdx.ui :as ui]
             [gdl.ui.stage :as stage]))
 

@@ -1,23 +1,23 @@
 (ns gdl.start
   (:require [clojure.assets :as assets]
-            [clojure.audio.sound :as sound]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.freetype :as freetype]
-            [clojure.gdx.shape-drawer :as shape-drawer]
-            [clojure.gdx.ui :as ui]
-            [clojure.gdx.math-utils :as math-utils]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.batch :as batch]
+            [clojure.gdx.freetype :as freetype] ; only used here
+            [clojure.gdx.shape-drawer :as shape-drawer] ; only used here
+            [clojure.gdx.ui :as ui] ; some stuff only used here
+            [clojure.gdx.math-utils :as math-utils] ; dito
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader] ; dito
+            [clojure.graphics :as graphics] ;dito
+            [clojure.graphics.batch :as batch] ; graphcis foozo
             [clojure.graphics.camera :as camera]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport :as viewport]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.utils.disposable :as disposable]
+            [gdl.audio.sound :as sound]
             [gdl.ui.stage :as stage])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
            (com.badlogic.gdx ApplicationListener
@@ -380,8 +380,12 @@
         ui-viewport (create-ui-viewport ui-viewport)]
     (ui/load! ui)
     {:ctx/input (create-input)
-     :ctx/graphics (create-graphics)
+
+     ; < - AUDIO / SOUNDS / TEXTURES >
      :ctx/assets (create-asset-manager (assets-to-load assets))
+
+     ; GRAPHICS
+     :ctx/graphics (create-graphics)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
@@ -401,6 +405,9 @@
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
                                                                      (:sprite-batch/java-object batch))))
+     ;;;
+
+     ;; USER INTERFACE
      :ctx/stage (reify-stage ui-viewport batch)}))
 
 (defn- set-glfw-async! []

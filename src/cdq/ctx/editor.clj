@@ -1,7 +1,7 @@
 (ns cdq.ctx.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [cdq.property :as property]
             [clojure.gdx.ui :as ui]
             [cdq.ui.editor.overview-table]
