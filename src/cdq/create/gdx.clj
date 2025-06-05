@@ -1,8 +1,5 @@
-; FIXME also outdated context at input-processors outside of stage/render!
-; -> pass directly atom state to stage?
-; swap! at each render?
 (ns cdq.create.gdx
-  (:require [cdq.ui.stage :as stage]
+  (:require [gdl.ui.stage :as stage]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx :as gdx]
