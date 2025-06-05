@@ -4,7 +4,7 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [clojure.gdx.ui :as ui]
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.utils :refer [pprint-to-str]]))
 
 (defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]

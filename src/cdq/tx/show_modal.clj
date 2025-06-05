@@ -1,7 +1,7 @@
 (ns cdq.tx.show-modal
   (:require [cdq.ctx.effect-handler :refer [do!]]
             [clojure.gdx.ui :as ui]
-            [cdq.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

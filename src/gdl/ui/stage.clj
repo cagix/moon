@@ -1,4 +1,4 @@
-(ns cdq.ui.stage)
+(ns gdl.ui.stage)
 
 (defprotocol Stage
   (render! [_ ctx])

@@ -1,5 +1,6 @@
 ; make this together with cdq.create.gdx & clojure.gdx into 'gdl.start'
 ; 'clojure.gdx.*' == ! interop-helper !
+; => 'CDQ' DOES _NOT_ see 'clojure.gdx'
 (ns gdl.start
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]

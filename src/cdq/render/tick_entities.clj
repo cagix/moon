@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.ctx :as ctx]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.utils :as utils]))
 
 (defn- tick-entities!

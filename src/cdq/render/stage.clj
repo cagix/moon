@@ -1,5 +1,5 @@
 (ns cdq.render.stage
-  (:require [cdq.ui.stage :as stage]))
+  (:require [gdl.ui.stage :as stage]))
 
 (defn do! [{:keys [ctx/stage] :as ctx}]
   (stage/render! stage ctx))

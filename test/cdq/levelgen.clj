@@ -10,7 +10,7 @@
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.render.clear-screen] ; ??
 
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
 
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx :as gdx]

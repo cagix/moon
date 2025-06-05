@@ -5,7 +5,7 @@
             [clojure.set :as set]
             [clojure.gdx.ui :as ui]
             [cdq.ui.editor.widget :as widget]
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.utils :as utils]))
 
 (def ^:private property-k-sort-order

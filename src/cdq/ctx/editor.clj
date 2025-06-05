@@ -8,7 +8,7 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.utils :as utils]))
 
 (defn- apply-context-fn [window f]

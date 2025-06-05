@@ -4,7 +4,7 @@
             [clojure.assets :as assets]
             [clojure.audio.sound :as sound]
             [clojure.gdx.ui :as ui]
-            [cdq.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"

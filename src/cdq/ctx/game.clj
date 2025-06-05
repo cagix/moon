@@ -1,6 +1,6 @@
 (ns cdq.ctx.game
   (:require [cdq.db :as db]
-            [cdq.ui.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
             [clojure.tiled :as tiled]))
