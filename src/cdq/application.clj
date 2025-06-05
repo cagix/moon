@@ -26,6 +26,8 @@
   (m/schema [:map {:closed true}
              [:ctx/config :some]
              [:ctx/db :some]
+
+             ;; all gdx related stuff & backend is one _type_
              [:ctx/files :some]
              [:ctx/assets :some]
              [:ctx/input :some]
@@ -41,6 +43,8 @@
              [:ctx/tiled-map-renderer :some]
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
+             ;;
+
              [:ctx/elapsed-time number?]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/max-delta number?]

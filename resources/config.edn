@@ -8,9 +8,7 @@
  :clojure.gdx.lwjgl/dispose! cdq.application/dispose!
  :clojure.gdx.lwjgl/render!  cdq.application/render!
  :clojure.gdx.lwjgl/resize!  cdq.application/resize!
- :cdq.application/create-fns [[:assoc :ctx/files cdq.create.files/do!]
-                              [:assoc :ctx/input cdq.create.input/do!]
-                              [:assoc :ctx/graphics cdq.create.graphics/do!]
+ :cdq.application/create-fns [cdq.create.gdx
                               [:assoc :ctx/assets [cdq.create.assets/do! [cdq.assets-to-load/create
                                                                           {:folder "resources/"
                                                                            :asset-type-extensions {:sound   #{"wav"}
