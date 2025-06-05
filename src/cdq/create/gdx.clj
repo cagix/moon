@@ -1,14 +1,20 @@
+; FIXME also outdated context at input-processors outside of stage/render!
+; -> pass directly atom state to stage?
+; swap! at each render?
 (ns cdq.create.gdx
   (:require [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.shape-drawer :as shape-drawer]
+            [clojure.gdx.ui :as ui]
             [clojure.graphics :as graphics]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.pixmap :as pixmap]
+            [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils.disposable :as disp]))
 
@@ -59,20 +65,24 @@
                        world-viewport
                        cursor-path-format ; optional
                        cursors ; optional
-                       default-font ; optional
+                       default-font ; optional, could use gdx included (BitmapFont.)
+                       ui
                        ]}]
+  (ui/load! ui)
   (let [files (gdx/files)
         graphics (gdx/graphics)
+        input (gdx/input)
         batch (gdx/sprite-batch)
         shape-drawer-texture (white-pixel-texture)
-        world-unit-scale (float (/ tile-size))]
+        world-unit-scale (float (/ tile-size))
+        ui-viewport (gdx/ui-viewport ui-viewport)]
     (assoc ctx
            :ctx/files files
-           :ctx/input (gdx/input)
-           :ctx/graphics (gdx/graphics)
+           :ctx/input input
+           :ctx/graphics graphics
            :ctx/assets (gdx/asset-manager (assets-to-load files assets))
            :ctx/world-unit-scale world-unit-scale
-           :ctx/ui-viewport (gdx/ui-viewport ui-viewport)
+           :ctx/ui-viewport ui-viewport
            :ctx/world-viewport (gdx/world-viewport world-unit-scale world-viewport)
            :ctx/batch batch
            :ctx/unit-scale (atom 1)
@@ -87,4 +97,31 @@
            :ctx/default-font (when default-font (truetype-font files default-font))
            :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                               (tiled-map-renderer/create tiled-map world-unit-scale batch)))
-           )))
+           :ctx/stage (let [stage (ui/stage (:java-object ui-viewport)
+                                            batch)]
+                        (input/set-processor! input stage)
+                        (reify
+                          ; TODO is disposable but not sure if needed as we handle batch ourself.
+                          clojure.lang.ILookup
+                          (valAt [_ key]
+                            (key stage))
+
+                          stage/Stage
+                          (render! [_ ctx]
+                            (ui/act! stage ctx)
+                            (ui/draw! stage ctx)
+                            ctx)
+
+                          (add! [_ actor] ; -> re-use clojure.gdx.ui/add! ?
+                            (ui/add! stage actor))
+
+                          (clear! [_]
+                            (ui/clear! stage))
+
+                          (hit [_ position]
+                            (ui/hit stage position))
+
+                          (find-actor [_ actor-name]
+                            (-> stage
+                                ui/root
+                                (ui/find-actor actor-name))))))))

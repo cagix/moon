@@ -35,10 +35,10 @@
                                                    :default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                                                   :size 16
                                                                   :quality-scaling 2}
+                                                   :ui {:skin-scale :x1}
                                                    }]
                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                                   :properties "properties.edn"}]]
-                              [:assoc :ctx/stage [cdq.create.stage/do! {:vis-ui {:skin-scale :x1}}]]
                               [cdq.create.extend-protocols/do! cdq.ctx]
                               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
                               cdq.create.player-movement-vector/do!

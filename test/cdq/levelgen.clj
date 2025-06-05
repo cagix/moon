@@ -5,11 +5,18 @@
             [cdq.level.vampire]
             [cdq.create.gdx]
             [cdq.create.db]
+
+            ; remove
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.render.clear-screen]
+            [cdq.render.clear-screen] ; ??
+
+            [cdq.ui.stage :as stage]
+
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx :as gdx]
+
             [clojure.gdx.ui :as ui]
+
             [clojure.graphics.camera :as camera]
             [clojure.graphics :as graphics]
             [clojure.graphics.viewport :as viewport]
@@ -68,8 +75,9 @@
 
 (defrecord Context [])
 
+; FIX use existing memoized tiled map renderer
+
 (defn create! [_config]
-  (ui/load! {:skin-scale :x1})
   (let [ctx (->Context)
         ctx (cdq.create.gdx/do! ctx
                                 {:assets {:folder "resources/"
@@ -80,20 +88,17 @@
                                                :height 900}
                                  :world-viewport {:width 1440
                                                   :height 900}
+                                 :ui {:skin-scale :x1}
                                  })
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
-        stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
-                        (:ctx/batch ctx))
         ctx (assoc ctx
                    :ctx/camera (:camera (:ctx/world-viewport ctx))
                    :ctx/color-setter (constantly (gdx/->color :white))
                    :ctx/zoom-speed 0.1
-                   :ctx/camera-movement-speed 1
-                   :ctx/stage stage)
+                   :ctx/camera-movement-speed 1)
         ctx (generate-level ctx cdq.level.modules/create)]
-    (input/set-processor! (:ctx/input ctx) stage)
-    (ui/add! stage (edit-window))
+    (stage/add! (:ctx/stage ctx) (edit-window))
     (reset! state ctx)))
 
 (defn dispose! []
@@ -132,8 +137,7 @@
 
 (defn- render-stage! [{:keys [ctx/stage]
                        :as ctx}]
-  (ui/act!  stage ctx)
-  (ui/draw! stage ctx))
+  (stage/render! stage ctx))
 
 (defn render! []
   (cdq.render.clear-screen/do! @state)
