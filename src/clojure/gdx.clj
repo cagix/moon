@@ -1,8 +1,6 @@
 (ns clojure.gdx
   (:require [clojure.assets :as assets]
             [clojure.audio.sound :as sound]
-            [clojure.files :as files]
-            [clojure.files.file-handle :as file-handle]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]
             [clojure.graphics.batch :as batch]
@@ -20,7 +18,6 @@
                              Input$Keys)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Camera
                                       Color
                                       Colors
@@ -437,28 +434,6 @@
         [(.getX this)
          (.getY this)]))))
 
-(defn- reify-file-handle [^FileHandle fh]
-  (reify
-    ILookup
-    (valAt [_ k]
-      (case k
-        :java-object fh)) ; Pixmap. & FreeTypeFontGenerator.
-    file-handle/FileHandle
-    (list [_]
-      (map reify-file-handle (.list fh)))
-    (directory? [_]
-      (.isDirectory fh))
-    (extension [_]
-      (.extension fh))
-    (path [_]
-      (.path fh))))
-
-(defn files []
-  (let [this Gdx/files]
-    (reify files/Files
-      (internal [_ path]
-        (reify-file-handle (.internal this path))))))
-
 (defn graphics []
   (let [this Gdx/graphics]
     (reify graphics/Graphics
@@ -522,7 +497,7 @@
 
 (defn pixmap
   ([file-handle]
-   (Pixmap. ^FileHandle (:java-object file-handle))) ; used @ create-cursor -> reify?
+   (Pixmap. file-handle))
   ([width height format]
    (let [this (Pixmap. (int width)
                        (int height)

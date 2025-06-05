@@ -27,7 +27,7 @@
     params))
 
 (defn- generate* [file-handle params]
-  (let [generator (FreeTypeFontGenerator. (:java-object file-handle))
+  (let [generator (FreeTypeFontGenerator. file-handle)
         font (.generateFont generator (font-params params))]
     (.dispose generator)
     font))

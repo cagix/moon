@@ -1,10 +1,5 @@
-; make this together with cdq.create.gdx & clojure.gdx into 'gdl.start'
-; 'clojure.gdx.*' == ! interop-helper !
-; => 'CDQ' DOES _NOT_ see 'clojure.gdx'
 (ns gdl.start
   (:require [clojure.edn :as edn]
-            [clojure.files :as files]
-            [clojure.files.file-handle :as fh]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.freetype :as freetype]
@@ -22,6 +17,7 @@
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
            (com.badlogic.gdx ApplicationListener
                              Gdx)
+           (com.badlogic.gdx.files FileHandle)
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
@@ -34,8 +30,8 @@
     (disp/dispose! pixmap)
     texture))
 
-(defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (freetype/generate (files/internal files file)
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (freetype/generate (.internal Gdx/files file)
                      {:size (* size quality-scaling)
                       :scale (/ quality-scaling)
                       :min-filter :texture-filter/linear ; because scaling to world-units
@@ -43,27 +39,26 @@
                       :enable-markup? true
                       :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
 
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list folder)
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
 
-          (fh/directory? file)
-          (recur (concat remaining (fh/list file)) result)
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
 
-          (extensions (fh/extension file))
-          (recur remaining (conj result (fh/path file)))
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
 
           :else
           (recur remaining result))))
 
-(defn- assets-to-load [files
-                       {:keys [folder
+(defn- assets-to-load [{:keys [folder
                                asset-type-extensions]}]
   (for [[asset-type extensions] asset-type-extensions
         file (map #(str/replace-first % folder "")
-                  (recursively-search (files/internal files folder)
+                  (recursively-search (.internal Gdx/files folder)
                                       extensions))]
     [file asset-type]))
 
@@ -105,8 +100,7 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [files (gdx/files)
-        graphics (gdx/graphics)
+  (let [graphics (gdx/graphics)
         input (gdx/input)
         batch (gdx/sprite-batch)
         shape-drawer-texture (white-pixel-texture)
@@ -115,7 +109,7 @@
     (ui/load! ui)
     {:ctx/input input
      :ctx/graphics graphics
-     :ctx/assets (gdx/asset-manager (assets-to-load files assets))
+     :ctx/assets (gdx/asset-manager (assets-to-load assets))
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (gdx/world-viewport world-unit-scale world-viewport)
@@ -125,11 +119,11 @@
      :ctx/shape-drawer (shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
+                                 (let [pixmap (gdx/pixmap (.internal Gdx/files (format cursor-path-format file)))
                                        cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                                    (disp/dispose! pixmap)
                                    cursor)))
-     :ctx/default-font (when default-font (truetype-font files default-font))
+     :ctx/default-font (when default-font (truetype-font default-font))
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
