@@ -40,7 +40,7 @@
     (try (let [result (do! transaction ctx)]
            (when result
              (let [[world-event-k params] result]
-               (println world-event-k)
+               ;(println world-event-k)
                (handle-txs! ctx
                             ((utils/safe-get ctx-handlers world-event-k) ctx params)))))
          (catch Throwable t
