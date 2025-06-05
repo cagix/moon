@@ -25,7 +25,7 @@
 
 (defn -main [app-edn-path]
   (println "architecture: " (shared-library-loader/architecture))
-  (println "bintess:" (shared-library-loader/bitness))
+  (println "bitness:" (shared-library-loader/bitness))
   (println "os: " (shared-library-loader/os))
   (let [config (-> app-edn-path
                    io/resource
