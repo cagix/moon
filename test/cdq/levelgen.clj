@@ -44,18 +44,12 @@
 ;                java.lang.OutOfMemoryError: Java heap space
 ; com.badlogic.gdx.utils.GdxRuntimeException: java.lang.OutOfMemoryError: Java heap space
 
-(defn- generate-level [{:keys [ctx/tiled-map
-                               ctx/batch
-                               ctx/world-unit-scale]
-                        :as ctx}
-                       level-fn]
+(defn- generate-level [{:keys [ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
     (disp/dispose! tiled-map))
   (let [level (level-fn ctx)
         tiled-map (:tiled-map level)
-        ctx (assoc ctx
-                   :ctx/tm-renderer (tm-renderer/create tiled-map world-unit-scale batch)
-                   :ctx/tiled-map tiled-map)]
+        ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
     (show-whole-map! ctx)
     ctx))
@@ -107,11 +101,11 @@
     (disp/dispose! assets)
     (disp/dispose! tiled-map)))
 
-(defn- draw-tiled-map! [{:keys [ctx/tm-renderer
+(defn- draw-tiled-map! [{:keys [ctx/tiled-map-renderer
                                 ctx/tiled-map
                                 ctx/camera
                                 ctx/color-setter]}]
-  (tm-renderer/draw! tm-renderer
+  (tm-renderer/draw! (tiled-map-renderer tiled-map)
                      tiled-map
                      color-setter
                      camera))
