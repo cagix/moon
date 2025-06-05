@@ -4,7 +4,6 @@
 (ns cdq.create.gdx
   (:require [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx :as gdx]
@@ -87,12 +86,12 @@
            :ctx/unit-scale (atom 1)
            :ctx/shape-drawer-texture shape-drawer-texture
            :ctx/shape-drawer (shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))
-           :ctx/cursors (utils/mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                         (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
-                                               cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                           (disp/dispose! pixmap)
-                                           cursor))
-                                       cursors)
+           :ctx/cursors (update-vals cursors
+                                     (fn [[file [hotspot-x hotspot-y]]]
+                                       (let [pixmap (gdx/pixmap (files/internal files (format cursor-path-format file)))
+                                             cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+                                         (disp/dispose! pixmap)
+                                         cursor)))
            :ctx/default-font (when default-font (truetype-font files default-font))
            :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                               (tiled-map-renderer/create tiled-map world-unit-scale batch)))

@@ -23,10 +23,6 @@
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
 
-(defn mapvals [f m] ; update-vals
-  (into {} (for [[k v] m]
-             [k (f v)])))
-
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
 
