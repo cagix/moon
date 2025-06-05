@@ -28,11 +28,19 @@
                                       extensions))]
     [file asset-type]))
 
-(defn do! [ctx {:keys [assets]}]
-  (let [files (gdx/files)]
+(defn do! [ctx {:keys [assets
+                       tile-size
+                       ui-viewport
+                       world-viewport
+                       ]}]
+  (let [files (gdx/files)
+        world-unit-scale (float (/ tile-size))]
     (assoc ctx
            :ctx/files files
            :ctx/input (gdx/input)
            :ctx/graphics (gdx/graphics)
            :ctx/assets (gdx/asset-manager (assets-to-load files assets))
+           :ctx/world-unit-scale world-unit-scale
+           :ctx/ui-viewport (gdx/ui-viewport ui-viewport)
+           :ctx/world-viewport (gdx/world-viewport world-unit-scale world-viewport)
            )))

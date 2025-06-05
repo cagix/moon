@@ -5,8 +5,6 @@
             [cdq.level.vampire]
             [cdq.create.gdx]
             [cdq.create.db]
-            [cdq.create.viewport]
-            [cdq.create.world-unit-scale]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
@@ -76,14 +74,15 @@
         ctx (cdq.create.gdx/do! ctx
                                 {:assets {:folder "resources/"
                                           :asset-type-extensions {:sound   #{"wav"}
-                                                                  :texture #{"png" "bmp"}}}})
+                                                                  :texture #{"png" "bmp"}}}
+                                 :tile-size 48
+                                 :ui-viewport {:width 1440
+                                               :height 900}
+                                 :world-viewport {:width 1440
+                                                  :height 900}
+                                 })
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
-        ctx (assoc ctx :ctx/ui-viewport (cdq.create.viewport/ui ctx {:width 1440
-                                                                     :height 900}))
-        ctx (assoc ctx :ctx/world-unit-scale (cdq.create.world-unit-scale/do! ctx {:tile-size 48}))
-        ctx (assoc ctx :ctx/world-viewport (cdq.create.viewport/world ctx {:width 1440
-                                                                           :height 900}))
         batch (gdx/sprite-batch)
         stage (ui/stage (:java-object (:ctx/ui-viewport ctx))
                         batch)

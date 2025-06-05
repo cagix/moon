@@ -11,14 +11,15 @@
  :cdq.application/create-fns [
                               [cdq.create.gdx/do! {:assets {:folder "resources/"
                                                             :asset-type-extensions {:sound   #{"wav"}
-                                                                                    :texture #{"png" "bmp"}}}}]
+                                                                                    :texture #{"png" "bmp"}}}
+                                                   :tile-size 48
+                                                   :ui-viewport {:width 1440
+                                                                 :height 900}
+                                                   :world-viewport {:width 1440
+                                                                    :height 900}
+                                                   }]
                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                                   :properties "properties.edn"}]]
-                              [:assoc :ctx/world-unit-scale [cdq.create.world-unit-scale/do! {:tile-size 48}]]
-                              [:assoc :ctx/ui-viewport [cdq.create.viewport/ui {:width 1440
-                                                                                :height 900}]]
-                              [:assoc :ctx/world-viewport [cdq.create.viewport/world {:width 1440
-                                                                                      :height 900}]]
                               [cdq.create.graphics-ext/do! {:cursor-path-format "cursors/%s.png"
                                                             :cursors {:cursors/bag                   ["bag001"       [0   0]]
                                                                       :cursors/black-x               ["black_x"      [0   0]]
