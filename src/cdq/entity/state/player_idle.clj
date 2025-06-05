@@ -2,18 +2,18 @@
   (:require [cdq.controls :as controls]
             [cdq.ctx :as ctx]
             [cdq.state :as state]
-            [clojure.input :as input]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [clojure.x :as x]))
 
 (defcomponent :player-idle
   (state/pause-game? [_] true)
 
-  (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
+  (state/manual-tick [_ eid ctx]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
       (let [[cursor on-click] (ctx/interaction-state ctx eid)]
         (cons [:tx/set-cursor cursor]
-              (when (input/button-just-pressed? input :left)
+              (when (x/button-just-pressed? ctx :left)
                 on-click)))))
 
   (state/clicked-inventory-cell [_ eid cell]

@@ -18,6 +18,12 @@
             [clojure.string :as str]
             [clojure.utils.disposable :as disp]))
 
+; whats left of 'gdx' usage?
+; clojure.gdx.ui
+; cdq.ctx.graphics
+; => we are accessing stage/etc. ?
+; instead access 'gdx' only ?
+
 (defn- white-pixel-texture []
   (let [pixmap (doto (gdx/pixmap 1 1 :pixmap.format/RGBA8888)
                  (pixmap/set-color! (gdx/->color :white))

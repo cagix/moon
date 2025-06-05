@@ -3,11 +3,12 @@
             [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
+            [cdq.utils :as utils]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.gdx.ui.menu :as menu]
-            [cdq.utils :as utils]))
+            [clojure.x :as x]))
 
 (defn create [{:keys [ctx/assets
                       ctx/config
@@ -39,10 +40,10 @@
                                   paused?)}
                     {:label "GUI"
                      :update-fn (fn [ctx]
-                                  (mapv int (ctx/ui-mouse-position ctx)))}
+                                  (mapv int (x/ui-mouse-position ctx)))}
                     {:label "World"
                      :update-fn (fn [ctx]
-                                  (mapv int (ctx/world-mouse-position ctx)))}
+                                  (mapv int (x/world-mouse-position ctx)))}
                     {:label "Zoom"
                      :update-fn (comp camera/zoom :camera :ctx/world-viewport)
                      :icon (assets "images/zoom.png")}

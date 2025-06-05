@@ -1,22 +1,21 @@
 (ns cdq.render.check-window-hotkeys
-  (:require [clojure.input :as input]
-            [clojure.gdx.ui :as ui]))
+  (:require [clojure.gdx.ui :as ui]
+            [clojure.x :as x]))
 
-(defn- check-escape-close-windows [input windows]
-  (when (input/key-just-pressed? input :escape)
+(defn- check-escape-close-windows [ctx windows]
+  (when (x/key-just-pressed? ctx :escape)
     (run! #(ui/set-visible! % false) (ui/children windows))))
 
 (def window-hotkeys {:inventory-window  :i
                      :entity-info-window :e})
 
-(defn- check-window-hotkeys [input windows]
+(defn- check-window-hotkeys [ctx windows]
   (doseq [[id input-key] window-hotkeys
-          :when (input/key-just-pressed? input input-key)]
+          :when (x/key-just-pressed? ctx input-key)]
     (ui/toggle-visible! (get windows id))))
 
-(defn do! [{:keys [ctx/input
-                   ctx/stage]
+(defn do! [{:keys [ctx/stage]
             :as ctx}]
-  (check-window-hotkeys       input (:windows stage))
-  (check-escape-close-windows input (:windows stage))
+  (check-window-hotkeys       ctx (:windows stage))
+  (check-escape-close-windows ctx (:windows stage))
   ctx)
