@@ -2,7 +2,7 @@
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
             [gdl.graphics.viewport :as viewport]
-            [clojure.utils.disposable :as disp]
+            [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
 (q/defrecord Context [ctx/assets

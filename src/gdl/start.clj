@@ -9,7 +9,6 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader] ; dito
             [clojure.string :as str]
             [clojure.java.io :as io]
-            [clojure.utils.disposable :as disposable]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
             [gdl.graphics :as graphics] ;dito
@@ -18,7 +17,8 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
-            [gdl.ui.stage :as stage])
+            [gdl.ui.stage :as stage]
+            [gdl.utils.disposable :as disposable])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
            (com.badlogic.gdx ApplicationListener
                              Gdx)

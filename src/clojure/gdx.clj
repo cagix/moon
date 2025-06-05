@@ -1,6 +1,6 @@
 (ns clojure.gdx
   (:require [gdl.tiled :as tiled]
-            [clojure.utils.disposable :as disposable])
+            [gdl.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx
                              Input$Buttons
