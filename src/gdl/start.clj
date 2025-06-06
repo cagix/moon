@@ -1,6 +1,7 @@
 (ns gdl.start
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.gdx.assets.manager :as assets-manager]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
@@ -29,9 +30,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (cdq.graphics OrthogonalTiledMapRenderer)
-           (com.badlogic.gdx ApplicationListener)
-           (com.badlogic.gdx.assets AssetManager)
+  (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
@@ -46,6 +45,7 @@
                                   Vector3)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
+           (gdl.graphics OrthogonalTiledMapRenderer)
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
@@ -115,26 +115,22 @@
 (defmethod reify-asset Texture [this] (reify-texture this))
 
 (defn- create-asset-manager [assets]
-  (let [this (AssetManager.)]
-    (doseq [[file asset-type-k] assets]
-      (.load this ^String file (k->class asset-type-k)))
-    (.finishLoading this)
+  (let [this (assets-manager/create (map
+                                     (fn [[file asset-type]]
+                                       [file (k->class asset-type)])
+                                     assets))]
     (reify
       disposable/Disposable
       (dispose! [_]
-        (.dispose this))
+        (assets-manager/dispose! this))
 
       clojure.lang.IFn
       (invoke [_ path]
-        (-> (if (.contains this path)
-              (.get this ^String path)
-              (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))
-            reify-asset))
+        (reify-asset (assets-manager/safe-get this path)))
 
       assets/Assets
       (all-of-type [_ asset-type-k]
-        (filter #(= (.getAssetType this %) (k->class asset-type-k))
-                (.getAssetNames this))))))
+        (assets-manager/all-of-class this (k->class asset-type-k))))))
 
 (defn- create-graphics [this]
   (reify gdl.graphics/Graphics

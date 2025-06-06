@@ -6,7 +6,7 @@
             [cdq.create.db]
 
             ; remove
-            [cdq.graphics.tiled-map-renderer :as tm-renderer]
+            [gdl.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.render.clear-screen] ; ??
 
             [gdl.ui.stage :as stage]

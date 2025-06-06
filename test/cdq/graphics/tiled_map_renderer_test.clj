@@ -1,4 +1,4 @@
-#_(ns cdq.graphics.tiled-map-renderer-test
+#_(ns gdl.graphics.tiled-map-renderer-test
   (:require [clojure.gdx :as gdx]
             [gdl.tiled :as tiled]
             [gdl.graphics.camera :as camera])
