@@ -3,9 +3,10 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
-            [clojure.gdx.freetype :as freetype]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.texture.filter :as texture.filter]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.input :as input]
             [clojure.gdx.shape-drawer :as shape-drawer]
@@ -21,6 +22,7 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
+            [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.input]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
@@ -33,7 +35,8 @@
                                       Pixmap$Format
                                       Texture
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.math Frustum
                                   Vector2
@@ -43,6 +46,18 @@
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn- set-scale! [^BitmapFont font scale]
+  (.setScale (.getData font) (float scale)))
+
+(defn- scale-x [^BitmapFont font]
+  (.scaleX (.getData font)))
 
 (extend-type Disposable
   disposable/Disposable
@@ -299,14 +314,43 @@
     (.dispose pixmap)
     texture))
 
+(defn- generate-font [file-handle params]
+  (let [^BitmapFont font (freetype/generate-font file-handle params)
+        {:keys [scale
+                enable-markup?
+                use-integer-positions?]} params]
+    (.setScale (.getData font) (float scale))
+    (set! (.markupEnabled (.getData font)) enable-markup?)
+    (.setUseIntegerPositions font use-integer-positions?)
+    (reify
+      Disposable
+      (dispose [_]
+        (.dispose font))
+
+      bitmap-font/BitmapFont
+      (draw! [_ batch {:keys [scale x y text h-align up?]}]
+        (let [old-scale (float (scale-x font))
+              target-width (float 0)
+              wrap? false]
+          (set-scale! font (* old-scale (float scale)))
+          (.draw font
+                 (:sprite-batch/java-object batch)
+                 text
+                 (float x)
+                 (float (+ y (if up? (text-height font text) 0)))
+                 target-width
+                 (interop/k->align (or h-align :center))
+                 wrap?)
+          (set-scale! font old-scale))))))
+
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (freetype/generate (files/internal files file)
-                     {:size (* size quality-scaling)
-                      :scale (/ quality-scaling)
-                      :min-filter :texture-filter/linear ; because scaling to world-units
-                      :mag-filter :texture-filter/linear
-                      :enable-markup? true
-                      :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
+  (generate-font (files/internal files file)
+                 {:size (* size quality-scaling)
+                  :scale (/ quality-scaling)
+                  :min-filter (texture.filter/->from-keyword :texture-filter/linear) ; because scaling to world-units
+                  :mag-filter (texture.filter/->from-keyword :texture-filter/linear)
+                  :enable-markup? true
+                  :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
 
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
