@@ -124,9 +124,6 @@
    (.load (TmxMapLoader.) file-name)))
 
 (defn create-tiled-map [{:keys [properties
-                                layers]}]
-  (let [tiled-map (TiledMap.)]
-    (map-properties/add! (.getProperties tiled-map) properties)
-    (doseq [layer layers]
-      (tiled-map/add-layer! tiled-map layer))
-    (reify-tiled-map tiled-map)))
+                                layers]
+                         :as opts}]
+  (reify-tiled-map (tiled-map/create opts)))
