@@ -31,19 +31,6 @@
   (map-properties [_]
                   "Returns the map-properties of the given tiled-map or tiled-map-layer as clojure map."))
 
-(defprotocol ^:private GetMapProperties
-  (^:private get-map-properties ^MapProperties [_]
-             "Internal helper for building map properties for TiledMap/Layer instances.
-             (There is no common interface)."))
-
-(extend-protocol GetMapProperties
-  TiledMap          (get-map-properties [this] (.getProperties this))
-  TiledMapTileLayer (get-map-properties [this] (.getProperties this)))
-
-(defn- build-map-properties [obj]
-  (let [ps (get-map-properties obj)]
-    (zipmap (.getKeys ps) (.getValues ps))))
-
 (defprotocol TMap
   (layers [tiled-map]
           "Returns the layers of the tiled-map (instance of [[TMapLayer]]).")
@@ -71,10 +58,13 @@
                   If there is no cell at this position in the layer returns `:no-cell`.
                   If the property value is undefined returns `:undefined`."))
 
-(defn- add-map-properties! [has-map-properties properties]
+(defn- add-map-properties! [^MapProperties ps properties]
   (doseq [[k v] properties]
     (assert (string? k))
-    (.put (get-map-properties has-map-properties) k v)))
+    (.put ps k v)))
+
+(defn- map-properties->clj-map [^MapProperties ps]
+  (zipmap (.getKeys ps) (.getValues ps)))
 
 (defn- reify-tiled-layer [^TiledMapTileLayer this]
   (reify
@@ -84,7 +74,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (build-map-properties this))
+      (map-properties->clj-map (.getProperties this)))
 
     TMapLayer
     (set-visible! [_ boolean]
@@ -123,7 +113,7 @@
                                   (.get tm-props "tileheight"))]
     (.setName layer name)
     (.setVisible layer visible?)
-    (add-map-properties! layer properties)
+    (add-map-properties! (.getProperties layer) properties)
     (doseq [[[x y] tiled-map-tile] tiles
             :when tiled-map-tile]
       (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
@@ -146,7 +136,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (build-map-properties this))
+      (map-properties->clj-map (.getProperties this)))
 
     TMap
     (layers [_]
@@ -173,7 +163,7 @@
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (TiledMap.)]
-    (add-map-properties! tiled-map properties)
+    (add-map-properties! (.getProperties tiled-map) properties)
     (doseq [layer layers]
       (add-tiled-map-tile-layer! tiled-map layer))
     (reify-tiled-map tiled-map)))
