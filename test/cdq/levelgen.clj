@@ -90,11 +90,11 @@
     (disp/dispose! graphics)
     (disp/dispose! tiled-map)))
 
-(defn- draw-tiled-map! [{:keys [ctx/tiled-map-renderer
+(defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
                                 ctx/camera
                                 ctx/color-setter]}]
-  (tm-renderer/draw! (tiled-map-renderer tiled-map)
+  (tm-renderer/draw! ((:tiled-map-renderer graphics) tiled-map)
                      tiled-map
                      color-setter
                      camera))

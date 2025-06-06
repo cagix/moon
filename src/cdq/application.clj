@@ -15,7 +15,6 @@
                       ctx/unit-scale
                       ctx/shape-drawer
                       ctx/shape-drawer-texture
-                      ctx/tiled-map-renderer
                       ctx/world-unit-scale
                       ctx/world-viewport])
 
@@ -34,7 +33,6 @@
              [:ctx/unit-scale :some]
              [:ctx/shape-drawer :some]
              [:ctx/shape-drawer-texture :some]
-             [:ctx/tiled-map-renderer :some]
              [:ctx/world-unit-scale :some]
              [:ctx/world-viewport :some]
              ;;

@@ -153,6 +153,8 @@
                         cursors
                         cursor-path-format
                         default-font
+                        batch
+                        world-unit-scale
                         ]
   (let [textures-to-load (find-assets files textures)
         ;_ (println "load-textures (count textures-to-load): " (count textures-to-load))
@@ -171,6 +173,10 @@
                     :textures textures
                     :cursors cursors
                     :default-font default-font
+                    :tiled-map-renderer (memoize (fn [tiled-map]
+                                                   (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                                (float world-unit-scale)
+                                                                                batch)))
                     })))
 
 (defn- create-input [this]
@@ -340,7 +346,9 @@
                                     textures
                                     cursors
                                     cursor-path-format
-                                    default-font)
+                                    default-font
+                                    batch
+                                    world-unit-scale)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
@@ -348,10 +356,6 @@
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
      :ctx/shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
-     :ctx/tiled-map-renderer (memoize (fn [tiled-map]
-                                        (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                     (float world-unit-scale)
-                                                                     batch)))
      :ctx/stage stage}))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?
