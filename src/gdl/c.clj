@@ -92,10 +92,10 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
-                             {:keys [ctx/default-font
+                             {:keys [ctx/graphics
                                      ctx/batch
                                      ctx/unit-scale]}]
-  (bitmap-font/draw! (or font default-font)
+  (bitmap-font/draw! (or font (:default-font graphics))
                      batch
                      {:scale (* (float @unit-scale)
                                 (float (or scale 1)))

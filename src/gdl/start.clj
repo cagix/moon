@@ -90,9 +90,72 @@
         (assert (contains? sounds path) (str path))
         (sound/play! (get sounds path))))))
 
-(defn- create-graphics [graphics files textures cursors cursor-path-format]
+(defn- generate-font [file-handle params]
+  (let [font (freetype/generate-font file-handle params)]
+    (bitmap-font/configure! font params) ; DOTO ?
+    (reify
+      Disposable
+      (dispose [_]
+        (.dispose font))
+
+      gdl.graphics.g2d.bitmap-font/BitmapFont
+      (draw! [_ batch {:keys [scale x y text h-align up?]}]
+        (let [old-scale (bitmap-font/scale-x font)]
+          (bitmap-font/set-scale! font (* old-scale scale))
+          (bitmap-font/draw! {:font font
+                              :batch batch
+                              :text text
+                              :x x
+                              :y (+ y (if up? (bitmap-font/text-height font text) 0))
+                              :target-width 0
+                              :align (align/->from-k (or h-align :center))
+                              :wrap? false})
+          (bitmap-font/set-scale! font old-scale))))))
+
+(defn- truetype-font [files {:keys [file size quality-scaling]}]
+  (generate-font (files/internal files file)
+                 {:size (* size quality-scaling)
+                  :scale (/ quality-scaling)
+                  :min-filter (texture.filter/->from-keyword :texture-filter/linear) ; because scaling to world-units
+                  :mag-filter (texture.filter/->from-keyword :texture-filter/linear)
+                  :enable-markup? true
+                  :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
+
+(defrecord Graphics [graphics
+                     textures
+                     cursors
+                     default-font]
+  disposable/Disposable
+  (dispose! [_]
+    (run! disposable/dispose! (vals textures))
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font))
+
+  gdl.graphics/Graphics
+  (delta-time [_]
+    (graphics/delta-time graphics))
+
+  (frames-per-second [_]
+    (graphics/frames-per-second graphics))
+
+  (set-cursor! [_ cursor-key]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! graphics (get cursors cursor-key)))
+
+  (texture [_ path]
+    (assert (contains? textures path) (str path))
+    (get textures path))
+  )
+
+(defn- create-graphics [graphics
+                        files
+                        textures
+                        cursors
+                        cursor-path-format
+                        default-font
+                        ]
   (let [textures-to-load (find-assets files textures)
-        _ (println "load-textures (count textures-to-load): " (count textures-to-load))
+        ;_ (println "load-textures (count textures-to-load): " (count textures-to-load))
         textures (into {} (for [file (find-assets files textures)]
                             [file (texture/load! file)]))
         cursors (update-vals cursors
@@ -100,28 +163,15 @@
                                (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
                                      cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                  (.dispose pixmap)
-                                 cursor)))]
-    (reify
-      disposable/Disposable
-      (dispose! [_]
-        (println "Disposing textures ...")
-        (run! disposable/dispose! (vals textures))
-        (run! disposable/dispose! (vals cursors)))
-
-      gdl.graphics/Graphics
-      (delta-time [_]
-        (graphics/delta-time graphics))
-
-      (frames-per-second [_]
-        (graphics/frames-per-second graphics))
-
-      (set-cursor! [_ cursor-key]
-        (assert (contains? cursors cursor-key))
-        (graphics/set-cursor! graphics (get cursors cursor-key)))
-
-      (texture [_ path]
-        (assert (contains? textures path) (str path))
-        (get textures path)))))
+                                 cursor)))
+        default-font (when default-font
+                       (truetype-font files default-font))]
+    (map->Graphics {
+                    :graphics graphics
+                    :textures textures
+                    :cursors cursors
+                    :default-font default-font
+                    })))
 
 (defn- create-input [this]
   (reify gdl.input/Input
@@ -234,37 +284,6 @@
     (.dispose pixmap)
     texture))
 
-(defn- generate-font [file-handle params]
-  (let [font (freetype/generate-font file-handle params)]
-    (bitmap-font/configure! font params) ; DOTO ?
-    (reify
-      Disposable
-      (dispose [_]
-        (.dispose font))
-
-      gdl.graphics.g2d.bitmap-font/BitmapFont
-      (draw! [_ batch {:keys [scale x y text h-align up?]}]
-        (let [old-scale (bitmap-font/scale-x font)]
-          (bitmap-font/set-scale! font (* old-scale scale))
-          (bitmap-font/draw! {:font font
-                              :batch batch
-                              :text text
-                              :x x
-                              :y (+ y (if up? (bitmap-font/text-height font text) 0))
-                              :target-width 0
-                              :align (align/->from-k (or h-align :center))
-                              :wrap? false})
-          (bitmap-font/set-scale! font old-scale))))))
-
-(defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (generate-font (files/internal files file)
-                 {:size (* size quality-scaling)
-                  :scale (/ quality-scaling)
-                  :min-filter (texture.filter/->from-keyword :texture-filter/linear) ; because scaling to world-units
-                  :mag-filter (texture.filter/->from-keyword :texture-filter/linear)
-                  :enable-markup? true
-                  :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
-
 (defn- reify-stage [stage]
   (reify
     ; TODO is disposable but not sure if needed as we handle batch ourself.
@@ -320,7 +339,8 @@
                                     files
                                     textures
                                     cursors
-                                    cursor-path-format)
+                                    cursor-path-format
+                                    default-font)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
@@ -328,8 +348,6 @@
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
      :ctx/shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
-     :ctx/default-font (when default-font
-                         (truetype-font files default-font))
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)

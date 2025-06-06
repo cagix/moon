@@ -8,7 +8,6 @@
 (q/defrecord Context [ctx/batch
                       ctx/config
                       ctx/db
-                      ctx/default-font
                       ctx/graphics
                       ctx/input
                       ctx/stage
@@ -30,7 +29,6 @@
              [:ctx/input :some]
              [:ctx/stage :some]
              [:ctx/batch :some]
-             [:ctx/default-font :some]
              [:ctx/graphics :some]
              [:ctx/ui-viewport :some]
              [:ctx/unit-scale :some]
@@ -77,13 +75,11 @@
   (let [{:keys [ctx/audio
                 ctx/graphics
                 ctx/batch
-                ctx/default-font
                 ctx/tiled-map
                 ctx/shape-drawer-texture]} @state]
     (disp/dispose! audio)
     (disp/dispose! graphics)
     (disp/dispose! batch)
-    (disp/dispose! default-font)
     (disp/dispose! shape-drawer-texture)
     (disp/dispose! tiled-map)
     ; TODO vis-ui dispose
