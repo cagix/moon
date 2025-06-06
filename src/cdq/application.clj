@@ -5,8 +5,7 @@
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
-(q/defrecord Context [ctx/assets
-                      ctx/batch
+(q/defrecord Context [ctx/batch
                       ctx/config
                       ctx/cursors
                       ctx/db
@@ -29,7 +28,6 @@
 
              ;; all gdx related stuff & backend is one _type_
              [:ctx/audio :some]
-             [:ctx/assets :some]
              [:ctx/input :some]
              [:ctx/stage :some]
              [:ctx/batch :some]
@@ -79,14 +77,14 @@
 
 (defn dispose! []
   (let [{:keys [ctx/audio
-                ctx/assets
+                ctx/graphics
                 ctx/batch
                 ctx/cursors
                 ctx/default-font
                 ctx/tiled-map
                 ctx/shape-drawer-texture]} @state]
     (disp/dispose! audio)
-    (disp/dispose! assets)
+    (disp/dispose! graphics)
     (disp/dispose! batch)
     (run! disp/dispose! (vals cursors))
     (disp/dispose! default-font)

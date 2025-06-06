@@ -6,21 +6,20 @@
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
-(defn- creature->texture-region [assets creature]
-  (let [{:keys [file sub-image-bounds]} (property/image creature)
-        texture (assets file)]
-    (if sub-image-bounds
-      (apply texture-region/create texture sub-image-bounds)
-      (texture-region/create texture))))
-
-(defn prepare-creature-properties [{:keys [ctx/assets
+(defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]
-  (for [creature (db/all-raw db :properties/creatures)]
+  (for [creature (db/all-raw db :properties/creatures)
+        :let [texture-region (let [{:keys [file sub-image-bounds]} (property/image creature)
+                                   texture (graphics/texture graphics file)]
+                               (if sub-image-bounds
+                                 (apply texture-region/create texture sub-image-bounds)
+                                 (texture-region/create texture)))]]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
-                       :tile/texture-region (creature->texture-region assets creature)})))
+                       :tile/texture-region texture-region})))
 
 ; out of memory error -> each texture region is a new object
 ; so either memoize on id or property/image already calculated !? idk

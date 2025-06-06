@@ -9,6 +9,7 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
 (defn- rand-0-3 []
@@ -161,13 +162,13 @@
 
 ; => TODO params for each step?
 
-(defn create [{:keys [ctx/assets]
+(defn create [{:keys [ctx/graphics]
                :as ctx}]
   (reduce (fn [level f]
             (f level))
           ; TODO add uf-caves info
           ; and probabilities for each tile
-          {:level/texture (assets "maps/uf_terrain.png")
+          {:level/texture (graphics/texture graphics "maps/uf_terrain.png")
            :level/random (java.util.Random.)
            :level/size 200
            :level/cave-style :wide

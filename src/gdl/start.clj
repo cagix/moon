@@ -70,21 +70,6 @@
        (recursively-search (files/internal files folder)
                            extensions)))
 
-(defn- load-textures [textures-to-load]
-  ;(println "load-textures (count textures-to-load): " (count textures-to-load))
-  (let [textures (into {} (for [file textures-to-load]
-                            [file (texture/load! file)]))]
-    (reify
-      disposable/Disposable
-      (dispose! [_]
-        ;(println "Disposing textures ...")
-        (run! disposable/dispose! (vals textures)))
-
-      clojure.lang.IFn
-      (invoke [_ path]
-        (assert (contains? textures path) (str path))
-        (get textures path)))))
-
 (defn- create-audio [audio files sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
   (let [sounds (into {}
@@ -105,16 +90,30 @@
         (assert (contains? sounds path) (str path))
         (sound/play! (get sounds path))))))
 
-(defn- create-graphics [this]
-  (reify gdl.graphics/Graphics
-    (delta-time [_]
-      (graphics/delta-time this))
+(defn- create-graphics [graphics files textures]
+  (let [textures-to-load (find-assets files textures)
+        _ (println "load-textures (count textures-to-load): " (count textures-to-load))
+        textures (into {} (for [file (find-assets files textures)]
+                            [file (texture/load! file)])) ]
+    (reify
+      disposable/Disposable
+      (dispose! [_]
+        (println "Disposing textures ...")
+        (run! disposable/dispose! (vals textures)))
 
-    (frames-per-second [_]
-      (graphics/frames-per-second this))
+      gdl.graphics/Graphics
+      (delta-time [_]
+        (graphics/delta-time graphics))
 
-    (set-cursor! [_ cursor]
-      (graphics/set-cursor! this cursor))))
+      (frames-per-second [_]
+        (graphics/frames-per-second graphics))
+
+      (set-cursor! [_ cursor]
+        (graphics/set-cursor! graphics cursor))
+
+      (texture [_ path]
+        (assert (contains? textures path) (str path))
+        (get textures path)))))
 
 (defn- create-input [this]
   (reify gdl.input/Input
@@ -309,8 +308,7 @@
     (ui/load! ui)
     {:ctx/input (create-input input)
      :ctx/audio (when sounds (create-audio audio files (find-assets files sounds)))
-     :ctx/assets (load-textures (find-assets files textures))
-     :ctx/graphics (create-graphics graphics)
+     :ctx/graphics (create-graphics graphics files textures)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)

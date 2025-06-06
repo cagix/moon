@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics :as graphics]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.graphics.viewport :as viewport]
@@ -190,22 +191,22 @@
                   :pixel-dimensions pixel-dimensions
                   :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
 
-(defn sprite [{:keys [ctx/assets
+(defn sprite [{:keys [ctx/graphics
                       ctx/world-unit-scale]}
               texture-path]
-  (create-sprite (texture-region/create (assets texture-path))
+  (create-sprite (texture-region/create (graphics/texture graphics texture-path))
                  world-unit-scale))
 
 (defn sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
   (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
                  world-unit-scale))
 
-(defn sprite-sheet [{:keys [ctx/assets
+(defn sprite-sheet [{:keys [ctx/graphics
                             ctx/world-unit-scale]}
                     texture-path
                     tilew
                     tileh]
-  {:image (create-sprite (texture-region/create (assets texture-path))
+  {:image (create-sprite (texture-region/create (graphics/texture graphics texture-path))
                          world-unit-scale)
    :tilew tilew
    :tileh tileh})
