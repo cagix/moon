@@ -106,7 +106,7 @@
       (dispose! [_]
         (println "Disposing textures ...")
         (run! disposable/dispose! (vals textures))
-        (run! disp/dispose! (vals cursors)))
+        (run! disposable/dispose! (vals cursors)))
 
       gdl.graphics/Graphics
       (delta-time [_]
@@ -319,8 +319,8 @@
      :ctx/graphics (create-graphics graphics
                                     files
                                     textures
-                                    cursor-path-format
-                                    cursors)
+                                    cursors
+                                    cursor-path-format)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
