@@ -6,13 +6,13 @@
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
             [clojure.gdx.math-utils :as math-utils]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader] ; dito
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.string :as str]
             [clojure.java.io :as io]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
-            [gdl.graphics :as graphics] ;dito
-            [gdl.graphics.batch :as batch] ; graphcis foozo
+            [gdl.graphics :as graphics]
+            [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
