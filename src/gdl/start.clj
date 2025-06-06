@@ -47,7 +47,6 @@
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer)))
 
@@ -91,21 +90,17 @@
     (sub-region [_ x y w h]
       (reify-texture-region (texture-region/create this x y w h)))))
 
-(defn- reify-texture [^Texture this]
+(defn- reify-texture [this]
   (reify
     disposable/Disposable
     (dispose! [_]
-      (.dispose this))
+      (texture/dispose! this))
 
     gdl.graphics.texture/Texture
     (region [_]
-      (reify-texture-region (TextureRegion. this)))
+      (reify-texture-region (texture-region/create this)))
     (region [_ x y w h]
-      (reify-texture-region (TextureRegion. this
-                                            (int x)
-                                            (int y)
-                                            (int w)
-                                            (int h))))))
+      (reify-texture-region (texture-region/create this x y w h)))))
 
 (defn- k->class ^Class [asset-type-k]
   (case asset-type-k

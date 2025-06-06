@@ -4,3 +4,6 @@
 
 (defn create ^Texture [^Pixmap pixmap]
   (Texture. pixmap))
+
+(defn dispose! [^Texture texture]
+  (.dispose texture))
