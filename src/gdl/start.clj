@@ -43,8 +43,7 @@
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Texture
-                                      OrthographicCamera)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           TextureRegion)
            (com.badlogic.gdx.utils Disposable)
@@ -158,7 +157,7 @@
       [(input/x this)
        (input/y this)])))
 
-(defn- reify-camera [^OrthographicCamera this]
+(defn- reify-camera [this]
   (reify
     clojure.lang.ILookup
     (valAt [_ k]
@@ -167,16 +166,16 @@
 
     gdl.graphics.camera/Camera
     (zoom [_]
-      (.zoom this))
+      (:orthographic-camera/zoom this))
 
     (position [_]
-      (camera/position this))
+      (:camera/position this))
 
     (combined [_]
-      (.combined this))
+      (:camera/combined this))
 
     (frustum [_]
-      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (.frustum this))))
+      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (:camera/frustum this))))
             left-x   (apply min (map first  frustum-points))
             right-x  (apply max (map first  frustum-points))
             bottom-y (apply min (map second frustum-points))
@@ -190,16 +189,16 @@
       (orthographic-camera/set-zoom! this amount))
 
     (viewport-width [_]
-      (.viewportWidth this))
+      (:camera/viewport-width this))
 
     (viewport-height [_]
-      (.viewportHeight this))
+      (:camera/viewport-height this))
 
     (reset-zoom! [cam]
       (orthographic-camera/set-zoom! this 1))
 
     (inc-zoom! [cam by]
-      (orthographic-camera/set-zoom! this (max 0.1 (+ (.zoom this) by)))) ))
+      (orthographic-camera/set-zoom! this (max 0.1 (+ (:orthographic-camera/zoom this) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (fit-viewport/create width height camera)]
