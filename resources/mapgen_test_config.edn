@@ -3,8 +3,7 @@
                             :windowed-mode {:width 1440
                                             :height 900}}
  :gdl.application/context {:assets {:folder "resources/"
-                                    :asset-type-extensions {:sound   #{"wav"}
-                                                            :texture #{"png" "bmp"}}}
+                                    :asset-type-extensions {:texture #{"png" "bmp"}}}
                            :tile-size 48
                            :ui-viewport {:width 1440
                                          :height 900}
