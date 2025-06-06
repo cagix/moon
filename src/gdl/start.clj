@@ -8,7 +8,9 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.input :as input]
             [clojure.gdx.input.buttons :as input.buttons]
@@ -24,7 +26,7 @@
             [gdl.graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
-            [gdl.graphics.texture :as texture]
+            [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport :as viewport]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
@@ -37,7 +39,6 @@
            (com.badlogic.gdx.graphics Texture
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.math Frustum
                                   Vector2
@@ -75,7 +76,7 @@
                                     (.getRegionHeight this)]
         :texture-region/java-object this))
 
-    texture/TextureRegion
+    gdl.graphics.texture/TextureRegion
     (sub-region [_ x y w h]
       (reify-texture-region (TextureRegion. this
                                             (int x)
@@ -89,7 +90,7 @@
     (dispose! [_]
       (.dispose this))
 
-    texture/Texture
+    gdl.graphics.texture/Texture
     (region [_]
       (reify-texture-region (TextureRegion. this)))
     (region [_ x y w h]
@@ -259,7 +260,7 @@
                   {:center-camera? false})))
 
 (defn- sprite-batch []
-  (let [this (SpriteBatch.)]
+  (let [this (sprite-batch/create)]
     (reify
       clojure.lang.ILookup
       (valAt [_ k]
@@ -308,7 +309,7 @@
   (let [pixmap (doto (pixmap/create 1 1)
                  (.setColor (color/create :white))
                  (.drawPixel 0 0))
-        texture (Texture. pixmap)]
+        texture (texture/create pixmap)]
     (.dispose pixmap)
     texture))
 
