@@ -2,6 +2,7 @@
   (:require [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.utils.align :as align]
             [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
@@ -15,8 +16,7 @@
                                         TiledMapTileLayer$Cell
                                         TmxMapLoader)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-           (com.badlogic.gdx.utils Align
-                                   ScreenUtils)))
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn- static-field [mapping exception-name k]
   (when-not (contains? mapping k)
@@ -26,6 +26,7 @@
 (def k->input-button (partial static-field input.buttons/mapping "Button"))
 (def k->input-key    (partial static-field input.keys/mapping    "Key"))
 (def k->color        (partial static-field color/mapping         "Color"))
+(def k->align        (partial static-field align/mapping         "Align"))
 
 (defn- create-color
   ([r g b]
@@ -41,16 +42,6 @@
 
 (defn add-markdown-color! [name color]
   (Colors/put name (->color color)))
-
-(defn k->align
-  "Returns the `com.badlogic.gdx.utils.Align` enum for keyword `k`.
-
-  `k` is either `:center`, `:left` or `:right` and `Align` value is `Align/center`, `Align/left` and `Align/right`."
-  [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))

@@ -34,4 +34,7 @@
  (generate-mapping "Input$Keys"    'int) ; without Input$Keys/MAX_KEYCODE
  (generate-mapping "Color" 'com.badlogic.gdx.graphics.Color)
 
+ (import 'com.badlogic.gdx.utils.Align)
+ (generate-mapping "Align" 'int)
+
  )
