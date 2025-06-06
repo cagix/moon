@@ -7,4 +7,4 @@
   (texture [_ path])
   (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])
-  )
+  (resize-viewports! [_ width height]))

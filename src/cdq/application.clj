@@ -1,7 +1,7 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
-            [gdl.graphics.viewport :as viewport]
+            [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
@@ -73,5 +73,4 @@
 (defn resize! [width height]
   (m/validate-humanize schema @state)
   (let [{:keys [ctx/graphics]} @state]
-    (viewport/resize! (:ui-viewport    graphics) width height)
-    (viewport/resize! (:world-viewport graphics) width height)))
+    (graphics/resize-viewports! graphics width height)))

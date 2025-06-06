@@ -144,6 +144,10 @@
     (disposable/dispose! default-font))
 
   gdl.graphics/Graphics
+  (resize-viewports! [_ width height]
+    (gdl.graphics.viewport/resize! ui-viewport    width height)
+    (gdl.graphics.viewport/resize! world-viewport width height))
+
   (delta-time [_]
     (graphics/delta-time graphics))
 
@@ -312,10 +316,6 @@
                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                                 (float world-unit-scale)
                                                                                 batch)))})))
-
-(comment
- (:shape-drawer (:ctx/graphics @cdq.application/state))
- )
 
 (defn- create-input [this]
   (reify gdl.input/Input

@@ -18,7 +18,6 @@
 
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
-            [gdl.graphics.viewport :as viewport]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disp]))
@@ -131,5 +130,4 @@
 
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
-    (viewport/resize! (:ui-viewport    graphics) width height)
-    (viewport/resize! (:world-viewport graphics) width height)))
+    (graphics/resize-viewports! graphics width height)))
