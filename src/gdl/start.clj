@@ -12,6 +12,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.input :as input]
@@ -36,7 +37,7 @@
             [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport]
-            [gdl.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdl.graphics.g2d.bitmap-font]
             [gdl.input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
@@ -44,22 +45,9 @@
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer)))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- set-scale! [^BitmapFont font scale]
-  (.setScale (.getData font) (float scale)))
-
-(defn- scale-x [^BitmapFont font]
-  (.scaleX (.getData font)))
 
 (extend-type Disposable
   disposable/Disposable
@@ -299,33 +287,26 @@
     texture))
 
 (defn- generate-font [file-handle params]
-  (let [^BitmapFont font (freetype/generate-font file-handle params)
-        {:keys [scale
-                enable-markup?
-                use-integer-positions?]} params]
-    (.setScale (.getData font) (float scale))
-    (set! (.markupEnabled (.getData font)) enable-markup?)
-    (.setUseIntegerPositions font use-integer-positions?)
+  (let [font (freetype/generate-font file-handle params)]
+    (bitmap-font/configure! font params) ; DOTO ?
     (reify
       Disposable
       (dispose [_]
         (.dispose font))
 
-      bitmap-font/BitmapFont
+      gdl.graphics.g2d.bitmap-font/BitmapFont
       (draw! [_ batch {:keys [scale x y text h-align up?]}]
-        (let [old-scale (float (scale-x font))
-              target-width (float 0)
-              wrap? false]
-          (set-scale! font (* old-scale (float scale)))
-          (.draw font
-                 (:sprite-batch/java-object batch)
-                 text
-                 (float x)
-                 (float (+ y (if up? (text-height font text) 0)))
-                 target-width
-                 (align/->from-k (or h-align :center))
-                 wrap?)
-          (set-scale! font old-scale))))))
+        (let [old-scale (bitmap-font/scale-x font)]
+          (bitmap-font/set-scale! font (* old-scale scale))
+          (bitmap-font/draw! {:font font
+                              :batch (:sprite-batch/java-object batch)
+                              :text text
+                              :x x
+                              :y (+ y (if up? (bitmap-font/text-height font text) 0))
+                              :target-width 0
+                              :align (align/->from-k (or h-align :center))
+                              :wrap? false})
+          (bitmap-font/set-scale! font old-scale))))))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
   (generate-font (files/internal files file)
