@@ -4,8 +4,10 @@
             [clojure.gdx.assets.manager :as assets-manager]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
+            [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.input :as input]
@@ -32,10 +34,7 @@
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap
-                                      Pixmap$Format
-                                      Texture
+           (com.badlogic.gdx.graphics Texture
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           SpriteBatch
@@ -306,7 +305,7 @@
         (.setProjectionMatrix this matrix)))))
 
 (defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+  (let [pixmap (doto (pixmap/create 1 1)
                  (.setColor (color/create :white))
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
@@ -351,17 +350,17 @@
                   :enable-markup? true
                   :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
 
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (file-handle/list folder)
          result []]
     (cond (nil? file)
           result
 
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
+          (file-handle/directory? file)
+          (recur (concat remaining (file-handle/list file)) result)
 
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
+          (extensions (file-handle/extension file))
+          (recur remaining (conj result (file-handle/path file)))
 
           :else
           (recur remaining result))))
@@ -439,7 +438,7 @@
      :ctx/shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
+                                 (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
                                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
