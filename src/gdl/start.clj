@@ -96,13 +96,13 @@
                            extensions)))
 
 (defn- load-textures [textures-to-load]
-  (println "load-textures (count textures-to-load): " (count textures-to-load))
+  ;(println "load-textures (count textures-to-load): " (count textures-to-load))
   (let [textures (into {} (for [file textures-to-load]
                             [file (texture/load! file)]))]
     (reify
       disposable/Disposable
       (dispose! [_]
-        (println "Disposing textures ...")
+        ;(println "Disposing textures ...")
         (run! disposable/dispose! (vals textures)))
 
       clojure.lang.IFn
@@ -111,7 +111,7 @@
         (reify-texture (get textures path))))))
 
 (defn- create-audio [audio files sounds-to-load]
-  (println "create-audio. (count sounds-to-load): " (count sounds-to-load))
+  ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
   (let [sounds (into {}
                      (for [file sounds-to-load]
                        [file (audio/sound audio (files/internal files file))]))]
