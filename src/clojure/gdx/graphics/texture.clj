@@ -2,5 +2,5 @@
   (:import (com.badlogic.gdx.graphics Texture
                                       Pixmap)))
 
-(defn create [^Pixmap pixmap]
+(defn create ^Texture [^Pixmap pixmap]
   (Texture. pixmap))

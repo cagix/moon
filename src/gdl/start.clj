@@ -163,7 +163,8 @@
       (:camera/combined this))
 
     (frustum [_]
-      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (:camera/frustum this))))
+      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints  ; refl
+                                                           (:camera/frustum this))))
             left-x   (apply min (map first  frustum-points))
             right-x  (apply max (map first  frustum-points))
             bottom-y (apply min (map second frustum-points))
