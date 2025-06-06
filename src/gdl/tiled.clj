@@ -1,5 +1,7 @@
 (ns gdl.tiled
-  (:require [clojure.gdx.tiled :as tiled])
+  (:require [clojure.gdx.maps.map-properties :as map-properties]
+            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]
+            [clojure.gdx.maps.tiled.tiled-map-tile-layer :as tiled-map-tile-layer])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
                                         TmxMapLoader)
@@ -9,16 +11,16 @@
   "Memoized function. Copies the given [[static-tiled-map-tile]].
 
   Tiles are usually shared by multiple cells, see: https://libgdx.com/wiki/graphics/2d/tile-maps#cells"
-  (memoize tiled/copy-static-tiled-map-tile))
+  (memoize static-tiled-map-tile/copy))
 
 (defn static-tiled-map-tile
   "Creates a `StaticTiledMapTile` with the given `texture-region` and property."
   [texture-region property-name property-value]
   {:pre [(:texture-region/java-object texture-region)
          (string? property-name)]}
-  (tiled/static-tiled-map-tile (:texture-region/java-object texture-region)
-                               property-name
-                               property-value))
+  (static-tiled-map-tile/create (:texture-region/java-object texture-region)
+                                property-name
+                                property-value))
 
 (defprotocol HasMapProperties
   (map-properties [_]
@@ -59,7 +61,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (tiled/map-properties->clj-map (.getProperties this)))
+      (map-properties/->clj-map (.getProperties this)))
 
     TMapLayer
     (set-visible! [_ boolean]
@@ -97,7 +99,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (tiled/map-properties->clj-map (.getProperties this)))
+      (map-properties/->clj-map (.getProperties this)))
 
     TMap
     (layers [_]
@@ -112,7 +114,7 @@
       (reify-tiled-layer (.get (.getLayers this) ^String layer-name)))
 
     (add-layer! [_ layer-declaration]
-      (tiled/add-tiled-map-tile-layer! this layer-declaration))))
+      (tiled-map-tile-layer/add! this layer-declaration))))
 
 (defn tmx-tiled-map
   "Has to be disposed because it loads textures.
@@ -124,7 +126,7 @@
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (TiledMap.)]
-    (tiled/add-map-properties! (.getProperties tiled-map) properties)
+    (map-properties/add! (.getProperties tiled-map) properties)
     (doseq [layer layers]
-      (tiled/add-tiled-map-tile-layer! tiled-map layer))
+      (tiled-map-tile-layer/add! tiled-map layer))
     (reify-tiled-map tiled-map)))
