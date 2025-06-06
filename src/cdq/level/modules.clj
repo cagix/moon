@@ -1,6 +1,5 @@
 (ns cdq.level.modules
-  (:require [clojure.gdx :as gdx]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
                                       scale-grid
@@ -9,7 +8,7 @@
                                       flood-fill
                                       grid->tiled-map
                                       transition-idx-value]]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
 (def modules-width  32) ; usd @ test
@@ -164,7 +163,7 @@
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules-scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (place-module (gdx/tmx-tiled-map modules-file)
+        tiled-map (place-module (tiled/tmx-tiled-map modules-file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))

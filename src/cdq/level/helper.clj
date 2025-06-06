@@ -5,9 +5,8 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [clojure.gdx :as gdx]
-            [gdl.graphics.texture :as texture]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]
+            [gdl.graphics.texture :as texture]))
 
 (defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)
@@ -31,7 +30,7 @@
                 tile/texture-region]}]
      (assert (and id
                   texture-region))
-     (gdx/static-tiled-map-tile texture-region "id" id))))
+     (tiled/static-tiled-map-tile texture-region "id" id))))
 
 (defn add-creatures-layer! [tiled-map spawn-positions]
   (tiled/add-layer! tiled-map {:name "creatures"
@@ -147,7 +146,7 @@
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (gdx/create-tiled-map
+  (tiled/create-tiled-map
    {:properties (merge (tiled/map-properties schema-tiled-map)
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})
@@ -160,10 +159,10 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (gdx/copy-tile tile)])))})}))
+                            [position (tiled/copy-tile tile)])))})}))
 
 (defn wgt-grid->tiled-map [tile-size grid position->tile]
-  (gdx/create-tiled-map
+  (tiled/create-tiled-map
    {:properties {"width"  (g2d/width  grid)
                  "height" (g2d/height grid)
                  "tilewidth"  tile-size

@@ -7,9 +7,8 @@
                                       scalegrid
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
-            [clojure.gdx :as gdx]
-            [gdl.graphics.texture :as texture]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]
+            [gdl.graphics.texture :as texture]))
 
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
@@ -21,7 +20,7 @@
   (memoize
    (fn [texture-region movement]
      {:pre [#{"all" "air" "none"} movement]}
-     (gdx/static-tiled-map-tile texture-region "movement" movement))))
+     (tiled/static-tiled-map-tile texture-region "movement" movement))))
 
 (def ^:private sprite-size 48)
 

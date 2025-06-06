@@ -3,7 +3,7 @@
             [gdl.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]))
 
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
   (let [{:keys [tiled-map
