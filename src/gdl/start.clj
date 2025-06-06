@@ -6,6 +6,7 @@
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
@@ -31,7 +32,7 @@
             [gdl.audio.sound :as sound]
             [gdl.graphics]
             [gdl.graphics.batch :as batch]
-            [gdl.graphics.camera :as camera]
+            [gdl.graphics.camera]
             [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport]
@@ -164,13 +165,12 @@
       (case k
         :camera/java-object this))
 
-    camera/Camera
+    gdl.graphics.camera/Camera
     (zoom [_]
       (.zoom this))
 
     (position [_]
-      [(.x (.position this))
-       (.y (.position this))])
+      (camera/position this))
 
     (combined [_]
       (.combined this))
@@ -183,14 +183,11 @@
             top-y    (apply max (map second frustum-points))]
         [left-x right-x bottom-y top-y]))
 
-    (set-position! [_ [x y]]
-      (set! (.x (.position this)) (float x))
-      (set! (.y (.position this)) (float y))
-      (.update this))
+    (set-position! [_ position]
+      (camera/set-position! this position))
 
     (set-zoom! [_ amount]
-      (set! (.zoom this) amount)
-      (.update this))
+      (orthographic-camera/set-zoom! this amount))
 
     (viewport-width [_]
       (.viewportWidth this))
@@ -199,10 +196,10 @@
       (.viewportHeight this))
 
     (reset-zoom! [cam]
-      (camera/set-zoom! cam 1))
+      (gdl.graphics.camera/set-zoom! cam 1))
 
     (inc-zoom! [cam by]
-      (camera/set-zoom! cam (max 0.1 (+ (camera/zoom cam) by)))) ))
+      (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (gdl.graphics.camera/zoom cam) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (fit-viewport/create width height camera)]
@@ -235,7 +232,7 @@
 (defn- create-ui-viewport [{:keys [width height]}]
   (fit-viewport width
                 height
-                (OrthographicCamera.)
+                (orthographic-camera/create)
                 {:center-camera? true}))
 
 (defn- create-world-viewport [world-unit-scale {:keys [width height]}]
