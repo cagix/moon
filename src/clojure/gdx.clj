@@ -1,8 +1,5 @@
 (ns clojure.gdx
-  (:require [clojure.gdx.input.buttons :as input.buttons]
-            [clojure.gdx.input.keys :as input.keys]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.utils.align :as align]
+  (:require [clojure.gdx.interop :as interop]
             [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
@@ -18,16 +15,6 @@
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.utils ScreenUtils)))
 
-(defn- static-field [mapping exception-name k]
-  (when-not (contains? mapping k)
-    (throw (IllegalArgumentException. (str "Unknown " exception-name ": " k ". \nOptions are:\n" (sort (keys mapping))))))
-  (k mapping))
-
-(def k->input-button (partial static-field input.buttons/mapping "Button"))
-(def k->input-key    (partial static-field input.keys/mapping    "Key"))
-(def k->color        (partial static-field color/mapping         "Color"))
-(def k->align        (partial static-field align/mapping         "Align"))
-
 (defn- create-color
   ([r g b]
    (create-color r g b 1))
@@ -36,7 +23,7 @@
 
 (defn ->color ^Color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (k->color c)
+        (keyword? c) (interop/k->color c)
         (vector? c) (apply create-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 

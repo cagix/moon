@@ -1,7 +1,7 @@
 (ns clojure.gdx.freetype
-  (:require [clojure.gdx :as gdx]
-            [gdl.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.string :as str])
+  (:require [clojure.gdx.interop :as interop]
+            [clojure.string :as str]
+            [gdl.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -69,6 +69,6 @@
                  (float x)
                  (float (+ y (if up? (text-height font text) 0)))
                  target-width
-                 (gdx/k->align (or h-align :center))
+                 (interop/k->align (or h-align :center))
                  wrap?)
           (set-scale! font old-scale))))))

@@ -1,8 +1,8 @@
 (ns gdl.start
   (:require [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.interop :as interop]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
             [clojure.gdx.math-utils :as math-utils]
@@ -134,13 +134,13 @@
   (let [this Gdx/input]
     (reify input/Input
       (button-just-pressed? [_ button]
-        (.isButtonJustPressed this (gdx/k->input-button button)))
+        (.isButtonJustPressed this (interop/k->input-button button)))
 
       (key-pressed? [_ key]
-        (.isKeyPressed this (gdx/k->input-key key)))
+        (.isKeyPressed this (interop/k->input-key key)))
 
       (key-just-pressed? [_ key]
-        (.isKeyJustPressed this (gdx/k->input-key key)))
+        (.isKeyJustPressed this (interop/k->input-key key)))
 
       (set-processor! [_ input-processor]
         (.setInputProcessor this input-processor))
