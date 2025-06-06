@@ -196,10 +196,10 @@
       (.viewportHeight this))
 
     (reset-zoom! [cam]
-      (gdl.graphics.camera/set-zoom! cam 1))
+      (orthographic-camera/set-zoom! this 1))
 
     (inc-zoom! [cam by]
-      (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (gdl.graphics.camera/zoom cam) by)))) ))
+      (orthographic-camera/set-zoom! this (max 0.1 (+ (.zoom this) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (fit-viewport/create width height camera)]
