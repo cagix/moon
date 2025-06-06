@@ -2,9 +2,9 @@
   (:require [clojure.gdx.maps.map-properties :as map-properties]
             [clojure.gdx.maps.tiled.tiled-map :as tiled-map]
             [clojure.gdx.maps.tiled.tiled-map-tile-layer :as layer]
-            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile])
-  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer
-                                        TmxMapLoader)
+            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader])
+  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
            (com.badlogic.gdx.utils Disposable)))
 
 (defn- tm-add-layer!
@@ -138,8 +138,9 @@
   "Has to be disposed because it loads textures.
   Loads through internal file handle."
   [file-name]
-  (reify-tiled-map
-   (.load (TmxMapLoader.) file-name)))
+  (-> file-name
+      tmx-map-loader/load!
+      reify-tiled-map))
 
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
