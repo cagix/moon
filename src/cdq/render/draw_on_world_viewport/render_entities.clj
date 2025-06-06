@@ -6,7 +6,7 @@
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [gdl.c :as c]))
+            [gdl.graphics :as graphics]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -179,16 +179,16 @@
 
 (def ^:dbg-flag show-body-bounds? false)
 
-(defn- draw-entity [ctx entity render-layer]
+(defn- draw-entity [{:keys [ctx/graphics] :as ctx} entity render-layer]
   (try
    (when show-body-bounds?
-     (c/handle-draws! (:ctx/graphics ctx) (draw-body-rect entity (if (:collides? entity) :white :gray))))
+     (graphics/handle-draws! graphics (draw-body-rect entity (if (:collides? entity) :white :gray))))
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
-     (c/handle-draws! (:ctx/graphics ctx) (draw-fn v entity ctx)))
+     (graphics/handle-draws! graphics (draw-fn v entity ctx)))
    (catch Throwable t
-     (c/handle-draws! (:ctx/graphics ctx) (draw-body-rect entity :red))
+     (graphics/handle-draws! graphics (draw-body-rect entity :red))
      (utils/pretty-pst t))))
 
 (defn do! [{:keys [ctx/active-entities

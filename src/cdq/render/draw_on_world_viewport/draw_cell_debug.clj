@@ -1,7 +1,7 @@
 (ns cdq.render.draw-on-world-viewport.draw-cell-debug
   (:require [cdq.grid :as grid]
             [cdq.utils.camera :as camera-utils]
-            [gdl.c :as c]))
+            [gdl.graphics :as graphics]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
@@ -25,5 +25,5 @@
                   (let [ratio (/ distance (factions-iterations faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
-(defn do! [ctx]
-  (c/handle-draws! (:ctx/graphics ctx) (draw-cell-debug* ctx)))
+(defn do! [{:keys [ctx/graphics] :as ctx}]
+  (graphics/handle-draws! graphics (draw-cell-debug* ctx)))

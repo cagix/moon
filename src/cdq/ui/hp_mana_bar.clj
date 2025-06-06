@@ -3,7 +3,8 @@
             [cdq.val-max :as val-max]
             [gdl.ui :as ui]
             [cdq.utils :as utils]
-            [gdl.c :as c]))
+            [gdl.c :as c]
+            [gdl.graphics :as graphics]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   [:draw/text {:text infostr
@@ -43,5 +44,5 @@
                           (render-hpmana-bar ctx x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                           (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP"))))]
     (ui/actor
-     {:draw (fn [_this ctx]
-              (c/handle-draws! (:ctx/graphics ctx) (create-draws ctx)))})))
+     {:draw (fn [_this {:keys [ctx/graphics] :as ctx}]
+              (graphics/handle-draws! graphics (create-draws ctx)))})))

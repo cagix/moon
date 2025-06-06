@@ -7,4 +7,7 @@
   (texture [_ path])
   (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])
-  (resize-viewports! [_ width height]))
+  (resize-viewports! [_ width height])
+  (ui-viewport-height [_])
+  (handle-draws! [_ draws])
+  )

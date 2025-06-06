@@ -7,6 +7,7 @@
             [clojure.gdx.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.c :as c]
+            [gdl.graphics :as graphics]
             [cdq.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -33,13 +34,14 @@
 (defn- draw-rect-actor []
   (ui/widget
    {:draw
-    (fn [actor {:keys [ctx/player-eid] :as ctx}]
-      (c/handle-draws! (:ctx/graphics ctx)
-                       (draw-cell-rect @player-eid
-                                       (ui/get-x actor)
-                                       (ui/get-y actor)
-                                       (ui/hit actor (c/ui-mouse-position ctx))
-                                       (ui/user-object (ui/parent actor)))))}))
+    (fn [actor {:keys [ctx/graphics
+                       ctx/player-eid] :as ctx}]
+      (graphics/handle-draws! graphics
+                              (draw-cell-rect @player-eid
+                                              (ui/get-x actor)
+                                              (ui/get-y actor)
+                                              (ui/hit actor (c/ui-mouse-position ctx))
+                                              (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
