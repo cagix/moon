@@ -8,6 +8,7 @@
                                       flood-fill
                                       grid->tiled-map
                                       transition-idx-value]]
+            [cdq.utils.tiled :as utils.tiled]
             [clojure.gdx.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
@@ -169,7 +170,7 @@
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))
                                  (filter #(= :transition (get grid %)) (g2d/posis grid)))
         start-position (mapv * start scale)
-        can-spawn? #(= "all" (tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (utils.tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill scaled-grid start-position can-spawn?)
         ;_ (println "scaled grid with filled nil: '?' \n")

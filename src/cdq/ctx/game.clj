@@ -2,8 +2,8 @@
   (:require [cdq.db :as db]
             [gdl.ui.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.world :as world]
-            [clojure.gdx.tiled :as tiled]))
+            [cdq.utils.tiled :as tiled]
+            [cdq.world :as world]))
 
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
   (let [{:keys [tiled-map
