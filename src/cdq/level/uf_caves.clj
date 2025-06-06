@@ -8,8 +8,8 @@
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
-            [gdl.tiled :as tiled]
-            [gdl.graphics.texture :as texture]))
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.tiled :as tiled]))
 
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
@@ -26,11 +26,11 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture/region texture
-                           (* sprite-x sprite-size)
-                           (* sprite-y sprite-size)
-                           sprite-size
-                           sprite-size)
+  (tm-tile (texture-region/create texture
+                                  (* sprite-x sprite-size)
+                                  (* sprite-y sprite-size)
+                                  sprite-size
+                                  sprite-size)
            movement))
 
 (def ^:private uf-grounds

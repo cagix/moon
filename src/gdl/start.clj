@@ -34,7 +34,6 @@
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
-            [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport]
             [gdl.graphics.g2d.bitmap-font]
@@ -66,30 +65,6 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn- reify-texture-region [this]
-  (reify
-    clojure.lang.ILookup
-    (valAt [_ k]
-      (case k
-        :texture-region/dimensions (texture-region/dimensions this)
-        :texture-region/java-object this))
-
-    gdl.graphics.texture/TextureRegion
-    (sub-region [_ x y w h]
-      (reify-texture-region (texture-region/create this x y w h)))))
-
-(defn- reify-texture [this]
-  (reify
-    disposable/Disposable
-    (dispose! [_]
-      (texture/dispose! this))
-
-    gdl.graphics.texture/Texture
-    (region [_]
-      (reify-texture-region (texture-region/create this)))
-    (region [_ x y w h]
-      (reify-texture-region (texture-region/create this x y w h)))))
-
 (defn- find-assets [files {:keys [folder extensions]}]
   (map #(str/replace-first % folder "")
        (recursively-search (files/internal files folder)
@@ -108,7 +83,7 @@
       clojure.lang.IFn
       (invoke [_ path]
         (assert (contains? textures path) (str path))
-        (reify-texture (get textures path))))))
+        (get textures path)))))
 
 (defn- create-audio [audio files sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))

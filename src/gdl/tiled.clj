@@ -33,11 +33,9 @@
 (defn static-tiled-map-tile
   "Creates a `StaticTiledMapTile` with the given `texture-region` and property."
   [texture-region property-name property-value]
-  {:pre [(:texture-region/java-object texture-region)
+  {:pre [texture-region
          (string? property-name)]}
-  (static-tiled-map-tile/create (:texture-region/java-object texture-region)
-                                property-name
-                                property-value))
+  (static-tiled-map-tile/create texture-region property-name property-value))
 
 (defprotocol HasMapProperties
   (map-properties [_]

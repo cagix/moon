@@ -5,15 +5,15 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [gdl.tiled :as tiled]
-            [gdl.graphics.texture :as texture]))
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.tiled :as tiled]))
 
 (defn- creature->texture-region [assets creature]
   (let [{:keys [file sub-image-bounds]} (property/image creature)
         texture (assets file)]
     (if sub-image-bounds
-      (apply texture/region texture sub-image-bounds)
-      (texture/region texture))))
+      (apply texture-region/create texture sub-image-bounds)
+      (texture-region/create texture))))
 
 (defn prepare-creature-properties [{:keys [ctx/assets
                                            ctx/db]}]

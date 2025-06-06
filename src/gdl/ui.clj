@@ -1,8 +1,8 @@
 (ns gdl.ui
-  (:require [gdl.graphics.texture :as texture])
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region])
   (:import (clojure.lang ILookup)
-           (gdl.graphics.texture Texture
-                                 TextureRegion)
+           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Stage
@@ -369,10 +369,10 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (:texture-region/java-object (texture/region texture))))
+  (VisImage. (texture-region/create texture)))
 
 (defmethod image* TextureRegion [texture-region]
-  (VisImage. (:texture-region/java-object texture-region)))
+  (VisImage. texture-region))
 
 (defn image-widget ; TODO widget also make, for fill parent
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
@@ -403,7 +403,7 @@
     (.addListener (change-listener on-clicked))))
 
 (defn texture-region-drawable [texture-region]
-  (TextureRegionDrawable. (:texture-region/java-object texture-region)))
+  (TextureRegionDrawable. texture-region))
 
 (defn image-button
   ([texture-region on-clicked]
@@ -412,7 +412,7 @@
    (let [drawable (texture-region-drawable texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale
-       (let [[w h] (:texture-region/dimensions texture-region)]
+       (let [[w h] (texture-region/dimensions texture-region)]
          (BaseDrawable/.setMinSize drawable
                                    (float (* scale w))
                                    (float (* scale h)))))

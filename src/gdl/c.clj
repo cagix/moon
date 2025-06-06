@@ -1,7 +1,7 @@
 (ns gdl.c
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [gdl.graphics.texture :as texture]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.graphics.viewport :as viewport]
@@ -184,7 +184,7 @@
                            (number? (scale 0))
                            (number? (scale 1)))))
         pixel-dimensions (if (number? scale)
-                           (scale-dimensions (:texture-region/dimensions texture-region) scale)
+                           (scale-dimensions (texture-region/dimensions texture-region) scale)
                            scale)]
     (map->Sprite {:texture-region texture-region
                   :pixel-dimensions pixel-dimensions
@@ -193,11 +193,11 @@
 (defn sprite [{:keys [ctx/assets
                       ctx/world-unit-scale]}
               texture-path]
-  (create-sprite (texture/region (assets texture-path))
+  (create-sprite (texture-region/create (assets texture-path))
                  world-unit-scale))
 
 (defn sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
-  (create-sprite (texture/sub-region (:sprite/texture-region sprite) x y w h)
+  (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
                  world-unit-scale))
 
 (defn sprite-sheet [{:keys [ctx/assets
@@ -205,7 +205,7 @@
                     texture-path
                     tilew
                     tileh]
-  {:image (create-sprite (texture/region (assets texture-path))
+  {:image (create-sprite (texture-region/create (assets texture-path))
                          world-unit-scale)
    :tilew tilew
    :tileh tileh})

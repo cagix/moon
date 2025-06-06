@@ -16,7 +16,7 @@
                      scale-y
                      rotation]}]
   (.draw batch
-         (:texture-region/java-object texture-region)
+         texture-region
          x
          y
          origin-x
