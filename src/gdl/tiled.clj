@@ -85,7 +85,7 @@
       (layer/set-visible! this boolean))
 
     (visible? [_]
-      (layer/visible? thi))
+      (layer/visible? this))
 
     (layer-name [_]
       (layer/name this))

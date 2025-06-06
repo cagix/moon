@@ -38,4 +38,4 @@
   (.isVisible layer))
 
 (defn name [^TiledMapTileLayer layer]
-  (.getName this))
+  (.getName layer))
