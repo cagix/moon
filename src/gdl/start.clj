@@ -10,6 +10,7 @@
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.input :as input]
@@ -238,14 +239,13 @@
                 {:center-camera? true}))
 
 (defn- create-world-viewport [world-unit-scale {:keys [width height]}]
-  (let [camera (OrthographicCamera.)
-        world-width  (* width world-unit-scale)
-        world-height (* height world-unit-scale)
-        y-down? false]
-    (.setToOrtho camera y-down? world-width world-height)
+  (let [world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)]
     (fit-viewport world-width
                   world-height
-                  camera
+                  (orthographic-camera/create {:world-width world-width
+                                               :world-height world-height
+                                               :y-down? false})
                   {:center-camera? false})))
 
 (defn- sprite-batch []
