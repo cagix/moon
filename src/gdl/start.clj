@@ -363,7 +363,10 @@
         (for [file sounds-to-load]
           (audio/sound (gdx/audio) (files/internal (gdx/files) file)))))
 
-(defn- create-context [{:keys [assets
+(defn- create-context [{:keys [gdx/files
+                               gdx/input
+                               gdx/graphics]}
+                       {:keys [assets
                                tile-size
                                ui-viewport
                                world-viewport
@@ -371,10 +374,7 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [files    (gdx/files)
-        input    (gdx/input)
-        graphics (gdx/graphics)
-        batch (sprite-batch)
+  (let [batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
@@ -426,6 +426,11 @@
   (when dock-icon
     (set-taskbar-icon! dock-icon)))
 
+(defn- gdx-context []
+  {:gdx/files    (gdx/files)
+   :gdx/graphics (gdx/graphics)
+   :gdx/input    (gdx/input)})
+
 (defn -main [app-edn-path]
   (let [config (-> app-edn-path
                    io/resource
@@ -440,7 +445,7 @@
                         (proxy [ApplicationListener] []
                           (create  []
                             ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-                             (create-context (:gdl.application/context config))
+                             (create-context (gdx-context) (:gdl.application/context config))
                              config))
                           (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
                           (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
