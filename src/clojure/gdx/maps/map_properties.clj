@@ -9,3 +9,8 @@
   (doseq [[k v] properties]
     (assert (string? k))
     (.put mp k v)))
+
+(defn create [m]
+  (let [mp (MapProperties.)]
+    (add! mp m)
+    mp))

@@ -1,45 +1,27 @@
 (ns gdl.tiled
   (:require [clojure.gdx.maps.map-properties :as map-properties]
             [clojure.gdx.maps.tiled.tiled-map :as tiled-map]
+            [clojure.gdx.maps.tiled.tiled-map-tile-layer :as layer]
             [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile])
   (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer
-                                        TiledMapTileLayer$Cell
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
 
-(defn- create-layer
-  [{:keys [width
-           height
-           tilewidth
-           tileheight]}
-   {:keys [name
-           visible?
-           properties
-           tiles]}]
-  {:pre [(string? name)
-         (boolean? visible?)]}
-  (let [; tilewidth/tileheight should not be required as it it saved in the map
-        ; in example `.tmx` file the layers do not have those properties
-        ; but the constructor requires it.
-        layer (TiledMapTileLayer. width height tilewidth tileheight)]
-    (.setName layer name)
-    (.setVisible layer visible?)
-    (map-properties/add! (.getProperties layer) properties)
-    (doseq [[[x y] tiled-map-tile] tiles
-            :when tiled-map-tile]
-      (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
-                            (.setTile tiled-map-tile))))
-    layer))
-
 (defn- tm-add-layer!
   "Returns nil."
-  [tiled-map layer-declaration]
+  [tiled-map {:keys [name
+                     visible?
+                     properties
+                     tiles]}]
   (let [props (tiled-map/properties tiled-map)
-        layer (create-layer {:width      (.get props "width")
+        layer (layer/create {:width      (.get props "width")
                              :height     (.get props "height")
                              :tilewidth  (.get props "tilewidth")
-                             :tileheight (.get props "tileheight")}
-                            layer-declaration)]
+                             :tileheight (.get props "tileheight")
+                             :name name
+                             :visible? visible?
+                             :map-properties (map-properties/create properties)
+                             :tiles tiles})]
     (.add (tiled-map/layers tiled-map) layer))
   nil)
 
