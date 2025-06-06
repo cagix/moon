@@ -3,5 +3,5 @@
 (defprotocol Graphics
   (delta-time [_])
   (frames-per-second [_])
-  (set-cursor! [_ cursor])
+  (set-cursor! [_ cursor-key])
   (texture [_ path]))

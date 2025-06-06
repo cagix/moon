@@ -83,9 +83,11 @@
     (reset! state ctx)))
 
 (defn dispose! []
-  (let [{:keys [ctx/assets
+  ; TODO ? disposing properly everything gdl.start stuff??
+  ; batch, cursors, default-font, shape-drawer-texture, etc.
+  (let [{:keys [ctx/graphics
                 ctx/tiled-map]} @state]
-    (disp/dispose! assets)
+    (disp/dispose! graphics)
     (disp/dispose! tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/tiled-map-renderer

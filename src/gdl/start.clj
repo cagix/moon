@@ -90,16 +90,23 @@
         (assert (contains? sounds path) (str path))
         (sound/play! (get sounds path))))))
 
-(defn- create-graphics [graphics files textures]
+(defn- create-graphics [graphics files textures cursors cursor-path-format]
   (let [textures-to-load (find-assets files textures)
         _ (println "load-textures (count textures-to-load): " (count textures-to-load))
         textures (into {} (for [file (find-assets files textures)]
-                            [file (texture/load! file)])) ]
+                            [file (texture/load! file)]))
+        cursors (update-vals cursors
+                             (fn [[file [hotspot-x hotspot-y]]]
+                               (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
+                                     cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
+                                 (.dispose pixmap)
+                                 cursor)))]
     (reify
       disposable/Disposable
       (dispose! [_]
         (println "Disposing textures ...")
-        (run! disposable/dispose! (vals textures)))
+        (run! disposable/dispose! (vals textures))
+        (run! disp/dispose! (vals cursors)))
 
       gdl.graphics/Graphics
       (delta-time [_]
@@ -108,8 +115,9 @@
       (frames-per-second [_]
         (graphics/frames-per-second graphics))
 
-      (set-cursor! [_ cursor]
-        (graphics/set-cursor! graphics cursor))
+      (set-cursor! [_ cursor-key]
+        (assert (contains? cursors cursor-key))
+        (graphics/set-cursor! graphics (get cursors cursor-key)))
 
       (texture [_ path]
         (assert (contains? textures path) (str path))
@@ -308,7 +316,11 @@
     (ui/load! ui)
     {:ctx/input (create-input input)
      :ctx/audio (when sounds (create-audio audio files (find-assets files sounds)))
-     :ctx/graphics (create-graphics graphics files textures)
+     :ctx/graphics (create-graphics graphics
+                                    files
+                                    textures
+                                    cursor-path-format
+                                    cursors)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
@@ -316,12 +328,6 @@
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
      :ctx/shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
-     :ctx/cursors (update-vals cursors
-                               (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
-                                       cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
-                                   (.dispose pixmap)
-                                   cursor)))
      :ctx/default-font (when default-font
                          (truetype-font files default-font))
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
