@@ -5,5 +5,8 @@
 (defn create ^Texture [^Pixmap pixmap]
   (Texture. pixmap))
 
+(defn load! [^String path]
+  (Texture. path))
+
 (defn dispose! [^Texture texture]
   (.dispose texture))

@@ -1,7 +1,6 @@
 (ns gdl.start
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.assets.manager :as assets-manager]
             [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -45,7 +44,6 @@
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
-           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer)))
 
@@ -63,14 +61,6 @@
 
           :else
           (recur remaining result))))
-
-(defn- assets-to-load [files {:keys [folder
-                                     asset-type-extensions]}]
-  (for [[asset-type extensions] asset-type-extensions
-        file (map #(str/replace-first % folder "")
-                  (recursively-search (files/internal files folder)
-                                      extensions))]
-    [file asset-type]))
 
 (extend-type Disposable
   disposable/Disposable
@@ -101,33 +91,29 @@
     (region [_ x y w h]
       (reify-texture-region (texture-region/create this x y w h)))))
 
-(defn- k->class ^Class [asset-type-k]
-  (case asset-type-k
-    :texture Texture))
+(defn- find-assets [files {:keys [folder extensions]}]
+  (map #(str/replace-first % folder "")
+       (recursively-search (files/internal files folder)
+                           extensions)))
 
-(defmulti ^:private reify-asset class)
-(defmethod reify-asset Texture [this] (reify-texture this))
-
-(defn- create-asset-manager [assets]
-  (let [this (assets-manager/create (map
-                                     (fn [[file asset-type]]
-                                       [file (k->class asset-type)])
-                                     assets))]
+(defn- load-textures [textures-to-load]
+  (println "load-textures (count textures-to-load): " (count textures-to-load))
+  (let [textures (into {} (for [file textures-to-load]
+                            [file (texture/load! file)]))]
     (reify
       disposable/Disposable
       (dispose! [_]
-        (assets-manager/dispose! this))
+        (println "Disposing textures ...")
+        (run! disposable/dispose! (vals textures)))
 
       clojure.lang.IFn
       (invoke [_ path]
-        (reify-asset (assets-manager/safe-get this path))))))
+        (assert (contains? textures path) (str path))
+        (reify-texture (get textures path))))))
 
-(defn- create-audio [audio files {:keys [folder extensions]}]
-  (let [sounds-to-load (map #(str/replace-first % "resources/" "")
-                            (recursively-search (files/internal files folder)
-                                                extensions))
-        ;_ (println "create-audio. (count sounds-to-load): " (count sounds-to-load))
-        sounds (into {}
+(defn- create-audio [audio files sounds-to-load]
+  (println "create-audio. (count sounds-to-load): " (count sounds-to-load))
+  (let [sounds (into {}
                      (for [file sounds-to-load]
                        [file (audio/sound audio (files/internal files file))]))]
     (reify
@@ -142,8 +128,7 @@
         (map first sounds))
 
       (play-sound! [_ path]
-        (assert (contains? sounds path)
-                (str path))
+        (assert (contains? sounds path) (str path))
         (sound/play! (get sounds path))))))
 
 (defn- create-graphics [this]
@@ -377,7 +362,7 @@
                                gdx/input
                                gdx/graphics]}
                        {:keys [sounds
-                               assets
+                               textures
                                tile-size
                                ui-viewport
                                world-viewport
@@ -395,10 +380,8 @@
                 (reify-stage stage))]
     (ui/load! ui)
     {:ctx/input (create-input input)
-     ;
-     :ctx/audio (when sounds (create-audio audio files sounds))
-     ;
-     :ctx/assets (create-asset-manager (assets-to-load files assets))
+     :ctx/audio (when sounds (create-audio audio files (find-assets files sounds)))
+     :ctx/assets (load-textures (find-assets files textures))
      :ctx/graphics (create-graphics graphics)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
@@ -419,7 +402,6 @@
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
                                                                      (:sprite-batch/java-object batch))))
-     ;
      :ctx/stage stage}))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?
