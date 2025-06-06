@@ -2,6 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as assets-manager]
+            [clojure.gdx.audio :as audio]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
@@ -30,7 +32,7 @@
             [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.audio.sound :as sound]
+            [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera]
@@ -43,11 +45,33 @@
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer)))
+
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (file-handle/list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (file-handle/directory? file)
+          (recur (concat remaining (file-handle/list file)) result)
+
+          (extensions (file-handle/extension file))
+          (recur remaining (conj result (file-handle/path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- assets-to-load [files {:keys [folder
+                                     asset-type-extensions]}]
+  (for [[asset-type extensions] asset-type-extensions
+        file (map #(str/replace-first % folder "")
+                  (recursively-search (files/internal files folder)
+                                      extensions))]
+    [file asset-type]))
 
 (extend-type Disposable
   disposable/Disposable
@@ -87,18 +111,11 @@
                                             (int w)
                                             (int h))))))
 
-(defn- reify-sound [^Sound this]
-  (reify sound/Sound
-    (play! [_]
-      (.play this))))
-
 (defn- k->class ^Class [asset-type-k]
   (case asset-type-k
-    :sound Sound
     :texture Texture))
 
 (defmulti ^:private reify-asset class)
-(defmethod reify-asset Sound   [this] (reify-sound   this))
 (defmethod reify-asset Texture [this] (reify-texture this))
 
 (defn- create-asset-manager [assets]
@@ -118,6 +135,30 @@
       assets/Assets
       (all-of-type [_ asset-type-k]
         (assets-manager/all-of-class this (k->class asset-type-k))))))
+
+(defn- create-audio [audio files {:keys [folder extensions]}]
+  (let [sounds-to-load (map #(str/replace-first % "resources/" "")
+                            (recursively-search (files/internal files folder)
+                                                extensions))
+        ;_ (println "create-audio. (count sounds-to-load): " (count sounds-to-load))
+        sounds (into {}
+                     (for [file sounds-to-load]
+                       [file (audio/sound audio (files/internal files file))]))]
+    (reify
+      disposable/Disposable
+      (dispose! [_]
+        (do
+         ;(println "Disposing sounds ...")
+         (run! disposable/dispose! (vals sounds))))
+
+      gdl.audio/Audio
+      (all-sounds [_]
+        (map first sounds))
+
+      (play-sound! [_ path]
+        (assert (contains? sounds path)
+                (str path))
+        (sound/play! (get sounds path))))))
 
 (defn- create-graphics [this]
   (reify gdl.graphics/Graphics
@@ -318,29 +359,6 @@
                   :enable-markup? true
                   :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
 
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (file-handle/list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (file-handle/directory? file)
-          (recur (concat remaining (file-handle/list file)) result)
-
-          (extensions (file-handle/extension file))
-          (recur remaining (conj result (file-handle/path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- assets-to-load [files {:keys [folder
-                                     asset-type-extensions]}]
-  (for [[asset-type extensions] asset-type-extensions
-        file (map #(str/replace-first % folder "")
-                  (recursively-search (files/internal files folder)
-                                      extensions))]
-    [file asset-type]))
-
 (defn- reify-stage [stage]
   (reify
     ; TODO is disposable but not sure if needed as we handle batch ourself.
@@ -368,15 +386,12 @@
           ui/root
           (ui/find-actor actor-name)))))
 
-#_(defn- create-audio [sounds-to-load]
-  (into {}
-        (for [file sounds-to-load]
-          (audio/sound audio (files/internal files file)))))
-
-(defn- create-context [{:keys [gdx/files
+(defn- create-context [{:keys [gdx/audio
+                               gdx/files
                                gdx/input
                                gdx/graphics]}
-                       {:keys [assets
+                       {:keys [sounds
+                               assets
                                tile-size
                                ui-viewport
                                world-viewport
@@ -394,7 +409,7 @@
                 (reify-stage stage))]
     (ui/load! ui)
     {:ctx/input (create-input input)
-     ;:ctx/audio (create-audio)
+     :ctx/audio (when sounds (create-audio audio files sounds))
      :ctx/assets (create-asset-manager (assets-to-load files assets))
      :ctx/graphics (create-graphics graphics)
      :ctx/world-unit-scale world-unit-scale

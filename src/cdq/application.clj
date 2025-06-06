@@ -28,6 +28,7 @@
              [:ctx/db :some]
 
              ;; all gdx related stuff & backend is one _type_
+             [:ctx/audio :some]
              [:ctx/assets :some]
              [:ctx/input :some]
              [:ctx/stage :some]
@@ -77,12 +78,14 @@
     (reset! state ctx)))
 
 (defn dispose! []
-  (let [{:keys [ctx/assets
+  (let [{:keys [ctx/audio
+                ctx/assets
                 ctx/batch
                 ctx/cursors
                 ctx/default-font
                 ctx/tiled-map
                 ctx/shape-drawer-texture]} @state]
+    (disp/dispose! audio)
     (disp/dispose! assets)
     (disp/dispose! batch)
     (run! disp/dispose! (vals cursors))

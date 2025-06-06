@@ -4,9 +4,10 @@
                             :windowed-mode {:width 1440
                                             :height 900}
                             :foreground-fps 60}
- :gdl.application/context {:assets {:folder "resources/"
-                                    :asset-type-extensions {:sound   #{"wav"}
-                                                            :texture #{"png" "bmp"}}}
+ :gdl.application/context {:sounds {:folder "resources/sounds/"
+                                    :extensions #{"wav"}}
+                           :assets {:folder "resources/"
+                                    :asset-type-extensions {:texture #{"png" "bmp"}}}
                            :tile-size 48
                            :ui-viewport {:width 1440
                                          :height 900}

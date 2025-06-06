@@ -1,23 +1,22 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [gdl.assets :as assets]
-            [gdl.audio.sound :as sound]
+            [gdl.audio :as audio]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"
-                  (fn [_actor {:keys [ctx/assets]}]
-                    (sound/play! (assets sound-name)))))
+                  (fn [_actor {:keys [ctx/audio]}]
+                    (audio/play-sound! audio sound-name))))
 
 (declare columns)
 
 (defn- open-choose-sound-window! [table
-                                  {:keys [ctx/assets
+                                  {:keys [ctx/audio
                                           ctx/stage
                                           ctx/ui-viewport]}]
-  (let [rows (for [sound-name (assets/all-of-type assets :sound)]
+  (let [rows (for [sound-name (audio/all-sounds audio)]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (ui/clear-children! table)

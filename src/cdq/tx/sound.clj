@@ -1,11 +1,10 @@
 (ns cdq.tx.sound
   (:require [cdq.ctx.effect-handler :refer [do!]]
-            [gdl.audio.sound :as sound]))
+            [gdl.audio :as audio]))
 
 (defmethod do! :tx/sound [[_ sound-name]
-                          {:keys [ctx/assets]}]
+                          {:keys [ctx/audio]}]
   (->> sound-name
        (format "sounds/%s.wav")
-       assets
-       sound/play!)
+       (audio/play-sound! audio))
   nil)
