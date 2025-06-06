@@ -3,9 +3,8 @@
             [clojure.gdx.maps.tiled.tiled-map :as tiled-map]
             [clojure.gdx.maps.tiled.tiled-map-tile-layer :as layer]
             [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]
-            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader])
-  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
-           (com.badlogic.gdx.utils Disposable)))
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
+            [gdl.utils.disposable :as disposable]))
 
 (defn- tm-add-layer!
   "Returns nil."
@@ -71,32 +70,32 @@
                   If there is no cell at this position in the layer returns `:no-cell`.
                   If the property value is undefined returns `:undefined`."))
 
-(defn- reify-tiled-layer [^TiledMapTileLayer this]
+(defn- reify-tiled-layer [this]
   (reify
     clojure.lang.ILookup
     (valAt [_ key]
-      (.get (.getProperties this) key))
+      (.get (layer/properties this) key))
 
     HasMapProperties
     (map-properties [_]
-      (map-properties/->clj-map (.getProperties this)))
+      (map-properties/->clj-map (layer/properties this)))
 
     TMapLayer
     (set-visible! [_ boolean]
-      (.setVisible this boolean))
+      (layer/set-visible! this boolean))
 
     (visible? [_]
-      (.isVisible this))
+      (layer/visible? thi))
 
     (layer-name [_]
-      (.getName this))
+      (layer/name this))
 
-    (tile-at [_ [x y]]
-      (when-let [cell (.getCell this x y)]
+    (tile-at [_ position]
+      (when-let [cell (layer/get-cell this position)]
         (.getTile cell)))
 
-    (property-value [_ [x y] property-key]
-      (if-let [cell (.getCell this x y)]
+    (property-value [_ position property-key]
+      (if-let [cell (layer/get-cell this position)]
         (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
           value
           :undefined)
@@ -104,8 +103,8 @@
 
 (defn- reify-tiled-map [this]
   (reify
-    Disposable
-    (dispose [_]
+    disposable/Disposable
+    (dispose! [_]
       (tiled-map/dispose! this))
 
     clojure.lang.ILookup
