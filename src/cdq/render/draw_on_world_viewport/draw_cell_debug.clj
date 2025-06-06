@@ -9,9 +9,9 @@
 
 (defn- draw-cell-debug* [{:keys [ctx/grid
                                  ctx/factions-iterations
-                                 ctx/world-viewport]}]
+                                 ctx/graphics]}]
   (apply concat
-         (for [[x y] (camera-utils/visible-tiles (:camera world-viewport))
+         (for [[x y] (camera-utils/visible-tiles (:camera (:world-viewport graphics)))
                :let [cell (grid/cell grid [x y])]
                :when cell
                :let [cell* @cell]]
@@ -26,4 +26,4 @@
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn do! [ctx]
-  (c/handle-draws! ctx (draw-cell-debug* ctx)))
+  (c/handle-draws! (:ctx/graphics ctx) (draw-cell-debug* ctx)))

@@ -11,9 +11,9 @@
                :y (+ y 2)
                :up? true}])
 
-(defn create [{:keys [ctx/ui-viewport]
+(defn create [{:keys [ctx/graphics]
                :as ctx}]
-  (let [[x y-mana] [(/ (:width ui-viewport) 2)
+  (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
                     80 ; action-bar-icon-size
                     ]
         rahmen      (c/sprite ctx "images/rahmen.png")
@@ -44,4 +44,4 @@
                           (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP"))))]
     (ui/actor
      {:draw (fn [_this ctx]
-              (c/handle-draws! ctx (create-draws ctx)))})))
+              (c/handle-draws! (:ctx/graphics ctx) (create-draws ctx)))})))

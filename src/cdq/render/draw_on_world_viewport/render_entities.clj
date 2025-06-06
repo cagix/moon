@@ -113,13 +113,13 @@
 (defn draw-temp-modifiers [_ entity _ctx]
   [[:draw/filled-circle (entity/position entity) 0.5 [0.5 0.5 0.5 0.4]]])
 
-(defn- draw-text-over-entity [{:keys [text]} entity {:keys [ctx/world-unit-scale]}]
+(defn- draw-text-over-entity [{:keys [text]} entity {:keys [ctx/graphics]}]
   (let [[x y] (entity/position entity)]
     [[:draw/text {:text text
                   :x x
                   :y (+ y
                         (:half-height entity)
-                        (* 5 world-unit-scale))
+                        (* 5 (:world-unit-scale graphics)))
                   :scale 2
                   :up? true}]]))
 
@@ -157,10 +157,10 @@
         (- height          (* 2 border))
         (hpbar-color ratio)]])))
 
-(defn draw-stats [_ entity {:keys [ctx/world-unit-scale]}]
+(defn draw-stats [_ entity {:keys [ctx/graphics]}]
   (let [ratio (val-max/ratio (entity/hitpoints entity))] ; <- use stats directly?
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar world-unit-scale entity ratio))))
+      (draw-hpbar (:world-unit-scale graphics) entity ratio))))
 
 (def render-below {:entity/mouseover? draw-mouseover-highlighting
                    :stunned draw-stunned-state
@@ -182,13 +182,13 @@
 (defn- draw-entity [ctx entity render-layer]
   (try
    (when show-body-bounds?
-     (c/handle-draws! ctx (draw-body-rect entity (if (:collides? entity) :white :gray))))
+     (c/handle-draws! (:ctx/graphics ctx) (draw-body-rect entity (if (:collides? entity) :white :gray))))
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
-     (c/handle-draws! ctx (draw-fn v entity ctx)))
+     (c/handle-draws! (:ctx/graphics ctx) (draw-fn v entity ctx)))
    (catch Throwable t
-     (c/handle-draws! ctx (draw-body-rect entity :red))
+     (c/handle-draws! (:ctx/graphics ctx) (draw-body-rect entity :red))
      (utils/pretty-pst t))))
 
 (defn do! [{:keys [ctx/active-entities

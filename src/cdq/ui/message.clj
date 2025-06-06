@@ -11,10 +11,10 @@
                  :up? true}]))
 
 (defn create [_ctx]
-  (ui/actor {:draw (fn [this {:keys [ctx/ui-viewport] :as ctx}]
-                     (c/handle-draws! ctx
+  (ui/actor {:draw (fn [this {:keys [ctx/graphics] :as ctx}]
+                     (c/handle-draws! (:ctx/graphics ctx)
                                       [(draw-message (ui/user-object this)
-                                                     ui-viewport)]))
+                                                     (:ui-viewport graphics))]))
              :act (fn [this delta _ctx]
                     (let [state (ui/user-object this)]
                       (when (:text @state)

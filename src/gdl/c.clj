@@ -11,12 +11,12 @@
             [qrecord.core :as q]))
 
 (defn world-mouse-position [{:keys [ctx/input
-                                    ctx/world-viewport]}]
-  (viewport/unproject world-viewport (input/mouse-position input)))
+                                    ctx/graphics]}]
+  (viewport/unproject (:world-viewport graphics) (input/mouse-position input)))
 
 (defn ui-mouse-position [{:keys [ctx/input
-                                 ctx/ui-viewport]}]
-  (viewport/unproject ui-viewport (input/mouse-position input)))
+                                 ctx/graphics]}]
+  (viewport/unproject (:ui-viewport graphics) (input/mouse-position input)))
 
 (defn mouseover-actor [{:keys [ctx/stage] :as ctx}]
   (stage/hit stage (ui-mouse-position ctx)))
@@ -59,25 +59,25 @@
                            rotation
                            color))))
 
-(defmulti draw! (fn [[k] _this]
+(defmulti draw! (fn [[k] _graphics]
                   k))
 
-(defn handle-draws! [this draws] ; batch, unit-scale, default-font, shape-drawer.
+(defn handle-draws! [graphics draws]
   (doseq [component draws
           :when component]
-    (draw! component this)))
+    (draw! component graphics)))
 
 (defmethod draw! :draw/image [[_ sprite position]
-                              {:keys [ctx/batch
-                                      ctx/unit-scale]}]
+                              {:keys [batch
+                                      unit-scale]}]
   (draw-sprite! batch
                 @unit-scale
                 sprite
                 position))
 
 (defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
-                                         {:keys [ctx/batch
-                                                 ctx/unit-scale]}]
+                                         {:keys [batch
+                                                 unit-scale]}]
   (draw-sprite! batch
                 @unit-scale
                 sprite
@@ -92,10 +92,10 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
-                             {:keys [ctx/graphics
-                                     ctx/batch
-                                     ctx/unit-scale]}]
-  (bitmap-font/draw! (or font (:default-font graphics))
+                             {:keys [batch
+                                     unit-scale
+                                     default-font]}]
+  (bitmap-font/draw! (or font default-font)
                      batch
                      {:scale (* (float @unit-scale)
                                 (float (or scale 1)))
@@ -106,47 +106,47 @@
                       :up? up?}))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
-                                {:keys [ctx/shape-drawer]}]
+                                {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/filled-ellipse [[_ [x y] radius-x radius-y color]
-                                       {:keys [ctx/shape-drawer]}]
+                                       {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/circle [[_ [x y] radius color]
-                               {:keys [ctx/shape-drawer]}]
+                               {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/filled-circle [[_ [x y] radius color]
-                                      {:keys [ctx/shape-drawer]}]
+                                      {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/rectangle [[_ x y w h color]
-                                  {:keys [ctx/shape-drawer]}]
+                                  {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/filled-rectangle [[_ x y w h color]
-                                         {:keys [ctx/shape-drawer]}]
+                                         {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/filled-rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/arc [[_ [center-x center-y] radius start-angle degree color]
-                            {:keys [ctx/shape-drawer]}]
+                            {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/arc! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/sector [[_ [center-x center-y] radius start-angle degree color]
-                               {:keys [ctx/shape-drawer]}]
+                               {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/sector! shape-drawer center-x center-y radius start-angle degree))
 
 (defmethod draw! :draw/line [[_ [sx sy] [ex ey] color]
-                             {:keys [ctx/shape-drawer]}]
+                             {:keys [shape-drawer]}]
   (sd/set-color! shape-drawer color)
   (sd/line! shape-drawer sx sy ex ey))
 
@@ -163,7 +163,7 @@
       (draw! [:draw/line [leftx liney] [rightx liney] color] this))))
 
 (defmethod draw! :draw/with-line-width [[_ width draws]
-                                        {:keys [ctx/shape-drawer] :as this}]
+                                        {:keys [shape-drawer] :as this}]
   (sd/with-line-width shape-drawer width
     (fn []
       (handle-draws! this draws))))
@@ -191,23 +191,21 @@
                   :pixel-dimensions pixel-dimensions
                   :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
 
-(defn sprite [{:keys [ctx/graphics
-                      ctx/world-unit-scale]}
+(defn sprite [{:keys [ctx/graphics]}
               texture-path]
   (create-sprite (texture-region/create (graphics/texture graphics texture-path))
-                 world-unit-scale))
+                 (:world-unit-scale graphics)))
 
-(defn sub-sprite [{:keys [ctx/world-unit-scale]} sprite [x y w h]]
+(defn sub-sprite [{:keys [ctx/graphics]} sprite [x y w h]]
   (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
-                 world-unit-scale))
+                 (:world-unit-scale graphics)))
 
-(defn sprite-sheet [{:keys [ctx/graphics
-                            ctx/world-unit-scale]}
+(defn sprite-sheet [{:keys [ctx/graphics]}
                     texture-path
                     tilew
                     tileh]
   {:image (create-sprite (texture-region/create (graphics/texture graphics texture-path))
-                         world-unit-scale)
+                         (:world-unit-scale graphics))
    :tilew tilew
    :tileh tileh})
 

@@ -12,9 +12,9 @@
 
 (defn tile-color-setter [{:keys [ctx/raycaster
                                  ctx/explored-tile-corners
-                                 ctx/world-viewport]}]
+                                 ctx/graphics]}]
   #_(reset! do-once false)
-  (let [light-position (camera/position (:camera world-viewport))
+  (let [light-position (camera/position (:camera (:world-viewport graphics)))
         light-cache (atom {})]
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]

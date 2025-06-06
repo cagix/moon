@@ -25,11 +25,11 @@
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
 (defn line-of-sight? [{:keys [ctx/raycaster
-                              ctx/world-viewport]}
+                              ctx/graphics]}
                       source
                       target]
   (and (or (not (:entity/player? source))
-           (on-screen? world-viewport (entity/position target)))
+           (on-screen? (:world-viewport graphics) (entity/position target)))
        (not (and los-checks?
                  (raycaster/blocked? raycaster
                                      (entity/position source)

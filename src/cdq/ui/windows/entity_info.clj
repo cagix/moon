@@ -43,5 +43,5 @@
                                         (.pack window))}))
     window))
 
-(defn create [{:keys [ctx/ui-viewport]}]
-  (create* [(:width ui-viewport) 0]))
+(defn create [{:keys [ctx/graphics]}]
+  (create* [(:width (:ui-viewport graphics)) 0]))

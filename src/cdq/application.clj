@@ -5,38 +5,20 @@
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
-(q/defrecord Context [ctx/batch
-                      ctx/config
+(q/defrecord Context [ctx/config
                       ctx/db
                       ctx/graphics
                       ctx/input
-                      ctx/stage
-                      ctx/ui-viewport
-                      ctx/unit-scale
-                      ctx/shape-drawer
-                      ctx/shape-drawer-texture
-                      ctx/world-unit-scale
-                      ctx/world-viewport])
+                      ctx/stage])
 
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/config :some]
              [:ctx/db :some]
-
-             ;; all gdx related stuff & backend is one _type_
              [:ctx/audio :some]
              [:ctx/input :some]
              [:ctx/stage :some]
-             [:ctx/batch :some]
              [:ctx/graphics :some]
-             [:ctx/ui-viewport :some]
-             [:ctx/unit-scale :some]
-             [:ctx/shape-drawer :some]
-             [:ctx/shape-drawer-texture :some]
-             [:ctx/world-unit-scale :some]
-             [:ctx/world-viewport :some]
-             ;;
-
              [:ctx/elapsed-time number?]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/max-delta number?]
@@ -72,13 +54,9 @@
 (defn dispose! []
   (let [{:keys [ctx/audio
                 ctx/graphics
-                ctx/batch
-                ctx/tiled-map
-                ctx/shape-drawer-texture]} @state]
+                ctx/tiled-map]} @state]
     (disp/dispose! audio)
     (disp/dispose! graphics)
-    (disp/dispose! batch)
-    (disp/dispose! shape-drawer-texture)
     (disp/dispose! tiled-map)
     ; TODO vis-ui dispose
     ; TODO what else disposable?
@@ -94,7 +72,6 @@
 
 (defn resize! [width height]
   (m/validate-humanize schema @state)
-  (let [{:keys [ctx/ui-viewport
-                ctx/world-viewport]} @state]
-    (viewport/resize! ui-viewport    width height)
-    (viewport/resize! world-viewport width height)))
+  (let [{:keys [ctx/graphics]} @state]
+    (viewport/resize! (:ui-viewport    graphics) width height)
+    (viewport/resize! (:world-viewport graphics) width height)))

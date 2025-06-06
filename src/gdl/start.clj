@@ -13,6 +13,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -37,6 +38,7 @@
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport]
             [gdl.graphics.g2d.bitmap-font]
+            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
@@ -124,9 +126,19 @@
 (defrecord Graphics [graphics
                      textures
                      cursors
-                     default-font]
+                     default-font
+                     world-unit-scale
+                     ui-viewport
+                     world-viewport
+                     batch
+                     unit-scale
+                     shape-drawer-texture
+                     shape-drawer
+                     tiled-map-renderer]
   disposable/Disposable
   (dispose! [_]
+    (disposable/dispose! batch)
+    (disposable/dispose! shape-drawer-texture)
     (run! disposable/dispose! (vals textures))
     (run! disposable/dispose! (vals cursors))
     (disposable/dispose! default-font))
@@ -145,54 +157,24 @@
   (texture [_ path]
     (assert (contains? textures path) (str path))
     (get textures path))
+
+  (draw-on-world-viewport! [_ f]
+    (batch/set-color! batch (color/create :white)) ; fix scene2d.ui.tooltip flickering
+    (batch/set-projection-matrix! batch (gdl.graphics.camera/combined (:camera world-viewport)))
+    (batch/begin! batch)
+    (shape-drawer/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (batch/end! batch))
+
+  (draw-tiled-map! [_ tiled-map color-setter]
+    (tiled-map-renderer/draw! (tiled-map-renderer tiled-map)
+                              tiled-map
+                              color-setter
+                              (:camera world-viewport)))
   )
-
-(defn- create-graphics [graphics
-                        files
-                        textures
-                        cursors
-                        cursor-path-format
-                        default-font
-                        batch
-                        world-unit-scale
-                        ]
-  (let [textures-to-load (find-assets files textures)
-        ;_ (println "load-textures (count textures-to-load): " (count textures-to-load))
-        textures (into {} (for [file (find-assets files textures)]
-                            [file (texture/load! file)]))
-        cursors (update-vals cursors
-                             (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
-                                     cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
-                                 (.dispose pixmap)
-                                 cursor)))
-        default-font (when default-font
-                       (truetype-font files default-font))]
-    (map->Graphics {
-                    :graphics graphics
-                    :textures textures
-                    :cursors cursors
-                    :default-font default-font
-                    :tiled-map-renderer (memoize (fn [tiled-map]
-                                                   (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                                (float world-unit-scale)
-                                                                                batch)))
-                    })))
-
-(defn- create-input [this]
-  (reify gdl.input/Input
-    (button-just-pressed? [_ button]
-      (input/button-just-pressed? this (input.buttons/->from-k button)))
-
-    (key-pressed? [_ key]
-      (input/key-pressed? this (input.keys/->from-k key)))
-
-    (key-just-pressed? [_ key]
-      (input/key-just-pressed? this (input.keys/->from-k key)))
-
-    (mouse-position [_]
-      [(input/x this)
-       (input/y this)])))
 
 (defn- reify-camera [this]
   (reify
@@ -290,6 +272,65 @@
     (.dispose pixmap)
     texture))
 
+(defn- create-graphics [gdx-graphics
+                        gdx-files
+                        {:keys [textures
+                                cursors ; optional
+                                cursor-path-format ; optional
+                                default-font ; optional, could use gdx included (BitmapFont.)
+                                tile-size
+                                ui-viewport
+                                world-viewport]}]
+  (let [batch (sprite-batch/create)
+        shape-drawer-texture (white-pixel-texture)
+        world-unit-scale (float (/ tile-size))
+        ui-viewport (create-ui-viewport ui-viewport)
+        textures-to-load (find-assets gdx-files textures)
+        ;_ (println "load-textures (count textures-to-load): " (count textures-to-load))
+        textures (into {} (for [file (find-assets gdx-files textures)]
+                            [file (texture/load! file)]))
+        cursors (update-vals cursors
+                             (fn [[file [hotspot-x hotspot-y]]]
+                               (let [pixmap (pixmap/create (files/internal gdx-files (format cursor-path-format file)))
+                                     cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
+                                 (.dispose pixmap)
+                                 cursor)))
+        default-font (when default-font
+                       (truetype-font gdx-files default-font))]
+    (map->Graphics {:graphics gdx-graphics
+                    :textures textures
+                    :cursors cursors
+                    :default-font default-font
+                    :world-unit-scale world-unit-scale
+                    :ui-viewport ui-viewport
+                    :world-viewport (create-world-viewport world-unit-scale world-viewport)
+                    :batch batch
+                    :unit-scale (atom 1)
+                    :shape-drawer-texture shape-drawer-texture
+                    :shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
+                    :tiled-map-renderer (memoize (fn [tiled-map]
+                                                   (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                                (float world-unit-scale)
+                                                                                batch)))})))
+
+(comment
+ (:shape-drawer (:ctx/graphics @cdq.application/state))
+ )
+
+(defn- create-input [this]
+  (reify gdl.input/Input
+    (button-just-pressed? [_ button]
+      (input/button-just-pressed? this (input.buttons/->from-k button)))
+
+    (key-pressed? [_ key]
+      (input/key-pressed? this (input.keys/->from-k key)))
+
+    (key-just-pressed? [_ key]
+      (input/key-just-pressed? this (input.keys/->from-k key)))
+
+    (mouse-position [_]
+      [(input/x this)
+       (input/y this)])))
 (defn- reify-stage [stage]
   (reify
     ; TODO is disposable but not sure if needed as we handle batch ourself.
@@ -319,43 +360,21 @@
 
 (defn- create-context [{:keys [gdx/audio
                                gdx/files
-                               gdx/input
-                               gdx/graphics]}
-                       {:keys [sounds
-                               textures
-                               tile-size
-                               ui-viewport
-                               world-viewport
-                               cursor-path-format ; optional
-                               cursors ; optional
-                               default-font ; optional, could use gdx included (BitmapFont.)
-                               ui]}]
-  (let [batch (sprite-batch/create)
-        shape-drawer-texture (white-pixel-texture)
-        world-unit-scale (float (/ tile-size))
-        ui-viewport (create-ui-viewport ui-viewport)
-        stage (let [stage (ui/stage (:java-object ui-viewport)
-                                    batch)]
+                               gdx/input]
+                        :as context}
+                       {:keys [sounds ui]
+                        :as config}]
+  (let [graphics (create-graphics (:gdx/graphics context)
+                                  (:gdx/files context)
+                                  (:graphics config))
+        stage (let [stage (ui/stage (:java-object (:ui-viewport graphics))
+                                    (:batch graphics))]
                 (input/set-processor! input stage)
                 (reify-stage stage))]
     (ui/load! ui)
     {:ctx/input (create-input input)
      :ctx/audio (when sounds (create-audio audio files (find-assets files sounds)))
-     :ctx/graphics (create-graphics graphics
-                                    files
-                                    textures
-                                    cursors
-                                    cursor-path-format
-                                    default-font
-                                    batch
-                                    world-unit-scale)
-     :ctx/world-unit-scale world-unit-scale
-     :ctx/ui-viewport ui-viewport
-     :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
-     :ctx/batch batch
-     :ctx/unit-scale (atom 1)
-     :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
+     :ctx/graphics graphics
      :ctx/stage stage}))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?

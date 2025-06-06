@@ -15,6 +15,6 @@
       1
       [1 1 1 0.8]]]))
 
-(defn do! [{:keys [ctx/world-viewport] :as ctx}]
+(defn do! [{:keys [ctx/graphics] :as ctx}]
   (when show-tile-grid?
-    (c/handle-draws! ctx (draw-tile-grid* world-viewport))))
+    (c/handle-draws! (:ctx/graphics ctx) (draw-tile-grid* (:world-viewport graphics)))))

@@ -3,7 +3,7 @@
             [gdl.c :as c]))
 
 (defn do! [{:keys [ctx/grid] :as ctx}]
-  (c/handle-draws! ctx
+  (c/handle-draws! (:ctx/graphics ctx)
                    (let [[x y] (mapv int (c/world-mouse-position ctx))
                          cell (grid/cell grid [x y])]
                      (when (and cell (#{:air :none} (:movement @cell)))

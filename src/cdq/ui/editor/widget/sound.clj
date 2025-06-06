@@ -15,7 +15,7 @@
 (defn- open-choose-sound-window! [table
                                   {:keys [ctx/audio
                                           ctx/stage
-                                          ctx/ui-viewport]}]
+                                          ctx/graphics]}]
   (let [rows (for [sound-name (audio/all-sounds audio)]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
@@ -26,7 +26,7 @@
                                   (let [[k _] (ui/user-object table)]
                                     (ui/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage/add! stage (scroll-pane/choose-window (:width ui-viewport)
+    (stage/add! stage (scroll-pane/choose-window (:width (:ui-viewport graphics))
                                                      rows))))
 
 (defn- columns [table sound-name]

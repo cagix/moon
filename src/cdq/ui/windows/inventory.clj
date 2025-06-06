@@ -34,7 +34,7 @@
   (ui/widget
    {:draw
     (fn [actor {:keys [ctx/player-eid] :as ctx}]
-      (c/handle-draws! ctx
+      (c/handle-draws! (:ctx/graphics ctx)
                        (draw-cell-rect @player-eid
                                        (ui/get-x actor)
                                        (ui/get-y actor)
@@ -102,14 +102,14 @@
                              (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
                                (->cell ctx :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [ctx/ui-viewport]
+(defn create [{:keys [ctx/graphics]
                :as ctx}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [(:width ui-viewport)
-                         (:height ui-viewport)]
+              :position [(:width (:ui-viewport graphics))
+                         (:height (:ui-viewport graphics))]
               :rows [[{:actor (inventory-table ctx)
                        :pad 4}]]}))
 

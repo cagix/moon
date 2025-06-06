@@ -25,7 +25,7 @@
 (defn- create-editor-window
   [props
    {:keys [ctx/db
-           ctx/ui-viewport]
+           ctx/graphics]
     :as ctx}]
   (let [schema (get (:schemas db) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
@@ -44,7 +44,7 @@
                                            (swap! application/state update :ctx/db
                                                   db/delete!
                                                   (:property/id props))))]
-    (ui/add-rows! window [[(scroll-pane/table-cell (:height ui-viewport)
+    (ui/add-rows! window [[(scroll-pane/table-cell (:height (:ui-viewport graphics))
                                                    [[{:actor widget :colspan 2}]
                                                     [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
                                                                              (fn [_actor ctx]

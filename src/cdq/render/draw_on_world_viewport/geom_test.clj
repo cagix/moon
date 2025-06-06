@@ -16,4 +16,4 @@
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
 (defn do! [ctx]
-  (c/handle-draws! ctx (geom-test* ctx)))
+  (c/handle-draws! (:ctx/graphics ctx) (geom-test* ctx)))

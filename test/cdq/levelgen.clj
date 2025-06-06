@@ -74,7 +74,7 @@
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
-                   :ctx/camera (:camera (:ctx/world-viewport ctx))
+                   :ctx/camera (:camera (:world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly (color/create :white))
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
@@ -130,7 +130,6 @@
   (render-stage! @state))
 
 (defn resize! [width height]
-  (let [{:keys [ctx/ui-viewport
-                ctx/world-viewport]} @state]
-    (viewport/resize! ui-viewport    width height)
-    (viewport/resize! world-viewport width height)))
+  (let [{:keys [ctx/graphics]} @state]
+    (viewport/resize! (:ui-viewport    graphics) width height)
+    (viewport/resize! (:world-viewport graphics) width height)))

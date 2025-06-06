@@ -46,7 +46,7 @@
                      :update-fn (fn [ctx]
                                   (mapv int (c/world-mouse-position ctx)))}
                     {:label "Zoom"
-                     :update-fn (comp camera/zoom :camera :ctx/world-viewport)
+                     :update-fn (comp camera/zoom :camera :world-viewport :ctx/graphics)
                      :icon (graphics/texture graphics "images/zoom.png")}
                     {:label "FPS"
                      :update-fn (comp graphics/frames-per-second :ctx/graphics)
