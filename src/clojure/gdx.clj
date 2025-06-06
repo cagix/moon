@@ -1,5 +1,17 @@
 (ns clojure.gdx
   (:import (com.badlogic.gdx Gdx)))
 
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+(defn app []
+  Gdx/app)
+
+(defn audio []
+  Gdx/audio)
+
+(defn files []
+  Gdx/files)
+
+(defn graphics []
+  Gdx/graphics)
+
+(defn input []
+  Gdx/input)

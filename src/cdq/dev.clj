@@ -2,10 +2,14 @@
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [clojure.gdx :refer [post-runnable!]]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.app :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.c :as c]))
+
+(defmacro post-runnable! [& exprs]
+  `(app/post-runnable! (gdx/app) (fn [] ~@exprs)))
 
 (comment
 

@@ -1,5 +1,6 @@
 (ns gdl.start
   (:require [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.graphics.color :as color]
@@ -21,8 +22,7 @@
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
-           (com.badlogic.gdx ApplicationListener
-                             Gdx)
+           (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -116,7 +116,7 @@
                 (.getAssetNames this))))))
 
 (defn- create-graphics []
-  (let [this Gdx/graphics]
+  (let [this (gdx/graphics)]
     (reify graphics/Graphics
       (delta-time [_]
         (.getDeltaTime this))
@@ -131,7 +131,7 @@
         (.setCursor this cursor)))))
 
 (defn- create-input []
-  (let [this Gdx/input]
+  (let [this (gdx/input)]
     (reify input/Input
       (button-just-pressed? [_ button]
         (.isButtonJustPressed this (interop/k->input-button button)))
@@ -305,7 +305,7 @@
     texture))
 
 (defn- truetype-font [{:keys [file size quality-scaling]}]
-  (freetype/generate (.internal Gdx/files file)
+  (freetype/generate (.internal (gdx/files) file)
                      {:size (* size quality-scaling)
                       :scale (/ quality-scaling)
                       :min-filter :texture-filter/linear ; because scaling to world-units
@@ -332,14 +332,14 @@
                                asset-type-extensions]}]
   (for [[asset-type extensions] asset-type-extensions
         file (map #(str/replace-first % folder "")
-                  (recursively-search (.internal Gdx/files folder)
+                  (recursively-search (.internal (gdx/files) folder)
                                       extensions))]
     [file asset-type]))
 
 (defn- reify-stage [ui-viewport batch]
   (let [stage (ui/stage (:java-object ui-viewport)
                         batch)]
-    (.setInputProcessor Gdx/input stage)
+    (.setInputProcessor (gdx/input) stage)
     (reify
       ; TODO is disposable but not sure if needed as we handle batch ourself.
       clojure.lang.ILookup
@@ -369,7 +369,7 @@
 #_(defn- create-audio [sounds-to-load]
   (into {}
         (for [file sounds-to-load]
-          (.newSound Gdx/audio (.internal Gdx/files file)))))
+          (audio/sound (gdx/audio) (.internal (gdx/files) file)))))
 
 (defn- create-context [{:keys [assets
                                tile-size
@@ -397,8 +397,8 @@
      :ctx/shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                                       cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                 (let [pixmap (Pixmap. (.internal (gdx/files) (format cursor-path-format file)))
+                                       cursor (.newCursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
      :ctx/default-font (when default-font
