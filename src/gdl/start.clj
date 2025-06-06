@@ -16,11 +16,12 @@
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.math.utils :as math-utils]
-            [clojure.gdx.math.vector2 :as vector2]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
+            [clojure.gdx.utils.viewport :as viewport]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.java.awt.taskbar :as taskbar]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
@@ -32,7 +33,7 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
-            [gdl.graphics.viewport :as viewport]
+            [gdl.graphics.viewport]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.input]
             [gdl.ui :as ui]
@@ -45,7 +46,6 @@
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           TextureRegion)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)
            (gdl.graphics OrthogonalTiledMapRenderer)))
 
 (defn- text-height [^BitmapFont font text]
@@ -204,11 +204,11 @@
       (camera/set-zoom! cam (max 0.1 (+ (camera/zoom cam) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
-  (let [this (FitViewport. width height camera)]
+  (let [this (fit-viewport/create width height camera)]
     (reify
-      viewport/Viewport
+      gdl.graphics.viewport/Viewport
       (resize! [_ width height]
-        (.update this width height center-camera?))
+        (viewport/update! this width height center-camera?))
 
       ; touch coordinates are y-down, while screen coordinates are y-up
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -221,10 +221,7 @@
               clamped-y (math-utils/clamp y
                                           (.getTopGutterHeight this)
                                           (.getTopGutterY      this))]
-
-          (->> (vector2/create clamped-x clamped-y)
-               (.unproject this)
-               vector2/->clj-vec)))
+          (viewport/unproject this clamped-x clamped-y)))
 
       clojure.lang.ILookup
       (valAt [_ key]
