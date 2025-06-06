@@ -33,7 +33,6 @@
             [clojure.string :as str]
             [gdl.audio]
             [gdl.graphics]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.camera]
             [gdl.graphics.texture]
             [gdl.graphics.shape-drawer :as shape-drawer]
@@ -245,52 +244,6 @@
                                                :y-down? false})
                   {:center-camera? false})))
 
-(defn- sprite-batch []
-  (let [this (sprite-batch/create)]
-    (reify
-      clojure.lang.ILookup
-      (valAt [_ k]
-        (case k
-          :sprite-batch/java-object this))
-
-      Disposable
-      (dispose [_]
-        (.dispose this))
-
-      batch/Batch
-      (set-color! [_ color]
-        (.setColor this ^Color color))
-
-      (draw! [_ texture-region {:keys [x
-                                       y
-                                       origin-x
-                                       origin-y
-                                       width
-                                       height
-                                       scale-x
-                                       scale-y
-                                       rotation]}]
-        (.draw this
-               (:texture-region/java-object texture-region)
-               x
-               y
-               origin-x
-               origin-y
-               width
-               height
-               scale-x
-               scale-y
-               rotation))
-
-      (begin! [_]
-        (.begin this))
-
-      (end! [_]
-        (.end this))
-
-      (set-projection-matrix! [_ matrix]
-        (.setProjectionMatrix this matrix)))))
-
 (defn- white-pixel-texture []
   (let [pixmap (doto (pixmap/create 1 1)
                  (.setColor (color/create :white))
@@ -312,7 +265,7 @@
         (let [old-scale (bitmap-font/scale-x font)]
           (bitmap-font/set-scale! font (* old-scale scale))
           (bitmap-font/draw! {:font font
-                              :batch (:sprite-batch/java-object batch)
+                              :batch batch
                               :text text
                               :x x
                               :y (+ y (if up? (bitmap-font/text-height font text) 0))
@@ -370,7 +323,7 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [batch (sprite-batch)
+  (let [batch (sprite-batch/create)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
@@ -401,7 +354,7 @@
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
-                                                                     (:sprite-batch/java-object batch))))
+                                                                     batch)))
      :ctx/stage stage}))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?

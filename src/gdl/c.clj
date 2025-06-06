@@ -1,6 +1,6 @@
 (ns gdl.c
   (:require [clojure.gdx.graphics.color :as color]
-            [gdl.graphics.batch :as batch]
+            [clojure.gdx.graphics.g2d.batch :as batch]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]

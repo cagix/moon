@@ -205,9 +205,7 @@
   (Stage/.clear stage))
 
 (defn stage [viewport batch]
-  (proxy [CtxStage ILookup] [viewport
-                             (:sprite-batch/java-object batch)
-                             (atom nil)]
+  (proxy [CtxStage ILookup] [viewport batch (atom nil)]
     (valAt [id]
       (find-actor-with-id (root this) id))))
 

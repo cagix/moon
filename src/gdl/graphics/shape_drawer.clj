@@ -17,7 +17,7 @@
   (with-line-width [_ width draw-fn]))
 
 (defn create [batch texture-region]
-  (let [this (ShapeDrawer. (:sprite-batch/java-object batch) texture-region)]
+  (let [this (ShapeDrawer. batch texture-region)]
     (reify PShapeDrawer
       (set-color! [_ color]
         (.setColor this (color/create color)))
