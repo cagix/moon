@@ -5,7 +5,7 @@
   ([]
    (OrthographicCamera.))
   ([{:keys [world-width world-height y-down?]}]
-   (doto (OrthographicCamera.)
+   (doto (create)
      (.setToOrtho y-down? world-width world-height))))
 
 (defn set-zoom! [^OrthographicCamera this amount]
