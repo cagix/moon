@@ -32,7 +32,6 @@
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.batch :as batch]
@@ -121,11 +120,7 @@
 
       clojure.lang.IFn
       (invoke [_ path]
-        (reify-asset (assets-manager/safe-get this path)))
-
-      assets/Assets
-      (all-of-type [_ asset-type-k]
-        (assets-manager/all-of-class this (k->class asset-type-k))))))
+        (reify-asset (assets-manager/safe-get this path))))))
 
 (defn- create-audio [audio files {:keys [folder extensions]}]
   (let [sounds-to-load (map #(str/replace-first % "resources/" "")
