@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.vector2 :as v]
-            [clojure.gdx.ui :as ui]))
+            [gdl.ui :as ui]))
 
 (defmulti on-clicked
   (fn [ctx eid]

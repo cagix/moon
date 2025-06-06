@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.animation
   (:require [cdq.ui.editor.widget :as widget]
             [cdq.schema :as schema]
-            [clojure.gdx.ui :as ui]))
+            [gdl.ui :as ui]))
 
 (defmethod widget/create :s/animation [_ animation ctx]
   (ui/table {:rows [(for [image (:frames animation)]

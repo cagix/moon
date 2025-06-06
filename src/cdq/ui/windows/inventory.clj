@@ -5,7 +5,7 @@
             [cdq.state :as state]
             [cdq.ctx :as ctx]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.c :as c]
             [cdq.utils :as utils]))
 

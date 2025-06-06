@@ -1,4 +1,4 @@
-(ns clojure.gdx.ui
+(ns gdl.ui
   (:require [gdl.graphics.texture :as texture])
   (:import (clojure.lang ILookup)
            (gdl.graphics.texture Texture

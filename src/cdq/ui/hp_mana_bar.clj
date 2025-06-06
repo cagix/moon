@@ -1,7 +1,7 @@
 (ns cdq.ui.hp-mana-bar
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.utils :as utils]
             [gdl.c :as c]))
 

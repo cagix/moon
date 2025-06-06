@@ -1,5 +1,5 @@
 (ns gdl.ui.menu
-  (:require [clojure.gdx.ui :as ui])
+  (:require [gdl.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)

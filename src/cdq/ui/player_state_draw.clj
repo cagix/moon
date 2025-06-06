@@ -1,7 +1,7 @@
 (ns cdq.ui.player-state-draw
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.c :as c]))
 
 (defn create [_ctx]

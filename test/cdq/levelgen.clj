@@ -14,7 +14,7 @@
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx.graphics.color :as color]
 
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
 
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]

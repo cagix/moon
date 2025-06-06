@@ -10,30 +10,23 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
-
-            ;;
-            [clojure.gdx.shape-drawer :as shape-drawer]
-            [clojure.gdx.ui :as ui]
-            ;;
-
             [clojure.gdx.math.utils :as math-utils]
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
-
-
             [clojure.string :as str]
             [clojure.java.io :as io]
-
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
             [gdl.graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.texture :as texture]
+            [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport :as viewport]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.input]
+            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
@@ -398,7 +391,7 @@
       (ui/draw! stage ctx)
       ctx)
 
-    (add! [_ actor] ; -> re-use clojure.gdx.ui/add! ?
+    (add! [_ actor] ; -> re-use gdl.ui/add! ?
       (ui/add! stage actor))
 
     (clear! [_]

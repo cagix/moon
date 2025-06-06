@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.default
   (:require [cdq.ui.editor.widget :as widget]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.utils :refer [truncate
                                ->edn-str]]))
 

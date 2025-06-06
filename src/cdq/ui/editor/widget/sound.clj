@@ -3,7 +3,7 @@
             [cdq.ui.editor.widget :as widget]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
 (defn- play-button [sound-name]

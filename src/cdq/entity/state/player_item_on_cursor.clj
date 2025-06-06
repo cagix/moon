@@ -4,7 +4,7 @@
             [cdq.state :as state]
             [cdq.vector2 :as v]
             [cdq.utils :refer [defcomponent]]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.c :as c]
             [gdl.input :as input]))
 

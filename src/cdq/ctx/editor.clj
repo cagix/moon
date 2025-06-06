@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [gdl.input :as input]
             [cdq.property :as property]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.ui.editor.overview-table]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]

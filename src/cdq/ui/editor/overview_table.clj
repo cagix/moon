@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.overview-table
-  (:require [clojure.gdx.ui :as ui]
+  (:require [gdl.ui :as ui]
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]))

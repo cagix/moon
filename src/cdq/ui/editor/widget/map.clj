@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.schemas :as schemas]
             [clojure.set :as set]
-            [clojure.gdx.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.ui.editor.widget :as widget]
             [gdl.ui.stage :as stage]
             [cdq.utils :as utils]))
