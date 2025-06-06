@@ -15,8 +15,9 @@
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input :as input]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
@@ -78,22 +79,17 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn- reify-texture-region [^TextureRegion this]
+(defn- reify-texture-region [this]
   (reify
     clojure.lang.ILookup
     (valAt [_ k]
       (case k
-        :texture-region/dimensions [(.getRegionWidth  this)
-                                    (.getRegionHeight this)]
+        :texture-region/dimensions (texture-region/dimensions this)
         :texture-region/java-object this))
 
     gdl.graphics.texture/TextureRegion
     (sub-region [_ x y w h]
-      (reify-texture-region (TextureRegion. this
-                                            (int x)
-                                            (int y)
-                                            (int w)
-                                            (int h))))))
+      (reify-texture-region (texture-region/create this x y w h)))))
 
 (defn- reify-texture [^Texture this]
   (reify
@@ -409,7 +405,9 @@
                 (reify-stage stage))]
     (ui/load! ui)
     {:ctx/input (create-input input)
+     ;
      :ctx/audio (when sounds (create-audio audio files sounds))
+     ;
      :ctx/assets (create-asset-manager (assets-to-load files assets))
      :ctx/graphics (create-graphics graphics)
      :ctx/world-unit-scale world-unit-scale
@@ -418,7 +416,7 @@
      :ctx/batch batch
      :ctx/unit-scale (atom 1)
      :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
+     :ctx/shape-drawer (shape-drawer/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
                                  (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
@@ -431,6 +429,7 @@
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
                                                                      (:sprite-batch/java-object batch))))
+     ;
      :ctx/stage stage}))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?
