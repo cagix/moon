@@ -17,6 +17,11 @@
         (f ctx params)))
     (render-element ctx)))
 
+(defn render-when-not [ctx [condition render-fns]]
+  (if (condition ctx)
+    ctx
+    (reduce render* ctx render-fns)))
+
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)

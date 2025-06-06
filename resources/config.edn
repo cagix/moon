@@ -52,9 +52,9 @@
                               cdq.render.player-state-handle-click/do!
                               cdq.render.update-mouseover-entity/do!
                               [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]
-                              cdq.render.update-time/do!
-                              cdq.render.update-potential-fields/do!
-                              cdq.render.tick-entities/do!
+                              [cdq.utils/render-when-not [:ctx/paused? [cdq.render.update-time/do!
+                                                                        cdq.render.update-potential-fields/do!
+                                                                        cdq.render.tick-entities/do!]]]
                               cdq.render.remove-destroyed-entities/do!
                               [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
                               cdq.render.check-window-hotkeys/do!]

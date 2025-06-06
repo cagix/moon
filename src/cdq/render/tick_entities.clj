@@ -5,7 +5,7 @@
             [gdl.ui.stage :as stage]
             [cdq.utils :as utils]))
 
-(defn- tick-entities!
+(defn do!
   [{:keys [ctx/active-entities
            ctx/stage]
     :as ctx}]
@@ -28,12 +28,4 @@
      (utils/pretty-pst t)
      (stage/add! stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-  )
-
-(defn do! [{:keys [ctx/paused?]
-            :as ctx}]
-  (if paused?
-    ctx
-    (do
-     (tick-entities! ctx)
-     ctx)))
+  ctx)
