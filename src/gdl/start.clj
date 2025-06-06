@@ -2,9 +2,12 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.files :as files]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.input :as input]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
             [clojure.gdx.math-utils :as math-utils]
@@ -13,12 +16,12 @@
             [clojure.java.io :as io]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
-            [gdl.graphics :as graphics]
+            [gdl.graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
-            [gdl.input :as input]
+            [gdl.input]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (cdq.graphics OrthogonalTiledMapRenderer)
@@ -115,39 +118,31 @@
         (filter #(= (.getAssetType this %) (k->class asset-type-k))
                 (.getAssetNames this))))))
 
-(defn- create-graphics []
-  (let [this (gdx/graphics)]
-    (reify graphics/Graphics
-      (delta-time [_]
-        (.getDeltaTime this))
+(defn- create-graphics [this]
+  (reify gdl.graphics/Graphics
+    (delta-time [_]
+      (graphics/delta-time this))
 
-      (frames-per-second [_]
-        (.getFramesPerSecond this))
+    (frames-per-second [_]
+      (graphics/frames-per-second this))
 
-      (new-cursor [_ pixmap hotspot-x hotspot-y]
-        (.newCursor this pixmap hotspot-x hotspot-y))
+    (set-cursor! [_ cursor]
+      (graphics/set-cursor! this cursor))))
 
-      (set-cursor! [_ cursor]
-        (.setCursor this cursor)))))
+(defn- create-input [this]
+  (reify gdl.input/Input
+    (button-just-pressed? [_ button]
+      (input/button-just-pressed? this (interop/k->input-button button)))
 
-(defn- create-input []
-  (let [this (gdx/input)]
-    (reify input/Input
-      (button-just-pressed? [_ button]
-        (.isButtonJustPressed this (interop/k->input-button button)))
+    (key-pressed? [_ key]
+      (input/key-pressed? this (interop/k->input-key key)))
 
-      (key-pressed? [_ key]
-        (.isKeyPressed this (interop/k->input-key key)))
+    (key-just-pressed? [_ key]
+      (input/key-just-pressed? this (interop/k->input-key key)))
 
-      (key-just-pressed? [_ key]
-        (.isKeyJustPressed this (interop/k->input-key key)))
-
-      (set-processor! [_ input-processor]
-        (.setInputProcessor this input-processor))
-
-      (mouse-position [_]
-        [(.getX this)
-         (.getY this)]))))
+    (mouse-position [_]
+      [(input/x this)
+       (input/y this)])))
 
 (defn- vector3->clj-vec [^Vector3 v3]
   [(.x v3)
@@ -304,8 +299,8 @@
     (.dispose pixmap)
     texture))
 
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (freetype/generate (.internal (gdx/files) file)
+(defn- truetype-font [files {:keys [file size quality-scaling]}]
+  (freetype/generate (files/internal files file)
                      {:size (* size quality-scaling)
                       :scale (/ quality-scaling)
                       :min-filter :texture-filter/linear ; because scaling to world-units
@@ -328,48 +323,45 @@
           :else
           (recur remaining result))))
 
-(defn- assets-to-load [{:keys [folder
-                               asset-type-extensions]}]
+(defn- assets-to-load [files {:keys [folder
+                                     asset-type-extensions]}]
   (for [[asset-type extensions] asset-type-extensions
         file (map #(str/replace-first % folder "")
-                  (recursively-search (.internal (gdx/files) folder)
+                  (recursively-search (files/internal files folder)
                                       extensions))]
     [file asset-type]))
 
-(defn- reify-stage [ui-viewport batch]
-  (let [stage (ui/stage (:java-object ui-viewport)
-                        batch)]
-    (.setInputProcessor (gdx/input) stage)
-    (reify
-      ; TODO is disposable but not sure if needed as we handle batch ourself.
-      clojure.lang.ILookup
-      (valAt [_ key]
-        (key stage))
+(defn- reify-stage [stage]
+  (reify
+    ; TODO is disposable but not sure if needed as we handle batch ourself.
+    clojure.lang.ILookup
+    (valAt [_ key]
+      (key stage))
 
-      stage/Stage
-      (render! [_ ctx]
-        (ui/act! stage ctx)
-        (ui/draw! stage ctx)
-        ctx)
+    stage/Stage
+    (render! [_ ctx]
+      (ui/act! stage ctx)
+      (ui/draw! stage ctx)
+      ctx)
 
-      (add! [_ actor] ; -> re-use clojure.gdx.ui/add! ?
-        (ui/add! stage actor))
+    (add! [_ actor] ; -> re-use clojure.gdx.ui/add! ?
+      (ui/add! stage actor))
 
-      (clear! [_]
-        (ui/clear! stage))
+    (clear! [_]
+      (ui/clear! stage))
 
-      (hit [_ position]
-        (ui/hit stage position))
+    (hit [_ position]
+      (ui/hit stage position))
 
-      (find-actor [_ actor-name]
-        (-> stage
-            ui/root
-            (ui/find-actor actor-name))))))
+    (find-actor [_ actor-name]
+      (-> stage
+          ui/root
+          (ui/find-actor actor-name)))))
 
 #_(defn- create-audio [sounds-to-load]
   (into {}
         (for [file sounds-to-load]
-          (audio/sound (gdx/audio) (.internal (gdx/files) file)))))
+          (audio/sound (gdx/audio) (files/internal (gdx/files) file)))))
 
 (defn- create-context [{:keys [assets
                                tile-size
@@ -379,15 +371,22 @@
                                cursors ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                ui]}]
-  (let [batch (sprite-batch)
+  (let [files    (gdx/files)
+        input    (gdx/input)
+        graphics (gdx/graphics)
+        batch (sprite-batch)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (create-ui-viewport ui-viewport)]
+        ui-viewport (create-ui-viewport ui-viewport)
+        stage (let [stage (ui/stage (:java-object ui-viewport)
+                                    batch)]
+                (input/set-processor! input stage)
+                (reify-stage stage))]
     (ui/load! ui)
-    {:ctx/input (create-input)
+    {:ctx/input (create-input input)
      ;:ctx/audio (create-audio)
-     :ctx/assets (create-asset-manager (assets-to-load assets))
-     :ctx/graphics (create-graphics)
+     :ctx/assets (create-asset-manager (assets-to-load files assets))
+     :ctx/graphics (create-graphics graphics)
      :ctx/world-unit-scale world-unit-scale
      :ctx/ui-viewport ui-viewport
      :ctx/world-viewport (create-world-viewport world-unit-scale world-viewport)
@@ -397,12 +396,12 @@
      :ctx/shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
      :ctx/cursors (update-vals cursors
                                (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (Pixmap. (.internal (gdx/files) (format cursor-path-format file)))
-                                       cursor (.newCursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
+                                 (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
+                                       cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
      :ctx/default-font (when default-font
-                         (truetype-font default-font))
+                         (truetype-font files default-font))
      :ctx/tiled-map-renderer (memoize (fn [tiled-map]
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
@@ -410,7 +409,7 @@
      ;;;
 
      ;; USER INTERFACE
-     :ctx/stage (reify-stage ui-viewport batch)}))
+     :ctx/stage stage}))
 
 (defn- set-glfw-async! []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
