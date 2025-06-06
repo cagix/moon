@@ -5,7 +5,7 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [clojure.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [gdl.graphics.texture :as texture]))
 
 (defn- creature->texture-region [assets creature]
