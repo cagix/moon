@@ -1,4 +1,7 @@
 (ns clojure.gdx.tiled
+  "API for `com.badlogic.gdx.maps.tiled`.
+
+  When creating layers, `tiles` refers to a sequence of `[[x y] tiled-map-tile]`"
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
@@ -9,11 +12,44 @@
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.utils Disposable)))
 
+(def copy-tile
+  "Memoized function. Copies the given [[static-tiled-map-tile]].
+
+  Tiles are usually shared by multiple cells, see: https://libgdx.com/wiki/graphics/2d/tile-maps#cells"
+  (memoize
+   (fn [^StaticTiledMapTile tile]
+     (assert tile)
+     (StaticTiledMapTile. tile))))
+
+(defn static-tiled-map-tile
+  "Creates a `StaticTiledMapTile` with the given `texture-region` and property."
+  [texture-region property-name property-value]
+  {:pre [(:texture-region/java-object texture-region) ; ???
+         (string? property-name)]}
+  (let [tile (StaticTiledMapTile. ^TextureRegion (:texture-region/java-object texture-region))] ; ???
+    (.put (.getProperties tile) property-name property-value)
+    tile))
+
 (defprotocol HasMapProperties
-  (map-properties [_]))
+  (map-properties [_]
+                  "Returns the map-properties of the given tiled-map or tiled-map-layer as clojure map."))
+
+(defprotocol GetMapProperties
+  (^:private get-map-properties ^MapProperties [_]
+             "Internal helper for building map properties for TiledMap/Layer instances.
+             (There is no common interface)."))
+
+(extend-protocol GetMapProperties
+  TiledMap          (get-map-properties [this] (.getProperties this))
+  TiledMapTileLayer (get-map-properties [this] (.getProperties this)))
+
+(defn- build-map-properties [obj]
+  (let [ps (get-map-properties obj)]
+    (zipmap (.getKeys ps) (.getValues ps))))
 
 (defprotocol TMap
-  (layers [tiled-map])
+  (layers [tiled-map]
+          "Returns the layers of the tiled-map (instance of [[TMapLayer]]).")
 
   (layer-index [tiled-map layer]
                "Returns nil or the integer index of the layer.")
@@ -38,7 +74,9 @@
                   If there is no cell at this position in the layer returns `:no-cell`.
                   If the property value is undefined returns `:undefined`."))
 
-(defn map-positions
+;;; my level code -> move out of here .
+
+(defn- map-positions
   "Returns a sequence of all `[x y]` positions in the `tiled-map`."
   [tiled-map]
   (for [x (range (:tiled-map/width  tiled-map))
@@ -85,16 +123,7 @@
            (some #(tile-movement-property tiled-map % position)))
       "none"))
 
-(defprotocol GetMapProperties
-  (get-map-properties ^MapProperties [_]))
-
-(extend-protocol GetMapProperties
-  TiledMap          (get-map-properties [this] (.getProperties this))
-  TiledMapTileLayer (get-map-properties [this] (.getProperties this)))
-
-(defn- build-map-properties [obj]
-  (let [ps (get-map-properties obj)]
-    (zipmap (.getKeys ps) (.getValues ps))))
+;;;;;
 
 (defn- add-map-properties! [has-map-properties properties]
   (doseq [[k v] properties]
@@ -202,19 +231,3 @@
     (doseq [layer layers]
       (add-tiled-map-tile-layer! tiled-map layer))
     (reify-tiled-map tiled-map)))
-
-(def copy-tile
-  "Memoized function. Copies the given [static-tiled-map-tile].
-
-  Tiles are usually shared by multiple cells, see: https://libgdx.com/wiki/graphics/2d/tile-maps#cells"
-  (memoize
-   (fn [^StaticTiledMapTile tile]
-     (assert tile)
-     (StaticTiledMapTile. tile))))
-
-(defn static-tiled-map-tile [texture-region property-name property-value]
-  {:pre [(:texture-region/java-object texture-region)
-         (string? property-name)]}
-  (let [tile (StaticTiledMapTile. ^TextureRegion (:texture-region/java-object texture-region))]
-    (.put (.getProperties tile) property-name property-value)
-    tile))
