@@ -1,5 +1,5 @@
 (ns gdl.c
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.graphics.color :as color]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.shape-drawer :as sd]
@@ -33,7 +33,7 @@
                 :scale-x 1
                 :scale-y 1
                 :rotation rotation})
-  (if color (batch/set-color! batch (gdx/->color :white))))
+  (if color (batch/set-color! batch (color/create :white))))
 
 (defn- unit-dimensions [sprite unit-scale]
   (if (= unit-scale 1)

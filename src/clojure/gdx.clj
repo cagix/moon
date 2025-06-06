@@ -1,11 +1,10 @@
 (ns clojure.gdx
-  (:require [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx.graphics.color :as color]
             [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color
-                                      Colors)
+           (com.badlogic.gdx.graphics Colors)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap
@@ -15,26 +14,14 @@
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.utils ScreenUtils)))
 
-(defn- create-color
-  ([r g b]
-   (create-color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(defn ->color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (interop/k->color c)
-        (vector? c) (apply create-color c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
 (defn add-markdown-color! [name color]
-  (Colors/put name (->color color)))
+  (Colors/put name (color/create color)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn clear-screen! []
-  (ScreenUtils/clear Color/BLACK))
+  (ScreenUtils/clear (color/create :black)))
 
 (defprotocol GetMapProperties
   (get-map-properties ^MapProperties [_]))

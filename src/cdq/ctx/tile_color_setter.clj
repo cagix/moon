@@ -1,14 +1,14 @@
 (ns cdq.ctx.tile-color-setter
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.graphics.color :as color]
             [gdl.graphics.camera :as camera]
             [cdq.raycaster :as raycaster]))
 
 (def see-all-tiles? false)
 
-(def explored-tile-color (gdx/->color [0.5 0.5 0.5 1]))
+(def explored-tile-color (color/create [0.5 0.5 0.5 1]))
 
-(def white (gdx/->color :white))
-(def black (gdx/->color :black))
+(def white (color/create :white))
+(def black (color/create :black))
 
 (defn tile-color-setter [{:keys [ctx/raycaster
                                  ctx/explored-tile-corners

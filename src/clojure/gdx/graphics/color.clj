@@ -1,7 +1,7 @@
 (ns clojure.gdx.graphics.color
   (:import (com.badlogic.gdx.graphics Color)))
 
-(def mapping
+(def ^:private mapping
   {:black       Color/BLACK
    :blue        Color/BLUE
    :brown       Color/BROWN
@@ -37,3 +37,20 @@
    :violet      Color/VIOLET
    :white       Color/WHITE
    :yellow      Color/YELLOW})
+
+(defn- k->color [k]
+  (when-not (contains? mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Color: " k ". \nOptions are:\n" (sort (keys mapping))))))
+  (k mapping))
+
+(defn- create-color
+  ([r g b]
+   (create-color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(defn create ^Color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (k->color c)
+        (vector? c) (apply create-color c)
+        :else (throw (ex-info "Cannot understand color" c))))

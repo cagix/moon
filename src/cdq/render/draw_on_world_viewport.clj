@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.graphics.color :as color]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]))
@@ -20,7 +20,7 @@
                    ctx/unit-scale]
             :as ctx}]
   (let [draw-fns (map requiring-resolve draw-fns)]
-    (batch/set-color! batch (gdx/->color :white)) ; fix scene2d.ui.tooltip flickering
+    (batch/set-color! batch (color/create :white)) ; fix scene2d.ui.tooltip flickering
     (batch/set-projection-matrix! batch (camera/combined (:camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale

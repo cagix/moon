@@ -12,7 +12,7 @@
             [gdl.ui.stage :as stage]
 
             [cdq.utils.camera :as camera-utils]
-            [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
 
             [clojure.gdx.ui :as ui]
 
@@ -75,7 +75,7 @@
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:camera (:ctx/world-viewport ctx))
-                   :ctx/color-setter (constantly (gdx/->color :white))
+                   :ctx/color-setter (constantly (color/create :white))
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
         ctx (generate-level ctx cdq.level.modules/create)]

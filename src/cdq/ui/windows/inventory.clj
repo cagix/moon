@@ -1,10 +1,10 @@
 (ns cdq.ui.windows.inventory
-  (:require [clojure.gdx :as gdx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
             [cdq.ctx :as ctx]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.ui :as ui]
             [gdl.c :as c]
             [cdq.utils :as utils]))
@@ -64,7 +64,7 @@
   (ui/create-drawable (:sprite/texture-region (slot->sprite ctx slot))
                       :width cell-size
                       :height cell-size
-                      :tint-color (gdx/->color [1 1 1 0.4])))
+                      :tint-color (color/create [1 1 1 0.4])))
 
 (defn- ->cell [ctx slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

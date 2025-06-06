@@ -1,5 +1,5 @@
 (ns clojure.gdx.shape-drawer
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.graphics.color :as color]
             [gdl.graphics.shape-drawer]
             [clojure.gdx.math-utils :as math-utils])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -8,7 +8,7 @@
   (let [this (ShapeDrawer. (:sprite-batch/java-object batch) texture-region)]
     (reify gdl.graphics.shape-drawer/ShapeDrawer
       (set-color! [_ color]
-        (.setColor this (gdx/->color color)))
+        (.setColor this (color/create color)))
 
       (ellipse! [_ x y radius-x radius-y]
         (.ellipse this

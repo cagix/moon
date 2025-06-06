@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
@@ -25,8 +26,7 @@
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Pixmap
+           (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture
                                       OrthographicCamera)
@@ -298,7 +298,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
+                 (.setColor (color/create :white))
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)

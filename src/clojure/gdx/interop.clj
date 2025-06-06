@@ -1,6 +1,5 @@
 (ns clojure.gdx.interop
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input.buttons :as input.buttons]
+  (:require [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.utils.align :as align]))
 
@@ -9,7 +8,6 @@
     (throw (IllegalArgumentException. (str "Unknown " exception-name ": " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
 
-(def k->color        (partial static-field color/mapping         "Color"))
 (def k->input-button (partial static-field input.buttons/mapping "Button"))
 (def k->input-key    (partial static-field input.keys/mapping    "Key"))
 (def k->align        (partial static-field align/mapping         "Align"))
