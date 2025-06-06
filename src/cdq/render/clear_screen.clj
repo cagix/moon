@@ -1,6 +1,6 @@
 (ns cdq.render.clear-screen
-  (:require [clojure.gdx :as gdx]))
+  (:require [clojure.gdx.utils.screen :as screen-utils]))
 
 (defn do! [ctx]
-  (gdx/clear-screen!)
+  (screen-utils/clear! :black)
   ctx)

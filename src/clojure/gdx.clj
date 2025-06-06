@@ -1,27 +1,18 @@
 (ns clojure.gdx
-  (:require [clojure.gdx.graphics.color :as color]
-            [gdl.tiled :as tiled]
+  (:require [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disposable])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Colors)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell
                                         TmxMapLoader)
-           (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-           (com.badlogic.gdx.utils ScreenUtils)))
-
-(defn add-markdown-color! [name color]
-  (Colors/put name (color/create color)))
+           (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defn clear-screen! []
-  (ScreenUtils/clear (color/create :black)))
 
 (defprotocol GetMapProperties
   (get-map-properties ^MapProperties [_]))
