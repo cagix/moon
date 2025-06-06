@@ -361,11 +361,11 @@
 #_(defn- create-audio [sounds-to-load]
   (into {}
         (for [file sounds-to-load]
-          (audio/sound (gdx/audio) (files/internal (gdx/files) file)))))
+          (audio/sound audio (files/internal files file)))))
 
-(defn- create-context [{:keys [gdx/files
-                               gdx/input
-                               gdx/graphics]}
+(defn- create-context [{:keys [clojure.gdx/files
+                               clojure.gdx/input
+                               clojure.gdx/graphics]}
                        {:keys [assets
                                tile-size
                                ui-viewport
@@ -423,11 +423,6 @@
   (when dock-icon
     (set-taskbar-icon! dock-icon)))
 
-(defn- gdx-context []
-  {:gdx/files    (gdx/files)
-   :gdx/graphics (gdx/graphics)
-   :gdx/input    (gdx/input)})
-
 (defn -main [app-edn-path]
   (let [config (-> app-edn-path
                    io/resource
@@ -442,7 +437,8 @@
                         (proxy [ApplicationListener] []
                           (create  []
                             ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-                             (create-context (gdx-context) (:gdl.application/context config))
+                             (create-context (gdx/context)
+                                             (:gdl.application/context config))
                              config))
                           (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
                           (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))

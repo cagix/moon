@@ -9,7 +9,7 @@
             [gdl.c :as c]))
 
 (defmacro post-runnable! [& exprs]
-  `(app/post-runnable! (gdx/app) (fn [] ~@exprs)))
+  `(app/post-runnable! (:clojure.gdx/app (gdx/context)) (fn [] ~@exprs)))
 
 (comment
 
