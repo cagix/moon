@@ -1,23 +1,23 @@
 (ns clojure.gdx.maps.tiled.tiled-map-tile-layer
   (:require [clojure.gdx.maps.map-properties :as map-properties])
-  (:import (com.badlogic.gdx.maps.tiled TiledMap
-                                        TiledMapTileLayer
+  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer
                                         TiledMapTileLayer$Cell)))
 
-(defn add!
-  "Returns nil."
-  [^TiledMap tiled-map
+(defn create
+  [{:keys [width
+           height
+           tilewidth
+           tileheight]}
    {:keys [name
            visible?
            properties
            tiles]}]
   {:pre [(string? name)
          (boolean? visible?)]}
-  (let [tm-props (.getProperties tiled-map)
-        layer (TiledMapTileLayer. (.get tm-props "width")
-                                  (.get tm-props "height")
-                                  (.get tm-props "tilewidth")
-                                  (.get tm-props "tileheight"))]
+  (let [; tilewidth/tileheight should not be required as it it saved in the map
+        ; in example `.tmx` file the layers do not have those properties
+        ; but the constructor requires it.
+        layer (TiledMapTileLayer. width height tilewidth tileheight)]
     (.setName layer name)
     (.setVisible layer visible?)
     (map-properties/add! (.getProperties layer) properties)
@@ -25,5 +25,4 @@
             :when tiled-map-tile]
       (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
                             (.setTile tiled-map-tile))))
-    (.add (.getLayers tiled-map) layer)
-    nil))
+    layer))

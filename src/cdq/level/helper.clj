@@ -169,6 +169,6 @@
                  "tileheight" tile-size}
     :layers [{:name "ground"
               :visible? true
-              :properties {"movement-properties" true} ; TODO 'movement-layer'/'collision-layer'
+              :properties {"movement-properties" true}
               :tiles (for [position (g2d/posis grid)]
                        [position (position->tile position)])}]}))
