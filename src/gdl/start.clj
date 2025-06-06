@@ -406,9 +406,6 @@
                                         (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                      (float world-unit-scale)
                                                                      (:sprite-batch/java-object batch))))
-     ;;;
-
-     ;; USER INTERFACE
      :ctx/stage stage}))
 
 (defn- set-glfw-async! []
