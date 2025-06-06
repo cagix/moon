@@ -16,11 +16,15 @@
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.math.utils :as math-utils]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
-            [clojure.string :as str]
+            [clojure.java.awt.taskbar :as taskbar]
             [clojure.java.io :as io]
+            [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
+            [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
             [gdl.graphics]
@@ -40,15 +44,9 @@
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           TextureRegion)
-           (com.badlogic.gdx.math Frustum
-                                  Vector2
-                                  Vector3)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
-           (gdl.graphics OrthogonalTiledMapRenderer)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)))
+           (gdl.graphics OrthogonalTiledMapRenderer)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -158,14 +156,6 @@
       [(input/x this)
        (input/y this)])))
 
-(defn- vector3->clj-vec [^Vector3 v3]
-  [(.x v3)
-   (.y v3)
-   (.z v3)])
-
-(defn- frustum-plane-points [^Frustum frustum]
-  (map vector3->clj-vec (.planePoints frustum)))
-
 (defn- reify-camera [^OrthographicCamera this]
   (reify
     clojure.lang.ILookup
@@ -185,7 +175,7 @@
       (.combined this))
 
     (frustum [_]
-      (let [frustum-points (take 4 (frustum-plane-points (.frustum this)))
+      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (.frustum this))))
             left-x   (apply min (map first  frustum-points))
             right-x  (apply max (map first  frustum-points))
             bottom-y (apply min (map second frustum-points))
@@ -231,8 +221,10 @@
               clamped-y (math-utils/clamp y
                                           (.getTopGutterHeight this)
                                           (.getTopGutterY      this))]
-          (let [v2 (.unproject this (Vector2. clamped-x clamped-y))]
-            [(.x v2) (.y v2)])))
+
+          (->> (vector2/create clamped-x clamped-y)
+               (.unproject this)
+               vector2/->clj-vec)))
 
       clojure.lang.ILookup
       (valAt [_ key]
@@ -451,20 +443,12 @@
                                                                      (:sprite-batch/java-object batch))))
      :ctx/stage stage}))
 
-(defn- set-glfw-async! []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-
-(defn- set-taskbar-icon! [io-resource]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource io-resource))))
-
 (defn- set-mac-os-config! [{:keys [glfw-async?
                                    dock-icon]}]
   (when glfw-async?
-    (set-glfw-async!))
+    (lwjgl.system.configuration/set-glfw-library-name! "glfw_async"))
   (when dock-icon
-    (set-taskbar-icon! dock-icon)))
+    (taskbar/set-icon! dock-icon)))
 
 (defn -main [app-edn-path]
   (let [config (-> app-edn-path
