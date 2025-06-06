@@ -1,9 +1,17 @@
 (ns clojure.gdx
   (:import (com.badlogic.gdx Gdx)))
 
-(defn context []
-  {::app      Gdx/app
-   ::audio    Gdx/audio
-   ::files    Gdx/files
-   ::graphics Gdx/graphics
-   ::input    Gdx/input})
+(defn app []
+  Gdx/app)
+
+(defn audio []
+  Gdx/audio)
+
+(defn files []
+  Gdx/files)
+
+(defn graphics []
+  Gdx/graphics)
+
+(defn input []
+  Gdx/input)

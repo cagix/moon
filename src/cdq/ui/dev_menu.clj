@@ -6,7 +6,7 @@
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [clojure.string :as str]
-            [clojure.gdx.ui.menu :as menu]
+            [gdl.ui.menu :as menu]
             [gdl.c :as c]
             [cdq.utils :as utils]))
 

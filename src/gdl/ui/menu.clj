@@ -1,4 +1,4 @@
-(ns clojure.gdx.ui.menu
+(ns gdl.ui.menu
   (:require [clojure.gdx.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group

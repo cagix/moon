@@ -41,7 +41,7 @@
                                       VisTextButton
                                       VisTextField
                                       VisWindow)
-           (clojure.gdx.ui CtxStage)))
+           (gdl.ui CtxStage)))
 
 (defn get-x [^Actor actor]
   (.getX actor))

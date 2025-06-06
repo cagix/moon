@@ -184,3 +184,8 @@
    :x                   Input$Keys/X
    :y                   Input$Keys/Y
    :z                   Input$Keys/Z})
+
+(defn ->from-k [k]
+  (when-not (contains? mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
+  (k mapping))

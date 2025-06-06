@@ -7,14 +7,24 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.interop :as interop]
             [clojure.gdx.input :as input]
+            [clojure.gdx.input.buttons :as input.buttons]
+            [clojure.gdx.input.keys :as input.keys]
+
+            ;;
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
+            ;;
+
             [clojure.gdx.math.utils :as math-utils]
+            [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
+            [clojure.gdx.utils.os :as os]
+
+
             [clojure.string :as str]
             [clojure.java.io :as io]
+
             [gdl.assets :as assets]
             [gdl.audio.sound :as sound]
             [gdl.graphics]
@@ -147,13 +157,13 @@
 (defn- create-input [this]
   (reify gdl.input/Input
     (button-just-pressed? [_ button]
-      (input/button-just-pressed? this (interop/k->input-button button)))
+      (input/button-just-pressed? this (input.buttons/->from-k button)))
 
     (key-pressed? [_ key]
-      (input/key-pressed? this (interop/k->input-key key)))
+      (input/key-pressed? this (input.keys/->from-k key)))
 
     (key-just-pressed? [_ key]
-      (input/key-just-pressed? this (interop/k->input-key key)))
+      (input/key-just-pressed? this (input.keys/->from-k key)))
 
     (mouse-position [_]
       [(input/x this)
@@ -339,7 +349,7 @@
                  (float x)
                  (float (+ y (if up? (text-height font text) 0)))
                  target-width
-                 (interop/k->align (or h-align :center))
+                 (align/->from-k (or h-align :center))
                  wrap?)
           (set-scale! font old-scale))))))
 
@@ -407,9 +417,9 @@
         (for [file sounds-to-load]
           (audio/sound audio (files/internal files file)))))
 
-(defn- create-context [{:keys [clojure.gdx/files
-                               clojure.gdx/input
-                               clojure.gdx/graphics]}
+(defn- create-context [{:keys [gdx/files
+                               gdx/input
+                               gdx/graphics]}
                        {:keys [assets
                                tile-size
                                ui-viewport
@@ -475,13 +485,17 @@
         req-resolve-call (fn [k & params]
                            (when-let [f (k config)]
                              (apply (requiring-resolve f) params)))]
-    (when (= (shared-library-loader/os) :os/mac-osx)
+    (when (= (get os/mapping (shared-library-loader/os)) :os/mac-osx)
       (set-mac-os-config! (:mac-os config)))
     (lwjgl/application! (:clojure.gdx.lwjgl/config config)
                         (proxy [ApplicationListener] []
                           (create  []
                             ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-                             (create-context (gdx/context)
+                             (create-context {:gdx/app      (gdx/app)
+                                              :gdx/audio    (gdx/audio)
+                                              :gdx/files    (gdx/files)
+                                              :gdx/graphics (gdx/graphics)
+                                              :gdx/input    (gdx/input)}
                                              (:gdl.application/context config))
                              config))
                           (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
