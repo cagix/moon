@@ -1,11 +1,23 @@
 (ns gdl.tiled
   (:require [clojure.gdx.maps.map-properties :as map-properties]
             [clojure.gdx.maps.tiled.tiled-map :as tiled-map]
+            [clojure.gdx.maps.tiled.tiled-map-tile-layer :as tiled-map-tile-layer]
             [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile])
-  (:import (com.badlogic.gdx.maps.tiled TiledMap
-                                        TiledMapTileLayer
+  (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
+
+(defn- tm-add-layer!
+  "Returns nil."
+  [tiled-map layer-declaration]
+  (let [props (tiled-map/properties tiled-map)
+        layer (tiled-map-tile-layer/create {:width      (.get props "width")
+                                            :height     (.get props "height")
+                                            :tilewidth  (.get props "tilewidth")
+                                            :tileheight (.get props "tileheight")}
+                                           layer-declaration)]
+    (.add (tiled-map/layers tiled-map) layer))
+  nil)
 
 (def copy-tile
   "Memoized function. Copies the given [[static-tiled-map-tile]].
@@ -84,37 +96,37 @@
           :undefined)
         :no-cell))))
 
-(defn- reify-tiled-map [^TiledMap this]
+(defn- reify-tiled-map [this]
   (reify
     Disposable
     (dispose [_]
-      (.dispose this))
+      (tiled-map/dispose! this))
 
     clojure.lang.ILookup
     (valAt [_ key]
       (case key
         :tiled-map/java-object this
-        :tiled-map/width  (.get (.getProperties this) "width")
-        :tiled-map/height (.get (.getProperties this) "height")))
+        :tiled-map/width  (.get (tiled-map/properties this) "width")
+        :tiled-map/height (.get (tiled-map/properties this) "height")))
 
     HasMapProperties
     (map-properties [_]
-      (map-properties/->clj-map (.getProperties this)))
+      (map-properties/->clj-map (tiled-map/properties this)))
 
     TMap
     (layers [_]
-      (map reify-tiled-layer (.getLayers this)))
+      (map reify-tiled-layer (tiled-map/layers this)))
 
     (layer-index [_ layer]
-      (let [idx (.getIndex (.getLayers this) ^String (layer-name layer))]
+      (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
         (when-not (= idx -1)
           idx)))
 
     (get-layer [_ layer-name]
-      (reify-tiled-layer (.get (.getLayers this) ^String layer-name)))
+      (reify-tiled-layer (.get (tiled-map/layers this) ^String layer-name)))
 
     (add-layer! [_ layer-declaration]
-      (tiled-map/add-layer! this layer-declaration))))
+      (tm-add-layer! this layer-declaration))))
 
 (defn tmx-tiled-map
   "Has to be disposed because it loads textures.
@@ -124,6 +136,9 @@
    (.load (TmxMapLoader.) file-name)))
 
 (defn create-tiled-map [{:keys [properties
-                                layers]
-                         :as opts}]
-  (reify-tiled-map (tiled-map/create opts)))
+                                layers]}]
+  (let [tiled-map (tiled-map/create)]
+    (map-properties/add! (tiled-map/properties tiled-map) properties)
+    (doseq [layer layers]
+      (tm-add-layer! tiled-map layer))
+    (reify-tiled-map tiled-map)))
