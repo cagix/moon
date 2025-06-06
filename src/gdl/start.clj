@@ -11,7 +11,7 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.ui :as ui]
-            [clojure.gdx.math-utils :as math-utils]
+            [clojure.gdx.math.utils :as math-utils]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.string :as str]
             [clojure.java.io :as io]

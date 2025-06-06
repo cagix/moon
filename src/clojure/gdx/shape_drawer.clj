@@ -1,7 +1,7 @@
 (ns clojure.gdx.shape-drawer
   (:require [clojure.gdx.graphics.color :as color]
             [gdl.graphics.shape-drawer]
-            [clojure.gdx.math-utils :as math-utils])
+            [clojure.gdx.math.utils :as math-utils])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
