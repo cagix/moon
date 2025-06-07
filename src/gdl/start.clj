@@ -1,10 +1,10 @@
 (ns gdl.start
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require [clojure.gdx.app-listener :as app-listener]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
             [clojure.java.awt.taskbar :as taskbar]
-            [clojure.lwjgl.system.configuration :as lwjgl.system.configuration])
-  (:import (com.badlogic.gdx ApplicationListener)))
+            [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?
                                    dock-icon]}]
@@ -13,16 +13,6 @@
   (when dock-icon
     (taskbar/set-icon! dock-icon)))
 
-(defn application-adapter [{:keys [create dispose render resize pause resume]}]
-  ; TODO validate possible combinations, e.g. typo 'resize!'
-  (proxy [ApplicationListener] []
-    (create  []              (when-let [[f params] create] (f params)))
-    (dispose []              (when dispose (dispose)))
-    (render  []              (when render  (render)))
-    (resize  [width height]  (when resize  (resize width height)))
-    (pause   []              (when pause   (pause)))
-    (resume  []              (when resume  (resume)))))
-
 (defn- operating-system []
   (get os/mapping (shared-library-loader/os)))
 
@@ -30,4 +20,4 @@
   (when (= (operating-system) :os/mac-osx)
     (set-mac-os-config! (:mac-os config)))
   (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                      (application-adapter (:listener config))))
+                      (app-listener/create-adapter (:listener config))))
