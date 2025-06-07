@@ -27,8 +27,8 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defn- generate-font [files {:keys [file size quality-scaling]}]
-  (let [font (freetype/generate-font (files/internal files file)
+(defn- generate-font [file-handle {:keys [size quality-scaling]}]
+  (let [font (freetype/generate-font file-handle
                                      {:size (* size quality-scaling)
                                       ; :texture-filter/linear because scaling to world-units
                                       :min-filter (texture.filter/->from-keyword :texture-filter/linear)
@@ -393,7 +393,8 @@
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font gdx-files default-font))
+                                    (generate-font (files/internal gdx-files (:file default-font))
+                                                   (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (create-world-viewport world-unit-scale world-viewport)

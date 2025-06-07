@@ -29,8 +29,8 @@
                                                 :cursors/use-skill             ["pointer004"   [0   0]]
                                                 :cursors/walking               ["walking"      [16 16]]}
                                       :default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                                     :size 16
-                                                     :quality-scaling 2}}
+                                                     :params {:size 16
+                                                              :quality-scaling 2}}}
                            :ui {:skin-scale :x1}}
  :clojure.gdx.lwjgl/create!  cdq.application/create!
  :clojure.gdx.lwjgl/dispose! cdq.application/dispose!
