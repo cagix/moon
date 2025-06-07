@@ -17,9 +17,9 @@
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [clojure.space.earlygrey.shape-drawer :as sd]
             [gdl.graphics]
             [gdl.graphics.camera]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.viewport]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils.disposable :as disposable])
@@ -78,7 +78,6 @@
                            rotation
                            color))))
 
-
 (defmulti draw! (fn [[k] _graphics]
                   k))
 
@@ -125,49 +124,62 @@
                         :wrap? false})
     (bitmap-font/set-scale! font old-scale)))
 
+(defn- sd-set-color! [shape-drawer color]
+  (sd/set-color! shape-drawer (color/create color)))
+
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
                                 {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/filled-ellipse [[_ [x y] radius-x radius-y color]
                                        {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
 
 (defmethod draw! :draw/circle [[_ [x y] radius color]
                                {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/filled-circle [[_ [x y] radius color]
                                       {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/filled-circle! shape-drawer x y radius))
 
 (defmethod draw! :draw/rectangle [[_ x y w h color]
                                   {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/filled-rectangle [[_ x y w h color]
                                          {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/filled-rectangle! shape-drawer x y w h))
 
 (defmethod draw! :draw/arc [[_ [center-x center-y] radius start-angle degree color]
                             {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
-  (sd/arc! shape-drawer center-x center-y radius start-angle degree))
+  (sd-set-color! shape-drawer color)
+  (sd/arc! shape-drawer
+           center-x
+           center-y
+           radius
+           (math-utils/degree->radians start-angle)
+           (math-utils/degree->radians degree)))
 
 (defmethod draw! :draw/sector [[_ [center-x center-y] radius start-angle degree color]
                                {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
-  (sd/sector! shape-drawer center-x center-y radius start-angle degree))
+  (sd-set-color! shape-drawer color)
+  (sd/sector! shape-drawer
+              center-x
+              center-y
+              radius
+              (math-utils/degree->radians start-angle)
+              (math-utils/degree->radians degree)))
 
 (defmethod draw! :draw/line [[_ [sx sy] [ex ey] color]
                              {:keys [shape-drawer]}]
-  (sd/set-color! shape-drawer color)
+  (sd-set-color! shape-drawer color)
   (sd/line! shape-drawer sx sy ex ey))
 
 (defmethod draw! :draw/grid [[_ leftx bottomy gridw gridh cellw cellh color] this]
