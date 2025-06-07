@@ -15,17 +15,15 @@
   (when dock-icon
     (taskbar/set-icon! dock-icon)))
 
-(defn- create-listener [config]
-  (let [req-resolve-call (fn [k & params]
-                           (when-let [f (k config)]
-                             (apply (requiring-resolve f) params)))]
-    (proxy [ApplicationListener] []
-      (create  []             (req-resolve-call :clojure.gdx.lwjgl/create!))
-      (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
-      (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
-      (resize  [width height] (req-resolve-call :clojure.gdx.lwjgl/resize! width height))
-      (pause   []             (req-resolve-call :clojure.gdx.lwjgl/pause!))
-      (resume  []             (req-resolve-call :clojure.gdx.lwjgl/resume!)))))
+(defn application-adapter [{:keys [create dispose render resize pause resume]}]
+  ; TODO validate possible combinations, e.g. typo 'resize!'
+  (proxy [ApplicationListener] []
+    (create  []              (when create  (create)))
+    (dispose []              (when dispose (dispose)))
+    (render  []              (when render  (render)))
+    (resize  [width height]  (when resize  (resize width height)))
+    (pause   []              (when pause   (pause)))
+    (resume  []              (when resume  (resume)))))
 
 (defn- operating-system []
   (get os/mapping (shared-library-loader/os)))
@@ -41,4 +39,4 @@
     (when (= (operating-system) :os/mac-osx)
       (set-mac-os-config! (:mac-os config)))
     (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                        (create-listener config))))
+                        (application-adapter (update-vals (:listener config) requiring-resolve)))))
