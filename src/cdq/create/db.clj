@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [cdq.db :as db]
             [cdq.malli :as m]
-            [cdq.schema :as schema]
+            [cdq.schema :as schema :refer [malli-form]]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]))
@@ -59,9 +59,6 @@
   (build-all [this property-type ctx]
     (map #(schemas/transform schemas % ctx)
          (db/all-raw this property-type))))
-
-(defmulti malli-form (fn [schema _schemas] (schema/type schema)))
-(defmethod malli-form :default [schema _schemas] schema)
 
 #_(def ^:private undefined-data-ks (atom #{}))
 

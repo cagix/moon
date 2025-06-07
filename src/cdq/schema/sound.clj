@@ -1,4 +1,4 @@
 (ns cdq.schema.sound
-  (:require [cdq.create.db :refer [malli-form]]))
+  (:require [cdq.schema :as schema]))
 
-(defmethod malli-form :s/sound [_ _schemas] :string)
+(defmethod schema/malli-form :s/sound [_ _schemas] :string)

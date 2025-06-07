@@ -1,10 +1,9 @@
 (ns cdq.schema.animation
   (:require [cdq.animation :as animation]
-            [cdq.create.db :refer [malli-form]]
             [cdq.schema :as schema]
             [gdl.graphics :as g]))
 
-(defmethod malli-form :s/animation [_ _schemas]
+(defmethod schema/malli-form :s/animation [_ _schemas]
   [:map {:closed true}
    [:frames :some] ; FIXME actually images
    [:frame-duration pos?]

@@ -1,5 +1,5 @@
 (ns cdq.schema.val-max
-  (:require [cdq.create.db :refer [malli-form]]
+  (:require [cdq.schema :as schema]
             [cdq.val-max :as val-max]))
 
-(defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
+(defmethod schema/malli-form :s/val-max [_ _schemas] val-max/schema)
