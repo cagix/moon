@@ -27,19 +27,17 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defn- generate-font [file-handle params]
-  (let [font (freetype/generate-font file-handle params)]
-    (bitmap-font/configure! font params) ; DOTO ?
+(defn- generate-font [files {:keys [file size quality-scaling]}]
+  (let [font (freetype/generate-font (files/internal files file)
+                                     {:size (* size quality-scaling)
+                                      ; :texture-filter/linear because scaling to world-units
+                                      :min-filter (texture.filter/->from-keyword :texture-filter/linear)
+                                      :mag-filter (texture.filter/->from-keyword :texture-filter/linear)})]
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? true
+                                  ; :use-integer-positions? false, otherwise scaling to world-units not visible
+                                  :use-integer-positions? false})
     font))
-
-(defn- truetype-font [files {:keys [file size quality-scaling]}]
-  (generate-font (files/internal files file)
-                 {:size (* size quality-scaling)
-                  :scale (/ quality-scaling)
-                  :min-filter (texture.filter/->from-keyword :texture-filter/linear) ; because scaling to world-units
-                  :mag-filter (texture.filter/->from-keyword :texture-filter/linear)
-                  :enable-markup? true
-                  :use-integer-positions? false}))  ; false, otherwise scaling to world-units not visible
 
 (defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
   (if color (batch/set-color! batch color))
@@ -390,13 +388,12 @@
                                (let [pixmap (pixmap/create (files/internal gdx-files (format cursor-path-format file)))
                                      cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
                                  (.dispose pixmap)
-                                 cursor)))
-        default-font (when default-font
-                       (truetype-font gdx-files default-font))]
+                                 cursor)))]
     (map->Graphics {:graphics gdx-graphics
                     :textures textures
                     :cursors cursors
-                    :default-font default-font
+                    :default-font (when default-font
+                                    (generate-font gdx-files default-font))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (create-world-viewport world-unit-scale world-viewport)
