@@ -21,7 +21,6 @@
             [gdl.graphics.camera]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.viewport]
-            [gdl.graphics.g2d.bitmap-font]
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx.utils Disposable)
@@ -30,24 +29,7 @@
 (defn- generate-font [file-handle params]
   (let [font (freetype/generate-font file-handle params)]
     (bitmap-font/configure! font params) ; DOTO ?
-    (reify
-      Disposable
-      (dispose [_]
-        (.dispose font))
-
-      gdl.graphics.g2d.bitmap-font/BitmapFont
-      (draw! [_ batch {:keys [scale x y text h-align up?]}]
-        (let [old-scale (bitmap-font/scale-x font)]
-          (bitmap-font/set-scale! font (* old-scale scale))
-          (bitmap-font/draw! {:font font
-                              :batch batch
-                              :text text
-                              :x x
-                              :y (+ y (if up? (bitmap-font/text-height font text) 0))
-                              :target-width 0
-                              :align (align/->from-k (or h-align :center))
-                              :wrap? false})
-          (bitmap-font/set-scale! font old-scale))))))
+    font))
 
 (defn- truetype-font [files {:keys [file size quality-scaling]}]
   (generate-font (files/internal files file)
@@ -128,15 +110,20 @@
                              {:keys [batch
                                      unit-scale
                                      default-font]}]
-  (gdl.graphics.g2d.bitmap-font/draw! (or font default-font)
-                                      batch
-                                      {:scale (* (float @unit-scale)
-                                                 (float (or scale 1)))
-                                       :x x
-                                       :y y
-                                       :text text
-                                       :h-align h-align
-                                       :up? up?}))
+  (let [font (or font default-font)
+        scale (* (float @unit-scale)
+                 (float (or scale 1)))
+        old-scale (bitmap-font/scale-x font)]
+    (bitmap-font/set-scale! font (* old-scale scale))
+    (bitmap-font/draw! {:font font
+                        :batch batch
+                        :text text
+                        :x x
+                        :y (+ y (if up? (bitmap-font/text-height font text) 0))
+                        :target-width 0
+                        :align (align/->from-k (or h-align :center))
+                        :wrap? false})
+    (bitmap-font/set-scale! font old-scale)))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
                                 {:keys [shape-drawer]}]
