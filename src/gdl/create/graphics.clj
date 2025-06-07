@@ -241,7 +241,8 @@
     (disposable/dispose! shape-drawer-texture)
     (run! disposable/dispose! (vals textures))
     (run! disposable/dispose! (vals cursors))
-    (disposable/dispose! default-font))
+    (when default-font
+      (disposable/dispose! default-font)))
 
   gdl.graphics/Graphics
   (resize-viewports! [_ width height]
