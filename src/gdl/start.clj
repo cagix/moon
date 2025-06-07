@@ -68,29 +68,38 @@
   (when dock-icon
     (taskbar/set-icon! dock-icon)))
 
-(defn -main [app-edn-path]
-  (let [config (-> app-edn-path
-                   io/resource
-                   slurp
-                   edn/read-string)
-        req-resolve-call (fn [k & params]
+(defn- create-listener [config]
+  (let [req-resolve-call (fn [k & params]
                            (when-let [f (k config)]
                              (apply (requiring-resolve f) params)))]
-    (when (= (get os/mapping (shared-library-loader/os)) :os/mac-osx)
+    (proxy [ApplicationListener] []
+      (create  []
+        ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
+         (create-context {:gdx/app      (gdx/app)
+                          :gdx/audio    (gdx/audio)
+                          :gdx/files    (gdx/files)
+                          :gdx/graphics (gdx/graphics)
+                          :gdx/input    (gdx/input)}
+                         (:gdl.application/context config))
+         config))
+      (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
+      (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
+      (resize  [width height] (req-resolve-call :clojure.gdx.lwjgl/resize! width height))
+      (pause   []             (req-resolve-call :clojure.gdx.lwjgl/pause!))
+      (resume  []             (req-resolve-call :clojure.gdx.lwjgl/resume!)))))
+
+(defn- operating-system []
+  (get os/mapping (shared-library-loader/os)))
+
+(defn- read-config [path]
+  (-> path
+      io/resource
+      slurp
+      edn/read-string))
+
+(defn -main [config-path]
+  (let [config (read-config config-path)]
+    (when (= (operating-system) :os/mac-osx)
       (set-mac-os-config! (:mac-os config)))
     (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                        (proxy [ApplicationListener] []
-                          (create  []
-                            ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-                             (create-context {:gdx/app      (gdx/app)
-                                              :gdx/audio    (gdx/audio)
-                                              :gdx/files    (gdx/files)
-                                              :gdx/graphics (gdx/graphics)
-                                              :gdx/input    (gdx/input)}
-                                             (:gdl.application/context config))
-                             config))
-                          (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
-                          (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
-                          (resize  [width height] (req-resolve-call :clojure.gdx.lwjgl/resize! width height))
-                          (pause   []             (req-resolve-call :clojure.gdx.lwjgl/pause!))
-                          (resume  []             (req-resolve-call :clojure.gdx.lwjgl/resume!))))))
+                        (create-listener config))))
