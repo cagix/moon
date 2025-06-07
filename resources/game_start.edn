@@ -1,8 +1,8 @@
 [
  [cdq.start/when* [gdl.start/operating-system
                    :os/mac-osx
-                   [[gdl.mac-os/set-config! {:glfw-async? true
-                                             :dock-icon "moon.png"}]]]]
+                   [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                    [clojure.java.awt.taskbar/set-icon! "moon.png"]]]]
  [gdl.start/start! {:config {:title "Cyber Dungeon Quest"
                              :windowed-mode {:width 1440
                                              :height 900}

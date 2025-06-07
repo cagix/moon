@@ -1,7 +1,7 @@
 [
  [cdq.start/when* [gdl.start/operating-system
                    :os/mac-osx
-                   [[gdl.mac-os/set-config! {:glfw-async? true}]]]]
+                   [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]]]
  [gdl.start/start! {:config {:title "Levelgen"
                              :windowed-mode {:width 1440
                                              :height 900}
