@@ -1,4 +1,4 @@
-{:mac-os {:glfw-async? true}
+{:mac-os [gdl.mac-os/set-config! {:glfw-async? true}]
  :clojure.gdx.lwjgl/config {:title "Mapgen Test"
                             :windowed-mode {:width 1440
                                             :height 900}}
