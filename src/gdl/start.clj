@@ -5,8 +5,7 @@
             [clojure.gdx.utils.os :as os]
             [clojure.java.awt.taskbar :as taskbar]
             [clojure.java.io :as io]
-            [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
-            [gdl.context])
+            [clojure.lwjgl.system.configuration :as lwjgl.system.configuration])
   (:import (com.badlogic.gdx ApplicationListener)))
 
 (defn- set-mac-os-config! [{:keys [glfw-async?
@@ -21,10 +20,7 @@
                            (when-let [f (k config)]
                              (apply (requiring-resolve f) params)))]
     (proxy [ApplicationListener] []
-      (create  []
-        ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-         (gdl.context/create (:gdl.application/context config))
-         config))
+      (create  []             (req-resolve-call :clojure.gdx.lwjgl/create!))
       (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
       (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
       (resize  [width height] (req-resolve-call :clojure.gdx.lwjgl/resize! width height))

@@ -214,8 +214,12 @@
                      form))
                  form))
 
-(defn load-edn-config [config-map]
-  (let [m (require-symbols config-map)]
+(defn load-edn-config [path]
+  (let [m (-> path
+              io/resource
+              slurp
+              edn/read-string
+              require-symbols)]
     (reify clojure.lang.ILookup
       (valAt [_ k]
         (assert (contains? m k)

@@ -43,10 +43,10 @@
 
 (def state (atom nil))
 
-(defn create! [ctx config]
-  (let [config (utils/load-edn-config config)
+(defn create! []
+  (let [config (utils/load-edn-config "config.edn")
         ctx (merge (map->Context {})
-                   (assoc ctx :ctx/config config))
+                   {:ctx/config config})
         ctx (reduce utils/render* ctx (:cdq.application/create-fns config))]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))

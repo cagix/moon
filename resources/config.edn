@@ -37,6 +37,7 @@
  :clojure.gdx.lwjgl/render!  cdq.application/render!
  :clojure.gdx.lwjgl/resize!  cdq.application/resize!
  :cdq.application/create-fns [
+                              cdq.create.gdl/do!
                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                                   :properties "properties.edn"}]]
                               [cdq.create.extend-protocols/do! cdq.ctx]

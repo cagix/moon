@@ -14,6 +14,7 @@
 
             [gdl.ui :as ui]
 
+            [gdl.context]
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
@@ -65,9 +66,16 @@
 
 (defrecord Context [])
 
-(defn create! [context _config]
+(defn create! []
   (let [ctx (merge (->Context)
-                   context)
+                   (gdl.context/create {:graphics {:textures {:folder "resources/"
+                                                              :extensions #{"png" "bmp"}}
+                                                   :tile-size 48
+                                                   :ui-viewport {:width 1440
+                                                                 :height 900}
+                                                   :world-viewport {:width 1440
+                                                                    :height 900}}
+                                        :ui {:skin-scale :x1}}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
