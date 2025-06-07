@@ -1,5 +1,8 @@
 [[clojure.core/identity [
-                         cdq.schemas-impl
+                         cdq.schema.animation
+                         cdq.schema.image
+                         cdq.schema.sound
+                         cdq.schema.val-max
 
                          cdq.effects.target.audiovisual
                          cdq.effects.target.convert
