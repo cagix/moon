@@ -5,8 +5,6 @@
             [cdq.level.vampire]
             [cdq.create.db]
 
-            ; remove
-            [gdl.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.render.clear-screen] ; ??
 
             [gdl.ui.stage :as stage]
@@ -91,12 +89,8 @@
 
 (defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
-                                ctx/camera
                                 ctx/color-setter]}]
-  (tm-renderer/draw! ((:tiled-map-renderer graphics) tiled-map)
-                     tiled-map
-                     color-setter
-                     camera))
+  (graphics/draw-tiled-map! graphics tiled-map color-setter))
 
 (defn- camera-movement-controls! [{:keys [ctx/input
                                           ctx/camera
