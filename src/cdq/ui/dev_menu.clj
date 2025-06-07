@@ -93,11 +93,14 @@
            ctx/graphics
            ctx/config
            ctx/db
-           ]}]
+           ]}
+   {:keys [world-fns
+           info]}
+   ]
   (menu/create
    {:menus [
-            (select-world (:cdq.ui.dev-menu/world-fns config))
-            (help (:cdq.ui.dev-menu/info config))
+            (select-world world-fns)
+            (help info)
             (db-editor db)
             ]
     :update-labels [

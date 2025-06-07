@@ -1,12 +1,25 @@
 {
- :cdq.ctx.game/ui-actors [cdq.ui.dev-menu/create
-                          cdq.ui.action-bar/create
-                          cdq.ui.hp-mana-bar/create
-                          cdq.ui.windows/create
-                          cdq.ui.player-state-draw/create
-                          cdq.ui.message/create]
- :cdq.ui.windows/create-actors [cdq.ui.windows.entity-info/create
-                                cdq.ui.windows.inventory/create]
+ :cdq.ctx.game/ui-actors [[cdq.ui.dev-menu/create {:world-fns [cdq.level.vampire/create
+                                                               cdq.level.uf-caves/create
+                                                               cdq.level.modules/create]
+                                                   ;icons, etc. , components ....
+                                                   :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]
+                          [cdq.ui.action-bar/create {:id :action-bar}] ; padding.... !, etc.
+                          [cdq.ui.hp-mana-bar/create {:rahmen "images/rahmen.png"
+                                                      :hpcontent "images/hp.png"
+                                                      :manacontent "images/mana.png"
+                                                      :y-mana 80}] ; action-bar-icon-size
+
+                          ;; here :id :windows
+                          ; so its just a group .....
+                          [cdq.ui.windows/create [[cdq.ui.windows.entity-info/create {:y 0}] ; id
+                                                  [cdq.ui.windows.inventory/create {:title "Inventory"
+                                                                                    :id :inventory-window
+                                                                                    :visible? false ; position
+                                                                                    }]]]
+                          [cdq.ui.player-state-draw/create] ; ... pass the fn itself ?
+                          [cdq.ui.message/create {:duration-seconds 0.5
+                                                  :name "player-message"}]]
  :cdq.ctx.game/player-props {:creature-id :creatures/vampire
                              :free-skill-points 3
                              :click-distance-tiles 1.5}
@@ -24,8 +37,4 @@
             :unpause-once :p
             :unpause-continously :space}
 
- :cdq.ui.dev-menu/world-fns [cdq.level.vampire/create
-                             cdq.level.uf-caves/create
-                             cdq.level.modules/create]
- :cdq.ui.dev-menu/info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
  }

@@ -11,13 +11,18 @@
                :y (+ y 2)
                :up? true}])
 
-(defn create [{:keys [ctx/graphics]}]
+(defn create [{:keys [ctx/graphics]}
+              {:keys [rahmen
+                      hpcontent
+                      manacontent
+                      y-mana
+                      ]}
+              ]
   (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
-                    80 ; action-bar-icon-size
-                    ]
-        rahmen      (g/sprite graphics "images/rahmen.png")
-        hpcontent   (g/sprite graphics "images/hp.png")
-        manacontent (g/sprite graphics "images/mana.png" )
+                    y-mana]
+        rahmen      (g/sprite graphics rahmen)
+        hpcontent   (g/sprite graphics hpcontent)
+        manacontent (g/sprite graphics manacontent)
         [rahmenw rahmenh] (:sprite/pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [graphics x y contentimage minmaxval name]

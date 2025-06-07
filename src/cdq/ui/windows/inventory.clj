@@ -104,10 +104,12 @@
                              (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
                                (->cell g :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [ctx/graphics]}]
-  (ui/window {:title "Inventory"
-              :id :inventory-window
-              :visible? false
+(defn create [{:keys [ctx/graphics]} {:keys [title
+                                             id
+                                             visible?]}]
+  (ui/window {:title title
+              :id id
+              :visible? visible?
               :pack? true
               :position [(:width (:ui-viewport graphics))
                          (:height (:ui-viewport graphics))]

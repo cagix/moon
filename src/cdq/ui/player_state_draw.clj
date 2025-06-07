@@ -4,7 +4,7 @@
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]))
 
-(defn create [_ctx]
+(defn create [_ctx _params]
   (ui/actor
    {:draw (fn [_this {:keys [ctx/graphics
                              ctx/player-eid] :as ctx}]

@@ -10,7 +10,8 @@
                  :scale 2.5
                  :up? true}]))
 
-(defn create [_ctx]
+(defn create [_ctx {:keys [duration-seconds
+                           name]}]
   (ui/actor {:draw (fn [this {:keys [ctx/graphics] :as ctx}]
                      (graphics/handle-draws! graphics
                                              [(draw-message (ui/user-object this)
@@ -19,9 +20,9 @@
                     (let [state (ui/user-object this)]
                       (when (:text @state)
                         (swap! state update :counter + delta)
-                        (when (>= (:counter @state) 1.5)
+                        (when (>= (:counter @state) duration-seconds)
                           (reset! state nil)))))
-             :name "player-message"
+             :name name
              :user-object (atom nil)}))
 
 (defn show! [message-actor text]

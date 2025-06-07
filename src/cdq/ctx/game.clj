@@ -35,8 +35,8 @@
                           :as ctx}
                          world-fn]
   (stage/clear! stage)
-  (doseq [create-actor (:cdq.ctx.game/ui-actors config)]
-    (stage/add! stage (create-actor ctx)))
+  (doseq [[create-actor params] (:cdq.ctx.game/ui-actors config)]
+    (stage/add! stage (create-actor ctx params)))
   (world/create ctx
                 (:cdq.ctx.game/world config)
                 (generate-level ctx world-fn)))
