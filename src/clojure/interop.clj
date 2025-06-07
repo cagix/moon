@@ -1,5 +1,10 @@
 (ns clojure.interop)
 
+(defn get-static-field [mapping k]
+  (when-not (contains? mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
+  (k mapping))
+
 (comment
 
  (require '[clojure.string :as str]
