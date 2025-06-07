@@ -1,6 +1,6 @@
 (ns cdq.create.gdl
   (:require [gdl.context]))
 
-(defn do! [ctx]
+(defn do! [ctx config]
   (merge ctx
-         (gdl.context/create (:gdl.application/context (:ctx/config ctx)))))
+         (gdl.context/create config)))

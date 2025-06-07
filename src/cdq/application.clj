@@ -5,6 +5,10 @@
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
+(comment
+ (defmacro def-record-and-schema )
+ )
+
 (q/defrecord Context [ctx/config
                       ctx/db
                       ctx/graphics
