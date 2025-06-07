@@ -271,8 +271,7 @@
   (handle-draws! [this draws]
     (doseq [component draws
             :when component]
-      (draw! component this)))
-  )
+      (draw! component this))))
 
 (defn- reify-camera [this]
   (reify
