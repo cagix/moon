@@ -10,9 +10,9 @@
 (def white (color/create :white))
 (def black (color/create :black))
 
-(defn tile-color-setter [{:keys [ctx/raycaster
-                                 ctx/explored-tile-corners
-                                 ctx/graphics]}]
+(defn create [{:keys [ctx/raycaster
+                      ctx/explored-tile-corners
+                      ctx/graphics]}]
   #_(reset! do-once false)
   (let [light-position (camera/position (:camera (:world-viewport graphics)))
         light-cache (atom {})]
