@@ -1,5 +1,5 @@
 [
- [cdq.start/when* [gdl.start/operating-system
+ [cdq.start/when* [clojure.gdx.utils.shared-library-loader/os
                    :os/mac-osx
                    [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]]]
  [gdl.start/start! {:config {:title "Levelgen"
