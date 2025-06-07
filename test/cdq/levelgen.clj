@@ -66,7 +66,7 @@
 
 (defrecord Context [])
 
-(defn create! []
+(defn create! [_]
   (let [ctx (merge (->Context)
                    (gdl.context/create {:graphics {:textures {:folder "resources/"
                                                               :extensions #{"png" "bmp"}}

@@ -2,7 +2,7 @@
  :clojure.gdx.lwjgl/config {:title "Mapgen Test"
                             :windowed-mode {:width 1440
                                             :height 900}}
- :listener {:create  cdq.levelgen/create!
+ :listener {:create  [cdq.levelgen/create!]
             :dispose cdq.levelgen/dispose!
             :render  cdq.levelgen/render!
             :resize  cdq.levelgen/resize!}}

@@ -43,8 +43,8 @@
 
 (def state (atom nil))
 
-(defn create! []
-  (let [config (utils/load-edn-config "config.edn")
+(defn create! [config]
+  (let [config (utils/load-edn-config config)
         ctx (merge (map->Context {})
                    {:ctx/config config})
         ctx (reduce utils/render* ctx (:cdq.application/create-fns config))]

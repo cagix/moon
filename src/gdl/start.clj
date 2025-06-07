@@ -1,10 +1,9 @@
 (ns gdl.start
-  (:require [clojure.edn :as edn]
+  (:require [cdq.utils]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
             [clojure.java.awt.taskbar :as taskbar]
-            [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl.system.configuration])
   (:import (com.badlogic.gdx ApplicationListener)))
 
@@ -18,7 +17,7 @@
 (defn application-adapter [{:keys [create dispose render resize pause resume]}]
   ; TODO validate possible combinations, e.g. typo 'resize!'
   (proxy [ApplicationListener] []
-    (create  []              (when create  (create)))
+    (create  []              (when-let [[f params] create] (f params)))
     (dispose []              (when dispose (dispose)))
     (render  []              (when render  (render)))
     (resize  [width height]  (when resize  (resize width height)))
@@ -28,15 +27,9 @@
 (defn- operating-system []
   (get os/mapping (shared-library-loader/os)))
 
-(defn- read-config [path]
-  (-> path
-      io/resource
-      slurp
-      edn/read-string))
-
 (defn -main [config-path]
-  (let [config (read-config config-path)]
+  (let [config (cdq.utils/load-edn-config config-path)]
     (when (= (operating-system) :os/mac-osx)
       (set-mac-os-config! (:mac-os config)))
     (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                        (application-adapter (update-vals (:listener config) requiring-resolve)))))
+                        (application-adapter (:listener config)))))
