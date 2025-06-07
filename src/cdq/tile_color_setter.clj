@@ -1,18 +1,12 @@
-(ns cdq.tile-color-setter
-  (:require [clojure.gdx.graphics.color :as color]))
+(ns cdq.tile-color-setter)
 
-(def white (color/create :white))
-(def black (color/create :black))
-
-(defprotocol Raycaster
-  (blocked? [_ start end]))
-
-(defn create [{:keys [raycaster
+(defn create [{:keys [ray-blocked?
                       explored-tile-corners
                       light-position
                       see-all-tiles?
                       explored-tile-color
-                      ]}]
+                      visible-tile-color
+                      invisible-tile-color]}]
   #_(reset! do-once false)
   (let [light-cache (atom {})]
     (fn tile-color-setter [_color x y]
@@ -20,10 +14,10 @@
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
             base-color (if explored?
                          explored-tile-color
-                         black)
+                         invisible-tile-color)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
-                       (let [blocked? (blocked? raycaster light-position position)]
+                       (let [blocked? (ray-blocked? light-position position)]
                          (swap! light-cache assoc position blocked?)
                          blocked?)
                        cache-entry)]
@@ -31,11 +25,11 @@
             (swap! ray-positions conj position))
         (if blocked?
           (if see-all-tiles?
-            white
+            visible-tile-color
             base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              white))))))
+              visible-tile-color))))))
 
 (comment
  (def ^:private count-rays? false)

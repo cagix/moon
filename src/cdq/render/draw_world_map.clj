@@ -13,12 +13,11 @@
   (graphics/draw-tiled-map! graphics
                             tiled-map
                             (tile-color-setter/create
-                             {:raycaster (reify tile-color-setter/Raycaster
-                                           (blocked? [_ start end]
-                                             (raycaster/blocked? raycaster start end)))
+                             {:ray-blocked? (fn [start end] (raycaster/blocked? raycaster start end))
                               :explored-tile-corners explored-tile-corners
                               :light-position (camera/position (:camera (:world-viewport graphics)))
                               :see-all-tiles? false
-                              :explored-tile-color (color/create [0.5 0.5 0.5 1])
-                              }))
+                              :explored-tile-color  (color/create [0.5 0.5 0.5 1])
+                              :visible-tile-color   (color/create :white)
+                              :invisible-tile-color (color/create :black)}))
   ctx)
