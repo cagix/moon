@@ -16,9 +16,6 @@
 (defprotocol InfoText
   (info-text [_ object]))
 
-(defprotocol TileColorSetter
-  (tile-color-setter [_]))
-
 (defprotocol Context
   (context-entity-add! [_ eid])
   (context-entity-remove! [_ eid])

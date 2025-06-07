@@ -1,7 +1,7 @@
-(ns cdq.ctx.tile-color-setter
-  (:require [clojure.gdx.graphics.color :as color]
-            [gdl.graphics.camera :as camera]
-            [cdq.raycaster :as raycaster]))
+(ns cdq.tile-color-setter
+  (:require [cdq.raycaster :as raycaster]
+            [clojure.gdx.graphics.color :as color]
+            [gdl.graphics.camera :as camera]))
 
 (def see-all-tiles? false)
 

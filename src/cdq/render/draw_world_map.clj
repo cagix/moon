@@ -1,9 +1,9 @@
 (ns cdq.render.draw-world-map
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.tile-color-setter :as tile-color-setter]
             [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/tiled-map]
             :as ctx}]
-  (graphics/draw-tiled-map! graphics tiled-map (ctx/tile-color-setter ctx))
+  (graphics/draw-tiled-map! graphics tiled-map (tile-color-setter/create ctx))
   ctx)
