@@ -11,43 +11,102 @@
             [gdl.graphics :as graphics]
             [cdq.utils :as utils]))
 
-(defn create [{:keys [ctx/graphics
-                      ctx/config
-                      ctx/db]}]
+(comment
+ (let [ctx @cdq.application/state
+       [cursor txs] (ctx/interaction-state ctx (:ctx/player-eid ctx))]
+   [cursor (map first txs)])
+ )
+
+;; => this is _actually_ :: _CONTEXT INFO_
+; _CONTEXT VIEWER_
+; _TILE VIEWER_
+; _ENTITY VIEWER_
+; _OVERSEVABILITY_
+
+(def interaction-state
+  {:label "Interaction State"
+   :update-fn (fn [ctx]
+                (let [[cursor txs] (ctx/interaction-state ctx (:ctx/player-eid ctx))]
+                  (pr-str [cursor (map first txs)])))})
+
+(defn mouseover-entity-id [icon]
+  {:label "Mouseover-entity id"
+   :update-fn (fn [{:keys [ctx/mouseover-eid]}]
+                (when-let [entity (and mouseover-eid @mouseover-eid)]
+                  (entity/id entity)))
+   :icon icon})
+
+(defn elapsed-time [icon]
+  {:label "elapsed-time"
+   :update-fn (fn [ctx]
+                (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
+   :icon icon})
+
+(def paused
+  {:label "paused?"
+   :update-fn (fn [{:keys [ctx/paused?]}]
+                paused?)})
+
+(def ui-mouse-position
+  {:label "GUI"
+   :update-fn (fn [ctx]
+                (mapv int (c/ui-mouse-position ctx)))})
+
+(def world-mouse-position
+  {:label "World"
+   :update-fn (fn [ctx]
+                (mapv int (c/world-mouse-position ctx)))})
+
+(defn zoom [icon]
+  {:label "Zoom"
+   :update-fn (comp camera/zoom :camera :world-viewport :ctx/graphics)
+   :icon icon})
+
+(defn fps [icon]
+  {:label "FPS"
+   :update-fn (comp graphics/frames-per-second :ctx/graphics)
+   :icon icon})
+
+(defn select-world [world-fns]
+  {:label "World"
+   :items (for [world-fn world-fns]
+            {:label (str "Start " world-fn)
+             :on-click (fn [_actor _ctx]
+                         (swap! application/state ctx/reset-game-state! world-fn))})})
+
+(defn help [infotext]
+  {:label "Help"
+   :items [{:label infotext}]})
+
+(defn db-editor [db]
+  {:label "Objects"
+   :items (for [property-type (sort (db/property-types db))]
+            {:label (str/capitalize (name property-type))
+             :on-click (fn [_actor ctx]
+                         (ctx/open-editor-overview-window! ctx property-type))})})
+
+; TODO 'config' is actually stuff itself !?!?
+; if we remove implicit arguments !?
+
+(defn create
+  [{:keys [
+           ctx/graphics
+           ctx/config
+           ctx/db
+           ]}]
   (menu/create
-   {:menus [{:label "World"
-             :items (for [world-fn (:cdq.ui.dev-menu/world-fns config)]
-                      {:label (str "Start " world-fn)
-                       :on-click (fn [_actor _ctx]
-                                   (swap! application/state ctx/reset-game-state! world-fn))})}
-            {:label "Help"
-             :items [{:label (:cdq.ui.dev-menu/info config)}]}
-            {:label "Objects"
-             :items (for [property-type (sort (db/property-types db))]
-                      {:label (str/capitalize (name property-type))
-                       :on-click (fn [_actor ctx]
-                                   (ctx/open-editor-overview-window! ctx property-type))})}]
-    :update-labels [{:label "Mouseover-entity id"
-                     :update-fn (fn [{:keys [ctx/mouseover-eid]}]
-                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
-                                    (entity/id entity)))
-                     :icon (graphics/texture graphics "images/mouseover.png")}
-                    {:label "elapsed-time"
-                     :update-fn (fn [ctx]
-                                  (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
-                     :icon (graphics/texture graphics "images/clock.png")}
-                    {:label "paused?"
-                     :update-fn (fn [{:keys [ctx/paused?]}]
-                                  paused?)}
-                    {:label "GUI"
-                     :update-fn (fn [ctx]
-                                  (mapv int (c/ui-mouse-position ctx)))}
-                    {:label "World"
-                     :update-fn (fn [ctx]
-                                  (mapv int (c/world-mouse-position ctx)))}
-                    {:label "Zoom"
-                     :update-fn (comp camera/zoom :camera :world-viewport :ctx/graphics)
-                     :icon (graphics/texture graphics "images/zoom.png")}
-                    {:label "FPS"
-                     :update-fn (comp graphics/frames-per-second :ctx/graphics)
-                     :icon (graphics/texture graphics "images/fps.png")}]}))
+   {:menus [
+            (select-world (:cdq.ui.dev-menu/world-fns config))
+            (help (:cdq.ui.dev-menu/info config))
+            (db-editor db)
+            ]
+    :update-labels [
+                    #_interaction-state
+                    (mouseover-entity-id (graphics/texture graphics "images/mouseover.png"))
+                    (elapsed-time        (graphics/texture graphics "images/clock.png"))
+                    paused
+                    ui-mouse-position
+                    world-mouse-position
+                    (zoom (graphics/texture graphics "images/zoom.png"))
+                    (fps (graphics/texture graphics "images/fps.png"))
+                    ]}))
