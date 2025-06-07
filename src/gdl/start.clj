@@ -1,6 +1,5 @@
 (ns gdl.start
-  (:require [cdq.utils]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
             [clojure.java.awt.taskbar :as taskbar]
@@ -27,9 +26,8 @@
 (defn- operating-system []
   (get os/mapping (shared-library-loader/os)))
 
-(defn -main [config-path]
-  (let [config (cdq.utils/load-edn-config config-path)]
-    (when (= (operating-system) :os/mac-osx)
-      (set-mac-os-config! (:mac-os config)))
-    (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                        (application-adapter (:listener config)))))
+(defn start! [config]
+  (when (= (operating-system) :os/mac-osx)
+    (set-mac-os-config! (:mac-os config)))
+  (lwjgl/application! (:clojure.gdx.lwjgl/config config)
+                      (application-adapter (:listener config))))
