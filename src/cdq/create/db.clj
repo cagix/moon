@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [cdq.db :as db]
             [cdq.malli :as m]
-            [cdq.schema :as schema :refer [malli-form]]
+            [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]))
@@ -93,7 +93,7 @@
     (filter #(= "properties" (namespace %)) (keys data)))
 
   (validate [_ property]
-    (m/form->validate (malli-form (get data (property/type property))
+    (m/form->validate (schema/malli-form (get data (property/type property))
                                   data)
                       property))
 
@@ -101,13 +101,13 @@
     (transform* schemas property ctx))
 
   (map-keys [_ map-schema]
-    (m/map-keys (malli-form map-schema data)))
+    (m/map-keys (schema/malli-form map-schema data)))
 
   (optional-keyset [_ map-schema]
-    (m/optional-keyset (malli-form map-schema data)))
+    (m/optional-keyset (schema/malli-form map-schema data)))
 
   (optional-k? [_ map-schema k]
-    (m/optional? k (malli-form map-schema data)))
+    (m/optional? k (schema/malli-form map-schema data)))
 
   (k->default-value [_ k]
     (let [schema (cdq.utils/safe-get data k)]
@@ -116,7 +116,7 @@
 
        ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-       :else (m/generate (malli-form schema data)
+       :else (m/generate (schema/malli-form schema data)
                          {:size 3})))))
 
 (defn- create-db [{:keys [schemas
@@ -133,65 +133,3 @@
 
 (defn do! [ctx config]
   (create-db config))
-
-; why do I do transform edn->value in the middle of running game need full ctx graphics/assets
-; and db to spawn a creature ?
-; how is it related to editor (we dont want to build everything, work with raw data there)
-; and how is it related with relationships, why not just add create skill/item work with id?
-; what was the reason for this?
-; also for the info texts there is too much showing
-; => observability -> tiles/context/app-values-tree/stage ui elements/entity see in game
-; right click map tree view step by step.
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [ctx/db] :as ctx}]
-  (db/build db property-id ctx))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [ctx/db] :as ctx}]
-  (set (map #(db/build db % ctx) property-ids)))
-
-(defmethod malli-form :s/number  [_ _schemas] number?)
-(defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
-(defmethod malli-form :s/int     [_ _schemas] int?)
-(defmethod malli-form :s/pos     [_ _schemas] pos?)
-(defmethod malli-form :s/pos-int [_ _schemas] pos-int?)
-
-(defn- type->id-namespace [property-type]
-  (keyword (name property-type)))
-
-(defmethod malli-form :s/one-to-one [[_ property-type] _schemas]
-  [:qualified-keyword {:namespace (type->id-namespace property-type)}])
-
-(defmethod malli-form :s/one-to-many [[_ property-type] _schemas]
-  [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
-
-(defn- map-schema
-  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
-  [ks k->malli-schema-form]
-  (apply vector :map {:closed true}
-         (for [k ks
-               :let [k? (keyword? k)
-                     schema-props (if k? nil (k 1))
-                     k (if k? k (k 0))]]
-           (do
-            (assert (keyword? k))
-            (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
-            [k schema-props (k->malli-schema-form k)]))))
-
-(defn- map-form [ks schemas]
-  (map-schema ks (fn [k]
-                   (malli-form (get schemas k) schemas))))
-
-(defmethod malli-form :s/map [[_ ks] schemas]
-  (map-form ks schemas))
-
-(defmethod malli-form :s/map-optional [[_ ks] schemas]
-  (map-form (map (fn [k] [k {:optional true}]) ks)
-            schemas))
-
-(defn- namespaced-ks [schemas ns-name-k]
-  (filter #(= (name ns-name-k) (namespace %))
-          (keys schemas)))
-
-(defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
-  (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
-              schemas))
