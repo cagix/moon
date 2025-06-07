@@ -1,24 +1,19 @@
 (ns gdl.start
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.audio :as audio]
-            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.input.buttons :as input.buttons]
-            [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]
             [clojure.java.awt.taskbar :as taskbar]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl.system.configuration]
             [clojure.string :as str]
-            [gdl.audio]
+            [gdl.create.audio]
             [gdl.create.graphics]
+            [gdl.create.input]
             [gdl.create.stage]
-            [gdl.input]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.utils Disposable)))
@@ -48,46 +43,11 @@
        (recursively-search (files/internal files folder)
                            extensions)))
 
-(defn- create-audio [audio files sounds-to-load]
-  ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
-  (let [sounds (into {}
-                     (for [file sounds-to-load]
-                       [file (audio/sound audio (files/internal files file))]))]
-    (reify
-      disposable/Disposable
-      (dispose! [_]
-        (do
-         ;(println "Disposing sounds ...")
-         (run! disposable/dispose! (vals sounds))))
-
-      gdl.audio/Audio
-      (all-sounds [_]
-        (map first sounds))
-
-      (play-sound! [_ path]
-        (assert (contains? sounds path) (str path))
-        (sound/play! (get sounds path))))))
-
-(defn- create-input [this]
-  (reify gdl.input/Input
-    (button-just-pressed? [_ button]
-      (input/button-just-pressed? this (input.buttons/->from-k button)))
-
-    (key-pressed? [_ key]
-      (input/key-pressed? this (input.keys/->from-k key)))
-
-    (key-just-pressed? [_ key]
-      (input/key-just-pressed? this (input.keys/->from-k key)))
-
-    (mouse-position [_]
-      [(input/x this)
-       (input/y this)])))
-
 (defn- create-context [{:keys [gdx/audio
                                gdx/files
                                gdx/input]
                         :as context}
-                       {:keys [sounds ui]
+                       {:keys [sounds]
                         :as config}]
   (let [graphics-config (update (:graphics config) :textures (partial find-assets files))
         graphics (gdl.create.graphics/create-graphics (:gdx/graphics context)
@@ -96,8 +56,8 @@
         stage (gdl.create.stage/create! (:ui config)
                                         graphics
                                         input)]
-    {:ctx/input (create-input input)
-     :ctx/audio (when sounds (create-audio audio files (find-assets files sounds)))
+    {:ctx/input (gdl.create.input/create-input input)
+     :ctx/audio (when sounds (gdl.create.audio/create-audio audio files (find-assets files sounds)))
      :ctx/graphics graphics
      :ctx/stage stage}))
 
