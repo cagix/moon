@@ -3,19 +3,9 @@
             [cdq.val-max :as val-max]
             [cdq.create.db :refer [malli-form]]
             [cdq.schema :as schema]
-            [gdl.c :as c]))
+            [gdl.graphics :as g]))
 
 (defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
-
-(defn- edn->sprite [{:keys [file sub-image-bounds]} ctx]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (c/sprite-sheet->sprite ctx
-                              (c/sprite-sheet ctx file tilew tileh)
-                              [(int (/ sprite-x tilew))
-                               (int (/ sprite-y tileh))]))
-    (c/sprite ctx file)))
 
 (defmethod malli-form :s/sound [_ _schemas] :string)
 
@@ -24,8 +14,10 @@
    [:file :string]
    [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
 
-(defmethod schema/edn->value :s/image [_ edn ctx]
-  (edn->sprite edn ctx))
+(defmethod schema/edn->value :s/image [_
+                                       edn
+                                       {:keys [ctx/graphics]}]
+  (g/edn->sprite graphics edn))
 
 (defmethod malli-form :s/animation [_ _schemas]
   [:map {:closed true}
@@ -33,7 +25,9 @@
    [:frame-duration pos?]
    [:looping? :boolean]])
 
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} ctx]
-  (animation/create (map #(edn->sprite % ctx) frames)
+(defmethod schema/edn->value :s/animation [_
+                                           {:keys [frames frame-duration looping?]}
+                                           {:keys [ctx/graphics]}]
+  (animation/create (map #(g/edn->sprite graphics %) frames)
                     :frame-duration frame-duration
                     :looping? looping?))

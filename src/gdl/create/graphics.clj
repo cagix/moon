@@ -22,10 +22,34 @@
             [gdl.graphics.camera]
             [gdl.graphics.viewport]
             [gdl.tiled :as tiled]
-            [gdl.utils.disposable :as disposable])
+            [gdl.utils.disposable :as disposable]
+            [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(q/defrecord Sprite [sprite/texture-region
+                     sprite/pixel-dimensions
+                     sprite/world-unit-dimensions
+                     sprite/color]) ; optional
+
+(defn- create-sprite
+  [texture-region
+   world-unit-scale]
+  (let [scale 1 ; "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+        _ (assert (or (number? scale)
+                      (and (vector? scale)
+                           (number? (scale 0))
+                           (number? (scale 1)))))
+        pixel-dimensions (if (number? scale)
+                           (scale-dimensions (texture-region/dimensions texture-region) scale)
+                           scale)]
+    (map->Sprite {:texture-region texture-region
+                  :pixel-dimensions pixel-dimensions
+                  :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
 
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
   (let [font (freetype/generate-font file-handle
@@ -265,6 +289,37 @@
            (map (partial tiled/layer-index tiled-map))
            int-array
            (.render renderer))))
+
+  (sprite [this texture-path]
+    (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
+                   world-unit-scale))
+
+  (sub-sprite [_ sprite [x y w h]]
+    (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
+                   world-unit-scale))
+
+  (sprite-sheet [this texture-path tilew tileh]
+    {:image (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
+                           world-unit-scale)
+     :tilew tilew
+     :tileh tileh})
+
+  (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
+    (gdl.graphics/sub-sprite this image
+                             [(* x tilew)
+                              (* y tileh)
+                              tilew
+                              tileh]))
+
+  (edn->sprite [this {:keys [file sub-image-bounds]}]
+    (if sub-image-bounds
+      (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+            [tilew tileh]       (drop 2 sub-image-bounds)]
+        (gdl.graphics/sprite-sheet->sprite this
+                                           (gdl.graphics/sprite-sheet this file tilew tileh)
+                                           [(int (/ sprite-x tilew))
+                                            (int (/ sprite-y tileh))]))
+      (gdl.graphics/sprite this file)))
 
   (handle-draws! [this draws]
     (doseq [component draws

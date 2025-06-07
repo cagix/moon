@@ -1,10 +1,9 @@
 (ns cdq.ui.hp-mana-bar
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
-            [gdl.ui :as ui]
             [cdq.utils :as utils]
-            [gdl.c :as c]
-            [gdl.graphics :as graphics]))
+            [gdl.graphics :as g]
+            [gdl.ui :as ui]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   [:draw/text {:text infostr
@@ -12,20 +11,19 @@
                :y (+ y 2)
                :up? true}])
 
-(defn create [{:keys [ctx/graphics]
-               :as ctx}]
+(defn create [{:keys [ctx/graphics]}]
   (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
                     80 ; action-bar-icon-size
                     ]
-        rahmen      (c/sprite ctx "images/rahmen.png")
-        hpcontent   (c/sprite ctx "images/hp.png")
-        manacontent (c/sprite ctx "images/mana.png" )
+        rahmen      (g/sprite graphics "images/rahmen.png")
+        hpcontent   (g/sprite graphics "images/hp.png")
+        manacontent (g/sprite graphics "images/mana.png" )
         [rahmenw rahmenh] (:sprite/pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [ctx x y contentimage minmaxval name]
+        render-hpmana-bar (fn [graphics x y contentimage minmaxval name]
                             [[:draw/image rahmen [x y]]
                              [:draw/image
-                              (c/sub-sprite ctx
+                              (g/sub-sprite graphics
                                             contentimage
                                             [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                               [x y]]
@@ -37,12 +35,13 @@
                                                     x
                                                     y
                                                     rahmenh)])
-        create-draws (fn [{:keys [ctx/player-eid] :as ctx}]
+        create-draws (fn [{:keys [ctx/graphics
+                                  ctx/player-eid]}]
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (concat
-                          (render-hpmana-bar ctx x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                          (render-hpmana-bar ctx x y-mana manacontent (entity/mana      player-entity) "MP"))))]
+                          (render-hpmana-bar graphics x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                          (render-hpmana-bar graphics x y-mana manacontent (entity/mana      player-entity) "MP"))))]
     (ui/actor
      {:draw (fn [_this {:keys [ctx/graphics] :as ctx}]
-              (graphics/handle-draws! graphics (create-draws ctx)))})))
+              (g/handle-draws! graphics (create-draws ctx)))})))

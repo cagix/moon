@@ -7,7 +7,7 @@
             [clojure.gdx.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.c :as c]
-            [gdl.graphics :as graphics]
+            [gdl.graphics :as g]
             [cdq.utils :as utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -36,12 +36,12 @@
    {:draw
     (fn [actor {:keys [ctx/graphics
                        ctx/player-eid] :as ctx}]
-      (graphics/handle-draws! graphics
-                              (draw-cell-rect @player-eid
-                                              (ui/get-x actor)
-                                              (ui/get-y actor)
-                                              (ui/hit actor (c/ui-mouse-position ctx))
-                                              (ui/user-object (ui/parent actor)))))}))
+      (g/handle-draws! graphics
+                       (draw-cell-rect @player-eid
+                                       (ui/get-x actor)
+                                       (ui/get-y actor)
+                                       (ui/hit actor (c/ui-mouse-position ctx))
+                                       (ui/user-object (ui/parent actor)))))}))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -57,20 +57,20 @@
                     :bag      10}) ; transparent
 
 ; TODO actually we can pass this whole map into inventory-window ...
-(defn- slot->sprite [ctx slot]
-  (c/sprite-sheet->sprite ctx
-                          (c/sprite-sheet ctx "images/items.png" 48 48)
+(defn- slot->sprite [graphics slot]
+  (g/sprite-sheet->sprite graphics
+                          (g/sprite-sheet graphics "images/items.png" 48 48)
                           [21 (+ (slot->y-sprite-idx slot) 2)]))
 
-(defn- slot->background [ctx slot]
-  (ui/create-drawable (:sprite/texture-region (slot->sprite ctx slot))
+(defn- slot->background [graphics slot]
+  (ui/create-drawable (:sprite/texture-region (slot->sprite graphics slot))
                       :width cell-size
                       :height cell-size
                       :tint-color (color/create [1 1 1 0.4])))
 
-(defn- ->cell [ctx slot & {:keys [position]}]
+(defn- ->cell [graphics slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        background-drawable (slot->background ctx slot)]
+        background-drawable (slot->background graphics slot)]
     (doto (ui/stack [(draw-rect-actor)
                      (ui/image-widget background-drawable
                                       {:name "image-widget"
@@ -83,36 +83,35 @@
                                                         entity/state-obj
                                                         (state/clicked-inventory-cell player-eid cell)))))))))
 
-(defn- inventory-table [ctx]
+(defn- inventory-table [g]
   (ui/table {:id ::table
              :rows (concat [[nil nil
-                             (->cell ctx :inventory.slot/helm)
-                             (->cell ctx :inventory.slot/necklace)]
+                             (->cell g :inventory.slot/helm)
+                             (->cell g :inventory.slot/necklace)]
                             [nil
-                             (->cell ctx :inventory.slot/weapon)
-                             (->cell ctx :inventory.slot/chest)
-                             (->cell ctx :inventory.slot/cloak)
-                             (->cell ctx :inventory.slot/shield)]
+                             (->cell g :inventory.slot/weapon)
+                             (->cell g :inventory.slot/chest)
+                             (->cell g :inventory.slot/cloak)
+                             (->cell g :inventory.slot/shield)]
                             [nil nil
-                             (->cell ctx :inventory.slot/leg)]
+                             (->cell g :inventory.slot/leg)]
                             [nil
-                             (->cell ctx :inventory.slot/glove)
-                             (->cell ctx :inventory.slot/rings :position [0 0])
-                             (->cell ctx :inventory.slot/rings :position [1 0])
-                             (->cell ctx :inventory.slot/boot)]]
+                             (->cell g :inventory.slot/glove)
+                             (->cell g :inventory.slot/rings :position [0 0])
+                             (->cell g :inventory.slot/rings :position [1 0])
+                             (->cell g :inventory.slot/boot)]]
                            (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
                              (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->cell ctx :inventory.slot/bag :position [x y]))))}))
+                               (->cell g :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [ctx/graphics]
-               :as ctx}]
+(defn create [{:keys [ctx/graphics]}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
               :position [(:width (:ui-viewport graphics))
                          (:height (:ui-viewport graphics))]
-              :rows [[{:actor (inventory-table ctx)
+              :rows [[{:actor (inventory-table graphics)
                        :pad 4}]]}))
 
 (defn- get-cell-widget [inventory-window cell]
