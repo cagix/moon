@@ -1,15 +1,16 @@
 [
- [cdq.start/when* [clojure.gdx.utils.shared-library-loader/os
+ [cdq.utils/when* [clojure.gdx.utils.shared-library-loader/os
                    :os/mac-osx
                    [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                     [clojure.java.awt.taskbar/set-icon! "moon.png"]]]]
- [gdl.start/start! {:config {:title "Cyber Dungeon Quest"
-                             :windowed-mode {:width 1440
-                                             :height 900}
-                             :foreground-fps 60}
-                    :listener [clojure.gdx.app-listener/create-adapter
-                               {:create  [cdq.application/create! "config.edn"]
-                                :dispose cdq.application/dispose!
-                                :render  cdq.application/render!
-                                :resize  cdq.application/resize!}]}]
+ [clojure.gdx.backends.lwjgl.start/application!
+  {:config {:title "Cyber Dungeon Quest"
+            :windowed-mode {:width 1440
+                            :height 900}
+            :foreground-fps 60}
+   :listener [clojure.gdx.app-listener/create-adapter
+              {:create  [cdq.application/create! "config.edn"]
+               :dispose cdq.application/dispose!
+               :render  cdq.application/render!
+               :resize  cdq.application/resize!}]}]
  ]

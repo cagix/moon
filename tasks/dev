@@ -1,1 +1,1 @@
-lein run -m clojure.dev-loop "((requiring-resolve 'cdq.start/-main) \"game_start.edn\")"
+lein run -m clojure.dev-loop "((requiring-resolve 'cdq.utils/-main) \"game_start.edn\")"

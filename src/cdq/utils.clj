@@ -1,5 +1,5 @@
 (ns cdq.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl] ; no deps other than clj
+  (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -232,3 +232,30 @@
 (defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24))) ; hardcoded values
+
+(defn invoc [[f params]]
+  (println "invoc ")
+  (println f)
+  (println params)
+  ; TODO PASSED A NAMESPACE 'gdl.start' instead of 'gdl.start/start!'
+  ; and just nothing happened no complaints
+  ; => for this implicit complicated shit write tests...
+  (f params))
+
+(defn exec! [exec]
+  (println "exec! " exec)
+  (run! invoc exec))
+
+(defn -main [config-path]
+  (println "config-path: " config-path)
+  (-> config-path
+      io-slurp-edn-req ; <- require-resolved in _this_ namespace ?? can I use 'invoc' ??
+      exec!))
+
+(defn when* [[ev cond* exec]]
+  (println "when*")
+  (println "(ev): " (ev))
+  (println "condition true? " (= (ev) cond*))
+  (when (= (ev) cond*)
+    (println "INVOCE EXECS: " exec)
+    (exec! exec)))
