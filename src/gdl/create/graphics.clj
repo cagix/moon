@@ -21,10 +21,11 @@
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.viewport]
-            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [gdl.tiled :as tiled]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx.utils Disposable)
-           (gdl.graphics OrthogonalTiledMapRenderer)))
+           (gdl.graphics OrthogonalTiledMapRenderer
+                         ColorSetter)))
 
 (defn- generate-font [file-handle params]
   (let [font (freetype/generate-font file-handle params)]
@@ -251,10 +252,22 @@
     (batch/end! batch))
 
   (draw-tiled-map! [_ tiled-map color-setter]
-    (tiled-map-renderer/draw! (tiled-map-renderer tiled-map)
-                              tiled-map
-                              color-setter
-                              (:camera world-viewport)))
+    (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
+          camera (:camera world-viewport)]
+      (.setColorSetter renderer (reify ColorSetter
+                                  (apply [_ color x y]
+                                    (color-setter color x y))))
+      (.setView renderer (:camera/java-object camera))
+      ; there is also:
+      ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
+      ; but right order / visible only ?
+      (->> tiled-map
+           tiled/layers
+           (filter tiled/visible?)
+           (map (partial tiled/layer-index tiled-map))
+           int-array
+           (.render renderer))))
+
   (handle-draws! [this draws]
     (doseq [component draws
             :when component]
