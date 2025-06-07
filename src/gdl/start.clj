@@ -43,21 +43,20 @@
        (recursively-search (files/internal files folder)
                            extensions)))
 
-(defn- create-context [{:keys [gdx/audio
-                               gdx/files
-                               gdx/input]
-                        :as context}
-                       {:keys [sounds]
-                        :as config}]
-  (let [graphics-config (update (:graphics config) :textures (partial find-assets files))
-        graphics (gdl.create.graphics/create-graphics (:gdx/graphics context)
-                                                      (:gdx/files context)
+(defn- create-context [config]
+  (let [graphics-config (update (:graphics config) :textures (partial find-assets (gdx/files)))
+        graphics (gdl.create.graphics/create-graphics (gdx/graphics)
+                                                      (gdx/files)
                                                       graphics-config)
         stage (gdl.create.stage/create! (:ui config)
                                         graphics
-                                        input)]
-    {:ctx/input (gdl.create.input/create-input input)
-     :ctx/audio (when sounds (gdl.create.audio/create-audio audio files (find-assets files sounds)))
+                                        (gdx/input))]
+    {:ctx/input (gdl.create.input/create-input (gdx/input))
+     :ctx/audio (when (:sounds config)
+                  (gdl.create.audio/create-audio (gdx/audio)
+                                                 (gdx/files)
+                                                 (find-assets (gdx/files)
+                                                              (:sounds config))))
      :ctx/graphics graphics
      :ctx/stage stage}))
 
@@ -75,12 +74,7 @@
     (proxy [ApplicationListener] []
       (create  []
         ((requiring-resolve (:clojure.gdx.lwjgl/create! config))
-         (create-context {:gdx/app      (gdx/app)
-                          :gdx/audio    (gdx/audio)
-                          :gdx/files    (gdx/files)
-                          :gdx/graphics (gdx/graphics)
-                          :gdx/input    (gdx/input)}
-                         (:gdl.application/context config))
+         (create-context (:gdl.application/context config))
          config))
       (dispose []             (req-resolve-call :clojure.gdx.lwjgl/dispose!))
       (render  []             (req-resolve-call :clojure.gdx.lwjgl/render!))
