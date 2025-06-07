@@ -43,11 +43,12 @@
 
 (def state (atom nil))
 
-(defn create! [config]
+(defn create! [[config
+                create-fns]]
   (let [config (utils/load-edn-config config)
         ctx (merge (map->Context {})
                    {:ctx/config config})
-        ctx (reduce utils/render* ctx (:cdq.application/create-fns config))]
+        ctx (reduce utils/render* ctx create-fns)]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
 
@@ -63,10 +64,10 @@
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
 
-(defn render! []
+(defn render! [render-fns]
   (swap! state (fn [ctx]
                  (m/validate-humanize schema ctx)
-                 (let [ctx (reduce utils/render* ctx (:cdq.application/render-fns (:ctx/config ctx)))]
+                 (let [ctx (reduce utils/render* ctx render-fns)]
                    (m/validate-humanize schema ctx)
                    ctx))))
 

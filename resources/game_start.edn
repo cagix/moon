@@ -9,8 +9,34 @@
                             :height 900}
             :foreground-fps 60}
    :listener [clojure.gdx.app-listener/create-adapter
-              {:create  [cdq.application/create! "config.edn"]
+              {:create  [cdq.application/create! ["config.edn"
+                                                  [
+                                                   cdq.create.gdl/do!
+                                                   [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
+                                                                                       :properties "properties.edn"}]]
+                                                   [cdq.create.extend-protocols/do! cdq.ctx]
+                                                   [cdq.ctx/reset-game-state! cdq.level.vampire/create]
+                                                   cdq.create.player-movement-vector/do!
+                                                   ]]]
                :dispose cdq.application/dispose!
-               :render  cdq.application/render!
+               :render  [cdq.application/render! [[:assoc :ctx/active-entities cdq.world/calculate-active-entities]
+                                                  cdq.render.set-camera-on-player/do!
+                                                  cdq.render.clear-screen/do!
+                                                  cdq.render.draw-world-map/do!
+                                                  [cdq.render.draw-on-world-viewport/do! [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
+                                                                                          cdq.render.draw-on-world-viewport.draw-cell-debug/do!
+                                                                                          cdq.render.draw-on-world-viewport.render-entities/do!
+                                                                                          ; cdq.render.draw-on-world-viewport.geom-test/do!
+                                                                                          cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
+                                                  cdq.render.stage/do!
+                                                  cdq.render.player-state-handle-click/do!
+                                                  cdq.render.update-mouseover-entity/do!
+                                                  [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]
+                                                  [cdq.utils/render-when-not [:ctx/paused? [cdq.render.update-time/do!
+                                                                                            cdq.render.update-potential-fields/do!
+                                                                                            cdq.render.tick-entities/do!]]]
+                                                  cdq.render.remove-destroyed-entities/do!
+                                                  [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
+                                                  cdq.render.check-window-hotkeys/do!]]
                :resize  cdq.application/resize!}]}]
  ]
