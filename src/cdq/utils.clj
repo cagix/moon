@@ -214,6 +214,13 @@
                      form))
                  form))
 
+(defn io-slurp-edn-req [path]
+  (-> path
+      io/resource
+      slurp
+      edn/read-string
+      require-symbols))
+
 (defn load-edn-config [path]
   (let [m (-> path
               io/resource

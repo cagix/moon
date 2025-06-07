@@ -4,12 +4,11 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.os :as os]))
 
-(defn- operating-system []
+; TODO GAVE WRONG OPTION AND DIDNT COMPLAIN
+; GET STATIC FIELD CLOJURE.JAVA.INTEROP
+(defn operating-system []
   (get os/mapping (shared-library-loader/os)))
 
-(defn start! [config]
-  (when (= (operating-system) :os/mac-osx)
-    (when-let [[f params] (:mac-os config)]
-      (f params)))
-  (lwjgl/application! (:clojure.gdx.lwjgl/config config)
-                      (app-listener/create-adapter (:listener config))))
+(defn start! [{:keys [config listener]}]
+  (lwjgl/application! config
+                      (app-listener/create-adapter listener)))

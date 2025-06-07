@@ -1,8 +1,13 @@
-{:mac-os [gdl.mac-os/set-config! {:glfw-async? true}]
- :clojure.gdx.lwjgl/config {:title "Mapgen Test"
-                            :windowed-mode {:width 1440
-                                            :height 900}}
- :listener {:create  [cdq.levelgen/create!]
-            :dispose cdq.levelgen/dispose!
-            :render  cdq.levelgen/render!
-            :resize  cdq.levelgen/resize!}}
+[
+ [cdq.start/when* [gdl.start/operating-system
+                   :os/mac-osx
+                   [[gdl.mac-os/set-config! {:glfw-async? true}]]]]
+ [gdl.start/start! {:config {:title "Levelgen"
+                             :windowed-mode {:width 1440
+                                             :height 900}
+                             :foreground-fps 60}
+                    :listener {:create  [cdq.levelgen/create!]
+                               :dispose cdq.levelgen/dispose!
+                               :render  cdq.levelgen/render!
+                               :resize  cdq.levelgen/resize!}}]
+ ]
