@@ -1,4 +1,93 @@
-[
+[[clojure.core/identity [
+                         cdq.schemas-impl
+
+                         cdq.effects.target.audiovisual
+                         cdq.effects.target.convert
+                         cdq.effects.target.damage
+                         cdq.effects.target.kill
+                         cdq.effects.target.melee-damage
+                         cdq.effects.target.spiderweb
+                         cdq.effects.target.stun
+
+                         cdq.effects.audiovisual
+                         cdq.effects.projectile
+                         cdq.effects.sound
+                         cdq.effects.spawn
+                         cdq.effects.target-all
+                         cdq.effects.target-entity
+
+                         cdq.entity.state.active-skill
+                         cdq.entity.state.npc-dead
+                         cdq.entity.state.npc-idle
+                         cdq.entity.state.npc-moving
+                         cdq.entity.state.npc-sleeping
+                         cdq.entity.state.player-dead
+                         cdq.entity.state.player-idle
+                         cdq.entity.state.player-item-on-cursor
+                         cdq.entity.state.player-moving
+                         cdq.entity.state.stunned
+
+                         cdq.entity.alert-friendlies-after-duration
+                         cdq.entity.animation
+                         cdq.entity.delete-after-animation-stopped
+                         cdq.entity.delete-after-duration
+                         cdq.entity.destroy-audiovisual
+                         cdq.entity.fsm
+                         cdq.entity.inventory
+                         cdq.entity.movement
+                         cdq.entity.projectile-collision
+                         cdq.entity.skills
+                         cdq.entity.stats
+                         cdq.entity.string-effect
+                         cdq.entity.temp-modifier
+
+                         cdq.ui.editor.widget.default
+                         cdq.ui.editor.widget.edn
+                         cdq.ui.editor.widget.string
+                         cdq.ui.editor.widget.boolean
+                         cdq.ui.editor.widget.enum
+                         cdq.ui.editor.widget.sound
+                         cdq.ui.editor.widget.one-to-one
+                         cdq.ui.editor.widget.one-to-many
+                         cdq.ui.editor.widget.image
+                         cdq.ui.editor.widget.animation
+                         cdq.ui.editor.widget.map
+
+                         cdq.tx.add-skill
+                         cdq.tx.add-text-effect
+                         cdq.tx.assoc
+                         cdq.tx.assoc-in
+                         cdq.tx.audiovisual
+                         cdq.tx.deal-damage
+                         cdq.tx.dissoc
+                         cdq.tx.effect
+                         cdq.tx.event
+                         cdq.tx.mark-destroyed
+                         cdq.tx.mod-add
+                         cdq.tx.mod-remove
+                         cdq.tx.move-entity
+                         cdq.tx.pay-mana-cost
+                         cdq.tx.pickup-item
+                         cdq.tx.remove-item
+                         cdq.tx.remove-one-item
+                         cdq.tx.remove-skill
+                         cdq.tx.set-cooldown
+                         cdq.tx.set-cursor
+                         cdq.tx.set-item
+                         cdq.tx.set-movement
+                         cdq.tx.show-message
+                         cdq.tx.show-modal
+                         cdq.tx.sound
+                         cdq.tx.spawn-alert
+                         cdq.tx.spawn-creature
+                         cdq.tx.spawn-effect
+                         cdq.tx.spawn-item
+                         cdq.tx.spawn-line
+                         cdq.tx.spawn-projectile
+                         cdq.tx.stack-item
+                         cdq.tx.toggle-inventory-visible
+                         cdq.tx.update-animation
+                         ]]
  [cdq.utils/when* [clojure.gdx.utils.shared-library-loader/os
                    :os/mac-osx
                    [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
