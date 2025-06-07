@@ -85,13 +85,9 @@
              :on-click (fn [_actor ctx]
                          (ctx/open-editor-overview-window! ctx property-type))})})
 
-; TODO 'config' is actually stuff itself !?!?
-; if we remove implicit arguments !?
-
 (defn create
   [{:keys [
            ctx/graphics
-           ctx/config
            ctx/db
            ]}
    {:keys [world-fns

@@ -10,13 +10,12 @@
                                                       :manacontent "images/mana.png"
                                                       :y-mana 80}] ; action-bar-icon-size
 
-                          ;; here :id :windows
-                          ; so its just a group .....
-                          [cdq.ui.windows/create [[cdq.ui.windows.entity-info/create {:y 0}] ; id
-                                                  [cdq.ui.windows.inventory/create {:title "Inventory"
-                                                                                    :id :inventory-window
-                                                                                    :visible? false ; position
-                                                                                    }]]]
+                          [cdq.ui.windows/create {:id :windows
+                                                  :actors [[cdq.ui.windows.entity-info/create {:y 0}] ; id
+                                                           [cdq.ui.windows.inventory/create {:title "Inventory"
+                                                                                             :id :inventory-window
+                                                                                             :visible? false ; position
+                                                                                             }]]}]
                           [cdq.ui.player-state-draw/create] ; ... pass the fn itself ?
                           [cdq.ui.message/create {:duration-seconds 0.5
                                                   :name "player-message"}]]
