@@ -5,4 +5,4 @@
 (defn -main [config-path]
   (-> config-path
       cdq.utils/load-edn-config
-      gdl.start/start))
+      gdl.start/start!))
