@@ -3,11 +3,17 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.db :as db]
             [cdq.property :as property]
+            [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [cdq.utils :refer [pprint-to-str]]))
 
-(defn- add-one-to-one-rows [{:keys [ctx/db] :as ctx} table property-type property-id]
+(defn- add-one-to-one-rows
+  [{:keys [ctx/db
+           ctx/graphics]}
+   table
+   property-type
+   property-id]
   (let [redo-rows (fn [ctx id]
                     (ui/clear-children! table)
                     (add-one-to-one-rows ctx table property-type id)
@@ -29,8 +35,9 @@
                              (.pack window)
                              (stage/add! stage window)))))]
       [(when property-id
-         (let [property (db/build db property-id ctx)
-               image-widget (ui/image-widget (:sprite/texture-region (property/image property))
+         (let [property (db/get-raw db property-id)
+               texture-region (graphics/image->texture-region graphics (property/image property))
+               image-widget (ui/image-widget texture-region
                                              {:id property-id})]
            (ui/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
