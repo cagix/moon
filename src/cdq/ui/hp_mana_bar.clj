@@ -7,44 +7,38 @@
 
 (defn create
   [{:keys [ctx/graphics]}
-   {:keys [rahmen
-           hpcontent
-           manacontent
+   {:keys [rahmen-file
+           rahmenw
+           rahmenh
+           hpcontent-file
+           manacontent-file
            y-mana]}]
   (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
                     y-mana]
-        rahmen      (g/sprite graphics rahmen)
-        hpcontent   (g/sprite graphics hpcontent)
-        manacontent (g/sprite graphics manacontent)
-        [rahmenw rahmenh] (:sprite/pixel-dimensions rahmen)
+        rahmen-tex-reg (g/image->texture-region graphics {:file rahmen-file})
         y-hp (+ y-mana rahmenh)
-        render-infostr-on-bar (fn [infostr x y h]
-                                [:draw/text {:text infostr
-                                             :x (+ x 75)
-                                             :y (+ y 2)
-                                             :up? true}])
-        render-hpmana-bar (fn [graphics x y contentimage minmaxval name]
-                            [[:draw/image rahmen [x y]]
-                             [:draw/image
-                              (g/sub-sprite graphics
-                                            contentimage
-                                            [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+        render-hpmana-bar (fn [graphics x y content-file minmaxval name]
+                            [[:draw/texture-region rahmen-tex-reg [x y]]
+                             [:draw/texture-region
+                              (g/image->texture-region graphics
+                                                       {:file content-file
+                                                        :sub-image-bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
                               [x y]]
-                             (render-infostr-on-bar (str (utils/readable-number (minmaxval 0))
-                                                         "/"
-                                                         (minmaxval 1)
-                                                         " "
-                                                         name)
-                                                    x
-                                                    y
-                                                    rahmenh)])
+                             [:draw/text {:text (str (utils/readable-number (minmaxval 0))
+                                                     "/"
+                                                     (minmaxval 1)
+                                                     " "
+                                                     name)
+                                          :x (+ x 75)
+                                          :y (+ y 2)
+                                          :up? true}]])
         create-draws (fn [{:keys [ctx/graphics
                                   ctx/player-eid]}]
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (concat
-                          (render-hpmana-bar graphics x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                          (render-hpmana-bar graphics x y-mana manacontent (entity/mana      player-entity) "MP"))))]
+                          (render-hpmana-bar graphics x y-hp   hpcontent-file   (entity/hitpoints player-entity) "HP")
+                          (render-hpmana-bar graphics x y-mana manacontent-file (entity/mana      player-entity) "MP"))))]
     (ui/actor
      {:draw (fn [_this {:keys [ctx/graphics] :as ctx}]
               (g/handle-draws! graphics (create-draws ctx)))})))

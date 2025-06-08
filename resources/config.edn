@@ -5,9 +5,11 @@
                                                    ;icons, etc. , components ....
                                                    :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]
                           [cdq.ui.action-bar/create {:id :action-bar}] ; padding.... !, etc.
-                          [cdq.ui.hp-mana-bar/create {:rahmen "images/rahmen.png"
-                                                      :hpcontent "images/hp.png"
-                                                      :manacontent "images/mana.png"
+                          [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                      :rahmenw 150
+                                                      :rahmenh 26
+                                                      :hpcontent-file "images/hp.png"
+                                                      :manacontent-file "images/mana.png"
                                                       :y-mana 80}] ; action-bar-icon-size
 
                           [cdq.ui.windows/create {:id :windows

@@ -104,6 +104,16 @@
 (defmulti draw! (fn [[k] _graphics]
                   k))
 
+(defmethod draw! :draw/texture-region [[_ texture-region [x y]]
+                                       {:keys [batch]}]
+  (draw-texture-region! batch
+                        texture-region
+                        [x y]
+                        (texture-region/dimensions texture-region)
+                        0  ;rotation
+                        nil ; color
+                        ))
+
 (defmethod draw! :draw/image [[_ sprite position]
                               {:keys [batch
                                       unit-scale]}]
@@ -260,7 +270,8 @@
     (graphics/set-cursor! graphics (get cursors cursor-key)))
 
   (texture [_ path]
-    (assert (contains? textures path) (str path))
+    (assert (contains? textures path)
+            (str "Cannot find texture with path: " (pr-str path)))
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
