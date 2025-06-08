@@ -1,5 +1,6 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
+            [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [clojure.gdx :as gdx]
@@ -61,7 +62,7 @@
  (post-runnable!
   (ctx/spawn-creature! @application/state
                        {:position [35 73]
-                        :creature-id :creatures/dragon-red
+                        :creature-property (db/build (:ctx/db @application/state) :creatures/dragon-red)
                         :components {:entity/fsm {:fsm :fsms/npc
                                                   :initial-state :npc-sleeping}
                                      :entity/faction :evil}}))

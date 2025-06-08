@@ -20,6 +20,7 @@
                        {:keys [position
                                creature-property
                                components]}]
+  (assert creature-property)
   (let [props creature-property]
     (ctx/spawn-entity! ctx
                        position
