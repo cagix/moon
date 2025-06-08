@@ -4257,6 +4257,7 @@
    :effects.target/stun 0.5},
   :entity/image
   {:file "images/uf_FX.png", :sub-image-bounds [24 288 24 24]},
+  :projectile/size 0.5
   :projectile/max-range 10,
   :projectile/piercing? true,
   :projectile/speed 9,
@@ -4265,6 +4266,7 @@
   :entity/image
   {:file "images/oryx_16bit_scifi_FX_lg_trans.png",
    :sub-image-bounds [32 192 32 32]},
+  :projectile/size 2/3
   :projectile/max-range 14,
   :projectile/piercing? true,
   :projectile/speed 9,

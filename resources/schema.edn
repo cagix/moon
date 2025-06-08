@@ -134,6 +134,7 @@
  :projectile/max-range :s/pos-int,
  :projectile/speed :s/pos-int,
  :projectile/piercing? :boolean,
+ :projectile/size :s/number
  :entity-effects [:s/components-ns :effects.target],
 
  :properties/projectiles [:s/map [:property/id
@@ -141,6 +142,7 @@
                                   :projectile/max-range
                                   :projectile/speed
                                   :projectile/piercing?
+                                  :projectile/size
                                   :entity-effects]],
 
  :skill/action-time-modifier-key [:enum :entity/cast-speed :entity/attack-speed],

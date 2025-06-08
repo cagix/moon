@@ -1,7 +1,6 @@
 (ns cdq.effects.projectile
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.projectile :as projectile]
             [cdq.raycaster :as raycaster]
             [cdq.vector2 :as v]
             [cdq.utils :refer [defcomponent]]))
@@ -26,7 +25,7 @@
       (and (not (raycaster/path-blocked? raycaster
                                          source-p
                                          target-p
-                                         (projectile/size projectile)))
+                                         (:projectile/size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
@@ -36,7 +35,7 @@
     [[:tx/spawn-projectile
       {:position (start-point @source
                               target-direction
-                              (projectile/size projectile))
+                              (:projectile/size projectile))
        :direction target-direction
        :faction (entity/faction @source)}
       projectile]]))

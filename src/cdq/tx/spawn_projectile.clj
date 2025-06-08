@@ -1,7 +1,6 @@
 (ns cdq.tx.spawn-projectile
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.effect-handler :refer [do!]]
-            [cdq.projectile :as projectile]
             [cdq.vector2 :as v]))
 
 (defmethod do! :tx/spawn-projectile [[_
@@ -12,7 +11,7 @@
                                               entity-effects
                                               projectile/piercing?] :as projectile}]
                                      ctx]
-  (let [size (projectile/size projectile)]
+  (let [size (:projectile/size projectile)]
     (ctx/spawn-entity! ctx
                        position
                        {:width size
