@@ -119,8 +119,8 @@
               :position [(:width (:ui-viewport graphics))
                          (:height (:ui-viewport graphics))]
               :rows [[{:actor (ui/table {:id ::table
-                                         :rows (inventory-table-rows (fn [slot]
-                                                                       (->cell graphics slot)))})
+                                         :rows (inventory-table-rows (fn [slot & params]
+                                                                       (apply ->cell graphics slot params)))})
                        :pad 4}]]}))
 
 (defn- get-cell-widget [inventory-window cell]
