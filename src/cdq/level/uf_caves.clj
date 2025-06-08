@@ -12,60 +12,6 @@
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
-(defn- rand-0-3 []
-  (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
-
-(defn- rand-0-5 []
-  (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
-
-(def ^:private tm-tile
-  (memoize
-   (fn [texture-region movement]
-     {:pre [#{"all" "air" "none"} movement]}
-     (tiled/static-tiled-map-tile texture-region "movement" movement))))
-
-(def ^:private sprite-size 48)
-
-(defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture-region/create texture
-                                  (* sprite-x sprite-size)
-                                  (* sprite-y sprite-size)
-                                  sprite-size
-                                  sprite-size)
-           movement))
-
-(def ^:private uf-grounds
-  (for [x [1 5]
-        y (range 5 11)
-        :when (not= [x y] [5 5])] ; wooden
-    [x y]))
-
-(def ^:private uf-walls
-  (for [x [1]
-        y [13,16,19,22,25,28]]
-    [x y]))
-
-(defn- ground-tile [texture [x y]]
-  (uf-tile texture
-           :sprite-x (+ x (rand-0-3))
-           :sprite-y y
-           :movement "all"))
-
-(defn- wall-tile [texture [x y]]
-  (uf-tile texture
-           :sprite-x (+ x (rand-0-5))
-           :sprite-y y
-           :movement "none"))
-
-(defn- transition-tile [texture [x y]]
-  (uf-tile texture
-           :sprite-x (+ x (rand-0-5))
-           :sprite-y y
-           :movement "none"))
-
-(defn- transition? [grid [x y]]
-  (= :ground (get grid [x (dec y)])))
-
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
                      (adjacent-wall-positions grid))]
@@ -85,16 +31,55 @@
      :grid grid}))
 
 (defn- generate-tiled-map [texture grid]
-  (let [ground-idx (rand-nth uf-grounds)
-        {wall-x 0 wall-y 1 :as wall-idx} (rand-nth uf-walls)
-        transition-idx [wall-x (inc wall-y)]
+  (let [sprite-size 48
+        uf-grounds (for [x [1 5]
+                         y (range 5 11)
+                         :when (not= [x y] [5 5])] ; wooden
+                     [x y])
+        uf-walls (for [x [1]
+                       y [13,16,19,22,25,28]]
+                   [x y])
+        transition? (fn [[x y]]
+                      (= :ground (get grid [x (dec y)])))
+        rand-0-3 (fn [] (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
+        rand-0-5 (fn [] (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
+        tm-tile (memoize
+                 (fn [texture-region movement]
+                   {:pre [#{"all" "air" "none"} movement]}
+                   (tiled/static-tiled-map-tile texture-region "movement" movement)))
+        uf-tile (fn [texture & {:keys [sprite-x sprite-y movement]}]
+                  (tm-tile (texture-region/create texture
+                                                  (* sprite-x sprite-size)
+                                                  (* sprite-y sprite-size)
+                                                  sprite-size
+                                                  sprite-size)
+                           movement))
+        [ground-x ground-y] (rand-nth uf-grounds)
+        {wall-x 0 wall-y 1} (rand-nth uf-walls)
+        [transition-x transition-y] [wall-x (inc wall-y)]
+        ->tile (fn [& {:keys [sprite-idx movement]}]
+                 (uf-tile texture
+                          :sprite-x (sprite-idx 0)
+                          :sprite-y (sprite-idx 1)
+                          :movement movement))
+        wall-tile (fn []
+                    (->tile :sprite-idx [(+ wall-x (rand-0-5)) wall-y]
+                            :movement "none"))
+        transition-tile (fn []
+                          (->tile :sprite-idx [(+ transition-x (rand-0-5))
+                                               transition-y]
+                                  :movement "none"))
+        ground-tile (fn []
+                      (->tile :sprite-idx [(+ ground-x (rand-0-3))
+                                           ground-y]
+                              :movement "all"))
         position->tile (fn [position]
                          (case (get grid position)
-                           :wall (wall-tile texture wall-idx)
-                           :transition (if (transition? grid position)
-                                         (transition-tile texture transition-idx)
-                                         (wall-tile texture wall-idx))
-                           :ground (ground-tile texture ground-idx)))]
+                           :wall (wall-tile)
+                           :transition (if (transition? position)
+                                         (transition-tile)
+                                         (wall-tile))
+                           :ground (ground-tile)))]
     (wgt-grid->tiled-map sprite-size grid position->tile)))
 
 ; TODO don't spawn my faction vampire w. player items ...
