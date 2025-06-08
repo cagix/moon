@@ -18,6 +18,8 @@
               [slot (g2d/create-grid width height (constantly nil))]))
        (into {})))
 
+(def valid-slots (set (keys empty-inventory)))
+
 (defn valid-slot? [[slot _] item]
   (or (= :inventory.slot/bag slot)
       (= (:item/slot item) slot)))
@@ -31,16 +33,20 @@
        (= (:property/id item-a) (:property/id item-b))))
 
 (defn- cells-and-items [inventory slot]
+  (assert (valid-slots slot) (str "Slot :" (pr-str slot)))
   (for [[position item] (slot inventory)]
     [[slot position] item]))
 
 (defn- free-cell [inventory slot item]
+  (assert (valid-slots slot) (str "Slot :" (pr-str slot)))
   (find-first (fn [[_cell cell-item]]
                 (or (stackable? item cell-item)
                     (nil? cell-item)))
               (cells-and-items inventory slot)))
 
 (defn can-pickup-item? [inventory item]
+  (assert (:item/slot item)
+          (str "Item not valid: " (pr-str item)))
   (or
    (free-cell inventory (:item/slot item)   item)
    (free-cell inventory :inventory.slot/bag item)))
