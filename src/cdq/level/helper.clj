@@ -154,15 +154,3 @@
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
                             [position (tiled/copy-tile tile)])))})}))
-
-(defn wgt-grid->tiled-map [tile-size grid position->tile]
-  (tiled/create-tiled-map
-   {:properties {"width"  (g2d/width  grid)
-                 "height" (g2d/height grid)
-                 "tilewidth"  tile-size
-                 "tileheight" tile-size}
-    :layers [{:name "ground"
-              :visible? true
-              :properties {"movement-properties" true}
-              :tiles (for [position (g2d/posis grid)]
-                       [position (position->tile position)])}]}))

@@ -2,7 +2,6 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
-                                      wgt-grid->tiled-map
                                       adjacent-wall-positions
                                       scalegrid
                                       flood-fill]]
@@ -31,7 +30,7 @@
      :grid grid}))
 
 (defn- generate-tiled-map [texture grid]
-  (let [sprite-size 48
+  (let [tile-size 48
         uf-grounds (for [x [1 5]
                          y (range 5 11)
                          :when (not= [x y] [5 5])] ; wooden
@@ -49,10 +48,10 @@
                    (tiled/static-tiled-map-tile texture-region "movement" movement)))
         uf-tile (fn [texture & {:keys [sprite-x sprite-y movement]}]
                   (tm-tile (texture-region/create texture
-                                                  (* sprite-x sprite-size)
-                                                  (* sprite-y sprite-size)
-                                                  sprite-size
-                                                  sprite-size)
+                                                  (* sprite-x tile-size)
+                                                  (* sprite-y tile-size)
+                                                  tile-size
+                                                  tile-size)
                            movement))
         [ground-x ground-y] (rand-nth uf-grounds)
         {wall-x 0 wall-y 1} (rand-nth uf-walls)
@@ -80,7 +79,16 @@
                                          (transition-tile)
                                          (wall-tile))
                            :ground (ground-tile)))]
-    (wgt-grid->tiled-map sprite-size grid position->tile)))
+    (tiled/create-tiled-map
+     {:properties {"width"  (g2d/width  grid)
+                   "height" (g2d/height grid)
+                   "tilewidth"  tile-size
+                   "tileheight" tile-size}
+      :layers [{:name "ground"
+                :visible? true
+                :properties {"movement-properties" true}
+                :tiles (for [position (g2d/posis grid)]
+                         [position (position->tile position)])}]})))
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
