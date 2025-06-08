@@ -29,9 +29,8 @@
     {:start-position (mapv #(* % scale) start)
      :grid grid}))
 
-(defn- generate-tiled-map [texture grid]
-  (let [tile-size 48
-        uf-grounds (for [x [1 5]
+(defn- position->tile-fn [grid]
+  (let [uf-grounds (for [x [1 5]
                          y (range 5 11)
                          :when (not= [x y] [5 5])] ; wooden
                      [x y])
@@ -42,15 +41,6 @@
                       (= :ground (get grid [x (dec y)])))
         rand-0-3 (fn [] (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
         rand-0-5 (fn [] (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
-        ->tile (memoize
-                (fn [& {:keys [sprite-idx movement]}]
-                  {:pre [#{"all" "air" "none"} movement]}
-                  (tiled/static-tiled-map-tile (texture-region/create texture
-                                                                      (* (sprite-idx 0) tile-size)
-                                                                      (* (sprite-idx 1) tile-size)
-                                                                      tile-size
-                                                                      tile-size)
-                                               "movement" movement)))
         [ground-x ground-y] (rand-nth uf-grounds)
         {wall-x 0 wall-y 1} (rand-nth uf-walls)
         [transition-x transition-y] [wall-x (inc wall-y)]
@@ -64,24 +54,14 @@
         ground-tile (fn []
                       {:sprite-idx [(+ ground-x (rand-0-3))
                                     ground-y]
-                       :movement "all"})
-        position->tile (fn [position]
-                         (case (get grid position)
-                           :wall (wall-tile)
-                           :transition (if (transition? position)
-                                         (transition-tile)
-                                         (wall-tile))
-                           :ground (ground-tile)))]
-    (tiled/create-tiled-map
-     {:properties {"width"  (g2d/width  grid)
-                   "height" (g2d/height grid)
-                   "tilewidth"  tile-size
-                   "tileheight" tile-size}
-      :layers [{:name "ground"
-                :visible? true
-                :properties {"movement-properties" true}
-                :tiles (for [position (g2d/posis grid)]
-                         [position (->tile (position->tile position))])}]})))
+                       :movement "all"})]
+    (fn [position]
+      (case (get grid position)
+        :wall (wall-tile)
+        :transition (if (transition? position)
+                      (transition-tile)
+                      (wall-tile))
+        :ground (ground-tile)))))
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
@@ -103,7 +83,27 @@
         ; -
 
         ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
-        tiled-map (generate-tiled-map texture grid)
+        tile-size 48
+        ->tile (memoize
+                (fn [& {:keys [sprite-idx movement]}]
+                  {:pre [#{"all" "air" "none"} movement]}
+                  (tiled/static-tiled-map-tile (texture-region/create texture
+                                                                      (* (sprite-idx 0) tile-size)
+                                                                      (* (sprite-idx 1) tile-size)
+                                                                      tile-size
+                                                                      tile-size)
+                                               "movement" movement)))
+        position->tile (position->tile-fn grid)
+        tiled-map (tiled/create-tiled-map
+                   {:properties {"width"  (g2d/width  grid)
+                                 "height" (g2d/height grid)
+                                 "tilewidth"  tile-size
+                                 "tileheight" tile-size}
+                    :layers [{:name "ground"
+                              :visible? true
+                              :properties {"movement-properties" true}
+                              :tiles (for [position (g2d/posis grid)]
+                                       [position (->tile (position->tile position))])}]})
         ; -
 
         ; - calculate spawn positions -
