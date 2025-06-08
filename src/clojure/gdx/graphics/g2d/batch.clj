@@ -1,37 +1,8 @@
-(ns clojure.gdx.graphics.g2d.batch
-  (:import (com.badlogic.gdx.graphics.g2d Batch)))
+(ns clojure.gdx.graphics.g2d.batch)
 
-(defn set-color! [^Batch batch color]
-  (.setColor batch ^Color color))
-
-(defn draw! [^Batch batch
-             texture-region
-             {:keys [x
-                     y
-                     origin-x
-                     origin-y
-                     width
-                     height
-                     scale-x
-                     scale-y
-                     rotation]}]
-  (.draw batch
-         texture-region
-         x
-         y
-         origin-x
-         origin-y
-         width
-         height
-         scale-x
-         scale-y
-         rotation))
-
-(defn begin! [^Batch batch]
-  (.begin batch))
-
-(defn end! [^Batch batch]
-  (.end batch))
-
-(defn set-projection-matrix! [^Batch batch matrix]
-  (.setProjectionMatrix batch matrix))
+(defprotocol Batch
+  (set-color! [_ color])
+  (draw! [_ texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}])
+  (begin! [_])
+  (end! [_])
+  (set-projection-matrix! [_ matrix]))

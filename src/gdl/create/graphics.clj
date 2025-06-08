@@ -10,7 +10,6 @@
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.java]
             [clojure.gdx.math.utils :as math-utils]
@@ -118,7 +117,7 @@
         old-scale (bitmap-font/scale-x font)]
     (bitmap-font/set-scale! font (* old-scale scale))
     (bitmap-font/draw! {:font font
-                        :batch batch
+                        :batch (clojure.gdx.java/get-state batch)
                         :text text
                         :x x
                         :y (+ y (if up? (bitmap-font/text-height font text) 0))
@@ -217,7 +216,7 @@
                      tiled-map-renderer]
   disposable/Disposable
   (dispose! [_]
-    (disposable/dispose! batch)
+    (clojure.gdx.utils.disposable/dispose! batch)
     (disposable/dispose! shape-drawer-texture)
     (run! disposable/dispose! (vals textures))
     (run! disposable/dispose! (vals cursors))
@@ -394,7 +393,7 @@
                                ui-viewport
                                world-viewport]}]
   ;(println "load-textures (count textures): " (count textures))
-  (let [batch (sprite-batch/create)
+  (let [batch (graphics/sprite-batch gdx-graphics)
         shape-drawer-texture (white-pixel-texture gdx-graphics)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
@@ -418,8 +417,9 @@
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
-                    :shape-drawer (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
+                    :shape-drawer (sd/create (clojure.gdx.java/get-state batch)
+                                             (texture-region/create shape-drawer-texture 1 0 1 1))
                     :tiled-map-renderer (memoize (fn [tiled-map]
                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                                 (float world-unit-scale)
-                                                                                batch)))})))
+                                                                                (clojure.gdx.java/get-state batch))))})))

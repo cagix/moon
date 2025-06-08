@@ -6,6 +6,7 @@
             [clojure.gdx.files.file-handle]
             [clojure.gdx.graphics]
             [clojure.gdx.graphics.pixmap]
+            [clojure.gdx.graphics.g2d.batch]
             [clojure.gdx.input]
             [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
@@ -19,7 +20,9 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
-                                      Texture)))
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          SpriteBatch)))
 
 (defprotocol JavaObjectState
   (get-state [_]))
@@ -85,6 +88,42 @@
     (draw-pixel! [_ x y]
       (.drawPixel this x y))))
 
+(defn- reify-batch [^Batch this]
+  (reify
+    JavaObjectState
+    (get-state [_]
+      this)
+
+    clojure.gdx.utils.disposable/Disposable
+    (dispose! [_]
+      (.dispose this))
+
+    clojure.gdx.graphics.g2d.batch/Batch
+    (set-color! [_ color]
+      (.setColor this color))
+
+    (draw! [_ texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}]
+      (.draw this
+             texture-region
+             x
+             y
+             origin-x
+             origin-y
+             width
+             height
+             scale-x
+             scale-y
+             rotation))
+
+    (begin! [_]
+      (.begin this))
+
+    (end! [_]
+      (.end this))
+
+    (set-projection-matrix! [_ matrix]
+      (.setProjectionMatrix this matrix))))
+
 (defn- reify-graphics [^Graphics this]
   (reify clojure.gdx.graphics/Graphics
     (delta-time [_]
@@ -108,7 +147,9 @@
 
     (texture [_ pixmap]
       (Texture. (get-state pixmap)))
-    ))
+
+    (sprite-batch [_]
+      (reify-batch (SpriteBatch.)))))
 
 (defn- reify-input [^Input this]
   (reify clojure.gdx.input/Input

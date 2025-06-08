@@ -7,4 +7,5 @@
   (set-cursor! [_ cursor])
   (pixmap [_ file-handle]
           [_ width height format])
-  (texture [_ pixmap]))
+  (texture [_ pixmap])
+  (sprite-batch [_]))

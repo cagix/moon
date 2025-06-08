@@ -1,5 +1,6 @@
 (ns gdl.create.stage
   (:require [clojure.gdx.input :as input]
+            [clojure.gdx.java]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
@@ -33,6 +34,6 @@
 (defn create! [ui-config graphics input]
   (ui/load! ui-config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
-                        (:batch graphics))]
+                        (clojure.gdx.java/get-state (:batch graphics)))]
     (input/set-processor! input stage)
     (reify-stage stage)))
