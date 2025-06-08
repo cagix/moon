@@ -8,6 +8,11 @@
             [cdq.val-max :as val-max]
             [gdl.graphics :as graphics]))
 
+(def ^:private skill-image-radius-world-units
+  (let [tile-size 48
+        image-width 32]
+    (/ (/ image-width tile-size) 2)))
+
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
 (def ^:private friendly-color [0 1 0 outline-alpha])
@@ -58,10 +63,10 @@
     [[:draw/rectangle x y (:width entity) (:height entity) color]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
-  (let [[width height] (:sprite/world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
+  (let [radius skill-image-radius-world-units
+        y (+ (float y)
+             (float (:half-height entity))
+             (float 0.15))
         center [x (+ y radius)]]
     [[:draw/filled-circle center radius [1 1 1 0.125]]
      [:draw/sector
