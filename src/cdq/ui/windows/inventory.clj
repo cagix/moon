@@ -69,15 +69,12 @@
                              {:file "images/items.png"
                               :sub-image-bounds bounds})))
 
-(defn- slot->background [graphics slot]
-  (ui/create-drawable (slot->texture-region graphics slot)
-                      :width cell-size
-                      :height cell-size
-                      :tint-color (color/create [1 1 1 0.4])))
-
 (defn- ->cell [graphics slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        background-drawable (slot->background graphics slot)]
+        background-drawable (ui/create-drawable (slot->texture-region graphics slot)
+                                                :width cell-size
+                                                :height cell-size
+                                                :tint-color (color/create [1 1 1 0.4]))]
     (doto (ui/stack [(draw-rect-actor)
                      (ui/image-widget background-drawable
                                       {:name "image-widget"
