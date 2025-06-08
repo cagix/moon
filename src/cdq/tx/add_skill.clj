@@ -5,7 +5,7 @@
   {:pre [(not (contains? skills id))]}
   (assoc skills id skill))
 
-(defmethod do! :tx/add-skill [[_ eid skill] ctx]
+(defmethod do! :tx/add-skill [[_ eid skill] _ctx]
   (swap! eid update :entity/skills add-skill skill)
   (when (:entity/player? @eid)
     [:world.event/player-skill-added skill]))

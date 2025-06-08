@@ -37,17 +37,38 @@
              ; entity/create <- this is intereseting, can do only w. world?
              ; draw-active-skill [exception]
              ; cdq.render.update-time [exception]
-             ; cdq.ctx.effect-handler/do! <- this is intereseting, can do only w. world?
+             ; cdq.ctx.effect-handler/do! - [FIXED]
              ; cdq.ui.dev-menu [exception]
              [:ctx/delta-time {:optional true} number?]
+             ; entity/tick!
+             ; cdq.render.update-time
+             ; cdq.tx.update-animation
              [:ctx/max-delta number?]
+             ; cdq.render.update-time
              [:ctx/max-speed number?]
+             ; entity/tick!
              [:ctx/minimum-size number?]
+             ; spawn-entity!
              [:ctx/paused? {:optional true} :boolean]
+             ; dev-menu
              [:ctx/tiled-map :some]
+             ; cdq.render.draw-world-map
              [:ctx/grid :some]
+             ; context-entity-add!/remove/upd
+             ; cdq.ctx.grid
+             ; entity/tick!
+             ; cdq.render.draw-on-world-viewport.draw-cell-debug
+             ; cdq.render.draw-on-world-viewport.geom-test
+             ; ..
+             ; cdq.render.update-mouseover-entity
+             ; update-potential-fields!
              [:ctx/raycaster :some]
+             ; cdq.ctx.line-of-sight
+             ; effect/useful?
+             ; cdq.render.draw-world-map
              [:ctx/content-grid :some]
+             ; ctx add/remove/upd
+             ; calculate-active-entities
              [:ctx/explored-tile-corners :some]
              [:ctx/id-counter :some]
              [:ctx/entity-ids :some]
