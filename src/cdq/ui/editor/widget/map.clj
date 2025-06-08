@@ -31,7 +31,7 @@
        scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (ui/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
-   (widget/value [:s/map] table schemas)))
+   (widget/value [:s/map] nil table schemas)))
 
 (defn- rebuild-editor-window! [{:keys [ctx/db
                                        ctx/stage] :as ctx}]
@@ -60,7 +60,7 @@
                                         (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (let [widget (widget/create (get schemas k) v ctx)]
+   {:actor (let [widget (widget/create (get schemas k) k v ctx)]
              (ui/set-user-object! widget [k v])
              widget)
     :left? true}])
@@ -76,7 +76,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table schemas)))
+        remaining-ks (sort (remove (set (keys (widget/value schema nil map-widget-table schemas)))
                                    (schemas/map-keys schemas schema)))]
     (ui/add-rows!
      window
@@ -99,7 +99,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema m {:keys [ctx/db] :as ctx}]
+(defmethod widget/create :s/map [schema  _attribute m {:keys [ctx/db] :as ctx}]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -128,8 +128,8 @@
 
 (def ^:private value-widget? (comp vector? ui/user-object))
 
-(defmethod widget/value :s/map [_ table schemas]
+(defmethod widget/value :s/map [_  _attribute table schemas]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (ui/user-object widget)]]
-          [k (widget/value (get schemas k) widget schemas)])))
+          [k (widget/value (get schemas k) k widget schemas)])))

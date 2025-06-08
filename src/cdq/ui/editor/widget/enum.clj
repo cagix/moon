@@ -4,10 +4,10 @@
             [gdl.ui :as ui]
             [cdq.utils :refer [->edn-str]]))
 
-(defmethod widget/create :enum [schema v _ctx]
+(defmethod widget/create :enum [schema _attribute v _ctx]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
-(defmethod widget/value :enum [_ widget _schemas]
+(defmethod widget/value :enum [_  _attribute widget _schemas]
   (edn/read-string (ui/get-selected widget)))
 

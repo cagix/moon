@@ -44,12 +44,12 @@
                         (fn [_actor ctx]
                           (redo-rows ctx (disj property-ids id)))))])))
 
-(defmethod widget/create :s/one-to-many [[_ property-type] property-ids ctx]
+(defmethod widget/create :s/one-to-many [[_ property-type]  _attribute property-ids ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
 
-(defmethod widget/value :s/one-to-many [_ widget _schemas]
+(defmethod widget/value :s/one-to-many [_  _attribute widget _schemas]
   (->> (ui/children widget)
        (keep ui/user-object)
        set))

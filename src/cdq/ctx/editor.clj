@@ -35,11 +35,11 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (widget/create schema props ctx)
+        widget (widget/create schema nil props ctx)
         save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
                                            (swap! application/state update :ctx/db
                                                   db/update!
-                                                  (widget/value schema widget (:schemas db)))))
+                                                  (widget/value schema nil widget (:schemas db)))))
         delete! (apply-context-fn window (fn [_ctx]
                                            (swap! application/state update :ctx/db
                                                   db/delete!

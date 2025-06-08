@@ -4,10 +4,10 @@
             [gdl.ui :as ui]
             [cdq.utils :refer [->edn-str]]))
 
-(defmethod widget/create :widget/edn [schema v _ctx]
+(defmethod widget/create :widget/edn [schema  _attribute v _ctx]
   (ui/add-tooltip! (ui/text-field (->edn-str v) {})
                    (str schema)))
 
-(defmethod widget/value :widget/edn [_ widget _schemas]
+(defmethod widget/value :widget/edn [_  _attribute widget _schemas]
   (edn/read-string (ui/get-text widget)))
 

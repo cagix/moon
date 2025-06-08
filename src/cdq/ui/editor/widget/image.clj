@@ -12,7 +12,7 @@
       #_[(ui/text-button file
                          (fn [_actor _ctx]))]))
 
-(defmethod widget/create :s/image [schema image {:keys [ctx/graphics]}]
+(defmethod widget/create :widget/image [schema  _attribute image {:keys [ctx/graphics]}]
   (ui/image-button (graphics/image->texture-region graphics image)
                    (fn [_actor _ctx])
                    {:scale 2})

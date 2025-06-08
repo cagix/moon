@@ -35,7 +35,7 @@
                      (open-choose-sound-window! table ctx)))
    (play-button sound-name)])
 
-(defmethod widget/create :s/sound [_ sound-name _ctx]
+(defmethod widget/create :s/sound [_  _attribute sound-name _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-name
                            (columns table sound-name)

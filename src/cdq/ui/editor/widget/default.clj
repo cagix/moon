@@ -4,8 +4,8 @@
             [cdq.utils :refer [truncate
                                ->edn-str]]))
 
-(defmethod widget/create :default [_ v _ctx]
+(defmethod widget/create :default [_ _attribute v _ctx]
   (ui/label (truncate (->edn-str v) 60)))
 
-(defmethod widget/value :default [_ widget _schemas]
+(defmethod widget/value :default [_  _attribute widget _schemas]
   ((ui/user-object widget) 1))
