@@ -10,11 +10,6 @@
             [gdl.graphics :as g]
             [cdq.utils :as utils]))
 
-; Items are also smaller than 48x48 all of them
-; so wasting space ...
-; can maybe make a smaller textureatlas or something...
-(def ^:private cell-size 48)
-
 (defn create
   [{:keys [ctx/graphics]}
    {:keys [title
@@ -43,6 +38,7 @@
                                  (g/image->texture-region graphics
                                                           {:file "images/items.png"
                                                            :sub-image-bounds bounds})))
+        cell-size 48
         slot->drawable (fn [slot]
                          (ui/create-drawable (slot->texture-region slot)
                                              :width cell-size
@@ -61,7 +57,7 @@
                               [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
         ; TODO why do I need to call getX ?
         ; is not layouted automatically to cell , use 0/0 ??
-        ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
+        ; maybe .setTransform stack true ? , but docs say it should work anyway
         draw-rect-actor (fn []
                           (ui/widget
                            {:draw
@@ -79,7 +75,8 @@
                    (doto (ui/stack [(draw-rect-actor)
                                     (ui/image-widget background-drawable
                                                      {:name "image-widget"
-                                                      :user-object background-drawable})])
+                                                      :user-object {:background-drawable background-drawable
+                                                                    :cell-size cell-size}})])
                      (.setName "inventory-cell")
                      (.setUserObject cell)
                      (.addListener (ui/click-listener
@@ -114,12 +111,10 @@
                                                              (->cell :inventory.slot/bag :position [x y]))))})
                          :pad 4}]]})))
 
-(defn- get-cell-widget [inventory-window cell]
-  (get (::table inventory-window) cell))
-
 (defn set-item! [inventory-window cell item]
-  (let [cell-widget (get-cell-widget inventory-window cell)
+  (let [cell-widget (get (::table inventory-window) cell)
         image-widget (ui/find-actor cell-widget "image-widget")
+        cell-size (:cell-size (ui/user-object image-widget))
         drawable (ui/create-drawable (:sprite/texture-region (:entity/image item))
                                      :width cell-size
                                      :height cell-size)]
@@ -127,9 +122,9 @@
     (ui/add-tooltip! cell-widget #(cdq.ctx/info-text % item))))
 
 (defn remove-item! [inventory-window cell]
-  (let [cell-widget (get-cell-widget inventory-window cell)
+  (let [cell-widget (get (::table inventory-window) cell)
         image-widget (ui/find-actor cell-widget "image-widget")]
-    (ui/set-drawable! image-widget (ui/user-object image-widget))
+    (ui/set-drawable! image-widget (:background-drawable (ui/user-object image-widget)))
     (ui/remove-tooltip! cell-widget)))
 
 (defn cell-with-item?
