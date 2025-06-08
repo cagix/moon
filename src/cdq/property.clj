@@ -9,4 +9,4 @@
 
 (defn image [{:keys [entity/image entity/animation]}]
   (or image
-      (first (:frames animation))))
+      (first (:animation/frames animation))))

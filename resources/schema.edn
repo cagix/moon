@@ -36,8 +36,19 @@
 {
  :property/id :qualified-keyword,
 
+ :image/file :string
+ :image/bounds [:vector {:size 4} nat-int?]
+ :entity/image [:s/map [:image/file
+                        [:image/bounds {:optional true}]]],
+
+ :animation/frames :some
+ :animation/frame-duration :s/pos
+ :animation/looping? :boolean
+ :entity/animation [:s/map [:animation/frames
+                            :animation/frame-duration
+                            :animation/looping?]],
+
  :tx/sound :s/sound,
- :entity/animation :s/animation,
 
  :properties/audiovisuals [:s/map [:property/id
                                    :tx/sound
@@ -111,7 +122,6 @@
                                 :creature/stats
                                 ]],
 
- :entity/image :s/image,
  :item/slot [:enum
              :inventory.slot/cloak
              :inventory.slot/chest

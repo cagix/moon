@@ -25,7 +25,9 @@
     (frames (min (int (/ (float cnt) (float frame-duration)))
                  (dec (count frames))))))
 
-(defn create [frames & {:keys [frame-duration looping?]}]
+(defn create [{:keys [animation/frames
+                      animation/frame-duration
+                      animation/looping?]}]
   (map->ImmutableAnimation
    {:frames (vec frames)
     :frame-duration frame-duration

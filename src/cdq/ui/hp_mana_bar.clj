@@ -15,14 +15,14 @@
            y-mana]}]
   (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
                     y-mana]
-        rahmen-tex-reg (g/image->texture-region graphics {:file rahmen-file})
+        rahmen-tex-reg (g/image->texture-region graphics {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [graphics x y content-file minmaxval name]
                             [[:draw/texture-region rahmen-tex-reg [x y]]
                              [:draw/texture-region
                               (g/image->texture-region graphics
-                                                       {:file content-file
-                                                        :sub-image-bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
+                                                       {:image/file content-file
+                                                        :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
                               [x y]]
                              [:draw/text {:text (str (utils/readable-number (minmaxval 0))
                                                      "/"

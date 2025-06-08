@@ -10,6 +10,7 @@
   (resize-viewports! [_ width height])
   (ui-viewport-height [_])
   (handle-draws! [_ draws])
-  (image->texture-region [_ {:keys [file sub-image-bounds]}]
-                         "sub-image-bounds is optional. `[x y w h]`
+  (image->texture-region [_ image]
+                         "image is `:image/file` (string) & `:image/bounds` `[x y w h]` (optional).
+
                          Loads the texture and creates a texture-region out of it, in case of sub-image bounds applies the proper bounds."))

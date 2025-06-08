@@ -273,10 +273,12 @@
 
   ; FIXME this can be memoized
   ; also good for tiled-map tiles they have to be memoized too
-  (image->texture-region [graphics {:keys [file sub-image-bounds]}]
+  (image->texture-region [graphics {:keys [image/file
+                                           image/bounds]}]
+    (assert file)
     (let [texture (gdl.graphics/texture graphics file)]
-      (if sub-image-bounds
-        (apply texture-region/create texture sub-image-bounds)
+      (if bounds
+        (apply texture-region/create texture bounds)
         (texture-region/create texture))))
 
   (handle-draws! [this draws]

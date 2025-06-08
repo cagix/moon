@@ -9,18 +9,8 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]))
 
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defmulti fetch* (fn [schema v _db]
-                   (when schema  ; undefined-data-ks
-                     (schema/type schema))))
+(defmulti fetch* (fn [schema _v _db]
+                   (schema/type schema)))
 
 (defmethod fetch* :default [_schema v _db]
   v)
@@ -34,10 +24,7 @@
 (defn- fetch-relationships [schemas property db]
   (utils/apply-kvs property
                    (fn [k v]
-                     (let [schema (try (get schemas k)
-                                       (catch Throwable _t
-                                         #_(swap! undefined-data-ks conj k)
-                                         nil))
+                     (let [schema (get schemas k)
                            v (if (map? v)
                                (fetch-relationships schemas v db)
                                v)]
@@ -112,17 +99,6 @@
 
 (defmethod malli-form :s/val-max [_ _schemas]
   val-max/schema)
-
-(defmethod malli-form :s/image [_ _schemas]
-  [:map {:closed true}
-   [:file :string]
-   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
-
-(defmethod malli-form :s/animation [_ _schemas]
-  [:map {:closed true}
-   [:frames :some] ; FIXME actually images
-   [:frame-duration pos?]
-   [:looping? :boolean]])
 
 (defmethod malli-form :s/map [[_ ks] schemas]
   (m/create-map-schema ks (fn [k]

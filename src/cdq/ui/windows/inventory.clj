@@ -36,8 +36,8 @@
                                              width
                                              height]]
                                  (g/image->texture-region graphics
-                                                          {:file "images/items.png"
-                                                           :sub-image-bounds bounds})))
+                                                          {:image/file "images/items.png"
+                                                           :image/bounds bounds})))
         cell-size 48
         slot->drawable (fn [slot]
                          (ui/create-drawable (slot->texture-region slot)
