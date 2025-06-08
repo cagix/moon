@@ -1,8 +1,9 @@
 (ns cdq.ui.editor.overview-table
-  (:require [gdl.ui :as ui]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
-            [cdq.utils :refer [pprint-to-str]]))
+            [cdq.utils :refer [pprint-to-str]]
+            [gdl.graphics :as graphics]
+            [gdl.ui :as ui]))
 
 ; FIXME not refreshed after changes in properties
 
@@ -29,41 +30,40 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
-  (let [on-clicked (fn [_actor ctx]
-                     (clicked-id-fn id ctx))
-        button (if-let [image (property/image props)]
-                 (ui/image-button (:sprite/texture-region image)
-                                  on-clicked
-                                  {:scale scale})
-                 (ui/text-button (name id)
-                                 on-clicked))
-        top-widget (ui/label (or (and extra-info-text
-                                      (extra-info-text props))
-                                 ""))
-        stack (ui/stack [button
-                         top-widget])]
-    (ui/add-tooltip! button (pprint-to-str props))
-    (ui/set-touchable! top-widget :disabled)
-    stack))
-
-(defn create [{:keys [ctx/db]
-               :as ctx}
-              property-type clicked-id-fn]
+(defn create
+  [{:keys [ctx/db
+           ctx/graphics]}
+   property-type
+   clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all db property-type ctx)
+        properties (db/all-raw db property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
     (ui/table
      {:cell-defaults {:pad 5}
       :rows (for [properties (partition-all columns properties)]
-              (for [property properties]
-                (try (property-widget property clicked-id-fn extra-info-text scale)
+              (for [{:keys [property/id] :as property} properties]
+                (try (let [on-clicked (fn [_actor ctx]
+                                        (clicked-id-fn id ctx))
+                           button (if-let [image (property/image property)]
+                                    (ui/image-button (graphics/image->texture-region graphics image)
+                                                     on-clicked
+                                                     {:scale scale})
+                                    (ui/text-button (name id)
+                                                    on-clicked))
+                           top-widget (ui/label (or (and extra-info-text
+                                                         (extra-info-text property))
+                                                    ""))
+                           stack (ui/stack [button
+                                            top-widget])]
+                       (ui/add-tooltip! button (pprint-to-str property))
+                       (ui/set-touchable! top-widget :disabled)
+                       stack)
                      (catch Throwable t
                        (throw (ex-info "" {:property property} t))))))})))
