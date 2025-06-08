@@ -3,6 +3,7 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -15,6 +16,7 @@
             [clojure.gdx.math.utils :as math-utils]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
+            [clojure.gdx.utils.disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.space.earlygrey.shape-drawer :as sd]
@@ -376,10 +378,10 @@
 
 (defn- white-pixel-texture [graphics]
   (let [pixmap (doto (graphics/pixmap graphics 1 1 :pixmap.format/RGBA8888)
-                 (.setColor (color/create :white))
-                 (.drawPixel 0 0))
-        texture (texture/create pixmap)]
-    (.dispose pixmap)
+                 (pixmap/set-color! (color/create :white))
+                 (pixmap/draw-pixel! 0 0))
+        texture (graphics/texture graphics pixmap)]
+    (clojure.gdx.utils.disposable/dispose! pixmap)
     texture))
 
 (defn create-graphics [gdx-graphics
@@ -402,7 +404,7 @@
                              (fn [[file [hotspot-x hotspot-y]]]
                                (let [pixmap (graphics/pixmap gdx-graphics (files/internal gdx-files (format cursor-path-format file)))
                                      cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
-                                 (.dispose pixmap)
+                                 (clojure.gdx.utils.disposable/dispose! pixmap)
                                  cursor)))]
     (map->Graphics {:graphics gdx-graphics
                     :textures textures

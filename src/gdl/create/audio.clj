@@ -2,8 +2,9 @@
   (:require [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.files :as files]
-            [gdl.audio]
-            [gdl.utils.disposable :as disposable]))
+            [clojure.gdx.utils.disposable :as disposable]
+            [gdl.utils.disposable]
+            [gdl.audio]))
 
 (defn create-audio [audio files sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
@@ -11,7 +12,7 @@
                      (for [file sounds-to-load]
                        [file (audio/sound audio (files/internal files file))]))]
     (reify
-      disposable/Disposable
+      gdl.utils.disposable/Disposable
       (dispose! [_]
         (do
          ;(println "Disposing sounds ...")

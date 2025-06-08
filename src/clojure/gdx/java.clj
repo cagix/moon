@@ -5,7 +5,9 @@
             [clojure.gdx.files]
             [clojure.gdx.files.file-handle]
             [clojure.gdx.graphics]
+            [clojure.gdx.graphics.pixmap]
             [clojure.gdx.input]
+            [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Application
                              Audio
@@ -16,7 +18,8 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
-                                      Pixmap$Format)))
+                                      Pixmap$Format
+                                      Texture)))
 
 (defprotocol JavaObjectState
   (get-state [_]))
@@ -27,7 +30,12 @@
       (.postRunnable this runnable))))
 
 (defn- reify-sound [^Sound this]
-  (reify clojure.gdx.audio.sound/Sound
+  (reify
+    clojure.gdx.utils.disposable/Disposable
+    (dispose! [_]
+      (.dispose this))
+
+    clojure.gdx.audio.sound/Sound
     (play! [_]
       (.play this))))
 
@@ -60,6 +68,23 @@
     (internal [_ path]
       (reify-file-handle (.internal this path)))))
 
+(defn- reify-pixmap [^Pixmap this]
+  (reify
+    JavaObjectState
+    (get-state [_]
+      this)
+
+    clojure.gdx.utils.disposable/Disposable
+    (dispose! [_]
+      (.dispose this))
+
+    clojure.gdx.graphics.pixmap/Pixmap
+    (set-color! [_ color]
+      (.setColor this color))
+
+    (draw-pixel! [_ x y]
+      (.drawPixel this x y))))
+
 (defn- reify-graphics [^Graphics this]
   (reify clojure.gdx.graphics/Graphics
     (delta-time [_]
@@ -69,17 +94,21 @@
       (.getFramesPerSecond this))
 
     (cursor [_ pixmap hotspot-x hotspot-y]
-      (.newCursor this pixmap hotspot-x hotspot-y)) ; returns state
+      (.newCursor this (get-state pixmap) hotspot-x hotspot-y)) ; returns state
 
     (set-cursor! [_ cursor]
       (.setCursor this cursor))
 
     (pixmap [_ file-handle]
-      (Pixmap. ^FileHandle (get-state file-handle)))
+      (reify-pixmap (Pixmap. ^FileHandle (get-state file-handle))))
 
     (pixmap [_ width height format]
-      (Pixmap. width height (case format
-                              :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888)))))
+      (reify-pixmap (Pixmap. width height (case format
+                                            :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
+
+    (texture [_ pixmap]
+      (Texture. (get-state pixmap)))
+    ))
 
 (defn- reify-input [^Input this]
   (reify clojure.gdx.input/Input
