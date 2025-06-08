@@ -13,55 +13,7 @@
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
 ; can maybe make a smaller textureatlas or something...
-
 (def ^:private cell-size 48)
-(def ^:private droppable-color   [0   0.6 0 0.8])
-(def ^:private not-allowed-color [0.6 0   0 0.8])
-
-(defn- draw-cell-rect [player-entity x y mouseover? cell]
-  [[:draw/rectangle x y cell-size cell-size :gray]
-   (when (and mouseover?
-              (= :player-item-on-cursor (entity/state-k player-entity)))
-     (let [item (:entity/item-on-cursor player-entity)
-           color (if (inventory/valid-slot? cell item)
-                   droppable-color
-                   not-allowed-color)]
-       [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
-
-; TODO why do I need to call getX ?
-; is not layouted automatically to cell , use 0/0 ??
-; (maybe (.setTransform stack true) ? , but docs say it should work anyway
-(defn- draw-rect-actor []
-  (ui/widget
-   {:draw
-    (fn [actor {:keys [ctx/graphics
-                       ctx/player-eid] :as ctx}]
-      (g/handle-draws! graphics
-                       (draw-cell-rect @player-eid
-                                       (ui/get-x actor)
-                                       (ui/get-y actor)
-                                       (ui/hit actor (c/ui-mouse-position ctx))
-                                       (ui/user-object (ui/parent actor)))))}))
-
-(defn- inventory-table-rows [cell*]
-  (concat [[nil nil
-            (cell* :inventory.slot/helm)
-            (cell* :inventory.slot/necklace)]
-           [nil
-            (cell* :inventory.slot/weapon)
-            (cell* :inventory.slot/chest)
-            (cell* :inventory.slot/cloak)
-            (cell* :inventory.slot/shield)]
-           [nil nil
-            (cell* :inventory.slot/leg)]
-           [nil
-            (cell* :inventory.slot/glove)
-            (cell* :inventory.slot/rings :position [0 0])
-            (cell* :inventory.slot/rings :position [1 0])
-            (cell* :inventory.slot/boot)]]
-          (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-            (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-              (cell* :inventory.slot/bag :position [x y])))))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -96,6 +48,31 @@
                                              :width cell-size
                                              :height cell-size
                                              :tint-color (color/create [1 1 1 0.4])))
+        droppable-color   [0   0.6 0 0.8]
+        not-allowed-color [0.6 0   0 0.8]
+        draw-cell-rect (fn [player-entity x y mouseover? cell]
+                         [[:draw/rectangle x y cell-size cell-size :gray]
+                          (when (and mouseover?
+                                     (= :player-item-on-cursor (entity/state-k player-entity)))
+                            (let [item (:entity/item-on-cursor player-entity)
+                                  color (if (inventory/valid-slot? cell item)
+                                          droppable-color
+                                          not-allowed-color)]
+                              [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
+        ; TODO why do I need to call getX ?
+        ; is not layouted automatically to cell , use 0/0 ??
+        ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
+        draw-rect-actor (fn []
+                          (ui/widget
+                           {:draw
+                            (fn [actor {:keys [ctx/graphics
+                                               ctx/player-eid] :as ctx}]
+                              (g/handle-draws! graphics
+                                               (draw-cell-rect @player-eid
+                                                               (ui/get-x actor)
+                                                               (ui/get-y actor)
+                                                               (ui/hit actor (c/ui-mouse-position ctx))
+                                                               (ui/user-object (ui/parent actor)))))}))
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
@@ -117,7 +94,24 @@
                 :position [(:width (:ui-viewport graphics))
                            (:height (:ui-viewport graphics))]
                 :rows [[{:actor (ui/table {:id ::table
-                                           :rows (inventory-table-rows ->cell)})
+                                           :rows (concat [[nil nil
+                                                           (->cell :inventory.slot/helm)
+                                                           (->cell :inventory.slot/necklace)]
+                                                          [nil
+                                                           (->cell :inventory.slot/weapon)
+                                                           (->cell :inventory.slot/chest)
+                                                           (->cell :inventory.slot/cloak)
+                                                           (->cell :inventory.slot/shield)]
+                                                          [nil nil
+                                                           (->cell :inventory.slot/leg)]
+                                                          [nil
+                                                           (->cell :inventory.slot/glove)
+                                                           (->cell :inventory.slot/rings :position [0 0])
+                                                           (->cell :inventory.slot/rings :position [1 0])
+                                                           (->cell :inventory.slot/boot)]]
+                                                         (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+                                                           (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+                                                             (->cell :inventory.slot/bag :position [x y]))))})
                          :pad 4}]]})))
 
 (defn- get-cell-widget [inventory-window cell]
