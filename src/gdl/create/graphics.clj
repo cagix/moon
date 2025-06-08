@@ -3,7 +3,6 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -12,6 +11,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.java]
             [clojure.gdx.math.utils :as math-utils]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
@@ -29,7 +29,7 @@
                          ColorSetter)))
 
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
-  (let [font (freetype/generate-font file-handle
+  (let [font (freetype/generate-font (clojure.gdx.java/get-state file-handle)
                                      {:size (* size quality-scaling)
                                       ; :texture-filter/linear because scaling to world-units
                                       :min-filter (texture.filter/->from-keyword :texture-filter/linear)
@@ -374,8 +374,8 @@
                                                :y-down? false})
                   {:center-camera? false})))
 
-(defn- white-pixel-texture []
-  (let [pixmap (doto (pixmap/create 1 1)
+(defn- white-pixel-texture [graphics]
+  (let [pixmap (doto (graphics/pixmap graphics 1 1 :pixmap.format/RGBA8888)
                  (.setColor (color/create :white))
                  (.drawPixel 0 0))
         texture (texture/create pixmap)]
@@ -393,14 +393,14 @@
                                world-viewport]}]
   ;(println "load-textures (count textures): " (count textures))
   (let [batch (sprite-batch/create)
-        shape-drawer-texture (white-pixel-texture)
+        shape-drawer-texture (white-pixel-texture gdx-graphics)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
         textures (into {} (for [file textures]
                             [file (texture/load! file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (pixmap/create (files/internal gdx-files (format cursor-path-format file)))
+                               (let [pixmap (graphics/pixmap gdx-graphics (files/internal gdx-files (format cursor-path-format file)))
                                      cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
                                  (.dispose pixmap)
                                  cursor)))]
