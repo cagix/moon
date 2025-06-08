@@ -51,6 +51,27 @@
                   :pixel-dimensions pixel-dimensions
                   :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
 
+(defn- sprite* [this texture-path]
+  (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
+                 (:world-unit-scale this)))
+
+(defn- sub-sprite [this sprite [x y w h]]
+  (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
+                 (:world-unit-scale this)))
+
+(defn- sprite-sheet [this texture-path tilew tileh]
+  {:image (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
+                         (:world-unit-scale this))
+   :tilew tilew
+   :tileh tileh})
+
+(defn- sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
+  (sub-sprite this image
+              [(* x tilew)
+               (* y tileh)
+               tilew
+               tileh]))
+
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
   (let [font (freetype/generate-font file-handle
                                      {:size (* size quality-scaling)
@@ -302,27 +323,6 @@
            int-array
            (.render renderer))))
 
-  (sprite [this texture-path]
-    (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
-                   world-unit-scale))
-
-  (sub-sprite [_ sprite [x y w h]]
-    (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
-                   world-unit-scale))
-
-  (sprite-sheet [this texture-path tilew tileh]
-    {:image (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
-                           world-unit-scale)
-     :tilew tilew
-     :tileh tileh})
-
-  (sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
-    (gdl.graphics/sub-sprite this image
-                             [(* x tilew)
-                              (* y tileh)
-                              tilew
-                              tileh]))
-
   ; this can be memoized
   ; also good for tiled-map tiles they have to be memoized too
   (image->texture-region [graphics {:keys [file sub-image-bounds]}]
@@ -335,11 +335,11 @@
     (if sub-image-bounds
       (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
             [tilew tileh]       (drop 2 sub-image-bounds)]
-        (gdl.graphics/sprite-sheet->sprite this
-                                           (gdl.graphics/sprite-sheet this file tilew tileh)
-                                           [(int (/ sprite-x tilew))
-                                            (int (/ sprite-y tileh))]))
-      (gdl.graphics/sprite this file)))
+        (sprite-sheet->sprite this
+                              (sprite-sheet this file tilew tileh)
+                              [(int (/ sprite-x tilew))
+                               (int (/ sprite-y tileh))]))
+      (sprite* this file)))
 
   (handle-draws! [this draws]
     (doseq [component draws
