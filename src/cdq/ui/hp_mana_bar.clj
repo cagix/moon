@@ -5,19 +5,12 @@
             [gdl.graphics :as g]
             [gdl.ui :as ui]))
 
-(defn- render-infostr-on-bar [infostr x y h]
-  [:draw/text {:text infostr
-               :x (+ x 75)
-               :y (+ y 2)
-               :up? true}])
-
-(defn create [{:keys [ctx/graphics]}
-              {:keys [rahmen
-                      hpcontent
-                      manacontent
-                      y-mana
-                      ]}
-              ]
+(defn create
+  [{:keys [ctx/graphics]}
+   {:keys [rahmen
+           hpcontent
+           manacontent
+           y-mana]}]
   (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
                     y-mana]
         rahmen      (g/sprite graphics rahmen)
@@ -25,6 +18,11 @@
         manacontent (g/sprite graphics manacontent)
         [rahmenw rahmenh] (:sprite/pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
+        render-infostr-on-bar (fn [infostr x y h]
+                                [:draw/text {:text infostr
+                                             :x (+ x 75)
+                                             :y (+ y 2)
+                                             :up? true}])
         render-hpmana-bar (fn [graphics x y contentimage minmaxval name]
                             [[:draw/image rahmen [x y]]
                              [:draw/image
