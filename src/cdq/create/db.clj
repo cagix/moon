@@ -170,8 +170,10 @@
        :else (m/generate (malli-form schema data)
                          {:size 3})))))
 
-(defn- create-db [{:keys [schemas
-                          properties]}]
+(defn do!
+  [_context
+   {:keys [schemas
+           properties]}]
   (let [schemas (->Schemas (utils/io-slurp-edn schemas))
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
@@ -181,6 +183,3 @@
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file
               :schemas schemas})))
-
-(defn do! [ctx config]
-  (create-db config))
