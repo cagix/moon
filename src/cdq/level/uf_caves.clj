@@ -42,36 +42,29 @@
                       (= :ground (get grid [x (dec y)])))
         rand-0-3 (fn [] (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
         rand-0-5 (fn [] (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
-        tm-tile (memoize
-                 (fn [texture-region movement]
-                   {:pre [#{"all" "air" "none"} movement]}
-                   (tiled/static-tiled-map-tile texture-region "movement" movement)))
-        uf-tile (fn [texture & {:keys [sprite-x sprite-y movement]}]
-                  (tm-tile (texture-region/create texture
-                                                  (* sprite-x tile-size)
-                                                  (* sprite-y tile-size)
-                                                  tile-size
-                                                  tile-size)
-                           movement))
+        ->tile (memoize
+                (fn [& {:keys [sprite-idx movement]}]
+                  {:pre [#{"all" "air" "none"} movement]}
+                  (tiled/static-tiled-map-tile (texture-region/create texture
+                                                                      (* (sprite-idx 0) tile-size)
+                                                                      (* (sprite-idx 1) tile-size)
+                                                                      tile-size
+                                                                      tile-size)
+                                               "movement" movement)))
         [ground-x ground-y] (rand-nth uf-grounds)
         {wall-x 0 wall-y 1} (rand-nth uf-walls)
         [transition-x transition-y] [wall-x (inc wall-y)]
-        ->tile (fn [& {:keys [sprite-idx movement]}]
-                 (uf-tile texture
-                          :sprite-x (sprite-idx 0)
-                          :sprite-y (sprite-idx 1)
-                          :movement movement))
         wall-tile (fn []
-                    (->tile :sprite-idx [(+ wall-x (rand-0-5)) wall-y]
-                            :movement "none"))
+                    {:sprite-idx [(+ wall-x (rand-0-5)) wall-y]
+                     :movement "none"})
         transition-tile (fn []
-                          (->tile :sprite-idx [(+ transition-x (rand-0-5))
-                                               transition-y]
-                                  :movement "none"))
+                          {:sprite-idx [(+ transition-x (rand-0-5))
+                                        transition-y]
+                           :movement "none"})
         ground-tile (fn []
-                      (->tile :sprite-idx [(+ ground-x (rand-0-3))
-                                           ground-y]
-                              :movement "all"))
+                      {:sprite-idx [(+ ground-x (rand-0-3))
+                                    ground-y]
+                       :movement "all"})
         position->tile (fn [position]
                          (case (get grid position)
                            :wall (wall-tile)
@@ -88,7 +81,7 @@
                 :visible? true
                 :properties {"movement-properties" true}
                 :tiles (for [position (g2d/posis grid)]
-                         [position (position->tile position)])}]})))
+                         [position (->tile (position->tile position))])}]})))
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
