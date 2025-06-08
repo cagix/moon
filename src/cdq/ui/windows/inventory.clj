@@ -56,13 +56,21 @@
                     :boot     9
                     :bag      10}) ; transparent
 
-(defn- slot->sprite [graphics slot]
-  (g/sprite-sheet->sprite graphics
-                          (g/sprite-sheet graphics "images/items.png" 48 48)
-                          [21 (+ (slot->y-sprite-idx slot) 2)]))
+(defn- slot->texture-region [graphics slot]
+  (let [width  48
+        height 48
+        sprite-x 21
+        sprite-y (+ (slot->y-sprite-idx slot) 2)
+        bounds [(* sprite-x width)
+                (* sprite-y height)
+                width
+                height]]
+    (g/image->texture-region graphics
+                             {:file "images/items.png"
+                              :sub-image-bounds bounds})))
 
 (defn- slot->background [graphics slot]
-  (ui/create-drawable (:sprite/texture-region (slot->sprite graphics slot))
+  (ui/create-drawable (slot->texture-region graphics slot)
                       :width cell-size
                       :height cell-size
                       :tint-color (color/create [1 1 1 0.4])))
