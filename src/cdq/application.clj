@@ -18,12 +18,27 @@
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/config :some]
+
              [:ctx/db :some]
+
              [:ctx/audio :some]
+
              [:ctx/input :some]
+
              [:ctx/stage :some]
+
              [:ctx/graphics :some]
+
+             ; our world model is most complex
              [:ctx/elapsed-time number?]
+             ; info-segment <- this is intereseting, can do only w. world?
+             ; effect/handle <- this is intereseting, can do only w. world?
+             ; entity/tick! <- this is intereseting, can do only w. world?
+             ; entity/create <- this is intereseting, can do only w. world?
+             ; draw-active-skill [exception]
+             ; cdq.render.update-time [exception]
+             ; cdq.ctx.effect-handler/do! <- this is intereseting, can do only w. world?
+             ; cdq.ui.dev-menu [exception]
              [:ctx/delta-time {:optional true} number?]
              [:ctx/max-delta number?]
              [:ctx/max-speed number?]
