@@ -1,5 +1,6 @@
 (ns cdq.ctx.effect-handler
-  (:require [cdq.state :as state]
+  (:require [cdq.ctx]
+            [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.utils :as utils]))
@@ -16,7 +17,12 @@
   nil)
 
 (defn- set-item! [ctx [inventory-cell item]]
-  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/set-item! inventory-cell item))
+  (-> ctx
+      :ctx/stage
+      :windows
+      :inventory-window
+      (inventory-window/set-item! inventory-cell {:texture-region (:sprite/texture-region (:entity/image item))
+                                                  :tooltip-text (cdq.ctx/info-text ctx item)}))
   nil)
 
 (defn- remove-item! [ctx inventory-cell]

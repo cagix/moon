@@ -111,15 +111,19 @@
                                                              (->cell :inventory.slot/bag :position [x y]))))})
                          :pad 4}]]})))
 
-(defn set-item! [inventory-window cell item]
+(defn set-item!
+  [inventory-window
+   cell
+   {:keys [texture-region
+           tooltip-text]}]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (ui/find-actor cell-widget "image-widget")
         cell-size (:cell-size (ui/user-object image-widget))
-        drawable (ui/create-drawable (:sprite/texture-region (:entity/image item))
+        drawable (ui/create-drawable texture-region
                                      :width cell-size
                                      :height cell-size)]
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(cdq.ctx/info-text % item))))
+    (ui/add-tooltip! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
