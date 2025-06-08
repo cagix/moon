@@ -312,6 +312,12 @@
                               tilew
                               tileh]))
 
+  (image->texture-region [graphics {:keys [file sub-image-bounds]}]
+    (let [texture (gdl.graphics/texture graphics file)]
+      (if sub-image-bounds
+        (apply texture-region/create texture sub-image-bounds)
+        (texture-region/create texture))))
+
   (edn->sprite [this {:keys [file sub-image-bounds]}]
     (if sub-image-bounds
       (let [[sprite-x sprite-y] (take 2 sub-image-bounds)

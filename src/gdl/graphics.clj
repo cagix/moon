@@ -15,4 +15,7 @@
   (sub-sprite [_ sprite [x y w h]])
   (sprite-sheet [_ texture-path tilew tileh])
   (sprite-sheet->sprite [_ sprite-sheet [x y]])
+  (image->texture-region [_ {:keys [file sub-image-bounds]}]
+                         "sub-image-bounds is optional.
+                         Loads the texture and creates a texture-region out of it, in case of sub-image bounds applies the proper bounds.")
   )

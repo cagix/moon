@@ -5,18 +5,13 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics :as graphics]
             [gdl.tiled :as tiled]))
 
 (defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]
   (for [creature (db/all-raw db :properties/creatures)
-        :let [texture-region (let [{:keys [file sub-image-bounds]} (property/image creature)
-                                   texture (graphics/texture graphics file)]
-                               (if sub-image-bounds
-                                 (apply texture-region/create texture sub-image-bounds)
-                                 (texture-region/create texture)))]]
+        :let [texture-region (graphics/image->texture-region graphics (property/image creature))]]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
                        :tile/texture-region texture-region})))
