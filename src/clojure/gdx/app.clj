@@ -1,5 +1,4 @@
-(ns clojure.gdx.app
-  (:import (com.badlogic.gdx Application)))
+(ns clojure.gdx.app)
 
-(defn post-runnable! [^Application app runnable]
-  (.postRunnable app runnable))
+(defprotocol Application
+  (post-runnable! [_ runnable]))

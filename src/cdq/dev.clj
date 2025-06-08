@@ -3,14 +3,16 @@
             [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [clojure.gdx :as gdx]
+            [clojure.gdx.java]
             [clojure.gdx.app :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.c :as c]))
 
+; TODO :clojure.gdx/app is not in ':ctx/'
 (defmacro post-runnable! [& exprs]
-  `(app/post-runnable! (gdx/app) (fn [] ~@exprs)))
+  `(app/post-runnable! (:clojure.gdx/app (clojure.gdx.java/context))
+                       (fn [] ~@exprs)))
 
 (comment
 
