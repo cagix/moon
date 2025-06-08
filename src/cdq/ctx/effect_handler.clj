@@ -82,6 +82,9 @@
                                             (* (:height (:ui-viewport graphics)) (/ 3 4))]
                           :pack? true})))
 
+(defn- toggle-inventory-visible! [{:keys [ctx/stage]} _]
+  (-> stage :windows :inventory-window ui/toggle-visible!))
+
 (def ctx-handlers {:world.event/player-skill-added add-skill!
                    :world.event/player-skill-removed remove-skill!
                    :world.event/player-item-set set-item!
@@ -91,6 +94,7 @@
                    :world.event/show-player-message show-player-ui-msg!
                    :world.event/show-modal-window show-modal-window!
                    :world.event/set-cursor set-cursor!
+                   :world.event/toggle-inventory-visible toggle-inventory-visible!
                    })
 
 ; TODO world event handlers always return nil

@@ -1,7 +1,5 @@
 (ns cdq.tx.toggle-inventory-visible
-  (:require [cdq.ctx.effect-handler :refer [do!]]
-            [gdl.ui :as ui]))
+  (:require [cdq.ctx.effect-handler :refer [do!]]))
 
-(defmethod do! :tx/toggle-inventory-visible [_ {:keys [ctx/stage]}]
-  (-> stage :windows :inventory-window ui/toggle-visible!)
-  nil)
+(defmethod do! :tx/toggle-inventory-visible [_ _ctx]
+  [:world.event/toggle-inventory-visible])
