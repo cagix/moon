@@ -252,10 +252,7 @@
       io-slurp-edn-req ; <- require-resolved in _this_ namespace ?? can I use 'invoc' ??
       exec!))
 
-(defn when* [[ev cond* exec]]
-  (println "when*")
-  (println "(ev): " (ev))
-  (println "condition true? " (= (ev) cond*))
-  (when (= (ev) cond*)
-    (println "INVOCE EXECS: " exec)
-    (exec! exec)))
+(defn dispatch-on [[to-be-evaluated result->execs]]
+  (-> (to-be-evaluated)
+      result->execs
+      exec!))
