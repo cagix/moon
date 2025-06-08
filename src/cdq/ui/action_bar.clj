@@ -1,6 +1,5 @@
 (ns cdq.ui.action-bar
-  (:require [cdq.ctx :as ctx]
-            [gdl.ui :as ui]
+  (:require [gdl.ui :as ui]
             [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn- button-group-container []
@@ -31,25 +30,24 @@
   (when-let [skill-button (button-group/checked (:button-group (get-data action-bar)))]
     (ui/user-object skill-button)))
 
-(defn add-skill! [action-bar {:keys [property/id entity/image] :as skill}]
+(defn add-skill!
+  [action-bar
+   {:keys [skill-id
+           texture-region
+           tooltip-text]}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (ui/image-button (:sprite/texture-region image)
+        button (ui/image-button texture-region
                                 (fn [_actor _ctx])
                                 {:scale 2})]
-    (ui/set-user-object! button id)
-    (ui/add-tooltip! button #(ctx/info-text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/set-user-object! button skill-id)
+    (ui/add-tooltip! button tooltip-text)
     (ui/add! horizontal-group button)
     (button-group/add! button-group button)
     nil))
 
-(defn remove-skill! [action-bar {:keys [property/id]}]
+(defn remove-skill! [action-bar skill-id]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (get horizontal-group id)]
+        button (get horizontal-group skill-id)]
     (ui/remove! button)
     (button-group/remove! button-group button)
     nil))
-
-(comment
- (keys (:entity/skills @cdq.ctx/player-eid))
-
- (remove-skill! (:action-bar cdq.ctx/stage) {:property/id :skills/spawn}))

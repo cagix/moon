@@ -9,11 +9,17 @@
                 k))
 
 (defn- add-skill! [ctx skill]
-  (-> ctx :ctx/stage :action-bar (action-bar/add-skill! skill))
+  (-> ctx
+      :ctx/stage
+      :action-bar
+      (action-bar/add-skill! {:skill-id (:property/id skill)
+                              :texture-region (:sprite/texture-region (:entity/image skill))
+                              :tooltip-text #(cdq.ctx/info-text % skill) ; (assoc ctx :effect/source (world/player)) FIXME
+                              }))
   nil)
 
 (defn- remove-skill! [ctx skill]
-  (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! skill))
+  (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! (:property/id skill)))
   nil)
 
 (defn- set-item! [ctx [inventory-cell item]]
