@@ -69,11 +69,6 @@
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
-  ; why this needs ctx?
-  ; or we build the db at start?
-  ; need to pass whole ctx at every creature spawn ....
-  ; we had some problem with relationships
-  ; why we don't just use datomic ?
   (build [this property-id ctx]
     (transform schemas
                (db/get-raw this property-id)
