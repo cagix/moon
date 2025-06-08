@@ -1,5 +1,5 @@
 (ns cdq.levelgen
-  (:require ;cdq.schemas-impl ; invalid schema :s/sound when reading db.
+  (:require
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]

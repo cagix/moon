@@ -1,19 +1,4 @@
 [[clojure.core/identity [
-                         cdq.schema.animation
-                         cdq.schema.components_ns
-                         cdq.schema.image
-                         cdq.schema.int
-                         cdq.schema.map
-                         cdq.schema.map_optional
-                         cdq.schema.nat_int
-                         cdq.schema.number
-                         cdq.schema.one_to_many
-                         cdq.schema.one_to_one
-                         cdq.schema.pos
-                         cdq.schema.pos_int
-                         cdq.schema.sound
-                         cdq.schema.val_max
-
                          cdq.effects.target.audiovisual
                          cdq.effects.target.convert
                          cdq.effects.target.damage

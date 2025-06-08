@@ -6,7 +6,8 @@
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [cdq.val-max :as val-max]))
 
 #_(def ^:private undefined-data-ks (atom #{}))
 
@@ -91,6 +92,51 @@
     (map #(fetch-relationships schemas % this)
          (db/all-raw this property-type))))
 
+(defmulti malli-form (fn [schema _schemas] (schema/type schema)))
+(defmethod malli-form :default [schema _schemas] schema)
+
+(defmethod malli-form :s/int     [_ _schemas] int?)
+(defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
+(defmethod malli-form :s/pos     [_ _schemas] pos?)
+(defmethod malli-form :s/pos-int [_ _schemas] pos-int?)
+(defmethod malli-form :s/number  [_ _schemas] number?)
+
+(defmethod malli-form :s/one-to-many [[_ property-type] _schemas]
+  [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])
+
+(defmethod malli-form :s/one-to-one [[_ property-type] _schemas]
+  [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
+
+(defmethod malli-form :s/sound [_ _schemas]
+  :string)
+
+(defmethod malli-form :s/val-max [_ _schemas]
+  val-max/schema)
+
+(defmethod malli-form :s/image [_ _schemas]
+  [:map {:closed true}
+   [:file :string]
+   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
+
+(defmethod malli-form :s/animation [_ _schemas]
+  [:map {:closed true}
+   [:frames :some] ; FIXME actually images
+   [:frame-duration pos?]
+   [:looping? :boolean]])
+
+(defmethod malli-form :s/map [[_ ks] schemas]
+  (m/create-map-schema ks (fn [k]
+                            (malli-form (get schemas k) schemas))))
+
+(defmethod malli-form :s/map-optional [[_ ks] schemas]
+  (malli-form [:s/map (map (fn [k] [k {:optional true}]) ks)]
+              schemas))
+
+(defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
+  (malli-form [:s/map-optional (filter #(= (name ns-name-k) (namespace %))
+                                       (keys schemas))]
+              schemas))
+
 (deftype Schemas [data]
   clojure.lang.ILookup
   (valAt [_ key]
@@ -101,18 +147,18 @@
     (filter #(= "properties" (namespace %)) (keys data)))
 
   (validate [_ property]
-    (m/form->validate (schema/malli-form (get data (property/type property))
+    (m/form->validate (malli-form (get data (property/type property))
                                   data)
                       property))
 
   (map-keys [_ map-schema]
-    (m/map-keys (schema/malli-form map-schema data)))
+    (m/map-keys (malli-form map-schema data)))
 
   (optional-keyset [_ map-schema]
-    (m/optional-keyset (schema/malli-form map-schema data)))
+    (m/optional-keyset (malli-form map-schema data)))
 
   (optional-k? [_ map-schema k]
-    (m/optional? k (schema/malli-form map-schema data)))
+    (m/optional? k (malli-form map-schema data)))
 
   (k->default-value [_ k]
     (let [schema (cdq.utils/safe-get data k)]
@@ -121,7 +167,7 @@
 
        ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-       :else (m/generate (schema/malli-form schema data)
+       :else (m/generate (malli-form schema data)
                          {:size 3})))))
 
 (defn- create-db [{:keys [schemas
