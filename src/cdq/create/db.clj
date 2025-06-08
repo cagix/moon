@@ -8,6 +8,29 @@
             [cdq.property :as property]
             [cdq.utils :as utils]))
 
+#_(def ^:private undefined-data-ks (atom #{}))
+
+(comment
+ #{:frames
+   :looping?
+   :frame-duration
+   :file ; => this is texture ... convert that key itself only?!
+   :sub-image-bounds})
+
+(defn- transform [schemas property ctx]
+  (utils/apply-kvs property
+                   (fn [k v]
+                     (let [schema (try (get schemas k)
+                                       (catch Throwable _t
+                                         #_(swap! undefined-data-ks conj k)
+                                         nil))
+                           v (if (map? v)
+                               (transform schemas v ctx)
+                               v)]
+                       (try (schema/edn->value schema v ctx)
+                            (catch Throwable t
+                              (throw (ex-info " " {:k k :v v} t))))))))
+
 (defn save-vals! [data-vals file]
   (->> data-vals
        (sort-by property/type)
@@ -52,36 +75,13 @@
   ; we had some problem with relationships
   ; why we don't just use datomic ?
   (build [this property-id ctx]
-    (schemas/transform schemas
-                       (db/get-raw this property-id)
-                       ctx))
+    (transform schemas
+               (db/get-raw this property-id)
+               ctx))
 
   (build-all [this property-type ctx]
-    (map #(schemas/transform schemas % ctx)
+    (map #(transform schemas % ctx)
          (db/all-raw this property-type))))
-
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defn- transform* [schemas property ctx]
-  (utils/apply-kvs property
-                   (fn [k v]
-                     (let [schema (try (get schemas k)
-                                       (catch Throwable _t
-                                         #_(swap! undefined-data-ks conj k)
-                                         nil))
-                           v (if (map? v)
-                               (transform* schemas v ctx)
-                               v)]
-                       (try (schema/edn->value schema v ctx)
-                            (catch Throwable t
-                              (throw (ex-info " " {:k k :v v} t))))))))
 
 (deftype Schemas [data]
   clojure.lang.ILookup
@@ -96,9 +96,6 @@
     (m/form->validate (schema/malli-form (get data (property/type property))
                                   data)
                       property))
-
-  (transform [schemas property ctx]
-    (transform* schemas property ctx))
 
   (map-keys [_ map-schema]
     (m/map-keys (schema/malli-form map-schema data)))
