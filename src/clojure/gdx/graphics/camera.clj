@@ -1,6 +1,7 @@
 (ns clojure.gdx.graphics.camera
   (:import (com.badlogic.gdx.graphics Camera)))
 
+; also has z?
 (defn position [^Camera this]
   [(.x (.position this))
    (.y (.position this))])
