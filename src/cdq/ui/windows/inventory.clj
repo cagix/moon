@@ -84,40 +84,43 @@
       (.addListener (ui/click-listener
                      (fn [{:keys [ctx/player-eid] :as ctx}]
                        (cdq.ctx/handle-txs! ctx (-> @player-eid
-                                                        entity/state-obj
-                                                        (state/clicked-inventory-cell player-eid cell)))))))))
+                                                    entity/state-obj
+                                                    (state/clicked-inventory-cell player-eid cell)))))))))
 
-(defn- inventory-table [g]
-  (ui/table {:id ::table
-             :rows (concat [[nil nil
-                             (->cell g :inventory.slot/helm)
-                             (->cell g :inventory.slot/necklace)]
-                            [nil
-                             (->cell g :inventory.slot/weapon)
-                             (->cell g :inventory.slot/chest)
-                             (->cell g :inventory.slot/cloak)
-                             (->cell g :inventory.slot/shield)]
-                            [nil nil
-                             (->cell g :inventory.slot/leg)]
-                            [nil
-                             (->cell g :inventory.slot/glove)
-                             (->cell g :inventory.slot/rings :position [0 0])
-                             (->cell g :inventory.slot/rings :position [1 0])
-                             (->cell g :inventory.slot/boot)]]
-                           (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                             (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->cell g :inventory.slot/bag :position [x y]))))}))
+(defn- inventory-table-rows [cell*]
+  (concat [[nil nil
+            (cell* :inventory.slot/helm)
+            (cell* :inventory.slot/necklace)]
+           [nil
+            (cell* :inventory.slot/weapon)
+            (cell* :inventory.slot/chest)
+            (cell* :inventory.slot/cloak)
+            (cell* :inventory.slot/shield)]
+           [nil nil
+            (cell* :inventory.slot/leg)]
+           [nil
+            (cell* :inventory.slot/glove)
+            (cell* :inventory.slot/rings :position [0 0])
+            (cell* :inventory.slot/rings :position [1 0])
+            (cell* :inventory.slot/boot)]]
+          (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+            (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+              (cell* :inventory.slot/bag :position [x y])))))
 
-(defn create [{:keys [ctx/graphics]} {:keys [title
-                                             id
-                                             visible?]}]
+(defn create
+  [{:keys [ctx/graphics]}
+   {:keys [title
+           id
+           visible?]}]
   (ui/window {:title title
               :id id
               :visible? visible?
               :pack? true
               :position [(:width (:ui-viewport graphics))
                          (:height (:ui-viewport graphics))]
-              :rows [[{:actor (inventory-table graphics)
+              :rows [[{:actor (ui/table {:id ::table
+                                         :rows (inventory-table-rows (fn [slot]
+                                                                       (->cell graphics slot)))})
                        :pad 4}]]}))
 
 (defn- get-cell-widget [inventory-window cell]
