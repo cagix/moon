@@ -56,7 +56,6 @@
                     :boot     9
                     :bag      10}) ; transparent
 
-; TODO actually we can pass this whole map into inventory-window ...
 (defn- slot->sprite [graphics slot]
   (g/sprite-sheet->sprite graphics
                           (g/sprite-sheet graphics "images/items.png" 48 48)
