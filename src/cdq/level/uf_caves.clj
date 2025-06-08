@@ -69,7 +69,8 @@
                         level/start
                         level/spawn-rate
                         level/creature-properties
-                        level/texture
+                        level/create-tile
+                        level/tile-size
                         level/scaling]}]
   (assert (= #{:wall :ground} (set (g2d/cells grid))))
   (let [
@@ -83,16 +84,6 @@
         ; -
 
         ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
-        tile-size 48
-        ->tile (memoize
-                (fn [& {:keys [sprite-idx movement]}]
-                  {:pre [#{"all" "air" "none"} movement]}
-                  (tiled/static-tiled-map-tile (texture-region/create texture
-                                                                      (* (sprite-idx 0) tile-size)
-                                                                      (* (sprite-idx 1) tile-size)
-                                                                      tile-size
-                                                                      tile-size)
-                                               "movement" movement)))
         position->tile (position->tile-fn grid)
         tiled-map (tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
@@ -103,7 +94,7 @@
                               :visible? true
                               :properties {"movement-properties" true}
                               :tiles (for [position (g2d/posis grid)]
-                                       [position (->tile (position->tile position))])}]})
+                                       [position (create-tile (position->tile position))])}]})
         ; -
 
         ; - calculate spawn positions -
@@ -150,15 +141,26 @@
 
 (defn create [{:keys [ctx/graphics]
                :as ctx}]
-  (reduce (fn [level f]
-            (f level))
-          ; TODO add uf-caves info
-          ; and probabilities for each tile
-          {:level/texture (graphics/texture graphics "maps/uf_terrain.png")
-           :level/random (java.util.Random.)
-           :level/size 200
-           :level/cave-style :wide
-           :level/spawn-rate 0.02
-           :level/scaling 3
-           :level/creature-properties (prepare-creature-properties ctx)}
-          level-generator-steps))
+  (let [tile-size 48]
+    (reduce (fn [level f]
+              (f level))
+            ; TODO add uf-caves info
+            ; and probabilities for each tile
+            {:level/tile-size tile-size
+             :level/create-tile (let [texture (graphics/texture graphics "maps/uf_terrain.png")]
+                                  (memoize
+                                   (fn [& {:keys [sprite-idx movement]}]
+                                     {:pre [#{"all" "air" "none"} movement]}
+                                     (tiled/static-tiled-map-tile (texture-region/create texture
+                                                                                         (* (sprite-idx 0) tile-size)
+                                                                                         (* (sprite-idx 1) tile-size)
+                                                                                         tile-size
+                                                                                         tile-size)
+                                                                  "movement" movement))))
+             :level/random (java.util.Random.)
+             :level/size 200
+             :level/cave-style :wide
+             :level/spawn-rate 0.02
+             :level/scaling 3
+             :level/creature-properties (prepare-creature-properties ctx)}
+            level-generator-steps)))
