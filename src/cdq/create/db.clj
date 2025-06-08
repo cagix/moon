@@ -17,7 +17,20 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defn- transform [schemas property ctx]
+(defmulti fetch* (fn [schema v _db]
+                   (when schema  ; undefined-data-ks
+                     (schema/type schema))))
+
+(defmethod fetch* :default [_schema v _db]
+  v)
+
+(defmethod fetch* :s/one-to-many [_ property-ids db]
+  (set (map (partial db/build db) property-ids)))
+
+(defmethod fetch* :s/one-to-one [_ property-id db]
+  (db/build db property-id))
+
+(defn- fetch-relationships [schemas property db]
   (utils/apply-kvs property
                    (fn [k v]
                      (let [schema (try (get schemas k)
@@ -25,9 +38,9 @@
                                          #_(swap! undefined-data-ks conj k)
                                          nil))
                            v (if (map? v)
-                               (transform schemas v ctx)
+                               (fetch-relationships schemas v db)
                                v)]
-                       (try (schema/edn->value schema v ctx)
+                       (try (fetch* schema v db)
                             (catch Throwable t
                               (throw (ex-info " " {:k k :v v} t))))))))
 
@@ -69,13 +82,13 @@
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
-  (build [this property-id ctx]
-    (transform schemas
-               (db/get-raw this property-id)
-               ctx))
+  (build [this property-id]
+    (fetch-relationships schemas
+                         (db/get-raw this property-id)
+                         this))
 
-  (build-all [this property-type ctx]
-    (map #(transform schemas % ctx)
+  (build-all [this property-type]
+    (map #(fetch-relationships schemas % this)
          (db/all-raw this property-type))))
 
 (deftype Schemas [data]

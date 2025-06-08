@@ -7,12 +7,5 @@
    (keyword? schema) schema
    :else (throw (IllegalArgumentException. (str "Unkown schema type: " (class schema))))))
 
-(defmulti edn->value (fn [schema v _ctx]
-                       (when schema  ; undefined-data-ks
-                         (type schema))))
-
-(defmethod edn->value :default [_schema v _ctx]
-  v)
-
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)

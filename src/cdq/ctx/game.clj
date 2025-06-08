@@ -10,7 +10,7 @@
                 start-position] :as level} (world-fn ctx)
         creatures (for [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
                     {:position (utils/tile->middle position)
-                     :creature-property (db/build db (keyword creature-id) ctx)
+                     :creature-property (db/build db (keyword creature-id))
                      :components {:entity/fsm {:fsm :fsms/npc
                                                :initial-state :npc-sleeping}
                                   :entity/faction :evil}})
@@ -18,7 +18,7 @@
                 free-skill-points
                 click-distance-tiles]} (:cdq.ctx.game/player-props (:ctx/config ctx))
         player-entity {:position (utils/tile->middle start-position)
-                       :creature-property (db/build db creature-id ctx)
+                       :creature-property (db/build db creature-id)
                        :components {:entity/fsm {:fsm :fsms/player
                                                  :initial-state :player-idle}
                                     :entity/faction :good

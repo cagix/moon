@@ -23,8 +23,8 @@
   (all-raw [_ property-type]
            "Returns all properties with type without schema-based transformations.")
 
-  (build [_ property-id ctx]
-         "Returns the property with schema-based transformations.")
+  (build [_ property-id]
+         "Returns the property with all associated relationships fetched recursively.")
 
-  (build-all [_ property-type ctx]
-             "Returns all properties with type with schema-based transformations."))
+  (build-all [_ property-type]
+             "Returns all properties with type with all associated relationships fetched recursively."))

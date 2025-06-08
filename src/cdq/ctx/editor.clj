@@ -19,8 +19,8 @@
            (utils/pretty-pst t)
            (stage/add! stage (error-window/create t))))))
 
-; We are working with raw property data without edn->value and build
-; otherwise at update! we would have to convert again from edn->value back to edn
+; We are working with raw property data without fetching relationships and build
+; otherwise at update! we would have to convert again back to edn
 ; for example at images/relationships
 (defn- create-editor-window
   [props

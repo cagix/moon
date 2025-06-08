@@ -7,7 +7,7 @@
                                  :as ctx}]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
-                                     (db/build db audiovisual ctx)
+                                     (db/build db audiovisual)
                                      audiovisual)]
     (do! [:tx/sound sound]
          ctx)

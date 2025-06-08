@@ -81,10 +81,10 @@
 
 
 #_(defn- learn-skill! [_context skill-id]
-  (clojure.tx.add-skill/do! ctx/player-eid (db/build db skill-id ctx)))
+  (clojure.tx.add-skill/do! ctx/player-eid (db/build db skill-id)))
 
 #_(defn- create-item! [_context item-id]
-  (clojure.tx.spawn-item/do! (entity/position @ctx/player-eid) (db/build db item-id ctx)))
+  (clojure.tx.spawn-item/do! (entity/position @ctx/player-eid) (db/build db item-id)))
 
 (defn- mouseover-grid-cell [{:keys [ctx/grid] :as ctx}]
   #_@(grid/cell grid (mapv int (c/world-mouse-position ctx))))
