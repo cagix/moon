@@ -114,10 +114,10 @@
 
 (require '[cdq.level.caves :as caves])
 
-(defn initial-grid-creation [{:keys [level/size
-                                     level/cave-style
-                                     level/random]
-                              :as level}]
+(defn initial-grid-creation [level
+                             {:keys [size
+                                     cave-style
+                                     random]}]
   (let [{:keys [start grid]} (caves/create random size size cave-style)]
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level
@@ -133,17 +133,13 @@
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level :level/grid grid)))
 
-(def level-generator-steps [initial-grid-creation
-                            fix-nads
-                            create*])
-
-; => TODO params for each step?
-
 (defn create [{:keys [ctx/graphics]
                :as ctx}]
   (let [tile-size 48]
-    (reduce (fn [level f]
-              (f level))
+    (reduce (fn [level step]
+              (if (vector? step)
+                (let [[f params] step] (f level params))
+                (let [f step]          (f level))))
             ; TODO add uf-caves info
             ; and probabilities for each tile
             {:level/tile-size tile-size
@@ -157,10 +153,11 @@
                                                                                          tile-size
                                                                                          tile-size)
                                                                   "movement" movement))))
-             :level/random (java.util.Random.)
-             :level/size 200
-             :level/cave-style :wide
              :level/spawn-rate 0.02
              :level/scaling 3
              :level/creature-properties (prepare-creature-properties ctx)}
-            level-generator-steps)))
+            [[initial-grid-creation {:size 200
+                                     :cave-style :wide
+                                     :random (java.util.Random.)}]
+             fix-nads
+             create*])))
