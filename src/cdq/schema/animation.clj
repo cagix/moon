@@ -1,7 +1,6 @@
 (ns cdq.schema.animation
   (:require [cdq.animation :as animation]
-            [cdq.schema :as schema]
-            [gdl.graphics :as g]))
+            [cdq.schema :as schema]))
 
 (defmethod schema/malli-form :s/animation [_ _schemas]
   [:map {:closed true}
@@ -11,7 +10,7 @@
 
 (defmethod schema/edn->value :s/animation [_
                                            {:keys [frames frame-duration looping?]}
-                                           {:keys [ctx/graphics]}]
-  (animation/create (map #(g/edn->sprite graphics %) frames)
+                                           _ctx]
+  (animation/create frames
                     :frame-duration frame-duration
                     :looping? looping?))

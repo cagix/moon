@@ -28,50 +28,6 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defn- scale-dimensions [dimensions scale]
-  (mapv (comp float (partial * scale)) dimensions))
-
-(q/defrecord Sprite [sprite/texture-region
-                     sprite/pixel-dimensions
-                     sprite/world-unit-dimensions
-                     sprite/color]) ; optional
-
-(defn- create-sprite
-  [texture-region
-   world-unit-scale]
-  (let [scale 1 ; "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-        _ (assert (or (number? scale)
-                      (and (vector? scale)
-                           (number? (scale 0))
-                           (number? (scale 1)))))
-        pixel-dimensions (if (number? scale)
-                           (scale-dimensions (texture-region/dimensions texture-region) scale)
-                           scale)]
-    (map->Sprite {:texture-region texture-region
-                  :pixel-dimensions pixel-dimensions
-                  :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale)})))
-
-(defn- sprite* [this texture-path]
-  (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
-                 (:world-unit-scale this)))
-
-(defn- sub-sprite [this sprite [x y w h]]
-  (create-sprite (texture-region/create (:sprite/texture-region sprite) x y w h)
-                 (:world-unit-scale this)))
-
-(defn- sprite-sheet [this texture-path tilew tileh]
-  {:image (create-sprite (texture-region/create (gdl.graphics/texture this texture-path))
-                         (:world-unit-scale this))
-   :tilew tilew
-   :tileh tileh})
-
-(defn- sprite-sheet->sprite [this {:keys [image tilew tileh]} [x y]]
-  (sub-sprite this image
-              [(* x tilew)
-               (* y tileh)
-               tilew
-               tileh]))
-
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
   (let [font (freetype/generate-font file-handle
                                      {:size (* size quality-scaling)
@@ -84,8 +40,7 @@
                                   :use-integer-positions? false})
     font))
 
-(defn- draw-texture-region! [batch texture-region [x y] [w h] rotation color]
-  (if color (batch/set-color! batch color))
+(defn- draw-texture-region! [batch texture-region [x y] [w h] rotation]
   (batch/draw! batch
                texture-region
                {:x x
@@ -96,31 +51,17 @@
                 :height h
                 :scale-x 1
                 :scale-y 1
-                :rotation rotation})
-  (if color (batch/set-color! batch (color/create :white))))
+                :rotation rotation}))
 
-(defn- unit-dimensions [sprite unit-scale]
-  (if (= unit-scale 1)
-    (:sprite/pixel-dimensions sprite)
-    (:sprite/world-unit-dimensions sprite)))
-
-(defn- draw-sprite!
-  ([batch unit-scale {:keys [sprite/texture-region sprite/color] :as sprite} position]
-   (draw-texture-region! batch
-                         texture-region
-                         position
-                         (unit-dimensions sprite unit-scale)
-                         0 ; rotation
-                         color))
-  ([batch unit-scale {:keys [sprite/texture-region sprite/color] :as sprite} [x y] rotation]
-   (let [[w h] (unit-dimensions sprite unit-scale)]
-     (draw-texture-region! batch
-                           texture-region
-                           [(- (float x) (/ (float w) 2))
-                            (- (float y) (/ (float h) 2))]
-                           [w h]
-                           rotation
-                           color))))
+(defn- texture-region-drawing-dimensions
+  [{:keys [unit-scale
+           world-unit-scale]}
+   texture-region]
+  (let [dimensions (texture-region/dimensions texture-region)]
+    (if (= @unit-scale 1)
+      dimensions
+      (mapv (comp float (partial * world-unit-scale))
+            dimensions))))
 
 (defmulti draw! (fn [[k] _graphics]
                   k))
@@ -132,25 +73,31 @@
                         [x y]
                         (texture-region/dimensions texture-region)
                         0  ;rotation
-                        nil ; color
                         ))
 
-(defmethod draw! :draw/image [[_ sprite position]
-                              {:keys [batch
-                                      unit-scale]}]
-  (draw-sprite! batch
-                @unit-scale
-                sprite
-                position))
+(defmethod draw! :draw/image [[_ image position]
+                              {:keys [batch]
+                               :as graphics}]
+  (let [texture-region (gdl.graphics/image->texture-region graphics image)]
+    (draw-texture-region! batch
+                          texture-region
+                          position
+                          (texture-region-drawing-dimensions graphics texture-region)
+                          0 ; rotation
+                          )))
 
-(defmethod draw! :draw/rotated-centered [[_ sprite rotation position]
-                                         {:keys [batch
-                                                 unit-scale]}]
-  (draw-sprite! batch
-                @unit-scale
-                sprite
-                position
-                rotation))
+(defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
+                                         {:keys [batch]
+                                          :as graphics}]
+  (let [texture-region (gdl.graphics/image->texture-region graphics image)
+        [w h] (texture-region-drawing-dimensions graphics texture-region)]
+    (draw-texture-region! batch
+                          texture-region
+                          [(- (float x) (/ (float w) 2))
+                           (- (float y) (/ (float h) 2))]
+                          [w h]
+                          rotation
+                          )))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
@@ -290,6 +237,7 @@
     (assert (contains? cursors cursor-key))
     (graphics/set-cursor! graphics (get cursors cursor-key)))
 
+  ; TODO probably not needed I only work with texture-regions
   (texture [_ path]
     (assert (contains? textures path)
             (str "Cannot find texture with path: " (pr-str path)))
@@ -323,23 +271,13 @@
            int-array
            (.render renderer))))
 
-  ; this can be memoized
+  ; FIXME this can be memoized
   ; also good for tiled-map tiles they have to be memoized too
   (image->texture-region [graphics {:keys [file sub-image-bounds]}]
     (let [texture (gdl.graphics/texture graphics file)]
       (if sub-image-bounds
         (apply texture-region/create texture sub-image-bounds)
         (texture-region/create texture))))
-
-  (edn->sprite [this {:keys [file sub-image-bounds]}]
-    (if sub-image-bounds
-      (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-            [tilew tileh]       (drop 2 sub-image-bounds)]
-        (sprite-sheet->sprite this
-                              (sprite-sheet this file tilew tileh)
-                              [(int (/ sprite-x tilew))
-                               (int (/ sprite-y tileh))]))
-      (sprite* this file)))
 
   (handle-draws! [this draws]
     (doseq [component draws

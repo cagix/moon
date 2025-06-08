@@ -3,17 +3,20 @@
             [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [gdl.graphics :as g]))
 
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
 
-(defn- add-skill! [ctx skill]
-  (-> ctx
-      :ctx/stage
+(defn- add-skill!
+  [{:keys [ctx/graphics
+           ctx/stage]}
+   skill]
+  (-> stage
       :action-bar
       (action-bar/add-skill! {:skill-id (:property/id skill)
-                              :texture-region (:sprite/texture-region (:entity/image skill))
+                              :texture-region (g/image->texture-region graphics (:entity/image skill))
                               :tooltip-text #(cdq.ctx/info-text % skill) ; (assoc ctx :effect/source (world/player)) FIXME
                               }))
   nil)
@@ -22,12 +25,15 @@
   (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! (:property/id skill)))
   nil)
 
-(defn- set-item! [ctx [inventory-cell item]]
-  (-> ctx
-      :ctx/stage
+(defn- set-item!
+  [{:keys [ctx/graphics
+           ctx/stage]
+    :as ctx}
+   [inventory-cell item]]
+  (-> stage
       :windows
       :inventory-window
-      (inventory-window/set-item! inventory-cell {:texture-region (:sprite/texture-region (:entity/image item))
+      (inventory-window/set-item! inventory-cell {:texture-region (g/image->texture-region graphics (:entity/image item))
                                                   :tooltip-text (cdq.ctx/info-text ctx item)}))
   nil)
 
