@@ -1,5 +1,5 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.java :as gdx.java]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.string :as str]
@@ -36,18 +36,18 @@
                            extensions)))
 
 (defn create [config]
-  (let [graphics-config (update (:graphics config) :textures (partial find-assets (gdx/files)))
-        graphics (gdl.create.graphics/create-graphics (gdx/graphics)
-                                                      (gdx/files)
+  (let [{:keys [clojure.gdx/audio
+                clojure.gdx/files
+                clojure.gdx/input] :as context} (gdx.java/context)
+        graphics-config (update (:graphics config) :textures (partial find-assets files))
+        graphics (gdl.create.graphics/create-graphics (:clojure.gdx/graphics context)
+                                                      files
                                                       graphics-config)
         stage (gdl.create.stage/create! (:ui config)
                                         graphics
-                                        (gdx/input))]
-    {:ctx/input (gdl.create.input/create-input (gdx/input))
+                                        input)]
+    {:ctx/input (gdl.create.input/create-input input)
      :ctx/audio (when (:sounds config)
-                  (gdl.create.audio/create-audio (gdx/audio)
-                                                 (gdx/files)
-                                                 (find-assets (gdx/files)
-                                                              (:sounds config))))
+                  (gdl.create.audio/create-audio audio files (find-assets files (:sounds config))))
      :ctx/graphics graphics
      :ctx/stage stage}))
