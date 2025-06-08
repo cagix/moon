@@ -43,50 +43,6 @@
                                        (ui/hit actor (c/ui-mouse-position ctx))
                                        (ui/user-object (ui/parent actor)))))}))
 
-(def ^:private slot->y-sprite-idx
-  #:inventory.slot {:weapon   0
-                    :shield   1
-                    :rings    2
-                    :necklace 3
-                    :helm     4
-                    :cloak    5
-                    :chest    6
-                    :leg      7
-                    :glove    8
-                    :boot     9
-                    :bag      10}) ; transparent
-
-(defn- slot->texture-region [graphics slot]
-  (let [width  48
-        height 48
-        sprite-x 21
-        sprite-y (+ (slot->y-sprite-idx slot) 2)
-        bounds [(* sprite-x width)
-                (* sprite-y height)
-                width
-                height]]
-    (g/image->texture-region graphics
-                             {:file "images/items.png"
-                              :sub-image-bounds bounds})))
-
-(defn- ->cell [graphics slot & {:keys [position]}]
-  (let [cell [slot (or position [0 0])]
-        background-drawable (ui/create-drawable (slot->texture-region graphics slot)
-                                                :width cell-size
-                                                :height cell-size
-                                                :tint-color (color/create [1 1 1 0.4]))]
-    (doto (ui/stack [(draw-rect-actor)
-                     (ui/image-widget background-drawable
-                                      {:name "image-widget"
-                                       :user-object background-drawable})])
-      (.setName "inventory-cell")
-      (.setUserObject cell)
-      (.addListener (ui/click-listener
-                     (fn [{:keys [ctx/player-eid] :as ctx}]
-                       (cdq.ctx/handle-txs! ctx (-> @player-eid
-                                                    entity/state-obj
-                                                    (state/clicked-inventory-cell player-eid cell)))))))))
-
 (defn- inventory-table-rows [cell*]
   (concat [[nil nil
             (cell* :inventory.slot/helm)
@@ -112,16 +68,57 @@
    {:keys [title
            id
            visible?]}]
-  (ui/window {:title title
-              :id id
-              :visible? visible?
-              :pack? true
-              :position [(:width (:ui-viewport graphics))
-                         (:height (:ui-viewport graphics))]
-              :rows [[{:actor (ui/table {:id ::table
-                                         :rows (inventory-table-rows (fn [slot & params]
-                                                                       (apply ->cell graphics slot params)))})
-                       :pad 4}]]}))
+  (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
+                                             :shield   1
+                                             :rings    2
+                                             :necklace 3
+                                             :helm     4
+                                             :cloak    5
+                                             :chest    6
+                                             :leg      7
+                                             :glove    8
+                                             :boot     9
+                                             :bag      10} ; transparent
+        slot->texture-region (fn [slot]
+                               (let [width  48
+                                     height 48
+                                     sprite-x 21
+                                     sprite-y (+ (slot->y-sprite-idx slot) 2)
+                                     bounds [(* sprite-x width)
+                                             (* sprite-y height)
+                                             width
+                                             height]]
+                                 (g/image->texture-region graphics
+                                                          {:file "images/items.png"
+                                                           :sub-image-bounds bounds})))
+        slot->drawable (fn [slot]
+                         (ui/create-drawable (slot->texture-region slot)
+                                             :width cell-size
+                                             :height cell-size
+                                             :tint-color (color/create [1 1 1 0.4])))
+        ->cell (fn [slot & {:keys [position]}]
+                 (let [cell [slot (or position [0 0])]
+                       background-drawable (slot->drawable slot)]
+                   (doto (ui/stack [(draw-rect-actor)
+                                    (ui/image-widget background-drawable
+                                                     {:name "image-widget"
+                                                      :user-object background-drawable})])
+                     (.setName "inventory-cell")
+                     (.setUserObject cell)
+                     (.addListener (ui/click-listener
+                                    (fn [{:keys [ctx/player-eid] :as ctx}]
+                                      (cdq.ctx/handle-txs! ctx (-> @player-eid
+                                                                   entity/state-obj
+                                                                   (state/clicked-inventory-cell player-eid cell)))))))))]
+    (ui/window {:title title
+                :id id
+                :visible? visible?
+                :pack? true
+                :position [(:width (:ui-viewport graphics))
+                           (:height (:ui-viewport graphics))]
+                :rows [[{:actor (ui/table {:id ::table
+                                           :rows (inventory-table-rows ->cell)})
+                         :pad 4}]]})))
 
 (defn- get-cell-widget [inventory-window cell]
   (get (::table inventory-window) cell))
