@@ -1,5 +1,5 @@
 (ns cdq.levelgen
-  (:require cdq.schemas-impl ; invalid schema :s/sound when reading db.
+  (:require ;cdq.schemas-impl ; invalid schema :s/sound when reading db.
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
@@ -123,7 +123,7 @@
                        :as ctx}]
   (stage/render! stage ctx))
 
-(defn render! []
+(defn render! [_]
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)

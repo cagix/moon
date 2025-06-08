@@ -10,6 +10,6 @@
    :listener [clojure.gdx.app-listener/create-adapter
               {:create  [cdq.levelgen/create!]
                :dispose cdq.levelgen/dispose!
-               :render  cdq.levelgen/render!
+               :render  [cdq.levelgen/render!]
                :resize  cdq.levelgen/resize!}]}]
  ]
