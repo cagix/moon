@@ -29,11 +29,14 @@
 
              [:ctx/graphics :some]
 
+             ; TODO can do _first_ the renamings to ':world/'
+             ; separaately from other changes
+
              ; our world model is most complex
              [:ctx/elapsed-time number?]
-             ; info-segment <- this is intereseting, can do only w. world?
-             ; effect/handle <- this is intereseting, can do only w. world?
-             ; entity/tick! <- this is intereseting, can do only w. world?
+             ; info-segment <- only [ctx/elapsed-time]
+             ; effect/handle <- only world
+             ; entity/tick! <- FIXME cdq.entity.state.player-moving -> controls
              ; entity/create <- this is intereseting, can do only w. world?
              ; draw-active-skill [exception]
              ; cdq.render.update-time [exception]
