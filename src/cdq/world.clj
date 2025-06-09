@@ -69,23 +69,38 @@
                   (assoc :entity/animation (animation/tick animation delta-time))))
   nil)
 
+(defn- valid-tx? [transaction]
+  (vector? transaction))
+
+(defn- handle-world-event!
+  [{:keys [ctx/world-event-handlers]
+    :as ctx}
+   [world-event-k params]]
+  ((utils/safe-get world-event-handlers world-event-k) ctx params))
+
 ; TODO :tx/spawn-projectile calls spawn-entity
 ; which returns a list of world-events
 ; so `do!` can return more than one result ....
+; => fix it & assert it what `do!` can return ...
 (defn handle-txs!
   "Handles transactions (side-effects) on the world and returns a list of world-events."
-  [{:keys [ctx/world-event-handlers]
-    :as ctx}
+  [ctx
    transactions]
-  (doseq [transaction transactions
-          :when transaction]
-    (assert (vector? transaction) (pr-str transaction))
-    (try (let [result (do! transaction ctx)]
-           (when result
-             (let [[world-event-k params] result]
-               ((utils/safe-get world-event-handlers world-event-k) ctx params))))
-         (catch Throwable t
-           (throw (ex-info "" {:transaction transaction} t))))))
+  ;(println "\n~handle-txs! " (map first (remove nil? transactions)))
+  ;(println "~\n")
+  (let [world-events (remove nil?
+                             (for [transaction transactions
+                                   :when transaction]
+                               (do
+                                (assert (valid-tx? transaction) (pr-str transaction))
+                                (try (do! transaction ctx)
+                                     (catch Throwable t
+                                       (throw (ex-info "" {:transaction transaction} t)))))))]
+    (binding [*print-level* 2]
+      ;(println "\n~world-events: " world-events)
+      ;(println "~\n")
+      )
+    (run! (partial handle-world-event! ctx) world-events)))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
