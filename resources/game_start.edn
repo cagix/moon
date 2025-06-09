@@ -117,6 +117,7 @@
                                                                                           ; cdq.render.draw-on-world-viewport.geom-test/do!
                                                                                           cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
                                                   cdq.render.stage/do!
+                                                  cdq.render.set-cursor/do!
                                                   cdq.render.player-state-handle-click/do!
                                                   cdq.render.update-mouseover-entity/do!
                                                   [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]

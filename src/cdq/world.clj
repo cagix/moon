@@ -50,10 +50,6 @@
 (defmethod do! :tx/toggle-inventory-visible [_ _ctx]
   [:world.event/toggle-inventory-visible])
 
-(defmethod do! :tx/set-cursor [[_ cursor-key]
-                               _ctx]
-  [:world.event/set-cursor cursor-key])
-
 (defmethod do! :tx/show-message [[_ message] _ctx]
   [:world.event/show-player-message message])
 
@@ -175,8 +171,7 @@
                           (dissoc old-state-k)))
           (handle-txs! ctx (state/exit!  old-state-obj eid ctx))
           (handle-txs! ctx (state/enter! new-state-obj eid))
-          (when (:entity/player? @eid)
-            [:world.event/player-state-changed new-state-obj]))))))
+          nil)))))
 
 (defmethod do! :tx/add-skill [[_ eid skill] _ctx]
   (swap! eid update :entity/skills add-skill skill)

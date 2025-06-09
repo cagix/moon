@@ -40,13 +40,6 @@
 (defn- remove-item! [ctx inventory-cell]
   (-> ctx :ctx/stage :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
 
-(defn set-cursor! [{:keys [ctx/graphics]} cursor-key]
-  (g/set-cursor! graphics cursor-key))
-
-(defn player-state-changed [ctx new-state-obj]
-  (when-let [cursor (state/cursor new-state-obj)]
-    (set-cursor! ctx cursor)))
-
 (defn play-sound! [{:keys [ctx/audio]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
@@ -86,9 +79,7 @@
    :world.event/player-skill-removed remove-skill!
    :world.event/player-item-set set-item!
    :world.event/player-item-removed remove-item!
-   :world.event/player-state-changed player-state-changed
    :world.event/sound play-sound!
    :world.event/show-player-message show-player-ui-msg!
    :world.event/show-modal-window show-modal-window!
-   :world.event/set-cursor set-cursor!
    :world.event/toggle-inventory-visible toggle-inventory-visible!})

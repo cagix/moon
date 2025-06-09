@@ -4,7 +4,7 @@
             [cdq.utils :refer [defcomponent]]))
 
 (defcomponent :player-dead
-  (state/cursor [_] :cursors/black-x)
+  (state/cursor [_ _eid _ctx] :cursors/black-x)
 
   (state/pause-game? [_] true)
 

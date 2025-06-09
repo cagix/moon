@@ -64,7 +64,7 @@
   (entity/create [[_ eid item] _ctx]
     {:item item})
 
-  (state/cursor [_] :cursors/hand-grab)
+  (state/cursor [_ _eid _ctx] :cursors/hand-grab)
 
   (state/pause-game? [_] true)
 

@@ -13,7 +13,7 @@
       [[:tx/set-movement eid movement-vector]]
       [[:tx/event eid :no-movement-input]]))
 
-  (state/cursor [_] :cursors/walking)
+  (state/cursor [_ _eid _ctx] :cursors/walking)
 
   (state/pause-game? [_] false)
 

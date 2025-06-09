@@ -8,13 +8,16 @@
 (defcomponent :player-idle
   (state/pause-game? [_] true)
 
+  (state/cursor [_ eid ctx]
+    (let [[cursor _on-click] (ctx/interaction-state ctx eid)]
+      cursor))
+
   (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
-      (let [[cursor on-click] (ctx/interaction-state ctx eid)]
-        (cons [:tx/set-cursor cursor]
-              (when (input/button-just-pressed? input :left)
-                on-click)))))
+      (let [[_cursor on-click] (ctx/interaction-state ctx eid)]
+        (when (input/button-just-pressed? input :left)
+          on-click))))
 
   (state/clicked-inventory-cell [_ eid cell]
     ; TODO no else case

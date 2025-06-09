@@ -1,8 +1,7 @@
 (ns cdq.state)
 
-(defmulti cursor (fn [[k]]
+(defmulti cursor (fn [[k] _eid _ctx]
                    k))
-(defmethod cursor :default [_])
 
 (defmulti pause-game? (fn [[k]]
                         k))
