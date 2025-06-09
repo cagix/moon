@@ -78,6 +78,34 @@
    [world-event-k params]]
   ((utils/safe-get world-event-handlers world-event-k) ctx params))
 
+(comment
+
+ ; # handle-txs! takes what ? what are 'txs' ?
+ ; => either nil or something which `do!` understands - no default behaviour.
+
+ ; # do! should return what?
+ ; * document
+ ; * validate
+ ; * test ( e.g. tx/effect or tx/event - e.g. pass abstract fsm)
+
+ ; # Research
+ ; 1. Returns one world event `[:world.event/set-cursor cursor-key]`
+ ; 2. Does something (swap! eid ..) and returns `nil`
+
+ ; Exceptions:
+ ; * :tx/effect
+ ; * :tx/event
+ ; * :tx/audiovisual
+ ; * :tx/spawn-alert
+ ; * :tx/spawn-line
+ ; * :tx/deal-damage
+ ; * :tx/spawn-projectile
+ ; * :tx/spawn-effect
+ ; * :tx/spawn-item
+ ; * :tx/spawn-creature
+
+ )
+
 ; TODO :tx/spawn-projectile calls spawn-entity
 ; which returns a list of world-events
 ; so `do!` can return more than one result ....
