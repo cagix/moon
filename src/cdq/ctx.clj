@@ -16,11 +16,6 @@
 (defprotocol InfoText
   (info-text [_ object]))
 
-(defprotocol Context
-  (context-entity-add! [_ eid])
-  (context-entity-remove! [_ eid])
-  (context-entity-moved! [_ eid]))
-
 (defprotocol LineOfSight
   (line-of-sight? [_ source target]))
 

@@ -1,9 +1,10 @@
 (ns cdq.world
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx] ; only ctx/handle-txs!
             [cdq.content-grid :as content-grid]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
+            [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
             [cdq.malli :as m]
             [cdq.math.geom :as geom]
@@ -14,6 +15,33 @@
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [qrecord.core :as q]))
+
+(defn- context-entity-add! [{:keys [ctx/entity-ids
+                                    ctx/content-grid
+                                    ctx/grid]}
+                            eid]
+  (let [id (entity/id @eid)]
+    (assert (number? id))
+    (swap! entity-ids assoc id eid))
+  (content-grid/add-entity! content-grid eid)
+  ; https://github.com/damn/core/issues/58
+  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+  (grid/add-entity! grid eid))
+
+(defn context-entity-remove! [{:keys [ctx/entity-ids
+                                      ctx/grid]}
+                              eid]
+  (let [id (entity/id @eid)]
+    (assert (contains? @entity-ids id))
+    (swap! entity-ids dissoc id))
+  (content-grid/remove-entity! eid)
+  (grid/remove-entity! grid eid))
+
+(defn context-entity-moved! [{:keys [ctx/content-grid
+                                     ctx/grid]}
+                             eid]
+  (content-grid/position-changed! content-grid eid)
+  (grid/position-changed! grid eid))
 
 ; TODO what about components which get added later/??
 ; => validate?
@@ -203,7 +231,7 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
-    (ctx/context-entity-add! ctx eid)
+    (context-entity-add! ctx eid)
     (doseq [component @eid]
       (ctx/handle-txs! ctx (entity/create! component eid ctx)))
     eid))
