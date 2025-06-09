@@ -475,13 +475,14 @@
           {}
           components))
 
-(defn spawn-entity! [{:keys [ctx/id-counter
-                             ctx/z-orders
-                             ctx/minimum-size]
-                      :as ctx}
-                     position
-                     body
-                     components]
+(defn- spawn-entity!
+  [{:keys [ctx/id-counter
+           ctx/z-orders
+           ctx/minimum-size]
+    :as ctx}
+   position
+   body
+   components]
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
@@ -495,7 +496,7 @@
     (let [components @eid
           txs (mapcat #(entity/create! % eid ctx) components)]
       #_(binding [*print-level* 2]
-        (println "txs: " txs))
+          (println "txs: " txs))
       (handle-txs! ctx txs))
     eid))
 
