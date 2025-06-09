@@ -493,11 +493,9 @@
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
     (context-entity-add! ctx eid)
-    (let [components @eid
-          txs (mapcat #(entity/create! % eid ctx) components)]
-      #_(binding [*print-level* 2]
-          (println "txs: " txs))
-      (handle-txs! ctx txs))
+    (->> @eid
+         (mapcat #(entity/create! % eid ctx))
+         (handle-txs! ctx))
     eid))
 
 (defmethod do! :tx/spawn-projectile [[_
