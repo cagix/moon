@@ -8,7 +8,7 @@
   (entity/create [[_ eid movement-vector] _ctx]
     {:movement-vector movement-vector})
 
-  (entity/tick! [[_ {:keys [movement-vector]}] eid ctx]
+  (state/manual-tick [[_ {:keys [movement-vector]}] eid ctx]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/set-movement eid movement-vector]]
       [[:tx/event eid :no-movement-input]]))
