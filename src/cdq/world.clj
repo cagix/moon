@@ -501,8 +501,11 @@
                                             (assoc :entity/id (swap! id-counter inc))
                                             (create-vs ctx)))))]
     (context-entity-add! ctx eid)
-    (doseq [component @eid]
-      (handle-txs! ctx (entity/create! component eid ctx)))
+    (let [components @eid
+          txs (mapcat #(entity/create! % eid ctx) components)]
+      #_(binding [*print-level* 2]
+        (println "txs: " txs))
+      (handle-txs! ctx txs))
     eid))
 
 (defmethod do! :tx/spawn-projectile [[_
