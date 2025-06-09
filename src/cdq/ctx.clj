@@ -29,9 +29,6 @@
   (nearest-enemy [_ entity])
   (potential-field-find-direction [_ eid]))
 
-(defprotocol SpawnEntity
-  (spawn-entity! [_ position body components]))
-
 (defprotocol Editor
   (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))
