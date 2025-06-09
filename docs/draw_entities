@@ -1,0 +1,18 @@
+
+; It's only about 'forms' not logic or code or anything
+
+spawn-entity -
+  :tx/spawn-effect
+    :tx/audiovisual 1 - animation
+    :tx/spawn-alert 2 - doesnt draw
+    :tx/spawn-line 3 - draws line
+  :tx/spawn-item 4 - image
+  :tx/spawn-projectile 5 - image
+  spawn-creature! 6 - animation
+
+    => 6 entity types only....
+      alert is not rendering...
+
+
+
+  - actually same thing about drawing effects -

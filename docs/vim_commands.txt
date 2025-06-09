@@ -1,0 +1,4 @@
+vimgrep/cdq.math/gj src/** test/**
+cfdo %s/cdq.math/gdl.math/gce | update
+
+CTRL + x => search files :CtrlP

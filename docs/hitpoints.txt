@@ -1,0 +1,3 @@
+* effect damage checks if something can be damaged (applicable)
+  * (:entity/hp @target)
+  * damage & hp together ? in a function

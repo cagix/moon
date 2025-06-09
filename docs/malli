@@ -1,0 +1,45 @@
+
+#_[:map
+ {:closed true}
+ [:property/id :qualified-keyword]
+ [:tx/sound :string]
+ [:entity/animation
+  [:map
+   {:closed true}
+   [:animation/frames [:vector #]]
+   [:animation/frame-duration pos?]
+   [:animation/looping? :boolean]]]]
+
+#_(validate-humanize (m/schema [:sequential [:map {:closed true}
+                                        [:image/file nil :string]
+                                        [:image/bounds {:optional true} [:vector {:size 4} nat-int?]]]])
+                   '({:image/file "images/oryx_16bit_scifi_FX_lg_trans.png",
+                     :image/bounds [64 64 32 32]}
+                    {:image/file "images/oryx_16bit_scifi_FX_lg_trans.png",
+                     :image/bounds [96 64 32 32]})
+                   )
+
+#_(validate-humanize (m/schema [:map {:closed true}
+                              [:property/id nil :qualified-keyword]
+                              [:tx/sound nil :string]
+                              [:entity/animation nil
+                               [:map {:closed true}
+                                [:animation/frames nil
+                                 [:seqable [:map {:closed true}
+                                           [:image/file nil :string]
+                                           [:image/bounds {:optional true} [:vector {:size 4} nat-int?]]]]]
+                                [:animation/frame-duration nil pos?]
+                                [:animation/looping? nil :boolean]]]]
+                             )
+                   {:entity/animation
+                    {:animation/frame-duration 0.1,
+                     :animation/frames
+                     '({:image/file "images/oryx_16bit_scifi_FX_lg_trans.png",
+                       :image/bounds [64 64 32 32]}
+                      {:image/file "images/oryx_16bit_scifi_FX_lg_trans.png",
+                       :image/bounds [96 64 32 32]}),
+                     :animation/looping? false},
+                    :property/id :audiovisuals/convert,
+                    :tx/sound "bfxr_burrow"}
+                   )
+

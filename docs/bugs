@@ -1,0 +1,5 @@
+* blood curse (convert) does not trigger wakeup! -> forever sleeping
+
+* movement speed -0.5% => you can see is just 2.995 instead of 3 for the rat after slow.
+
+* dragon disappears after blood curse (convert ) ?
