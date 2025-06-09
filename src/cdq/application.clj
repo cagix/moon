@@ -28,6 +28,7 @@
              [:ctx/stage :some]
 
              [:ctx/graphics :some]
+             [:ctx/world-event-handlers :some]
 
              ; TODO can do _first_ the renamings to ':world/'
              ; separaately from other changes

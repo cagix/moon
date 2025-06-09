@@ -136,6 +136,7 @@
                                                    [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                                                        :properties "properties.edn"}]]
                                                    [cdq.create.extend-protocols/do! cdq.ctx]
+                                                   [:assoc :ctx/world-event-handlers cdq.create.world-event-handlers/do!]
                                                    [cdq.ctx/reset-game-state! cdq.level.vampire/create]
                                                    cdq.create.player-movement-vector/do!
                                                    ]]]
