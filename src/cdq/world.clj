@@ -85,20 +85,49 @@
  ; * test ( e.g. tx/effect or tx/event - e.g. pass abstract fsm)
 
  ; # Research
- ; 1. Returns one world event `[:world.event/set-cursor cursor-key]`
- ; 2. Does something (swap! eid ..) and returns `nil`
+ ; 1. RETURN `nil` (does something)
+
+ ; 2. Returns one world event `[:world.event/set-cursor cursor-key]`
 
  ; Exceptions:
- ; * :tx/effect
- ; * :tx/event
+ ; * :tx/effect ( make testable ! )
+
+ ; -> handle-txs! -> returns new transactions to be handled
+
+
+ ; * :tx/event ( make testable ! )
+
+ ; does something (swap!)
+ ; handles txs of state/exit! ( which could also contain world events ...)
+ ; handles txs of state/enter!
+ ; returns world event
+
  ; * :tx/audiovisual
+
+ ; => returns two other txs
+
  ; * :tx/spawn-alert
+
+ ; => return other txs
+
  ; * :tx/spawn-line
  ; * :tx/deal-damage
  ; * :tx/spawn-projectile
  ; * :tx/spawn-effect
  ; * :tx/spawn-item
  ; * :tx/spawn-creature
+
+
+ ; ## :tx/spawn-creature
+ ; -> spawn-creature!
+ ; -> spawn-entity!
+
+ ; ## spawn-entity!
+ ; -> does something _AND_ returns transactions _AND_ those transactions might trigger world events !
+ ; 1. increments id-counter
+ ; 2. context-entity-add!
+ ; 3. handle-txs!
+ ; 4. returns eid
 
  )
 
@@ -150,6 +179,8 @@
   (swap! eid entity/mod-remove modifiers)
   nil)
 
+; HOW CAN WE TEST THIS ?
+; HAVE TO DEFINE MULTIMETHODS ...
 (defmethod do! :tx/effect [[_ effect-ctx effects] ctx]
   (run! #(handle-txs! ctx (effect/handle % effect-ctx ctx))
         (effect/filter-applicable? effect-ctx effects)))
@@ -311,8 +342,6 @@
                      [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
                      [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
                      [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))
-
-
 
 (defn- context-entity-add! [{:keys [ctx/entity-ids
                                     ctx/content-grid
