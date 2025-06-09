@@ -1,20 +1,73 @@
 (ns cdq.world
-  (:require cdq.ctx.effect-handler
+  (:require [cdq.animation :as animation]
             [cdq.content-grid :as content-grid]
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
+            [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.math.geom :as geom]
             [cdq.modifiers :as modifiers]
+            [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
+            [cdq.timer :as timer]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
-            [qrecord.core :as q]))
+            [qrecord.core :as q]
+            [reduce-fsm :as fsm]))
+
+; we cannot just set/unset movement direction
+; because it is handled by the state enter/exit for npg/player movement state ...
+; so we cannot expose it as a 'transaction'
+; so the movement should be updated in the respective npg/player movement 'state' and no movement 'component' necessary !
+; for projectiles inside projectile update !?
+(defn- set-movement* [entity movement-vector]
+  (assoc entity :entity/movement {:direction movement-vector
+                                  :speed (or (entity/stat entity :entity/movement-speed) 0)}))
+
+(defn- add-skill [skills {:keys [property/id] :as skill}]
+  {:pre [(not (contains? skills id))]}
+  (assoc skills id skill))
+
+(defn- add-text-effect* [entity text {:keys [ctx/elapsed-time]}]
+  (assoc entity
+         :entity/string-effect
+         (if-let [string-effect (:entity/string-effect entity)]
+           (-> string-effect
+               (update :text str "\n" text)
+               (update :counter #(timer/reset elapsed-time %)))
+           {:text text
+            :counter (timer/create elapsed-time 0.4)})))
+
+(defmulti do! (fn [[k & _params] _ctx]
+                k))
+
+(defmethod do! :tx/toggle-inventory-visible [_ _ctx]
+  [:world.event/toggle-inventory-visible])
+
+(defmethod do! :tx/set-cursor [[_ cursor-key]
+                               _ctx]
+  [:world.event/set-cursor cursor-key])
+
+(defmethod do! :tx/show-message [[_ message] _ctx]
+  [:world.event/show-player-message message])
+
+(defmethod do! :tx/show-modal [[_ opts] _ctx]
+  [:world.event/show-modal-window opts])
+
+(defmethod do! :tx/sound [[_ sound-name] _ctx]
+  [:world.event/sound sound-name])
+
+(defmethod do! :tx/update-animation [[_ eid animation] {:keys [ctx/delta-time]}]
+  (swap! eid #(-> %
+                  (assoc :entity/image (animation/current-frame animation))
+                  (assoc :entity/animation (animation/tick animation delta-time))))
+  nil)
 
 (defn handle-txs!
   [{:keys [ctx/world-event-handlers]
@@ -23,12 +76,201 @@
   (doseq [transaction transactions
           :when transaction]
     (assert (vector? transaction) (pr-str transaction))
-    (try (let [result (cdq.ctx.effect-handler/do! transaction ctx)]
+    (try (let [result (do! transaction ctx)]
            (when result
              (let [[world-event-k params] result]
                ((utils/safe-get world-event-handlers world-event-k) ctx params))))
          (catch Throwable t
            (throw (ex-info "" {:transaction transaction} t))))))
+
+(defmethod do! :tx/assoc [[_ eid k value] _ctx]
+  (swap! eid assoc k value)
+  nil)
+
+(defmethod do! :tx/assoc-in [[_ eid ks value] _ctx]
+  (swap! eid assoc-in ks value)
+  nil)
+
+(defmethod do! :tx/dissoc [[_ eid k] _ctx]
+  (swap! eid dissoc k)
+  nil)
+
+(defmethod do! :tx/mark-destroyed [[_ eid] _ctx]
+  (swap! eid assoc :entity/destroyed? true)
+  nil)
+
+(defmethod do! :tx/mod-add [[_ eid modifiers] _ctx]
+  (swap! eid entity/mod-add modifiers)
+  nil)
+
+(defmethod do! :tx/mod-remove [[_ eid modifiers] _ctx]
+  (swap! eid entity/mod-remove modifiers)
+  nil)
+
+(defmethod do! :tx/effect [[_ effect-ctx effects] ctx]
+  (run! #(handle-txs! ctx (effect/handle % effect-ctx ctx))
+        (effect/filter-applicable? effect-ctx effects)))
+
+(defmethod do! :tx/event [[_ eid event params] ctx]
+  (when-let [fsm (:entity/fsm @eid)]
+    (let [old-state-k (:state fsm)
+          new-fsm (fsm/fsm-event fsm event)
+          new-state-k (:state new-fsm)]
+      (when-not (= old-state-k new-state-k)
+        (let [old-state-obj (entity/state-obj @eid)
+              new-state-obj [new-state-k (entity/create (if params
+                                                          [new-state-k eid params]
+                                                          [new-state-k eid])
+                                                        ctx)]]
+          (swap! eid #(-> %
+                          (assoc :entity/fsm new-fsm
+                                 new-state-k (new-state-obj 1))
+                          (dissoc old-state-k)))
+          (handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+          (handle-txs! ctx (state/enter! new-state-obj eid))
+          (when (:entity/player? @eid)
+            [:world.event/player-state-changed new-state-obj]))))))
+
+(defmethod do! :tx/add-skill [[_ eid skill] _ctx]
+  (swap! eid update :entity/skills add-skill skill)
+  (when (:entity/player? @eid)
+    [:world.event/player-skill-added skill]))
+
+#_(defn remove-skill [eid {:keys [property/id] :as skill}]
+    {:pre [(contains? (:entity/skills @eid) id)]}
+    (swap! eid update :entity/skills dissoc id)
+    (when (:entity/player? @eid)
+      [:world.event/player-skill-removed skill]))
+
+(defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/elapsed-time]}]
+  (swap! eid assoc-in
+         [:entity/skills (:property/id skill) :skill/cooling-down?]
+         (timer/create elapsed-time (:skill/cooldown skill)))
+  nil)
+
+(defmethod do! :tx/add-text-effect [[_ eid text] ctx]
+  (swap! eid add-text-effect* text ctx)
+  nil)
+
+(defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
+  (swap! eid entity/pay-mana-cost cost)
+  nil)
+
+(defmethod do! :tx/set-item [[_ eid cell item] ctx]
+  (let [entity @eid
+        inventory (:entity/inventory entity)]
+    (assert (and (nil? (get-in inventory cell))
+                 (inventory/valid-slot? cell item)))
+    (swap! eid assoc-in (cons :entity/inventory cell) item)
+    (when (inventory/applies-modifiers? cell)
+      (swap! eid entity/mod-add (:entity/modifiers item)))
+    (when (:entity/player? entity)
+      [:world.event/player-item-set [cell item]])))
+
+(defmethod do! :tx/pickup-item [[_ eid item] ctx]
+  (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
+    (assert cell)
+    (assert (or (inventory/stackable? item cell-item)
+                (nil? cell-item)))
+    (if (inventory/stackable? item cell-item)
+      (do
+       #_(tx/stack-item ctx eid cell item))
+      (do! [:tx/set-item eid cell item] ctx))))
+
+(defmethod do! :tx/remove-item [[_ eid cell] ctx]
+  (let [entity @eid
+        item (get-in (:entity/inventory entity) cell)]
+    (assert item)
+    (swap! eid assoc-in (cons :entity/inventory cell) nil)
+    (when (inventory/applies-modifiers? cell)
+      (swap! eid entity/mod-remove (:entity/modifiers item)))
+    (when (:entity/player? entity)
+      [:world.event/player-item-removed cell])))
+
+; TODO doesnt exist, stackable, usable items with action/skillbar thingy
+#_(defn remove-one-item [eid cell]
+  (let [item (get-in (:entity/inventory @eid) cell)]
+    (if (and (:count item)
+             (> (:count item) 1))
+      (do
+       ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+       ; first remove and then place, just update directly  item ...
+       (cdq.tx.remove-item/do! eid cell)
+       (cdq.tx.set-item/do! eid cell (update item :count dec)))
+      (cdq.tx.remove-item/do! eid cell))))
+
+; TODO no items which stack are available
+#_(defn stack-item [eid cell item]
+  (let [cell-item (get-in (:entity/inventory @eid) cell)]
+    (assert (inventory/stackable? item cell-item))
+    ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+    ; first remove and then place, just update directly  item ...
+    (concat (cdq.tx.remove-item/do! eid cell)
+            (cdq.tx.set-item/do! eid cell (update cell-item :count + (:count item))))))
+
+#_(defn do! [ctx eid cell item]
+  #_(tx/stack-item ctx eid cell item))
+
+(defmethod do! :tx/audiovisual [[_ position audiovisual]
+                                {:keys [ctx/db]
+                                 :as ctx}]
+  (let [{:keys [tx/sound
+                entity/animation]} (if (keyword? audiovisual)
+                                     (db/build db audiovisual)
+                                     audiovisual)]
+    (do! [:tx/sound sound]
+         ctx)
+    (do! [:tx/spawn-effect
+          position
+          {:entity/animation animation
+           :entity/delete-after-animation-stopped? true}]
+         ctx)
+    nil))
+
+(defmethod do! :tx/spawn-alert [[_ position faction duration]
+                                {:keys [ctx/elapsed-time] :as ctx}]
+  (do! [:tx/spawn-effect
+        position
+        {:entity/alert-friendlies-after-duration
+         {:counter (timer/create elapsed-time duration)
+          :faction faction}}]
+       ctx)
+  nil)
+
+(defmethod do! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] ctx]
+  (do! [:tx/spawn-effect
+        start
+        {:entity/line-render {:thick? thick? :end end :color color}
+         :entity/delete-after-duration duration}]
+       ctx)
+  nil)
+
+(defmethod do! :tx/deal-damage [[_ source target damage] ctx]
+  (let [source* @source
+        target* @target
+        hp (entity/hitpoints target*)]
+    (handle-txs! ctx
+                 (cond
+                  (zero? (hp 0))
+                  nil
+
+                  (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
+                                                            (:creature/stats target*)))
+                  [[:tx/add-text-effect target "[WHITE]ARMOR"]]
+
+                  :else
+                  (let [min-max (:damage/min-max (modifiers/damage (:creature/stats source*)
+                                                                   (:creature/stats target*)
+                                                                   damage))
+                        dmg-amount (rand-int-between min-max)
+                        new-hp-val (max (- (hp 0) dmg-amount)
+                                        0)]
+                    [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
+                     [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
+                     [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
+                     [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))
+
+
 
 (defn- context-entity-add! [{:keys [ctx/entity-ids
                                     ctx/content-grid
@@ -51,11 +293,24 @@
   (content-grid/remove-entity! eid)
   (grid/remove-entity! grid eid))
 
-(defn context-entity-moved! [{:keys [ctx/content-grid
+(defn- context-entity-moved! [{:keys [ctx/content-grid
                                      ctx/grid]}
                              eid]
   (content-grid/position-changed! content-grid eid)
   (grid/position-changed! grid eid))
+
+(defmethod do! :tx/move-entity [[_ eid body direction rotate-in-movement-direction?] ctx]
+  (context-entity-moved! ctx eid)
+  (swap! eid assoc
+         :entity/position (:entity/position body)
+         :left-bottom (:left-bottom body))
+  (when rotate-in-movement-direction?
+    (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
+  nil)
+
+(defmethod do! :tx/set-movement [[_ eid movement-vector] _ctx]
+  (swap! eid set-movement* movement-vector)
+  nil)
 
 ; TODO what about components which get added later/??
 ; => validate?
@@ -250,6 +505,54 @@
       (handle-txs! ctx (entity/create! component eid ctx)))
     eid))
 
+(defmethod do! :tx/spawn-projectile [[_
+                                      {:keys [position direction faction]}
+                                      {:keys [entity/image
+                                              projectile/max-range
+                                              projectile/speed
+                                              entity-effects
+                                              projectile/piercing?] :as projectile}]
+                                     ctx]
+  (let [size (:projectile/size projectile)]
+    (spawn-entity! ctx
+                   position
+                   {:width size
+                    :height size
+                    :z-order :z-order/flying
+                    :rotation-angle (v/angle-from-vector direction)}
+                   {:entity/movement {:direction direction
+                                      :speed speed}
+                    :entity/image image
+                    :entity/faction faction
+                    :entity/delete-after-duration (/ max-range speed)
+                    :entity/destroy-audiovisual :audiovisuals/hit-wall
+                    :entity/projectile-collision {:entity-effects entity-effects
+                                                  :piercing? piercing?}})
+    nil))
+
+(defmethod do! :tx/spawn-effect
+  [[_ position components]
+   {:keys [ctx/config]
+    :as ctx}]
+  (spawn-entity! ctx
+                 position
+                 (:effect-body-props config)
+                 components)
+  nil)
+
+(defmethod do! :tx/spawn-item [[_ position item] ctx]
+  (spawn-entity! ctx
+                 position
+                 {:width 0.75
+                  :height 0.75
+                  :z-order :z-order/on-ground}
+                 {:entity/image (:entity/image item)
+                  :entity/item item
+                  :entity/clickable {:type :clickable/item
+                                     :text (:property/pretty-name item)}})
+  nil)
+
+
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
 ; because using potential-field for z-order/ground
@@ -277,6 +580,10 @@
                        (dissoc :entity/body)
                        (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                        (utils/safe-merge components)))))
+
+(defmethod do! :tx/spawn-creature [[_ opts] ctx]
+  (spawn-creature! ctx opts)
+  nil)
 
 (defn create [ctx config {:keys [tiled-map
                                  start-position
