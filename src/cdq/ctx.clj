@@ -3,9 +3,6 @@
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
 
-(defprotocol EffectHandler
-  (handle-txs! [_ transactions]))
-
 (defprotocol InteractionState
   (interaction-state [_ eid]))
 

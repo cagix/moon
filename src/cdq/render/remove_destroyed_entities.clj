@@ -1,6 +1,5 @@
 (ns cdq.render.remove-destroyed-entities
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.world :as world]))
 
 ; do not pause as pickup item should be destroyed
@@ -10,5 +9,5 @@
                       (vals @entity-ids))]
     (world/context-entity-remove! ctx eid)
     (doseq [component @eid]
-      (ctx/handle-txs! ctx (entity/destroy! component eid ctx))))
+      (world/handle-txs! ctx (entity/destroy! component eid ctx))))
   ctx)

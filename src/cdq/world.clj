@@ -1,5 +1,5 @@
 (ns cdq.world
-  (:require [cdq.ctx :as ctx] ; only ctx/handle-txs!
+  (:require cdq.ctx.effect-handler
             [cdq.content-grid :as content-grid]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -15,6 +15,20 @@
             [cdq.utils :as utils]
             [cdq.vector2 :as v]
             [qrecord.core :as q]))
+
+(defn handle-txs!
+  [{:keys [ctx/world-event-handlers]
+    :as ctx}
+   transactions]
+  (doseq [transaction transactions
+          :when transaction]
+    (assert (vector? transaction) (pr-str transaction))
+    (try (let [result (cdq.ctx.effect-handler/do! transaction ctx)]
+           (when result
+             (let [[world-event-k params] result]
+               ((utils/safe-get world-event-handlers world-event-k) ctx params))))
+         (catch Throwable t
+           (throw (ex-info "" {:transaction transaction} t))))))
 
 (defn- context-entity-add! [{:keys [ctx/entity-ids
                                     ctx/content-grid
@@ -233,7 +247,7 @@
                                             (create-vs ctx)))))]
     (context-entity-add! ctx eid)
     (doseq [component @eid]
-      (ctx/handle-txs! ctx (entity/create! component eid ctx)))
+      (handle-txs! ctx (entity/create! component eid ctx)))
     eid))
 
 ; # :z-order/flying has no effect for now

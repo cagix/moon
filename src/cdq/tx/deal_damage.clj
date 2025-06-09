@@ -1,14 +1,15 @@
 (ns cdq.tx.deal-damage
-  (:require [cdq.ctx.effect-handler :refer [do! handle-txs!]]
+  (:require [cdq.ctx.effect-handler :refer [do!]]
             [cdq.entity :as entity]
             [cdq.modifiers :as modifiers]
-            [cdq.rand :refer [rand-int-between]]))
+            [cdq.rand :refer [rand-int-between]]
+            [cdq.world :as world]))
 
 (defmethod do! :tx/deal-damage [[_ source target damage] ctx]
   (let [source* @source
         target* @target
         hp (entity/hitpoints target*)]
-    (handle-txs! ctx
+    (world/handle-txs! ctx
                  (cond
                   (zero? (hp 0))
                   nil

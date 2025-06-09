@@ -1,8 +1,8 @@
 (ns cdq.tx.event
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]
+  (:require [cdq.ctx.effect-handler :refer [do!]]
             [cdq.entity :as entity]
             [cdq.state :as state]
+            [cdq.world :as world]
             [reduce-fsm :as fsm]))
 
 (defmethod do! :tx/event [[_ eid event params] ctx]
@@ -20,7 +20,7 @@
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (ctx/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-          (ctx/handle-txs! ctx (state/enter! new-state-obj eid))
+          (world/handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+          (world/handle-txs! ctx (state/enter! new-state-obj eid))
           (when (:entity/player? @eid)
             [:world.event/player-state-changed new-state-obj]))))))

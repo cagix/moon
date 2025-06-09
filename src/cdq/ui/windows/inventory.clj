@@ -3,12 +3,12 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [cdq.ctx :as ctx]
+            [cdq.utils :as utils]
+            [cdq.world :as world]
             [clojure.gdx.graphics.color :as color]
-            [gdl.ui :as ui]
             [gdl.c :as c]
             [gdl.graphics :as g]
-            [cdq.utils :as utils]))
+            [gdl.ui :as ui]))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -81,9 +81,9 @@
                      (.setUserObject cell)
                      (.addListener (ui/click-listener
                                     (fn [{:keys [ctx/player-eid] :as ctx}]
-                                      (cdq.ctx/handle-txs! ctx (-> @player-eid
-                                                                   entity/state-obj
-                                                                   (state/clicked-inventory-cell player-eid cell)))))))))]
+                                      (world/handle-txs! ctx (-> @player-eid
+                                                                 entity/state-obj
+                                                                 (state/clicked-inventory-cell player-eid cell)))))))))]
     (ui/window {:title title
                 :id id
                 :visible? visible?
