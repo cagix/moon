@@ -32,9 +32,6 @@
 (defprotocol SpawnEntity
   (spawn-entity! [_ position body components]))
 
-(defprotocol SpawnCreature
-  (spawn-creature! [_ {:keys [position creature-id components]}]))
-
 (defprotocol Editor
   (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))

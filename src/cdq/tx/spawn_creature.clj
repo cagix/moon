@@ -1,7 +1,7 @@
 (ns cdq.tx.spawn-creature
-  (:require [cdq.ctx :as ctx]
-            [cdq.ctx.effect-handler :refer [do!]]))
+  (:require [cdq.ctx.effect-handler :refer [do!]]
+            [cdq.world :as world]))
 
 (defmethod do! :tx/spawn-creature [[_ opts] ctx]
-  (ctx/spawn-creature! ctx opts)
+  (world/spawn-creature! ctx opts)
   nil)
