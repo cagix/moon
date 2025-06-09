@@ -69,7 +69,11 @@
                   (assoc :entity/animation (animation/tick animation delta-time))))
   nil)
 
+; TODO :tx/spawn-projectile calls spawn-entity
+; which returns a list of world-events
+; so `do!` can return more than one result ....
 (defn handle-txs!
+  "Handles transactions (side-effects) on the world and returns a list of world-events."
   [{:keys [ctx/world-event-handlers]
     :as ctx}
    transactions]
