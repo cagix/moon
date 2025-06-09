@@ -475,15 +475,6 @@
           {}
           components))
 
-; this should be in my 'world' thingy
-; only problem create! callbacks player inventory/skills ....
-; so we can call world/spawn-entity!
-; and then context/handle-txs ... ?
-
-; create needs only: elapsed-time
-; :tx/pickup-item -> handle-tx! :tx/set-item -> :item-set @ entity-player callback ...
-; :tx/add-skill -> same
-
 (defn spawn-entity! [{:keys [ctx/id-counter
                              ctx/z-orders
                              ctx/minimum-size]
