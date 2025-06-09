@@ -234,20 +234,20 @@
     (pretty-repl/pretty-pst t 24))) ; hardcoded values
 
 (defn invoc [[f params]]
-  (println "invoc ")
-  (println f)
-  (println params)
+  ;(println "invoc ")
+  ;(println f)
+  ;(println params)
   ; TODO PASSED A NAMESPACE 'gdl.start' instead of 'gdl.start/start!'
   ; and just nothing happened no complaints
   ; => for this implicit complicated shit write tests...
   (f params))
 
 (defn exec! [exec]
-  (println "exec! " exec)
+  ;(println "exec! " exec)
   (run! invoc exec))
 
 (defn -main [config-path]
-  (println "config-path: " config-path)
+  ;(println "config-path: " config-path)
   (-> config-path
       io-slurp-edn-req ; <- require-resolved in _this_ namespace ?? can I use 'invoc' ??
       exec!))
