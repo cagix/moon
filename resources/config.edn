@@ -1,10 +1,10 @@
 {
- :mac-os-settings {:glfw-async? true
-                   :dock-icon "moon.png"}
- :lwjgl-app-config {:title "Cyber Dungeon Quest"
-                    :windowed-mode {:width 1440
-                                    :height 900}
-                    :foreground-fps 60}
+ :gdl.application/mac-os-settings {:glfw-async? true
+                                   :dock-icon "moon.png"}
+ :gdl.application/lwjgl-app-config {:title "Cyber Dungeon Quest"
+                                    :windowed-mode {:width 1440
+                                                    :height 900}
+                                    :foreground-fps 60}
  :gdl.application/context {:sounds {:folder "resources/"
                                     :extensions #{"wav"}}
                            :graphics {:textures {:folder "resources/"
@@ -34,36 +34,36 @@
                                                      :params {:size 16
                                                               :quality-scaling 2}}}
                            :ui {:skin-scale :x1}}
- :listener {:create  [cdq.application/create! [
-                                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
-                                                                                   :properties "properties.edn"}]]
-                                               [cdq.create.extend-protocols/do! cdq.ctx]
-                                               [:assoc :ctx/world-event-handlers cdq.create.world-event-handlers/do!]
-                                               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
-                                               cdq.create.player-movement-vector/do!
-                                               ]]
-            :dispose cdq.application/dispose!
-            :render  [cdq.application/render! [[:assoc :ctx/active-entities cdq.world/calculate-active-entities]
-                                               cdq.render.set-camera-on-player/do!
-                                               cdq.render.clear-screen/do!
-                                               cdq.render.draw-world-map/do!
-                                               [cdq.render.draw-on-world-viewport/do! [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
-                                                                                       cdq.render.draw-on-world-viewport.draw-cell-debug/do!
-                                                                                       cdq.render.draw-on-world-viewport.render-entities/do!
-                                                                                       ; cdq.render.draw-on-world-viewport.geom-test/do!
-                                                                                       cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
-                                               cdq.render.stage/do!
-                                               cdq.render.set-cursor/do!
-                                               cdq.render.player-state-handle-click/do!
-                                               cdq.render.update-mouseover-entity/do!
-                                               [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]
-                                               [cdq.utils/render-when-not [:ctx/paused? [cdq.render.update-time/do!
-                                                                                         cdq.render.update-potential-fields/do!
-                                                                                         cdq.render.tick-entities/do!]]]
-                                               cdq.render.remove-destroyed-entities/do!
-                                               [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
-                                               cdq.render.check-window-hotkeys/do!]]
-            :resize  cdq.application/resize!}
+ :gdl.application/listener {:create  [cdq.application/create! [
+                                                               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
+                                                                                                   :properties "properties.edn"}]]
+                                                               [cdq.create.extend-protocols/do! cdq.ctx]
+                                                               [:assoc :ctx/world-event-handlers cdq.create.world-event-handlers/do!]
+                                                               [cdq.ctx/reset-game-state! cdq.level.vampire/create]
+                                                               cdq.create.player-movement-vector/do!
+                                                               ]]
+                            :dispose cdq.application/dispose!
+                            :render  [cdq.application/render! [[:assoc :ctx/active-entities cdq.world/calculate-active-entities]
+                                                               cdq.render.set-camera-on-player/do!
+                                                               cdq.render.clear-screen/do!
+                                                               cdq.render.draw-world-map/do!
+                                                               [cdq.render.draw-on-world-viewport/do! [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
+                                                                                                       cdq.render.draw-on-world-viewport.draw-cell-debug/do!
+                                                                                                       cdq.render.draw-on-world-viewport.render-entities/do!
+                                                                                                       ; cdq.render.draw-on-world-viewport.geom-test/do!
+                                                                                                       cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
+                                                               cdq.render.stage/do!
+                                                               cdq.render.set-cursor/do!
+                                                               cdq.render.player-state-handle-click/do!
+                                                               cdq.render.update-mouseover-entity/do!
+                                                               [:assoc :ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]
+                                                               [cdq.utils/render-when-not [:ctx/paused? [cdq.render.update-time/do!
+                                                                                                         cdq.render.update-potential-fields/do!
+                                                                                                         cdq.render.tick-entities/do!]]]
+                                                               cdq.render.remove-destroyed-entities/do!
+                                                               [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
+                                                               cdq.render.check-window-hotkeys/do!]]
+                            :resize  cdq.application/resize!}
  :cdq.ctx.game/ui-actors [[cdq.ui.dev-menu/create {:world-fns [cdq.level.vampire/create
                                                                cdq.level.uf-caves/create
                                                                cdq.level.modules/create]

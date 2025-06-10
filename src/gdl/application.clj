@@ -1,6 +1,5 @@
 (ns gdl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input.buttons :as input.buttons]
@@ -27,6 +26,8 @@
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
@@ -567,14 +568,6 @@
        (recursively-search (.internal Gdx/files folder)
                            extensions)))
 
-(defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
-  (when glfw-async?
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (when dock-icon
-    (.setIconImage (Taskbar/getTaskbar)
-                   (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource dock-icon)))))
-
 (defn- create-context [main-config]
   (let [config (::context main-config)
         graphics-config (update (:graphics config) :textures find-assets)
@@ -587,19 +580,40 @@
      :ctx/graphics graphics
      :ctx/stage stage}))
 
+(defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
+  (when glfw-async?
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+  (when dock-icon
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource dock-icon)))))
+
+(defn- create-lwjgl-app-config [lwjgl-app-config]
+  (doto (Lwjgl3ApplicationConfiguration.)
+    (.setTitle (:title lwjgl-app-config))
+    (.setWindowedMode (:width  (:windowed-mode lwjgl-app-config))
+                      (:height (:windowed-mode lwjgl-app-config)))
+    (.setForegroundFPS (:foreground-fps lwjgl-app-config))))
+
+(defn- create-app-listener [{:keys [create dispose render resize pause resume]} config]
+  (proxy [ApplicationListener] []
+    (create  []              (when-let [[f params] create] (f (create-context config) params)))
+    (dispose []              (when dispose (dispose)))
+    (render  []              (when-let [[f params] render] (f params)))
+    (resize  [width height]  (when resize  (resize width height)))
+    (pause   []              (when pause   (pause)))
+    (resume  []              (when resume  (resume)))))
+
+(defn- mac-os? []
+  (= SharedLibraryLoader/os Os/MacOsX))
+
 (defn -main [config-path]
-  (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (load-edn-config config-path)]
-    (when (= SharedLibraryLoader/os Os/MacOsX)
-      (set-mac-settings! mac-os-settings))
-    (lwjgl/application lwjgl-app-config
-                       (let [{:keys [create dispose render resize pause resume]} listener]
-                         (proxy [ApplicationListener] []
-                           (create  []              (when-let [[f params] create] (f (create-context config) params)))
-                           (dispose []              (when dispose (dispose)))
-                           (render  []              (when-let [[f params] render] (f params)))
-                           (resize  [width height]  (when resize  (resize width height)))
-                           (pause   []              (when pause   (pause)))
-                           (resume  []              (when resume  (resume))))))))
+  (let [config (load-edn-config config-path)]
+    (when (mac-os?)
+      (set-mac-settings! (::mac-os-settings config)))
+    (Lwjgl3Application. (create-app-listener (::listener config)
+                                             config)
+                        (create-lwjgl-app-config (::lwjgl-app-config config)))))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
