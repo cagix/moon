@@ -102,7 +102,7 @@
               (try-draw this f))))
     (set-actor-opts! opts)))
 
-(defn widget [opts]
+(defn- -widget [opts]
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
       (when-let [f (:draw opts)]
@@ -171,7 +171,7 @@
   (when (instance? WidgetGroup actor)
     (set-widget-group-opts actor opts))
   (when (instance? Group actor) ; Check Addable protocol
-    (run! #(add! actor %) (:actors opts)))
+    (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
 
 (defn clear-children! [^Group group]
@@ -209,14 +209,20 @@
   (-> (proxy-ILookup VisTable [])
       (set-opts! opts)))
 
+(defn -stack ^Stack [{:keys [actors] :as opts}]
+  (doto (proxy-ILookup Stack [])
+    (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
+
 (defn -create-actor ^Actor [actor-declaration]
   (try
    (cond
     (instance? Actor actor-declaration) actor-declaration
     (map? actor-declaration) (case (:actor/type actor-declaration)
                                :actor.type/actor (-actor actor-declaration)
+                               :actor.type/widget (-widget actor-declaration)
                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
                                :actor.type/table (table actor-declaration)
+                               :actor.type/stack (-stack actor-declaration)
                                (throw (ex-info "Cannot understand actor declaration"
                                                {:actor/type (:actor/type actor-declaration)})))
     (nil? actor-declaration) nil
@@ -358,9 +364,6 @@
       (set-opts! opts)))
 
 (def get-text VisTextField/.getText)
-
-(defn stack ^Stack [actors]
-  (proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private image* type)
 

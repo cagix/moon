@@ -60,8 +60,9 @@
                           top-widget (ui/label (or (and extra-info-text
                                                         (extra-info-text property))
                                                    ""))
-                          stack (ui/stack [button
-                                           top-widget])]
+                          stack {:actor/type :actor.type/stack
+                                 :actors [button
+                                          top-widget]}]
                       (ui/add-tooltip! button (pprint-to-str property))
                       (ui/set-touchable! top-widget :disabled)
                       stack)

@@ -59,24 +59,24 @@
         ; is not layouted automatically to cell , use 0/0 ??
         ; maybe .setTransform stack true ? , but docs say it should work anyway
         draw-rect-actor (fn []
-                          (ui/widget
-                           {:draw
-                            (fn [actor {:keys [ctx/graphics
-                                               ctx/player-eid] :as ctx}]
-                              (g/handle-draws! graphics
-                                               (draw-cell-rect @player-eid
-                                                               (ui/get-x actor)
-                                                               (ui/get-y actor)
-                                                               (ui/hit actor (c/ui-mouse-position ctx))
-                                                               (ui/user-object (ui/parent actor)))))}))
+                          {:actor/type :actor.type/widget
+                           :draw
+                           (fn [actor {:keys [ctx/graphics
+                                              ctx/player-eid] :as ctx}]
+                             (g/handle-draws! graphics
+                                              (draw-cell-rect @player-eid
+                                                              (ui/get-x actor)
+                                                              (ui/get-y actor)
+                                                              (ui/hit actor (c/ui-mouse-position ctx))
+                                                              (ui/user-object (ui/parent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
-                   (doto (ui/stack [(draw-rect-actor)
-                                    (ui/image-widget background-drawable
-                                                     {:name "image-widget"
-                                                      :user-object {:background-drawable background-drawable
-                                                                    :cell-size cell-size}})])
+                   (doto (ui/-stack {:actors [(draw-rect-actor)
+                                              (ui/image-widget background-drawable
+                                                               {:name "image-widget"
+                                                                :user-object {:background-drawable background-drawable
+                                                                              :cell-size cell-size}})]})
                      (.setName "inventory-cell")
                      (.setUserObject cell)
                      (.addListener (ui/click-listener
