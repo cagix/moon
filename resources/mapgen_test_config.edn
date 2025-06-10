@@ -1,14 +1,13 @@
 [
  [cdq.utils/dispatch-on [clojure.gdx.utils.shared-library-loader/os
                          {:os/mac-osx [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}]]
- [clojure.gdx.backends.lwjgl.start/application!
+ [gdl.application/start!
   {:config {:title "Levelgen"
             :windowed-mode {:width 1440
                             :height 900}
             :foreground-fps 60}
-   :listener [clojure.gdx.app-listener/create-adapter
-              {:create  [cdq.levelgen/create!]
-               :dispose cdq.levelgen/dispose!
-               :render  [cdq.levelgen/render!]
-               :resize  cdq.levelgen/resize!}]}]
+   :listener {:create  [cdq.levelgen/create!]
+              :dispose cdq.levelgen/dispose!
+              :render  [cdq.levelgen/render!]
+              :resize  cdq.levelgen/resize!}}]
  ]
