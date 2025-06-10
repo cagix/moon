@@ -60,7 +60,7 @@
                                         (name k))]]})
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (let [widget (widget/create (get schemas k) k v ctx)]
+   {:actor (let [widget (ui/-create-actor (widget/create (get schemas k) k v ctx))]
              (ui/set-user-object! widget [k v])
              widget)
     :left? true}])

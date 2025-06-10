@@ -5,8 +5,9 @@
             [cdq.utils :refer [->edn-str]]))
 
 (defmethod widget/create :widget/edn [schema  _attribute v _ctx]
-  (ui/add-tooltip! (ui/text-field (->edn-str v) {})
-                   (str schema)))
+  {:actor/type :actor.type/text-field
+   :text (->edn-str v)
+   :tooltip (str schema)})
 
 (defmethod widget/value :widget/edn [_  _attribute widget _schemas]
   (edn/read-string (ui/get-text widget)))

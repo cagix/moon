@@ -62,6 +62,37 @@
     (clicked [event _x _y]
       (f @(.ctx ^CtxStage (.getStage event))))))
 
+(defn- get-stage-ctx [^Actor actor]
+  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
+    @(.ctx ^CtxStage stage)))
+
+(defn add-tooltip!
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
+  Returns the actor."
+  [^Actor actor tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (let [actor (.getTarget this)
+                              ctx (get-stage-ctx actor)]
+                          (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
+                            (.setText this (str (tooltip-text ctx))))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip actor)
+    (.setContent tooltip label))
+  actor)
+
+(defn remove-tooltip! [^Actor actor]
+  (Tooltip/removeTooltip actor))
+
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
                                              user-object
@@ -84,11 +115,9 @@
     (.setPosition actor x y))
   (when-let [f (:click-listener opts)]
     (.addListener actor (-click-listener f)))
+  (when-let [tooltip (:tooltip opts)]
+    (add-tooltip! actor tooltip))
   actor)
-
-(defn- get-stage-ctx [^Actor actor]
-  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
-    @(.ctx ^CtxStage stage)))
 
 ;; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]
@@ -220,18 +249,50 @@
   (doto (proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
+(defn- -check-box
+  "on-clicked is a fn of one arg, taking the current isChecked state"
+  [{:keys [text on-clicked checked?]}]
+  (let [^Button button (VisCheckBox. (str text))]
+    (.setChecked button checked?)
+    (.addListener button
+                  (proxy [ChangeListener] []
+                    (changed [event ^Button actor]
+                      (on-clicked (.isChecked actor)))))
+    button))
+
+(defn label ^VisLabel [text]
+  (VisLabel. ^CharSequence text))
+
+(defn text-field [text opts]
+  (-> (VisTextField. (str text))
+      (set-opts! opts)))
+
+(defn- -select-box [{:keys [items selected]}]
+  (doto (VisSelectBox.)
+    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
+    (.setSelected selected)))
+
+; schemas for components would prevents weird errors
+; e.g. needs on-clicked ...
 (defn -create-actor ^Actor [actor-declaration]
   (try
    (cond
     (instance? Actor actor-declaration) actor-declaration
-    (map? actor-declaration) (case (:actor/type actor-declaration)
-                               :actor.type/actor (-actor actor-declaration)
-                               :actor.type/widget (-widget actor-declaration)
-                               :actor.type/horizontal-group (-horizontal-group actor-declaration)
-                               :actor.type/table (table actor-declaration)
-                               :actor.type/stack (-stack actor-declaration)
-                               (throw (ex-info "Cannot understand actor declaration"
-                                               {:actor/type (:actor/type actor-declaration)})))
+    (map? actor-declaration) (do
+                              (assert (:actor/type actor-declaration))
+                              (case (:actor/type actor-declaration)
+                                :actor.type/actor (-actor actor-declaration)
+                                :actor.type/widget (-widget actor-declaration)
+                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
+                                :actor.type/table (table actor-declaration)
+                                :actor.type/stack (-stack actor-declaration)
+                                :actor.type/check-box (-check-box actor-declaration)
+                                :actor.type/label (label (:text actor-declaration))
+                                :actor.type/text-field (text-field (:text actor-declaration)
+                                                                   actor-declaration)
+                                :actor.type/select-box (-select-box actor-declaration)
+                                (throw (ex-info "Cannot understand actor declaration"
+                                                {:actor/type (:actor/type actor-declaration)}))))
     (nil? actor-declaration) nil
     :else (throw (ex-info "Cannot find constructor"
                           {:instance-actor? (instance? Actor actor-declaration)
@@ -331,23 +392,7 @@
     (run! #(add! group %) actors)
     group))
 
-(defn check-box
-  "on-clicked is a fn of one arg, taking the current isChecked state"
-  [text on-clicked checked?]
-  (let [^Button button (VisCheckBox. (str text))]
-    (.setChecked button checked?)
-    (.addListener button
-                  (proxy [ChangeListener] []
-                    (changed [event ^Button actor]
-                      (on-clicked (.isChecked actor)))))
-    button))
-
 (def checked? VisCheckBox/.isChecked)
-
-(defn select-box [{:keys [items selected]}]
-  (doto (VisSelectBox.)
-    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
-    (.setSelected selected)))
 
 (def get-selected VisSelectBox/.getSelected)
 
@@ -361,13 +406,6 @@
         (when center?          (.centerWindow   window))
         (when close-on-escape? (.closeOnEscape  window))
         window)
-      (set-opts! opts)))
-
-(defn label ^VisLabel [text]
-  (VisLabel. ^CharSequence text))
-
-(defn text-field [text opts]
-  (-> (VisTextField. (str text))
       (set-opts! opts)))
 
 (def get-text VisTextField/.getText)
@@ -474,33 +512,6 @@
       (when-let [p (parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
-
-(defn add-tooltip!
-  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
-  Returns the actor."
-  [^Actor actor tooltip-text]
-  (let [text? (string? tooltip-text)
-        label (VisLabel. (if text? tooltip-text ""))
-        tooltip (proxy [Tooltip] []
-                  ; hooking into getWidth because at
-                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                  ; when tooltip position gets calculated we setText (which calls pack) before that
-                  ; so that the size is correct for the newly calculated text.
-                  (getWidth []
-                    (let [^Tooltip this this]
-                      (when-not text?
-                        (let [actor (.getTarget this)
-                              ctx (get-stage-ctx actor)]
-                          (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                            (.setText this (str (tooltip-text ctx))))))
-                      (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
-    (.setTarget  tooltip actor)
-    (.setContent tooltip label))
-  actor)
-
-(defn remove-tooltip! [^Actor actor]
-  (Tooltip/removeTooltip actor))
 
 (defn create-drawable
   [texture-region
