@@ -75,7 +75,7 @@
         on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
                         (open-property-editor-window! ctx (db/get-raw db id)))]
     (ui/add! window (cdq.ui.editor.overview-table/create ctx
-                                                             property-type
-                                                             on-clicked-id))
+                                                         property-type
+                                                         on-clicked-id))
     (.pack window)
     (stage/add! stage window)))

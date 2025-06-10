@@ -13,8 +13,18 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap)
            (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group
                                             Touchable)
            (com.badlogic.gdx.utils Disposable)))
+
+(extend-type Group
+  gdl.ui/PGroup
+  (find-actor [group name]
+    (.findActor group name))
+  (clear-children! [group]
+    (.clearChildren group))
+  (children [group]
+    (.getChildren group)))
 
 (extend-type Actor
   gdl.ui/PActor

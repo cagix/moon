@@ -65,6 +65,6 @@
                                           top-widget]}]
                       (ui/add-tooltip! button (pprint-to-str property))
                       (ui/set-touchable! top-widget :disabled)
-                      stack)
+                      {:actor stack})
                     (catch Throwable t
                       (throw (ex-info "" {:property property} t))))))}))

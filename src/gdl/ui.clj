@@ -115,8 +115,10 @@
       (when-let [f (:draw opts)]
         (try-draw this f)))))
 
-(defn find-actor [^Group group name]
-  (.findActor group name))
+(defprotocol PGroup
+  (find-actor [_ name])
+  (clear-children! [_])
+  (children [_]))
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -153,19 +155,23 @@
 (defprotocol CanAddActor
   (add! [_ actor]))
 
-(defn add-rows!
-  "rows is a seq of seqs of columns.
-  Elements are actors or nil (for just adding empty cells ) or a map of
-  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
-  [^Table table rows]
-  (doseq [row rows]
-    (doseq [props-or-actor row]
-      (cond
-       (map? props-or-actor) (-> (add! table (:actor props-or-actor))
-                                 (set-cell-opts! (dissoc props-or-actor :actor)))
-       :else (add! table props-or-actor)))
-    (.row table))
-  table)
+(defprotocol PTable
+  (add-rows! [_ rows]
+             "rows is a seq of seqs of columns.
+             Elements are actors or nil (for just adding empty cells ) or a map of
+             {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
+
+(extend-type Table
+  PTable
+  (add-rows! [table rows]
+    (doseq [row rows]
+      (doseq [props-or-actor row]
+        (cond
+         (map? props-or-actor) (-> (add! table (:actor props-or-actor))
+                                   (set-cell-opts! (dissoc props-or-actor :actor)))
+         :else (add! table props-or-actor)))
+      (.row table))
+    table))
 
 (defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
   (set-cell-opts! (.defaults table) cell-defaults)
@@ -180,12 +186,6 @@
   (when (instance? Group actor) ; Check Addable protocol
     (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
-
-(defn clear-children! [^Group group]
-  (.clearChildren group))
-
-(defn children [^Group group]
-  (.getChildren group))
 
 (defn- find-actor-with-id [group id]
   (let [actors (children group)
@@ -216,7 +216,7 @@
   (-> (proxy-ILookup VisTable [])
       (set-opts! opts)))
 
-(defn -stack ^Stack [opts]
+(defn- -stack ^Stack [opts]
   (doto (proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
