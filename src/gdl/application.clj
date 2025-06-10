@@ -1,7 +1,6 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -40,6 +39,7 @@
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter
+                                      OrthographicCamera
                                       )
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)
@@ -378,7 +378,7 @@
             :when component]
       (draw! component this))))
 
-(defn- reify-camera [this]
+(defn- reify-camera [^OrthographicCamera this]
   (reify
     clojure.lang.ILookup
     (valAt [_ k]
@@ -387,17 +387,17 @@
 
     gdl.graphics.camera/Camera
     (zoom [_]
-      (:orthographic-camera/zoom this))
+      (.zoom this))
 
     (position [_]
-      (:camera/position this))
+      [(.x (.position this))
+       (.y (.position this))])
 
     (combined [_]
-      (:camera/combined this))
+      (.combined this))
 
     (frustum [_]
-      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints  ; refl
-                                                           (:camera/frustum this))))
+      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (.frustum this))))
             left-x   (apply min (map first  frustum-points))
             right-x  (apply max (map first  frustum-points))
             bottom-y (apply min (map second frustum-points))
@@ -410,19 +410,20 @@
       (.update this))
 
     (set-zoom! [_ amount]
-      (orthographic-camera/set-zoom! this amount))
+      (set! (.zoom this) amount)
+      (.update this))
 
     (viewport-width [_]
-      (:camera/viewport-width this))
+      (.viewportWidth this))
 
     (viewport-height [_]
-      (:camera/viewport-height this))
+      (.viewportHeight this))
 
     (reset-zoom! [cam]
-      (orthographic-camera/set-zoom! this 1))
+      (gdl.graphics.camera/set-zoom! cam 1))
 
     (inc-zoom! [cam by]
-      (orthographic-camera/set-zoom! this (max 0.1 (+ (:orthographic-camera/zoom this) by)))) ))
+      (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom this) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (fit-viewport/create width height camera)]
@@ -455,7 +456,7 @@
 (defn- create-ui-viewport [{:keys [width height]}]
   (fit-viewport width
                 height
-                (orthographic-camera/create)
+                (OrthographicCamera.)
                 {:center-camera? true}))
 
 (defn- create-world-viewport [world-unit-scale {:keys [width height]}]
@@ -463,9 +464,10 @@
         world-height (* height world-unit-scale)]
     (fit-viewport world-width
                   world-height
-                  (orthographic-camera/create {:world-width world-width
-                                               :world-height world-height
-                                               :y-down? false})
+                  (doto (OrthographicCamera.)
+                    (.setToOrtho false ; y-down ?
+                                 world-width
+                                 world-height))
                   {:center-camera? false})))
 
 (defn- white-pixel-texture [graphics]
