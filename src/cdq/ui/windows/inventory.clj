@@ -72,18 +72,18 @@
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
-                   (doto (ui/-stack {:actors [(draw-rect-actor)
-                                              (ui/image-widget background-drawable
-                                                               {:name "image-widget"
-                                                                :user-object {:background-drawable background-drawable
-                                                                              :cell-size cell-size}})]})
-                     (.setName "inventory-cell")
-                     (.setUserObject cell)
-                     (.addListener (ui/click-listener
-                                    (fn [{:keys [ctx/player-eid] :as ctx}]
-                                      (world/handle-txs! ctx (-> @player-eid
-                                                                 entity/state-obj
-                                                                 (state/clicked-inventory-cell player-eid cell)))))))))]
+                   {:actor {:actor/type :actor.type/stack
+                            :name "inventory-cell"
+                            :user-object cell
+                            :click-listener (fn [{:keys [ctx/player-eid] :as ctx}]
+                                              (world/handle-txs! ctx (-> @player-eid
+                                                                         entity/state-obj
+                                                                         (state/clicked-inventory-cell player-eid cell))))
+                            :actors [(draw-rect-actor)
+                                     (ui/image-widget background-drawable
+                                                      {:name "image-widget"
+                                                       :user-object {:background-drawable background-drawable
+                                                                     :cell-size cell-size}})]}}))]
     (ui/window {:title title
                 :id id
                 :visible? visible?

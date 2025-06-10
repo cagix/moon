@@ -57,6 +57,11 @@
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
 
+(defn- -click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f @(.ctx ^CtxStage (.getStage event))))))
+
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
                                              user-object
@@ -77,6 +82,8 @@
                   (- y (/ (.getHeight actor) 2))))
   (when-let [[x y] position]
     (.setPosition actor x y))
+  (when-let [f (:click-listener opts)]
+    (.addListener actor (-click-listener f)))
   actor)
 
 (defn- get-stage-ctx [^Actor actor]
@@ -209,7 +216,7 @@
   (-> (proxy-ILookup VisTable [])
       (set-opts! opts)))
 
-(defn -stack ^Stack [{:keys [actors] :as opts}]
+(defn -stack ^Stack [opts]
   (doto (proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
@@ -494,11 +501,6 @@
 
 (defn remove-tooltip! [^Actor actor]
   (Tooltip/removeTooltip actor))
-
-(defn click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (.getStage event))))))
 
 (defn create-drawable
   [texture-region
