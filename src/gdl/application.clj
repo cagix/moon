@@ -45,7 +45,8 @@
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx ApplicationListener)
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -604,3 +605,6 @@
                            (resize  [width height]  (when resize  (resize width height)))
                            (pause   []              (when pause   (pause)))
                            (resume  []              (when resume  (resume))))))))
+
+(defn post-runnable! [runnable]
+  (.postRunnable Gdx/app runnable))

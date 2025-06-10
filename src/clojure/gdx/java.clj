@@ -1,6 +1,5 @@
 (ns clojure.gdx.java
-  (:require [clojure.gdx.app]
-            [clojure.gdx.audio]
+  (:require [clojure.gdx.audio]
             [clojure.gdx.audio.sound]
             [clojure.gdx.files]
             [clojure.gdx.files.file-handle]
@@ -10,8 +9,7 @@
             [clojure.gdx.input]
             [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx Application
-                             Audio
+  (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
                              Graphics
@@ -26,11 +24,6 @@
 
 (defprotocol JavaObjectState
   (get-state [_]))
-
-(defn- reify-app [^Application this]
-  (reify clojure.gdx.app/Application
-    (post-runnable! [_ runnable]
-      (.postRunnable this runnable))))
 
 (defn- reify-sound [^Sound this]
   (reify
@@ -178,8 +171,7 @@
                       clojure.gdx/input])
 
 (defn context []
-  (map->Context {:app      (reify-app      Gdx/app)
-                 :audio    (reify-audio    Gdx/audio)
+  (map->Context {:audio    (reify-audio    Gdx/audio)
                  :files    (reify-files    Gdx/files)
                  :graphics (reify-graphics Gdx/graphics)
                  :input    (reify-input    Gdx/input)}))
