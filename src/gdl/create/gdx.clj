@@ -6,12 +6,48 @@
             [gdl.fs]
             [gdl.graphics]
             [gdl.input]
+            [gdl.ui]
             [gdl.utils.disposable])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap)
+           (com.badlogic.gdx.scenes.scene2d Actor
+                                            Touchable)
            (com.badlogic.gdx.utils Disposable)))
+
+(extend-type Actor
+  gdl.ui/PActor
+  (get-x [actor]
+    (.getX actor))
+
+  (get-y [actor]
+    (.getY actor))
+
+  (get-name [actor]
+    (.getName actor))
+
+  (user-object [actor]
+    (.getUserObject actor))
+
+  (set-user-object! [actor object]
+    (.setUserObject actor object))
+
+  (visible? [actor]
+    (.isVisible actor))
+
+  (set-visible! [actor visible?]
+    (.setVisible actor visible?))
+
+  (set-touchable! [actor touchable]
+    (.setTouchable actor (case touchable
+                           :disabled Touchable/disabled)))
+
+  (remove! [actor]
+    (.remove actor))
+
+  (parent [actor]
+    (.getParent actor)))
 
 (extend-type Sound
   gdl.audio/Sound

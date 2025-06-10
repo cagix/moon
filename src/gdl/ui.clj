@@ -5,8 +5,7 @@
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
-                                            Stage
-                                            Touchable)
+                                            Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Cell
                                                HorizontalGroup
@@ -57,39 +56,6 @@
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
-
-(extend-type Actor
-  PActor
-  (get-x [actor]
-    (.getX actor))
-
-  (get-y [actor]
-    (.getY actor))
-
-  (get-name [actor]
-    (.getName actor))
-
-  (user-object [actor]
-    (.getUserObject actor))
-
-  (set-user-object! [actor object]
-    (.setUserObject actor object))
-
-  (visible? [actor]
-    (.isVisible actor))
-
-  (set-visible! [actor visible?]
-    (.setVisible actor visible?))
-
-  (set-touchable! [actor touchable]
-    (.setTouchable actor (case touchable
-                           :disabled Touchable/disabled)))
-
-  (remove! [actor]
-    (.remove actor))
-
-  (parent [actor]
-    (.getParent actor)))
 
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
