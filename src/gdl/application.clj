@@ -1,10 +1,5 @@
 (ns gdl.application
-  (:require
-   clojure.edn
-            clojure.java.io
-            clojure.walk
-
-   [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.audio]
             [gdl.graphics]
@@ -18,9 +13,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable])
-  (:import
-   (clojure.lang ILookup)
-   (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
@@ -453,31 +446,13 @@
     (.dispose object)))
 
 (defn create-context!
-  [{:keys [config-path
-           graphics
+  [{:keys [graphics
            sounds
            ui]}]
   (doseq [[name color-params] (:colors graphics)]
     (Colors/put name (color/create color-params)))
   (ui/load! ui)
-  (let [config (->> config-path
-                    clojure.java.io/resource
-                    slurp
-                    clojure.edn/read-string
-                    (clojure.walk/postwalk (fn [form]
-                                             (if (symbol? form)
-                                               (if (namespace form)
-                                                 (requiring-resolve form)
-                                                 (do
-                                                  (require form)
-                                                  form))
-                                               form))))
-        config (reify ILookup
-                 (valAt [_ k]
-                   (assert (contains? config k)
-                           (str "Config key not found: " k))
-                   (get config k)))
-        recursively-search (fn [^FileHandle folder extensions]
+  (let [recursively-search (fn [^FileHandle folder extensions]
                              (loop [[^FileHandle file & remaining] (.list folder)
                                     result []]
                                (cond (nil? file)
@@ -553,7 +528,7 @@
         stage (ui/stage (:java-object (:ui-viewport graphics))
                         (:batch graphics))]
     (.setInputProcessor Gdx/input stage)
-    {:ctx/config config
+    {
      :ctx/input (let [this Gdx/input]
                   (reify gdl.input/Input
                     (button-just-pressed? [_ button]

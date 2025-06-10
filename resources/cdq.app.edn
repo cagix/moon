@@ -6,9 +6,10 @@
    :windowed-mode {:width 1440 :height 900}
    :foreground-fps 60
    :create [cdq.application/create!
-            [[clojure.app/merge-m [gdl.application/create-context!
-                                   {:config-path "config.edn"
-                                    :sounds {:folder "resources/"
+            [
+             [:assoc :ctx/config [gdl.create.config/do! "config.edn"]]
+             [clojure.app/merge-m [gdl.application/create-context!
+                                   {:sounds {:folder "resources/"
                                              :extensions #{"wav"}}
                                     :graphics {:textures {:folder "resources/"
                                                           :extensions #{"png" "bmp"}}
