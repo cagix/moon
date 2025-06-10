@@ -3,6 +3,12 @@
                              Input$Keys)
            (com.badlogic.gdx.utils Align)))
 
+; '(clojure.java.interop/k->enum 'class-symbol keyword & :namespaced? false)
+; see play-clj
+; Make ':bottom-left' -> 'Align/bottomLeft'
+; no namespace because its only used @ align or at key-pressed?
+; so input.keys is redundant.
+
 (def Align-mapping {:bottom      Align/bottom
                     :bottomleft  Align/bottomLeft
                     :bottomright Align/bottomRight
