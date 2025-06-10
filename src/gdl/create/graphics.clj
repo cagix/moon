@@ -13,7 +13,6 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.java]
-            [clojure.gdx.math.utils :as math-utils]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.disposable]
@@ -25,6 +24,7 @@
             [gdl.graphics.camera]
             [gdl.graphics.viewport]
             [gdl.tiled :as tiled]
+            [gdl.math.utils :as math-utils]
             [gdl.utils.disposable :as disposable]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)
