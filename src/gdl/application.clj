@@ -1,11 +1,45 @@
 (ns gdl.application
   (:require cdq.utils
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.files :as files]
+            [clojure.gdx.files.file-handle :as file-handle]
+            [clojure.gdx.java :as gdx.java]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl.system.configuration]
             [clojure.java.awt.taskbar]
-            [gdl.context])
-  (:import (com.badlogic.gdx ApplicationListener)))
+            [clojure.string :as str]
+            [gdl.create.audio]
+            [gdl.create.graphics]
+            [gdl.create.input]
+            [gdl.create.stage]
+            [gdl.utils.disposable :as disposable])
+  (:import (com.badlogic.gdx ApplicationListener)
+           (com.badlogic.gdx.utils Disposable)))
+
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (file-handle/list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (file-handle/directory? file)
+          (recur (concat remaining (file-handle/list file)) result)
+
+          (extensions (file-handle/extension file))
+          (recur remaining (conj result (file-handle/path file)))
+
+          :else
+          (recur remaining result))))
+
+(extend-type Disposable
+  disposable/Disposable
+  (dispose! [object]
+    (.dispose object)))
+
+(defn- find-assets [files {:keys [folder extensions]}]
+  (map #(str/replace-first % folder "")
+       (recursively-search (files/internal files folder)
+                           extensions)))
 
 (defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
   (when glfw-async?
@@ -13,9 +47,24 @@
   (when dock-icon
     (clojure.java.awt.taskbar/set-icon! dock-icon)))
 
-(defn- create-context [config]
-  (assoc (gdl.context/create (::context config))
-         :ctx/config config))
+(defn- create-context [main-config]
+  (let [config (::context main-config)
+        {:keys [clojure.gdx/audio
+                clojure.gdx/files
+                clojure.gdx/input] :as context} (gdx.java/context)
+        graphics-config (update (:graphics config) :textures (partial find-assets files))
+        graphics (gdl.create.graphics/create-graphics (:clojure.gdx/graphics context)
+                                                      files
+                                                      graphics-config)
+        stage (gdl.create.stage/create! (:ui config)
+                                        graphics
+                                        input)]
+    {:ctx/config main-config
+     :ctx/input (gdl.create.input/create-input input)
+     :ctx/audio (when (:sounds config)
+                  (gdl.create.audio/create-audio audio files (find-assets files (:sounds config))))
+     :ctx/graphics graphics
+     :ctx/stage stage}))
 
 (defn -main [config-path]
   (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (cdq.utils/load-edn-config config-path)]
