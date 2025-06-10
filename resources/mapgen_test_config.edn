@@ -1,8 +1,7 @@
 [
- [cdq.utils/dispatch-on [clojure.gdx.utils.shared-library-loader/os
-                         {:os/mac-osx [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}]]
  [gdl.application/start!
-  {:config {:title "Levelgen"
+  {:mac-os-settings {:glfw-async? true}
+   :config {:title "Levelgen"
             :windowed-mode {:width 1440
                             :height 900}
             :foreground-fps 60}

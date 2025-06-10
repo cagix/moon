@@ -251,8 +251,3 @@
   (-> config-path
       io-slurp-edn-req ; <- require-resolved in _this_ namespace ?? can I use 'invoc' ??
       exec!))
-
-(defn dispatch-on [[to-be-evaluated result->execs]]
-  (-> (to-be-evaluated)
-      result->execs
-      exec!))

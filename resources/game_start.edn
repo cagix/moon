@@ -52,19 +52,10 @@
                          cdq.ui.editor.widget.map
 
                          ]]
- [cdq.utils/dispatch-on [clojure.gdx.utils.shared-library-loader/os
-                         {:os/mac-osx [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                                       [clojure.java.awt.taskbar/set-icon! "moon.png"]]}]]
- ; TODO the starter should return GDX protocolized reified
- ; state instead of calling 'gdx/'
- ; (clojure.gdx.java/create-context)
- ; why do I depend on Audio/Sound/Files,etc. classes?
- ; 'gdl.application' or 'gdl.start'
-
- ; 1. REMOVE CLOJURE/GDL STUFF INTO SEPARATE LIBRARY ( FACADE )
- ; 2. WRITE GAME
  [gdl.application/start!
-  {:config {:title "Cyber Dungeon Quest"
+  {:mac-os-settings {:glfw-async? true
+                     :dock-icon "moon.png"}
+   :config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440
                             :height 900}
             :foreground-fps 60}

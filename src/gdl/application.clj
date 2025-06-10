@@ -1,5 +1,8 @@
 (ns gdl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl])
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
+            [clojure.lwjgl.system.configuration]
+            [clojure.java.awt.taskbar])
   (:import (com.badlogic.gdx ApplicationListener)))
 
 (defn- create-adapter [{:keys [create dispose render resize pause resume]}]
@@ -11,6 +14,14 @@
     (pause   []              (when pause   (pause)))
     (resume  []              (when resume  (resume)))))
 
-(defn start! [{:keys [config listener]}]
+(defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
+  (when glfw-async?
+    (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"))
+  (when dock-icon
+    (clojure.java.awt.taskbar/set-icon! dock-icon)) )
+
+(defn start! [{:keys [mac-os-settings config listener]}]
+  (when (= (shared-library-loader/os) :os/mac-osx)
+    (set-mac-settings! mac-os-settings))
   (lwjgl/application config
                      (create-adapter listener)))
