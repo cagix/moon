@@ -1,10 +1,42 @@
 (ns gdl.tiled
-  (:require [clojure.gdx.maps.map-properties :as map-properties]
-            [clojure.gdx.maps.tiled.tiled-map :as tiled-map]
-            [clojure.gdx.maps.tiled.tiled-map-tile-layer :as layer]
-            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]
-            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [gdl.utils.disposable :as disposable]))
+  (:require [gdl.utils.disposable :as disposable])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.maps MapProperties)
+           (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
+           (com.badlogic.gdx.maps.tiled TiledMap
+                                        TiledMapTileLayer
+                                        TiledMapTileLayer$Cell
+                                        TmxMapLoader)))
+
+(defn- add-props! [^MapProperties mp properties]
+  (doseq [[k v] properties]
+    (assert (string? k))
+    (.put mp k v)))
+
+(defn- props->clj-map [^MapProperties mp]
+  (zipmap (.getKeys   mp)
+          (.getValues mp)))
+
+(defn- create-layer
+  [{:keys [width
+           height
+           tilewidth
+           tileheight
+           name
+           visible?
+           map-properties
+           tiles]}]
+  {:pre [(string? name)
+         (boolean? visible?)]}
+  (let [layer (doto (TiledMapTileLayer. width height tilewidth tileheight)
+                (.setName name)
+                (.setVisible visible?))]
+    (.putAll (.getProperties layer) map-properties)
+    (doseq [[[x y] tiled-map-tile] tiles
+            :when tiled-map-tile]
+      (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
+                            (.setTile tiled-map-tile))))
+    layer))
 
 (defn- tm-add-layer!
   "Returns nil."
@@ -12,30 +44,36 @@
                      visible?
                      properties
                      tiles]}]
-  (let [props (tiled-map/properties tiled-map)
-        layer (layer/create {:width      (.get props "width")
+  (let [props (.getProperties tiled-map)
+        layer (create-layer {:width      (.get props "width")
                              :height     (.get props "height")
                              :tilewidth  (.get props "tilewidth")
                              :tileheight (.get props "tileheight")
                              :name name
                              :visible? visible?
-                             :map-properties (map-properties/create properties)
+                             :map-properties (doto (MapProperties.)
+                                               (add-props! properties))
                              :tiles tiles})]
-    (.add (tiled-map/layers tiled-map) layer))
+    (.add (.getLayers tiled-map) layer))
   nil)
 
 (def copy-tile
   "Memoized function. Copies the given [[static-tiled-map-tile]].
 
   Tiles are usually shared by multiple cells, see: https://libgdx.com/wiki/graphics/2d/tile-maps#cells"
-  (memoize static-tiled-map-tile/copy))
+  (memoize
+   (fn [^StaticTiledMapTile tile]
+     (assert tile)
+     (StaticTiledMapTile. tile))))
 
 (defn static-tiled-map-tile
   "Creates a `StaticTiledMapTile` with the given `texture-region` and property."
   [texture-region property-name property-value]
   {:pre [texture-region
          (string? property-name)]}
-  (static-tiled-map-tile/create texture-region property-name property-value))
+  (let [tile (StaticTiledMapTile. ^TextureRegion texture-region)]
+    (.put (.getProperties tile) property-name property-value)
+    tile))
 
 (defprotocol HasMapProperties
   (map-properties [_]
@@ -72,28 +110,28 @@
   (reify
     clojure.lang.ILookup
     (valAt [_ key]
-      (.get (layer/properties this) key))
+      (.get (.getProperties this) key))
 
     HasMapProperties
     (map-properties [_]
-      (map-properties/->clj-map (layer/properties this)))
+      (props->clj-map (.getProperties this)))
 
     TMapLayer
     (set-visible! [_ boolean]
-      (layer/set-visible! this boolean))
+      (.setVisible this boolean))
 
     (visible? [_]
-      (layer/visible? this))
+      (.isVisible this))
 
     (layer-name [_]
-      (layer/name this))
+      (.getName this))
 
-    (tile-at [_ position]
-      (when-let [cell (layer/get-cell this position)]
+    (tile-at [_ [x y]]
+      (when-let [cell (.getCell this x y)]
         (.getTile cell)))
 
-    (property-value [_ position property-key]
-      (if-let [cell (layer/get-cell this position)]
+    (property-value [_ [x y] property-key]
+      (if-let [cell (.getCell this x y)]
         (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
           value
           :undefined)
@@ -103,30 +141,30 @@
   (reify
     disposable/Disposable
     (dispose! [_]
-      (tiled-map/dispose! this))
+      (.dispose this))
 
     clojure.lang.ILookup
     (valAt [_ key]
       (case key
         :tiled-map/java-object this
-        :tiled-map/width  (.get (tiled-map/properties this) "width")
-        :tiled-map/height (.get (tiled-map/properties this) "height")))
+        :tiled-map/width  (.get (.getProperties this) "width")
+        :tiled-map/height (.get (.getProperties this) "height")))
 
     HasMapProperties
     (map-properties [_]
-      (map-properties/->clj-map (tiled-map/properties this)))
+      (props->clj-map (.getProperties this)))
 
     TMap
     (layers [_]
-      (map reify-tiled-layer (tiled-map/layers this)))
+      (map reify-tiled-layer (.getLayers this)))
 
     (layer-index [_ layer]
-      (let [idx (.getIndex (tiled-map/layers this) ^String (layer-name layer))]
+      (let [idx (.getIndex (.getLayers this) ^String (layer-name layer))]
         (when-not (= idx -1)
           idx)))
 
     (get-layer [_ layer-name]
-      (reify-tiled-layer (.get (tiled-map/layers this) ^String layer-name)))
+      (reify-tiled-layer (.get (.getLayers this) ^String layer-name)))
 
     (add-layer! [_ layer-declaration]
       (tm-add-layer! this layer-declaration))))
@@ -135,14 +173,14 @@
   "Has to be disposed because it loads textures.
   Loads through internal file handle."
   [file-name]
-  (-> file-name
-      tmx-map-loader/load!
-      reify-tiled-map))
+  (->> file-name
+       (.load (TmxMapLoader.))
+       reify-tiled-map))
 
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
-  (let [tiled-map (tiled-map/create)]
-    (map-properties/add! (tiled-map/properties tiled-map) properties)
+  (let [tiled-map (TiledMap.)]
+    (add-props! (.getProperties tiled-map) properties)
     (doseq [layer layers]
       (tm-add-layer! tiled-map layer))
     (reify-tiled-map tiled-map)))
