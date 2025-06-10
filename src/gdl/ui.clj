@@ -43,39 +43,53 @@
                                       VisWindow)
            (gdl.ui CtxStage)))
 
-(defn get-x [^Actor actor]
-  (.getX actor))
-
-(defn get-y [^Actor actor]
-  (.getY actor))
-
-(defn get-name [^Actor actor]
-  (.getName actor))
-
-(defn user-object [^Actor actor]
-  (.getUserObject actor))
-
-(defn set-user-object! [^Actor actor object]
-  (.setUserObject actor object))
-
-(defn visible? [^Actor actor]
-  (.isVisible actor))
-
-(defn set-visible! [^Actor actor visible?]
-  (.setVisible actor visible?))
+(defprotocol PActor
+  (get-x [_])
+  (get-y [_])
+  (get-name [_])
+  (user-object [_])
+  (set-user-object! [_ object])
+  (visible? [_])
+  (set-visible! [_ visible?])
+  (set-touchable! [_ touchable])
+  (remove! [_])
+  (parent [_]))
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
 
-(defn set-touchable! [^Actor actor touchable]
-  (.setTouchable actor (case touchable
-                         :disabled Touchable/disabled)))
+(extend-type Actor
+  PActor
+  (get-x [actor]
+    (.getX actor))
 
-(defn remove! [^Actor actor]
-  (.remove actor))
+  (get-y [actor]
+    (.getY actor))
 
-(defn parent [^Actor actor]
-  (.getParent actor))
+  (get-name [actor]
+    (.getName actor))
+
+  (user-object [actor]
+    (.getUserObject actor))
+
+  (set-user-object! [actor object]
+    (.setUserObject actor object))
+
+  (visible? [actor]
+    (.isVisible actor))
+
+  (set-visible! [actor visible?]
+    (.setVisible actor visible?))
+
+  (set-touchable! [actor touchable]
+    (.setTouchable actor (case touchable
+                           :disabled Touchable/disabled)))
+
+  (remove! [actor]
+    (.remove actor))
+
+  (parent [actor]
+    (.getParent actor)))
 
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
