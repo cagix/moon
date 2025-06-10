@@ -92,7 +92,7 @@
     (f actor ctx)))
 ;;
 
-(defn actor [opts]
+(defn- -actor [opts]
   (doto (proxy [Actor] []
           (act [delta]
             (when-let [f (:act opts)]
@@ -214,7 +214,7 @@
    (cond
     (instance? Actor actor-declaration) actor-declaration
     (map? actor-declaration) (case (:actor/type actor-declaration)
-                               :actor.type/actor (actor actor-declaration)
+                               :actor.type/actor (-actor actor-declaration)
                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
                                :actor.type/table (table actor-declaration)
                                (throw (ex-info "Cannot understand actor declaration"

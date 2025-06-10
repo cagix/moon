@@ -45,25 +45,25 @@
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
-    (ui/table
-     {:cell-defaults {:pad 5}
-      :rows (for [properties (partition-all columns properties)]
-              (for [{:keys [property/id] :as property} properties]
-                (try (let [on-clicked (fn [_actor ctx]
-                                        (clicked-id-fn id ctx))
-                           button (if-let [image (property/image property)]
-                                    (ui/image-button (graphics/image->texture-region graphics image)
-                                                     on-clicked
-                                                     {:scale scale})
-                                    (ui/text-button (name id)
-                                                    on-clicked))
-                           top-widget (ui/label (or (and extra-info-text
-                                                         (extra-info-text property))
-                                                    ""))
-                           stack (ui/stack [button
-                                            top-widget])]
-                       (ui/add-tooltip! button (pprint-to-str property))
-                       (ui/set-touchable! top-widget :disabled)
-                       stack)
-                     (catch Throwable t
-                       (throw (ex-info "" {:property property} t))))))})))
+    {:actor/type :actor.type/table
+     :cell-defaults {:pad 5}
+     :rows (for [properties (partition-all columns properties)]
+             (for [{:keys [property/id] :as property} properties]
+               (try (let [on-clicked (fn [_actor ctx]
+                                       (clicked-id-fn id ctx))
+                          button (if-let [image (property/image property)]
+                                   (ui/image-button (graphics/image->texture-region graphics image)
+                                                    on-clicked
+                                                    {:scale scale})
+                                   (ui/text-button (name id)
+                                                   on-clicked))
+                          top-widget (ui/label (or (and extra-info-text
+                                                        (extra-info-text property))
+                                                   ""))
+                          stack (ui/stack [button
+                                           top-widget])]
+                      (ui/add-tooltip! button (pprint-to-str property))
+                      (ui/set-touchable! top-widget :disabled)
+                      stack)
+                    (catch Throwable t
+                      (throw (ex-info "" {:property property} t))))))}))

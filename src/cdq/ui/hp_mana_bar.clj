@@ -2,8 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
             [cdq.utils :as utils]
-            [gdl.graphics :as g]
-            [gdl.ui :as ui]))
+            [gdl.graphics :as g]))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -39,6 +38,6 @@
                          (concat
                           (render-hpmana-bar graphics x y-hp   hpcontent-file   (entity/hitpoints player-entity) "HP")
                           (render-hpmana-bar graphics x y-mana manacontent-file (entity/mana      player-entity) "MP"))))]
-    (ui/actor
-     {:draw (fn [_this {:keys [ctx/graphics] :as ctx}]
-              (g/handle-draws! graphics (create-draws ctx)))})))
+    {:actor/type :actor.type/actor
+     :draw (fn [_this {:keys [ctx/graphics] :as ctx}]
+             (g/handle-draws! graphics (create-draws ctx)))}))
