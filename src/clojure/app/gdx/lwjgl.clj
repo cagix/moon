@@ -9,8 +9,7 @@
                       resize
                       title
                       windowed-mode
-                      foreground-fps
-                      config-path]}]
+                      foreground-fps]}]
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
                           (let [[f params] create]
