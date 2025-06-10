@@ -114,16 +114,27 @@
 (defprotocol CanAddActor
   (add! [_ actor]))
 
+(defn -create-actor ^Actor [actor-declaration]
+  (cond
+   (instance? Actor actor-declaration) actor-declaration
+   (map? actor-declaration) (case (:actor/type actor-declaration)
+                              :actor.type/actor (actor actor-declaration)
+                              (throw (ex-info "Cannot understand actor declaration"
+                                              (:actor/type actor-declaration))))
+   :else (throw (ex-info "Cannot create actor"
+                         {:actor actor-declaration
+                          :map? (map? actor-declaration)}))))
+
 (extend-protocol CanAddActor
   Group
   (add! [group actor]
-    (.addActor group actor))
+    (.addActor group (-create-actor actor)))
   Stage
   (add! [stage actor]
-    (.addActor stage actor))
+    (.addActor stage (-create-actor actor)))
   Table
   (add! [table actor]
-    (.add table ^Actor actor)))
+    (.add table (-create-actor actor))))
 
 (defprotocol CanHit
   (hit [_ [x y]]))
