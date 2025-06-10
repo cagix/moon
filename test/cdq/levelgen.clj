@@ -10,7 +10,7 @@
             [gdl.ui.stage :as stage]
 
             [cdq.utils.camera :as camera-utils]
-            [clojure.gdx.graphics.color :as color]
+            [gdl.graphics.color :as color]
 
             [gdl.ui :as ui]
 
