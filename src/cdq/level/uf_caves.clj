@@ -7,8 +7,8 @@
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics :as graphics]
+            [gdl.graphics.texture-region :as texture-region]
             [gdl.tiled :as tiled]))
 
 (defn- assoc-transition-cells [grid]

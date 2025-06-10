@@ -1,6 +1,5 @@
 (ns gdl.application
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.input.buttons :as input.buttons]
+  (:require [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
@@ -14,6 +13,7 @@
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
+            [gdl.graphics.texture-region :as texture-region]
             [gdl.graphics.viewport]
             [gdl.input]
             [gdl.math.utils :as math-utils]

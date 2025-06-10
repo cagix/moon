@@ -1,5 +1,5 @@
 (ns gdl.ui
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region])
+  (:require [gdl.graphics.texture-region :as texture-region])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
