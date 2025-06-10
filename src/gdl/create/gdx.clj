@@ -1,9 +1,22 @@
 (ns gdl.create.gdx
   (:require [clojure.gdx.interop :as interop]
             [gdl.gdx]
+            [gdl.file]
             [gdl.input])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap)))
+
+(extend-type FileHandle
+  gdl.file/File
+  (list [this]
+    (.list this))
+  (directory? [this]
+    (.isDirectory this))
+  (extension [this]
+    (.extension this))
+  (path [this]
+    (.path this)))
 
 (defrecord Context [app
                     audio
