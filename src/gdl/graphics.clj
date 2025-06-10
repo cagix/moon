@@ -1,6 +1,7 @@
 (ns gdl.graphics)
 
 (defprotocol Graphics
+  (clear-screen! [_ color])
   (delta-time [_])
   (frames-per-second [_])
   (set-cursor! [_ cursor-key])

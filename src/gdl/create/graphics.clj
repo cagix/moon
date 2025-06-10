@@ -17,6 +17,7 @@
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
             [clojure.gdx.utils.disposable]
+            [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.space.earlygrey.shape-drawer :as sd]
@@ -225,6 +226,9 @@
       (disposable/dispose! default-font)))
 
   gdl.graphics/Graphics
+  (clear-screen! [_ color]
+    (screen-utils/clear! (color/create color)))
+
   (resize-viewports! [_ width height]
     (gdl.graphics.viewport/resize! ui-viewport    width height)
     (gdl.graphics.viewport/resize! world-viewport width height))
