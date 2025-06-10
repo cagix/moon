@@ -1,7 +1,36 @@
-(ns clojure.gdx.input.keys
-  (:import (com.badlogic.gdx Input$Keys)))
+(ns clojure.gdx.interop
+  (:import (com.badlogic.gdx Input$Buttons
+                             Input$Keys)
+           (com.badlogic.gdx.utils Align)))
 
-(def mapping
+(def Align-mapping {:bottom      Align/bottom
+                    :bottomleft  Align/bottomLeft
+                    :bottomright Align/bottomRight
+                    :center      Align/center
+                    :left        Align/left
+                    :right       Align/right
+                    :top         Align/top
+                    :topleft     Align/topLeft
+                    :topright    Align/topRight})
+
+(defn k->align [k]
+  (when-not (contains? Align-mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Align: " k ". \nOptions are:\n" (sort (keys Align-mapping))))))
+  (k Align-mapping))
+
+(def Input$Buttons-mapping
+  {:back    Input$Buttons/BACK
+   :forward Input$Buttons/FORWARD
+   :left    Input$Buttons/LEFT
+   :middle  Input$Buttons/MIDDLE
+   :right   Input$Buttons/RIGHT})
+
+(defn k->input-button [k]
+  (when-not (contains? Input$Buttons-mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Button: " k ". \nOptions are:\n" (sort (keys Input$Buttons-mapping))))))
+  (k Input$Buttons-mapping))
+
+(def Input$Keys-mapping
   {:a                   Input$Keys/A
    :alt-left            Input$Keys/ALT_LEFT
    :alt-right           Input$Keys/ALT_RIGHT
@@ -185,7 +214,51 @@
    :y                   Input$Keys/Y
    :z                   Input$Keys/Z})
 
-(defn ->from-k [k]
+(defn k->input-key [k]
+  (when-not (contains? Input$Keys-mapping k)
+    (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys Input$Keys-mapping))))))
+  (k Input$Keys-mapping))
+
+(defn get-static-field [mapping k]
   (when-not (contains? mapping k)
     (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
+
+(comment
+
+ (require '[clojure.string :as str]
+          '[clojure.reflect :refer [type-reflect]])
+
+ (defn- relevant-fields [class-str field-type]
+   (->> class-str
+        symbol
+        eval
+        type-reflect
+        :members
+        (filter #(= field-type (:type %)))))
+
+ (defn- ->clojure-symbol [field]
+   (-> field :name name str/lower-case (str/replace #"_" "-") symbol))
+
+ (defn create-mapping [class-str field-type]
+   (sort-by first
+            (for [field (relevant-fields class-str field-type)]
+              [(keyword (->clojure-symbol field))
+               (symbol class-str (str (:name field)))])))
+
+ (defn generate-mapping [class-str field-type]
+   (spit "temp.clj"
+         (with-out-str
+          (println "{")
+          (doseq [[kw static-field] (create-mapping class-str field-type)]
+            (println kw static-field))
+          (println "}"))))
+
+ (generate-mapping "Input$Buttons" 'int)
+ (generate-mapping "Input$Keys"    'int) ; without Input$Keys/MAX_KEYCODE
+ (generate-mapping "Color" 'com.badlogic.gdx.graphics.Color)
+
+ (import 'com.badlogic.gdx.utils.Align)
+ (generate-mapping "Align" 'int)
+
+ )

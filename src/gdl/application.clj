@@ -1,13 +1,9 @@
 (ns gdl.application
-  (:require [clojure.gdx.input.buttons :as input.buttons]
-            [clojure.gdx.input.keys :as input.keys]
-            [clojure.gdx.math.vector3 :as vector3]
-            [clojure.gdx.utils.align :as align]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.space.earlygrey.shape-drawer :as sd]
-            [clojure.string :as str]
+  (:require [clojure.space.earlygrey.shape-drawer :as sd]
             [clojure.edn :as edn]
+            [clojure.gdx.interop :as interop]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.walk :as walk]
             [gdl.audio]
             [gdl.graphics]
@@ -38,6 +34,8 @@
                                           SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.math Vector2
+                                  Vector3)
            (com.badlogic.gdx.utils Disposable
                                    SharedLibraryLoader
                                    ScreenUtils
@@ -108,13 +106,13 @@
   (let [this Gdx/input]
     (reify gdl.input/Input
       (button-just-pressed? [_ button]
-        (.isButtonJustPressed this (input.buttons/->from-k button)))
+        (.isButtonJustPressed this (interop/k->input-button button)))
 
       (key-pressed? [_ key]
-        (.isKeyPressed this (input.keys/->from-k key)))
+        (.isKeyPressed this (interop/k->input-key key)))
 
       (key-just-pressed? [_ key]
-        (.isKeyJustPressed this (input.keys/->from-k key)))
+        (.isKeyJustPressed this (interop/k->input-key key)))
 
       (mouse-position [_]
         [(.getX this)
@@ -246,7 +244,7 @@
                         :x x
                         :y (+ y (if up? (bitmap-font-text-height font text) 0))
                         :target-width 0
-                        :align (align/->from-k (or h-align :center))
+                        :align (interop/k->align (or h-align :center))
                         :wrap? false})
     (.setScale (.getData font) (float old-scale))))
 
@@ -433,7 +431,11 @@
       (.combined this))
 
     (frustum [_]
-      (let [frustum-points (take 4 (map vector3/->clj-vec (.planePoints (.frustum this))))
+      (let [frustum-points (take 4 (map (fn [^Vector3 v3]
+                                          [(.x v3)
+                                           (.y v3)
+                                           (.z v3)])
+                                        (.planePoints (.frustum this))))
             left-x   (apply min (map first  frustum-points))
             right-x  (apply max (map first  frustum-points))
             bottom-y (apply min (map second frustum-points))
@@ -466,20 +468,18 @@
     (reify
       gdl.graphics.viewport/Viewport
       (resize! [_ width height]
-        (viewport/update! this width height center-camera?))
+        (.update this width height (boolean center-camera?)))
 
       ; touch coordinates are y-down, while screen coordinates are y-up
       ; so the clamping of y is reverse, but as black bars are equal it does not matter
       ; TODO clamping only works for gui-viewport ?
       ; TODO ? "Can be negative coordinates, undefined cells."
       (unproject [_ [x y]]
-        (let [clamped-x (math-utils/clamp x
-                                          (.getLeftGutterWidth this)
-                                          (.getRightGutterX    this))
-              clamped-y (math-utils/clamp y
-                                          (.getTopGutterHeight this)
-                                          (.getTopGutterY      this))]
-          (viewport/unproject this clamped-x clamped-y)))
+        (let [x (math-utils/clamp x (.getLeftGutterWidth this) (.getRightGutterX    this))
+              y (math-utils/clamp y (.getTopGutterHeight this) (.getTopGutterY      this))]
+          (let [vector2 (.unproject this (Vector2. x y))]
+            [(.x vector2)
+             (.y vector2)])))
 
       clojure.lang.ILookup
       (valAt [_ key]
