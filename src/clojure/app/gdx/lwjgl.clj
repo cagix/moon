@@ -1,4 +1,4 @@
-(ns gdl.application.desktop
+(ns clojure.app.gdx.lwjgl
   (:require clojure.edn
             clojure.java.io
             clojure.walk
