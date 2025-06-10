@@ -47,27 +47,6 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defn- require-symbols [form]
-  (walk/postwalk (fn [form]
-                   (if (symbol? form)
-                     (if (namespace form)
-                       (requiring-resolve form)
-                       (do (require form) form))
-                     form))
-                 form))
-
-(defn- load-edn-config [path]
-  (let [m (-> path
-              io/resource
-              slurp
-              edn/read-string
-              require-symbols)]
-    (reify clojure.lang.ILookup
-      (valAt [_ k]
-        (assert (contains? m k)
-                (str "Config key not found: " k))
-        (get m k)))))
-
 (defn- reify-stage [stage]
   (reify
     ; TODO is disposable but not sure if needed as we handle batch ourself.
@@ -170,8 +149,9 @@
       (mapv (comp float (partial * world-unit-scale))
             dimensions))))
 
-(defmulti draw! (fn [[k] _graphics]
-                  k))
+(defmulti ^:private draw!
+  (fn [[k] _graphics]
+    k))
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
@@ -633,52 +613,67 @@
        (recursively-search (.internal Gdx/files folder)
                            extensions)))
 
-(defn- create-context [main-config]
-  (let [config (::context main-config)
-        graphics-config (update (:graphics config) :textures find-assets)
-        graphics (create-graphics Gdx/graphics graphics-config)
-        stage (create-stage! (:ui config) graphics)]
-    {:ctx/config main-config
-     :ctx/input (create-input)
-     :ctx/audio (when (:sounds config)
-                  (create-audio (find-assets (:sounds config))))
-     :ctx/graphics graphics
-     :ctx/stage stage}))
+(let [create-config (let [req (fn [form]
+                                (if (symbol? form)
+                                  (if (namespace form)
+                                    (requiring-resolve form)
+                                    (do (require form) form))
+                                  form))]
+                      (fn [path]
+                        (let [m (->> path
+                                     io/resource
+                                     slurp
+                                     edn/read-string
+                                     (walk/postwalk req))]
+                          (reify clojure.lang.ILookup
+                              (valAt [_ k]
+                                (assert (contains? m k)
+                                        (str "Config key not found: " k))
+                                (get m k))))))
 
-(defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
-  (when glfw-async?
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (when dock-icon
-    (.setIconImage (Taskbar/getTaskbar)
-                   (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource dock-icon)))))
+      mac-os? #(= SharedLibraryLoader/os Os/MacOsX)
 
-(defn- create-lwjgl-app-config [lwjgl-app-config]
-  (doto (Lwjgl3ApplicationConfiguration.)
-    (.setTitle (:title lwjgl-app-config))
-    (.setWindowedMode (:width  (:windowed-mode lwjgl-app-config))
-                      (:height (:windowed-mode lwjgl-app-config)))
-    (.setForegroundFPS (:foreground-fps lwjgl-app-config))))
+      set-mac-settings! (fn [{:keys [glfw-async? dock-icon]}]
+                          (when glfw-async?
+                            (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+                          (when dock-icon
+                            (.setIconImage (Taskbar/getTaskbar)
+                                           (.getImage (Toolkit/getDefaultToolkit)
+                                                      (io/resource dock-icon)))))
 
-(defn- create-app-listener [{:keys [create dispose render resize pause resume]} config]
-  (proxy [ApplicationListener] []
-    (create  []              (when-let [[f params] create] (f (create-context config) params)))
-    (dispose []              (when dispose (dispose)))
-    (render  []              (when-let [[f params] render] (f params)))
-    (resize  [width height]  (when resize  (resize width height)))
-    (pause   []              (when pause   (pause)))
-    (resume  []              (when resume  (resume)))))
+      create-lwjgl-app-config (fn [lwjgl-app-config]
+                                (doto (Lwjgl3ApplicationConfiguration.)
+                                  (.setTitle (:title lwjgl-app-config))
+                                  (.setWindowedMode (:width  (:windowed-mode lwjgl-app-config))
+                                                    (:height (:windowed-mode lwjgl-app-config)))
+                                  (.setForegroundFPS (:foreground-fps lwjgl-app-config))))
 
-(defn- mac-os? []
-  (= SharedLibraryLoader/os Os/MacOsX))
-
-(defn -main [config-path]
-  (let [config (load-edn-config config-path)]
-    (when (mac-os?)
-      (set-mac-settings! (::mac-os-settings config)))
-    (Lwjgl3Application. (create-app-listener (::listener config)
-                                             config)
-                        (create-lwjgl-app-config (::lwjgl-app-config config)))))
+      create-app-listener (let [create-context (fn [main-config]
+                                                 (let [config (::context main-config)
+                                                       graphics-config (update (:graphics config) :textures find-assets)
+                                                       graphics (create-graphics Gdx/graphics graphics-config)
+                                                       stage (create-stage! (:ui config) graphics)]
+                                                   {:ctx/config main-config
+                                                    :ctx/input (create-input)
+                                                    :ctx/audio (when (:sounds config)
+                                                                 (create-audio (find-assets (:sounds config))))
+                                                    :ctx/graphics graphics
+                                                    :ctx/stage stage}))]
+                            (fn [{:keys [create dispose render resize pause resume]} config]
+                              (proxy [ApplicationListener] []
+                                (create  []              (when-let [[f params] create] (f (create-context config) params)))
+                                (dispose []              (when dispose (dispose)))
+                                (render  []              (when-let [[f params] render] (f params)))
+                                (resize  [width height]  (when resize  (resize width height)))
+                                (pause   []              (when pause   (pause)))
+                                (resume  []              (when resume  (resume))))))]
+  (defn -main [config-path]
+    (let [config (create-config config-path)]
+      (when (mac-os?)
+        (set-mac-settings! (::mac-os-settings config)))
+      (Lwjgl3Application. (create-app-listener (::listener config)
+                                               config)
+                          (create-lwjgl-app-config (::lwjgl-app-config config))))))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
