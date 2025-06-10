@@ -2,6 +2,7 @@
   (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
+            [gdl.gdx :as gdx]
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
@@ -459,21 +460,20 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (gdl.assets/find-assets (update textures :folder #(.internal (:files gdx) %)))
+        textures-to-load (gdl.assets/find-assets (update textures :folder (partial gdx/internal gdx)))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
         cursors (update-vals cursors
-                             (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (Pixmap. (.internal (:files gdx) (format cursor-path-format file)))
-                                     cursor (.newCursor (:graphics gdx) pixmap hotspot-x hotspot-y)]
-                                 (.dispose pixmap)
-                                 cursor)))]
-    (map->Graphics {:graphics (:graphics gdx)
+                             (fn [[file hotspot]]
+                               (gdx/cursor gdx
+                                           (format cursor-path-format file)
+                                           hotspot)))]
+    (map->Graphics {:graphics (:graphics gdx) ; TODO no need to pass
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (.internal (:files gdx) (:file default-font))
+                                    (generate-font (gdx/internal gdx (:file default-font))
                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport

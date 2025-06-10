@@ -12,11 +12,11 @@
     (let [[cursor _on-click] (ctx/interaction-state ctx eid)]
       cursor))
 
-  (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
+  (state/manual-tick [_ eid {:keys [ctx/gdx] :as ctx}]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
       (let [[_cursor on-click] (ctx/interaction-state ctx eid)]
-        (when (input/button-just-pressed? input :left)
+        (when (input/button-just-pressed? gdx :left)
           on-click))))
 
   (state/clicked-inventory-cell [_ eid cell]

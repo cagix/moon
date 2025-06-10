@@ -12,7 +12,6 @@
 (q/defrecord Context [ctx/config
                       ctx/db
                       ctx/graphics
-                      ctx/input
                       ctx/stage])
 
 (def ^:private schema
@@ -23,8 +22,6 @@
              [:ctx/db :some]
 
              [:ctx/audio :some]
-
-             [:ctx/input :some]
 
              [:ctx/stage :some]
 

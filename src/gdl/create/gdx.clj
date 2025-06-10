@@ -1,6 +1,9 @@
 (ns gdl.create.gdx
-  (:require [gdl.gdx])
-  (:import (com.badlogic.gdx Gdx)))
+  (:require [clojure.gdx.interop :as interop]
+            [gdl.gdx]
+            [gdl.input])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Pixmap)))
 
 (defrecord Context [app
                     audio
@@ -10,7 +13,38 @@
   gdl.gdx/Application
   (post-runnable! [_ runnable]
     (.postRunnable app runnable))
-  )
+
+  gdl.gdx/Files
+  (internal [_ path]
+    (.internal files path))
+
+  gdl.gdx/Audio
+  (sound [_ path]
+    (.newSound audio (.internal files path)))
+
+  gdl.gdx/Graphics
+  (cursor [_ path [hotspot-x hotspot-y]]
+    (let [pixmap (Pixmap. (.internal files path))
+          cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+      (.dispose pixmap)
+      cursor))
+
+  gdl.input/Input
+  (set-input-processor! [_ input-processor]
+    (.setInputProcessor input input-processor))
+
+  (button-just-pressed? [_ button]
+    (.isButtonJustPressed input (interop/k->input-button button)))
+
+  (key-pressed? [_ key]
+    (.isKeyPressed input (interop/k->input-key key)))
+
+  (key-just-pressed? [_ key]
+    (.isKeyJustPressed input (interop/k->input-key key)))
+
+  (mouse-position [_]
+    [(.getX input)
+     (.getY input)]))
 
 (defn do! [_ctx _params]
   (map->Context {:app      Gdx/app

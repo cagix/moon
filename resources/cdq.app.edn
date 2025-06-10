@@ -39,7 +39,6 @@
                                                              }}}
                                     ]]
              [:assoc :ctx/stage [gdl.create.stage/do! {:skin-scale :x1}]]
-             [:assoc :ctx/input [gdl.create.input/do!]]
              [:assoc :ctx/audio [gdl.create.audio/do! {:sounds {:folder "resources/"
                                                                 :extensions #{"wav"}}}]]
              [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"

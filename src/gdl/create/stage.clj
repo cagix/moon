@@ -1,5 +1,6 @@
 (ns gdl.create.stage
-  (:require [gdl.ui :as ui]
+  (:require [gdl.input :as input]
+            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]))
 
 (defn do!
@@ -9,7 +10,7 @@
   (ui/load! config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
                         (:batch graphics))]
-    (.setInputProcessor (:input gdx) stage)
+    (input/set-input-processor! gdx stage)
     (reify
       ; TODO is disposable but not sure if needed as we handle batch ourself.
       clojure.lang.ILookup

@@ -91,7 +91,7 @@
                                 ctx/color-setter]}]
   (graphics/draw-tiled-map! graphics tiled-map color-setter))
 
-(defn- camera-movement-controls! [{:keys [ctx/input
+(defn- camera-movement-controls! [{:keys [ctx/gdx
                                           ctx/camera
                                           ctx/camera-movement-speed]}]
   (let [apply-position (fn [idx f]
@@ -99,16 +99,16 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (input/key-pressed? input :left)  (apply-position 0 -))
-    (if (input/key-pressed? input :right) (apply-position 0 +))
-    (if (input/key-pressed? input :up)    (apply-position 1 +))
-    (if (input/key-pressed? input :down)  (apply-position 1 -))))
+    (if (input/key-pressed? gdx :left)  (apply-position 0 -))
+    (if (input/key-pressed? gdx :right) (apply-position 0 +))
+    (if (input/key-pressed? gdx :up)    (apply-position 1 +))
+    (if (input/key-pressed? gdx :down)  (apply-position 1 -))))
 
-(defn- camera-zoom-controls! [{:keys [ctx/input
+(defn- camera-zoom-controls! [{:keys [ctx/gdx
                                       ctx/camera
                                       ctx/zoom-speed]}]
-  (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
-  (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (input/key-pressed? gdx :minus)  (camera/inc-zoom! camera zoom-speed))
+  (when (input/key-pressed? gdx :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn- render-stage! [{:keys [ctx/stage]
                        :as ctx}]
