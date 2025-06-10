@@ -6,15 +6,6 @@
             [clojure.java.awt.taskbar])
   (:import (com.badlogic.gdx ApplicationListener)))
 
-(defn- create-adapter [{:keys [create dispose render resize pause resume]}]
-  (proxy [ApplicationListener] []
-    (create  []              (when-let [[f params] create] (f params)))
-    (dispose []              (when dispose (dispose)))
-    (render  []              (when-let [[f params] render] (f params)))
-    (resize  [width height]  (when resize  (resize width height)))
-    (pause   []              (when pause   (pause)))
-    (resume  []              (when resume  (resume)))))
-
 (defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
   (when glfw-async?
     (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"))
@@ -22,8 +13,15 @@
     (clojure.java.awt.taskbar/set-icon! dock-icon)) )
 
 (defn -main [config-path]
-  (let [{:keys [mac-os-settings config listener]} (cdq.utils/load-edn-config config-path)]
+  (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (cdq.utils/load-edn-config config-path)]
     (when (= (shared-library-loader/os) :os/mac-osx)
             (set-mac-settings! mac-os-settings))
-    (lwjgl/application config
-                       (create-adapter listener))))
+    (lwjgl/application lwjgl-app-config
+                       (let [{:keys [create dispose render resize pause resume]} listener]
+                         (proxy [ApplicationListener] []
+                           (create  []              (when-let [[f params] create] (f config params)))
+                           (dispose []              (when dispose (dispose)))
+                           (render  []              (when-let [[f params] render] (f params)))
+                           (resize  [width height]  (when resize  (resize width height)))
+                           (pause   []              (when pause   (pause)))
+                           (resume  []              (when resume  (resume))))))))

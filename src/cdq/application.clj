@@ -87,9 +87,8 @@
 
 (def state (atom nil))
 
-(defn create! [create-fns]
-  (let [config (utils/load-edn-config "config.edn")
-        ctx (merge (map->Context {})
+(defn create! [config create-fns]
+  (let [ctx (merge (map->Context {})
                    {:ctx/config config})
         ctx (reduce utils/render* ctx create-fns)]
     (m/validate-humanize schema ctx)
