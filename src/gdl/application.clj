@@ -1,10 +1,6 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
-            [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -39,9 +35,12 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
+                                      Colors
                                       Pixmap
                                       Pixmap$Format
-                                      Texture)
+                                      Texture
+                                      Texture$TextureFilter
+                                      )
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
@@ -122,8 +121,8 @@
   (let [font (freetype/generate-font file-handle
                                      {:size (* size quality-scaling)
                                       ; :texture-filter/linear because scaling to world-units
-                                      :min-filter (texture.filter/->from-keyword :texture-filter/linear)
-                                      :mag-filter (texture.filter/->from-keyword :texture-filter/linear)})]
+                                      :min-filter Texture$TextureFilter/Linear
+                                      :mag-filter Texture$TextureFilter/Linear})]
     (bitmap-font/configure! font {:scale (/ quality-scaling)
                                   :enable-markup? true
                                   ; :use-integer-positions? false, otherwise scaling to world-units not visible
@@ -405,8 +404,10 @@
             top-y    (apply max (map second frustum-points))]
         [left-x right-x bottom-y top-y]))
 
-    (set-position! [_ position]
-      (camera/set-position! this position))
+    (set-position! [_ [x y]]
+      (set! (.x (.position this)) (float x))
+      (set! (.y (.position this)) (float y))
+      (.update this))
 
     (set-zoom! [_ amount]
       (orthographic-camera/set-zoom! this amount))
@@ -485,14 +486,14 @@
                                 ui-viewport
                                 world-viewport]}]
   (doseq [[name color-params] colors]
-    (colors/put! name (color/create color-params)))
+    (Colors/put name (color/create color-params)))
   ;(println "load-textures (count textures): " (count textures))
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture gdx-graphics)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
         textures (into {} (for [file textures]
-                            [file (texture/load! file)]))
+                            [file (Texture. file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
                                (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
