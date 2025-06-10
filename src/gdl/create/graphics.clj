@@ -16,12 +16,9 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture
-                                      Texture$TextureFilter
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           SpriteBatch)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2
                                   Vector3)
            (com.badlogic.gdx.utils ScreenUtils)
@@ -29,35 +26,6 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
-
-(defn- freetype-font-params [{:keys [size
-                                     min-filter
-                                     mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
-
-(defn- generate-font
-  [file-handle
-   {:keys [size
-           quality-scaling
-           enable-markup?
-           use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        ^BitmapFont font (.generateFont generator
-                                        (freetype-font-params {:size (* size quality-scaling)
-                                                               ; :texture-filter/linear because scaling to world-units
-                                                               :min-filter Texture$TextureFilter/Linear
-                                                               :mag-filter Texture$TextureFilter/Linear}))]
-    (.setScale (.getData font) (/ quality-scaling))
-    (set! (.markupEnabled (.getData font)) enable-markup?)
-    (.setUseIntegerPositions font use-integer-positions?)
-    font))
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation]
   (.draw batch
@@ -472,8 +440,9 @@
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (fs/internal gdl (:file default-font))
-                                                   (:params default-font)))
+                                    (graphics/true-type-font gdl
+                                                             (fs/internal gdl (:file default-font))
+                                                             (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)

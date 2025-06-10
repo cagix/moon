@@ -18,3 +18,9 @@
                          "image is `:image/file` (string) & `:image/bounds` `[x y w h]` (optional).
 
                          Loads the texture and creates a texture-region out of it, in case of sub-image bounds applies the proper bounds."))
+
+(defprotocol TrueTypeFonts
+  (true-type-font [_ file-handle {:keys [size
+                                         quality-scaling
+                                         enable-markup?
+                                         use-integer-positions?]}]))
