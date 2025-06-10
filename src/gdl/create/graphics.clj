@@ -10,8 +10,7 @@
             [gdl.math.utils :as math-utils]
             [gdl.tiled :as tiled]
             [gdl.utils.disposable])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color
+  (:import (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
                                       Pixmap$Format
@@ -437,7 +436,7 @@
 
 
 (defn do!
-  [_ctx
+  [{:keys [ctx/gdx]}
    {:keys [textures
            colors ; optional
            cursors ; optional
@@ -460,21 +459,21 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (gdl.assets/find-assets textures)
+        textures-to-load (gdl.assets/find-assets (update textures :folder #(.internal (:files gdx) %)))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                                     cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                               (let [pixmap (Pixmap. (.internal (:files gdx) (format cursor-path-format file)))
+                                     cursor (.newCursor (:graphics gdx) pixmap hotspot-x hotspot-y)]
                                  (.dispose pixmap)
                                  cursor)))]
-    (map->Graphics {:graphics Gdx/graphics
+    (map->Graphics {:graphics (:graphics gdx)
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (.internal Gdx/files (:file default-font))
+                                    (generate-font (.internal (:files gdx) (:file default-font))
                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport

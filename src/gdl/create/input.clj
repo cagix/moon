@@ -1,10 +1,9 @@
 (ns gdl.create.input
   (:require [clojure.gdx.interop :as interop]
-            [gdl.input])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdl.input]))
 
-(defn do! [_ctx _params]
-  (let [this Gdx/input]
+(defn do! [{:keys [ctx/gdx]} _params]
+  (let [this (:input gdx)]
     (reify gdl.input/Input
       (button-just-pressed? [_ button]
         (.isButtonJustPressed this (interop/k->input-button button)))

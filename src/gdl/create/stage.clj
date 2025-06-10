@@ -1,13 +1,15 @@
 (ns gdl.create.stage
   (:require [gdl.ui :as ui]
-            [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdl.ui.stage :as stage]))
 
-(defn do! [{:keys [ctx/graphics]} config]
+(defn do!
+  [{:keys [ctx/graphics
+           ctx/gdx]}
+   config]
   (ui/load! config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
                         (:batch graphics))]
-    (.setInputProcessor Gdx/input stage)
+    (.setInputProcessor (:input gdx) stage)
     (reify
       ; TODO is disposable but not sure if needed as we handle batch ourself.
       clojure.lang.ILookup

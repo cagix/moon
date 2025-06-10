@@ -5,11 +5,11 @@
             [cdq.entity :as entity]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.application]
             [gdl.c :as c]))
 
 (defmacro post-runnable! [& exprs]
-  `(gdl.application/post-runnable! (fn [] ~@exprs)))
+  `(.postRunnable (:app (:ctx/gdx @cdq.application/state))
+                  (fn [] ~@exprs)))
 
 (comment
 
