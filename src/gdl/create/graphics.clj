@@ -24,8 +24,7 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2
                                   Vector3)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (gdl.graphics OrthogonalTiledMapRenderer
@@ -284,7 +283,7 @@
                      tiled-map-renderer]
   gdl.utils.disposable/Disposable
   (dispose! [_]
-    (Disposable/.dispose batch)
+    (gdl.utils.disposable/dispose! batch)
     (gdl.utils.disposable/dispose! shape-drawer-texture)
     (run! gdl.utils.disposable/dispose! (vals textures))
     (run! gdl.utils.disposable/dispose! (vals cursors))

@@ -5,10 +5,23 @@
             [gdl.file]
             [gdl.fs]
             [gdl.graphics]
-            [gdl.input])
+            [gdl.input]
+            [gdl.utils.disposable])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap)))
+           (com.badlogic.gdx.graphics Pixmap)
+           (com.badlogic.gdx.utils Disposable)))
+
+(extend-type Sound
+  gdl.audio/Sound
+  (play! [this]
+    (.play this)))
+
+(extend-type Disposable
+  gdl.utils.disposable/Disposable
+  (dispose! [object]
+    (.dispose object)))
 
 (extend-type FileHandle
   gdl.file/File

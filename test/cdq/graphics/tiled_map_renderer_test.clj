@@ -1,12 +1,12 @@
 #_(ns gdl.graphics.tiled-map-renderer-test
   (:require [clojure.gdx :as gdx]
             [gdl.tiled :as tiled]
-            [gdl.graphics.camera :as camera])
+            [gdl.graphics.camera :as camera]
+            [gdl.utils.disposable])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)
            (com.badlogic.gdx.graphics Color OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
 
 (def screen-width 800)
@@ -36,8 +36,8 @@
        (def renderer (tiled/renderer tiled-map world-unit-scale batch)))
 
      (dispose []
-       (Disposable/.dispose tiled-map)
-       (Disposable/.dispose batch))
+       (disposable/dispose! tiled-map)
+       (disposable/dispose! batch))
 
      (render []
        (tiled/draw! renderer tiled-map color-setter camera))
