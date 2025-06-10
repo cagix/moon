@@ -1,9 +1,6 @@
 (ns gdl.application
-  (:require clojure.edn
-            [clojure.gdx.interop :as interop]
-            clojure.java.io
+  (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str]
-            clojure.walk
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
@@ -19,8 +16,6 @@
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
@@ -36,13 +31,8 @@
            (com.badlogic.gdx.math Vector2
                                   Vector3)
            (com.badlogic.gdx.utils Disposable
-                                   SharedLibraryLoader
-                                   ScreenUtils
-                                   Os)
+                                   ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -456,7 +446,7 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn- create-application-listener [config]
+(defn create-application-listener [config]
   (proxy [ApplicationListener] []
     (create  []
       (doseq [[name color-params] (:colors (::graphics config))]
@@ -609,43 +599,6 @@
       ((::resize config) width height))
     (pause [])
     (resume [])))
-
-; with the direct path I don't have to invent names for things
-; and don't need to see the namespace context for names
-; everything is clear and direct.
-; also stop with this 'if' and 'when'
-; why does everything need a fucking name
-; each component tx can be an anonymous fn has a name through the keyword only
-; also context transactions only w. 'gdl.c/'
-(defn -main [config-path]
-  (let [config (let [m (->> config-path
-                            clojure.java.io/resource
-                            slurp
-                            clojure.edn/read-string
-                            (clojure.walk/postwalk (fn [form]
-                                                     (if (symbol? form)
-                                                       (if (namespace form)
-                                                         (requiring-resolve form)
-                                                         (do
-                                                          (require form)
-                                                          form))
-                                                       form))))]
-                 (reify clojure.lang.ILookup
-                   (valAt [_ k]
-                     (assert (contains? m k)
-                             (str "Config key not found: " k))
-                     (get m k))))]
-    (when (= SharedLibraryLoader/os Os/MacOsX)
-      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-      (.setIconImage (Taskbar/getTaskbar)
-                     (.getImage (Toolkit/getDefaultToolkit)
-                                (clojure.java.io/resource (::taskbar-icon config)))))
-    (Lwjgl3Application. (create-application-listener config)
-                        (doto (Lwjgl3ApplicationConfiguration.)
-                          (.setTitle (::title config))
-                          (.setWindowedMode (:width  (::windowed-mode config))
-                                            (:height (::windowed-mode config)))
-                          (.setForegroundFPS (::foreground-fps config))))))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
