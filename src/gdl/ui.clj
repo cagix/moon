@@ -111,19 +111,117 @@
 (defn find-actor [^Group group name]
   (.findActor group name))
 
+(comment
+ ; fill parent & pack is from Widget TODO ( not widget-group ?)
+ com.badlogic.gdx.scenes.scene2d.ui.Widget
+ ; about .pack :
+ ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
+ )
+
+(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
+  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
+  (when pack?
+    (.pack widget-group))
+  widget-group)
+
+(defn- set-cell-opts! [^Cell cell opts]
+  (doseq [[option arg] opts]
+    (case option
+      :fill-x?    (.fillX     cell)
+      :fill-y?    (.fillY     cell)
+      :expand?    (.expand    cell)
+      :expand-x?  (.expandX   cell)
+      :expand-y?  (.expandY   cell)
+      :bottom?    (.bottom    cell)
+      :colspan    (.colspan   cell (int   arg))
+      :pad        (.pad       cell (float arg))
+      :pad-top    (.padTop    cell (float arg))
+      :pad-bottom (.padBottom cell (float arg))
+      :width      (.width     cell (float arg))
+      :height     (.height    cell (float arg))
+      :center?    (.center    cell)
+      :right?     (.right     cell)
+      :left?      (.left      cell))))
+
 (defprotocol CanAddActor
   (add! [_ actor]))
 
+(defn add-rows!
+  "rows is a seq of seqs of columns.
+  Elements are actors or nil (for just adding empty cells ) or a map of
+  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
+  [^Table table rows]
+  (doseq [row rows]
+    (doseq [props-or-actor row]
+      (cond
+       (map? props-or-actor) (-> (add! table (:actor props-or-actor))
+                                 (set-cell-opts! (dissoc props-or-actor :actor)))
+       :else (add! table props-or-actor)))
+    (.row table))
+  table)
+
+(defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
+  (set-cell-opts! (.defaults table) cell-defaults)
+  (add-rows! table rows))
+
+(defn- set-opts! [actor opts]
+  (set-actor-opts! actor opts)
+  (when (instance? Table actor)
+    (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
+  (when (instance? WidgetGroup actor)
+    (set-widget-group-opts actor opts))
+  (when (instance? Group actor) ; Check Addable protocol
+    (run! #(add! actor %) (:actors opts)))
+  actor)
+
+(defn clear-children! [^Group group]
+  (.clearChildren group))
+
+(defn children [^Group group]
+  (.getChildren group))
+
+(defn- find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep user-object actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (user-object %)) actors))))
+
+(defmacro ^:private proxy-ILookup
+  "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
+  via [find-actor-with-id]."
+  [class args]
+  `(proxy [~class ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
+
+(defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
+  (let [group (proxy-ILookup HorizontalGroup [])]
+    (when space (.space group (float space)))
+    (when pad   (.pad   group (float pad)))
+    (set-opts! group opts)))
+
 (defn -create-actor ^Actor [actor-declaration]
-  (cond
-   (instance? Actor actor-declaration) actor-declaration
-   (map? actor-declaration) (case (:actor/type actor-declaration)
-                              :actor.type/actor (actor actor-declaration)
-                              (throw (ex-info "Cannot understand actor declaration"
-                                              (:actor/type actor-declaration))))
-   :else (throw (ex-info "Cannot create actor"
-                         {:actor actor-declaration
-                          :map? (map? actor-declaration)}))))
+  (try
+   (cond
+    (instance? Actor actor-declaration) actor-declaration
+    (map? actor-declaration) (case (:actor/type actor-declaration)
+                               :actor.type/actor (actor actor-declaration)
+                               :actor.type/horizontal-group (-horizontal-group actor-declaration)
+                               (throw (ex-info "Cannot understand actor declaration"
+                                               {:actor/type (:actor/type actor-declaration)})))
+    (nil? actor-declaration) nil
+    :else (throw (ex-info "Cannot find constructor"
+                          {:instance-actor? (instance? Actor actor-declaration)
+                           :map? (map? actor-declaration)})))
+   (catch Throwable t
+     (throw (ex-info "Cannot create-actor"
+                     {:actor-declaration actor-declaration}
+                     t)))))
 
 (extend-protocol CanAddActor
   Group
@@ -147,20 +245,6 @@
   Stage
   (hit [stage [x y]]
     (.hit stage x y true)))
-
-(defn clear-children! [^Group group]
-  (.clearChildren group))
-
-(defn children [^Group group]
-  (.getChildren group))
-
-(defn- find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (user-object %)) actors))))
 
 ; => pass app/state to stage and click handlers do 'swap!'
 ; so each render step has to be a separate swap! also ? confusing
@@ -219,91 +303,14 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defmacro ^:private proxy-ILookup
-  "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
-  via [find-actor-with-id]."
-  [class args]
-  `(proxy [~class ILookup] ~args
-     (valAt
-       ([id#]
-        (find-actor-with-id ~'this id#))
-       ([id# not-found#]
-        (or (find-actor-with-id ~'this id#) not-found#)))))
-
-(comment
- ; fill parent & pack is from Widget TODO ( not widget-group ?)
- com.badlogic.gdx.scenes.scene2d.ui.Widget
- ; about .pack :
- ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
- )
-
-(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
-  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
-  (when pack?
-    (.pack widget-group))
-  widget-group)
-
-(defn- set-cell-opts! [^Cell cell opts]
-  (doseq [[option arg] opts]
-    (case option
-      :fill-x?    (.fillX     cell)
-      :fill-y?    (.fillY     cell)
-      :expand?    (.expand    cell)
-      :expand-x?  (.expandX   cell)
-      :expand-y?  (.expandY   cell)
-      :bottom?    (.bottom    cell)
-      :colspan    (.colspan   cell (int   arg))
-      :pad        (.pad       cell (float arg))
-      :pad-top    (.padTop    cell (float arg))
-      :pad-bottom (.padBottom cell (float arg))
-      :width      (.width     cell (float arg))
-      :height     (.height    cell (float arg))
-      :center?    (.center    cell)
-      :right?     (.right     cell)
-      :left?      (.left      cell))))
-
-(defn add-rows!
-  "rows is a seq of seqs of columns.
-  Elements are actors or nil (for just adding empty cells ) or a map of
-  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
-  [^Table table rows]
-  (doseq [row rows]
-    (doseq [props-or-actor row]
-      (cond
-       (map? props-or-actor) (-> (.add table ^Actor (:actor props-or-actor))
-                                 (set-cell-opts! (dissoc props-or-actor :actor)))
-       :else (.add table ^Actor props-or-actor)))
-    (.row table))
-  table)
-
-(defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
-  (set-cell-opts! (.defaults table) cell-defaults)
-  (add-rows! table rows))
-
-(defn- set-opts! [actor opts]
-  (set-actor-opts! actor opts)
-  (when (instance? Table actor)
-    (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
-  (when (instance? WidgetGroup actor)
-    (set-widget-group-opts actor opts))
-  (when (instance? Group actor)
-    (run! #(Group/.addActor actor %) (:actors opts)))
-  actor)
-
 (defn group [{:keys [actors] :as opts}]
   (let [group (proxy-ILookup Group [])]
-    (run! #(Group/.addActor group %) actors)
-    (set-opts! group opts)))
-
-(defn horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
-  (let [group (proxy-ILookup HorizontalGroup [])]
-    (when space (.space group (float space)))
-    (when pad   (.pad   group (float pad)))
+    (run! #(add! group %) actors)
     (set-opts! group opts)))
 
 (defn vertical-group [actors]
   (let [group (proxy-ILookup VerticalGroup [])]
-    (run! #(Group/.addActor group %) actors)
+    (run! #(add! group %) actors)
     group))
 
 (defn check-box

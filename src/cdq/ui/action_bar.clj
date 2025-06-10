@@ -2,16 +2,15 @@
   (:require [gdl.ui :as ui]
             [gdl.ui.button-group :as button-group]))
 
-(defn- button-group-container []
-  (ui/actor {:name "button-group-container"
-             :user-object (button-group/create {:max-check-count 1
-                                                :min-check-count 0})}))
-
 (defn- horizontal-group []
-  (ui/horizontal-group {:pad 2
-                        :space 2
-                        :user-object :horizontal-group
-                        :actors [(button-group-container)]}))
+  {:actor/type :actor.type/horizontal-group
+   :pad 2
+   :space 2
+   :user-object :horizontal-group
+   :actors [{:actor/type :actor.type/actor
+             :name "button-group-container"
+             :user-object (button-group/create {:max-check-count 1
+                                                :min-check-count 0})}]})
 
 (defn create [_ctx {:keys [id]}]
   (ui/table {:rows [[{:actor (horizontal-group)
