@@ -12,7 +12,6 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.input :as input]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.java :as gdx.java]
@@ -97,27 +96,28 @@
           ui/root
           (ui/find-actor actor-name)))))
 
-(defn- create-stage! [ui-config graphics input]
+(defn- create-stage! [ui-config graphics]
   (ui/load! ui-config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
                         (clojure.gdx.java/get-state (:batch graphics)))]
-    (input/set-processor! input stage)
+    (.setInputProcessor Gdx/input stage)
     (reify-stage stage)))
 
-(defn- create-input [gdx-input]
-  (reify gdl.input/Input
-    (button-just-pressed? [_ button]
-      (input/button-just-pressed? gdx-input (input.buttons/->from-k button)))
+(defn- create-input []
+  (let [this Gdx/input]
+    (reify gdl.input/Input
+      (button-just-pressed? [_ button]
+        (.isButtonJustPressed this (input.buttons/->from-k button)))
 
-    (key-pressed? [_ key]
-      (input/key-pressed? gdx-input (input.keys/->from-k key)))
+      (key-pressed? [_ key]
+        (.isKeyPressed this (input.keys/->from-k key)))
 
-    (key-just-pressed? [_ key]
-      (input/key-just-pressed? gdx-input (input.keys/->from-k key)))
+      (key-just-pressed? [_ key]
+        (.isKeyJustPressed this (input.keys/->from-k key)))
 
-    (mouse-position [_]
-      [(input/x gdx-input)
-       (input/y gdx-input)])))
+      (mouse-position [_]
+        [(.getX this)
+         (.getY this)]))))
 
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
   (let [font (freetype/generate-font file-handle
@@ -572,15 +572,13 @@
 
 (defn- create-context [main-config]
   (let [config (::context main-config)
-        {:keys [clojure.gdx/input] :as context} (gdx.java/context)
+        context (gdx.java/context)
         graphics-config (update (:graphics config) :textures find-assets)
         graphics (create-graphics (:clojure.gdx/graphics context)
                                   graphics-config)
-        stage (create-stage! (:ui config)
-                             graphics
-                             input)]
+        stage (create-stage! (:ui config) graphics)]
     {:ctx/config main-config
-     :ctx/input (create-input input)
+     :ctx/input (create-input)
      :ctx/audio (when (:sounds config)
                   (create-audio (find-assets (:sounds config))))
      :ctx/graphics graphics

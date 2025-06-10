@@ -2,12 +2,10 @@
   (:require [clojure.gdx.graphics]
             [clojure.gdx.graphics.pixmap]
             [clojure.gdx.graphics.g2d.batch]
-            [clojure.gdx.input]
             [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Gdx
-                             Graphics
-                             Input)
+                             Graphics)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
@@ -97,31 +95,9 @@
     (sprite-batch [_]
       (reify-batch (SpriteBatch.)))))
 
-(defn- reify-input [^Input this]
-  (reify clojure.gdx.input/Input
-    (button-just-pressed? [_ button]
-      (.isButtonJustPressed this button))
-
-    (key-pressed? [_ key]
-      (.isKeyPressed this key))
-
-    (key-just-pressed? [_ key]
-      (.isKeyJustPressed this key))
-
-    (set-processor! [_ input-processor]
-      (.setInputProcessor this input-processor))
-
-    (x [_]
-      (.getX this))
-
-    (y [_]
-      (.getY this))))
-
 (q/defrecord Context [clojure.gdx/app
                       clojure.gdx/audio
-                      clojure.gdx/graphics
-                      clojure.gdx/input])
+                      clojure.gdx/graphics])
 
 (defn context []
-  (map->Context {:graphics (reify-graphics Gdx/graphics)
-                 :input    (reify-input    Gdx/input)}))
+  (map->Context {:graphics (reify-graphics Gdx/graphics)}))
