@@ -17,6 +17,9 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.input :as input]
+            [clojure.gdx.input.buttons :as input.buttons]
+            [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.java :as gdx.java]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
@@ -33,16 +36,66 @@
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.viewport]
-            [gdl.create.input]
-            [gdl.create.stage]
+            [gdl.input]
             [gdl.math.utils :as math-utils]
             [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [gdl.utils.disposable]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
+
+(defn- reify-stage [stage]
+  (reify
+    ; TODO is disposable but not sure if needed as we handle batch ourself.
+    clojure.lang.ILookup
+    (valAt [_ key]
+      (key stage))
+
+    stage/Stage
+    (render! [_ ctx]
+      (ui/act! stage ctx)
+      (ui/draw! stage ctx)
+      ctx)
+
+    (add! [_ actor] ; -> re-use gdl.ui/add! ?
+      (ui/add! stage actor))
+
+    (clear! [_]
+      (ui/clear! stage))
+
+    (hit [_ position]
+      (ui/hit stage position))
+
+    (find-actor [_ actor-name]
+      (-> stage
+          ui/root
+          (ui/find-actor actor-name)))))
+
+(defn- create-stage! [ui-config graphics input]
+  (ui/load! ui-config)
+  (let [stage (ui/stage (:java-object (:ui-viewport graphics))
+                        (clojure.gdx.java/get-state (:batch graphics)))]
+    (input/set-processor! input stage)
+    (reify-stage stage)))
+
+(defn- create-input [gdx-input]
+  (reify gdl.input/Input
+    (button-just-pressed? [_ button]
+      (input/button-just-pressed? gdx-input (input.buttons/->from-k button)))
+
+    (key-pressed? [_ key]
+      (input/key-pressed? gdx-input (input.keys/->from-k key)))
+
+    (key-just-pressed? [_ key]
+      (input/key-just-pressed? gdx-input (input.keys/->from-k key)))
+
+    (mouse-position [_]
+      [(input/x gdx-input)
+       (input/y gdx-input)])))
 
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
   (let [font (freetype/generate-font (clojure.gdx.java/get-state file-handle)
@@ -505,11 +558,11 @@
         graphics (create-graphics (:clojure.gdx/graphics context)
                                   files
                                   graphics-config)
-        stage (gdl.create.stage/create! (:ui config)
-                                        graphics
-                                        input)]
+        stage (create-stage! (:ui config)
+                             graphics
+                             input)]
     {:ctx/config main-config
-     :ctx/input (gdl.create.input/create-input input)
+     :ctx/input (create-input input)
      :ctx/audio (when (:sounds config)
                   (create-audio audio files (find-assets files (:sounds config))))
      :ctx/graphics graphics
