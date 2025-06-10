@@ -9,17 +9,17 @@
 (defn- ->p [^Vector2 v]
   [(.x v) (.y v)])
 
-(defn scale [v n]
-  ;	public Vector2 scl (float scalar) {
-  ;		x *= scalar;
-  ;		y *= scalar;
-  ;		return this;
-  ;	}
-  (comment
-   [(* x scalar)
-    (* y scalar)]
-   )
-  (->p (.scl (m-v2 v) (float n))))
+(defn nearly-equal? [[x1 y1] [x2 y2]]
+  (and (math-utils/nearly-equal? x1 x2)
+       (math-utils/nearly-equal? y1 y2)))
+
+(defn scale [[^double x ^double y] ^double scalar]
+  [(* x scalar)
+   (* y scalar)])
+
+(defn length [[^double x ^double y]]
+  (Math/sqrt (+ (* x x)
+                (* y y))))
 
 (defn normalise [v]
 ;	public Vector2 nor () {
@@ -39,16 +39,6 @@
 ;		return this;
 ;	}
   (->p (.add (m-v2 v1) (m-v2 v2))))
-
-(defn length [v]
-;	public static float len (float x, float y) {
-;		return (float)Math.sqrt(x * x + y * y);
-;	}
-(comment
- (Math/sqrt (+ (* x x)
-               (* y y)))
- )
-  (.len (m-v2 v)))
 
 (defn distance [v1 v2]
 ;	public static float dst (float x1, float y1, float x2, float y2) {
