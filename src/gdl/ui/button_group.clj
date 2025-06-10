@@ -7,11 +7,19 @@
     (.setMaxCheckCount max-check-count)
     (.setMinCheckCount min-check-count)))
 
-(defn checked [button-group]
-  (ButtonGroup/.getChecked button-group))
+(defprotocol BG
+  (checked [_])
+  (add! [_ button])
+  (remove! [_ button]))
 
-(defn add! [button-group button]
-  (ButtonGroup/.add button-group ^Button button))
+(extend-type ButtonGroup
+  BG
+  (checked [button-group]
+    (.getChecked button-group))
 
-(defn remove! [button-group button]
-  (ButtonGroup/.remove button-group ^Button button))
+  (add! [button-group button]
+    (.add button-group ^Button button))
+
+  (remove! [button-group button]
+    (.remove button-group ^Button button)))
+
