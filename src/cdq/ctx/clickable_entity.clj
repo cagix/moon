@@ -30,7 +30,7 @@
 (defmethod on-clicked :clickable/player [_ctx _eid]
   [[:tx/toggle-inventory-visible]]) ; TODO every 'transaction' should have a sound or effect with it?
 
-(defn- clickable->cursor [entity too-far-away?]
+(defn- clickable->cursor [entity & {:keys [too-far-away?]}]
   (case (:type (:entity/clickable entity))
     :clickable/item (if too-far-away?
                       :cursors/hand-before-grab-gray
@@ -41,6 +41,8 @@
   (if (< (v/distance (entity/position player-entity)
                      (entity/position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
-    [(clickable->cursor @clicked-eid false) (on-clicked ctx clicked-eid)]
-    [(clickable->cursor @clicked-eid true)  [[:tx/sound "bfxr_denied"]
-                                             [:tx/show-message "Too far away"]]]))
+    [(clickable->cursor @clicked-eid :too-far-away? false)
+     (on-clicked ctx clicked-eid)]
+    [(clickable->cursor @clicked-eid :too-far-away? true)
+     [[:tx/sound "bfxr_denied"]
+      [:tx/show-message "Too far away"]]]))
