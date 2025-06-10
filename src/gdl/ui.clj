@@ -205,6 +205,10 @@
     (when pad   (.pad   group (float pad)))
     (set-opts! group opts)))
 
+(defn table ^Table [opts]
+  (-> (proxy-ILookup VisTable [])
+      (set-opts! opts)))
+
 (defn -create-actor ^Actor [actor-declaration]
   (try
    (cond
@@ -212,6 +216,7 @@
     (map? actor-declaration) (case (:actor/type actor-declaration)
                                :actor.type/actor (actor actor-declaration)
                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
+                               :actor.type/table (table actor-declaration)
                                (throw (ex-info "Cannot understand actor declaration"
                                                {:actor/type (:actor/type actor-declaration)})))
     (nil? actor-declaration) nil
@@ -332,10 +337,6 @@
     (.setSelected selected)))
 
 (def get-selected VisSelectBox/.getSelected)
-
-(defn table ^Table [opts]
-  (-> (proxy-ILookup VisTable [])
-      (set-opts! opts)))
 
 (defn cells [^Table table]
   (.getCells table))
