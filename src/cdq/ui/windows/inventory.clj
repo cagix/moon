@@ -5,9 +5,9 @@
             [cdq.state :as state]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [clojure.gdx.graphics.color :as color]
             [gdl.c :as c]
             [gdl.graphics :as g]
+            [gdl.graphics.color :as color]
             [gdl.ui :as ui]))
 
 (defn create

@@ -1,6 +1,5 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -17,6 +16,7 @@
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
+            [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
             [gdl.input]
             [gdl.math.utils :as math-utils]

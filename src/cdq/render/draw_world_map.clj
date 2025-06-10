@@ -3,7 +3,7 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]))
+            [gdl.graphics.color :as color]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/tiled-map

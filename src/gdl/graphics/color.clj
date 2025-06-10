@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.color
+(ns gdl.graphics.color
   (:import (com.badlogic.gdx.graphics Color)))
 
 (def ^:private mapping
