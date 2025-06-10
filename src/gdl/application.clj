@@ -1,5 +1,10 @@
 (ns gdl.application
-  (:require [clojure.gdx.interop :as interop]
+  (:require
+   clojure.edn
+            clojure.java.io
+            clojure.walk
+
+   [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.audio]
             [gdl.graphics]
@@ -13,7 +18,9 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable])
-  (:import (com.badlogic.gdx Gdx)
+  (:import
+   (clojure.lang ILookup)
+   (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
@@ -445,11 +452,28 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn create-context! [config]
-  (doseq [[name color-params] (:colors (::graphics config))]
-    (Colors/put name (color/create color-params)))
-  (ui/load! (::ui config))
-  (let [recursively-search (fn [^FileHandle folder extensions]
+(defn create-context! [config-path]
+  (let [config (->> config-path
+                    clojure.java.io/resource
+                    slurp
+                    clojure.edn/read-string
+                    (clojure.walk/postwalk (fn [form]
+                                             (if (symbol? form)
+                                               (if (namespace form)
+                                                 (requiring-resolve form)
+                                                 (do
+                                                  (require form)
+                                                  form))
+                                               form))))
+        config (reify ILookup
+                 (valAt [_ k]
+                   (assert (contains? config k)
+                           (str "Config key not found: " k))
+                   (get config k)))
+        _ (doseq [[name color-params] (:colors (::graphics config))]
+            (Colors/put name (color/create color-params)))
+        _ (ui/load! (::ui config))
+        recursively-search (fn [^FileHandle folder extensions]
                              (loop [[^FileHandle file & remaining] (.list folder)
                                     result []]
                                (cond (nil? file)
