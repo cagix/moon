@@ -1,5 +1,4 @@
 (ns clojure.app.gdx.lwjgl
-  (:require [gdl.application])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)))
@@ -15,7 +14,7 @@
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
                           (let [[f params] create]
-                            (f (gdl.application/create-context! config-path) params)))
+                            (f params)))
                         (dispose []
                           (dispose))
                         (render  []

@@ -5,9 +5,8 @@
   {:title "Cyber Dungeon Quest"
    :windowed-mode {:width 1440 :height 900}
    :foreground-fps 60
-   :config-path "config.edn"
    :create [cdq.application/create!
-            [
+            [[clojure.app/merge-m [gdl.application/create-context! "config.edn"]]
              [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                  :properties "properties.edn"}]]
              [cdq.create.extend-protocols/do! cdq.ctx]

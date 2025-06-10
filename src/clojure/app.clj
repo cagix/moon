@@ -28,3 +28,6 @@
   (->> (on)
        result->execs
        (run! execute!)))
+
+(defn merge-m [m [f params]]
+  (merge m (f params)))
