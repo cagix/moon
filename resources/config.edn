@@ -32,7 +32,10 @@
                                                 :cursors/walking               ["walking"      [16 16]]}
                                       :default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                                      :params {:size 16
-                                                              :quality-scaling 2}}}
+                                                              :quality-scaling 2
+                                                              :enable-markup? true
+                                                              :use-integer-positions? false ; false, otherwise scaling to world-units not visible
+                                                              }}}
                            :ui {:skin-scale :x1}}
  :gdl.application/listener {:create  [cdq.application/create! [
                                                                [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"

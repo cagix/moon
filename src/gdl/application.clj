@@ -1,7 +1,5 @@
 (ns gdl.application
-  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.math.vector3 :as vector3]
@@ -36,7 +34,10 @@
                                       Texture
                                       Texture$TextureFilter
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable
                                    SharedLibraryLoader
                                    ScreenUtils
@@ -119,16 +120,33 @@
         [(.getX this)
          (.getY this)]))))
 
-(defn- generate-font [file-handle {:keys [size quality-scaling]}]
-  (let [font (freetype/generate-font file-handle
-                                     {:size (* size quality-scaling)
-                                      ; :texture-filter/linear because scaling to world-units
-                                      :min-filter Texture$TextureFilter/Linear
-                                      :mag-filter Texture$TextureFilter/Linear})]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? true
-                                  ; :use-integer-positions? false, otherwise scaling to world-units not visible
-                                  :use-integer-positions? false})
+(defn- freetype-font-params [{:keys [size
+                                     min-filter
+                                     mag-filter]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) min-filter)
+    (set! (.magFilter params) mag-filter)
+    params))
+
+(defn- generate-font
+  [file-handle
+   {:keys [size
+           quality-scaling
+           enable-markup?
+           use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        ^BitmapFont font (.generateFont generator
+                                        (freetype-font-params {:size (* size quality-scaling)
+                                                               ; :texture-filter/linear because scaling to world-units
+                                                               :min-filter Texture$TextureFilter/Linear
+                                                               :mag-filter Texture$TextureFilter/Linear}))]
+    (.setScale (.getData font) (/ quality-scaling))
+    (set! (.markupEnabled (.getData font)) enable-markup?)
+    (.setUseIntegerPositions font use-integer-positions?)
     font))
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation]
@@ -193,6 +211,22 @@
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
 
+(defn- bitmap-font-text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn- draw-bitmap-font! [{:keys [^BitmapFont font batch text x y target-width align wrap?]}]
+  (.draw font
+         batch
+         text
+         (float x)
+         (float y)
+         (float target-width)
+         align
+         wrap?))
+
   "font, h-align, up? and scale are optional.
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
@@ -201,20 +235,20 @@
                              {:keys [batch
                                      unit-scale
                                      default-font]}]
-  (let [font (or font default-font)
+  (let [^BitmapFont font (or font default-font)
         scale (* (float @unit-scale)
                  (float (or scale 1)))
-        old-scale (bitmap-font/scale-x font)]
-    (bitmap-font/set-scale! font (* old-scale scale))
-    (bitmap-font/draw! {:font font
+        old-scale (.scaleX (.getData font))]
+    (.setScale (.getData font) (float (* old-scale scale)))
+    (draw-bitmap-font! {:font font
                         :batch batch
                         :text text
                         :x x
-                        :y (+ y (if up? (bitmap-font/text-height font text) 0))
+                        :y (+ y (if up? (bitmap-font-text-height font text) 0))
                         :target-width 0
                         :align (align/->from-k (or h-align :center))
                         :wrap? false})
-    (bitmap-font/set-scale! font old-scale)))
+    (.setScale (.getData font) (float old-scale))))
 
 (defn- sd-set-color! [shape-drawer color]
   (sd/set-color! shape-drawer (color/create color)))
