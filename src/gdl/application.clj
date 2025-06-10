@@ -1,23 +1,18 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys :as input.keys]
-            [clojure.gdx.java :as gdx.java]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
-            [clojure.gdx.utils.disposable]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as viewport]
@@ -38,12 +33,16 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [gdl.utils.disposable]
-            [qrecord.core :as q])
+            [gdl.utils.disposable])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Color
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -99,7 +98,7 @@
 (defn- create-stage! [ui-config graphics]
   (ui/load! ui-config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
-                        (clojure.gdx.java/get-state (:batch graphics)))]
+                        (:batch graphics))]
     (.setInputProcessor Gdx/input stage)
     (reify-stage stage)))
 
@@ -131,18 +130,18 @@
                                   :use-integer-positions? false})
     font))
 
-(defn- draw-texture-region! [batch texture-region [x y] [w h] rotation]
-  (batch/draw! batch
-               texture-region
-               {:x x
-                :y y
-                :origin-x (/ (float w) 2)
-                :origin-y (/ (float h) 2)
-                :width w
-                :height h
-                :scale-x 1
-                :scale-y 1
-                :rotation rotation}))
+(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation]
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; origin-x
+         (/ (float h) 2) ; origin-y
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation))
 
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
@@ -207,7 +206,7 @@
         old-scale (bitmap-font/scale-x font)]
     (bitmap-font/set-scale! font (* old-scale scale))
     (bitmap-font/draw! {:font font
-                        :batch (clojure.gdx.java/get-state batch)
+                        :batch batch
                         :text text
                         :x x
                         :y (+ y (if up? (bitmap-font/text-height font text) 0))
@@ -299,14 +298,14 @@
                      world-unit-scale
                      ui-viewport
                      world-viewport
-                     batch
+                     ^SpriteBatch batch
                      unit-scale
                      shape-drawer-texture
                      shape-drawer
                      tiled-map-renderer]
   gdl.utils.disposable/Disposable
   (dispose! [_]
-    (clojure.gdx.utils.disposable/dispose! batch)
+    (Disposable/.dispose batch)
     (gdl.utils.disposable/dispose! shape-drawer-texture)
     (run! gdl.utils.disposable/dispose! (vals textures))
     (run! gdl.utils.disposable/dispose! (vals cursors))
@@ -322,14 +321,14 @@
     (gdl.graphics.viewport/resize! world-viewport width height))
 
   (delta-time [_]
-    (graphics/delta-time graphics))
+    (.getDeltaTime graphics))
 
   (frames-per-second [_]
-    (graphics/frames-per-second graphics))
+    (.getFramesPerSecond graphics))
 
   (set-cursor! [_ cursor-key]
     (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! graphics (get cursors cursor-key)))
+    (.setCursor graphics (get cursors cursor-key)))
 
   ; TODO probably not needed I only work with texture-regions
   (texture [_ path]
@@ -338,15 +337,15 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (batch/set-color! batch (color/create :white)) ; fix scene2d.ui.tooltip flickering
-    (batch/set-projection-matrix! batch (gdl.graphics.camera/combined (:camera world-viewport)))
-    (batch/begin! batch)
+    (.setColor batch (color/create :white)) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix batch (gdl.graphics.camera/combined (:camera world-viewport)))
+    (.begin batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (fn []
         (reset! unit-scale world-unit-scale)
         (f)
         (reset! unit-scale 1)))
-    (batch/end! batch))
+    (.end batch))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
@@ -469,11 +468,11 @@
                   {:center-camera? false})))
 
 (defn- white-pixel-texture [graphics]
-  (let [pixmap (doto (graphics/pixmap graphics 1 1 :pixmap.format/RGBA8888)
-                 (pixmap/set-color! (color/create :white))
-                 (pixmap/draw-pixel! 0 0))
-        texture (graphics/texture graphics pixmap)]
-    (clojure.gdx.utils.disposable/dispose! pixmap)
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
     texture))
 
 (defn- create-graphics [gdx-graphics
@@ -488,7 +487,7 @@
   (doseq [[name color-params] colors]
     (colors/put! name (color/create color-params)))
   ;(println "load-textures (count textures): " (count textures))
-  (let [batch (graphics/sprite-batch gdx-graphics)
+  (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture gdx-graphics)
         world-unit-scale (float (/ tile-size))
         ui-viewport (create-ui-viewport ui-viewport)
@@ -496,9 +495,9 @@
                             [file (texture/load! file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (graphics/pixmap gdx-graphics (.internal Gdx/files (format cursor-path-format file)))
-                                     cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
-                                 (clojure.gdx.utils.disposable/dispose! pixmap)
+                               (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                                     cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                 (.dispose pixmap)
                                  cursor)))]
     (map->Graphics {:graphics gdx-graphics
                     :textures textures
@@ -512,12 +511,12 @@
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
-                    :shape-drawer (sd/create (clojure.gdx.java/get-state batch)
+                    :shape-drawer (sd/create batch
                                              (texture-region/create shape-drawer-texture 1 0 1 1))
                     :tiled-map-renderer (memoize (fn [tiled-map]
                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                                 (float world-unit-scale)
-                                                                                (clojure.gdx.java/get-state batch))))})))
+                                                                                batch)))})))
 
 (defn- create-audio [sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
@@ -572,10 +571,8 @@
 
 (defn- create-context [main-config]
   (let [config (::context main-config)
-        context (gdx.java/context)
         graphics-config (update (:graphics config) :textures find-assets)
-        graphics (create-graphics (:clojure.gdx/graphics context)
-                                  graphics-config)
+        graphics (create-graphics Gdx/graphics graphics-config)
         stage (create-stage! (:ui config) graphics)]
     {:ctx/config main-config
      :ctx/input (create-input)
