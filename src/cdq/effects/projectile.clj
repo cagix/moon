@@ -2,8 +2,8 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.raycaster :as raycaster]
-            [cdq.vector2 :as v]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [gdl.math.vector2 :as v]))
 
 (defn- start-point [entity direction size]
   (v/add (entity/position entity)

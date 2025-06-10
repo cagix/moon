@@ -1,8 +1,8 @@
 (ns cdq.ctx.effect-context
   (:require [cdq.entity :as entity]
-            [cdq.vector2 :as v]
             [cdq.ctx :as ctx]
-            [gdl.c :as c]))
+            [gdl.c :as c]
+            [gdl.math.vector2 :as v]))
 
 (defn player-effect-ctx [{:keys [ctx/mouseover-eid]
                           :as ctx}

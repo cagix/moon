@@ -1,4 +1,4 @@
-(ns cdq.vector2
+(ns gdl.math.vector2
   (:require [gdl.math.utils :as math-utils])
   (:import (com.badlogic.gdx.math Vector2)))
 

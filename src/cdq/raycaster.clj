@@ -1,7 +1,7 @@
 (ns cdq.raycaster
   (:require [cdq.cell :as cell]
             [cdq.grid2d :as g2d]
-            [cdq.vector2 :as v])
+            [gdl.math.vector2 :as v])
   (:import (cdq RayCaster)))
 
 (defn- set-arr [arr cell cell->blocked?]

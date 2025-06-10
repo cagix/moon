@@ -1,7 +1,7 @@
 (ns cdq.create.player-movement-vector
   (:require [cdq.controls :as controls]
-            [cdq.vector2 :as v]
-            [gdl.input :as input]))
+            [gdl.input :as input]
+            [gdl.math.vector2 :as v]))
 
 ; controls is a ctx element with control config ( key mappings)
 ; and also holds input

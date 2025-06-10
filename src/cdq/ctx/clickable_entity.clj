@@ -1,7 +1,7 @@
 (ns cdq.ctx.clickable-entity
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [gdl.ui :as ui]))
 
 (defmulti on-clicked

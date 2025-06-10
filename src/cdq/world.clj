@@ -17,7 +17,7 @@
             [cdq.timer :as timer]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.utils :as utils]
-            [cdq.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
 
