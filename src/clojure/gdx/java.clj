@@ -1,17 +1,13 @@
 (ns clojure.gdx.java
-  (:require [clojure.gdx.files]
-            [clojure.gdx.files.file-handle]
-            [clojure.gdx.graphics]
+  (:require [clojure.gdx.graphics]
             [clojure.gdx.graphics.pixmap]
             [clojure.gdx.graphics.g2d.batch]
             [clojure.gdx.input]
             [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx Files
-                             Gdx
+  (:import (com.badlogic.gdx Gdx
                              Graphics
                              Input)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
@@ -20,30 +16,6 @@
 
 (defprotocol JavaObjectState
   (get-state [_]))
-
-(defn- reify-file-handle [^FileHandle this]
-  (reify
-    JavaObjectState
-    (get-state [_]
-      this)
-
-    clojure.gdx.files.file-handle/FileHandle
-    (list [_]
-      (map reify-file-handle (.list this)))
-
-    (directory? [_]
-      (.isDirectory this))
-
-    (extension [_]
-      (.extension this))
-
-    (path [_]
-      (.path this))))
-
-(defn- reify-files [^Files this]
-  (reify clojure.gdx.files/Files
-    (internal [_ path]
-      (reify-file-handle (.internal this path)))))
 
 (defn- reify-pixmap [^Pixmap this]
   (reify
@@ -113,7 +85,7 @@
       (.setCursor this cursor))
 
     (pixmap [_ file-handle]
-      (reify-pixmap (Pixmap. ^FileHandle (get-state file-handle))))
+      (reify-pixmap (Pixmap. file-handle)))
 
     (pixmap [_ width height format]
       (reify-pixmap (Pixmap. width height (case format
@@ -147,11 +119,9 @@
 
 (q/defrecord Context [clojure.gdx/app
                       clojure.gdx/audio
-                      clojure.gdx/files
                       clojure.gdx/graphics
                       clojure.gdx/input])
 
 (defn context []
-  (map->Context {:files    (reify-files    Gdx/files)
-                 :graphics (reify-graphics Gdx/graphics)
+  (map->Context {:graphics (reify-graphics Gdx/graphics)
                  :input    (reify-input    Gdx/input)}))

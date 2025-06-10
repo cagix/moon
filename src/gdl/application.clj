@@ -1,7 +1,5 @@
 (ns gdl.application
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
@@ -46,6 +44,7 @@
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -121,7 +120,7 @@
        (input/y gdx-input)])))
 
 (defn- generate-font [file-handle {:keys [size quality-scaling]}]
-  (let [font (freetype/generate-font (clojure.gdx.java/get-state file-handle)
+  (let [font (freetype/generate-font file-handle
                                      {:size (* size quality-scaling)
                                       ; :texture-filter/linear because scaling to world-units
                                       :min-filter (texture.filter/->from-keyword :texture-filter/linear)
@@ -478,7 +477,6 @@
     texture))
 
 (defn- create-graphics [gdx-graphics
-                        gdx-files
                         {:keys [textures
                                 colors ; optional
                                 cursors ; optional
@@ -498,7 +496,7 @@
                             [file (texture/load! file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (graphics/pixmap gdx-graphics (files/internal gdx-files (format cursor-path-format file)))
+                               (let [pixmap (graphics/pixmap gdx-graphics (.internal Gdx/files (format cursor-path-format file)))
                                      cursor (graphics/cursor gdx-graphics pixmap hotspot-x hotspot-y)]
                                  (clojure.gdx.utils.disposable/dispose! pixmap)
                                  cursor)))]
@@ -506,7 +504,7 @@
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (files/internal gdx-files (:file default-font))
+                                    (generate-font (.internal Gdx/files (:file default-font))
                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
@@ -521,11 +519,11 @@
                                                                                 (float world-unit-scale)
                                                                                 (clojure.gdx.java/get-state batch))))})))
 
-(defn- create-audio [files sounds-to-load]
+(defn- create-audio [sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
   (let [sounds (into {}
                      (for [file sounds-to-load]
-                       [file (.newSound Gdx/audio (clojure.gdx.java/get-state (files/internal files file)))]))]
+                       [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
     (reify
       gdl.utils.disposable/Disposable
       (dispose! [_]
@@ -541,17 +539,17 @@
         (assert (contains? sounds path) (str path))
         (Sound/.play (get sounds path))))))
 
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (file-handle/list folder)
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
 
-          (file-handle/directory? file)
-          (recur (concat remaining (file-handle/list file)) result)
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
 
-          (extensions (file-handle/extension file))
-          (recur remaining (conj result (file-handle/path file)))
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
 
           :else
           (recur remaining result))))
@@ -561,9 +559,9 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn- find-assets [files {:keys [folder extensions]}]
+(defn- find-assets [{:keys [folder extensions]}]
   (map #(str/replace-first % folder "")
-       (recursively-search (files/internal files folder)
+       (recursively-search (.internal Gdx/files folder)
                            extensions)))
 
 (defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
@@ -574,11 +572,9 @@
 
 (defn- create-context [main-config]
   (let [config (::context main-config)
-        {:keys [clojure.gdx/files
-                clojure.gdx/input] :as context} (gdx.java/context)
-        graphics-config (update (:graphics config) :textures (partial find-assets files))
+        {:keys [clojure.gdx/input] :as context} (gdx.java/context)
+        graphics-config (update (:graphics config) :textures find-assets)
         graphics (create-graphics (:clojure.gdx/graphics context)
-                                  files
                                   graphics-config)
         stage (create-stage! (:ui config)
                              graphics
@@ -586,7 +582,7 @@
     {:ctx/config main-config
      :ctx/input (create-input input)
      :ctx/audio (when (:sounds config)
-                  (create-audio files (find-assets files (:sounds config))))
+                  (create-audio (find-assets (:sounds config))))
      :ctx/graphics graphics
      :ctx/stage stage}))
 
