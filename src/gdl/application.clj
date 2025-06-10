@@ -1,5 +1,6 @@
 (ns gdl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require cdq.utils
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl.system.configuration]
             [clojure.java.awt.taskbar])
@@ -20,8 +21,9 @@
   (when dock-icon
     (clojure.java.awt.taskbar/set-icon! dock-icon)) )
 
-(defn start! [{:keys [mac-os-settings config listener]}]
-  (when (= (shared-library-loader/os) :os/mac-osx)
-    (set-mac-settings! mac-os-settings))
-  (lwjgl/application config
-                     (create-adapter listener)))
+(defn -main [config-path]
+  (let [{:keys [mac-os-settings config listener]} (cdq.utils/load-edn-config config-path)]
+    (when (= (shared-library-loader/os) :os/mac-osx)
+            (set-mac-settings! mac-os-settings))
+    (lwjgl/application config
+                       (create-adapter listener))))

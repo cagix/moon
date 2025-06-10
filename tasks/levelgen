@@ -1,1 +1,1 @@
-lein run -m clojure.dev-loop "((requiring-resolve 'cdq.levelgen/-main))"
+lein run -m clojure.dev-loop "((requiring-resolve 'gdl.application/-main) \"levelgen.edn\")"
