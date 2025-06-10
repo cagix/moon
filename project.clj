@@ -3,7 +3,8 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
-                 [clojure.gdx.backends.lwjgl                  ~libgdx-version]
+                 [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
                  [space.earlygrey/shapedrawer "2.5.0"]

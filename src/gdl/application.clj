@@ -12,5 +12,5 @@
     (resume  []              (when resume  (resume)))))
 
 (defn start! [{:keys [config listener]}]
-  (lwjgl/application! config
-                      (create-adapter listener)))
+  (lwjgl/application config
+                     (create-adapter listener)))
