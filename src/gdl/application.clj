@@ -1,9 +1,9 @@
 (ns gdl.application
-  (:require [clojure.edn :as edn]
+  (:require clojure.edn
             [clojure.gdx.interop :as interop]
-            [clojure.java.io :as io]
+            clojure.java.io
             [clojure.string :as str]
-            [clojure.walk :as walk]
+            clojure.walk
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
@@ -46,56 +46,6 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
-
-(defn- reify-stage [stage]
-  (reify
-    ; TODO is disposable but not sure if needed as we handle batch ourself.
-    clojure.lang.ILookup
-    (valAt [_ key]
-      (key stage))
-
-    stage/Stage
-    (render! [_ ctx]
-      (ui/act! stage ctx)
-      (ui/draw! stage ctx)
-      ctx)
-
-    (add! [_ actor] ; -> re-use gdl.ui/add! ?
-      (ui/add! stage actor))
-
-    (clear! [_]
-      (ui/clear! stage))
-
-    (hit [_ position]
-      (ui/hit stage position))
-
-    (find-actor [_ actor-name]
-      (-> stage
-          ui/root
-          (ui/find-actor actor-name)))))
-
-(defn- create-stage! [ui-config graphics]
-  (ui/load! ui-config)
-  (let [stage (ui/stage (:java-object (:ui-viewport graphics))
-                        (:batch graphics))]
-    (.setInputProcessor Gdx/input stage)
-    (reify-stage stage)))
-
-(defn- create-input []
-  (let [this Gdx/input]
-    (reify gdl.input/Input
-      (button-just-pressed? [_ button]
-        (.isButtonJustPressed this (interop/k->input-button button)))
-
-      (key-pressed? [_ key]
-        (.isKeyPressed this (interop/k->input-key key)))
-
-      (key-just-pressed? [_ key]
-        (.isKeyJustPressed this (interop/k->input-key key)))
-
-      (mouse-position [_]
-        [(.getX this)
-         (.getY this)]))))
 
 (defn- freetype-font-params [{:keys [size
                                      min-filter
@@ -501,179 +451,198 @@
           :height (.getWorldHeight this)
           :camera (reify-camera (.getCamera this)))))))
 
-(defn- create-ui-viewport [{:keys [width height]}]
-  (fit-viewport width
-                height
-                (OrthographicCamera.)
-                {:center-camera? true}))
-
-(defn- create-world-viewport [world-unit-scale {:keys [width height]}]
-  (let [world-width  (* width world-unit-scale)
-        world-height (* height world-unit-scale)]
-    (fit-viewport world-width
-                  world-height
-                  (doto (OrthographicCamera.)
-                    (.setToOrtho false ; y-down ?
-                                 world-width
-                                 world-height))
-                  {:center-camera? false})))
-
-(defn- white-pixel-texture [graphics]
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
-
-(defn- create-graphics [gdx-graphics
-                        {:keys [textures
-                                colors ; optional
-                                cursors ; optional
-                                cursor-path-format ; optional
-                                default-font ; optional, could use gdx included (BitmapFont.)
-                                tile-size
-                                ui-viewport
-                                world-viewport]}]
-  (doseq [[name color-params] colors]
-    (Colors/put name (color/create color-params)))
-  ;(println "load-textures (count textures): " (count textures))
-  (let [batch (SpriteBatch.)
-        shape-drawer-texture (white-pixel-texture gdx-graphics)
-        world-unit-scale (float (/ tile-size))
-        ui-viewport (create-ui-viewport ui-viewport)
-        textures (into {} (for [file textures]
-                            [file (Texture. file)]))
-        cursors (update-vals cursors
-                             (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                                     cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                 (.dispose pixmap)
-                                 cursor)))]
-    (map->Graphics {:graphics gdx-graphics
-                    :textures textures
-                    :cursors cursors
-                    :default-font (when default-font
-                                    (generate-font (.internal Gdx/files (:file default-font))
-                                                   (:params default-font)))
-                    :world-unit-scale world-unit-scale
-                    :ui-viewport ui-viewport
-                    :world-viewport (create-world-viewport world-unit-scale world-viewport)
-                    :batch batch
-                    :unit-scale (atom 1)
-                    :shape-drawer-texture shape-drawer-texture
-                    :shape-drawer (ShapeDrawer. batch (texture-region/create shape-drawer-texture 1 0 1 1))
-                    :tiled-map-renderer (memoize (fn [tiled-map]
-                                                   (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                                (float world-unit-scale)
-                                                                                batch)))})))
-
-(defn- create-audio [sounds-to-load]
-  ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
-  (let [sounds (into {}
-                     (for [file sounds-to-load]
-                       [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
-    (reify
-      gdl.utils.disposable/Disposable
-      (dispose! [_]
-        (do
-         ;(println "Disposing sounds ...")
-         (run! Disposable/.dispose (vals sounds))))
-
-      gdl.audio/Audio
-      (all-sounds [_]
-        (map first sounds))
-
-      (play-sound! [_ path]
-        (assert (contains? sounds path) (str path))
-        (Sound/.play (get sounds path))))))
-
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
 (extend-type Disposable
   gdl.utils.disposable/Disposable
   (dispose! [object]
     (.dispose object)))
 
-(defn- find-assets [{:keys [folder extensions]}]
-  (map #(str/replace-first % folder "")
-       (recursively-search (.internal Gdx/files folder)
-                           extensions)))
+; with the direct path I don't have to invent names for things
+; and don't need to see the namespace context for names
+; everything is clear and direct.
+; also stop with this 'if' and 'when'
+; why does everything need a fucking name
+; each component tx can be an anonymous fn has a name through the keyword only
+; also context transactions only w. 'gdl.c/'
+(defn -main [config-path]
+  (let [config (let [m (->> config-path
+                            clojure.java.io/resource
+                            slurp
+                            clojure.edn/read-string
+                            (clojure.walk/postwalk (fn [form]
+                                                     (if (symbol? form)
+                                                       (if (namespace form)
+                                                         (requiring-resolve form)
+                                                         (do
+                                                          (require form)
+                                                          form))
+                                                       form))))]
+                 (reify clojure.lang.ILookup
+                   (valAt [_ k]
+                     (assert (contains? m k)
+                             (str "Config key not found: " k))
+                     (get m k))))]
+    (when (= SharedLibraryLoader/os Os/MacOsX)
+      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+      (.setIconImage (Taskbar/getTaskbar)
+                     (.getImage (Toolkit/getDefaultToolkit)
+                                (clojure.java.io/resource (::taskbar-icon config)))))
+    (Lwjgl3Application. (proxy [ApplicationListener] []
+                          (create  []
+                            (doseq [[name color-params] (:colors (::graphics config))]
+                              (Colors/put name (color/create color-params)))
+                            (ui/load! (::ui config))
+                            (let [[f params] (::create config)]
+                              (f
+                               (let [recursively-search (fn [^FileHandle folder extensions]
+                                                          (loop [[^FileHandle file & remaining] (.list folder)
+                                                                 result []]
+                                                            (cond (nil? file)
+                                                                  result
 
-(let [create-config (let [req (fn [form]
-                                (if (symbol? form)
-                                  (if (namespace form)
-                                    (requiring-resolve form)
-                                    (do (require form) form))
-                                  form))]
-                      (fn [path]
-                        (let [m (->> path
-                                     io/resource
-                                     slurp
-                                     edn/read-string
-                                     (walk/postwalk req))]
-                          (reify clojure.lang.ILookup
-                              (valAt [_ k]
-                                (assert (contains? m k)
-                                        (str "Config key not found: " k))
-                                (get m k))))))
+                                                                  (.isDirectory file)
+                                                                  (recur (concat remaining (.list file)) result)
 
-      mac-os? #(= SharedLibraryLoader/os Os/MacOsX)
+                                                                  (extensions (.extension file))
+                                                                  (recur remaining (conj result (.path file)))
 
-      set-mac-settings! (fn [{:keys [glfw-async? dock-icon]}]
-                          (when glfw-async?
-                            (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-                          (when dock-icon
-                            (.setIconImage (Taskbar/getTaskbar)
-                                           (.getImage (Toolkit/getDefaultToolkit)
-                                                      (io/resource dock-icon)))))
+                                                                  :else
+                                                                  (recur remaining result))))
+                                     find-assets (fn [{:keys [folder extensions]}]
+                                                   (map #(str/replace-first % folder "")
+                                                        (recursively-search (.internal Gdx/files folder)
+                                                                            extensions)))
 
-      create-lwjgl-app-config (fn [lwjgl-app-config]
-                                (doto (Lwjgl3ApplicationConfiguration.)
-                                  (.setTitle (:title lwjgl-app-config))
-                                  (.setWindowedMode (:width  (:windowed-mode lwjgl-app-config))
-                                                    (:height (:windowed-mode lwjgl-app-config)))
-                                  (.setForegroundFPS (:foreground-fps lwjgl-app-config))))
+                                     graphics (let [{:keys [textures
+                                                            colors ; optional
+                                                            cursors ; optional
+                                                            cursor-path-format ; optional
+                                                            default-font ; optional, could use gdx included (BitmapFont.)
+                                                            tile-size
+                                                            ui-viewport
+                                                            world-viewport]} (update (::graphics config) :textures find-assets)]
+                                                ;(println "load-textures (count textures): " (count textures))
+                                                (let [batch (SpriteBatch.)
+                                                      shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                                                                          (.setColor Color/WHITE)
+                                                                                          (.drawPixel 0 0))
+                                                                                 texture (Texture. pixmap)]
+                                                                             (.dispose pixmap)
+                                                                             texture)
+                                                      world-unit-scale (float (/ tile-size))
+                                                      ui-viewport (fit-viewport (:width ui-viewport)
+                                                                                (:height ui-viewport)
+                                                                                (OrthographicCamera.)
+                                                                                {:center-camera? true})
+                                                      textures (into {} (for [file textures]
+                                                                          [file (Texture. file)]))
+                                                      cursors (update-vals cursors
+                                                                           (fn [[file [hotspot-x hotspot-y]]]
+                                                                             (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                                                                                   cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                                                               (.dispose pixmap)
+                                                                               cursor)))]
+                                                  (map->Graphics {:graphics Gdx/graphics
+                                                                  :textures textures
+                                                                  :cursors cursors
+                                                                  :default-font (when default-font
+                                                                                  (generate-font (.internal Gdx/files (:file default-font))
+                                                                                                 (:params default-font)))
+                                                                  :world-unit-scale world-unit-scale
+                                                                  :ui-viewport ui-viewport
+                                                                  :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                                                                                        world-height (* (:height world-viewport) world-unit-scale)]
+                                                                                    (fit-viewport world-width
+                                                                                                  world-height
+                                                                                                  (doto (OrthographicCamera.)
+                                                                                                    (.setToOrtho false ; y-down ?
+                                                                                                                 world-width
+                                                                                                                 world-height))
+                                                                                                  {:center-camera? false}))
+                                                                  :batch batch
+                                                                  :unit-scale (atom 1)
+                                                                  :shape-drawer-texture shape-drawer-texture
+                                                                  :shape-drawer (ShapeDrawer. batch (texture-region/create shape-drawer-texture 1 0 1 1))
+                                                                  :tiled-map-renderer (memoize (fn [tiled-map]
+                                                                                                 (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                                                                              (float world-unit-scale)
+                                                                                                                              batch)))})))
+                                     stage (ui/stage (:java-object (:ui-viewport graphics))
+                                                     (:batch graphics))]
+                                 (.setInputProcessor Gdx/input stage)
+                                 {:ctx/config config
+                                  :ctx/input (let [this Gdx/input]
+                                               (reify gdl.input/Input
+                                                 (button-just-pressed? [_ button]
+                                                   (.isButtonJustPressed this (interop/k->input-button button)))
 
-      create-app-listener (let [create-context (fn [main-config]
-                                                 (let [config (::context main-config)
-                                                       graphics-config (update (:graphics config) :textures find-assets)
-                                                       graphics (create-graphics Gdx/graphics graphics-config)
-                                                       stage (create-stage! (:ui config) graphics)]
-                                                   {:ctx/config main-config
-                                                    :ctx/input (create-input)
-                                                    :ctx/audio (when (:sounds config)
-                                                                 (create-audio (find-assets (:sounds config))))
-                                                    :ctx/graphics graphics
-                                                    :ctx/stage stage}))]
-                            (fn [{:keys [create dispose render resize pause resume]} config]
-                              (proxy [ApplicationListener] []
-                                (create  []              (when-let [[f params] create] (f (create-context config) params)))
-                                (dispose []              (when dispose (dispose)))
-                                (render  []              (when-let [[f params] render] (f params)))
-                                (resize  [width height]  (when resize  (resize width height)))
-                                (pause   []              (when pause   (pause)))
-                                (resume  []              (when resume  (resume))))))]
-  (defn -main [config-path]
-    (let [config (create-config config-path)]
-      (when (mac-os?)
-        (set-mac-settings! (::mac-os-settings config)))
-      (Lwjgl3Application. (create-app-listener (::listener config)
-                                               config)
-                          (create-lwjgl-app-config (::lwjgl-app-config config))))))
+                                                 (key-pressed? [_ key]
+                                                   (.isKeyPressed this (interop/k->input-key key)))
+
+                                                 (key-just-pressed? [_ key]
+                                                   (.isKeyJustPressed this (interop/k->input-key key)))
+
+                                                 (mouse-position [_]
+                                                   [(.getX this)
+                                                    (.getY this)])))
+                                  :ctx/audio (when (::sounds config)
+                                               (let [sounds (into {}
+                                                                  (for [file (find-assets (::sounds config))]
+                                                                    [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
+                                                 (reify
+                                                   gdl.utils.disposable/Disposable
+                                                   (dispose! [_]
+                                                     (do
+                                                      ;(println "Disposing sounds ...")
+                                                      (run! Disposable/.dispose (vals sounds))))
+
+                                                   gdl.audio/Audio
+                                                   (all-sounds [_]
+                                                     (map first sounds))
+
+                                                   (play-sound! [_ path]
+                                                     (assert (contains? sounds path) (str path))
+                                                     (Sound/.play (get sounds path))))))
+                                  :ctx/graphics graphics
+                                  :ctx/stage (reify
+                                               ; TODO is disposable but not sure if needed as we handle batch ourself.
+                                               clojure.lang.ILookup
+                                               (valAt [_ key]
+                                                 (key stage))
+
+                                               stage/Stage
+                                               (render! [_ ctx]
+                                                 (ui/act! stage ctx)
+                                                 (ui/draw! stage ctx)
+                                                 ctx)
+
+                                               (add! [_ actor] ; -> re-use gdl.ui/add! ?
+                                                 (ui/add! stage actor))
+
+                                               (clear! [_]
+                                                 (ui/clear! stage))
+
+                                               (hit [_ position]
+                                                 (ui/hit stage position))
+
+                                               (find-actor [_ actor-name]
+                                                 (-> stage
+                                                     ui/root
+                                                     (ui/find-actor actor-name))))})
+                               params)))
+                          (dispose []
+                            ((::dispose config)))
+                          (render  []
+                            (let [[f params] (::render config)]
+                              (f params)))
+                          (resize [width height]
+                            ((::resize config) width height))
+                          (pause [])
+                          (resume []))
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle (::title config))
+                          (.setWindowedMode (:width  (::windowed-mode config))
+                                            (:height (::windowed-mode config)))
+                          (.setForegroundFPS (::foreground-fps config))))))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
