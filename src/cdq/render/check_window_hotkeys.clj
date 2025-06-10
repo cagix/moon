@@ -14,9 +14,9 @@
           :when (input/key-just-pressed? input input-key)]
     (ui/toggle-visible! (get windows id))))
 
-(defn do! [{:keys [ctx/gdx
+(defn do! [{:keys [ctx/gdl
                    ctx/stage]
             :as ctx}]
-  (check-window-hotkeys       gdx (:windows stage))
-  (check-escape-close-windows gdx (:windows stage))
+  (check-window-hotkeys       gdl (:windows stage))
+  (check-escape-close-windows gdl (:windows stage))
   ctx)

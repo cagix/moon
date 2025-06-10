@@ -82,9 +82,9 @@
          [:tx/dissoc eid :entity/item-on-cursor]
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [_ eid {:keys [ctx/gdx]
+  (state/manual-tick [_ eid {:keys [ctx/gdl]
                              :as ctx}]
-    (when (and (input/button-just-pressed? gdx :left)
+    (when (and (input/button-just-pressed? gdl :left)
                (world-item? ctx))
       [[:tx/event eid :drop-item]]))
 

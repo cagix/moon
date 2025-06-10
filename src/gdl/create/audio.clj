@@ -1,7 +1,7 @@
 (ns gdl.create.audio
   (:require [gdl.assets :as assets]
-            [gdl.audio]
-            [gdl.gdx :as gdx]
+            [gdl.audio :as audio]
+            [gdl.fs :as fs]
             [gdl.utils.disposable])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.utils Disposable)))
@@ -11,10 +11,10 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn do! [{:keys [ctx/gdx]} {:keys [sounds]}]
+(defn do! [{:keys [ctx/gdl]} {:keys [sounds]}]
   (let [sounds (into {}
-                     (for [file (assets/find-assets (update sounds :folder (partial gdx/internal gdx)))]
-                       [file (gdx/sound gdx file)]))]
+                     (for [file (assets/find-assets (update sounds :folder (partial fs/internal gdl)))]
+                       [file (audio/sound gdl file)]))]
     (reify
       gdl.utils.disposable/Disposable
       (dispose! [_]

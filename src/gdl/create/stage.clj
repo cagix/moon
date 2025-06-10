@@ -5,12 +5,12 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/gdx]}
+           ctx/gdl]}
    config]
   (ui/load! config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
                         (:batch graphics))]
-    (input/set-input-processor! gdx stage)
+    (input/set-input-processor! gdl stage)
     (reify
       ; TODO is disposable but not sure if needed as we handle batch ourself.
       clojure.lang.ILookup

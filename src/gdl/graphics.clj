@@ -1,5 +1,8 @@
 (ns gdl.graphics)
 
+(defprotocol Cursors
+  (cursor [_ path [hotspot-x hotspot-y]]))
+
 (defprotocol Graphics
   (clear-screen! [_ color])
   (delta-time [_])

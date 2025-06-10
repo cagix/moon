@@ -9,11 +9,11 @@
 ; see also window controls / camera controls
 ; and can also info-text it properly
 
-(defn- WASD-movement-vector [{:keys [ctx/gdx]}]
-  (let [r (when (input/key-pressed? gdx :d) [1  0])
-        l (when (input/key-pressed? gdx :a) [-1 0])
-        u (when (input/key-pressed? gdx :w) [0  1])
-        d (when (input/key-pressed? gdx :s) [0 -1])]
+(defn- WASD-movement-vector [{:keys [ctx/gdl]}]
+  (let [r (when (input/key-pressed? gdl :d) [1  0])
+        l (when (input/key-pressed? gdl :a) [-1 0])
+        u (when (input/key-pressed? gdl :w) [0  1])
+        d (when (input/key-pressed? gdl :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))

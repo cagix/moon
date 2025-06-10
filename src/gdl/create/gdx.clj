@@ -1,7 +1,10 @@
 (ns gdl.create.gdx
   (:require [clojure.gdx.interop :as interop]
-            [gdl.gdx]
+            [gdl.app]
+            [gdl.audio]
             [gdl.file]
+            [gdl.fs]
+            [gdl.graphics]
             [gdl.input])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)
@@ -23,19 +26,19 @@
                     files
                     graphics
                     input]
-  gdl.gdx/Application
+  gdl.app/Application
   (post-runnable! [_ runnable]
     (.postRunnable app runnable))
 
-  gdl.gdx/Files
+  gdl.fs/FileSystem
   (internal [_ path]
     (.internal files path))
 
-  gdl.gdx/Audio
+  gdl.audio/Sounds
   (sound [_ path]
     (.newSound audio (.internal files path)))
 
-  gdl.gdx/Graphics
+  gdl.graphics/Cursors
   (cursor [_ path [hotspot-x hotspot-y]]
     (let [pixmap (Pixmap. (.internal files path))
           cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]

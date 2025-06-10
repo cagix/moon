@@ -2,8 +2,8 @@
   (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.gdx :as gdx]
-            [gdl.graphics]
+            [gdl.fs :as fs]
+            [gdl.graphics :as graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture-region :as texture-region]
@@ -437,7 +437,7 @@
 
 
 (defn do!
-  [{:keys [ctx/gdx]}
+  [{:keys [ctx/gdl]}
    {:keys [textures
            colors ; optional
            cursors ; optional
@@ -460,20 +460,20 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (gdl.assets/find-assets (update textures :folder (partial gdx/internal gdx)))
+        textures-to-load (gdl.assets/find-assets (update textures :folder (partial fs/internal gdl)))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
         cursors (update-vals cursors
                              (fn [[file hotspot]]
-                               (gdx/cursor gdx
-                                           (format cursor-path-format file)
-                                           hotspot)))]
-    (map->Graphics {:graphics (:graphics gdx) ; TODO no need to pass
+                               (graphics/cursor gdl
+                                                (format cursor-path-format file)
+                                                hotspot)))]
+    (map->Graphics {:graphics (:graphics gdl) ; TODO no need to pass
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (gdx/internal gdx (:file default-font))
+                                    (generate-font (fs/internal gdl (:file default-font))
                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
