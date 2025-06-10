@@ -452,7 +452,14 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn create-context! [config-path]
+(defn create-context!
+  [{:keys [config-path
+           graphics
+           sounds
+           ui]}]
+  (doseq [[name color-params] (:colors graphics)]
+    (Colors/put name (color/create color-params)))
+  (ui/load! ui)
   (let [config (->> config-path
                     clojure.java.io/resource
                     slurp
@@ -470,9 +477,6 @@
                    (assert (contains? config k)
                            (str "Config key not found: " k))
                    (get config k)))
-        _ (doseq [[name color-params] (:colors (::graphics config))]
-            (Colors/put name (color/create color-params)))
-        _ (ui/load! (::ui config))
         recursively-search (fn [^FileHandle folder extensions]
                              (loop [[^FileHandle file & remaining] (.list folder)
                                     result []]
@@ -499,7 +503,7 @@
                                default-font ; optional, could use gdx included (BitmapFont.)
                                tile-size
                                ui-viewport
-                               world-viewport]} (update (::graphics config) :textures find-assets)]
+                               world-viewport]} (update graphics :textures find-assets)]
                    ;(println "load-textures (count textures): " (count textures))
                    (let [batch (SpriteBatch.)
                          shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -564,9 +568,9 @@
                     (mouse-position [_]
                       [(.getX this)
                        (.getY this)])))
-     :ctx/audio (when (::sounds config)
+     :ctx/audio (when sounds
                   (let [sounds (into {}
-                                     (for [file (find-assets (::sounds config))]
+                                     (for [file (find-assets sounds)]
                                        [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
                     (reify
                       gdl.utils.disposable/Disposable
