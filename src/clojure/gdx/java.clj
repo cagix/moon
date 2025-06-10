@@ -1,7 +1,5 @@
 (ns clojure.gdx.java
-  (:require [clojure.gdx.audio]
-            [clojure.gdx.audio.sound]
-            [clojure.gdx.files]
+  (:require [clojure.gdx.files]
             [clojure.gdx.files.file-handle]
             [clojure.gdx.graphics]
             [clojure.gdx.graphics.pixmap]
@@ -9,12 +7,10 @@
             [clojure.gdx.input]
             [clojure.gdx.utils.disposable]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx Audio
-                             Files
+  (:import (com.badlogic.gdx Files
                              Gdx
                              Graphics
                              Input)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
@@ -24,21 +20,6 @@
 
 (defprotocol JavaObjectState
   (get-state [_]))
-
-(defn- reify-sound [^Sound this]
-  (reify
-    clojure.gdx.utils.disposable/Disposable
-    (dispose! [_]
-      (.dispose this))
-
-    clojure.gdx.audio.sound/Sound
-    (play! [_]
-      (.play this))))
-
-(defn- reify-audio [^Audio this]
-  (reify clojure.gdx.audio/Audio
-    (sound [_ file-handle]
-      (reify-sound (.newSound this (get-state file-handle))))))
 
 (defn- reify-file-handle [^FileHandle this]
   (reify
@@ -171,7 +152,6 @@
                       clojure.gdx/input])
 
 (defn context []
-  (map->Context {:audio    (reify-audio    Gdx/audio)
-                 :files    (reify-files    Gdx/files)
+  (map->Context {:files    (reify-files    Gdx/files)
                  :graphics (reify-graphics Gdx/graphics)
                  :input    (reify-input    Gdx/input)}))

@@ -1,7 +1,5 @@
 (ns gdl.application
-  (:require [clojure.gdx.audio :as audio]
-            [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
@@ -47,6 +45,7 @@
             [qrecord.core :as q])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -522,17 +521,17 @@
                                                                                 (float world-unit-scale)
                                                                                 (clojure.gdx.java/get-state batch))))})))
 
-(defn- create-audio [audio files sounds-to-load]
+(defn- create-audio [files sounds-to-load]
   ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
   (let [sounds (into {}
                      (for [file sounds-to-load]
-                       [file (audio/sound audio (files/internal files file))]))]
+                       [file (.newSound Gdx/audio (clojure.gdx.java/get-state (files/internal files file)))]))]
     (reify
       gdl.utils.disposable/Disposable
       (dispose! [_]
         (do
          ;(println "Disposing sounds ...")
-         (run! clojure.gdx.utils.disposable/dispose! (vals sounds))))
+         (run! Disposable/.dispose (vals sounds))))
 
       gdl.audio/Audio
       (all-sounds [_]
@@ -540,7 +539,7 @@
 
       (play-sound! [_ path]
         (assert (contains? sounds path) (str path))
-        (sound/play! (get sounds path))))))
+        (Sound/.play (get sounds path))))))
 
 (defn- recursively-search [folder extensions]
   (loop [[file & remaining] (file-handle/list folder)
@@ -575,8 +574,7 @@
 
 (defn- create-context [main-config]
   (let [config (::context main-config)
-        {:keys [clojure.gdx/audio
-                clojure.gdx/files
+        {:keys [clojure.gdx/files
                 clojure.gdx/input] :as context} (gdx.java/context)
         graphics-config (update (:graphics config) :textures (partial find-assets files))
         graphics (create-graphics (:clojure.gdx/graphics context)
@@ -588,7 +586,7 @@
     {:ctx/config main-config
      :ctx/input (create-input input)
      :ctx/audio (when (:sounds config)
-                  (create-audio audio files (find-assets files (:sounds config))))
+                  (create-audio files (find-assets files (:sounds config))))
      :ctx/graphics graphics
      :ctx/stage stage}))
 
