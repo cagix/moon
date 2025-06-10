@@ -8,13 +8,8 @@
             [clojure.gdx.input.keys :as input.keys]
             [clojure.gdx.math.vector3 :as vector3]
             [clojure.gdx.utils.align :as align]
-            [clojure.gdx.utils.screen :as screen-utils]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.space.earlygrey.shape-drawer :as sd]
-            [clojure.lwjgl.system.configuration]
-            [clojure.java.awt.taskbar]
             [clojure.string :as str]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -39,10 +34,16 @@
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter
-                                      OrthographicCamera
-                                      )
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils Disposable
+                                   SharedLibraryLoader
+                                   ScreenUtils
+                                   Os)
+           (com.badlogic.gdx.utils.viewport FitViewport)
+           (java.awt Taskbar
+                     Toolkit)
+           (org.lwjgl.system Configuration)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -313,7 +314,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (screen-utils/clear! (color/create color)))
+    (ScreenUtils/clear (color/create color)))
 
   (resize-viewports! [_ width height]
     (gdl.graphics.viewport/resize! ui-viewport    width height)
@@ -426,7 +427,7 @@
       (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom this) by)))) ))
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
-  (let [this (fit-viewport/create width height camera)]
+  (let [this (FitViewport. width height camera)]
     (reify
       gdl.graphics.viewport/Viewport
       (resize! [_ width height]
@@ -568,9 +569,11 @@
 
 (defn- set-mac-settings! [{:keys [glfw-async? dock-icon]}]
   (when glfw-async?
-    (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"))
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (when dock-icon
-    (clojure.java.awt.taskbar/set-icon! dock-icon)))
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource dock-icon)))))
 
 (defn- create-context [main-config]
   (let [config (::context main-config)
@@ -586,8 +589,8 @@
 
 (defn -main [config-path]
   (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (load-edn-config config-path)]
-    (when (= (shared-library-loader/os) :os/mac-osx)
-            (set-mac-settings! mac-os-settings))
+    (when (= SharedLibraryLoader/os Os/MacOsX)
+      (set-mac-settings! mac-os-settings))
     (lwjgl/application lwjgl-app-config
                        (let [{:keys [create dispose render resize pause resume]} listener]
                          (proxy [ApplicationListener] []
