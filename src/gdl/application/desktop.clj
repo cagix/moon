@@ -5,12 +5,7 @@
             [gdl.application])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader
-                                   Os)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)))
+                                             Lwjgl3ApplicationConfiguration)))
 
 (defn start! [config-path]
   (let [config (->> config-path
@@ -30,11 +25,6 @@
                    (assert (contains? config k)
                            (str "Config key not found: " k))
                    (get config k)))]
-    (when (= SharedLibraryLoader/os Os/MacOsX)
-      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-      (.setIconImage (Taskbar/getTaskbar)
-                     (.getImage (Toolkit/getDefaultToolkit)
-                                (clojure.java.io/resource (:gdl.application/taskbar-icon config)))))
     (Lwjgl3Application. (gdl.application/create-application-listener config)
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:gdl.application/title config))

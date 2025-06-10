@@ -4,7 +4,10 @@
             clojure.walk))
 
 (defn execute! [[f params]]
-  (f params))
+  (println "EXECUTE! " [f params])
+  (if params
+    (f params)
+    (f)))
 
 (defn -main [path]
   (->> path
@@ -13,11 +16,15 @@
        clojure.edn/read-string
        (clojure.walk/postwalk (fn [form]
                                 (if (symbol? form)
-                                  (if (namespace form)
+                                  (if (namespace form) ; var
                                     (requiring-resolve form)
                                     (do
-                                     (require form)
+                                     (require form) ; namespace
                                      form))
                                   form)))
        (run! execute!)))
 
+(defn dispatch! [[on result->execs]]
+  (->> (on)
+       result->execs
+       (run! execute!)))

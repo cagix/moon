@@ -1,1 +1,5 @@
-[[gdl.application.desktop/start! "config.edn"]]
+[
+ [clojure.app/dispatch! [clojure.gdx/operating-system {:os/mac [[clojure.lwjgl/set-glfw-async!]
+                                                                [clojure.awt/set-taskbar-icon! "moon.png"]]}]]
+ [gdl.application.desktop/start! "config.edn"]
+ ]
