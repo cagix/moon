@@ -4,6 +4,7 @@
             clojure.walk
             [gdl.application])
   (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)))
 
@@ -25,7 +26,20 @@
                    (assert (contains? config k)
                            (str "Config key not found: " k))
                    (get config k)))]
-    (Lwjgl3Application. (gdl.application/create-application-listener config)
+    (Lwjgl3Application. (proxy [ApplicationListener] []
+                          (create []
+                            (let [[f params] (:gdl.application/create config)]
+                              (f (gdl.application/create-context! config)
+                                 params)))
+                          (dispose []
+                            ((:gdl.application/dispose config)))
+                          (render  []
+                            (let [[f params] (:gdl.application/render config)]
+                              (f params)))
+                          (resize [width height]
+                            ((:gdl.application/resize config) width height))
+                          (pause [])
+                          (resume []))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:gdl.application/title config))
                           (.setWindowedMode (:width  (:gdl.application/windowed-mode config))

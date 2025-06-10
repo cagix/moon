@@ -13,8 +13,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
@@ -446,159 +445,145 @@
   (dispose! [object]
     (.dispose object)))
 
-(defn create-application-listener [config]
-  (proxy [ApplicationListener] []
-    (create  []
-      (doseq [[name color-params] (:colors (::graphics config))]
-        (Colors/put name (color/create color-params)))
-      (ui/load! (::ui config))
-      (let [[f params] (::create config)]
-        (f
-         (let [recursively-search (fn [^FileHandle folder extensions]
-                                    (loop [[^FileHandle file & remaining] (.list folder)
-                                           result []]
-                                      (cond (nil? file)
-                                            result
+(defn create-context! [config]
+  (doseq [[name color-params] (:colors (::graphics config))]
+    (Colors/put name (color/create color-params)))
+  (ui/load! (::ui config))
+  (let [recursively-search (fn [^FileHandle folder extensions]
+                             (loop [[^FileHandle file & remaining] (.list folder)
+                                    result []]
+                               (cond (nil? file)
+                                     result
 
-                                            (.isDirectory file)
-                                            (recur (concat remaining (.list file)) result)
+                                     (.isDirectory file)
+                                     (recur (concat remaining (.list file)) result)
 
-                                            (extensions (.extension file))
-                                            (recur remaining (conj result (.path file)))
+                                     (extensions (.extension file))
+                                     (recur remaining (conj result (.path file)))
 
-                                            :else
-                                            (recur remaining result))))
-               find-assets (fn [{:keys [folder extensions]}]
-                             (map #(str/replace-first % folder "")
-                                  (recursively-search (.internal Gdx/files folder)
-                                                      extensions)))
+                                     :else
+                                     (recur remaining result))))
+        find-assets (fn [{:keys [folder extensions]}]
+                      (map #(str/replace-first % folder "")
+                           (recursively-search (.internal Gdx/files folder)
+                                               extensions)))
 
-               graphics (let [{:keys [textures
-                                      colors ; optional
-                                      cursors ; optional
-                                      cursor-path-format ; optional
-                                      default-font ; optional, could use gdx included (BitmapFont.)
-                                      tile-size
-                                      ui-viewport
-                                      world-viewport]} (update (::graphics config) :textures find-assets)]
-                          ;(println "load-textures (count textures): " (count textures))
-                          (let [batch (SpriteBatch.)
-                                shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                                                    (.setColor Color/WHITE)
-                                                                    (.drawPixel 0 0))
-                                                           texture (Texture. pixmap)]
-                                                       (.dispose pixmap)
-                                                       texture)
-                                world-unit-scale (float (/ tile-size))
-                                ui-viewport (fit-viewport (:width ui-viewport)
-                                                          (:height ui-viewport)
-                                                          (OrthographicCamera.)
-                                                          {:center-camera? true})
-                                textures (into {} (for [file textures]
-                                                    [file (Texture. file)]))
-                                cursors (update-vals cursors
-                                                     (fn [[file [hotspot-x hotspot-y]]]
-                                                       (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
-                                                             cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                                         (.dispose pixmap)
-                                                         cursor)))]
-                            (map->Graphics {:graphics Gdx/graphics
-                                            :textures textures
-                                            :cursors cursors
-                                            :default-font (when default-font
-                                                            (generate-font (.internal Gdx/files (:file default-font))
-                                                                           (:params default-font)))
-                                            :world-unit-scale world-unit-scale
-                                            :ui-viewport ui-viewport
-                                            :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
-                                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                                              (fit-viewport world-width
-                                                                            world-height
-                                                                            (doto (OrthographicCamera.)
-                                                                              (.setToOrtho false ; y-down ?
-                                                                                           world-width
-                                                                                           world-height))
-                                                                            {:center-camera? false}))
-                                            :batch batch
-                                            :unit-scale (atom 1)
-                                            :shape-drawer-texture shape-drawer-texture
-                                            :shape-drawer (ShapeDrawer. batch (texture-region/create shape-drawer-texture 1 0 1 1))
-                                            :tiled-map-renderer (memoize (fn [tiled-map]
-                                                                           (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                                                        (float world-unit-scale)
-                                                                                                        batch)))})))
-               stage (ui/stage (:java-object (:ui-viewport graphics))
-                               (:batch graphics))]
-           (.setInputProcessor Gdx/input stage)
-           {:ctx/config config
-            :ctx/input (let [this Gdx/input]
-                         (reify gdl.input/Input
-                           (button-just-pressed? [_ button]
-                             (.isButtonJustPressed this (interop/k->input-button button)))
+        graphics (let [{:keys [textures
+                               colors ; optional
+                               cursors ; optional
+                               cursor-path-format ; optional
+                               default-font ; optional, could use gdx included (BitmapFont.)
+                               tile-size
+                               ui-viewport
+                               world-viewport]} (update (::graphics config) :textures find-assets)]
+                   ;(println "load-textures (count textures): " (count textures))
+                   (let [batch (SpriteBatch.)
+                         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                                             (.setColor Color/WHITE)
+                                                             (.drawPixel 0 0))
+                                                    texture (Texture. pixmap)]
+                                                (.dispose pixmap)
+                                                texture)
+                         world-unit-scale (float (/ tile-size))
+                         ui-viewport (fit-viewport (:width ui-viewport)
+                                                   (:height ui-viewport)
+                                                   (OrthographicCamera.)
+                                                   {:center-camera? true})
+                         textures (into {} (for [file textures]
+                                             [file (Texture. file)]))
+                         cursors (update-vals cursors
+                                              (fn [[file [hotspot-x hotspot-y]]]
+                                                (let [pixmap (Pixmap. (.internal Gdx/files (format cursor-path-format file)))
+                                                      cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                                  (.dispose pixmap)
+                                                  cursor)))]
+                     (map->Graphics {:graphics Gdx/graphics
+                                     :textures textures
+                                     :cursors cursors
+                                     :default-font (when default-font
+                                                     (generate-font (.internal Gdx/files (:file default-font))
+                                                                    (:params default-font)))
+                                     :world-unit-scale world-unit-scale
+                                     :ui-viewport ui-viewport
+                                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                                                           world-height (* (:height world-viewport) world-unit-scale)]
+                                                       (fit-viewport world-width
+                                                                     world-height
+                                                                     (doto (OrthographicCamera.)
+                                                                       (.setToOrtho false ; y-down ?
+                                                                                    world-width
+                                                                                    world-height))
+                                                                     {:center-camera? false}))
+                                     :batch batch
+                                     :unit-scale (atom 1)
+                                     :shape-drawer-texture shape-drawer-texture
+                                     :shape-drawer (ShapeDrawer. batch (texture-region/create shape-drawer-texture 1 0 1 1))
+                                     :tiled-map-renderer (memoize (fn [tiled-map]
+                                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                                                 (float world-unit-scale)
+                                                                                                 batch)))})))
+        stage (ui/stage (:java-object (:ui-viewport graphics))
+                        (:batch graphics))]
+    (.setInputProcessor Gdx/input stage)
+    {:ctx/config config
+     :ctx/input (let [this Gdx/input]
+                  (reify gdl.input/Input
+                    (button-just-pressed? [_ button]
+                      (.isButtonJustPressed this (interop/k->input-button button)))
 
-                           (key-pressed? [_ key]
-                             (.isKeyPressed this (interop/k->input-key key)))
+                    (key-pressed? [_ key]
+                      (.isKeyPressed this (interop/k->input-key key)))
 
-                           (key-just-pressed? [_ key]
-                             (.isKeyJustPressed this (interop/k->input-key key)))
+                    (key-just-pressed? [_ key]
+                      (.isKeyJustPressed this (interop/k->input-key key)))
 
-                           (mouse-position [_]
-                             [(.getX this)
-                              (.getY this)])))
-            :ctx/audio (when (::sounds config)
-                         (let [sounds (into {}
-                                            (for [file (find-assets (::sounds config))]
-                                              [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
-                           (reify
-                             gdl.utils.disposable/Disposable
-                             (dispose! [_]
-                               (do
-                                ;(println "Disposing sounds ...")
-                                (run! Disposable/.dispose (vals sounds))))
+                    (mouse-position [_]
+                      [(.getX this)
+                       (.getY this)])))
+     :ctx/audio (when (::sounds config)
+                  (let [sounds (into {}
+                                     (for [file (find-assets (::sounds config))]
+                                       [file (.newSound Gdx/audio (.internal Gdx/files file))]))]
+                    (reify
+                      gdl.utils.disposable/Disposable
+                      (dispose! [_]
+                        (do
+                         ;(println "Disposing sounds ...")
+                         (run! Disposable/.dispose (vals sounds))))
 
-                             gdl.audio/Audio
-                             (all-sounds [_]
-                               (map first sounds))
+                      gdl.audio/Audio
+                      (all-sounds [_]
+                        (map first sounds))
 
-                             (play-sound! [_ path]
-                               (assert (contains? sounds path) (str path))
-                               (Sound/.play (get sounds path))))))
-            :ctx/graphics graphics
-            :ctx/stage (reify
-                         ; TODO is disposable but not sure if needed as we handle batch ourself.
-                         clojure.lang.ILookup
-                         (valAt [_ key]
-                           (key stage))
+                      (play-sound! [_ path]
+                        (assert (contains? sounds path) (str path))
+                        (Sound/.play (get sounds path))))))
+     :ctx/graphics graphics
+     :ctx/stage (reify
+                  ; TODO is disposable but not sure if needed as we handle batch ourself.
+                  clojure.lang.ILookup
+                  (valAt [_ key]
+                    (key stage))
 
-                         stage/Stage
-                         (render! [_ ctx]
-                           (ui/act! stage ctx)
-                           (ui/draw! stage ctx)
-                           ctx)
+                  stage/Stage
+                  (render! [_ ctx]
+                    (ui/act! stage ctx)
+                    (ui/draw! stage ctx)
+                    ctx)
 
-                         (add! [_ actor] ; -> re-use gdl.ui/add! ?
-                           (ui/add! stage actor))
+                  (add! [_ actor] ; -> re-use gdl.ui/add! ?
+                    (ui/add! stage actor))
 
-                         (clear! [_]
-                           (ui/clear! stage))
+                  (clear! [_]
+                    (ui/clear! stage))
 
-                         (hit [_ position]
-                           (ui/hit stage position))
+                  (hit [_ position]
+                    (ui/hit stage position))
 
-                         (find-actor [_ actor-name]
-                           (-> stage
-                               ui/root
-                               (ui/find-actor actor-name))))})
-         params)))
-    (dispose []
-      ((::dispose config)))
-    (render  []
-      (let [[f params] (::render config)]
-        (f params)))
-    (resize [width height]
-      ((::resize config) width height))
-    (pause [])
-    (resume [])))
+                  (find-actor [_ actor-name]
+                    (-> stage
+                        ui/root
+                        (ui/find-actor actor-name))))}))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
