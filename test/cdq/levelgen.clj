@@ -7,6 +7,7 @@
 
             [cdq.render.clear-screen] ; ??
 
+            [gdl.application]
             [gdl.ui.stage :as stage]
 
             [cdq.utils.camera :as camera-utils]
@@ -133,3 +134,15 @@
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
+
+(defn -main []
+  (gdl.application/start!
+   {:mac-os-settings {:glfw-async? true}
+    :config {:title "Levelgen"
+             :windowed-mode {:width 1440
+                             :height 900}
+             :foreground-fps 60}
+    :listener {:create  [cdq.levelgen/create!]
+               :dispose cdq.levelgen/dispose!
+               :render  [cdq.levelgen/render!]
+               :resize  cdq.levelgen/resize!}}))
