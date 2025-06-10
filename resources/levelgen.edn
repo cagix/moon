@@ -1,0 +1,17 @@
+{:mac-os-settings {:glfw-async? true}
+ :lwjgl-app-config {:title "Levelgen"
+                    :windowed-mode {:width 1440
+                                    :height 900}
+                    :foreground-fps 60}
+ :gdl.application/context {:graphics {:textures {:folder "resources/"
+                                                 :extensions #{"png" "bmp"}}
+                                      :tile-size 48
+                                      :ui-viewport {:width 1440
+                                                    :height 900}
+                                      :world-viewport {:width 1440
+                                                       :height 900}}
+                           :ui {:skin-scale :x1}}
+ :listener {:create  [cdq.levelgen/create!]
+            :dispose cdq.levelgen/dispose!
+            :render  [cdq.levelgen/render!]
+            :resize  cdq.levelgen/resize!}}
