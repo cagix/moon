@@ -1,6 +1,5 @@
 (ns gdl.application
-  (:require cdq.utils
-            [clojure.gdx.audio :as audio]
+  (:require [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
@@ -32,6 +31,9 @@
             [clojure.lwjgl.system.configuration]
             [clojure.java.awt.taskbar]
             [clojure.string :as str]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.walk :as walk]
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
@@ -47,6 +49,27 @@
            (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
+
+(defn- require-symbols [form]
+  (walk/postwalk (fn [form]
+                   (if (symbol? form)
+                     (if (namespace form)
+                       (requiring-resolve form)
+                       (do (require form) form))
+                     form))
+                 form))
+
+(defn- load-edn-config [path]
+  (let [m (-> path
+              io/resource
+              slurp
+              edn/read-string
+              require-symbols)]
+    (reify clojure.lang.ILookup
+      (valAt [_ k]
+        (assert (contains? m k)
+                (str "Config key not found: " k))
+        (get m k)))))
 
 (defn- reify-stage [stage]
   (reify
@@ -569,7 +592,7 @@
      :ctx/stage stage}))
 
 (defn -main [config-path]
-  (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (cdq.utils/load-edn-config config-path)]
+  (let [{:keys [mac-os-settings lwjgl-app-config listener] :as config} (load-edn-config config-path)]
     (when (= (shared-library-loader/os) :os/mac-osx)
             (set-mac-settings! mac-os-settings))
     (lwjgl/application lwjgl-app-config
