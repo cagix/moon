@@ -3,6 +3,7 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.texture.filter :as texture.filter]
@@ -386,12 +387,15 @@
 (defn create-graphics [gdx-graphics
                        gdx-files
                        {:keys [textures
+                               colors ; optional
                                cursors ; optional
                                cursor-path-format ; optional
                                default-font ; optional, could use gdx included (BitmapFont.)
                                tile-size
                                ui-viewport
                                world-viewport]}]
+  (doseq [[name color-params] colors]
+    (colors/put! name (color/create color-params)))
   ;(println "load-textures (count textures): " (count textures))
   (let [batch (graphics/sprite-batch gdx-graphics)
         shape-drawer-texture (white-pixel-texture gdx-graphics)

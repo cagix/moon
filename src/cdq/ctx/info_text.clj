@@ -3,12 +3,8 @@
             [cdq.op :as op]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]))
-
-(colors/put! "PRETTY_NAME" (color/create [0.84 0.8 0.52 1]))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
