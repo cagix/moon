@@ -8,7 +8,7 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
             [gdl.graphics :as graphics]
-            [gdl.graphics.texture-region :as texture-region]
+            [gdl.graphics.texture :as texture]
             [gdl.tiled :as tiled]))
 
 (defn- assoc-transition-cells [grid]
@@ -147,11 +147,11 @@
                                   (memoize
                                    (fn [& {:keys [sprite-idx movement]}]
                                      {:pre [#{"all" "air" "none"} movement]}
-                                     (tiled/static-tiled-map-tile (texture-region/create texture
-                                                                                         (* (sprite-idx 0) tile-size)
-                                                                                         (* (sprite-idx 1) tile-size)
-                                                                                         tile-size
-                                                                                         tile-size)
+                                     (tiled/static-tiled-map-tile (texture/region texture
+                                                                                  (* (sprite-idx 0) tile-size)
+                                                                                  (* (sprite-idx 1) tile-size)
+                                                                                  tile-size
+                                                                                  tile-size)
                                                                   "movement" movement))))
              :level/spawn-rate 0.02
              :level/scaling 3

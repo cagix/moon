@@ -11,11 +11,37 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap)
+           (com.badlogic.gdx.graphics Pixmap
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)
            (com.badlogic.gdx.utils Disposable)))
+
+(extend-type TextureRegion
+  gdl.graphics.g2d.texture-region/TextureRegion
+  (dimensions [texture-region]
+    [(.getRegionWidth  texture-region)
+     (.getRegionHeight texture-region)])
+  (region [texture-region x y w h]
+    (TextureRegion. texture-region
+                    (int x)
+                    (int y)
+                    (int w)
+                    (int h))))
+
+(extend-type Texture
+  gdl.graphics.texture/Texture
+  (region
+    ([texture]
+     (TextureRegion. texture))
+    ([texture x y w h]
+     (TextureRegion. texture
+                     (int x)
+                     (int y)
+                     (int w)
+                     (int h)))))
 
 (extend-type Group
   gdl.ui/PGroup

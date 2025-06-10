@@ -1,5 +1,6 @@
 (ns gdl.ui
-  (:require [gdl.graphics.texture-region :as texture-region])
+  (:require [gdl.graphics.texture :as texture]
+            [gdl.graphics.g2d.texture-region :as texture-region])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -196,6 +197,7 @@
     (doseq [row rows]
       (doseq [props-or-actor row]
         (cond
+         ; this is weird now as actor declarations are all maps ....
          (map? props-or-actor) (-> (add! table (:actor props-or-actor))
                                    (set-cell-opts! (dissoc props-or-actor :actor)))
          :else (add! table props-or-actor)))
@@ -384,12 +386,12 @@
 
 (defn group [{:keys [actors] :as opts}]
   (let [group (proxy-ILookup Group [])]
-    (run! #(add! group %) actors)
+    (run! #(add! group %) actors) ; redundant
     (set-opts! group opts)))
 
 (defn vertical-group [actors]
   (let [group (proxy-ILookup VerticalGroup [])]
-    (run! #(add! group %) actors)
+    (run! #(add! group %) actors) ; redundant if we use map based
     group))
 
 (def checked? VisCheckBox/.isChecked)
@@ -416,7 +418,7 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (texture-region/create texture)))
+  (VisImage. (texture/region texture)))
 
 (defmethod image* TextureRegion [texture-region]
   (VisImage. texture-region))

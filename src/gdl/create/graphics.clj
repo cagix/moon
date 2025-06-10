@@ -6,7 +6,8 @@
             [gdl.graphics :as graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
-            [gdl.graphics.texture-region :as texture-region]
+            [gdl.graphics.texture :as texture]
+            [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
             [gdl.math.utils :as math-utils]
             [gdl.tiled :as tiled]
@@ -317,8 +318,8 @@
     (assert file)
     (let [texture (gdl.graphics/texture graphics file)]
       (if bounds
-        (apply texture-region/create texture bounds)
-        (texture-region/create texture))))
+        (apply texture/region texture bounds)
+        (texture/region texture))))
 
   (handle-draws! [this draws]
     (doseq [component draws
@@ -457,7 +458,7 @@
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
-                    :shape-drawer (ShapeDrawer. batch (texture-region/create shape-drawer-texture 1 0 1 1))
+                    :shape-drawer (ShapeDrawer. batch (texture/region shape-drawer-texture 1 0 1 1))
                     :tiled-map-renderer (memoize (fn [tiled-map]
                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                                 (float world-unit-scale)
