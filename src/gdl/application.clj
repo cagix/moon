@@ -1,7 +1,9 @@
 (ns gdl.application
-  (:require [clojure.gdx.interop :as interop]
+  (:require [clojure.edn :as edn]
+            [clojure.gdx.interop :as interop]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.walk :as walk]
             [gdl.audio]
             [gdl.graphics]
             [gdl.graphics.camera]
@@ -53,6 +55,18 @@
                        (do (require form) form))
                      form))
                  form))
+
+(defn- load-edn-config [path]
+  (let [m (-> path
+              io/resource
+              slurp
+              edn/read-string
+              require-symbols)]
+    (reify clojure.lang.ILookup
+      (valAt [_ k]
+        (assert (contains? m k)
+                (str "Config key not found: " k))
+        (get m k)))))
 
 (defn- reify-stage [stage]
   (reify
@@ -658,12 +672,13 @@
 (defn- mac-os? []
   (= SharedLibraryLoader/os Os/MacOsX))
 
-(defn start! [config]
-  (when (mac-os?)
-    (set-mac-settings! (::mac-os-settings config)))
-  (Lwjgl3Application. (create-app-listener (::listener config)
-                                           config)
-                      (create-lwjgl-app-config (::lwjgl-app-config config))))
+(defn -main [config-path]
+  (let [config (load-edn-config config-path)]
+    (when (mac-os?)
+      (set-mac-settings! (::mac-os-settings config)))
+    (Lwjgl3Application. (create-app-listener (::listener config)
+                                             config)
+                        (create-lwjgl-app-config (::lwjgl-app-config config)))))
 
 (defn post-runnable! [runnable]
   (.postRunnable Gdx/app runnable))
