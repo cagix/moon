@@ -1,20 +1,43 @@
 (ns gdl.application
   (:require cdq.utils
+            [clojure.gdx.audio :as audio]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.java :as gdx.java]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl.system.configuration]
             [clojure.java.awt.taskbar]
             [clojure.string :as str]
-            [gdl.create.audio]
+            [gdl.audio]
             [gdl.create.graphics]
             [gdl.create.input]
             [gdl.create.stage]
-            [gdl.utils.disposable :as disposable])
+            [gdl.utils.disposable])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.utils Disposable)))
+
+(defn- create-audio [audio files sounds-to-load]
+  ;(println "create-audio. (count sounds-to-load): " (count sounds-to-load))
+  (let [sounds (into {}
+                     (for [file sounds-to-load]
+                       [file (audio/sound audio (files/internal files file))]))]
+    (reify
+      gdl.utils.disposable/Disposable
+      (dispose! [_]
+        (do
+         ;(println "Disposing sounds ...")
+         (run! clojure.gdx.utils.disposable/dispose! (vals sounds))))
+
+      gdl.audio/Audio
+      (all-sounds [_]
+        (map first sounds))
+
+      (play-sound! [_ path]
+        (assert (contains? sounds path) (str path))
+        (sound/play! (get sounds path))))))
 
 (defn- recursively-search [folder extensions]
   (loop [[file & remaining] (file-handle/list folder)
@@ -32,7 +55,7 @@
           (recur remaining result))))
 
 (extend-type Disposable
-  disposable/Disposable
+  gdl.utils.disposable/Disposable
   (dispose! [object]
     (.dispose object)))
 
@@ -62,7 +85,7 @@
     {:ctx/config main-config
      :ctx/input (gdl.create.input/create-input input)
      :ctx/audio (when (:sounds config)
-                  (gdl.create.audio/create-audio audio files (find-assets files (:sounds config))))
+                  (create-audio audio files (find-assets files (:sounds config))))
      :ctx/graphics graphics
      :ctx/stage stage}))
 
