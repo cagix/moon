@@ -15,6 +15,10 @@
   ;		y *= scalar;
   ;		return this;
   ;	}
+  (comment
+   [(* x scalar)
+    (* y scalar)]
+   )
   (->p (.scl (m-v2 v) (float n))))
 
 (defn normalise [v]
@@ -40,6 +44,10 @@
 ;	public static float len (float x, float y) {
 ;		return (float)Math.sqrt(x * x + y * y);
 ;	}
+(comment
+ (Math/sqrt (+ (* x x)
+               (* y y)))
+ )
   (.len (m-v2 v)))
 
 (defn distance [v1 v2]
@@ -50,17 +58,8 @@
 ;	}
   (.dst (m-v2 v1) (m-v2 v2)))
 
-(defn normalised? [v]
-
-	;static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-
-;	/** Returns true if a is nearly equal to b. The function uses the default floating error tolerance.
-;	 * @param a the first value.
-;	 * @param b the second value. */
-;	static public boolean isEqual (float a, float b) {
-;		return Math.abs(a - b) <= FLOAT_ROUNDING_ERROR;
-;	}
-  (math-utils/equal? 1 (length v)))
+(defn nearly-normalised? [v]
+  (math-utils/nearly-equal? 1 (length v)))
 
 (defn direction [[sx sy] [tx ty]]
   (normalise [(- (float tx) (float sx))

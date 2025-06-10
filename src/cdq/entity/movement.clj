@@ -40,7 +40,7 @@
     (assert (<= 0 speed max-speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
-                (v/normalised? direction))
+                (v/nearly-normalised? direction))
             (str "cannot understand direction: " (pr-str direction)))
     (when-not (or (zero? (v/length direction))
                   (nil? speed)
