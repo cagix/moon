@@ -9,3 +9,9 @@
 
 (defn sound [path]
   (.newSound Gdx/audio (internal path)))
+
+(defn graphics []
+  Gdx/graphics)
+
+(defn input []
+  Gdx/input)

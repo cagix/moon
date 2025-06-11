@@ -17,8 +17,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.audio Sound)
+  (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
@@ -672,8 +671,8 @@
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (let [gdl (map->Context {:graphics Gdx/graphics
-                           :input    Gdx/input})
+  (let [gdl (map->Context {:graphics (gdx/graphics)
+                           :input    (gdx/input)})
         graphics (create-graphics gdl graphics-config)]
     {:ctx/gdl gdl
      :ctx/graphics graphics
