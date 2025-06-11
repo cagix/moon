@@ -22,10 +22,10 @@
                                          use-integer-positions?]}]
   (let [generator (FreeTypeFontGenerator. file-handle)
         ^BitmapFont font (.generateFont generator
-                                        (freetype-font-params {:size (* size quality-scaling)
-                                                               ; :texture-filter/linear because scaling to world-units
-                                                               :min-filter Texture$TextureFilter/Linear
-                                                               :mag-filter Texture$TextureFilter/Linear}))]
+                                        (create-params {:size (* size quality-scaling)
+                                                        ; :texture-filter/linear because scaling to world-units
+                                                        :min-filter Texture$TextureFilter/Linear
+                                                        :mag-filter Texture$TextureFilter/Linear}))]
     (.setScale (.getData font) (/ quality-scaling))
     (set! (.markupEnabled (.getData font)) enable-markup?)
     (.setUseIntegerPositions font use-integer-positions?)
