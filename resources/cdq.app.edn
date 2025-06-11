@@ -6,7 +6,6 @@
  :create [cdq.application/create!
           [
            [:assoc :ctx/config [gdl.create.config/do! "config.edn"]]
-           gdl.create.gdx-freetype/do!
            [:assoc :ctx/graphics [gdl.create.graphics/do!
                                   {:textures {:folder "resources/"
                                               :extensions #{"png" "bmp"}}

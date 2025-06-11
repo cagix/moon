@@ -16,8 +16,12 @@
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+                                      Texture
+                                      Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)
@@ -27,6 +31,18 @@
            (java.awt Taskbar
                      Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- freetype-font-params [{:keys [size
+                                     min-filter
+                                     mag-filter]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) min-filter)
+    (set! (.magFilter params) mag-filter)
+    params))
 
 (extend-type TextureRegion
   gdl.graphics.g2d.texture-region/TextureRegion
@@ -138,6 +154,22 @@
           cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
       (.dispose pixmap)
       cursor))
+
+  gdl.graphics/TrueTypeFonts
+  (true-type-font [_ file-handle {:keys [size
+                                         quality-scaling
+                                         enable-markup?
+                                         use-integer-positions?]}]
+    (let [generator (FreeTypeFontGenerator. file-handle)
+          ^BitmapFont font (.generateFont generator
+                                          (freetype-font-params {:size (* size quality-scaling)
+                                                                 ; :texture-filter/linear because scaling to world-units
+                                                                 :min-filter Texture$TextureFilter/Linear
+                                                                 :mag-filter Texture$TextureFilter/Linear}))]
+      (.setScale (.getData font) (/ quality-scaling))
+      (set! (.markupEnabled (.getData font)) enable-markup?)
+      (.setUseIntegerPositions font use-integer-positions?)
+      font))
 
   gdl.input/Input
   (set-input-processor! [_ input-processor]
