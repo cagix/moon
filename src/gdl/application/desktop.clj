@@ -1,10 +1,10 @@
 (ns gdl.application.desktop
-  (:require [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.audio :as audio]
             [gdl.file]
-            [gdl.fs :as fs]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
@@ -478,7 +478,7 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (gdl.assets/find-assets (update textures :folder (partial fs/internal gdl)))
+        textures-to-load (gdl.assets/find-assets (update textures :folder gdx/internal))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
@@ -492,7 +492,7 @@
                     :cursors cursors
                     :default-font (when default-font
                                     (graphics/true-type-font gdl
-                                                             (fs/internal gdl (:file default-font))
+                                                             (gdx/internal (:file default-font))
                                                              (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
@@ -592,11 +592,6 @@
   (parent [actor]
     (.getParent actor)))
 
-(extend-type Sound
-  gdl.audio/Sound
-  (play! [this]
-    (.play this)))
-
 (extend-type Disposable
   gdl.utils.disposable/Disposable
   (dispose! [object]
@@ -613,21 +608,11 @@
   (path [this]
     (.path this)))
 
-(defrecord Context [audio
-                    files
-                    graphics
+(defrecord Context [graphics
                     input]
-  gdl.fs/FileSystem
-  (internal [_ path]
-    (.internal files path))
-
-  gdl.audio/Sounds
-  (sound [_ path]
-    (.newSound audio (.internal files path)))
-
   gdl.graphics/Cursors
   (cursor [_ path [hotspot-x hotspot-y]]
-    (let [pixmap (Pixmap. (.internal files path))
+    (let [pixmap (Pixmap. (gdx/internal path))
           cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
       (.dispose pixmap)
       cursor))
@@ -665,10 +650,10 @@
     [(.getX input)
      (.getY input)]))
 
-(defn- create-audio [gdl {:keys [sounds]}]
+(defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
-                     (for [file (assets/find-assets (update sounds :folder (partial fs/internal gdl)))]
-                       [file (audio/sound gdl file)]))]
+                     (for [file (assets/find-assets (update sounds :folder gdx/internal))]
+                       [file (gdx/sound file)]))]
     (reify
       disposable/Disposable
       (dispose! [_]
@@ -682,18 +667,16 @@
 
       (play-sound! [_ path]
         (assert (contains? sounds path) (str path))
-        (audio/play! (get sounds path))))))
+        (Sound/.play (get sounds path))))))
 
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (let [gdl (map->Context {:audio    Gdx/audio
-                           :files    Gdx/files
-                           :graphics Gdx/graphics
+  (let [gdl (map->Context {:graphics Gdx/graphics
                            :input    Gdx/input})
         graphics (create-graphics gdl graphics-config)]
     {:ctx/gdl gdl
      :ctx/graphics graphics
      :ctx/stage (create-user-interface graphics gdl user-interface)
      :ctx/audio (when audio
-                  (create-audio gdl audio))}))
+                  (create-audio audio))}))
