@@ -1,9 +1,7 @@
 (ns gdl.application.desktop
-  (:require clojure.gdx.backends.lwjgl
-            [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.app]
             [gdl.audio :as audio]
             [gdl.file]
             [gdl.fs :as fs]
@@ -19,8 +17,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
@@ -616,15 +613,10 @@
   (path [this]
     (.path this)))
 
-(defrecord Context [app
-                    audio
+(defrecord Context [audio
                     files
                     graphics
                     input]
-  gdl.app/Application
-  (post-runnable! [_ runnable]
-    (.postRunnable app runnable))
-
   gdl.fs/FileSystem
   (internal [_ path]
     (.internal files path))
@@ -692,47 +684,16 @@
         (assert (contains? sounds path) (str path))
         (audio/play! (get sounds path))))))
 
-(defn- create-context* []
-  (map->Context {:app      Gdx/app
-                 :audio    Gdx/audio
-                 :files    Gdx/files
-                 :graphics Gdx/graphics
-                 :input    Gdx/input}))
-
-(defn- create-context [graphics-config
-                       user-interface
-                       audio]
-  (let [gdl (create-context*)
+(defn create-context [graphics-config
+                      user-interface
+                      audio]
+  (let [gdl (map->Context {:audio    Gdx/audio
+                           :files    Gdx/files
+                           :graphics Gdx/graphics
+                           :input    Gdx/input})
         graphics (create-graphics gdl graphics-config)]
     {:ctx/gdl (create-context*)
      :ctx/graphics graphics
      :ctx/stage (create-user-interface graphics gdl user-interface)
      :ctx/audio (when audio
                   (create-audio gdl audio))}))
-
-(defprotocol Listener
-  (create! [_ context])
-  (dispose! [_])
-  (render! [_])
-  (resize! [_ width height]))
-
-(defn start! [{:keys [lwjgl-config
-                      graphics
-                      user-interface
-                      audio
-                      listener]}]
-  (clojure.gdx.backends.lwjgl/application lwjgl-config
-                                          (proxy [ApplicationListener] []
-                                            (create []
-                                              (create! listener (create-context graphics
-                                                                                user-interface
-                                                                                audio
-                                                                                )))
-                                            (dispose []
-                                              (dispose! listener))
-                                            (render  []
-                                              (render! listener))
-                                            (resize [width height]
-                                              (resize! listener width height))
-                                            (pause [])
-                                            (resume []))))

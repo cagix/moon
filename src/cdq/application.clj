@@ -2,12 +2,14 @@
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
             clojure.edn
+            clojure.gdx.backends.lwjgl
             clojure.java.io
             clojure.walk
             [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
-            [qrecord.core :as q]))
+            [qrecord.core :as q])
+  (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (q/defrecord Context [ctx/config
                       ctx/db
@@ -67,41 +69,46 @@
 
 (def state (atom nil))
 
+(defn- create-listener [config]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (let [context (gdl.application.desktop/create-context (:graphics config)
+                                                            (:user-interface config)
+                                                            (:audio config))
+            ctx (reduce utils/render*
+                        (merge (map->Context {})
+                               (assoc context :ctx/config config))
+                        (:create-fns config))]
+        (m/validate-humanize schema ctx)
+        (reset! state ctx)))
+
+    (dispose []
+      (let [{:keys [ctx/audio
+                    ctx/graphics
+                    ctx/tiled-map]} @state]
+        (disp/dispose! audio)
+        (disp/dispose! graphics)
+        (disp/dispose! tiled-map)
+        ; TODO vis-ui dispose
+        ; TODO what else disposable?
+        ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
+        ))
+
+    (render []
+      (swap! state (fn [ctx]
+                     (m/validate-humanize schema ctx)
+                     (let [ctx (reduce utils/render*
+                                       ctx
+                                       (:render-fns config))]
+                       (m/validate-humanize schema ctx)
+                       ctx))))
+
+    (resize [width height]
+      (m/validate-humanize schema @state)
+      (let [{:keys [ctx/graphics]} @state]
+        (graphics/resize-viewports! graphics width height)))))
+
 (defn -main [config-path]
   (let [config (create-config config-path)]
-    (gdl.application.desktop/start!
-     (assoc config :listener
-            (reify gdl.application.desktop/Listener
-              (create! [_ context]
-                (let [ctx (reduce utils/render*
-                                  (merge (map->Context {})
-                                         (assoc context :ctx/config config))
-                                  (:create-fns config))]
-                  (m/validate-humanize schema ctx)
-                  (reset! state ctx)))
-
-              (dispose! [_]
-                (let [{:keys [ctx/audio
-                              ctx/graphics
-                              ctx/tiled-map]} @state]
-                  (disp/dispose! audio)
-                  (disp/dispose! graphics)
-                  (disp/dispose! tiled-map)
-                  ; TODO vis-ui dispose
-                  ; TODO what else disposable?
-                  ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
-                  ))
-
-              (render! [_]
-                (swap! state (fn [ctx]
-                               (m/validate-humanize schema ctx)
-                               (let [ctx (reduce utils/render*
-                                                 ctx
-                                                 (:render-fns config))]
-                                 (m/validate-humanize schema ctx)
-                                 ctx))))
-
-              (resize! [_ width height]
-                (m/validate-humanize schema @state)
-                (let [{:keys [ctx/graphics]} @state]
-                  (graphics/resize-viewports! graphics width height))))))))
+    (clojure.gdx.backends.lwjgl/application (:lwjgl-config config)
+                                            (create-listener config))))
