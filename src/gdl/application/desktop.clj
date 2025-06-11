@@ -1,8 +1,7 @@
-(ns clojure.app.gdx.lwjgl
+(ns gdl.application.desktop
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)))
-
 (defn start! [{:keys [create
                       dispose
                       render
