@@ -66,13 +66,11 @@
 
 (defrecord Context [])
 
-(require 'gdl.create.gdx)
 (require 'gdl.create.graphics)
 (require 'gdl.create.stage)
 
-(defn create! [_params]
-  (let [ctx (->Context)
-        ctx (assoc ctx :ctx/gdl (gdl.create.gdx/do! nil nil))
+(defn create! [context _params]
+  (let [ctx (merge (->Context) context)
         ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do!
                                       ctx
                                       {:textures {:folder "resources/"

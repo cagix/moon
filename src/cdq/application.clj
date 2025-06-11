@@ -46,9 +46,9 @@
 
 (def state (atom nil))
 
-(defn create! [create-fns]
+(defn create! [context create-fns]
   (let [ctx (reduce utils/render*
-                    (map->Context {})
+                    (merge (map->Context {}) context)
                     create-fns)]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
