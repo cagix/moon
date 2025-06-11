@@ -3,9 +3,7 @@
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
-            [gdl.assets :as assets]
             [gdl.audio :as audio]
-            [gdl.file]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera]
             [gdl.graphics.color :as color]
@@ -40,6 +38,25 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- find-assets [{:keys [^FileHandle folder extensions]}]
+  (map #(str/replace-first % (str (.path folder) "/") "")
+       (recursively-search folder extensions)))
 
 (defn- create-user-interface [graphics config]
   (ui/load! config)
@@ -471,7 +488,7 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (gdl.assets/find-assets (update textures :folder gdx/internal))
+        textures-to-load (find-assets (update textures :folder gdx/internal))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
@@ -575,17 +592,6 @@
   (dispose! [object]
     (.dispose object)))
 
-(extend-type FileHandle
-  gdl.file/File
-  (list [this]
-    (.list this))
-  (directory? [this]
-    (.isDirectory this))
-  (extension [this]
-    (.extension this))
-  (path [this]
-    (.path this)))
-
 (defrecord Context [input]
   gdl.input/Input
   (button-just-pressed? [_ button]
@@ -603,7 +609,7 @@
 
 (defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
-                     (for [file (assets/find-assets (update sounds :folder gdx/internal))]
+                     (for [file (find-assets (update sounds :folder gdx/internal))]
                        [file (gdx/sound file)]))]
     (reify
       disposable/Disposable
