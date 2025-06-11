@@ -112,5 +112,5 @@
 ; do not create unnecessary abstractions ...
 (defn -main [config-path]
   (let [config (create-config config-path)]
-    (gdl.application.lwjgl/application (:lwjgl-config config)
-                                       (create-listener config))))
+    (gdl.application.lwjgl/start! (:lwjgl-config config)
+                                  (create-listener config))))

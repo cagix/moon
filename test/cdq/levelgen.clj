@@ -122,7 +122,7 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main []
-  (gdl.application.lwjgl/application
+  (gdl.application.lwjgl/start!
    {:mac-os {:glfw-async? true}
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
