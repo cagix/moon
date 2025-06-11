@@ -130,7 +130,7 @@
                        :as ctx}]
   (stage/render! stage ctx))
 
-(defn render! [_]
+(defn render! []
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
@@ -147,7 +147,12 @@
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60
-    :create! create!
-    :dispose dispose!
-    :render [render!]
-    :resize resize!}))
+    :listener (reify gdl.application.desktop/Listener
+                (create! [_ context]
+                  (create! context))
+                (dispose! [_]
+                  (dispose!))
+                (render! [_]
+                  (render!))
+                (resize! [_ width height]
+                  (resize! width height)))}))

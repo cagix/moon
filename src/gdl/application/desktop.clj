@@ -205,26 +205,28 @@
                    (.getImage (Toolkit/getDefaultToolkit)
                               (io/resource dock-icon)))))
 
+(defprotocol Listener
+  (create! [_ context])
+  (dispose! [_])
+  (render! [_])
+  (resize! [_ width height]))
+
 (defn start! [{:keys [mac-os-settings
-                      create!
-                      dispose
-                      render
-                      resize
                       title
                       windowed-mode
-                      foreground-fps]}]
+                      foreground-fps
+                      listener]}]
   (when (= SharedLibraryLoader/os Os/MacOsX)
     (apply-mac-os-settings! mac-os-settings))
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
-                          (create! (create-context)))
+                          (create! listener (create-context)))
                         (dispose []
-                          (dispose))
+                          (dispose! listener))
                         (render  []
-                          (let [[f params] render]
-                            (f params)))
+                          (render! listener))
                         (resize [width height]
-                          (resize width height))
+                          (resize! listener width height))
                         (pause [])
                         (resume []))
                       (doto (Lwjgl3ApplicationConfiguration.)

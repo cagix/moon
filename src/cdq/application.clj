@@ -92,4 +92,13 @@
                                                   form))
                                                form))))]
     (gdl.application.desktop/start!
-     (assoc config :create! #(create! % (:create-fns config))))))
+     (assoc config :listener
+            (reify gdl.application.desktop/Listener
+              (create! [_ context]
+                (create! context (:create-fns config)))
+              (dispose! [_]
+                (dispose!))
+              (render! [_]
+                (render! (:render-fns config)))
+              (resize! [_ width height]
+                (resize! width height)))))))
