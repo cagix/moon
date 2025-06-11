@@ -188,12 +188,20 @@
     [(.getX input)
      (.getY input)]))
 
-(defn- create-context []
+(defn- create-context* []
   (map->Context {:app      Gdx/app
                  :audio    Gdx/audio
                  :files    Gdx/files
                  :graphics Gdx/graphics
                  :input    Gdx/input}))
+
+(require 'gdl.create.graphics)
+
+(defn- create-context [graphics-config]
+  (let [gdl (create-context*)]
+    {:ctx/gdl (create-context*)
+     :ctx/graphics (gdl.create.graphics/do! {:ctx/gdl gdl}
+                                            graphics-config)}))
 
 (defn- apply-mac-os-settings!
   [{:keys [glfw-async?
@@ -215,12 +223,13 @@
                       title
                       windowed-mode
                       foreground-fps
+                      graphics
                       listener]}]
   (when (= SharedLibraryLoader/os Os/MacOsX)
     (apply-mac-os-settings! mac-os-settings))
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
-                          (create! listener (create-context)))
+                          (create! listener (create-context graphics)))
                         (dispose []
                           (dispose! listener))
                         (render  []

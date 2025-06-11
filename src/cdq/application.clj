@@ -49,7 +49,7 @@
 (defn create! [context create-fns]
   (let [ctx (reduce utils/render*
                     (merge (map->Context {})
-                           {:ctx/gdl context})
+                           context)
                     create-fns)]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
