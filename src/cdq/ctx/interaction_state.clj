@@ -15,6 +15,12 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
+; Checks with mouse position (as input?)
+; and either over an ui actor, over a clickable world entity
+; or we try to use an action (see if selected, skill, then check usable state)
+;[:interaction-state/mouseover-ui-actor mouseover-actor]
+;[:interaction-state/clickable-mouseover-entity mouseover-eid]
+;[:interaction-state/try-use-action ]
 (defn interaction-state [{:keys [ctx/mouseover-eid
                                  ctx/stage]
                           :as ctx}
