@@ -43,7 +43,9 @@
   | `:vsync?`                   | Sets whether to use vsync. This setting can be changed anytime at runtime via {@link Graphics#setVSync(boolean)}. For multi-window applications, only one (the main) window should enable vsync. Otherwise, every window will wait for the vertical blank on swap individually, effectively cutting the frame rate to (refreshRate / numberOfWindows). | `` |
   "
   (:require [clojure.java.io :as io])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3Application$GLDebugMessageSeverity
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
@@ -244,12 +246,23 @@
   []
   (map monitor->map (Lwjgl3ApplicationConfiguration/getMonitors)))
 
+(defn- create-listener [{:keys [create! dispose! render! resize!]}]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (when create! (create!)))
+    (dispose []
+      (when dispose! (dispose!)))
+    (render []
+      (when render! (render!)))
+    (resize [width height]
+      (when resize! (resize! width height)))))
+
 (defn application
   "Starts a `com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application` with the given `com.badlogic.gdx.ApplicationListener` and config.
 
   Config can contain both application and window configuration options."
   [config listener]
-  (Lwjgl3Application. listener
+  (Lwjgl3Application. (create-listener listener)
                       (create-application-config config)))
 
 (defn new-window

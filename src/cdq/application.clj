@@ -8,8 +8,7 @@
             [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
-            [qrecord.core :as q])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+            [qrecord.core :as q]))
 
 (q/defrecord Context [ctx/config
                       ctx/db
@@ -70,43 +69,42 @@
 (def state (atom nil))
 
 (defn- create-listener [config]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (let [context (gdl.application.desktop/create-context (:graphics config)
-                                                            (:user-interface config)
-                                                            (:audio config))
-            ctx (reduce utils/render*
-                        (merge (map->Context {})
-                               (assoc context :ctx/config config))
-                        (:create-fns config))]
-        (m/validate-humanize schema ctx)
-        (reset! state ctx)))
+  {:create! (fn []
+              (let [context (gdl.application.desktop/create-context (:graphics config)
+                                                                    (:user-interface config)
+                                                                    (:audio config))
+                    ctx (reduce utils/render*
+                                (merge (map->Context {})
+                                       (assoc context :ctx/config config))
+                                (:create-fns config))]
+                (m/validate-humanize schema ctx)
+                (reset! state ctx)))
 
-    (dispose []
-      (let [{:keys [ctx/audio
-                    ctx/graphics
-                    ctx/tiled-map]} @state]
-        (disp/dispose! audio)
-        (disp/dispose! graphics)
-        (disp/dispose! tiled-map)
-        ; TODO vis-ui dispose
-        ; TODO what else disposable?
-        ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
-        ))
+   :dispose! (fn []
+               (let [{:keys [ctx/audio
+                             ctx/graphics
+                             ctx/tiled-map]} @state]
+                 (disp/dispose! audio)
+                 (disp/dispose! graphics)
+                 (disp/dispose! tiled-map)
+                 ; TODO vis-ui dispose
+                 ; TODO what else disposable?
+                 ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
+                 ))
 
-    (render []
-      (swap! state (fn [ctx]
-                     (m/validate-humanize schema ctx)
-                     (let [ctx (reduce utils/render*
-                                       ctx
-                                       (:render-fns config))]
-                       (m/validate-humanize schema ctx)
-                       ctx))))
+   :render! (fn []
+              (swap! state (fn [ctx]
+                             (m/validate-humanize schema ctx)
+                             (let [ctx (reduce utils/render*
+                                               ctx
+                                               (:render-fns config))]
+                               (m/validate-humanize schema ctx)
+                               ctx))))
 
-    (resize [width height]
-      (m/validate-humanize schema @state)
-      (let [{:keys [ctx/graphics]} @state]
-        (graphics/resize-viewports! graphics width height)))))
+   :resize! (fn [width height]
+              (m/validate-humanize schema @state)
+              (let [{:keys [ctx/graphics]} @state]
+                (graphics/resize-viewports! graphics width height)))})
 
 ; this is much cleaner
 ; don't create abstractions for things which are only used 2x times 'somehow' repeated ...

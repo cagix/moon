@@ -14,8 +14,7 @@
             [gdl.input :as input]
             [gdl.tiled :as tiled]
             [gdl.ui.stage :as stage]
-            [gdl.utils.disposable :as disp])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+            [gdl.utils.disposable :as disp]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -128,22 +127,16 @@
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
-   (proxy [ApplicationAdapter] []
-     (create []
-       (create! (gdl.application.desktop/create-context {:textures {:folder "resources/"
-                                                                    :extensions #{"png" "bmp"}}
-                                                         :tile-size 48
-                                                         :ui-viewport {:width 1440
-                                                                       :height 900}
-                                                         :world-viewport {:width 1440
-                                                                          :height 900}}
-                                                        {:skin-scale :x1}
-                                                        nil)))
-     (dispose []
-       (dispose!))
-
-     (render []
-       (render!))
-
-     (resize [width height]
-       (resize! width height)))))
+   {:create! (fn []
+               (create! (gdl.application.desktop/create-context {:textures {:folder "resources/"
+                                                                            :extensions #{"png" "bmp"}}
+                                                                 :tile-size 48
+                                                                 :ui-viewport {:width 1440
+                                                                               :height 900}
+                                                                 :world-viewport {:width 1440
+                                                                                  :height 900}}
+                                                                {:skin-scale :x1}
+                                                                nil)))
+    :dispose! dispose!
+    :render! render!
+    :resize! resize!}))
