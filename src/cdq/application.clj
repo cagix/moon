@@ -1,6 +1,10 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
+            clojure.edn
+            clojure.java.io
+            clojure.walk
+            [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
@@ -72,3 +76,18 @@
   (m/validate-humanize schema @state)
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
+
+(defn -main [config-path]
+  (->> config-path
+       clojure.java.io/resource
+       slurp
+       clojure.edn/read-string
+       (clojure.walk/postwalk (fn [form]
+                                (if (symbol? form)
+                                  (if (namespace form) ; var
+                                    (requiring-resolve form)
+                                    (do
+                                     (require form) ; namespace
+                                     form))
+                                  form)))
+       gdl.application.desktop/start!))
