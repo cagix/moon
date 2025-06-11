@@ -4,7 +4,7 @@
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.app]
-            [gdl.audio]
+            [gdl.audio :as audio]
             [gdl.file]
             [gdl.fs :as fs]
             [gdl.graphics :as graphics]
@@ -14,10 +14,11 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
             [gdl.math.utils :as math-utils]
-            [gdl.input]
+            [gdl.input :as input]
             [gdl.tiled :as tiled]
-            [gdl.ui]
-            [gdl.utils.disposable])
+            [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
+            [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
@@ -52,6 +53,40 @@
                      Toolkit)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- create-user-interface
+  [graphics
+   gdl
+   config]
+  (ui/load! config)
+  (let [stage (ui/stage (:java-object (:ui-viewport graphics))
+                        (:batch graphics))]
+    (input/set-input-processor! gdl stage)
+    (reify
+      ; TODO is disposable but not sure if needed as we handle batch ourself.
+      clojure.lang.ILookup
+      (valAt [_ key]
+        (key stage))
+
+      stage/Stage
+      (render! [_ ctx]
+        (ui/act! stage ctx)
+        (ui/draw! stage ctx)
+        ctx)
+
+      (add! [_ actor] ; -> re-use gdl.ui/add! ?
+        (ui/add! stage actor))
+
+      (clear! [_]
+        (ui/clear! stage))
+
+      (hit [_ position]
+        (ui/hit stage position))
+
+      (find-actor [_ actor-name]
+        (-> stage
+            ui/root
+            (ui/find-actor actor-name))))))
 
 (defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation]
   (.draw batch
@@ -645,15 +680,31 @@
     [(.getX input)
      (.getY input)]))
 
+(defn- create-audio [gdl {:keys [sounds]}]
+  (let [sounds (into {}
+                     (for [file (assets/find-assets (update sounds :folder (partial fs/internal gdl)))]
+                       [file (audio/sound gdl file)]))]
+    (reify
+      disposable/Disposable
+      (dispose! [_]
+        (do
+         ;(println "Disposing sounds ...")
+         (run! disposable/dispose! (vals sounds))))
+
+      gdl.audio/Audio
+      (all-sounds [_]
+        (map first sounds))
+
+      (play-sound! [_ path]
+        (assert (contains? sounds path) (str path))
+        (audio/play! (get sounds path))))))
+
 (defn- create-context* []
   (map->Context {:app      Gdx/app
                  :audio    Gdx/audio
                  :files    Gdx/files
                  :graphics Gdx/graphics
                  :input    Gdx/input}))
-
-(require 'gdl.create.stage)
-(require 'gdl.create.audio)
 
 (defn- create-context [graphics-config
                        user-interface
@@ -662,8 +713,9 @@
         graphics (create-graphics gdl graphics-config)]
     {:ctx/gdl (create-context*)
      :ctx/graphics graphics
-     :ctx/stage (gdl.create.stage/do! graphics gdl user-interface)
-     :ctx/audio (gdl.create.audio/do! gdl audio)}))
+     :ctx/stage (create-user-interface graphics gdl user-interface)
+     :ctx/audio (when audio
+                  (create-audio gdl audio))}))
 
 (defn- apply-mac-os-settings!
   [{:keys [glfw-async?
