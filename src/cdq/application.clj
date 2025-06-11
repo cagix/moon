@@ -46,10 +46,10 @@
 
 (def state (atom nil))
 
-(defn create! [context create-fns]
+(defn create! [context config create-fns]
   (let [ctx (reduce utils/render*
                     (merge (map->Context {})
-                           context)
+                           (assoc context :ctx/config config))
                     create-fns)]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
@@ -78,24 +78,36 @@
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
 
+(defn- create-config [config-path]
+  (let [m (->> config-path
+               clojure.java.io/resource
+               slurp
+               clojure.edn/read-string
+               (clojure.walk/postwalk (fn [form]
+                                        (if (symbol? form)
+                                          (if (namespace form)
+                                            (requiring-resolve form)
+                                            (do
+                                             (require form)
+                                             form))
+                                          form))))]
+    #_(reify ILookup
+      (valAt [_ k]
+        (assert (contains? m k)
+                (str "Config key not found: " k))
+        (get m k)))
+    m
+    ))
+
 (defn -main [config-path]
-  (let [config (->> config-path
-                    clojure.java.io/resource
-                    slurp
-                    clojure.edn/read-string
-                    (clojure.walk/postwalk (fn [form]
-                                             (if (symbol? form)
-                                               (if (namespace form) ; var
-                                                 (requiring-resolve form)
-                                                 (do
-                                                  (require form) ; namespace
-                                                  form))
-                                               form))))]
+  (let [config (create-config config-path)]
     (gdl.application.desktop/start!
      (assoc config :listener
             (reify gdl.application.desktop/Listener
               (create! [_ context]
-                (create! context (:create-fns config)))
+                (create! context
+                         config
+                         (:create-fns config)))
               (dispose! [_]
                 (dispose!))
               (render! [_]
