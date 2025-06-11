@@ -403,36 +403,26 @@
     (.setUseIntegerPositions font use-integer-positions?)
     font))
 
-(defn- create-user-interface [graphics config]
-  (ui/load! config)
-  (let [stage (ui/stage (:java-object (:ui-viewport graphics))
-                        (:batch graphics))]
-    (.setInputProcessor Gdx/input stage)
-    (reify
-      ; TODO is disposable but not sure if needed as we handle batch ourself.
-      clojure.lang.ILookup
-      (valAt [_ key]
-        (key stage))
+(extend-type gdl.ui.CtxStage
+  stage/Stage
+  (render! [stage ctx]
+    (ui/act! stage ctx)
+    (ui/draw! stage ctx)
+    ctx)
 
-      stage/Stage
-      (render! [_ ctx]
-        (ui/act! stage ctx)
-        (ui/draw! stage ctx)
-        ctx)
+  (add! [stage actor] ; -> re-use gdl.ui/add! ?
+    (ui/add! stage actor))
 
-      (add! [_ actor] ; -> re-use gdl.ui/add! ?
-        (ui/add! stage actor))
+  (clear! [stage]
+    (ui/clear! stage))
 
-      (clear! [_]
-        (ui/clear! stage))
+  (hit [stage position]
+    (ui/hit stage position))
 
-      (hit [_ position]
-        (ui/hit stage position))
-
-      (find-actor [_ actor-name]
-        (-> stage
-            ui/root
-            (ui/find-actor actor-name))))))
+  (find-actor [stage actor-name]
+    (-> stage
+        ui/root
+        (ui/find-actor actor-name))))
 
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
@@ -961,25 +951,31 @@
         (assert (contains? sounds path) (str path))
         (Sound/.play (get sounds path))))))
 
+(extend-type com.badlogic.gdx.Input
+  gdl.input/Input
+  (button-just-pressed? [this button]
+    (.isButtonJustPressed this (k->input-button button)))
+
+  (key-pressed? [this key]
+    (.isKeyPressed this (k->input-key key)))
+
+  (key-just-pressed? [this key]
+    (.isKeyJustPressed this (k->input-key key)))
+
+  (mouse-position [this]
+    [(.getX this)
+     (.getY this)]))
+
 (defn create-context [graphics-config
                       user-interface
                       audio]
+  (ui/load! user-interface)
   (let [graphics (create-graphics graphics-config)]
-    {:ctx/input (let [this Gdx/input] ; just extend Input to my input ....
-                  (reify gdl.input/Input
-                    (button-just-pressed? [_ button]
-                      (.isButtonJustPressed this (k->input-button button)))
-
-                    (key-pressed? [_ key]
-                      (.isKeyPressed this (k->input-key key)))
-
-                    (key-just-pressed? [_ key]
-                      (.isKeyJustPressed this (k->input-key key)))
-
-                    (mouse-position [_]
-                      [(.getX this)
-                       (.getY this)])))
+    {:ctx/input Gdx/input
      :ctx/graphics graphics
-     :ctx/stage (create-user-interface graphics user-interface)
+     :ctx/stage (let [stage (ui/stage (:java-object (:ui-viewport graphics))
+                                      (:batch graphics))]
+                  (.setInputProcessor Gdx/input stage)
+                  stage)
      :ctx/audio (when audio
                   (create-audio audio))}))
