@@ -1,5 +1,6 @@
 (ns gdl.application.desktop
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
@@ -24,13 +25,10 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture
-                                      Texture$TextureFilter
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)
@@ -42,33 +40,6 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- freetype-font-params [{:keys [size
-                                     min-filter
-                                     mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
-
-(defn- true-type-font [file-handle {:keys [size
-                                           quality-scaling
-                                           enable-markup?
-                                           use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        ^BitmapFont font (.generateFont generator
-                                        (freetype-font-params {:size (* size quality-scaling)
-                                                               ; :texture-filter/linear because scaling to world-units
-                                                               :min-filter Texture$TextureFilter/Linear
-                                                               :mag-filter Texture$TextureFilter/Linear}))]
-    (.setScale (.getData font) (/ quality-scaling))
-    (set! (.markupEnabled (.getData font)) enable-markup?)
-    (.setUseIntegerPositions font use-integer-positions?)
-    font))
 
 (defn- create-user-interface [graphics config]
   (ui/load! config)
@@ -511,8 +482,8 @@
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (true-type-font (gdx/internal (:file default-font))
-                                                    (:params default-font)))
+                                    (freetype/generate-font (gdx/internal (:file default-font))
+                                                            (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
