@@ -55,8 +55,8 @@
                                                                                (delete! ctx)))
                                                       :center? true}]])]])
     (ui/add! window {:actor/type :actor.type/actor
-                     :act (fn [_this _delta {:keys [ctx/gdl]}]
-                            (when (input/key-just-pressed? gdl :enter)
+                     :act (fn [_this _delta {:keys [ctx/input]}]
+                            (when (input/key-just-pressed? input :enter)
                               (save! ctx)))})
     (.pack window)
     window))

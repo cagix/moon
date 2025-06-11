@@ -942,20 +942,7 @@
   (dispose! [object]
     (.dispose object)))
 
-(defrecord Context [input]
-  gdl.input/Input
-  (button-just-pressed? [_ button]
-    (.isButtonJustPressed input (k->input-button button)))
 
-  (key-pressed? [_ key]
-    (.isKeyPressed input (k->input-key key)))
-
-  (key-just-pressed? [_ key]
-    (.isKeyJustPressed input (k->input-key key)))
-
-  (mouse-position [_]
-    [(.getX input)
-     (.getY input)]))
 
 (defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
@@ -964,9 +951,7 @@
     (reify
       disposable/Disposable
       (dispose! [_]
-        (do
-         ;(println "Disposing sounds ...")
-         (run! disposable/dispose! (vals sounds))))
+        (run! disposable/dispose! (vals sounds)))
 
       gdl.audio/Audio
       (all-sounds [_]
@@ -979,9 +964,21 @@
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (let [gdl (map->Context {:input Gdx/input})
-        graphics (create-graphics graphics-config)]
-    {:ctx/gdl gdl
+  (let [graphics (create-graphics graphics-config)]
+    {:ctx/input (let [this Gdx/input] ; just extend Input to my input ....
+                  (reify gdl.input/Input
+                    (button-just-pressed? [_ button]
+                      (.isButtonJustPressed this (k->input-button button)))
+
+                    (key-pressed? [_ key]
+                      (.isKeyPressed this (k->input-key key)))
+
+                    (key-just-pressed? [_ key]
+                      (.isKeyJustPressed this (k->input-key key)))
+
+                    (mouse-position [_]
+                      [(.getX this)
+                       (.getY this)])))
      :ctx/graphics graphics
      :ctx/stage (create-user-interface graphics user-interface)
      :ctx/audio (when audio

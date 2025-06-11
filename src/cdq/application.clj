@@ -18,7 +18,7 @@
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/config :some]
-             [:ctx/gdl :some]
+             [:ctx/input :some]
              [:ctx/db :some]
              [:ctx/audio :some]
              [:ctx/stage :some]
