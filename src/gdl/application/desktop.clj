@@ -17,9 +17,6 @@
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
-                                      Colors
-                                      Pixmap
-                                      Pixmap$Format
                                       Texture
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
@@ -472,15 +469,9 @@
            tile-size
            ui-viewport
            world-viewport]}]
-  (doseq [[name color-params] colors]
-    (Colors/put name (gdx/color color-params)))
+  (gdx/put-colors! colors)
   (let [batch (SpriteBatch.)
-        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                            (.setColor Color/WHITE)
-                                            (.drawPixel 0 0))
-                                   texture (Texture. pixmap)]
-                               (.dispose pixmap)
-                               texture)
+        shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (fit-viewport (:width ui-viewport)
                                   (:height ui-viewport)

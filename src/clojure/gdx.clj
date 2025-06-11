@@ -3,7 +3,10 @@
                              Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.graphics Color
-                                      Pixmap)
+                                      Colors
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture)
            (com.badlogic.gdx.utils Align)))
 
 (defmacro post-runnable! [& exprs]
@@ -349,3 +352,15 @@
         (keyword? c) (k->color c)
         (vector? c) (apply create-color c)
         :else (throw (ex-info "Cannot understand color" c))))
+
+(defn put-colors! [colors]
+  (doseq [[name color-params] colors]
+    (Colors/put name (color color-params))))
+
+(defn white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
