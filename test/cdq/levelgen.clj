@@ -128,10 +128,10 @@
 
 (defn -main []
   (gdl.application.desktop/start!
-   {:mac-os-settings {:glfw-async? true}
-    :title "Levelgen test"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60
+   {:lwjgl-config {:mac-os {:glfw-async? true}
+                   :title "Levelgen test"
+                   :windowed-mode {:width 1440 :height 900}
+                   :foreground-fps 60}
     :graphics {:textures {:folder "resources/"
                           :extensions #{"png" "bmp"}}
                :tile-size 48
