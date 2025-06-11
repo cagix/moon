@@ -3,17 +3,17 @@
             [cdq.level.uf-caves]
             [cdq.level.vampire]
             [cdq.create.db]
-            gdl.application.desktop
             [cdq.render.clear-screen]
-            [gdl.ui.stage :as stage]
             [cdq.utils.camera :as camera-utils]
+            [clojure.gdx :as gdx]
             clojure.gdx.backends.lwjgl
-            [gdl.graphics.color :as color]
+            gdl.application.desktop
             [gdl.ui :as ui]
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
+            [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
@@ -68,7 +68,7 @@
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:camera (:world-viewport (:ctx/graphics ctx)))
-                   :ctx/color-setter (constantly (color/create :white))
+                   :ctx/color-setter (constantly (gdx/color :white))
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
         ctx (generate-level ctx cdq.level.modules/create)]

@@ -1,9 +1,9 @@
 (ns cdq.render.draw-world-map
   (:require [cdq.raycaster :as raycaster]
             [cdq.tile-color-setter :as tile-color-setter]
+            [clojure.gdx :as gdx]
             [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.color :as color]))
+            [gdl.graphics.camera :as camera]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/tiled-map
@@ -17,7 +17,7 @@
                               :explored-tile-corners explored-tile-corners
                               :light-position (camera/position (:camera (:world-viewport graphics)))
                               :see-all-tiles? false
-                              :explored-tile-color  (color/create [0.5 0.5 0.5 1])
-                              :visible-tile-color   (color/create :white)
-                              :invisible-tile-color (color/create :black)}))
+                              :explored-tile-color  (gdx/color [0.5 0.5 0.5 1])
+                              :visible-tile-color   (gdx/color :white)
+                              :invisible-tile-color (gdx/color :black)}))
   ctx)

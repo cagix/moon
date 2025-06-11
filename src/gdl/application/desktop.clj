@@ -1,12 +1,10 @@
 (ns gdl.application.desktop
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
-            [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.audio :as audio]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera]
-            [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
@@ -187,12 +185,12 @@
                         :x x
                         :y (+ y (if up? (bitmap-font-text-height font text) 0))
                         :target-width 0
-                        :align (interop/k->align (or h-align :center))
+                        :align (gdx/k->align (or h-align :center))
                         :wrap? false})
     (.setScale (.getData font) (float old-scale))))
 
 (defn- sd-set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (color/create color)))
+  (ShapeDrawer/.setColor shape-drawer (gdx/color color)))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
                                 {:keys [shape-drawer]}]
@@ -322,7 +320,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (ScreenUtils/clear (color/create color)))
+    (ScreenUtils/clear (gdx/color color)))
 
   (resize-viewports! [_ width height]
     (gdl.graphics.viewport/resize! ui-viewport    width height)
@@ -345,7 +343,7 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (.setColor batch (color/create :white)) ; fix scene2d.ui.tooltip flickering
+    (.setColor batch (gdx/color :white)) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix batch (gdl.graphics.camera/combined (:camera world-viewport)))
     (.begin batch)
     (sd-with-line-width shape-drawer world-unit-scale
@@ -475,7 +473,7 @@
            ui-viewport
            world-viewport]}]
   (doseq [[name color-params] colors]
-    (Colors/put name (color/create color-params)))
+    (Colors/put name (gdx/color color-params)))
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
@@ -595,13 +593,13 @@
 (defrecord Context [input]
   gdl.input/Input
   (button-just-pressed? [_ button]
-    (.isButtonJustPressed input (interop/k->input-button button)))
+    (.isButtonJustPressed input (gdx/k->input-button button)))
 
   (key-pressed? [_ key]
-    (.isKeyPressed input (interop/k->input-key key)))
+    (.isKeyPressed input (gdx/k->input-key key)))
 
   (key-just-pressed? [_ key]
-    (.isKeyJustPressed input (interop/k->input-key key)))
+    (.isKeyJustPressed input (gdx/k->input-key key)))
 
   (mouse-position [_]
     [(.getX input)
