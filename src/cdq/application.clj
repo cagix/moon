@@ -44,40 +44,6 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
-(def state (atom nil))
-
-(defn create! [context config create-fns]
-  (let [ctx (reduce utils/render*
-                    (merge (map->Context {})
-                           (assoc context :ctx/config config))
-                    create-fns)]
-    (m/validate-humanize schema ctx)
-    (reset! state ctx)))
-
-(defn dispose! []
-  (let [{:keys [ctx/audio
-                ctx/graphics
-                ctx/tiled-map]} @state]
-    (disp/dispose! audio)
-    (disp/dispose! graphics)
-    (disp/dispose! tiled-map)
-    ; TODO vis-ui dispose
-    ; TODO what else disposable?
-    ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
-    ))
-
-(defn render! [render-fns]
-  (swap! state (fn [ctx]
-                 (m/validate-humanize schema ctx)
-                 (let [ctx (reduce utils/render* ctx render-fns)]
-                   (m/validate-humanize schema ctx)
-                   ctx))))
-
-(defn resize! [width height]
-  (m/validate-humanize schema @state)
-  (let [{:keys [ctx/graphics]} @state]
-    (graphics/resize-viewports! graphics width height)))
-
 (defn- create-config [config-path]
   (let [m (->> config-path
                clojure.java.io/resource
@@ -99,18 +65,43 @@
     m
     ))
 
+(def state (atom nil))
+
 (defn -main [config-path]
   (let [config (create-config config-path)]
     (gdl.application.desktop/start!
      (assoc config :listener
             (reify gdl.application.desktop/Listener
               (create! [_ context]
-                (create! context
-                         config
-                         (:create-fns config)))
+                (let [ctx (reduce utils/render*
+                                  (merge (map->Context {})
+                                         (assoc context :ctx/config config))
+                                  (:create-fns config))]
+                  (m/validate-humanize schema ctx)
+                  (reset! state ctx)))
+
               (dispose! [_]
-                (dispose!))
+                (let [{:keys [ctx/audio
+                              ctx/graphics
+                              ctx/tiled-map]} @state]
+                  (disp/dispose! audio)
+                  (disp/dispose! graphics)
+                  (disp/dispose! tiled-map)
+                  ; TODO vis-ui dispose
+                  ; TODO what else disposable?
+                  ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
+                  ))
+
               (render! [_]
-                (render! (:render-fns config)))
+                (swap! state (fn [ctx]
+                               (m/validate-humanize schema ctx)
+                               (let [ctx (reduce utils/render*
+                                                 ctx
+                                                 (:render-fns config))]
+                                 (m/validate-humanize schema ctx)
+                                 ctx))))
+
               (resize! [_ width height]
-                (resize! width height)))))))
+                (m/validate-humanize schema @state)
+                (let [{:keys [ctx/graphics]} @state]
+                  (graphics/resize-viewports! graphics width height))))))))
