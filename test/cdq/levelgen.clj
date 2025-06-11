@@ -1,25 +1,21 @@
 (ns cdq.levelgen
-  (:require
-            [cdq.level.modules]
+  (:require [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
             [cdq.create.db]
-
-            [cdq.render.clear-screen] ; ??
-
+            gdl.application.desktop
+            [cdq.render.clear-screen]
             [gdl.ui.stage :as stage]
-
             [cdq.utils.camera :as camera-utils]
-            [gdl.application.desktop]
+            clojure.gdx.backends.lwjgl
             [gdl.graphics.color :as color]
-
             [gdl.ui :as ui]
-
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
-            [gdl.utils.disposable :as disp]))
+            [gdl.utils.disposable :as disp])
+  (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -127,25 +123,27 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main []
-  (gdl.application.desktop/start!
-   {:lwjgl-config {:mac-os {:glfw-async? true}
-                   :title "Levelgen test"
-                   :windowed-mode {:width 1440 :height 900}
-                   :foreground-fps 60}
-    :graphics {:textures {:folder "resources/"
-                          :extensions #{"png" "bmp"}}
-               :tile-size 48
-               :ui-viewport {:width 1440
-                             :height 900}
-               :world-viewport {:width 1440
-                                :height 900}}
-    :user-interface {:skin-scale :x1}
-    :listener (reify gdl.application.desktop/Listener
-                (create! [_ context]
-                  (create! context))
-                (dispose! [_]
-                  (dispose!))
-                (render! [_]
-                  (render!))
-                (resize! [_ width height]
-                  (resize! width height)))}))
+  (clojure.gdx.backends.lwjgl/application
+   {:mac-os {:glfw-async? true}
+    :title "Levelgen test"
+    :windowed-mode {:width 1440 :height 900}
+    :foreground-fps 60}
+   (proxy [ApplicationAdapter] []
+     (create []
+       (create! (gdl.application.desktop/create-context {:textures {:folder "resources/"
+                                                                    :extensions #{"png" "bmp"}}
+                                                         :tile-size 48
+                                                         :ui-viewport {:width 1440
+                                                                       :height 900}
+                                                         :world-viewport {:width 1440
+                                                                          :height 900}}
+                                                        {:skin-scale :x1}
+                                                        nil)))
+     (dispose []
+       (dispose!))
+
+     (render []
+       (render!))
+
+     (resize [width height]
+       (resize! width height)))))

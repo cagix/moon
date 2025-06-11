@@ -692,7 +692,7 @@
                            :graphics Gdx/graphics
                            :input    Gdx/input})
         graphics (create-graphics gdl graphics-config)]
-    {:ctx/gdl (create-context*)
+    {:ctx/gdl gdl
      :ctx/graphics graphics
      :ctx/stage (create-user-interface graphics gdl user-interface)
      :ctx/audio (when audio

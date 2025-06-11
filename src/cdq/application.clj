@@ -108,6 +108,10 @@
       (let [{:keys [ctx/graphics]} @state]
         (graphics/resize-viewports! graphics width height)))))
 
+; this is much cleaner
+; don't create abstractions for things which are only used 2x times 'somehow' repeated ...
+; see at least a few times
+; do not create unnecessary abstractions ...
 (defn -main [config-path]
   (let [config (create-config config-path)]
     (clojure.gdx.backends.lwjgl/application (:lwjgl-config config)
