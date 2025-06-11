@@ -43,14 +43,38 @@
                          ColorSetter)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
-(defn- create-user-interface
-  [graphics
-   gdl
-   config]
+(defn- freetype-font-params [{:keys [size
+                                     min-filter
+                                     mag-filter]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) min-filter)
+    (set! (.magFilter params) mag-filter)
+    params))
+
+(defn- true-type-font [file-handle {:keys [size
+                                           quality-scaling
+                                           enable-markup?
+                                           use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        ^BitmapFont font (.generateFont generator
+                                        (freetype-font-params {:size (* size quality-scaling)
+                                                               ; :texture-filter/linear because scaling to world-units
+                                                               :min-filter Texture$TextureFilter/Linear
+                                                               :mag-filter Texture$TextureFilter/Linear}))]
+    (.setScale (.getData font) (/ quality-scaling))
+    (set! (.markupEnabled (.getData font)) enable-markup?)
+    (.setUseIntegerPositions font use-integer-positions?)
+    font))
+
+(defn- create-user-interface [graphics config]
   (ui/load! config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))
                         (:batch graphics))]
-    (input/set-input-processor! gdl stage)
+    (gdx/set-input-processor! stage)
     (reify
       ; TODO is disposable but not sure if needed as we handle batch ourself.
       clojure.lang.ILookup
@@ -454,8 +478,7 @@
 
 
 (defn- create-graphics
-  [gdl
-   {:keys [textures
+  [{:keys [textures
            colors ; optional
            cursors ; optional
            cursor-path-format ; optional
@@ -483,16 +506,13 @@
                             [file (Texture. file)]))
         cursors (update-vals cursors
                              (fn [[file hotspot]]
-                               (graphics/cursor gdl
-                                                (format cursor-path-format file)
-                                                hotspot)))]
-    (map->Graphics {:graphics (:graphics gdl) ; TODO no need to pass
+                               (gdx/cursor (format cursor-path-format file) hotspot)))]
+    (map->Graphics {:graphics (gdx/graphics)
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (graphics/true-type-font gdl
-                                                             (gdx/internal (:file default-font))
-                                                             (:params default-font)))
+                                    (true-type-font (gdx/internal (:file default-font))
+                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
@@ -512,18 +532,6 @@
                                                    (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                                 (float world-unit-scale)
                                                                                 batch)))})))
-
-(defn- freetype-font-params [{:keys [size
-                                     min-filter
-                                     mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
 
 (extend-type TextureRegion
   gdl.graphics.g2d.texture-region/TextureRegion
@@ -607,35 +615,8 @@
   (path [this]
     (.path this)))
 
-(defrecord Context [graphics
-                    input]
-  gdl.graphics/Cursors
-  (cursor [_ path [hotspot-x hotspot-y]]
-    (let [pixmap (Pixmap. (gdx/internal path))
-          cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
-      (.dispose pixmap)
-      cursor))
-
-  gdl.graphics/TrueTypeFonts
-  (true-type-font [_ file-handle {:keys [size
-                                         quality-scaling
-                                         enable-markup?
-                                         use-integer-positions?]}]
-    (let [generator (FreeTypeFontGenerator. file-handle)
-          ^BitmapFont font (.generateFont generator
-                                          (freetype-font-params {:size (* size quality-scaling)
-                                                                 ; :texture-filter/linear because scaling to world-units
-                                                                 :min-filter Texture$TextureFilter/Linear
-                                                                 :mag-filter Texture$TextureFilter/Linear}))]
-      (.setScale (.getData font) (/ quality-scaling))
-      (set! (.markupEnabled (.getData font)) enable-markup?)
-      (.setUseIntegerPositions font use-integer-positions?)
-      font))
-
+(defrecord Context [input]
   gdl.input/Input
-  (set-input-processor! [_ input-processor]
-    (.setInputProcessor input input-processor))
-
   (button-just-pressed? [_ button]
     (.isButtonJustPressed input (interop/k->input-button button)))
 
@@ -671,11 +652,10 @@
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (let [gdl (map->Context {:graphics (gdx/graphics)
-                           :input    (gdx/input)})
-        graphics (create-graphics gdl graphics-config)]
+  (let [gdl (map->Context {:input (gdx/input)})
+        graphics (create-graphics graphics-config)]
     {:ctx/gdl gdl
      :ctx/graphics graphics
-     :ctx/stage (create-user-interface graphics gdl user-interface)
+     :ctx/stage (create-user-interface graphics user-interface)
      :ctx/audio (when audio
                   (create-audio audio))}))
