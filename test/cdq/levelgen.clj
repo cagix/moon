@@ -10,6 +10,7 @@
             [gdl.ui.stage :as stage]
 
             [cdq.utils.camera :as camera-utils]
+            [gdl.application.desktop]
             [gdl.graphics.color :as color]
 
             [gdl.ui :as ui]
@@ -65,8 +66,24 @@
 
 (defrecord Context [])
 
-(defn create! [context _params]
-  (let [ctx (merge (->Context) context)
+(require 'gdl.create.gdx)
+(require 'gdl.create.graphics)
+(require 'gdl.create.stage)
+
+(defn create! [_params]
+  (let [ctx (->Context)
+        ctx (assoc ctx :ctx/gdl (gdl.create.gdx/do! nil nil))
+        ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do!
+                                      ctx
+                                      {:textures {:folder "resources/"
+                                                  :extensions #{"png" "bmp"}}
+                                       :tile-size 48
+                                       :ui-viewport {:width 1440
+                                                     :height 900}
+                                       :world-viewport {:width 1440
+                                                        :height 900}}))
+        ctx (assoc ctx :ctx/stage (gdl.create.stage/do! ctx
+                                                        {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
@@ -124,3 +141,14 @@
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
+
+(defn -main []
+  (gdl.application.desktop/start!
+   {:mac-os-settings {:glfw-async? true}
+    :title "Levelgen test"
+    :windowed-mode {:width 1440 :height 900}
+    :foreground-fps 60
+    :create [create!]
+    :dispose dispose!
+    :render [render!]
+    :resize resize!}))
