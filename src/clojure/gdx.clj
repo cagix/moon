@@ -1,13 +1,18 @@
 (ns clojure.gdx
+  (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx
                              Input$Buttons
                              Input$Keys)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          BitmapFont)
+           (com.badlogic.gdx.utils Align
+                                   ScreenUtils)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -364,3 +369,51 @@
         texture (Texture. pixmap)]
     (.dispose pixmap)
     texture))
+
+(defn clear-screen! [color*]
+  (ScreenUtils/clear (color color*)))
+
+(defn find-assets [{:keys [folder extensions]}]
+  (map #(str/replace-first % folder "")
+       (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+              result []]
+         (cond (nil? file)
+               result
+
+               (.isDirectory file)
+               (recur (concat remaining (.list file)) result)
+
+               (extensions (.extension file))
+               (recur remaining (conj result (.path file)))
+
+               :else
+               (recur remaining result)))))
+
+(defn draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation]
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; origin-x
+         (/ (float h) 2) ; origin-y
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation))
+
+(defn text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn draw-bitmap-font! [{:keys [^BitmapFont font batch text x y target-width align wrap?]}]
+  (.draw font
+         batch
+         text
+         (float x)
+         (float y)
+         (float target-width)
+         align
+         wrap?))

@@ -15,7 +15,6 @@
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Texture
                                       OrthographicCamera)
@@ -27,31 +26,11 @@
                                             Touchable)
            (com.badlogic.gdx.math Vector2
                                   Vector3)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- find-assets [{:keys [^FileHandle folder extensions]}]
-  (map #(str/replace-first % (str (.path folder) "/") "")
-       (recursively-search folder extensions)))
 
 (defn- create-user-interface [graphics config]
   (ui/load! config)
@@ -84,19 +63,6 @@
             ui/root
             (ui/find-actor actor-name))))))
 
-(defn- draw-texture-region! [^SpriteBatch batch texture-region [x y] [w h] rotation]
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; origin-x
-         (/ (float h) 2) ; origin-y
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation))
-
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
            world-unit-scale]}
@@ -113,55 +79,39 @@
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  (draw-texture-region! batch
-                        texture-region
-                        [x y]
-                        (texture-region/dimensions texture-region)
-                        0  ;rotation
-                        ))
+  (gdx/draw-texture-region! batch
+                            texture-region
+                            [x y]
+                            (texture-region/dimensions texture-region)
+                            0  ;rotation
+                            ))
 
 (defmethod draw! :draw/image [[_ image position]
                               {:keys [batch]
                                :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (draw-texture-region! batch
-                          texture-region
-                          position
-                          (texture-region-drawing-dimensions graphics texture-region)
-                          0 ; rotation
-                          )))
+    (gdx/draw-texture-region! batch
+                              texture-region
+                              position
+                              (texture-region-drawing-dimensions graphics texture-region)
+                              0 ; rotation
+                              )))
 
 (defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
                                          {:keys [batch]
                                           :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)
         [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (draw-texture-region! batch
-                          texture-region
-                          [(- (float x) (/ (float w) 2))
-                           (- (float y) (/ (float h) 2))]
-                          [w h]
-                          rotation
-                          )))
+    (gdx/draw-texture-region! batch
+                              texture-region
+                              [(- (float x) (/ (float w) 2))
+                               (- (float y) (/ (float h) 2))]
+                              [w h]
+                              rotation
+                              )))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
-
-(defn- bitmap-font-text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- draw-bitmap-font! [{:keys [^BitmapFont font batch text x y target-width align wrap?]}]
-  (.draw font
-         batch
-         text
-         (float x)
-         (float y)
-         (float target-width)
-         align
-         wrap?))
 
   "font, h-align, up? and scale are optional.
   h-align one of: :center, :left, :right. Default :center.
@@ -176,14 +126,14 @@
                  (float (or scale 1)))
         old-scale (.scaleX (.getData font))]
     (.setScale (.getData font) (float (* old-scale scale)))
-    (draw-bitmap-font! {:font font
-                        :batch batch
-                        :text text
-                        :x x
-                        :y (+ y (if up? (bitmap-font-text-height font text) 0))
-                        :target-width 0
-                        :align (gdx/k->align (or h-align :center))
-                        :wrap? false})
+    (gdx/draw-bitmap-font! {:font font
+                            :batch batch
+                            :text text
+                            :x x
+                            :y (+ y (if up? (gdx/text-height font text) 0))
+                            :target-width 0
+                            :align (gdx/k->align (or h-align :center))
+                            :wrap? false})
     (.setScale (.getData font) (float old-scale))))
 
 (defn- sd-set-color! [shape-drawer color]
@@ -317,7 +267,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (ScreenUtils/clear (gdx/color color)))
+    (gdx/clear-screen! color))
 
   (resize-viewports! [_ width height]
     (gdl.graphics.viewport/resize! ui-viewport    width height)
@@ -477,7 +427,7 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (find-assets (update textures :folder gdx/internal))
+        textures-to-load (gdx/find-assets textures)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
@@ -598,7 +548,7 @@
 
 (defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
-                     (for [file (find-assets (update sounds :folder gdx/internal))]
+                     (for [file (gdx/find-assets sounds)]
                        [file (gdx/sound file)]))]
     (reify
       disposable/Disposable
