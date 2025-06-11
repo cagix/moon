@@ -652,10 +652,18 @@
                  :graphics Gdx/graphics
                  :input    Gdx/input}))
 
-(defn- create-context [graphics-config]
-  (let [gdl (create-context*)]
+(require 'gdl.create.stage)
+(require 'gdl.create.audio)
+
+(defn- create-context [graphics-config
+                       user-interface
+                       audio]
+  (let [gdl (create-context*)
+        graphics (create-graphics gdl graphics-config)]
     {:ctx/gdl (create-context*)
-     :ctx/graphics (create-graphics gdl graphics-config)}))
+     :ctx/graphics graphics
+     :ctx/stage (gdl.create.stage/do! graphics gdl user-interface)
+     :ctx/audio (gdl.create.audio/do! gdl audio)}))
 
 (defn- apply-mac-os-settings!
   [{:keys [glfw-async?
@@ -678,12 +686,17 @@
                       windowed-mode
                       foreground-fps
                       graphics
+                      user-interface
+                      audio
                       listener]}]
   (when (= SharedLibraryLoader/os Os/MacOsX)
     (apply-mac-os-settings! mac-os-settings))
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
-                          (create! listener (create-context graphics)))
+                          (create! listener (create-context graphics
+                                                            user-interface
+                                                            audio
+                                                            )))
                         (dispose []
                           (dispose! listener))
                         (render  []

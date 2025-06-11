@@ -30,11 +30,11 @@
                                     :enable-markup? true
                                     :use-integer-positions? false ; false, otherwise scaling to world-units not visible
                                     }}}
+ :user-interface {:skin-scale :x1}
+ :audio {:sounds {:folder "resources/"
+                  :extensions #{"wav"}}}
  :create-fns [
               [:assoc :ctx/config [gdl.create.config/do! "config.edn"]]
-              [:assoc :ctx/stage [gdl.create.stage/do! {:skin-scale :x1}]]
-              [:assoc :ctx/audio [gdl.create.audio/do! {:sounds {:folder "resources/"
-                                                                 :extensions #{"wav"}}}]]
               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                   :properties "properties.edn"}]]
               [cdq.create.extend-protocols/do! cdq.ctx]

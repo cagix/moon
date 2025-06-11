@@ -4,7 +4,7 @@
             [gdl.fs :as fs]
             [gdl.utils.disposable :as disposable]))
 
-(defn do! [{:keys [ctx/gdl]} {:keys [sounds]}]
+(defn do! [gdl {:keys [sounds]}]
   (let [sounds (into {}
                      (for [file (assets/find-assets (update sounds :folder (partial fs/internal gdl)))]
                        [file (audio/sound gdl file)]))]

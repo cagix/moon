@@ -4,8 +4,8 @@
             [gdl.ui.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/graphics
-           ctx/gdl]}
+  [graphics
+   gdl
    config]
   (ui/load! config)
   (let [stage (ui/stage (:java-object (:ui-viewport graphics))

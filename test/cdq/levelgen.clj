@@ -66,12 +66,8 @@
 
 (defrecord Context [])
 
-(require 'gdl.create.stage)
-
 (defn create! [context]
   (let [ctx (merge (->Context) context)
-        ctx (assoc ctx :ctx/stage (gdl.create.stage/do! ctx
-                                                        {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
@@ -143,6 +139,7 @@
                              :height 900}
                :world-viewport {:width 1440
                                 :height 900}}
+    :user-interface {:skin-scale :x1}
     :listener (reify gdl.application.desktop/Listener
                 (create! [_ context]
                   (create! context))
