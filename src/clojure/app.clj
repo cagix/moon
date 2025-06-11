@@ -23,8 +23,3 @@
                                      form))
                                   form)))
        (run! execute!)))
-
-(defn dispatch! [[on result->execs]]
-  (->> (on)
-       result->execs
-       (run! execute!)))

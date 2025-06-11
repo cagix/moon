@@ -1,8 +1,8 @@
 [
- [clojure.app/dispatch! [clojure.gdx/operating-system {:os/mac [[clojure.lwjgl/set-glfw-async!]
-                                                                [clojure.awt/set-taskbar-icon! "moon.png"]]}]]
- [clojure.app.gdx.lwjgl/start!
-  {:title "Cyber Dungeon Quest"
+ [gdl.application.desktop/start!
+  {:mac-os-settings {:glfw-async? true
+                     :dock-icon "moon.png"}
+   :title "Cyber Dungeon Quest"
    :windowed-mode {:width 1440 :height 900}
    :foreground-fps 60
    :create [cdq.application/create!
