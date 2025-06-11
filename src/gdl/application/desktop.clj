@@ -699,7 +699,7 @@
       (.setColorSetter renderer (reify ColorSetter
                                   (apply [_ color x y]
                                     (color-setter color x y))))
-      (.setView renderer (:camera/java-object camera))
+      (.setView renderer camera)
       ; there is also:
       ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
       ; but right order / visible only ?
@@ -725,56 +725,50 @@
             :when component]
       (draw! component this))))
 
-(defn- reify-camera [^OrthographicCamera this]
-  (reify
-    clojure.lang.ILookup
-    (valAt [_ k]
-      (case k
-        :camera/java-object this))
+(extend-type OrthographicCamera
+  gdl.graphics.camera/Camera
+  (zoom [this]
+    (.zoom this))
 
-    gdl.graphics.camera/Camera
-    (zoom [_]
-      (.zoom this))
+  (position [this]
+    [(.x (.position this))
+     (.y (.position this))])
 
-    (position [_]
-      [(.x (.position this))
-       (.y (.position this))])
+  (combined [this]
+    (.combined this))
 
-    (combined [_]
-      (.combined this))
+  (frustum [this]
+    (let [frustum-points (take 4 (map (fn [^Vector3 v3]
+                                        [(.x v3)
+                                         (.y v3)
+                                         (.z v3)])
+                                      (.planePoints (.frustum this))))
+          left-x   (apply min (map first  frustum-points))
+          right-x  (apply max (map first  frustum-points))
+          bottom-y (apply min (map second frustum-points))
+          top-y    (apply max (map second frustum-points))]
+      [left-x right-x bottom-y top-y]))
 
-    (frustum [_]
-      (let [frustum-points (take 4 (map (fn [^Vector3 v3]
-                                          [(.x v3)
-                                           (.y v3)
-                                           (.z v3)])
-                                        (.planePoints (.frustum this))))
-            left-x   (apply min (map first  frustum-points))
-            right-x  (apply max (map first  frustum-points))
-            bottom-y (apply min (map second frustum-points))
-            top-y    (apply max (map second frustum-points))]
-        [left-x right-x bottom-y top-y]))
+  (set-position! [this [x y]]
+    (set! (.x (.position this)) (float x))
+    (set! (.y (.position this)) (float y))
+    (.update this))
 
-    (set-position! [_ [x y]]
-      (set! (.x (.position this)) (float x))
-      (set! (.y (.position this)) (float y))
-      (.update this))
+  (set-zoom! [this amount]
+    (set! (.zoom this) amount)
+    (.update this))
 
-    (set-zoom! [_ amount]
-      (set! (.zoom this) amount)
-      (.update this))
+  (viewport-width [this]
+    (.viewportWidth this))
 
-    (viewport-width [_]
-      (.viewportWidth this))
+  (viewport-height [this]
+    (.viewportHeight this))
 
-    (viewport-height [_]
-      (.viewportHeight this))
+  (reset-zoom! [cam]
+    (gdl.graphics.camera/set-zoom! cam 1))
 
-    (reset-zoom! [cam]
-      (gdl.graphics.camera/set-zoom! cam 1))
-
-    (inc-zoom! [cam by]
-      (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom this) by)))) ))
+  (inc-zoom! [cam by]
+    (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom this) by)))) )
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
@@ -800,7 +794,7 @@
           :java-object this
           :width  (.getWorldWidth  this)
           :height (.getWorldHeight this)
-          :camera (reify-camera (.getCamera this)))))))
+          :camera (.getCamera this))))))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
