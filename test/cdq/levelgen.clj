@@ -69,8 +69,9 @@
 (require 'gdl.create.graphics)
 (require 'gdl.create.stage)
 
-(defn create! [context _params]
-  (let [ctx (merge (->Context) context)
+(defn create! [context]
+  (let [ctx (merge (->Context)
+                   {:ctx/gdl context})
         ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do!
                                       ctx
                                       {:textures {:folder "resources/"
@@ -146,7 +147,7 @@
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60
-    :create [create!]
+    :create! create!
     :dispose dispose!
     :render [render!]
     :resize resize!}))

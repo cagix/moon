@@ -48,7 +48,8 @@
 
 (defn create! [context create-fns]
   (let [ctx (reduce utils/render*
-                    (merge (map->Context {}) context)
+                    (merge (map->Context {})
+                           {:ctx/gdl context})
                     create-fns)]
     (m/validate-humanize schema ctx)
     (reset! state ctx)))
@@ -78,16 +79,17 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main [config-path]
-  (->> config-path
-       clojure.java.io/resource
-       slurp
-       clojure.edn/read-string
-       (clojure.walk/postwalk (fn [form]
-                                (if (symbol? form)
-                                  (if (namespace form) ; var
-                                    (requiring-resolve form)
-                                    (do
-                                     (require form) ; namespace
-                                     form))
-                                  form)))
-       gdl.application.desktop/start!))
+  (let [config (->> config-path
+                    clojure.java.io/resource
+                    slurp
+                    clojure.edn/read-string
+                    (clojure.walk/postwalk (fn [form]
+                                             (if (symbol? form)
+                                               (if (namespace form) ; var
+                                                 (requiring-resolve form)
+                                                 (do
+                                                  (require form) ; namespace
+                                                  form))
+                                               form))))]
+    (gdl.application.desktop/start!
+     (assoc config :create! #(create! % (:create-fns config))))))

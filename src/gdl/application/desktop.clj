@@ -206,7 +206,7 @@
                               (io/resource dock-icon)))))
 
 (defn start! [{:keys [mac-os-settings
-                      create
+                      create!
                       dispose
                       render
                       resize
@@ -217,8 +217,7 @@
     (apply-mac-os-settings! mac-os-settings))
   (Lwjgl3Application. (proxy [ApplicationListener] []
                         (create []
-                          (let [[f params] create]
-                            (f {:ctx/gdl (create-context)} params)))
+                          (create! (create-context)))
                         (dispose []
                           (dispose))
                         (render  []
