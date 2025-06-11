@@ -29,7 +29,7 @@
     :resizable? (.setResizable object (boolean v))
     :decorated? (.setDecorated object (boolean v))
     :maximized? (.setMaximized object (boolean v))
-    :maximized-monitor (.setMaximizedMonitor object (map->monitor v))
+    ;:maximized-monitor (.setMaximizedMonitor object (map->monitor v))
     :auto-iconify? (.setAutoIconify object (boolean v))
     :window-position (.setWindowPosition object
                                          (int (:x v))
@@ -47,7 +47,7 @@
                                          ; Lwjgl3WindowListener v
                                          )
     :initial-background-color (.setInitialBackgroundColor object v)
-    :fullscreen-mode (.setFullscreenMode object (map->display-mode v))
+    ;:fullscreen-mode (.setFullscreenMode object (map->display-mode v))
     :title (.setTitle object (str v))
     :vsync? (.useVsync object (boolean v))))
 
