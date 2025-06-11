@@ -6,7 +6,7 @@
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx :as gdx]
-            clojure.gdx.backends.lwjgl
+            gdl.application.lwjgl
             gdl.application.desktop
             [gdl.ui :as ui]
             [gdl.graphics.camera :as camera]
@@ -123,7 +123,7 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main []
-  (clojure.gdx.backends.lwjgl/application
+  (gdl.application.lwjgl/application
    {:mac-os {:glfw-async? true}
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
