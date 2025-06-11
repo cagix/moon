@@ -5,7 +5,6 @@
             [cdq.create.db]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
-            [clojure.gdx :as gdx]
             gdl.application.lwjgl
             gdl.application.desktop
             [gdl.ui :as ui]
@@ -67,7 +66,7 @@
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:camera (:world-viewport (:ctx/graphics ctx)))
-                   :ctx/color-setter (constantly (gdx/color :white))
+                   :ctx/color-setter (constantly (graphics/->color (:ctx/graphics ctx) :white))
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
         ctx (generate-level ctx cdq.level.modules/create)]

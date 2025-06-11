@@ -5,7 +5,6 @@
             [cdq.state :as state]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [clojure.gdx :as gdx]
             [gdl.c :as c]
             [gdl.graphics :as g]
             [gdl.ui :as ui]))
@@ -43,7 +42,7 @@
                          (ui/create-drawable (slot->texture-region slot)
                                              :width cell-size
                                              :height cell-size
-                                             :tint-color (gdx/color [1 1 1 0.4])))
+                                             :tint-color (g/->color graphics [1 1 1 0.4])))
         droppable-color   [0   0.6 0 0.8]
         not-allowed-color [0.6 0   0 0.8]
         draw-cell-rect (fn [player-entity x y mouseover? cell]

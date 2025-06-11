@@ -12,6 +12,9 @@
                      Toolkit)
            (org.lwjgl.system Configuration)))
 
+(defmacro post-runnable! [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
 (defn- k->glversion [gl-version]
   (case gl-version
     :gl-emulation/angle-gles20 Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20

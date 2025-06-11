@@ -3,9 +3,9 @@
             [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [gdl.application.lwjgl :refer [post-runnable!]]
             [gdl.c :as c]))
 
 (comment
@@ -55,7 +55,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (gdx/post-runnable!
+ (post-runnable!
   (cdq.world/spawn-creature! @application/state
                              {:position [35 73]
                               :creature-property (db/build (:ctx/db @application/state) :creatures/dragon-red)
