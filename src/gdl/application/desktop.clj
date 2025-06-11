@@ -1,6 +1,6 @@
 (ns gdl.application.desktop
-  (:require [clojure.gdx.interop :as interop]
-            [clojure.java.io :as io]
+  (:require clojure.gdx.backends.lwjgl
+            [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.app]
@@ -22,8 +22,6 @@
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
@@ -43,15 +41,10 @@
            (com.badlogic.gdx.math Vector2
                                   Vector3)
            (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils
-                                   SharedLibraryLoader
-                                   Os)
+                                   ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- create-user-interface
@@ -717,48 +710,29 @@
      :ctx/audio (when audio
                   (create-audio gdl audio))}))
 
-(defn- apply-mac-os-settings!
-  [{:keys [glfw-async?
-           dock-icon]}]
-  (when glfw-async?
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (when dock-icon
-    (.setIconImage (Taskbar/getTaskbar)
-                   (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource dock-icon)))))
-
 (defprotocol Listener
   (create! [_ context])
   (dispose! [_])
   (render! [_])
   (resize! [_ width height]))
 
-(defn start! [{:keys [mac-os-settings
-                      title
-                      windowed-mode
-                      foreground-fps
+(defn start! [{:keys [lwjgl-config
                       graphics
                       user-interface
                       audio
                       listener]}]
-  (when (= SharedLibraryLoader/os Os/MacOsX)
-    (apply-mac-os-settings! mac-os-settings))
-  (Lwjgl3Application. (proxy [ApplicationListener] []
-                        (create []
-                          (create! listener (create-context graphics
-                                                            user-interface
-                                                            audio
-                                                            )))
-                        (dispose []
-                          (dispose! listener))
-                        (render  []
-                          (render! listener))
-                        (resize [width height]
-                          (resize! listener width height))
-                        (pause [])
-                        (resume []))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setWindowedMode (:width  windowed-mode)
-                                          (:height windowed-mode))
-                        (.setForegroundFPS foreground-fps))))
+  (clojure.gdx.backends.lwjgl/application lwjgl-config
+                                          (proxy [ApplicationListener] []
+                                            (create []
+                                              (create! listener (create-context graphics
+                                                                                user-interface
+                                                                                audio
+                                                                                )))
+                                            (dispose []
+                                              (dispose! listener))
+                                            (render  []
+                                              (render! listener))
+                                            (resize [width height]
+                                              (resize! listener width height))
+                                            (pause [])
+                                            (resume []))))

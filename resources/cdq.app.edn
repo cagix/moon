@@ -1,8 +1,8 @@
-{:mac-os-settings {:glfw-async? true
-                   :dock-icon "moon.png"}
- :title "Cyber Dungeon Quest"
- :windowed-mode {:width 1440 :height 900}
- :foreground-fps 60
+{:lwjgl-config {:mac-os {:glfw-async? true
+                         :dock-icon "moon.png"}
+                :title "Cyber Dungeon Quest"
+                :windowed-mode {:width 1440 :height 900}
+                :foreground-fps 60}
  :graphics {:textures {:folder "resources/"
                        :extensions #{"png" "bmp"}}
             :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
