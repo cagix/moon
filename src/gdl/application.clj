@@ -3,7 +3,6 @@
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.tiled :as tiled]
-            [clojure.java.io :as io]
             [clojure.string :as str]
             [gdl.audio :as audio]
             [gdl.graphics :as graphics]
@@ -30,10 +29,7 @@
                                       VisLabel)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
-           (gdl.ui CtxStage)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)))
+           (gdl.ui CtxStage)))
 
 (defn- load-vis-ui! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
@@ -488,20 +484,16 @@
   (defn- operating-system []
     (get mapping SharedLibraryLoader/os)))
 
+(defn- execute! [[f params]]
+  ;(println "execute!" [f params])
+  (f params))
+
 (defn start!
   [os-config
    lwjgl3-config
    context
    {:keys [create! dispose! render! resize!]}]
-  (when (= (operating-system) :mac)
-    (let [{:keys [glfw-async?
-                  dock-icon]} (:mac os-config)]
-      (when glfw-async?
-        (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-      (when dock-icon
-        (.setIconImage (Taskbar/getTaskbar)
-                       (.getImage (Toolkit/getDefaultToolkit)
-                                  (io/resource dock-icon))))))
+  (run! execute! (get os-config (operating-system)))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (load-vis-ui! (:user-interface context))

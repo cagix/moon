@@ -119,8 +119,10 @@
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
 
+(require 'gdl.lwjgl)
+
 (defn -main []
-  (application/start! {:mac {:glfw-async? true}}
+  (application/start! {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}
                       {:title "Levelgen test"
                        :windowed-mode {:width 1440 :height 900}
                        :foreground-fps 60}
