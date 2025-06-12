@@ -1,23 +1,18 @@
 (ns gdl.application
-  (:require [clojure.gdx :as gdx]
-            [gdl.app]
+  (:require [gdl.app]
             [gdl.files]
             [gdl.input]
             [gdl.utils.disposable]
             [gdx.backends.lwjgl.application.config :as application-config]
+            [gdx.input]
             [gdx.utils.shared-library-loader :as shared-library-loader])
   (:import (com.badlogic.gdx ApplicationAdapter
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
 
 (defn- execute! [[f params]]
-  ;(println "execute!" [f params])
   (f params))
 
-; 0. reda config chere
-; 2. txs start inside cereate/dispoes/render/resize only ?
-; 3. state here ?
-; 4. inside graphics again txs !?
 (defn start!
   [os-config
    lwjgl3-config
@@ -48,23 +43,13 @@
   (internal [this path]
     (.internal this path)))
 
-(extend-type com.badlogic.gdx.Input
+(extend com.badlogic.gdx.Input
   gdl.input/Input
-  (button-just-pressed? [this button]
-    (.isButtonJustPressed this (gdx/k->Input$Buttons button)))
-
-  (key-pressed? [this key]
-    (.isKeyPressed this (gdx/k->Input$Keys key)))
-
-  (key-just-pressed? [this key]
-    (.isKeyJustPressed this (gdx/k->Input$Keys key)))
-
-  (mouse-position [this]
-    [(.getX this)
-     (.getY this)])
-
-  (set-processor! [this input-processor]
-    (.setInputProcessor this input-processor)))
+  {:button-just-pressed? gdx.input/button-just-pressed?
+   :key-pressed?         gdx.input/key-pressed?
+   :key-just-pressed?    gdx.input/key-just-pressed?
+   :mouse-position       gdx.input/mouse-position
+   :set-processor!       gdx.input/set-processor!})
 
 (extend-type com.badlogic.gdx.utils.Disposable
   gdl.utils.disposable/Disposable

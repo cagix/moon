@@ -5,7 +5,6 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Input$Buttons
                              Input$Keys)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
@@ -317,8 +316,6 @@
 (defn find-assets [^FileHandle folder extensions]
   (map #(str/replace-first % (str (.path folder) "/") "")
        (recursively-search folder extensions)))
-
-(def play! Sound/.play)
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
