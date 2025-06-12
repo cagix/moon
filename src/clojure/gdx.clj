@@ -5,7 +5,8 @@
   If it gets too big can split up but now just keep it like that.
   No need graphics/audio/g2d/batch/viewport/etc... ?"
   (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx ApplicationAdapter
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationAdapter
                              Gdx
                              Graphics
                              Input
@@ -25,7 +26,8 @@
                                           SpriteBatch)
            (com.badlogic.gdx.utils Align
                                    SharedLibraryLoader
-                                   Os)))
+                                   Os)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- safe-get-option [mapping k]
   (when-not (contains? mapping k)
@@ -426,3 +428,11 @@
 
 (defn sprite-batch []
   (SpriteBatch.))
+
+(defn fit-viewport [width height camera]
+  (proxy [FitViewport ILookup] [width height camera]
+    (valAt [k]
+      (case k
+        :width  (.getWorldWidth  this)
+        :height (.getWorldHeight this)
+        :camera (.getCamera      this)))))

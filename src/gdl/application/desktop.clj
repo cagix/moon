@@ -16,14 +16,10 @@
             [gdl.utils.disposable :as disposable])
   (:import (com.badlogic.gdx.graphics.g2d Batch
                                           TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group
-                                            Touchable)
            (com.badlogic.gdx.math Vector2
                                   Vector3)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
@@ -276,8 +272,8 @@
     (ScreenUtils/clear (gdx/->Color color)))
 
   (resize-viewports! [_ width height]
-    (gdl.graphics.viewport/resize! ui-viewport    width height)
-    (gdl.graphics.viewport/resize! world-viewport width height))
+    (.update ui-viewport    width height true)
+    (.update world-viewport width height false))
 
   (delta-time [_]
     (.getDeltaTime graphics))
@@ -382,31 +378,18 @@
   (inc-zoom! [cam by]
     (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom cam) by)))) )
 
-(defn- fit-viewport [width height camera {:keys [center-camera?]}]
-  (let [this (FitViewport. width height camera)]
-    (reify
-      gdl.graphics.viewport/Viewport
-      (resize! [_ width height]
-        (.update this width height (boolean center-camera?)))
-
-      ; touch coordinates are y-down, while screen coordinates are y-up
-      ; so the clamping of y is reverse, but as black bars are equal it does not matter
-      ; TODO clamping only works for gui-viewport ?
-      ; TODO ? "Can be negative coordinates, undefined cells."
-      (unproject [_ [x y]]
-        (let [x (math-utils/clamp x (.getLeftGutterWidth this) (.getRightGutterX    this))
-              y (math-utils/clamp y (.getTopGutterHeight this) (.getTopGutterY      this))]
-          (let [vector2 (.unproject this (Vector2. x y))]
-            [(.x vector2)
-             (.y vector2)])))
-
-      clojure.lang.ILookup
-      (valAt [_ key]
-        (case key
-          :java-object this
-          :width  (.getWorldWidth  this)
-          :height (.getWorldHeight this)
-          :camera (.getCamera this))))))
+(extend-type com.badlogic.gdx.utils.viewport.FitViewport
+  gdl.graphics.viewport/Viewport
+  ; touch coordinates are y-down, while screen coordinates are y-up
+  ; so the clamping of y is reverse, but as black bars are equal it does not matter
+  ; TODO clamping only works for gui-viewport ?
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (unproject [this [x y]]
+    (let [x (math-utils/clamp x (.getLeftGutterWidth this) (.getRightGutterX    this))
+          y (math-utils/clamp y (.getTopGutterHeight this) (.getTopGutterY      this))]
+      (let [vector2 (.unproject this (Vector2. x y))]
+        [(.x vector2)
+         (.y vector2)]))))
 
 (defn- create-graphics
   [{:keys [textures
@@ -421,10 +404,9 @@
   (let [batch (gdx/sprite-batch)
         shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (fit-viewport (:width ui-viewport)
-                                  (:height ui-viewport)
-                                  (gdx/orthographic-camera)
-                                  {:center-camera? true})
+        ui-viewport (gdx/fit-viewport (:width  ui-viewport)
+                                      (:height ui-viewport)
+                                      (gdx/orthographic-camera))
         textures-to-load (gdx/find-assets textures)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
@@ -442,12 +424,11 @@
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                           world-height (* (:height world-viewport) world-unit-scale)]
-                                      (fit-viewport world-width
-                                                    world-height
-                                                    (gdx/orthographic-camera :y-down? false
-                                                                             :world-width world-width
-                                                                             :world-height world-height)
-                                                    {:center-camera? false}))
+                                      (gdx/fit-viewport world-width
+                                                        world-height
+                                                        (gdx/orthographic-camera :y-down? false
+                                                                                 :world-width world-width
+                                                                                 :world-height world-height)))
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
@@ -481,7 +462,7 @@
                      (int w)
                      (int h)))))
 
-(extend-type Group
+(extend-type com.badlogic.gdx.scenes.scene2d.Group
   gdl.ui/PGroup
   (find-actor [group name]
     (.findActor group name))
@@ -494,7 +475,7 @@
 ; they actually belong in 'clojure.gdx.scenes.scene2d.actor' as public functions API
 ; then we extend them here
 ; this can be also automated...
-(extend-type Actor
+(extend-type com.badlogic.gdx.scenes.scene2d.Actor
   gdl.ui/PActor
   (get-x [actor]
     (.getX actor))
@@ -519,7 +500,7 @@
 
   (set-touchable! [actor touchable]
     (.setTouchable actor (case touchable
-                           :disabled Touchable/disabled)))
+                           :disabled com.badlogic.gdx.scenes.scene2d.Touchable/disabled)))
 
   (remove! [actor]
     (.remove actor))
@@ -590,7 +571,7 @@
   (let [graphics (create-graphics graphics-config)]
     {:ctx/input (gdx/input)
      :ctx/graphics graphics
-     :ctx/stage (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:java-object (:ui-viewport graphics))
+     :ctx/stage (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
                                                                     (:batch graphics)
                                                                     (atom nil)]
                               (valAt [id]
