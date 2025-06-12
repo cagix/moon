@@ -24,11 +24,9 @@
                                                   ClickListener
                                                   Drawable
                                                   TextureRegionDrawable)
-           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align
                                    Scaling)
            (com.kotcrab.vis.ui.widget Separator
-                                      Tooltip
                                       VisCheckBox
                                       VisImage
                                       VisImageButton
@@ -56,45 +54,36 @@
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
 
-(defn- -click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (.getStage event))))))
-
-(defn- get-stage-ctx [^Actor actor]
-  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
-    @(.ctx ^CtxStage stage)))
-
 (defprotocol PActorTooltips
   (add-tooltip! [_ tooltip-text]
                 "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.  Returns the actor.")
   (remove-tooltip! [_]))
 
-(extend-type Actor
-  PActorTooltips
-  (add-tooltip! [actor tooltip-text]
-    (let [text? (string? tooltip-text)
-          label (VisLabel. (if text? tooltip-text ""))
-          tooltip (proxy [Tooltip] []
-                    ; hooking into getWidth because at
-                    ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                    ; when tooltip position gets calculated we setText (which calls pack) before that
-                    ; so that the size is correct for the newly calculated text.
-                    (getWidth []
-                      (let [^Tooltip this this]
-                        (when-not text?
-                          (let [actor (.getTarget this)
-                                ctx (get-stage-ctx actor)]
-                            (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                              (.setText this (str (tooltip-text ctx))))))
-                        (proxy-super getWidth))))]
-      (.setAlignment label Align/center)
-      (.setTarget  tooltip actor)
-      (.setContent tooltip label))
-    actor)
+(defprotocol PGroup
+  (find-actor [_ name])
+  (clear-children! [_])
+  (children [_]))
 
-  (remove-tooltip! [actor]
-    (Tooltip/removeTooltip actor)))
+(defprotocol CanAddActor
+  (add! [_ actor]))
+
+(defprotocol CanHit
+  (hit [_ [x y]]))
+
+(defprotocol PTable
+  (add-rows! [_ rows]
+             "rows is a seq of seqs of columns.
+             Elements are actors or nil (for just adding empty cells ) or a map of
+             {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
+
+(defn- -click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f @(.ctx ^CtxStage (.getStage event))))))
+
+(defn get-stage-ctx [^Actor actor]
+  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
+    @(.ctx ^CtxStage stage)))
 
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
@@ -149,10 +138,7 @@
       (when-let [f (:draw opts)]
         (try-draw this f)))))
 
-(defprotocol PGroup
-  (find-actor [_ name])
-  (clear-children! [_])
-  (children [_]))
+
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -167,7 +153,7 @@
     (.pack widget-group))
   widget-group)
 
-(defn- set-cell-opts! [^Cell cell opts]
+(defn set-cell-opts! [^Cell cell opts]
   (doseq [[option arg] opts]
     (case option
       :fill-x?    (.fillX     cell)
@@ -185,28 +171,6 @@
       :center?    (.center    cell)
       :right?     (.right     cell)
       :left?      (.left      cell))))
-
-(defprotocol CanAddActor
-  (add! [_ actor]))
-
-(defprotocol PTable
-  (add-rows! [_ rows]
-             "rows is a seq of seqs of columns.
-             Elements are actors or nil (for just adding empty cells ) or a map of
-             {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
-
-(extend-type Table
-  PTable
-  (add-rows! [table rows]
-    (doseq [row rows]
-      (doseq [props-or-actor row]
-        (cond
-         ; this is weird now as actor declarations are all maps ....
-         (map? props-or-actor) (-> (add! table (:actor props-or-actor))
-                                   (set-cell-opts! (dissoc props-or-actor :actor)))
-         :else (add! table props-or-actor)))
-      (.row table))
-    table))
 
 (defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
   (set-cell-opts! (.defaults table) cell-defaults)
@@ -317,29 +281,6 @@
        (throw (ex-info "Cannot create-actor"
                        {:actor-declaration actor-declaration}
                        t))))))
-
-(extend-protocol CanAddActor
-  Group
-  (add! [group actor]
-    (.addActor group (-create-actor actor)))
-  Stage
-  (add! [stage actor]
-    (.addActor stage (-create-actor actor)))
-  Table
-  (add! [table actor]
-    (.add table (-create-actor actor))))
-
-(defprotocol CanHit
-  (hit [_ [x y]]))
-
-(extend-protocol CanHit
-  Actor
-  (hit [actor [x y]]
-    (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-      (.hit actor (.x v) (.y v) true)))
-  Stage
-  (hit [stage [x y]]
-    (.hit stage x y true)))
 
 (def checked? VisCheckBox/.isChecked)
 

@@ -3,7 +3,21 @@
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.ui :as ui]
             [gdl.ui.stage])
-  (:import (gdl.ui CtxStage)))
+  (:import (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils Align)
+           (com.kotcrab.vis.ui.widget Tooltip
+                                      VisLabel)
+           (gdl.ui CtxStage)))
+
+(defn create! [user-interface graphics]
+  (vis-ui/load! user-interface)
+  (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
+                                                      (:batch graphics)
+                                                      (atom nil)]
+                (valAt [id]
+                  (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
+    (gdx/set-input-processor! stage)
+    stage))
 
 (extend-type gdl.ui.CtxStage
   gdl.ui.stage/Stage
@@ -88,12 +102,64 @@
   (parent [actor]
     (.getParent actor)))
 
-(defn create! [user-interface graphics]
-  (vis-ui/load! user-interface)
-  (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
-                                                      (:batch graphics)
-                                                      (atom nil)]
-                (valAt [id]
-                  (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
-    (gdx/set-input-processor! stage)
-    stage))
+(extend-type com.badlogic.gdx.scenes.scene2d.Actor
+  gdl.ui/PActorTooltips
+  (add-tooltip! [actor tooltip-text]
+    (let [text? (string? tooltip-text)
+          label (VisLabel. (if text? tooltip-text ""))
+          tooltip (proxy [Tooltip] []
+                    ; hooking into getWidth because at
+                    ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                    ; when tooltip position gets calculated we setText (which calls pack) before that
+                    ; so that the size is correct for the newly calculated text.
+                    (getWidth []
+                      (let [^Tooltip this this]
+                        (when-not text?
+                          (let [actor (.getTarget this)
+                                ctx (ui/get-stage-ctx actor)]
+                            (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
+                              (.setText this (str (tooltip-text ctx))))))
+                        (proxy-super getWidth))))]
+      (.setAlignment label Align/center)
+      (.setTarget  tooltip actor)
+      (.setContent tooltip label))
+    actor)
+
+  (remove-tooltip! [actor]
+    (Tooltip/removeTooltip actor)))
+
+(extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
+  gdl.ui/PTable
+  (add-rows! [table rows]
+    (doseq [row rows]
+      (doseq [props-or-actor row]
+        (cond
+         ; this is weird now as actor declarations are all maps ....
+         (map? props-or-actor) (-> (ui/add! table (:actor props-or-actor))
+                                   (ui/set-cell-opts! (dissoc props-or-actor :actor)))
+         :else (ui/add! table props-or-actor)))
+      (.row table))
+    table))
+
+(extend-protocol gdl.ui/CanAddActor
+  com.badlogic.gdx.scenes.scene2d.Group
+  (add! [group actor]
+    (.addActor group (ui/-create-actor actor)))
+
+  com.badlogic.gdx.scenes.scene2d.Stage
+  (add! [stage actor]
+    (.addActor stage (ui/-create-actor actor)))
+
+  com.badlogic.gdx.scenes.scene2d.ui.Table
+  (add! [table actor]
+    (.add table (ui/-create-actor actor))))
+
+(extend-protocol gdl.ui/CanHit
+  com.badlogic.gdx.scenes.scene2d.Actor
+  (hit [actor [x y]]
+    (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+      (.hit actor (.x v) (.y v) true)))
+
+  com.badlogic.gdx.scenes.scene2d.Stage
+  (hit [stage [x y]]
+    (.hit stage x y true)))
