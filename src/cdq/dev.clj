@@ -3,9 +3,9 @@
             [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
+            [clojure.gdx :refer [post-runnable!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.application.lwjgl :refer [post-runnable!]]
             [gdl.c :as c]))
 
 (comment

@@ -1,19 +1,11 @@
 (ns gdl.application.lwjgl
-  (:require [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter
-                             Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+  (:require [clojure.gdx :as gdx]
+            [clojure.java.awt :as awt]
+            [clojure.lwjgl :as lwjgl])
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
-                                             Lwjgl3WindowConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader
-                                   Os)
-           (java.awt Taskbar
-                     Toolkit)
-           (org.lwjgl.system Configuration)))
-
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+                                             Lwjgl3WindowConfiguration)))
 
 (defn- k->glversion [gl-version]
   (case gl-version
@@ -56,15 +48,13 @@
 
 (defn- set-application-config-key! [^Lwjgl3ApplicationConfiguration object k v]
   (case k
-    :mac-os (when (= SharedLibraryLoader/os Os/MacOsX)
+    :mac-os (when (= (gdx/operating-system) :mac)
               (let [{:keys [glfw-async?
                             dock-icon]} v]
                 (when glfw-async?
-                  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+                  (lwjgl/set-glfw-library-name! "glfw_async"))
                 (when dock-icon
-                  (.setIconImage (Taskbar/getTaskbar)
-                                 (.getImage (Toolkit/getDefaultToolkit)
-                                            (io/resource dock-icon))))))
+                  (awt/set-taskbar-icon! dock-icon))))
     :audio (.setAudioConfig object
                             (int (:simultaneous-sources v))
                             (int (:buffer-size         v))
@@ -110,18 +100,7 @@
       (set-application-config-key! obj k v))
     obj))
 
-(defn- create-listener [{:keys [create! dispose! render! resize!]}]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (when create! (create!)))
-    (dispose []
-      (when dispose! (dispose!)))
-    (render []
-      (when render! (render!)))
-    (resize [width height]
-      (when resize! (resize! width height)))))
-
 (defn start!
   [config listener]
-  (Lwjgl3Application. (create-listener listener)
+  (Lwjgl3Application. (gdx/application-adapter listener)
                       (create-application-config config)))

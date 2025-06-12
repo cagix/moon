@@ -5,7 +5,8 @@
   If it gets too big can split up but now just keep it like that.
   No need graphics/audio/g2d/batch/viewport/etc... ?"
   (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx
                              Graphics
                              Input
                              Input$Buttons
@@ -21,7 +22,9 @@
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.utils Align
+                                   SharedLibraryLoader
+                                   Os)))
 
 (defn- safe-get-option [mapping k]
   (when-not (contains? mapping k)
@@ -371,3 +374,25 @@
   (set! (.markupEnabled (.getData font)) enable-markup?)
   (.setUseIntegerPositions font use-integer-positions?)
   font)
+
+(defn application-adapter [{:keys [create! dispose! render! resize!]}]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (when create! (create!)))
+    (dispose []
+      (when dispose! (dispose!)))
+    (render []
+      (when render! (render!)))
+    (resize [width height]
+      (when resize! (resize! width height)))))
+
+(defmacro post-runnable! [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+(let [mapping {Os/Android :android
+               Os/IOS     :ios
+               Os/Linux   :linux
+               Os/MacOsX  :mac
+               Os/Windows :windows}]
+  (defn operating-system []
+    (get mapping SharedLibraryLoader/os)))
