@@ -39,6 +39,9 @@
                                    Disposable
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
+           (com.kotcrab.vis.ui VisUI
+                               VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Tooltip)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
            (gdl.ui CtxStage)
@@ -944,8 +947,6 @@
   (dispose! [object]
     (.dispose object)))
 
-
-
 (defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
                      (for [path (find-assets sounds)]
@@ -978,10 +979,29 @@
     [(.getX this)
      (.getY this)]))
 
+(defn- load-vis-ui! [{:keys [skin-scale]}]
+  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose))
+  (VisUI/load (case skin-scale
+                :x1 VisUI$SkinScale/X1
+                :x2 VisUI$SkinScale/X2))
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (ui/load! user-interface)
+  (load-vis-ui! user-interface)
   (let [graphics (create-graphics graphics-config)]
     {:ctx/input Gdx/input
      :ctx/graphics graphics
