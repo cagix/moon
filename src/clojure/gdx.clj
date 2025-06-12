@@ -21,7 +21,8 @@
                                       Texture
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch
-                                          BitmapFont)
+                                          BitmapFont
+                                          SpriteBatch)
            (com.badlogic.gdx.utils Align
                                    SharedLibraryLoader
                                    Os)))
@@ -422,3 +423,6 @@
            (k->Align (or h-align :center))
            wrap?)
     (.setScale (.getData font) (float old-scale))))
+
+(defn sprite-batch []
+  (SpriteBatch.))

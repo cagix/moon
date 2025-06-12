@@ -14,7 +14,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch
+  (:import (com.badlogic.gdx.graphics.g2d Batch
                                           TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
@@ -243,6 +243,13 @@
     (fn []
       (gdl.graphics/handle-draws! this draws))))
 
+; FIX VIEWPORT REIFY FIRST, cant call `.getCamera`
+#_(defn draw-on-viewport! [^Batch batch ^Viewport viewport ]
+  (Batch/.setProjectionMatrix batch (.combined (.getCamera viewport)))
+  (Batch/.begin batch)
+  ; my draw comes here
+  (Batch/.end batch) )
+
 (defrecord Graphics [graphics
                      textures
                      cursors
@@ -250,7 +257,7 @@
                      world-unit-scale
                      ui-viewport
                      world-viewport
-                     ^SpriteBatch batch
+                     batch
                      unit-scale
                      shape-drawer-texture
                      shape-drawer
@@ -289,16 +296,17 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    ; batch interface understands gdx/colors ?
-    (.setColor batch (gdx/->Color :white)) ; fix scene2d.ui.tooltip flickering
-    (.setProjectionMatrix batch (gdl.graphics.camera/combined (:camera world-viewport)))
-    (.begin batch)
+    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
+    ; -> also Widgets, etc. ? check.
+    (Batch/.setColor batch (gdx/->Color :white))
+    (Batch/.setProjectionMatrix batch (.combined (:camera world-viewport)))
+    (Batch/.begin batch)
     (sd-with-line-width shape-drawer world-unit-scale
       (fn []
         (reset! unit-scale world-unit-scale)
         (f)
         (reset! unit-scale 1)))
-    (.end batch))
+    (Batch/.end batch))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
@@ -340,9 +348,6 @@
   (position [this]
     [(.x (.position this))
      (.y (.position this))])
-
-  (combined [this]
-    (.combined this))
 
   (frustum [this]
     (let [frustum-points (take 4 (map (fn [^Vector3 v3]
@@ -413,7 +418,7 @@
            ui-viewport
            world-viewport]}]
   (gdx/def-colors colors)
-  (let [batch (SpriteBatch.)
+  (let [batch (gdx/sprite-batch)
         shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (fit-viewport (:width ui-viewport)
