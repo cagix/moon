@@ -1,0 +1,28 @@
+(ns master.yoda)
+
+(defn execute! [[f params]]
+  (f params))
+
+(defn dispatch [[to-eval mapping]]
+  (->> (to-eval)
+       (get mapping)
+       (run! execute!)))
+
+(defn req [form]
+  (if (symbol? form)
+    (if (namespace form)
+      (requiring-resolve form)
+      (try (require form)
+           form
+           (catch Exception e ; Java classes
+             form)))
+    form))
+
+(defn provide [impls]
+  (doseq [[atype implementation-ns protocol] impls]
+    (let [atype (eval atype)
+          protocol @protocol
+          method-map (update-vals (:sigs protocol)
+                                  (fn [{:keys [name]}]
+                                    (requiring-resolve (symbol (str implementation-ns "/" name)))))]
+      (extend atype protocol method-map))))
