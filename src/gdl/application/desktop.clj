@@ -13,9 +13,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
+  (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture
@@ -42,28 +40,6 @@
                          ColorSetter)
            (gdl.ui CtxStage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- create-cursor [path [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal Gdx/files path))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
-
-(defn- find-assets [{:keys [folder extensions]}]
-  (map #(str/replace-first % folder "")
-       (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-              result []]
-         (cond (nil? file)
-               result
-
-               (.isDirectory file)
-               (recur (concat remaining (.list file)) result)
-
-               (extensions (.extension file))
-               (recur remaining (conj result (.path file)))
-
-               :else
-               (recur remaining result)))))
 
 (defn- create-font-params [{:keys [size
                                    min-filter
@@ -521,18 +497,18 @@
                                   (:height ui-viewport)
                                   (OrthographicCamera.)
                                   {:center-camera? true})
-        textures-to-load (find-assets textures)
+        textures-to-load (gdx/find-assets textures)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (Texture. file)]))
         cursors (update-vals cursors
                              (fn [[file hotspot]]
-                               (create-cursor (format cursor-path-format file) hotspot)))]
-    (map->Graphics {:graphics Gdx/graphics
+                               (gdx/create-cursor (format cursor-path-format file) hotspot)))]
+    (map->Graphics {:graphics (gdx/graphics)
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (.internal Gdx/files (:file default-font))
+                                    (generate-font (gdx/internal (:file default-font))
                                                    (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
@@ -631,8 +607,8 @@
 
 (defn- create-audio [{:keys [sounds]}]
   (let [sounds (into {}
-                     (for [path (find-assets sounds)]
-                       [path (.newSound Gdx/audio (.internal Gdx/files path))]))]
+                     (for [path (gdx/find-assets sounds)]
+                       [path (gdx/load-sound path)]))]
     (reify
       disposable/Disposable
       (dispose! [_]
@@ -685,14 +661,14 @@
                       audio]
   (load-vis-ui! user-interface)
   (let [graphics (create-graphics graphics-config)]
-    {:ctx/input Gdx/input
+    {:ctx/input (gdx/input)
      :ctx/graphics graphics
      :ctx/stage (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:java-object (:ui-viewport graphics))
                                                                     (:batch graphics)
                                                                     (atom nil)]
                               (valAt [id]
                                 (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
-                  (.setInputProcessor Gdx/input stage)
+                  (gdx/set-input-processor! stage)
                   stage)
      :ctx/audio (when audio
                   (create-audio audio))}))

@@ -1,8 +1,16 @@
+; TODO
+; * ->Color ignored with lein codox (thinks its a defrecord constructor)
 (ns clojure.gdx
-  (:import (com.badlogic.gdx Input$Buttons
+  (:require [clojure.string :as str])
+  (:import (com.badlogic.gdx Gdx
+                             Graphics
+                             Input
+                             Input$Buttons
                              Input$Keys)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
-                                      Colors)
+                                      Colors
+                                      Pixmap)
            (com.badlogic.gdx.utils Align)))
 
 (defn- safe-get-option [mapping k]
@@ -268,3 +276,43 @@
 (defn def-colors [colors]
   (doseq [[name color-params] colors]
     (Colors/put name (->Color color-params))))
+
+(defn graphics ^Graphics []
+  Gdx/graphics)
+
+(defn input ^Input []
+  Gdx/input)
+
+(defn internal ^FileHandle [path]
+  (.internal Gdx/files path))
+
+(defn create-cursor [path [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. (internal path))
+        cursor (.newCursor (graphics) pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
+
+(defn recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (.list (internal folder))
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn find-assets [{:keys [folder extensions]}]
+  (map #(str/replace-first % folder "")
+       (recursively-search folder extensions)))
+
+(defn load-sound [path]
+  (.newSound Gdx/audio (internal path)))
+
+(defn set-input-processor! [input-processor]
+  (.setInputProcessor (input) input-processor))
