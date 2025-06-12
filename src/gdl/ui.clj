@@ -1,5 +1,6 @@
 (ns gdl.ui
-  (:require [gdl.graphics.texture :as texture]
+  (:require [clojure.gdx :as gdx]
+            [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
@@ -471,7 +472,7 @@
                    (BaseDrawable/.setMinSize (float width)
                                              (float height)))]
     (if tint-color
-      (TextureRegionDrawable/.tint drawable tint-color)
+      (TextureRegionDrawable/.tint drawable (gdx/->Color tint-color))
       drawable)))
 
 (defn set-drawable! [image-widget drawable]

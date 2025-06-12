@@ -7,8 +7,7 @@
             [cdq.world :as world]
             [gdl.c :as c]
             [gdl.graphics :as g]
-            [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.graphics Color)))
+            [gdl.ui :as ui]))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -43,9 +42,9 @@
                          (ui/create-drawable (slot->texture-region slot)
                                              :width cell-size
                                              :height cell-size
-                                             :tint-color (Color. 1 1 1 0.4)))
-        droppable-color   [0   0.6 0 0.8]
-        not-allowed-color [0.6 0   0 0.8]
+                                             :tint-color [1 1 1 0.4]))
+        droppable-color   [0   0.6 0 0.8 1]
+        not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
                          [[:draw/rectangle x y cell-size cell-size :gray]
                           (when (and mouseover?

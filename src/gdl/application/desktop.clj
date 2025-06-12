@@ -16,9 +16,7 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Colors
-                                      Pixmap
+           (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter
@@ -44,18 +42,6 @@
                          ColorSetter)
            (gdl.ui CtxStage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- create-color
-  ([r g b]
-   (create-color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(defn- ->color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (gdx/k->Color c)
-        (vector? c) (apply create-color c)
-        :else (throw (ex-info "Cannot understand color" c))))
 
 (defn- create-cursor [path [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. (.internal Gdx/files path))
@@ -243,7 +229,7 @@
     (.setScale (.getData font) (float old-scale))))
 
 (defn- sd-set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (->color color)))
+  (ShapeDrawer/.setColor shape-drawer (gdx/->Color color)))
 
 (defmethod draw! :draw/ellipse [[_ [x y] radius-x radius-y color]
                                 {:keys [shape-drawer]}]
@@ -373,7 +359,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (ScreenUtils/clear (->color color)))
+    (ScreenUtils/clear (gdx/->Color color)))
 
   (resize-viewports! [_ width height]
     (gdl.graphics.viewport/resize! ui-viewport    width height)
@@ -396,7 +382,8 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+    ; batch interface understands gdx/colors ?
+    (.setColor batch (gdx/->Color :white)) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix batch (gdl.graphics.camera/combined (:camera world-viewport)))
     (.begin batch)
     (sd-with-line-width shape-drawer world-unit-scale
@@ -411,11 +398,7 @@
           camera (:camera world-viewport)]
       (.setColorSetter renderer (reify ColorSetter
                                   (apply [_ color x y]
-                                    (let [[r g b a] (color-setter color x y)]
-                                      (Color/toFloatBits (float r)
-                                                         (float g)
-                                                         (float b)
-                                                         (float a))))))
+                                    (gdx/->float-bits (color-setter color x y)))))
       (.setView renderer camera)
       ; there is also:
       ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
@@ -515,7 +498,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
+                 (.setColor (gdx/->Color :white))
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -530,8 +513,7 @@
            tile-size
            ui-viewport
            world-viewport]}]
-  (doseq [[name color-params] colors]
-    (Colors/put name (->color color-params)))
+  (gdx/def-colors colors)
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ tile-size))

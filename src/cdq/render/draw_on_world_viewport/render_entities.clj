@@ -129,10 +129,10 @@
                   :up? true}]]))
 
 (def ^:private hpbar-colors
-  {:green     [0 0.8 0]
-   :darkgreen [0 0.5 0]
-   :yellow    [0.5 0.5 0]
-   :red       [0.5 0 0]})
+  {:green     [0 0.8 0 1]
+   :darkgreen [0 0.5 0 1]
+   :yellow    [0.5 0.5 0 1]
+   :red       [0.5 0 0 1]})
 
 (defn- hpbar-color [ratio]
   (let [ratio (float ratio)
