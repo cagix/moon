@@ -1,6 +1,7 @@
 (ns gdl.application.desktop
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [gdl.audio :as audio]
             [gdl.graphics :as graphics]
@@ -10,7 +11,6 @@
             [gdl.graphics.viewport]
             [gdl.math.utils :as math-utils]
             [gdl.input :as input]
-            [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable])

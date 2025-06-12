@@ -1,5 +1,5 @@
 (ns cdq.level.vampire
-  (:require [gdl.tiled :as tiled]))
+  (:require [clojure.gdx.tiled :as tiled]))
 
 (defn create [_ctx]
   {:tiled-map (tiled/tmx-tiled-map "maps/vampire.tmx") ; TODO not disposed !

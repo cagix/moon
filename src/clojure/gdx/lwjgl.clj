@@ -1,4 +1,4 @@
-(ns gdl.application.lwjgl
+(ns clojure.gdx.lwjgl
   (:require [clojure.gdx :as gdx]
             [clojure.java.awt :as awt]
             [clojure.lwjgl :as lwjgl])
@@ -100,7 +100,7 @@
       (set-application-config-key! obj k v))
     obj))
 
-(defn start!
+(defn application
   [config listener]
   (Lwjgl3Application. (gdx/application-adapter listener)
                       (create-application-config config)))

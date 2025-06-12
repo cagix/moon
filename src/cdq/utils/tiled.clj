@@ -1,5 +1,5 @@
 (ns cdq.utils.tiled
-  (:require [gdl.tiled :as tiled]))
+  (:require [clojure.gdx.tiled :as tiled]))
 
 (defn- map-positions
   "Returns a sequence of all `[x y]` positions in the `tiled-map`."

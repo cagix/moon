@@ -1,12 +1,12 @@
-(ns gdl.tiled
-  (:require [gdl.utils.disposable :as disposable])
+(ns clojure.gdx.tiled
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell
-                                        TmxMapLoader)))
+                                        TmxMapLoader)
+           (com.badlogic.gdx.utils Disposable)))
 
 (defn- add-props! [^MapProperties mp properties]
   (doseq [[k v] properties]
@@ -139,8 +139,8 @@
 
 (defn- reify-tiled-map [this]
   (reify
-    disposable/Disposable
-    (dispose! [_]
+    Disposable
+    (dispose [_]
       (.dispose this))
 
     clojure.lang.ILookup

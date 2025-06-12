@@ -5,8 +5,8 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [gdl.graphics :as graphics]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]
+            [gdl.graphics :as graphics]))
 
 (defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]
