@@ -4,8 +4,7 @@
             clojure.edn
             clojure.java.io
             clojure.walk
-            [gdl.application]
-            [gdl.application.desktop]
+            [gdl.application :as application]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
@@ -69,11 +68,8 @@
 (def state (atom nil))
 
 (defn- create-listener [config]
-  {:create! (fn []
-              (let [context (gdl.application.desktop/create-context (:graphics config)
-                                                                    (:user-interface config)
-                                                                    (:audio config))
-                    ctx (reduce utils/render*
+  {:create! (fn [context]
+              (let [ctx (reduce utils/render*
                                 (merge (map->Context {})
                                        (assoc context :ctx/config config))
                                 (:create-fns config))]
@@ -112,6 +108,7 @@
 ; do not create unnecessary abstractions ...
 (defn -main [config-path]
   (let [config (create-config config-path)]
-    (gdl.application/start! (:os-config config)
-                            (:lwjgl-config config)
-                            (create-listener config))))
+    (application/start! (:os-config config)
+                        (:lwjgl-config config)
+                        (:context config)
+                        (create-listener config))))

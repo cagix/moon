@@ -6,8 +6,7 @@
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx.tiled :as tiled]
-            [gdl.application]
-            [gdl.application.desktop]
+            [gdl.application :as application]
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
@@ -121,21 +120,19 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main []
-  (gdl.application/start!
-   {:mac {:glfw-async? true}}
-   {:title "Levelgen test"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}
-   {:create! (fn []
-               (create! (gdl.application.desktop/create-context {:textures {:folder "resources/"
-                                                                            :extensions #{"png" "bmp"}}
-                                                                 :tile-size 48
-                                                                 :ui-viewport {:width 1440
-                                                                               :height 900}
-                                                                 :world-viewport {:width 1440
-                                                                                  :height 900}}
-                                                                {:skin-scale :x1}
-                                                                nil)))
-    :dispose! dispose!
-    :render! render!
-    :resize! resize!}))
+  (application/start! {:mac {:glfw-async? true}}
+                      {:title "Levelgen test"
+                       :windowed-mode {:width 1440 :height 900}
+                       :foreground-fps 60}
+                      {:graphics {:textures {:folder "resources/"
+                                             :extensions #{"png" "bmp"}}
+                                  :tile-size 48
+                                  :ui-viewport {:width 1440
+                                                :height 900}
+                                  :world-viewport {:width 1440
+                                                   :height 900}}
+                       :user-interface {:skin-scale :x1}}
+                      {:create! create!
+                       :dispose! dispose!
+                       :render! render!
+                       :resize! resize!}))
