@@ -1,5 +1,5 @@
 (ns gdl.create.ui
-  (:require [clojure.gdx :as gdx]
+  (:require [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage])
   (:import (com.badlogic.gdx.math Vector2)
@@ -29,14 +29,15 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defn do! [{:keys [ctx/graphics] :as ctx} params]
+(defn do! [{:keys [ctx/graphics
+                   ctx/input] :as ctx} params]
   (load-vis-ui! params)
   (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
                                                       (:batch graphics)
                                                       (atom nil)]
                 (valAt [id]
                   (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
-    (gdx/set-input-processor! stage)
+    (input/set-processor! input stage)
     stage))
 
 (extend-type gdl.ui.CtxStage

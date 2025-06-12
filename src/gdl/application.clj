@@ -1,11 +1,37 @@
 (ns gdl.application
   (:require [clojure.gdx :as gdx]
-            [gdl.input :as input]
+            [gdl.input]
             [gdl.utils.disposable]
             [gdx.backends.lwjgl.application.config :as application-config]
             [gdx.utils.shared-library-loader :as shared-library-loader])
-  (:import (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
+
+(defn- execute! [[f params]]
+  ;(println "execute!" [f params])
+  (f params))
+
+; 0. reda config chere
+; 1. pass Gdx state
+; 2. txs start inside cereate/dispoes/render/resize only ?
+; 3. state here ?
+; 4. inside graphics again txs !?
+(defn start!
+  [os-config
+   lwjgl3-config
+   {:keys [create! dispose! render! resize!]}]
+  (run! execute! (get os-config (shared-library-loader/operating-system)))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (create! {:ctx/input Gdx/input}))
+                        (dispose []
+                          (dispose!))
+                        (render []
+                          (render!))
+                        (resize [width height]
+                          (resize! width height)))
+                      (application-config/create lwjgl3-config)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
   gdl.utils.disposable/Disposable
@@ -25,29 +51,7 @@
 
   (mouse-position [this]
     [(.getX this)
-     (.getY this)]))
+     (.getY this)])
 
-(defn- execute! [[f params]]
-  ;(println "execute!" [f params])
-  (f params))
-
-; 0. reda config chere
-; 1. pass Gdx state
-; 2. txs start inside cereate/dispoes/render/resize only ?
-; 3. state here ?
-; 4. inside graphics again txs !?
-(defn start!
-  [os-config
-   lwjgl3-config
-   {:keys [create! dispose! render! resize!]}]
-  (run! execute! (get os-config (shared-library-loader/operating-system)))
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create []
-                          (create! {:ctx/input (gdx/input)}))
-                        (dispose []
-                          (dispose!))
-                        (render []
-                          (render!))
-                        (resize [width height]
-                          (resize! width height)))
-                      (application-config/create lwjgl3-config)))
+  (set-processor! [this input-processor]
+    (.setInputProcessor this input-processor)))

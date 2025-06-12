@@ -305,9 +305,6 @@
 (defn graphics ^Graphics []
   Gdx/graphics)
 
-(defn input ^Input []
-  Gdx/input)
-
 (defn internal ^FileHandle [path]
   (.internal Gdx/files path))
 
@@ -338,9 +335,6 @@
 
 (defn load-sound [path]
   (.newSound Gdx/audio (internal path)))
-
-(defn set-input-processor! [input-processor]
-  (.setInputProcessor (input) input-processor))
 
 (def play! Sound/.play)
 
