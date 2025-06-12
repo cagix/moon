@@ -344,7 +344,7 @@
     (.dispose pixmap)
     texture))
 
-(defn load-texture [path]
+(defn load-texture [^String path]
   (Texture. path))
 
 (defn orthographic-camera
@@ -396,3 +396,29 @@
                Os/Windows :windows}]
   (defn operating-system []
     (get mapping SharedLibraryLoader/os)))
+
+(defn text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn draw-text!
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
+  [^BitmapFont font
+   batch
+   {:keys [scale text x y up? h-align target-width wrap?]}]
+  (let [old-scale (.scaleX (.getData font))]
+    (.setScale (.getData font) (float (* old-scale scale)))
+    (.draw font
+           batch
+           text
+           (float x)
+           (float (+ y (if up? (text-height font text) 0)))
+           (float target-width)
+           (k->Align (or h-align :center))
+           wrap?)
+    (.setScale (.getData font) (float old-scale))))

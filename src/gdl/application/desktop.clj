@@ -14,8 +14,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
@@ -120,44 +119,21 @@
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
 
-(defn- draw-bitmap-font! [{:keys [^BitmapFont font batch text x y target-width align wrap?]}]
-  (.draw font
-         batch
-         text
-         (float x)
-         (float y)
-         (float target-width)
-         (gdx/k->Align align)
-         wrap?))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
 (defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
                              {:keys [batch
                                      unit-scale
                                      default-font]}]
-  (let [^BitmapFont font (or font default-font)
-        scale (* (float @unit-scale)
-                 (float (or scale 1)))
-        old-scale (.scaleX (.getData font))]
-    (.setScale (.getData font) (float (* old-scale scale)))
-    (draw-bitmap-font! {:font font
-                        :batch batch
-                        :text text
-                        :x x
-                        :y (+ y (if up? (text-height font text) 0))
-                        :target-width 0
-                        :align (or h-align :center)
-                        :wrap? false})
-    (.setScale (.getData font) (float old-scale))))
+  (gdx/draw-text! (or font default-font)
+                  batch
+                  {:scale (* (float @unit-scale)
+                             (float (or scale 1)))
+                   :text text
+                   :x x
+                   :y y
+                   :up? up?
+                   :h-align h-align
+                   :target-width 0
+                   :wrap? false}))
 
 (defn- sd-set-color! [shape-drawer color]
   (ShapeDrawer/.setColor shape-drawer (gdx/->Color color)))
