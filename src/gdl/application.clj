@@ -1,11 +1,15 @@
-(ns clojure.gdx.lwjgl
-  (:require [clojure.gdx :as gdx]
-            [clojure.java.awt :as awt]
-            [clojure.lwjgl :as lwjgl])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+(ns gdl.application
+  (:require [clojure.java.io :as io])
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
-                                             Lwjgl3WindowConfiguration)))
+                                             Lwjgl3WindowConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader
+                                   Os)
+           (java.awt Taskbar
+                     Toolkit)
+           (org.lwjgl.system Configuration)))
 
 (defn- k->glversion [gl-version]
   (case gl-version
@@ -48,13 +52,6 @@
 
 (defn- set-application-config-key! [^Lwjgl3ApplicationConfiguration object k v]
   (case k
-    :mac-os (when (= (gdx/operating-system) :mac)
-              (let [{:keys [glfw-async?
-                            dock-icon]} v]
-                (when glfw-async?
-                  (lwjgl/set-glfw-library-name! "glfw_async"))
-                (when dock-icon
-                  (awt/set-taskbar-icon! dock-icon))))
     :audio (.setAudioConfig object
                             (int (:simultaneous-sources v))
                             (int (:buffer-size         v))
@@ -94,13 +91,37 @@
                               (->PrintStream (:debug-output-stream v))))
     (set-window-config-key! object k v)))
 
-(defn- create-application-config [config]
-  (let [obj (Lwjgl3ApplicationConfiguration.)]
-    (doseq [[k v] config]
-      (set-application-config-key! obj k v))
-    obj))
+(let [mapping {Os/Android :android
+               Os/IOS     :ios
+               Os/Linux   :linux
+               Os/MacOsX  :mac
+               Os/Windows :windows}]
+  (defn- operating-system []
+    (get mapping SharedLibraryLoader/os)))
 
-(defn application
-  [config listener]
-  (Lwjgl3Application. (gdx/application-adapter listener)
-                      (create-application-config config)))
+(defn start!
+  [os-config
+   lwjgl3-config
+   {:keys [create! dispose! render! resize!]}]
+  (when (= (operating-system) :mac)
+    (let [{:keys [glfw-async?
+                  dock-icon]} (:mac os-config)]
+      (when glfw-async?
+        (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+      (when dock-icon
+        (.setIconImage (Taskbar/getTaskbar)
+                       (.getImage (Toolkit/getDefaultToolkit)
+                                  (io/resource dock-icon))))))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (when create! (create!)))
+                        (dispose []
+                          (when dispose! (dispose!)))
+                        (render []
+                          (when render! (render!)))
+                        (resize [width height]
+                          (when resize! (resize! width height))))
+                      (let [obj (Lwjgl3ApplicationConfiguration.)]
+                        (doseq [[k v] lwjgl3-config]
+                          (set-application-config-key! obj k v))
+                        obj)))

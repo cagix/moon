@@ -2,9 +2,9 @@
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
             clojure.edn
-            clojure.gdx.lwjgl
             clojure.java.io
             clojure.walk
+            [gdl.application]
             [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
@@ -112,5 +112,6 @@
 ; do not create unnecessary abstractions ...
 (defn -main [config-path]
   (let [config (create-config config-path)]
-    (clojure.gdx.lwjgl/application (:lwjgl-config config)
-                                   (create-listener config))))
+    (gdl.application/start! (:os-config config)
+                            (:lwjgl-config config)
+                            (create-listener config))))

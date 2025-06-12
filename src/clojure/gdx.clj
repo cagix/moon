@@ -1,13 +1,9 @@
 ; TODO
 ; * ->Color ignored with lein codox (thinks its a defrecord constructor)
 (ns clojure.gdx
-  "Here only dependencies to `clojure` and libs & core libdx libraries ....
-  If it gets too big can split up but now just keep it like that.
-  No need graphics/audio/g2d/batch/viewport/etc... ?"
   (:require [clojure.string :as str])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx ApplicationAdapter
-                             Gdx
+           (com.badlogic.gdx Gdx
                              Graphics
                              Input
                              Input$Buttons
@@ -28,9 +24,7 @@
            (com.badlogic.gdx.math Vector2
                                   Vector3)
            (com.badlogic.gdx.utils Align
-                                   ScreenUtils
-                                   SharedLibraryLoader
-                                   Os)
+                                   ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
 
@@ -389,27 +383,8 @@
   (.setUseIntegerPositions font use-integer-positions?)
   font)
 
-(defn application-adapter [{:keys [create! dispose! render! resize!]}]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (when create! (create!)))
-    (dispose []
-      (when dispose! (dispose!)))
-    (render []
-      (when render! (render!)))
-    (resize [width height]
-      (when resize! (resize! width height)))))
-
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(let [mapping {Os/Android :android
-               Os/IOS     :ios
-               Os/Linux   :linux
-               Os/MacOsX  :mac
-               Os/Windows :windows}]
-  (defn operating-system []
-    (get mapping SharedLibraryLoader/os)))
 
 (defn text-height [^BitmapFont font text]
   (-> text

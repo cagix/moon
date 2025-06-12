@@ -13,7 +13,7 @@
 (defn- set-color! [shape-drawer color]
   (ShapeDrawer/.setColor shape-drawer (gdx/->Color color)))
 
-(defn ellipse! [shape-drawer [x y] radius-x radius-y color ]
+(defn ellipse! [shape-drawer [x y] radius-x radius-y color]
   (set-color! shape-drawer color)
   (ShapeDrawer/.ellipse shape-drawer
                         (float x)
