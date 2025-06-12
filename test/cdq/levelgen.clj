@@ -7,6 +7,7 @@
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx.tiled :as tiled]
             [gdl.application :as application]
+            gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
@@ -62,6 +63,13 @@
 
 (defn create! [context]
   (let [ctx (merge (->Context) context)
+        ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx {:textures {:folder "resources/"
+                                                                              :extensions #{"png" "bmp"}}
+                                                                   :tile-size 48
+                                                                   :ui-viewport {:width 1440
+                                                                                 :height 900}
+                                                                   :world-viewport {:width 1440
+                                                                                    :height 900}}))
         ctx (assoc ctx :ctx/stage (gdl.create.ui/do! ctx {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
@@ -128,14 +136,7 @@
                       {:title "Levelgen test"
                        :windowed-mode {:width 1440 :height 900}
                        :foreground-fps 60}
-                      {:graphics {:textures {:folder "resources/"
-                                             :extensions #{"png" "bmp"}}
-                                  :tile-size 48
-                                  :ui-viewport {:width 1440
-                                                :height 900}
-                                  :world-viewport {:width 1440
-                                                   :height 900}}
-                       :user-interface {:skin-scale :x1}}
+                      {}
                       {:create! create!
                        :dispose! dispose!
                        :render! render!
