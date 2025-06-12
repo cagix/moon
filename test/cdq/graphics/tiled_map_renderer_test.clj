@@ -1,5 +1,5 @@
 #_(ns gdl.graphics.tiled-map-renderer-test
-  (:require [gdl.tiled :as tiled]
+  (:require [clojure.gdx.tiled :as tiled]
             [gdl.graphics.camera :as camera]
             [gdl.utils.disposable])
   (:import (com.badlogic.gdx ApplicationAdapter)

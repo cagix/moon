@@ -5,12 +5,12 @@
             [cdq.level.vampire]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
+            clojure.gdx.lwjgl
+            [clojure.gdx.tiled :as tiled]
             gdl.application.desktop
-            gdl.application.lwjgl
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
-            [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp]))
@@ -121,7 +121,7 @@
     (graphics/resize-viewports! graphics width height)))
 
 (defn -main []
-  (gdl.application.lwjgl/start!
+  (clojure.gdx.lwjgl/application
    {:mac-os {:glfw-async? true}
     :title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
