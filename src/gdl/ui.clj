@@ -1,6 +1,5 @@
 (ns gdl.ui
   (:require [clojure.gdx :as gdx]
-            [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
@@ -366,7 +365,7 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (texture/region texture)))
+  (VisImage. (gdx/texture-region texture)))
 
 (defmethod image* TextureRegion [texture-region]
   (VisImage. texture-region))
