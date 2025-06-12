@@ -1,7 +1,11 @@
 (ns clojure.gdx.shape-drawer
-  (:require [clojure.gdx :as gdx]
-            [gdl.math.utils :as math-utils])
+  (:require [clojure.gdx :as gdx])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(def ^:private degrees-to-radians (float (/ Math/PI 180)))
+
+(defn- degree->radians [degree]
+  (* degrees-to-radians (float degree)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
@@ -61,8 +65,8 @@
                     (float center-x)
                     (float center-y)
                     (float radius)
-                    (float (math-utils/degree->radians start-angle))
-                    (float (math-utils/degree->radians degree))))
+                    (float (degree->radians start-angle))
+                    (float (degree->radians degree))))
 
 (defn sector! [shape-drawer [center-x center-y] radius start-angle degree color]
   (set-color! shape-drawer color)
@@ -70,8 +74,8 @@
                        (float center-x)
                        (float center-y)
                        (float radius)
-                       (float (math-utils/degree->radians start-angle))
-                       (float (math-utils/degree->radians degree))))
+                       (float (degree->radians start-angle))
+                       (float (degree->radians degree))))
 
 (defn line! [shape-drawer [sx sy] [ex ey] color]
   (set-color! shape-drawer color)

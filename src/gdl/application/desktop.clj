@@ -10,7 +10,6 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
-            [gdl.math.utils :as math-utils]
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]

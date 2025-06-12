@@ -39,6 +39,12 @@
     (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
 
+(defn clamp [value min max]
+  (cond
+   (< value min) min
+   (> value max) max
+   :else value))
+
 (let [mapping {:linear Texture$TextureFilter/Linear}]
   (defn k->TextureFilter [k]
     (safe-get-option mapping k)))
@@ -442,11 +448,6 @@
         :height (.getWorldHeight this)
         :camera (.getCamera      this)))))
 
-(defn clamp [value min max]
-  (cond
-   (< value min) min
-   (> value max) max
-   :else value))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
