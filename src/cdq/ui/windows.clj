@@ -1,8 +1,7 @@
-(ns cdq.ui.windows
-  (:require [gdl.ui :as ui]))
+(ns cdq.ui.windows)
 
 (defn create [ctx {:keys [id actors]}]
-  (let [group (ui/group {:id id})]
-    (doseq [[create-actor params] actors]
-      (ui/add! group (create-actor ctx params)))
-    group))
+  {:actor/type :actor.type/group
+   :id id
+   :actors (for [[f params] actors]
+             (f ctx params))})

@@ -279,10 +279,15 @@
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
 
+(defn- -group [opts]
+  (doto (proxy-ILookup Group [])
+    (set-opts! opts)))
+
 ; schemas for components would prevents weird errors
 ; e.g. needs on-clicked ...
 (let [type->constructor {:actor.type/actor -actor
                          :actor.type/check-box -check-box
+                         :actor.type/group -group
                          :actor.type/horizontal-group -horizontal-group
                          :actor.type/label label
                          :actor.type/select-box -select-box
@@ -330,11 +335,6 @@
   Stage
   (hit [stage [x y]]
     (.hit stage x y true)))
-
-(defn group [{:keys [actors] :as opts}]
-  (let [group (proxy-ILookup Group [])]
-    (run! #(add! group %) actors) ; redundant
-    (set-opts! group opts)))
 
 (defn vertical-group [actors]
   (let [group (proxy-ILookup VerticalGroup [])]
