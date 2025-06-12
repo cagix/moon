@@ -283,6 +283,11 @@
   (doto (proxy-ILookup Group [])
     (set-opts! opts)))
 
+#_(defn- -vertical-group [actors]
+    (let [group (proxy-ILookup VerticalGroup [])]
+      (run! #(add! group %) actors) ; redundant if we use map based
+      group))
+
 ; schemas for components would prevents weird errors
 ; e.g. needs on-clicked ...
 (let [type->constructor {:actor.type/actor -actor
@@ -335,11 +340,6 @@
   Stage
   (hit [stage [x y]]
     (.hit stage x y true)))
-
-(defn vertical-group [actors]
-  (let [group (proxy-ILookup VerticalGroup [])]
-    (run! #(add! group %) actors) ; redundant if we use map based
-    group))
 
 (def checked? VisCheckBox/.isChecked)
 
