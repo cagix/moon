@@ -13,7 +13,8 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage]
-            [gdl.utils.disposable])
+            [gdl.utils.disposable]
+            [gdx.utils.shared-library-loader :as shared-library-loader])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
@@ -476,14 +477,6 @@
                               (->PrintStream (:debug-output-stream v))))
     (set-window-config-key! object k v)))
 
-(let [mapping {Os/Android :android
-               Os/IOS     :ios
-               Os/Linux   :linux
-               Os/MacOsX  :mac
-               Os/Windows :windows}]
-  (defn- operating-system []
-    (get mapping SharedLibraryLoader/os)))
-
 (defn- execute! [[f params]]
   ;(println "execute!" [f params])
   (f params))
@@ -493,7 +486,7 @@
    lwjgl3-config
    context
    {:keys [create! dispose! render! resize!]}]
-  (run! execute! (get os-config (operating-system)))
+  (run! execute! (get os-config (shared-library-loader/operating-system)))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (load-vis-ui! (:user-interface context))
