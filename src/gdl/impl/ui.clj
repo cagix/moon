@@ -1,6 +1,5 @@
 (ns gdl.impl.ui
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.vis-ui :as vis-ui]
+  (:require [clojure.gdx.vis-ui :as vis-ui]
             [gdl.ui :as ui]
             [gdl.ui.stage])
   (:import (com.badlogic.gdx.math Vector2)
@@ -11,13 +10,11 @@
 
 (defn create! [user-interface graphics]
   (vis-ui/load! user-interface)
-  (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
-                                                      (:batch graphics)
-                                                      (atom nil)]
-                (valAt [id]
-                  (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
-    (gdx/set-input-processor! stage)
-    stage))
+  (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
+                                          (:batch graphics)
+                                          (atom nil)]
+    (valAt [id]
+      (ui/find-actor-with-id (CtxStage/.getRoot this) id))))
 
 (extend-type gdl.ui.CtxStage
   gdl.ui.stage/Stage

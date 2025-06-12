@@ -365,9 +365,11 @@
 (defn create-context [graphics-config
                       user-interface
                       audio]
-  (let [graphics (create-graphics graphics-config)]
+  (let [graphics (create-graphics graphics-config)
+        stage (gdl.impl.ui/create! user-interface graphics)]
+    (gdx/set-input-processor! stage)
     {:ctx/input (gdx/input)
      :ctx/graphics graphics
-     :ctx/stage (gdl.impl.ui/create! user-interface graphics)
+     :ctx/stage stage
      :ctx/audio (when audio
                   (create-audio audio))}))
