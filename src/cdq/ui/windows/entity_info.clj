@@ -27,7 +27,7 @@
   (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn- create* [position]
-  (let [label (ui/label "")
+  (let [label (ui/label {:label/text ""})
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false

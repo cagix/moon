@@ -4,9 +4,10 @@
 
 (defn create [throwable]
   (ui/window {:title "Error"
-              :rows [[(ui/label (binding [*print-level* 3]
-                                  (with-err-str
-                                    (clojure.repl/pst throwable))))]]
+              :rows [[{:actor {:actor/type :actor.type/label
+                               :label/text (binding [*print-level* 3]
+                                             (with-err-str
+                                               (clojure.repl/pst throwable)))}}]]
               :modal? true
               :close-button? true
               :close-on-escape? true

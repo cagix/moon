@@ -1,8 +1,7 @@
 (ns gdl.ui.menu
   (:require [gdl.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group
-                                            Touchable)
+                                            Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label
                                                Table)
            (com.kotcrab.vis.ui.widget Menu
@@ -18,12 +17,12 @@
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (ui/image-widget icon {})
-         label (ui/label "")
+         label (ui/label {:label/text ""})
          sub-table (ui/table {:rows [[icon label]]})]
      (ui/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
-   (let [label (ui/label "")]
+   (let [label (ui/label {:label/text ""})]
      (ui/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table label))))))
 
@@ -54,8 +53,9 @@
             :expand-x? true
             :fill-x? true
             :colspan 1}]
-          [{:actor (doto (ui/label "")
-                     (Actor/.setTouchable Touchable/disabled))
+          [{:actor {:actor/type :actor.type/label
+                    :label/text ""
+                    :actor/touchable :disabled}
             :expand? true
             :fill-x? true
             :fill-y? true}]]

@@ -60,7 +60,8 @@
   (assert (not (::modal stage)))
   (stage/add! stage
               (ui/window {:title title
-                          :rows [[(ui/label text)]
+                          :rows [[{:actor {:actor/type :actor.type/label
+                                           :label/text text}}]
                                  [(ui/text-button button-text
                                                   (fn [_actor _ctx]
                                                     (ui/remove! (::modal stage))

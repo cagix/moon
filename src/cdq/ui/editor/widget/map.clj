@@ -57,8 +57,9 @@
                                                 (ui/remove! (find-kv-widget table k))
                                                 (rebuild-editor-window! ctx))))
                      :left? true}
-                    (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-                              (name k))]]}
+                    {:actor {:actor/type :actor.type/label
+                             :label/text (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                             }}]]}
     :right? true}
    (ui/vertical-separator-cell)
    {:actor (let [widget (ui/-create-actor (widget/create (get schemas k) k v ctx))]

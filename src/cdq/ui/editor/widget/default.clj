@@ -6,7 +6,7 @@
 
 (defmethod widget/create :default [_ _attribute v _ctx]
   {:actor/type :actor.type/label
-   :text (truncate (->edn-str v) 60)})
+   :label/text (truncate (->edn-str v) 60)})
 
 (defmethod widget/value :default [_  _attribute widget _schemas]
   ((ui/user-object widget) 1))

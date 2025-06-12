@@ -57,9 +57,9 @@
                                                     {:scale scale})
                                    (ui/text-button (name id)
                                                    on-clicked))
-                          top-widget (ui/label (or (and extra-info-text
-                                                        (extra-info-text property))
-                                                   ""))
+                          top-widget (ui/label {:label/text (or (and extra-info-text
+                                                                     (extra-info-text property))
+                                                                "")})
                           stack {:actor/type :actor.type/stack
                                  :actors [button
                                           top-widget]}]

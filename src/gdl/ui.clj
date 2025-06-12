@@ -122,6 +122,8 @@
     (.addListener actor (-click-listener f)))
   (when-let [tooltip (:tooltip opts)]
     (add-tooltip! actor tooltip))
+  (when-let [touchable (:actor/touchable opts)]
+    (set-touchable! actor touchable))
   actor)
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
@@ -266,8 +268,9 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(defn label ^VisLabel [text]
-  (VisLabel. ^CharSequence text))
+(defn label ^VisLabel [{:keys [label/text] :as opts}]
+  (doto (VisLabel. ^CharSequence text)
+    (set-opts! opts)))
 
 (defn text-field [text opts]
   (-> (VisTextField. (str text))
@@ -288,15 +291,14 @@
                               (assert (:actor/type actor-declaration))
                               (case (:actor/type actor-declaration)
                                 :actor.type/actor (-actor actor-declaration)
-                                :actor.type/widget (-widget actor-declaration)
-                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
-                                :actor.type/table (table actor-declaration)
-                                :actor.type/stack (-stack actor-declaration)
                                 :actor.type/check-box (-check-box actor-declaration)
-                                :actor.type/label (label (:text actor-declaration))
-                                :actor.type/text-field (text-field (:text actor-declaration)
-                                                                   actor-declaration)
+                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
+                                :actor.type/label (label actor-declaration)
                                 :actor.type/select-box (-select-box actor-declaration)
+                                :actor.type/stack (-stack actor-declaration)
+                                :actor.type/table (table actor-declaration)
+                                :actor.type/text-field (text-field (:text actor-declaration) actor-declaration)
+                                :actor.type/widget (-widget actor-declaration)
                                 (throw (ex-info "Cannot understand actor declaration"
                                                 {:actor/type (:actor/type actor-declaration)}))))
     (nil? actor-declaration) nil
