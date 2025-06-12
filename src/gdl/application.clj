@@ -1,5 +1,6 @@
 (ns gdl.application
   (:require [clojure.gdx :as gdx]
+            [gdl.app]
             [gdl.input]
             [gdl.utils.disposable]
             [gdx.backends.lwjgl.application.config :as application-config]
@@ -24,7 +25,8 @@
   (run! execute! (get os-config (shared-library-loader/operating-system)))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create! {:ctx/input Gdx/input}))
+                          (create! {:ctx/app   Gdx/app
+                                    :ctx/input Gdx/input}))
                         (dispose []
                           (dispose!))
                         (render []
@@ -33,10 +35,10 @@
                           (resize! width height)))
                       (application-config/create lwjgl3-config)))
 
-(extend-type com.badlogic.gdx.utils.Disposable
-  gdl.utils.disposable/Disposable
-  (dispose! [object]
-    (.dispose object)))
+(extend-type com.badlogic.gdx.Application
+  gdl.app/Application
+  (post-runnable! [this runnable]
+    (.postRunnable this runnable)))
 
 (extend-type com.badlogic.gdx.Input
   gdl.input/Input
@@ -55,3 +57,8 @@
 
   (set-processor! [this input-processor]
     (.setInputProcessor this input-processor)))
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  gdl.utils.disposable/Disposable
+  (dispose! [object]
+    (.dispose object)))

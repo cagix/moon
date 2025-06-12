@@ -3,10 +3,14 @@
             [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [clojure.gdx :refer [post-runnable!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [gdl.app :as app]
             [gdl.c :as c]))
+
+(defmacro post-runnable! [& exprs]
+  `(app/post-runnable! (:ctx/app @application/state)
+                       (fn [] ~@exprs)))
 
 (comment
 

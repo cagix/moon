@@ -377,9 +377,6 @@
   (.setUseIntegerPositions font use-integer-positions?)
   font)
 
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
 (defn text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
