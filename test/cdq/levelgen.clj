@@ -1,17 +1,17 @@
 (ns cdq.levelgen
-  (:require [cdq.level.modules]
+  (:require [cdq.create.db]
+            [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.vampire]
-            [cdq.create.db]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
-            gdl.application.lwjgl
             gdl.application.desktop
-            [gdl.ui :as ui]
+            gdl.application.lwjgl
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
             [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp]))
 
@@ -66,7 +66,7 @@
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:camera (:world-viewport (:ctx/graphics ctx)))
-                   :ctx/color-setter (constantly (graphics/->color (:ctx/graphics ctx) :white))
+                   :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
         ctx (generate-level ctx cdq.level.modules/create)]

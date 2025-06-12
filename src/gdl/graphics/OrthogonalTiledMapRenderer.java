@@ -102,11 +102,10 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
           // System.out.println("x1 : " + x1 + " , x2:" + x2);
           // System.out.println("y1 : " + y1 + " , y2:" + y2);
 
-          // TODO if colorSetter not null
-          float color11 = colorSetter.apply(batchColor, x1, y1).toFloatBits();
-          float color12 = colorSetter.apply(batchColor, x1, y2).toFloatBits();
-          float color22 = colorSetter.apply(batchColor, x2, y2).toFloatBits();
-          float color21 = colorSetter.apply(batchColor, x2, y1).toFloatBits();
+          float color11 = colorSetter.apply(batchColor, x1, y1);
+          float color12 = colorSetter.apply(batchColor, x1, y2);
+          float color22 = colorSetter.apply(batchColor, x2, y2);
+          float color21 = colorSetter.apply(batchColor, x2, y1);
 
           // float color11 = Color.WHITE.toFloatBits();
           // float color12 = Color.WHITE.toFloatBits();

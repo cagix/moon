@@ -7,7 +7,6 @@
   (set-cursor! [_ cursor-key])
   (texture [_ path])
   (draw-on-world-viewport! [_ f])
-  (->color [_ color-declaration])
   (draw-tiled-map! [_ tiled-map color-setter])
   (resize-viewports! [_ width height])
   (ui-viewport-height [_])

@@ -16,7 +16,7 @@
                        :explored-tile-corners explored-tile-corners
                        :light-position (camera/position (:camera (:world-viewport graphics)))
                        :see-all-tiles? false
-                       :explored-tile-color  (g/->color graphics [0.5 0.5 0.5 1])
-                       :visible-tile-color   (g/->color graphics :white)
-                       :invisible-tile-color (g/->color graphics :black)}))
+                       :explored-tile-color  [0.5 0.5 0.5 1]
+                       :visible-tile-color   [1 1 1 1]
+                       :invisible-tile-color [0 0 0 1]}))
   ctx)

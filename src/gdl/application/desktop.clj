@@ -690,15 +690,16 @@
         (reset! unit-scale 1)))
     (.end batch))
 
-  (->color [_ color-declaration]
-    (->color color-declaration))
-
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
           camera (:camera world-viewport)]
       (.setColorSetter renderer (reify ColorSetter
                                   (apply [_ color x y]
-                                    (color-setter color x y))))
+                                    (let [[r g b a] (color-setter color x y)]
+                                      (Color/toFloatBits (float r)
+                                                         (float g)
+                                                         (float b)
+                                                         (float a))))))
       (.setView renderer camera)
       ; there is also:
       ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
@@ -768,7 +769,7 @@
     (gdl.graphics.camera/set-zoom! cam 1))
 
   (inc-zoom! [cam by]
-    (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom this) by)))) )
+    (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom cam) by)))) )
 
 (defn- fit-viewport [width height camera {:keys [center-camera?]}]
   (let [this (FitViewport. width height camera)]
