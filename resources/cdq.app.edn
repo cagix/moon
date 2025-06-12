@@ -3,8 +3,6 @@
  :lwjgl-config {:title "Cyber Dungeon Quest"
                 :windowed-mode {:width 1440 :height 900}
                 :foreground-fps 60}
- :context {:audio {:sounds {:folder "resources/"
-                            :extensions #{"wav"}}}}
  :create-fns [
               [:assoc :ctx/graphics [gdl.create.graphics/do! {:textures {:folder "resources/"
                                                                          :extensions #{"png" "bmp"}}
@@ -34,6 +32,8 @@
                                                                                       :use-integer-positions? false ; false, otherwise scaling to world-units not visible
                                                                                       }}}]]
               [:assoc :ctx/stage [gdl.create.ui/do! {:skin-scale :x1}]]
+              [:assoc :ctx/audio [gdl.create.audio/do! {:sounds {:folder "resources/"
+                                                                 :extensions #{"wav"}}}]]
               [:assoc :ctx/db [cdq.create.db/do! {:schemas "schema.edn"
                                                   :properties "properties.edn"}]]
               [cdq.create.extend-protocols/do! cdq.ctx]

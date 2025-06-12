@@ -136,7 +136,6 @@
                       {:title "Levelgen test"
                        :windowed-mode {:width 1440 :height 900}
                        :foreground-fps 60}
-                      {}
                       {:create! create!
                        :dispose! dispose!
                        :render! render!

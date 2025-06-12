@@ -1,6 +1,5 @@
 (ns gdl.application
   (:require [clojure.gdx :as gdx]
-            [gdl.audio :as audio]
             [gdl.input :as input]
             [gdl.utils.disposable]
             [gdx.utils.shared-library-loader :as shared-library-loader])
@@ -14,23 +13,6 @@
   gdl.utils.disposable/Disposable
   (dispose! [object]
     (.dispose object)))
-
-(defn- create-audio [{:keys [sounds]}]
-  (let [sounds (into {}
-                     (for [path (gdx/find-assets sounds)]
-                       [path (gdx/load-sound path)]))]
-    (reify
-      gdl.utils.disposable/Disposable
-      (dispose! [_]
-        (run! gdl.utils.disposable/dispose! (vals sounds)))
-
-      gdl.audio/Audio
-      (all-sounds [_]
-        (map first sounds))
-
-      (play-sound! [_ path]
-        (assert (contains? sounds path) (str path))
-        (gdx/play! (get sounds path))))))
 
 (extend-type com.badlogic.gdx.Input
   gdl.input/Input
@@ -135,17 +117,15 @@
 ; 1. pass Gdx state
 ; 2. txs start inside cereate/dispoes/render/resize only ?
 ; 3. state here ?
+; 4. inside graphics again txs !?
 (defn start!
   [os-config
    lwjgl3-config
-   context
    {:keys [create! dispose! render! resize!]}]
   (run! execute! (get os-config (shared-library-loader/operating-system)))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create! {:ctx/input (gdx/input)
-                                    :ctx/audio (when-let [audio (:audio context)]
-                                                 (create-audio audio))}))
+                          (create! {:ctx/input (gdx/input)}))
                         (dispose []
                           (dispose!))
                         (render []
