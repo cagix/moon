@@ -272,7 +272,7 @@
   (doto (VisLabel. ^CharSequence text)
     (set-opts! opts)))
 
-(defn text-field [text opts]
+(defn- -text-field [{:keys [text-field/text] :as opts}]
   (-> (VisTextField. (str text))
       (set-opts! opts)))
 
@@ -297,7 +297,7 @@
                                 :actor.type/select-box (-select-box actor-declaration)
                                 :actor.type/stack (-stack actor-declaration)
                                 :actor.type/table (table actor-declaration)
-                                :actor.type/text-field (text-field (:text actor-declaration) actor-declaration)
+                                :actor.type/text-field (-text-field actor-declaration)
                                 :actor.type/widget (-widget actor-declaration)
                                 (throw (ex-info "Cannot understand actor declaration"
                                                 {:actor/type (:actor/type actor-declaration)}))))

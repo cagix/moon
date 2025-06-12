@@ -3,8 +3,9 @@
             [gdl.ui :as ui]))
 
 (defmethod widget/create :string [schema  _attribute v _ctx]
-  (ui/add-tooltip! (ui/text-field v {})
-                   (str schema)))
+  {:actor/type :actor.type/text-field
+   :text-field/text v
+   :tooltip (str schema)})
 
 (defmethod widget/value :string [_  _attribute widget _schemas]
   (ui/get-text widget))

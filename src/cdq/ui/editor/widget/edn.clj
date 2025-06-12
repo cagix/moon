@@ -6,7 +6,7 @@
 
 (defmethod widget/create :widget/edn [schema  _attribute v _ctx]
   {:actor/type :actor.type/text-field
-   :text (->edn-str v)
+   :text-field/text (->edn-str v)
    :tooltip (str schema)})
 
 (defmethod widget/value :widget/edn [_  _attribute widget _schemas]
