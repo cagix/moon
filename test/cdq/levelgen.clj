@@ -7,6 +7,7 @@
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx.tiled :as tiled]
             [gdl.application :as application]
+            gdl.create.ui
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
@@ -61,6 +62,7 @@
 
 (defn create! [context]
   (let [ctx (merge (->Context) context)
+        ctx (assoc ctx :ctx/stage (gdl.create.ui/do! ctx {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
