@@ -3,6 +3,7 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
+                 ;[org.clojure/clojure "1.13.0-master-SNAPSHOT"]
                  [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
