@@ -13,8 +13,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics Texture
-                                      OrthographicCamera)
+  (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
                                           SpriteBatch
@@ -530,7 +529,7 @@
                     (int w)
                     (int h))))
 
-(extend-type Texture
+(extend-type com.badlogic.gdx.graphics.Texture
   gdl.graphics.texture/Texture
   (region
     ([texture]
