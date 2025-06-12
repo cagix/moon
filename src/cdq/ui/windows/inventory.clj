@@ -90,25 +90,26 @@
                 :pack? true
                 :position [(:width (:ui-viewport graphics))
                            (:height (:ui-viewport graphics))]
-                :rows [[{:actor (ui/table {:id ::table
-                                           :rows (concat [[nil nil
-                                                           (->cell :inventory.slot/helm)
-                                                           (->cell :inventory.slot/necklace)]
-                                                          [nil
-                                                           (->cell :inventory.slot/weapon)
-                                                           (->cell :inventory.slot/chest)
-                                                           (->cell :inventory.slot/cloak)
-                                                           (->cell :inventory.slot/shield)]
-                                                          [nil nil
-                                                           (->cell :inventory.slot/leg)]
-                                                          [nil
-                                                           (->cell :inventory.slot/glove)
-                                                           (->cell :inventory.slot/rings :position [0 0])
-                                                           (->cell :inventory.slot/rings :position [1 0])
-                                                           (->cell :inventory.slot/boot)]]
-                                                         (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                                                           (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                                                             (->cell :inventory.slot/bag :position [x y]))))})
+                :rows [[{:actor {:id ::table
+                                 :actor/type :actor.type/table
+                                 :rows (concat [[nil nil
+                                                 (->cell :inventory.slot/helm)
+                                                 (->cell :inventory.slot/necklace)]
+                                                [nil
+                                                 (->cell :inventory.slot/weapon)
+                                                 (->cell :inventory.slot/chest)
+                                                 (->cell :inventory.slot/cloak)
+                                                 (->cell :inventory.slot/shield)]
+                                                [nil nil
+                                                 (->cell :inventory.slot/leg)]
+                                                [nil
+                                                 (->cell :inventory.slot/glove)
+                                                 (->cell :inventory.slot/rings :position [0 0])
+                                                 (->cell :inventory.slot/rings :position [1 0])
+                                                 (->cell :inventory.slot/boot)]]
+                                               (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+                                                 (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+                                                   (->cell :inventory.slot/bag :position [x y]))))}
                          :pad 4}]]})))
 
 (defn set-item!

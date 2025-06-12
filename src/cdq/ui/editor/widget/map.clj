@@ -49,15 +49,16 @@
 (def ^:private component-row-cols 3)
 
 (defn- component-row [ctx [k v] map-schema schemas table]
-  [{:actor (ui/table {:cell-defaults {:pad 2}
-                      :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
-                                        (ui/text-button "-"
-                                                        (fn [_actor ctx]
-                                                          (ui/remove! (find-kv-widget table k))
-                                                          (rebuild-editor-window! ctx))))
-                               :left? true}
-                              (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-                                        (name k))]]})
+  [{:actor {:actor/type :actor.type/table
+            :cell-defaults {:pad 2}
+            :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
+                              (ui/text-button "-"
+                                              (fn [_actor ctx]
+                                                (ui/remove! (find-kv-widget table k))
+                                                (rebuild-editor-window! ctx))))
+                     :left? true}
+                    (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                              (name k))]]}
     :right? true}
    (ui/vertical-separator-cell)
    {:actor (let [widget (ui/-create-actor (widget/create (get schemas k) k v ctx))]

@@ -46,16 +46,17 @@
     (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]
-  (ui/table {:rows [[{:actor (let [menu-bar (MenuBar.)]
-                               (run! #(add-menu! menu-bar %) menus)
-                               (add-update-labels! menu-bar update-labels)
-                               (MenuBar/.getTable menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (Actor/.setTouchable Touchable/disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
+  {:actor/type :actor.type/table
+   :rows [[{:actor (let [menu-bar (MenuBar.)]
+                     (run! #(add-menu! menu-bar %) menus)
+                     (add-update-labels! menu-bar update-labels)
+                     (MenuBar/.getTable menu-bar))
+            :expand-x? true
+            :fill-x? true
+            :colspan 1}]
+          [{:actor (doto (ui/label "")
+                     (Actor/.setTouchable Touchable/disabled))
+            :expand? true
+            :fill-x? true
+            :fill-y? true}]]
+   :fill-parent? true})

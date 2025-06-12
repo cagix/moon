@@ -124,14 +124,14 @@
     (add-tooltip! actor tooltip))
   actor)
 
-;; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
+; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]
   (when-let [ctx (get-stage-ctx actor)]
     (f actor delta ctx)))
+
 (defn- try-draw [actor f]
   (when-let [ctx (get-stage-ctx actor)]
     (f actor ctx)))
-;;
 
 (defn- -actor [opts]
   (doto (proxy [Actor] []
