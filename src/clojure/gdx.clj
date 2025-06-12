@@ -1,22 +1,33 @@
 ; TODO
 ; * ->Color ignored with lein codox (thinks its a defrecord constructor)
 (ns clojure.gdx
+  "Here only dependencies to `clojure` and libs & core libdx libraries ....
+  If it gets too big can split up but now just keep it like that.
+  No need graphics/audio/g2d/batch/viewport/etc... ?"
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx
                              Graphics
                              Input
                              Input$Buttons
                              Input$Keys)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
-                                      Pixmap)
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture
+                                      Texture$TextureFilter)
            (com.badlogic.gdx.utils Align)))
 
 (defn- safe-get-option [mapping k]
   (when-not (contains? mapping k)
     (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
+
+(let [mapping {:linear Texture$TextureFilter/Linear}]
+  (defn k->TextureFilter [k]
+    (safe-get-option mapping k)))
 
 (let [mapping {:bottom      Align/bottom
                :bottomleft  Align/bottomLeft
@@ -316,3 +327,16 @@
 
 (defn set-input-processor! [input-processor]
   (.setInputProcessor (input) input-processor))
+
+(def play! Sound/.play)
+
+(defn white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor (->Color :white))
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
+
+(defn load-texture [path]
+  (Texture. path))

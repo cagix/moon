@@ -13,11 +13,7 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Pixmap
-                                      Pixmap$Format
-                                      Texture
-                                      Texture$TextureFilter
+  (:import (com.badlogic.gdx.graphics Texture
                                       OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
@@ -58,8 +54,8 @@
         ^BitmapFont font (.generateFont generator
                                         (create-font-params {:size (* size quality-scaling)
                                                              ; :texture-filter/linear because scaling to world-units
-                                                             :min-filter Texture$TextureFilter/Linear
-                                                             :mag-filter Texture$TextureFilter/Linear}))]
+                                                             :min-filter (gdx/k->TextureFilter :linear)
+                                                             :mag-filter (gdx/k->TextureFilter :linear)}))]
     (.setScale (.getData font) (/ quality-scaling))
     (set! (.markupEnabled (.getData font)) enable-markup?)
     (.setUseIntegerPositions font use-integer-positions?)
@@ -472,14 +468,6 @@
           :height (.getWorldHeight this)
           :camera (.getCamera this))))))
 
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor (gdx/->Color :white))
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
-
 (defn- create-graphics
   [{:keys [textures
            colors ; optional
@@ -491,7 +479,7 @@
            world-viewport]}]
   (gdx/def-colors colors)
   (let [batch (SpriteBatch.)
-        shape-drawer-texture (white-pixel-texture)
+        shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (fit-viewport (:width ui-viewport)
                                   (:height ui-viewport)
@@ -500,7 +488,7 @@
         textures-to-load (gdx/find-assets textures)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
-                            [file (Texture. file)]))
+                            [file (gdx/load-texture file)]))
         cursors (update-vals cursors
                              (fn [[file hotspot]]
                                (gdx/create-cursor (format cursor-path-format file) hotspot)))]
@@ -620,7 +608,7 @@
 
       (play-sound! [_ path]
         (assert (contains? sounds path) (str path))
-        (Sound/.play (get sounds path))))))
+        (gdx/play! (get sounds path))))))
 
 (extend-type com.badlogic.gdx.Input
   gdl.input/Input
