@@ -4,20 +4,23 @@
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
 
-(defn start! [config {:keys [create! dispose! render! resize!]}]
+(defn start! [[config {:keys [create! dispose! render! resize!]}]]
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create! {:ctx/app      Gdx/app
-                                    :ctx/audio    Gdx/audio
-                                    :ctx/files    Gdx/files
-                                    :ctx/graphics Gdx/graphics
-                                    :ctx/input    Gdx/input}))
+                          (let [[f params] create!]
+                            (f {:ctx/app      Gdx/app
+                                :ctx/audio    Gdx/audio
+                                :ctx/files    Gdx/files
+                                :ctx/graphics Gdx/graphics
+                                :ctx/input    Gdx/input}
+                               params)))
 
                         (dispose []
                           (dispose!))
 
                         (render []
-                          (render!))
+                          (let [[f params] render!]
+                            (f params)))
 
                         (resize [width height]
                           (resize! width height)))

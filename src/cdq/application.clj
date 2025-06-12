@@ -1,10 +1,7 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
-            clojure.edn
-            clojure.java.io
-            clojure.walk
-            [gdl.application :as application]
+            [gdl.start]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
@@ -45,67 +42,37 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
-(defn- create-config [config-path]
-  (let [m (->> config-path
-               clojure.java.io/resource
-               slurp
-               clojure.edn/read-string
-               (clojure.walk/postwalk (fn [form]
-                                        (if (symbol? form)
-                                          (if (namespace form)
-                                            (requiring-resolve form)
-                                            (do
-                                             (require form)
-                                             form))
-                                          form))))]
-    #_(reify ILookup
-      (valAt [_ k]
-        (assert (contains? m k)
-                (str "Config key not found: " k))
-        (get m k)))
-    m
-    ))
-
 (def state (atom nil))
 
-(defn- create-listener [config]
-  {:create! (fn [context]
-              (let [ctx (reduce utils/render*
-                                (merge (map->Context {})
-                                       (assoc context :ctx/config config))
-                                (:create-fns config))
-                    ctx (dissoc ctx :ctx/files)]
-                (m/validate-humanize schema ctx)
-                (reset! state ctx)))
+(defn create! [context {:keys [config create-fns]}]
+  (let [ctx (reduce utils/render*
+                    (merge (map->Context {})
+                           (assoc context :ctx/config (gdl.start/slurpquire config)))
+                    create-fns)
+        ctx (dissoc ctx :ctx/files)]
+    (m/validate-humanize schema ctx)
+    (reset! state ctx)))
 
-   :dispose! (fn []
-               (let [{:keys [ctx/audio
-                             ctx/graphics
-                             ctx/tiled-map]} @state]
-                 (disp/dispose! audio)
-                 (disp/dispose! graphics)
-                 (disp/dispose! tiled-map)
-                 ; TODO vis-ui dispose
-                 ; TODO what else disposable?
-                 ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
-                 ))
+(defn dispose! []
+  (let [{:keys [ctx/audio
+                ctx/graphics
+                ctx/tiled-map]} @state]
+    (disp/dispose! audio)
+    (disp/dispose! graphics)
+    (disp/dispose! tiled-map)
+    ; TODO vis-ui dispose
+    ; TODO what else disposable?
+    ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
+    ))
 
-   :render! (fn []
-              (swap! state (fn [ctx]
-                             (m/validate-humanize schema ctx)
-                             (let [ctx (reduce utils/render*
-                                               ctx
-                                               (:render-fns config))]
-                               (m/validate-humanize schema ctx)
-                               ctx))))
+(defn render! [render-fns]
+  (swap! state (fn [ctx]
+                 (m/validate-humanize schema ctx)
+                 (let [ctx (reduce utils/render* ctx render-fns)]
+                   (m/validate-humanize schema ctx)
+                   ctx))))
 
-   :resize! (fn [width height]
-              (m/validate-humanize schema @state)
-              (let [{:keys [ctx/graphics]} @state]
-                (graphics/resize-viewports! graphics width height)))})
-
-(defn -main [config-path]
-  (let [config (create-config config-path)]
-    (application/start! (:os-config config)
-                        (:lwjgl-config config)
-                        (create-listener config))))
+(defn resize! [width height]
+  (m/validate-humanize schema @state)
+  (let [{:keys [ctx/graphics]} @state]
+    (graphics/resize-viewports! graphics width height)))
