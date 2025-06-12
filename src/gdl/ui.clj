@@ -283,32 +283,32 @@
 
 ; schemas for components would prevents weird errors
 ; e.g. needs on-clicked ...
-(defn -create-actor ^Actor [actor-declaration]
-  (try
-   (cond
-    (instance? Actor actor-declaration) actor-declaration
-    (map? actor-declaration) (do
-                              (assert (:actor/type actor-declaration))
-                              (case (:actor/type actor-declaration)
-                                :actor.type/actor (-actor actor-declaration)
-                                :actor.type/check-box (-check-box actor-declaration)
-                                :actor.type/horizontal-group (-horizontal-group actor-declaration)
-                                :actor.type/label (label actor-declaration)
-                                :actor.type/select-box (-select-box actor-declaration)
-                                :actor.type/stack (-stack actor-declaration)
-                                :actor.type/table (table actor-declaration)
-                                :actor.type/text-field (-text-field actor-declaration)
-                                :actor.type/widget (-widget actor-declaration)
-                                (throw (ex-info "Cannot understand actor declaration"
-                                                {:actor/type (:actor/type actor-declaration)}))))
-    (nil? actor-declaration) nil
-    :else (throw (ex-info "Cannot find constructor"
-                          {:instance-actor? (instance? Actor actor-declaration)
-                           :map? (map? actor-declaration)})))
-   (catch Throwable t
-     (throw (ex-info "Cannot create-actor"
-                     {:actor-declaration actor-declaration}
-                     t)))))
+(let [type->constructor {:actor.type/actor -actor
+                         :actor.type/check-box -check-box
+                         :actor.type/horizontal-group -horizontal-group
+                         :actor.type/label label
+                         :actor.type/select-box -select-box
+                         :actor.type/stack -stack
+                         :actor.type/table table
+                         :actor.type/text-field -text-field
+                         :actor.type/widget -widget}]
+  (defn -create-actor ^Actor [actor-declaration]
+    (try
+     (cond
+      (instance? Actor actor-declaration) actor-declaration
+      (map? actor-declaration) (do
+                                (assert (:actor/type actor-declaration))
+                                (let [constructor (type->constructor (:actor/type actor-declaration))]
+                                  (assert constructor (str "Cannot find constructor for " (:actor/type actor-declaration)))
+                                  (constructor actor-declaration)))
+      (nil? actor-declaration) nil
+      :else (throw (ex-info "Cannot find constructor"
+                            {:instance-actor? (instance? Actor actor-declaration)
+                             :map? (map? actor-declaration)})))
+     (catch Throwable t
+       (throw (ex-info "Cannot create-actor"
+                       {:actor-declaration actor-declaration}
+                       t))))))
 
 (extend-protocol CanAddActor
   Group
