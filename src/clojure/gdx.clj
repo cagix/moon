@@ -3,10 +3,7 @@
 (ns clojure.gdx
   (:require [clojure.string :as str])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx
-                             Graphics
-                             Input
-                             Input$Buttons
+           (com.badlogic.gdx Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -302,20 +299,8 @@
   (doseq [[name color-params] colors]
     (Colors/put name (->Color color-params))))
 
-(defn graphics ^Graphics []
-  Gdx/graphics)
-
-(defn internal ^FileHandle [path]
-  (.internal Gdx/files path))
-
-(defn create-cursor [path [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (internal path))
-        cursor (.newCursor (graphics) pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
-
-(defn recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (internal folder))
+(defn recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
@@ -329,12 +314,9 @@
           :else
           (recur remaining result))))
 
-(defn find-assets [{:keys [folder extensions]}]
-  (map #(str/replace-first % folder "")
+(defn find-assets [^FileHandle folder extensions]
+  (map #(str/replace-first % (str (.path folder) "/") "")
        (recursively-search folder extensions)))
-
-(defn load-sound [path]
-  (.newSound Gdx/audio (internal path)))
 
 (def play! Sound/.play)
 
@@ -413,7 +395,6 @@
         :width  (.getWorldWidth  this)
         :height (.getWorldHeight this)
         :camera (.getCamera      this)))))
-
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter

@@ -3,12 +3,14 @@
             [clojure.gdx.freetype :as freetype]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.tiled :as tiled]
-            [gdl.graphics :as graphics]
+            [gdl.files :as files]
+            [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
-            [gdl.utils.disposable])
+            [gdl.utils.disposable]
+            [gdx.graphics :as graphics])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -104,7 +106,8 @@
       (draw! component this))))
 
 (defn do!
-  [_ctx
+  [{:keys [ctx/files
+           ctx/graphics]}
    {:keys [textures
            colors ; optional
            cursors ; optional
@@ -120,18 +123,22 @@
         ui-viewport (gdx/fit-viewport (:width  ui-viewport)
                                       (:height ui-viewport)
                                       (gdx/orthographic-camera))
-        textures-to-load (gdx/find-assets textures)
+        {:keys [folder extensions]} textures
+        textures-to-load (gdx/find-assets (files/internal files folder) extensions)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (gdx/load-texture file)]))
         cursors (update-vals cursors
-                             (fn [[file hotspot]]
-                               (gdx/create-cursor (format cursor-path-format file) hotspot)))]
-    (map->Graphics {:graphics (gdx/graphics)
+                             (fn [[file [hotspot-x hotspot-y]]]
+                               (let [pixmap (graphics/pixmap (files/internal files (format cursor-path-format file)))
+                                     cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+                                 (.dispose pixmap)
+                                 cursor)))]
+    (map->Graphics {:graphics graphics
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (freetype/generate-font (gdx/internal (:file default-font))
+                                    (freetype/generate-font (files/internal files (:file default-font))
                                                             (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport

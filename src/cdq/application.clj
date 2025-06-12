@@ -73,7 +73,8 @@
               (let [ctx (reduce utils/render*
                                 (merge (map->Context {})
                                        (assoc context :ctx/config config))
-                                (:create-fns config))]
+                                (:create-fns config))
+                    ctx (dissoc ctx :ctx/files)]
                 (m/validate-humanize schema ctx)
                 (reset! state ctx)))
 

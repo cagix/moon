@@ -1,6 +1,7 @@
 (ns gdl.application
   (:require [clojure.gdx :as gdx]
             [gdl.app]
+            [gdl.files]
             [gdl.input]
             [gdl.utils.disposable]
             [gdx.backends.lwjgl.application.config :as application-config]
@@ -14,7 +15,6 @@
   (f params))
 
 ; 0. reda config chere
-; 1. pass Gdx state
 ; 2. txs start inside cereate/dispoes/render/resize only ?
 ; 3. state here ?
 ; 4. inside graphics again txs !?
@@ -25,8 +25,11 @@
   (run! execute! (get os-config (shared-library-loader/operating-system)))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create! {:ctx/app   Gdx/app
-                                    :ctx/input Gdx/input}))
+                          (create! {:ctx/app      Gdx/app
+                                    :ctx/audio    Gdx/audio
+                                    :ctx/files    Gdx/files
+                                    :ctx/graphics Gdx/graphics
+                                    :ctx/input    Gdx/input}))
                         (dispose []
                           (dispose!))
                         (render []
@@ -39,6 +42,11 @@
   gdl.app/Application
   (post-runnable! [this runnable]
     (.postRunnable this runnable)))
+
+(extend-type com.badlogic.gdx.Files
+  gdl.files/Files
+  (internal [this path]
+    (.internal this path)))
 
 (extend-type com.badlogic.gdx.Input
   gdl.input/Input
