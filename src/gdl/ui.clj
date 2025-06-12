@@ -67,32 +67,36 @@
   (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
     @(.ctx ^CtxStage stage)))
 
-(defn add-tooltip!
-  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
-  Returns the actor."
-  [^Actor actor tooltip-text]
-  (let [text? (string? tooltip-text)
-        label (VisLabel. (if text? tooltip-text ""))
-        tooltip (proxy [Tooltip] []
-                  ; hooking into getWidth because at
-                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                  ; when tooltip position gets calculated we setText (which calls pack) before that
-                  ; so that the size is correct for the newly calculated text.
-                  (getWidth []
-                    (let [^Tooltip this this]
-                      (when-not text?
-                        (let [actor (.getTarget this)
-                              ctx (get-stage-ctx actor)]
-                          (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                            (.setText this (str (tooltip-text ctx))))))
-                      (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
-    (.setTarget  tooltip actor)
-    (.setContent tooltip label))
-  actor)
+(defprotocol PActorTooltips
+  (add-tooltip! [_ tooltip-text]
+                "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.  Returns the actor.")
+  (remove-tooltip! [_]))
 
-(defn remove-tooltip! [^Actor actor]
-  (Tooltip/removeTooltip actor))
+(extend-type Actor
+  PActorTooltips
+  (add-tooltip! [actor tooltip-text]
+    (let [text? (string? tooltip-text)
+          label (VisLabel. (if text? tooltip-text ""))
+          tooltip (proxy [Tooltip] []
+                    ; hooking into getWidth because at
+                    ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                    ; when tooltip position gets calculated we setText (which calls pack) before that
+                    ; so that the size is correct for the newly calculated text.
+                    (getWidth []
+                      (let [^Tooltip this this]
+                        (when-not text?
+                          (let [actor (.getTarget this)
+                                ctx (get-stage-ctx actor)]
+                            (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
+                              (.setText this (str (tooltip-text ctx))))))
+                        (proxy-super getWidth))))]
+      (.setAlignment label Align/center)
+      (.setTarget  tooltip actor)
+      (.setContent tooltip label))
+    actor)
+
+  (remove-tooltip! [actor]
+    (Tooltip/removeTooltip actor)))
 
 (defn- set-actor-opts! [^Actor actor {:keys [id
                                              name
