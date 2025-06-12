@@ -37,14 +37,14 @@
                                 (fn [_actor _ctx])
                                 {:scale 2})]
     (ui/set-user-object! button skill-id)
-    (ui/add-tooltip! button tooltip-text)
-    (ui/add! horizontal-group button)
-    (button-group/add! button-group button)
+    (ui/add-tooltip!     button tooltip-text)
+    (ui/add!           horizontal-group button)
+    (button-group/add! button-group     button)
     nil))
 
 (defn remove-skill! [action-bar skill-id]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
         button (get horizontal-group skill-id)]
-    (ui/remove! button)
+    (ui/remove!                        button)
     (button-group/remove! button-group button)
     nil))
