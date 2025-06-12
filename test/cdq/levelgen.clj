@@ -6,7 +6,6 @@
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
             [clojure.gdx.tiled :as tiled]
-            [gdl.application :as application]
             gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
@@ -61,7 +60,7 @@
 
 (defrecord Context [])
 
-(defn create! [context]
+(defn create! [context _params]
   (let [ctx (merge (->Context) context)
         ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx {:textures {:folder "resources/"
                                                                               :extensions #{"png" "bmp"}}
@@ -118,7 +117,7 @@
                        :as ctx}]
   (stage/render! stage ctx))
 
-(defn render! []
+(defn render! [_]
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
@@ -128,15 +127,3 @@
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
-
-(require 'gdl.lwjgl)
-
-(defn -main []
-  (application/start! {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}
-                      {:title "Levelgen test"
-                       :windowed-mode {:width 1440 :height 900}
-                       :foreground-fps 60}
-                      {:create! create!
-                       :dispose! dispose!
-                       :render! render!
-                       :resize! resize!}))

@@ -4,7 +4,6 @@
             clojure.walk))
 
 (defn execute! [[f params]]
-  (println "execute!" [f params])
   (f params))
 
 (defn dispatch [[to-eval mapping]]
@@ -21,9 +20,10 @@
                                 (if (symbol? form)
                                   (if (namespace form)
                                     (requiring-resolve form)
-                                    (do
-                                     (require form)
-                                     form))
+                                    (try (require form)
+                                         form
+                                         (catch Exception e ; Java classes
+                                           form)))
                                   form)))))
 
 (defn -main [path]
