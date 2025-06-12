@@ -13,12 +13,8 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)
-           (com.kotcrab.vis.ui VisUI
+            [gdl.utils.disposable])
+  (:import (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (gdl.graphics OrthogonalTiledMapRenderer
@@ -260,7 +256,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (ScreenUtils/clear (gdx/->Color color)))
+    (gdx/clear-screen! color))
 
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)
@@ -334,11 +330,7 @@
      (.y (.position this))])
 
   (frustum [this]
-    (let [frustum-points (take 4 (map (fn [^Vector3 v3]
-                                        [(.x v3)
-                                         (.y v3)
-                                         (.z v3)])
-                                      (.planePoints (.frustum this))))
+    (let [frustum-points (take 4 (map gdx/vector3->clj-vec (.planePoints (.frustum this))))
           left-x   (apply min (map first  frustum-points))
           right-x  (apply max (map first  frustum-points))
           bottom-y (apply min (map second frustum-points))
@@ -418,29 +410,25 @@
                                                                                 (float world-unit-scale)
                                                                                 batch)))})))
 
-(extend-type TextureRegion
+(extend-type com.badlogic.gdx.graphics.g2d.TextureRegion
   gdl.graphics.g2d.texture-region/TextureRegion
   (dimensions [texture-region]
     [(.getRegionWidth  texture-region)
      (.getRegionHeight texture-region)])
   (region [texture-region x y w h]
-    (TextureRegion. texture-region
-                    (int x)
-                    (int y)
-                    (int w)
-                    (int h))))
+    (gdx/texture-region x y w h)))
 
 (extend-type com.badlogic.gdx.graphics.Texture
   gdl.graphics.texture/Texture
   (region
     ([texture]
-     (TextureRegion. texture))
+     (gdx/texture-region texture))
     ([texture x y w h]
-     (TextureRegion. texture
-                     (int x)
-                     (int y)
-                     (int w)
-                     (int h)))))
+     (com.badlogic.gdx.graphics.g2d.TextureRegion. texture
+                                                   (int x)
+                                                   (int y)
+                                                   (int w)
+                                                   (int h)))))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Group
   gdl.ui/PGroup
@@ -488,7 +476,7 @@
   (parent [actor]
     (.getParent actor)))
 
-(extend-type Disposable
+(extend-type com.badlogic.gdx.utils.Disposable
   gdl.utils.disposable/Disposable
   (dispose! [object]
     (.dispose object)))
@@ -498,9 +486,9 @@
                      (for [path (gdx/find-assets sounds)]
                        [path (gdx/load-sound path)]))]
     (reify
-      disposable/Disposable
+      gdl.utils.disposable/Disposable
       (dispose! [_]
-        (run! disposable/dispose! (vals sounds)))
+        (run! gdl.utils.disposable/dispose! (vals sounds)))
 
       gdl.audio/Audio
       (all-sounds [_]

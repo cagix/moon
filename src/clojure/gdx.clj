@@ -23,9 +23,12 @@
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
-                                          SpriteBatch)
-           (com.badlogic.gdx.math Vector2)
+                                          SpriteBatch
+                                          TextureRegion)
+           (com.badlogic.gdx.math Vector2
+                                  Vector3)
            (com.badlogic.gdx.utils Align
+                                   ScreenUtils
                                    SharedLibraryLoader
                                    Os)
            (com.badlogic.gdx.utils.viewport FitViewport
@@ -464,3 +467,21 @@
   (.begin batch)
   (f)
   (.end batch))
+
+(defn texture-region
+  ([texture]
+   (TextureRegion. texture))
+  ([texture-region x y w h]
+   (TextureRegion. texture-region
+                   (int x)
+                   (int y)
+                   (int w)
+                   (int h))))
+
+(defn clear-screen! [color]
+  (ScreenUtils/clear (->Color color)))
+
+(defn vector3->clj-vec [^Vector3 v3]
+  [(.x v3)
+   (.y v3)
+   (.z v3)])
