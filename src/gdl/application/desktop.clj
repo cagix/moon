@@ -1,5 +1,6 @@
 (ns gdl.application.desktop
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.freetype :as freetype]
             [clojure.string :as str]
             [gdl.audio :as audio]
             [gdl.graphics :as graphics]
@@ -13,13 +14,9 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch
-                                          BitmapFont
+  (:import (com.badlogic.gdx.graphics.g2d BitmapFont
                                           SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Touchable)
@@ -35,30 +32,6 @@
                          ColorSetter)
            (gdl.ui CtxStage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- create-font-params [{:keys [size
-                                   min-filter
-                                   mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
-
-(defn- generate-font [file-handle {:keys [size
-                                          quality-scaling
-                                          enable-markup?
-                                          use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        ^BitmapFont font (.generateFont generator
-                                        (create-font-params {:size (* size quality-scaling)
-                                                             ; :texture-filter/linear because scaling to world-units
-                                                             :min-filter (gdx/k->TextureFilter :linear)
-                                                             :mag-filter (gdx/k->TextureFilter :linear)}))]
-    (.setScale (.getData font) (/ quality-scaling))
-    (set! (.markupEnabled (.getData font)) enable-markup?)
-    (.setUseIntegerPositions font use-integer-positions?)
-    font))
 
 (extend-type gdl.ui.CtxStage
   stage/Stage
@@ -111,51 +84,38 @@
   (fn [[k] _graphics]
     k))
 
-(defn- draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation]
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; origin-x
-         (/ (float h) 2) ; origin-y
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation))
-
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  (draw-texture-region! batch
-                        texture-region
-                        [x y]
-                        (texture-region/dimensions texture-region)
-                        0  ;rotation
-                        ))
+  (gdx/draw-texture-region! batch
+                            texture-region
+                            [x y]
+                            (texture-region/dimensions texture-region)
+                            0  ;rotation
+                            ))
 
 (defmethod draw! :draw/image [[_ image position]
                               {:keys [batch]
                                :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (draw-texture-region! batch
-                          texture-region
-                          position
-                          (texture-region-drawing-dimensions graphics texture-region)
-                          0 ; rotation
-                          )))
+    (gdx/draw-texture-region! batch
+                              texture-region
+                              position
+                              (texture-region-drawing-dimensions graphics texture-region)
+                              0 ; rotation
+                              )))
 
 (defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
                                          {:keys [batch]
                                           :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)
         [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (draw-texture-region! batch
-                          texture-region
-                          [(- (float x) (/ (float w) 2))
-                           (- (float y) (/ (float h) 2))]
-                          [w h]
-                          rotation
-                          )))
+    (gdx/draw-texture-region! batch
+                              texture-region
+                              [(- (float x) (/ (float w) 2))
+                               (- (float y) (/ (float h) 2))]
+                              [w h]
+                              rotation
+                              )))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
@@ -396,7 +356,7 @@
             :when component]
       (draw! component this))))
 
-(extend-type OrthographicCamera
+(extend-type com.badlogic.gdx.graphics.OrthographicCamera
   gdl.graphics.camera/Camera
   (zoom [this]
     (.zoom this))
@@ -482,7 +442,7 @@
         world-unit-scale (float (/ tile-size))
         ui-viewport (fit-viewport (:width ui-viewport)
                                   (:height ui-viewport)
-                                  (OrthographicCamera.)
+                                  (gdx/orthographic-camera)
                                   {:center-camera? true})
         textures-to-load (gdx/find-assets textures)
         ;(println "load-textures (count textures): " (count textures))
@@ -495,18 +455,17 @@
                     :textures textures
                     :cursors cursors
                     :default-font (when default-font
-                                    (generate-font (gdx/internal (:file default-font))
-                                                   (:params default-font)))
+                                    (freetype/generate-font (gdx/internal (:file default-font))
+                                                            (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                           world-height (* (:height world-viewport) world-unit-scale)]
                                       (fit-viewport world-width
                                                     world-height
-                                                    (doto (OrthographicCamera.)
-                                                      (.setToOrtho false ; y-down?
-                                                                   world-width
-                                                                   world-height))
+                                                    (gdx/orthographic-camera :y-down? false
+                                                                             :world-width world-width
+                                                                             :world-height world-height)
                                                     {:center-camera? false}))
                     :batch batch
                     :unit-scale (atom 1)

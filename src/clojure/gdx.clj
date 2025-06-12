@@ -14,10 +14,13 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
+                                      OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          BitmapFont)
            (com.badlogic.gdx.utils Align)))
 
 (defn- safe-get-option [mapping k]
@@ -340,3 +343,31 @@
 
 (defn load-texture [path]
   (Texture. path))
+
+(defn orthographic-camera
+  ([]
+   (OrthographicCamera.))
+  ([& {:keys [y-down? world-width world-height]}]
+   (doto (OrthographicCamera.)
+     (.setToOrtho y-down?
+                  world-width
+                  world-height))))
+
+(defn draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation]
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; origin-x
+         (/ (float h) 2) ; origin-y
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation))
+
+(defn configure-bitmap-font! [^BitmapFont font {:keys [scale enable-markup? use-integer-positions?]}]
+  (.setScale (.getData font) scale)
+  (set! (.markupEnabled (.getData font)) enable-markup?)
+  (.setUseIntegerPositions font use-integer-positions?)
+  font)
