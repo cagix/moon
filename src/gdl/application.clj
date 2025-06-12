@@ -400,23 +400,6 @@
     [(.getX this)
      (.getY this)]))
 
-(defn- create-context [{:keys [graphics
-                               user-interface
-                               audio]}]
-  (vis-ui/load! user-interface)
-  (let [graphics (create-graphics graphics)
-        stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
-                                                      (:batch graphics)
-                                                      (atom nil)]
-                (valAt [id]
-                  (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
-    (gdx/set-input-processor! stage)
-    {:ctx/input (gdx/input)
-     :ctx/graphics graphics
-     :ctx/stage stage
-     :ctx/audio (when audio
-                  (create-audio audio))}))
-
 (defn- k->glversion [gl-version]
   (case gl-version
     :gl-emulation/angle-gles20 Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20
@@ -521,7 +504,19 @@
                                   (io/resource dock-icon))))))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create! (create-context context)))
+                          (load-vis-ui! (:user-interface context))
+                          (create! (let [graphics (create-graphics (:graphics context))
+                                         stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
+                                                                                       (:batch graphics)
+                                                                                       (atom nil)]
+                                                 (valAt [id]
+                                                   (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
+                                     (gdx/set-input-processor! stage)
+                                     {:ctx/input (gdx/input)
+                                      :ctx/graphics graphics
+                                      :ctx/stage stage
+                                      :ctx/audio (when-let [audio (:audio context)]
+                                                   (create-audio audio))})))
                         (dispose []
                           (dispose!))
                         (render []
