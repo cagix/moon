@@ -14,10 +14,8 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disposable])
-  (:import (com.badlogic.gdx.graphics.g2d Batch
-                                          TextureRegion)
-           (com.badlogic.gdx.math Vector2
-                                  Vector3)
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.math Vector3)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
            (com.kotcrab.vis.ui VisUI
@@ -239,13 +237,6 @@
     (fn []
       (gdl.graphics/handle-draws! this draws))))
 
-; FIX VIEWPORT REIFY FIRST, cant call `.getCamera`
-#_(defn draw-on-viewport! [^Batch batch ^Viewport viewport ]
-  (Batch/.setProjectionMatrix batch (.combined (.getCamera viewport)))
-  (Batch/.begin batch)
-  ; my draw comes here
-  (Batch/.end batch) )
-
 (defrecord Graphics [graphics
                      textures
                      cursors
@@ -292,17 +283,14 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-    ; -> also Widgets, etc. ? check.
-    (Batch/.setColor batch (gdx/->Color :white))
-    (Batch/.setProjectionMatrix batch (.combined (:camera world-viewport)))
-    (Batch/.begin batch)
-    (sd-with-line-width shape-drawer world-unit-scale
-      (fn []
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
-    (Batch/.end batch))
+    (gdx/draw-on-viewport! batch
+                           world-viewport
+                           (fn []
+                             (sd-with-line-width shape-drawer world-unit-scale
+                                                 (fn []
+                                                   (reset! unit-scale world-unit-scale)
+                                                   (f)
+                                                   (reset! unit-scale 1))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
@@ -380,16 +368,8 @@
 
 (extend-type com.badlogic.gdx.utils.viewport.FitViewport
   gdl.graphics.viewport/Viewport
-  ; touch coordinates are y-down, while screen coordinates are y-up
-  ; so the clamping of y is reverse, but as black bars are equal it does not matter
-  ; TODO clamping only works for gui-viewport ?
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject [this [x y]]
-    (let [x (math-utils/clamp x (.getLeftGutterWidth this) (.getRightGutterX    this))
-          y (math-utils/clamp y (.getTopGutterHeight this) (.getTopGutterY      this))]
-      (let [vector2 (.unproject this (Vector2. x y))]
-        [(.x vector2)
-         (.y vector2)]))))
+  (unproject [this position]
+    (gdx/unproject this position)))
 
 (defn- create-graphics
   [{:keys [textures
