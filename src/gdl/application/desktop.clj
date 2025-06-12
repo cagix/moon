@@ -41,6 +41,7 @@
            (com.badlogic.gdx.utils.viewport FitViewport)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)
+           (gdl.ui CtxStage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (def ^:private Align-mapping {:bottom      Align/bottom
@@ -406,22 +407,38 @@
 (extend-type gdl.ui.CtxStage
   stage/Stage
   (render! [stage ctx]
-    (ui/act! stage ctx)
-    (ui/draw! stage ctx)
+    (reset! (.ctx stage) ctx)
+    (.act stage)
+    ; We cannot pass this
+    ; because input events are handled outside ui/act! and in the Lwjgl3Input system
+    #_@(.ctx (-k ctx))
+    ; we need to set nil as input listeners
+    ; are updated outside of render
+    ; inside lwjgl3application code
+    ; FIXME so it has outdated context.
+    #_(reset! (.ctx (-k ctx)) nil)
+    (reset! (.ctx stage) ctx)
+    (.draw stage)
+    ; we need to set nil as input listeners
+    ; are updated outside of render
+    ; inside lwjgl3application code
+    ; so it has outdated context
+    ; => maybe context should be an immutable data structure with mutable fields?
+    #_(reset! (.ctx (-k ctx)) nil)
     ctx)
 
   (add! [stage actor] ; -> re-use gdl.ui/add! ?
     (ui/add! stage actor))
 
   (clear! [stage]
-    (ui/clear! stage))
+    (.clear stage))
 
   (hit [stage position]
     (ui/hit stage position))
 
   (find-actor [stage actor-name]
     (-> stage
-        ui/root
+        .getRoot
         (ui/find-actor actor-name))))
 
 (defn- texture-region-drawing-dimensions
@@ -968,8 +985,11 @@
   (let [graphics (create-graphics graphics-config)]
     {:ctx/input Gdx/input
      :ctx/graphics graphics
-     :ctx/stage (let [stage (ui/stage (:java-object (:ui-viewport graphics))
-                                      (:batch graphics))]
+     :ctx/stage (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:java-object (:ui-viewport graphics))
+                                                                    (:batch graphics)
+                                                                    (atom nil)]
+                              (valAt [id]
+                                (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
                   (.setInputProcessor Gdx/input stage)
                   stage)
      :ctx/audio (when audio

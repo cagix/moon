@@ -224,7 +224,7 @@
     (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
 
-(defn- find-actor-with-id [group id]
+(defn find-actor-with-id [group id]
   (let [actors (children group)
         ids (keep user-object actors)]
     (assert (or (empty? ids)
@@ -332,44 +332,6 @@
   Stage
   (hit [stage [x y]]
     (.hit stage x y true)))
-
-; => pass app/state to stage and click handlers do 'swap!'
-; so each render step has to be a separate swap! also ? confusing
-
-(defn draw! [stage ctx]
-  (reset! (.ctx stage) ctx)
-  (Stage/.draw stage)
-  ; we need to set nil as input listeners
-  ; are updated outside of render
-  ; inside lwjgl3application code
-  ; so it has outdated context
-  ; => maybe context should be an immutable data structure with mutable fields?
-  #_(reset! (.ctx (-k ctx)) nil)
-  nil)
-
-(defn act! [stage ctx]
-  (reset! (.ctx stage) ctx)
-  (Stage/.act stage)
-  ; We cannot pass this
-  ; because input events are handled outside ui/act! and in the Lwjgl3Input system
-  #_@(.ctx (-k ctx))
-  ; we need to set nil as input listeners
-  ; are updated outside of render
-  ; inside lwjgl3application code
-  ; FIXME so it has outdated context.
-  #_(reset! (.ctx (-k ctx)) nil)
-  nil)
-
-(defn root [stage]
-  (Stage/.getRoot stage))
-
-(defn clear! [stage]
-  (Stage/.clear stage))
-
-(defn stage [viewport batch]
-  (proxy [CtxStage ILookup] [viewport batch (atom nil)]
-    (valAt [id]
-      (find-actor-with-id (root this) id))))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
