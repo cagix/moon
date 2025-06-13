@@ -37,10 +37,16 @@
                       :cursors/hand-before-grab)
     :clickable/player :cursors/bag))
 
+(defn distance [a b]
+  (v/distance (entity/position a)
+              (entity/position b)))
+
+(defn in-click-range? [player-entity clicked-entity]
+  (< (distance player-entity clicked-entity)
+     (:entity/click-distance-tiles player-entity)))
+
 (defn clickable-entity-interaction [ctx player-entity clicked-eid]
-  (if (< (v/distance (entity/position player-entity)
-                     (entity/position @clicked-eid))
-         (:entity/click-distance-tiles player-entity))
+  (if (in-click-range? player-entity @clicked-eid)
     [(clickable->cursor @clicked-eid :too-far-away? false)
      (on-clicked ctx clicked-eid)]
     [(clickable->cursor @clicked-eid :too-far-away? true)
