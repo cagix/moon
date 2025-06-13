@@ -1,5 +1,6 @@
 (ns clojure.gdx.freetype
-  (:require [clojure.gdx :as gdx])
+  (:require [clojure.gdx :as gdx]
+            [gdx.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
 (defn- create-font-params [{:keys [size
@@ -21,6 +22,6 @@
                                                  ; :texture-filter/linear because scaling to world-units
                                                  :min-filter (gdx/k->TextureFilter :linear)
                                                  :mag-filter (gdx/k->TextureFilter :linear)}))]
-    (gdx/configure-bitmap-font! font {:scale (/ quality-scaling)
-                                      :enable-markup? enable-markup?
-                                      :use-integer-positions? use-integer-positions?})))
+    (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? enable-markup?
+                                  :use-integer-positions? use-integer-positions?})))

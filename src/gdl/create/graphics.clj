@@ -10,7 +10,8 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
             [gdl.utils.disposable]
-            [gdx.graphics :as graphics])
+            [gdx.graphics :as graphics]
+            [gdx.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -271,17 +272,17 @@
                              {:keys [batch
                                      unit-scale
                                      default-font]}]
-  (gdx/draw-text! (or font default-font)
-                  batch
-                  {:scale (* (float @unit-scale)
-                             (float (or scale 1)))
-                   :text text
-                   :x x
-                   :y y
-                   :up? up?
-                   :h-align h-align
-                   :target-width 0
-                   :wrap? false}))
+  (bitmap-font/draw! (or font default-font)
+                     batch
+                     {:scale (* (float @unit-scale)
+                                (float (or scale 1)))
+                      :text text
+                      :x x
+                      :y y
+                      :up? up?
+                      :h-align h-align
+                      :target-width 0
+                      :wrap? false}))
 
 (defmethod draw! :draw/ellipse [[_ position radius-x radius-y color]
                                 {:keys [shape-drawer]}]
