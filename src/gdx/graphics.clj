@@ -55,9 +55,9 @@
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
       (case k
-        :width  (.getWorldWidth  this)
-        :height (.getWorldHeight this)
-        :camera (.getCamera      this)))))
+        :width  (Viewport/.getWorldWidth  this)
+        :height (Viewport/.getWorldHeight this)
+        :camera (Viewport/.getCamera      this)))))
 
 (defn- clamp [value min max]
   (cond
@@ -76,11 +76,11 @@
       [(.x vector2)
        (.y vector2)])))
 
-(defn draw-on-viewport! [^Batch batch ^Viewport viewport f]
+(defn draw-on-viewport! [^Batch batch viewport f]
   ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
   ; -> also Widgets, etc. ? check.
   (.setColor batch (color/->obj :white))
-  (.setProjectionMatrix batch (.combined (:camera viewport)))
+  (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
   (.begin batch)
   (f)
   (.end batch))

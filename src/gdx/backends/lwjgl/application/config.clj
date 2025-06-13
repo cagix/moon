@@ -30,13 +30,8 @@
                                               (int (:min-height v))
                                               (int (:max-width  v))
                                               (int (:max-height v)))
-    :window-icons (.setWindowIcon object ; TODO
-                                  ; filetype
-                                  ; array of string of file icons
-                                  )
-    :window-listener (.setWindowListener object
-                                         ; Lwjgl3WindowListener v
-                                         )
+    ;:window-icons (.setWindowIcon object )
+    ;:window-listener (.setWindowListener object)
     :initial-background-color (.setInitialBackgroundColor object v)
     ;:fullscreen-mode (.setFullscreenMode object (map->display-mode v))
     :title (.setTitle object (str v))
