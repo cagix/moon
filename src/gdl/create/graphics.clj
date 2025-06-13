@@ -3,7 +3,7 @@
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.texture :as texture]
-            [gdl.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics.g2d.texture-region]
             [gdl.graphics.viewport]
             [gdl.utils.assets :as assets]
             [gdl.utils.disposable]
@@ -11,7 +11,6 @@
             [gdx.graphics.color :as color]
             [gdx.graphics.colors :as colors]
             [gdx.graphics.g2d :as g2d]
-            [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd]
             [gdx.math.vector3 :as vector3]
@@ -21,22 +20,27 @@
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defmulti ^:private draw!
-  (fn [[k] _graphics]
-    k))
+(defn- create-cursors [graphics files cursors cursor-path-format]
+  (update-vals cursors
+               (fn [[file hotspot]]
+                 (graphics/create-cursor graphics
+                                         (files/internal files (format cursor-path-format file))
+                                         hotspot))))
 
-(defrecord Graphics [graphics
-                     textures
+(defrecord Graphics [
+                     batch
                      cursors
                      default-font
-                     world-unit-scale
-                     ui-viewport
-                     world-viewport
-                     batch
-                     unit-scale
+                     graphics
                      shape-drawer-texture
                      shape-drawer
-                     tiled-map-renderer]
+                     textures
+                     tiled-map-renderer
+                     ui-viewport
+                     unit-scale
+                     world-unit-scale
+                     world-viewport
+                     ]
   gdl.utils.disposable/Disposable
   (dispose! [_]
     (gdl.utils.disposable/dispose! batch)
@@ -105,12 +109,7 @@
     (let [texture (gdl.graphics/texture graphics file)]
       (if bounds
         (apply texture/region texture bounds)
-        (texture/region texture))))
-
-  (handle-draws! [this draws]
-    (doseq [component draws
-            :when component]
-      (draw! component this))))
+        (texture/region texture)))))
 
 (defn do!
   [{:keys [ctx/files
@@ -123,24 +122,26 @@
            tile-size
            ui-viewport
            world-viewport]}]
+
   (colors/put! colors)
+
   (let [batch (g2d/sprite-batch)
+
         shape-drawer-texture (graphics/white-pixel-texture)
+
         world-unit-scale (float (/ tile-size))
+
         ui-viewport (graphics/fit-viewport (:width  ui-viewport)
                                            (:height ui-viewport)
                                            (graphics/orthographic-camera))
+
         {:keys [folder extensions]} textures
         textures-to-load (assets/search (files/internal files folder) extensions)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (graphics/load-texture file)]))
-        cursors (update-vals cursors
-                             (fn [[file [hotspot-x hotspot-y]]]
-                               (let [pixmap (graphics/pixmap (files/internal files (format cursor-path-format file)))
-                                     cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                 (.dispose pixmap)
-                                 cursor)))]
+
+        cursors (create-cursors graphics files cursors cursor-path-format)]
     (map->Graphics {:graphics graphics
                     :textures textures
                     :cursors cursors
@@ -227,111 +228,3 @@
 
   (inc-zoom! [cam by]
     (gdl.graphics.camera/set-zoom! cam (max 0.1 (+ (.zoom cam) by)))) )
-
-(defmethod draw! :draw/texture-region [[_ texture-region [x y]]
-                                       {:keys [batch]}]
-  (graphics/draw-texture-region! batch
-                                 texture-region
-                                 [x y]
-                                 (texture-region/dimensions texture-region)
-                                 0  ;rotation
-                                 ))
-
-(defn- texture-region-drawing-dimensions
-  [{:keys [unit-scale
-           world-unit-scale]}
-   texture-region]
-  (let [dimensions (texture-region/dimensions texture-region)]
-    (if (= @unit-scale 1)
-      dimensions
-      (mapv (comp float (partial * world-unit-scale))
-            dimensions))))
-
-(defmethod draw! :draw/image [[_ image position]
-                              {:keys [batch]
-                               :as graphics}]
-  (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (graphics/draw-texture-region! batch
-                                   texture-region
-                                   position
-                                   (texture-region-drawing-dimensions graphics texture-region)
-                                   0 ; rotation
-                                   )))
-
-(defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
-                                         {:keys [batch]
-                                          :as graphics}]
-  (let [texture-region (gdl.graphics/image->texture-region graphics image)
-        [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (graphics/draw-texture-region! batch
-                                   texture-region
-                                   [(- (float x) (/ (float w) 2))
-                                    (- (float y) (/ (float h) 2))]
-                                   [w h]
-                                   rotation
-                                   )))
-
-(defmethod draw! :draw/centered [[_ image position] this]
-  (draw! [:draw/rotated-centered image 0 position] this))
-
-(defmethod draw! :draw/text [[_ {:keys [font scale x y text h-align up?]}]
-                             {:keys [batch
-                                     unit-scale
-                                     default-font]}]
-  (bitmap-font/draw! (or font default-font)
-                     batch
-                     {:scale (* (float @unit-scale)
-                                (float (or scale 1)))
-                      :text text
-                      :x x
-                      :y y
-                      :up? up?
-                      :h-align h-align
-                      :target-width 0
-                      :wrap? false}))
-
-(defmethod draw! :draw/ellipse [[_ position radius-x radius-y color]
-                                {:keys [shape-drawer]}]
-  (sd/ellipse! shape-drawer position radius-x radius-y color))
-
-(defmethod draw! :draw/filled-ellipse [[_ position radius-x radius-y color]
-                                       {:keys [shape-drawer]}]
-  (sd/filled-ellipse! shape-drawer position radius-x radius-y color))
-
-(defmethod draw! :draw/circle [[_ position radius color]
-                               {:keys [shape-drawer]}]
-  (sd/circle! shape-drawer position radius color))
-
-(defmethod draw! :draw/filled-circle [[_ position radius color]
-                                      {:keys [shape-drawer]}]
-  (sd/filled-circle! shape-drawer position radius color))
-
-(defmethod draw! :draw/rectangle [[_ x y w h color]
-                                  {:keys [shape-drawer]}]
-  (sd/rectangle! shape-drawer x y w h color))
-
-(defmethod draw! :draw/filled-rectangle [[_ x y w h color]
-                                         {:keys [shape-drawer]}]
-  (sd/filled-rectangle! shape-drawer x y w h color))
-
-(defmethod draw! :draw/arc [[_ center-position radius start-angle degree color]
-                            {:keys [shape-drawer]}]
-  (sd/arc! shape-drawer center-position radius start-angle degree color))
-
-(defmethod draw! :draw/sector [[_ center-position radius start-angle degree color]
-                               {:keys [shape-drawer]}]
-  (sd/sector! shape-drawer center-position radius start-angle degree color))
-
-(defmethod draw! :draw/line [[_ start end color]
-                             {:keys [shape-drawer]}]
-  (sd/line! shape-drawer start end color))
-
-(defmethod draw! :draw/grid [[_ leftx bottomy gridw gridh cellw cellh color]
-                             {:keys [shape-drawer]}]
-  (sd/grid! shape-drawer leftx bottomy gridw gridh cellw cellh color))
-
-(defmethod draw! :draw/with-line-width [[_ width draws]
-                                        {:keys [shape-drawer] :as this}]
-  (sd/with-line-width shape-drawer width
-    (fn []
-      (gdl.graphics/handle-draws! this draws))))

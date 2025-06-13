@@ -5,7 +5,7 @@
             [cdq.level.vampire]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
-            gdl.create.graphics
+            gdl.create.g
             gdl.create.ui
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
@@ -62,13 +62,13 @@
 
 (defn create! [context _params]
   (let [ctx (merge (->Context) context)
-        ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx {:textures {:folder "resources/"
-                                                                              :extensions #{"png" "bmp"}}
-                                                                   :tile-size 48
-                                                                   :ui-viewport {:width 1440
-                                                                                 :height 900}
-                                                                   :world-viewport {:width 1440
-                                                                                    :height 900}}))
+        ctx (assoc ctx :ctx/graphics (gdl.create.g/do! ctx {:textures {:folder "resources/"
+                                                                       :extensions #{"png" "bmp"}}
+                                                            :tile-size 48
+                                                            :ui-viewport {:width 1440
+                                                                          :height 900}
+                                                            :world-viewport {:width 1440
+                                                                             :height 900}}))
         ctx (assoc ctx :ctx/stage (gdl.create.ui/do! ctx {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))

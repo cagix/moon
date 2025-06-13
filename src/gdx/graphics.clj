@@ -18,11 +18,11 @@
 (defn frames-per-second [^Graphics graphics]
   (.getFramesPerSecond graphics))
 
-(defn pixmap ^Pixmap [^FileHandle file-handle]
-  (Pixmap. file-handle))
-
-(defn new-cursor [^Graphics graphics pixmap hotspot-x hotspot-y]
-  (.newCursor graphics pixmap hotspot-x hotspot-y))
+(defn create-cursor [^Graphics graphics ^FileHandle file-handle [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. file-handle)
+        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
 
 (defn set-cursor! [^Graphics graphics cursor]
   (.setCursor graphics cursor))

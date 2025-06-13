@@ -3,13 +3,17 @@
 (defprotocol ActionBar
   (selected-skill [_]))
 
-(require '[cdq.ui.action-bar :as action-bar])
 
 (comment
+
+ (require '[cdq.ui.action-bar :as action-bar])
+
  (extend-type gdl.ui.CtxStage
    ActionBar
    (selected-skill [stage]
-     (action-bar/selected-skill (:action-bar stage)))
-   )
+     (action-bar/selected-skill (:action-bar stage))))
+
  (let [stage (:ctx/stage @cdq.application/state)]
-   (selected-skill stage)))
+   (selected-skill stage))
+
+ )

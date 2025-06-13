@@ -28,7 +28,7 @@
      {:config "config.edn"
       :create-fns
       [
-       [:assoc :ctx/graphics [gdl.create.graphics/do! {:textures {:folder "resources/"
+       [:assoc :ctx/graphics [gdl.create.g/do! {:textures {:folder "resources/"
                                                                   :extensions #{"png" "bmp"}}
                                                        :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
                                                        :tile-size 48
