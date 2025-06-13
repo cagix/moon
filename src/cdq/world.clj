@@ -1,6 +1,5 @@
 (ns cdq.world
-  (:require [cdq.animation :as animation]
-            [cdq.content-grid :as content-grid]
+  (:require [cdq.content-grid :as content-grid]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -57,12 +56,6 @@
 
 (defmethod do! :tx/sound [[_ sound-name] _ctx]
   [:world.event/sound sound-name])
-
-(defmethod do! :tx/update-animation [[_ eid animation] {:keys [ctx/delta-time]}]
-  (swap! eid #(-> %
-                  (assoc :entity/image (animation/current-frame animation))
-                  (assoc :entity/animation (animation/tick animation delta-time))))
-  nil)
 
 (defn- valid-tx? [transaction]
   (vector? transaction))
