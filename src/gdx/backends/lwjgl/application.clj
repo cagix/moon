@@ -1,19 +1,13 @@
 (ns gdx.backends.lwjgl.application
   (:require [gdx.backends.lwjgl.application.config :as application-config])
-  (:import (com.badlogic.gdx ApplicationAdapter
-                             Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
 
 (defn start! [[config {:keys [create! dispose! render! resize!]}]]
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (let [[f params] create!]
-                            (f {:ctx/app      Gdx/app
-                                :ctx/audio    Gdx/audio
-                                :ctx/files    Gdx/files
-                                :ctx/graphics Gdx/graphics
-                                :ctx/input    Gdx/input}
-                               params)))
+                            (f params)))
 
                         (dispose []
                           (dispose!))

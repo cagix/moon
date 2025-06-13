@@ -5,6 +5,7 @@
             [cdq.level.vampire]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
+            [gdl.create.gdx]
             gdl.create.g
             gdl.create.ui
             [gdl.graphics.camera :as camera]
@@ -60,8 +61,8 @@
 
 (defrecord Context [])
 
-(defn create! [context _params]
-  (let [ctx (merge (->Context) context)
+(defn create! [_params]
+  (let [ctx (gdl.create.gdx/do! (->Context))
         ctx (assoc ctx :ctx/graphics (gdl.create.g/do! ctx {:textures {:folder "resources/"
                                                                        :extensions #{"png" "bmp"}}
                                                             :tile-size 48

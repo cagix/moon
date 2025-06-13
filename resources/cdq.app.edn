@@ -27,6 +27,7 @@
     [cdq.application/create!
      {:create-fns
       [
+       gdl.create.gdx/do!
        [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
        [cdq.utils/assoc* [:ctx/graphics [gdl.create.g/do! {:textures {:folder "resources/"
                                                                       :extensions #{"png" "bmp"}}
