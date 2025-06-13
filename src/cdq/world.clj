@@ -693,7 +693,8 @@
     ctx))
 
 (defn calculate-active-entities [{:keys [ctx/content-grid
-                                         ctx/player-eid]}]
+                                         ctx/player-eid]}
+                                 _params]
   (content-grid/active-entities content-grid @player-eid))
 
 (defn update-potential-fields!

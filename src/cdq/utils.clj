@@ -10,16 +10,26 @@
 (defn render* [ctx render-element]
   (if (vector? render-element)
     (let [[f params] render-element]
-      (if (= :assoc f)
-        (let [[_ k f*] render-element]
-          (assoc ctx k (render* ctx f*)))
-        (f ctx params)))
+      (f ctx params))
     (render-element ctx)))
+
+(defn assoc* [ctx [k [f params]]]
+  (assoc ctx k (f ctx params)))
 
 (defn render-when-not [ctx [condition render-fns]]
   (if (condition ctx)
     ctx
     (reduce render* ctx render-fns)))
+
+(comment
+ (= (let [->graphics (fn [ctx params] (str :GRAPHICS "-" params))
+          ->audio    (fn [ctx params] (str :AUDIO "-" params))]
+      (reduce render*
+              {:initial-context :foobar}
+              [[assoc* [:ctx/graphics [->graphics :GDX]]]
+               [assoc* [:ctx/audio    [->audio "OpenAL"]]]]))
+    {:initial-context :foobar, :ctx/graphics ":GRAPHICS-:GDX", :ctx/audio ":AUDIO-OpenAL"})
+ )
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

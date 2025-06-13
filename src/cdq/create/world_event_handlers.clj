@@ -75,7 +75,7 @@
 (defn- toggle-inventory-visible! [{:keys [ctx/stage]} _]
   (-> stage :windows :inventory-window ui/toggle-visible!))
 
-(defn do! [_ctx]
+(defn do! [_ctx _params]
   {:world.event/player-skill-added add-skill!
    :world.event/player-skill-removed remove-skill!
    :world.event/player-item-set set-item!
