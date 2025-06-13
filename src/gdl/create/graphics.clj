@@ -1,6 +1,5 @@
 (ns gdl.create.graphics
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.freetype :as freetype]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.tiled :as tiled]
             [gdl.files :as files]
@@ -11,7 +10,8 @@
             [gdl.graphics.viewport]
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
-            [gdx.graphics.g2d.bitmap-font :as bitmap-font])
+            [gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [gdx.graphics.g2d.freetype :as freetype])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 

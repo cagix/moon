@@ -9,8 +9,7 @@
                                       OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
-                                      Texture
-                                      Texture$TextureFilter)
+                                      Texture)
            (com.badlogic.gdx.graphics.g2d Batch
                                           SpriteBatch
                                           TextureRegion)
@@ -24,10 +23,6 @@
   (when-not (contains? mapping k)
     (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
   (k mapping))
-
-(let [mapping {:linear Texture$TextureFilter/Linear}]
-  (defn k->TextureFilter [k]
-    (safe-get-option mapping k)))
 
 (let [mapping {:black       Color/BLACK
                :blue        Color/BLUE
