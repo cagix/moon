@@ -15,8 +15,6 @@
 
   (state/cursor [_ _eid _ctx] :cursors/walking)
 
-  (state/pause-game? [_] false)
-
   (state/enter! [[_ {:keys [movement-vector]}] eid]
     [[:tx/set-movement eid movement-vector]])
 

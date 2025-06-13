@@ -82,7 +82,13 @@
                cdq.render.set-cursor/do!
                cdq.render.player-state-handle-click/do!
                cdq.render.update-mouseover-entity/do!
-               [cdq.utils/assoc* [:ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true}]]]
+               [cdq.utils/assoc* [:ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true
+                                                                             :state->pause-game? {:stunned false
+                                                                                                  :player-moving false
+                                                                                                  :player-item-on-cursor true
+                                                                                                  :player-idle true
+                                                                                                  :player-dead true
+                                                                                                  :active-skill false}}]]]
                [cdq.utils/render-when-not [:ctx/paused? [cdq.render.update-time/do!
                                                          cdq.render.update-potential-fields/do!
                                                          cdq.render.tick-entities/do!]]]

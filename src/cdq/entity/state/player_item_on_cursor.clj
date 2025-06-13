@@ -66,8 +66,6 @@
 
   (state/cursor [_ _eid _ctx] :cursors/hand-grab)
 
-  (state/pause-game? [_] true)
-
   (state/enter! [[_ {:keys [item]}] eid]
     [[:tx/assoc eid :entity/item-on-cursor item]])
 

@@ -47,8 +47,6 @@
 
   (state/cursor [_ _eid _ctx] :cursors/sandclock)
 
-  (state/pause-game? [_] false)
-
   (state/enter! [[_ {:keys [skill]}] eid]
     [[:tx/sound (:skill/start-action-sound skill)]
      (when (:skill/cooldown skill)

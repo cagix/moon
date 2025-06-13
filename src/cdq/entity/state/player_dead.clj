@@ -6,8 +6,6 @@
 (defmethods :player-dead
   (state/cursor [_ _eid _ctx] :cursors/black-x)
 
-  (state/pause-game? [_] true)
-
   (state/enter! [_ _eid]
     [[:tx/sound "bfxr_playerdeath"]
      [:tx/show-modal {:title "YOU DIED - again!"

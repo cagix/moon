@@ -12,6 +12,4 @@
     (when (timer/stopped? elapsed-time counter)
       [[:tx/event eid :effect-wears-off]]))
 
-  (state/cursor [_ _eid _ctx] :cursors/denied)
-
-  (state/pause-game? [_] false))
+  (state/cursor [_ _eid _ctx] :cursors/denied))

@@ -6,8 +6,6 @@
             [cdq.utils :refer [defmethods]]))
 
 (defmethods :player-idle
-  (state/pause-game? [_] true)
-
   (state/cursor [_ eid ctx]
     (let [[cursor _on-click] (ctx/interaction-state ctx eid)]
       cursor))
