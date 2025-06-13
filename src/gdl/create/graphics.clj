@@ -13,8 +13,11 @@
             [gdx.graphics :as graphics]
             [gdx.graphics.color :as color]
             [gdx.graphics.colors :as colors]
+            [gdx.graphics.g2d :as g2d]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [gdx.graphics.g2d.freetype :as freetype])
+            [gdx.graphics.g2d.freetype :as freetype]
+            [gdx.math.vector3 :as vector3]
+            [gdx.utils.screen :as screen-utils])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -45,7 +48,7 @@
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]
-    (gdx/clear-screen! color))
+    (screen-utils/clear! color))
 
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)
@@ -121,7 +124,7 @@
            ui-viewport
            world-viewport]}]
   (colors/put! colors)
-  (let [batch (gdx/sprite-batch)
+  (let [batch (g2d/sprite-batch)
         shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
         ui-viewport (gdx/fit-viewport (:width  ui-viewport)
@@ -173,13 +176,13 @@
     [(.getRegionWidth  texture-region)
      (.getRegionHeight texture-region)])
   (region [texture-region x y w h]
-    (gdx/texture-region x y w h)))
+    (g2d/texture-region x y w h)))
 
 (extend-type com.badlogic.gdx.graphics.Texture
   gdl.graphics.texture/Texture
   (region
     ([texture]
-     (gdx/texture-region texture))
+     (g2d/texture-region texture))
     ([texture x y w h]
      (com.badlogic.gdx.graphics.g2d.TextureRegion. texture
                                                    (int x)
@@ -197,7 +200,7 @@
      (.y (.position this))])
 
   (frustum [this]
-    (let [frustum-points (take 4 (map gdx/vector3->clj-vec (.planePoints (.frustum this))))
+    (let [frustum-points (take 4 (map vector3/clojurize (.planePoints (.frustum this))))
           left-x   (apply min (map first  frustum-points))
           right-x  (apply max (map first  frustum-points))
           bottom-y (apply min (map second frustum-points))

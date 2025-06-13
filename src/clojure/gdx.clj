@@ -5,12 +5,8 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.graphics.g2d Batch
-                                          SpriteBatch
-                                          TextureRegion)
-           (com.badlogic.gdx.math Vector2
-                                  Vector3)
-           (com.badlogic.gdx.utils ScreenUtils)
+           (com.badlogic.gdx.graphics.g2d Batch)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
 
@@ -47,9 +43,6 @@
          1 ; scale-y
          rotation))
 
-(defn sprite-batch []
-  (SpriteBatch.))
-
 (defn fit-viewport [width height camera]
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
@@ -82,21 +75,3 @@
   (.begin batch)
   (f)
   (.end batch))
-
-(defn texture-region
-  ([texture]
-   (TextureRegion. texture))
-  ([texture-region x y w h]
-   (TextureRegion. texture-region
-                   (int x)
-                   (int y)
-                   (int w)
-                   (int h))))
-
-(defn clear-screen! [color]
-  (ScreenUtils/clear (color/->obj color)))
-
-(defn vector3->clj-vec [^Vector3 v3]
-  [(.x v3)
-   (.y v3)
-   (.z v3)])
