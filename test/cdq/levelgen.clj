@@ -5,7 +5,6 @@
             [cdq.level.vampire]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
-            [clojure.gdx.tiled :as tiled]
             gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
@@ -13,7 +12,8 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [gdl.utils.disposable :as disp]))
+            [gdl.utils.disposable :as disp]
+            [gdx.tiled :as tiled]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]

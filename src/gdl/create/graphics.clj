@@ -1,6 +1,5 @@
 (ns gdl.create.graphics
-  (:require [clojure.gdx :as gdx]
-            [gdl.files :as files]
+  (:require [gdl.files :as files]
             [gdl.graphics]
             [gdl.graphics.camera]
             [gdl.graphics.texture :as texture]
@@ -71,14 +70,14 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (gdx/draw-on-viewport! batch
-                           world-viewport
-                           (fn []
-                             (sd/with-line-width shape-drawer world-unit-scale
-                                                 (fn []
-                                                   (reset! unit-scale world-unit-scale)
-                                                   (f)
-                                                   (reset! unit-scale 1))))))
+    (graphics/draw-on-viewport! batch
+                                world-viewport
+                                (fn []
+                                  (sd/with-line-width shape-drawer world-unit-scale
+                                    (fn []
+                                      (reset! unit-scale world-unit-scale)
+                                      (f)
+                                      (reset! unit-scale 1))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
@@ -125,16 +124,16 @@
            world-viewport]}]
   (colors/put! colors)
   (let [batch (g2d/sprite-batch)
-        shape-drawer-texture (gdx/white-pixel-texture)
+        shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (gdx/fit-viewport (:width  ui-viewport)
-                                      (:height ui-viewport)
-                                      (gdx/orthographic-camera))
+        ui-viewport (graphics/fit-viewport (:width  ui-viewport)
+                                           (:height ui-viewport)
+                                           (graphics/orthographic-camera))
         {:keys [folder extensions]} textures
         textures-to-load (assets/search (files/internal files folder) extensions)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
-                            [file (gdx/load-texture file)]))
+                            [file (graphics/load-texture file)]))
         cursors (update-vals cursors
                              (fn [[file [hotspot-x hotspot-y]]]
                                (let [pixmap (graphics/pixmap (files/internal files (format cursor-path-format file)))
@@ -151,11 +150,11 @@
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                           world-height (* (:height world-viewport) world-unit-scale)]
-                                      (gdx/fit-viewport world-width
-                                                        world-height
-                                                        (gdx/orthographic-camera :y-down? false
-                                                                                 :world-width world-width
-                                                                                 :world-height world-height)))
+                                      (graphics/fit-viewport world-width
+                                                             world-height
+                                                             (graphics/orthographic-camera :y-down? false
+                                                                                           :world-width world-width
+                                                                                           :world-height world-height)))
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
@@ -168,7 +167,7 @@
 (extend-type com.badlogic.gdx.utils.viewport.FitViewport
   gdl.graphics.viewport/Viewport
   (unproject [this position]
-    (gdx/unproject this position)))
+    (graphics/unproject this position)))
 
 (extend-type com.badlogic.gdx.graphics.g2d.TextureRegion
   gdl.graphics.g2d.texture-region/TextureRegion
@@ -230,12 +229,12 @@
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  (gdx/draw-texture-region! batch
-                            texture-region
-                            [x y]
-                            (texture-region/dimensions texture-region)
-                            0  ;rotation
-                            ))
+  (graphics/draw-texture-region! batch
+                                 texture-region
+                                 [x y]
+                                 (texture-region/dimensions texture-region)
+                                 0  ;rotation
+                                 ))
 
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
@@ -251,25 +250,25 @@
                               {:keys [batch]
                                :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (gdx/draw-texture-region! batch
-                              texture-region
-                              position
-                              (texture-region-drawing-dimensions graphics texture-region)
-                              0 ; rotation
-                              )))
+    (graphics/draw-texture-region! batch
+                                   texture-region
+                                   position
+                                   (texture-region-drawing-dimensions graphics texture-region)
+                                   0 ; rotation
+                                   )))
 
 (defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
                                          {:keys [batch]
                                           :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)
         [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (gdx/draw-texture-region! batch
-                              texture-region
-                              [(- (float x) (/ (float w) 2))
-                               (- (float y) (/ (float h) 2))]
-                              [w h]
-                              rotation
-                              )))
+    (graphics/draw-texture-region! batch
+                                   texture-region
+                                   [(- (float x) (/ (float w) 2))
+                                    (- (float y) (/ (float h) 2))]
+                                   [w h]
+                                   rotation
+                                   )))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
