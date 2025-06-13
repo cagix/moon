@@ -28,7 +28,7 @@
       [:tx/show-message "Your Inventory is full"]])))
 
 (defmethod on-clicked :clickable/player [_ctx _eid]
-  [[:tx/toggle-inventory-visible]]) ; TODO every 'transaction' should have a sound or effect with it?
+  [[:tx/toggle-inventory-visible]])
 
 (defn- clickable->cursor [entity & {:keys [too-far-away?]}]
   (case (:type (:entity/clickable entity))
