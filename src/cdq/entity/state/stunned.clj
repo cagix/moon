@@ -10,6 +10,4 @@
 
   (entity/tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
     (when (timer/stopped? elapsed-time counter)
-      [[:tx/event eid :effect-wears-off]]))
-
-  (state/cursor [_ _eid _ctx] :cursors/denied))
+      [[:tx/event eid :effect-wears-off]])))

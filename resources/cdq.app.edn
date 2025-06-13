@@ -79,7 +79,12 @@
                                                        ; cdq.render.draw-on-world-viewport.geom-test/do!
                                                        cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
                cdq.render.stage/do!
-               cdq.render.set-cursor/do!
+               [cdq.render.set-cursor/do! {:state->cursor {:active-skill :cursors/sandclock
+                                                           :player-dead :cursors/black-x
+                                                           :player-idle cdq.ctx.interaction-state/->cursor
+                                                           :player-item-on-cursor :cursors/hand-grab
+                                                           :player-moving :cursors/walking
+                                                           :stunned :cursors/denied}}]
                cdq.render.player-state-handle-click/do!
                cdq.render.update-mouseover-entity/do!
                [cdq.utils/assoc* [:ctx/paused? [cdq.render.assoc-paused/do! {:pausing? true

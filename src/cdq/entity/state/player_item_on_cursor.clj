@@ -64,8 +64,6 @@
   (entity/create [[_ eid item] _ctx]
     {:item item})
 
-  (state/cursor [_ _eid _ctx] :cursors/hand-grab)
-
   (state/enter! [[_ {:keys [item]}] eid]
     [[:tx/assoc eid :entity/item-on-cursor item]])
 

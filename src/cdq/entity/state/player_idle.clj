@@ -6,10 +6,6 @@
             [cdq.utils :refer [defmethods]]))
 
 (defmethods :player-idle
-  (state/cursor [_ eid ctx]
-    (let [[cursor _on-click] (ctx/interaction-state ctx eid)]
-      cursor))
-
   (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]

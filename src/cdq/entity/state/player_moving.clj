@@ -13,8 +13,6 @@
       [[:tx/set-movement eid movement-vector]]
       [[:tx/event eid :no-movement-input]]))
 
-  (state/cursor [_ _eid _ctx] :cursors/walking)
-
   (state/enter! [[_ {:keys [movement-vector]}] eid]
     [[:tx/set-movement eid movement-vector]])
 

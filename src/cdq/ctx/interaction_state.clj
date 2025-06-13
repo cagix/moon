@@ -60,3 +60,7 @@
        [:cursors/no-skill-selected
         [[:tx/sound "bfxr_denied"]
          [:tx/show-message "No selected skill"]]]))))
+
+(defn ->cursor [player-eid ctx]
+  (let [[cursor _on-click] (interaction-state ctx player-eid)]
+    cursor))

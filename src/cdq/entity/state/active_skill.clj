@@ -45,8 +45,6 @@
      [[:tx/effect effect-ctx (:skill/effects skill)]
       [:tx/event eid :action-done]]))
 
-  (state/cursor [_ _eid _ctx] :cursors/sandclock)
-
   (state/enter! [[_ {:keys [skill]}] eid]
     [[:tx/sound (:skill/start-action-sound skill)]
      (when (:skill/cooldown skill)

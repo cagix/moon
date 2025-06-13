@@ -4,8 +4,6 @@
             [cdq.utils :refer [defmethods]]))
 
 (defmethods :player-dead
-  (state/cursor [_ _eid _ctx] :cursors/black-x)
-
   (state/enter! [_ _eid]
     [[:tx/sound "bfxr_playerdeath"]
      [:tx/show-modal {:title "YOU DIED - again!"

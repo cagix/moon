@@ -1,8 +1,5 @@
 (ns cdq.state)
 
-(defmulti cursor (fn [[k] _eid _ctx]
-                   k))
-
 (defmulti enter! (fn [[k] _eid]
                   k))
 (defmethod enter! :default [_ _eid])
