@@ -8,6 +8,7 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.viewport]
+            [gdl.utils.assets :as assets]
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
             [gdx.graphics.color :as color]
@@ -127,7 +128,7 @@
                                       (:height ui-viewport)
                                       (gdx/orthographic-camera))
         {:keys [folder extensions]} textures
-        textures-to-load (gdx/find-assets (files/internal files folder) extensions)
+        textures-to-load (assets/search (files/internal files folder) extensions)
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [file textures-to-load]
                             [file (gdx/load-texture file)]))

@@ -1,8 +1,6 @@
 (ns clojure.gdx
-  (:require [clojure.string :as str]
-            [gdx.graphics.color :as color])
+  (:require [gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
@@ -15,25 +13,6 @@
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
-
-(defn recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn find-assets [^FileHandle folder extensions]
-  (map #(str/replace-first % (str (.path folder) "/") "")
-       (recursively-search folder extensions)))
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)

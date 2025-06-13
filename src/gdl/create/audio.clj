@@ -1,7 +1,7 @@
 (ns gdl.create.audio
-  (:require [clojure.gdx :as gdx]
-            [gdl.audio]
+  (:require [gdl.audio]
             [gdl.files :as files]
+            [gdl.utils.assets :as assets]
             [gdl.utils.disposable :refer [dispose!]]
             [gdx.audio :as audio]
             [gdx.audio.sound :as sound]))
@@ -12,7 +12,7 @@
    {:keys [sounds]}]
   (let [{:keys [folder extensions]} sounds
         sounds (into {}
-                     (for [path (gdx/find-assets (files/internal files folder) extensions)]
+                     (for [path (assets/search (files/internal files folder) extensions)]
                        [path (audio/new-sound audio (files/internal files path))]))]
     (reify
       gdl.utils.disposable/Disposable

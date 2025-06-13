@@ -1,8 +1,9 @@
 [[master.yoda/provide
-  [[com.badlogic.gdx.Application      gdx.app              gdl.app/Application            ]
-   [com.badlogic.gdx.Files            gdx.files            gdl.files/Files                ]
-   [com.badlogic.gdx.Input            gdx.input            gdl.input/Input                ]
-   [com.badlogic.gdx.utils.Disposable gdx.utils.disposable gdl.utils.disposable/Disposable]]]
+  [[com.badlogic.gdx.Application      gdx.app               gdl.app/Application             ]
+   [com.badlogic.gdx.Files            gdx.files             gdl.files/Files                 ]
+   [com.badlogic.gdx.files.FileHandle gdx.files.file-handle gdl.files.file-handle/FileHandle]
+   [com.badlogic.gdx.Input            gdx.input             gdl.input/Input                 ]
+   [com.badlogic.gdx.utils.Disposable gdx.utils.disposable  gdl.utils.disposable/Disposable ]]]
  [master.yoda/dispatch [gdx.utils.shared-library-loader/operating-system {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}]]
  [gdx.backends.lwjgl.application/start!
   [{:title "Levelgen test"
