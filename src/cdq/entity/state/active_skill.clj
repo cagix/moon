@@ -21,6 +21,20 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
+(defn tick! [[_ {:keys [skill effect-ctx counter]}]
+             eid
+             {:keys [ctx/elapsed-time] :as ctx}]
+  (cond
+   (not (effect/some-applicable? (update-effect-ctx ctx effect-ctx) ; TODO how 2 test
+                                 (:skill/effects skill)))
+   [[:tx/event eid :action-done]
+    ; TODO some sound ?
+    ]
+
+   (timer/stopped? elapsed-time counter)
+   [[:tx/effect effect-ctx (:skill/effects skill)]
+    [:tx/event eid :action-done]]))
+
 (defmethods :active-skill
   (entity/create [[_ eid [skill effect-ctx]]
                   {:keys [ctx/elapsed-time]}]
@@ -30,20 +44,6 @@
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
                    (timer/create elapsed-time))})
-
-  (entity/tick! [[_ {:keys [skill effect-ctx counter]}]
-                 eid
-                 {:keys [ctx/elapsed-time] :as ctx}]
-    (cond
-     (not (effect/some-applicable? (update-effect-ctx ctx effect-ctx) ; TODO how 2 test
-                                   (:skill/effects skill)))
-     [[:tx/event eid :action-done]
-      ; TODO some sound ?
-      ]
-
-     (timer/stopped? elapsed-time counter)
-     [[:tx/effect effect-ctx (:skill/effects skill)]
-      [:tx/event eid :action-done]]))
 
   (state/enter! [[_ {:keys [skill]}] eid]
     [[:tx/sound (:skill/start-action-sound skill)]

@@ -4,10 +4,10 @@
             [cdq.timer :as timer]
             [cdq.utils :refer [defmethods]]))
 
+(defn tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
+    [[:tx/event eid :effect-wears-off]]))
+
 (defmethods :stunned
   (entity/create [[_ _eid duration] {:keys [ctx/elapsed-time]}]
-    {:counter (timer/create elapsed-time duration)})
-
-  (entity/tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
-    (when (timer/stopped? elapsed-time counter)
-      [[:tx/event eid :effect-wears-off]])))
+    {:counter (timer/create elapsed-time duration)}))

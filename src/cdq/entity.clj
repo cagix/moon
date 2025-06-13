@@ -13,10 +13,6 @@
                     k))
 (defmethod destroy! :default [_ eid ctx])
 
-(defmulti tick! (fn [[k] eid ctx]
-                  k))
-(defmethod tick! :default [_ eid ctx])
-
 (defprotocol Entity
   (position [_])
   (in-range? [_ target maxrange])

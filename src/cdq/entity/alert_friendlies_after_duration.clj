@@ -1,18 +1,16 @@
 (ns cdq.entity.alert-friendlies-after-duration
   (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.timer :as timer]
-            [cdq.utils :refer [defmethods]]))
+            [cdq.timer :as timer]))
 
-(defmethods :entity/alert-friendlies-after-duration
-  (entity/tick! [[_ {:keys [counter faction]}]
-                 eid
-                 {:keys [ctx/elapsed-time
-                         ctx/grid]}]
-    (when (timer/stopped? elapsed-time counter)
-      (cons [:tx/mark-destroyed eid]
-            (for [friendly-eid (->> {:position (entity/position @eid)
-                                     :radius 4}
-                                    (grid/circle->entities grid)
-                                    (filter #(= (entity/faction @%) faction)))]
-              [:tx/event friendly-eid :alert])))))
+(defn tick! [[_ {:keys [counter faction]}]
+             eid
+             {:keys [ctx/elapsed-time
+                     ctx/grid]}]
+  (when (timer/stopped? elapsed-time counter)
+    (cons [:tx/mark-destroyed eid]
+          (for [friendly-eid (->> {:position (entity/position @eid)
+                                   :radius 4}
+                                  (grid/circle->entities grid)
+                                  (filter #(= (entity/faction @%) faction)))]
+            [:tx/event friendly-eid :alert]))))

@@ -5,12 +5,13 @@
             [cdq.world :as world]
             [gdl.ui.stage :as stage]))
 
-(defn- tick-entities! [ctx entities]
+(defn- tick-entities! [ctx entities entity->tick]
   (doseq [eid entities]
     (try
      (doseq [k (keys @eid)]
        (try (when-let [v (k @eid)] ; component might have been removed
-              (world/handle-txs! ctx (entity/tick! [k v] eid ctx)))
+              (world/handle-txs! ctx (when-let [f (entity->tick k)]
+                                       (f [k v] eid ctx))))
             (catch Throwable t
               (throw (ex-info "entity-tick" {:k k} t)))))
      (catch Throwable t
@@ -19,9 +20,10 @@
 (defn do!
   [{:keys [ctx/active-entities
            ctx/stage]
-    :as ctx}]
+    :as ctx}
+   entity->tick]
   (try
-   (tick-entities! ctx active-entities)
+   (tick-entities! ctx active-entities entity->tick)
    (catch Throwable t
      (utils/pretty-pst t)
      (stage/add! stage (error-window/create t))
