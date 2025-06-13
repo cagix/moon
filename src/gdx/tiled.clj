@@ -40,10 +40,11 @@
 
 (defn- tm-add-layer!
   "Returns nil."
-  [tiled-map {:keys [name
-                     visible?
-                     properties
-                     tiles]}]
+  [^TiledMap tiled-map
+   {:keys [name
+           visible?
+           properties
+           tiles]}]
   (let [props (.getProperties tiled-map)
         layer (create-layer {:width      (.get props "width")
                              :height     (.get props "height")
@@ -106,7 +107,7 @@
                   If there is no cell at this position in the layer returns `:no-cell`.
                   If the property value is undefined returns `:undefined`."))
 
-(defn- reify-tiled-layer [this]
+(defn- reify-tiled-layer [^TiledMapTileLayer this]
   (reify
     clojure.lang.ILookup
     (valAt [_ key]
@@ -137,7 +138,7 @@
           :undefined)
         :no-cell))))
 
-(defn- reify-tiled-map [this]
+(defn- reify-tiled-map [^TiledMap this]
   (reify
     Disposable
     (dispose [_]
