@@ -1,4 +1,4 @@
-(ns clojure.java.interop)
+(ns clojure.interop)
 
 (comment
  (require '[clojure.string :as str]
