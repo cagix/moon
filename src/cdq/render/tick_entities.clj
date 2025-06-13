@@ -5,27 +5,25 @@
             [cdq.world :as world]
             [gdl.ui.stage :as stage]))
 
+(defn- tick-entities! [ctx entities]
+  (doseq [eid entities]
+    (try
+     (doseq [k (keys @eid)]
+       (try (when-let [v (k @eid)] ; component might have been removed
+              (world/handle-txs! ctx (entity/tick! [k v] eid ctx)))
+            (catch Throwable t
+              (throw (ex-info "entity-tick" {:k k} t)))))
+     (catch Throwable t
+       (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t))))))
+
 (defn do!
   [{:keys [ctx/active-entities
            ctx/stage]
     :as ctx}]
-  ; precaution in case a component gets removed by another component
-  ; the question is do we still want to update nil components ?
-  ; should be contains? check ?
-  ; but then the 'order' is important? in such case dependent components
-  ; should be moved together?
   (try
-   (doseq [eid active-entities]
-     (try
-      (doseq [k (keys @eid)]
-        (try (when-let [v (k @eid)]
-               (world/handle-txs! ctx (entity/tick! [k v] eid ctx)))
-             (catch Throwable t
-               (throw (ex-info "entity-tick" {:k k} t)))))
-      (catch Throwable t
-        (throw (ex-info (str "entity/id: " (entity/id @eid)) {} t)))))
+   (tick-entities! ctx active-entities)
    (catch Throwable t
      (utils/pretty-pst t)
      (stage/add! stage (error-window/create t))
-     #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+     #_(bind-root ::error t)))
   ctx)
