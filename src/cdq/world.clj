@@ -19,15 +19,15 @@
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
 
-(defn- add-text-effect* [entity text {:keys [ctx/elapsed-time]}]
+(defn- add-text-effect* [entity text duration elapsed-time]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(timer/reset elapsed-time %)))
+               (update :counter timer/increment duration))
            {:text text
-            :counter (timer/create elapsed-time 0.4)})))
+            :counter (timer/create elapsed-time duration)})))
 
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
@@ -200,8 +200,8 @@
          (timer/create elapsed-time (:skill/cooldown skill)))
   nil)
 
-(defmethod do! :tx/add-text-effect [[_ eid text] ctx]
-  (swap! eid add-text-effect* text ctx)
+(defmethod do! :tx/add-text-effect [[_ eid text duration] {:keys [ctx/elapsed-time]}]
+  (swap! eid add-text-effect* text duration elapsed-time)
   nil)
 
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
@@ -308,7 +308,7 @@
 
                   (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
                                                             (:creature/stats target*)))
-                  [[:tx/add-text-effect target "[WHITE]ARMOR"]]
+                  [[:tx/add-text-effect target "[WHITE]ARMOR" 0.3]]
 
                   :else
                   (let [min-max (:damage/min-max (modifiers/damage (:creature/stats source*)
@@ -320,7 +320,7 @@
                     [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
                      [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
                      [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
-                     [:tx/add-text-effect target (str "[RED]" dmg-amount "[]")]])))))
+                     [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]])))))
 
 (defn- context-entity-add! [{:keys [ctx/entity-ids
                                     ctx/content-grid

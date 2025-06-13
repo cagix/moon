@@ -13,4 +13,4 @@
 (defmethods :npc-sleeping
   (state/exit! [_ eid _ctx]
     [[:tx/spawn-alert (entity/position @eid) (entity/faction @eid) 0.2]
-     [:tx/add-text-effect eid "[WHITE]!"]]))
+     [:tx/add-text-effect eid "[WHITE]!" 1]]))
