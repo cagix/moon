@@ -4,12 +4,15 @@
             clojure.walk
             master.yoda))
 
-(defn slurpquire [path]
-  (->> path
-       clojure.java.io/resource
-       slurp
-       clojure.edn/read-string
-       (clojure.walk/postwalk master.yoda/req)))
+(defn slurpquire
+  ([_context path]
+   (slurpquire path))
+  ([path]
+   (->> path
+        clojure.java.io/resource
+        slurp
+        clojure.edn/read-string
+        (clojure.walk/postwalk master.yoda/req))))
 
 (defn -main [path]
   (->> path

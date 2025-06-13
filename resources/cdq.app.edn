@@ -25,9 +25,9 @@
 
    {:create!
     [cdq.application/create!
-     {:config "config.edn"
-      :create-fns
+     {:create-fns
       [
+       [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
        [cdq.utils/assoc* [:ctx/graphics [gdl.create.g/do! {:textures {:folder "resources/"
                                                                       :extensions #{"png" "bmp"}}
                                                            :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]

@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]
-            [gdl.start]
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
@@ -44,10 +43,9 @@
 
 (def state (atom nil))
 
-(defn create! [context {:keys [config create-fns]}]
+(defn create! [context {:keys [create-fns]}]
   (let [ctx (reduce utils/render*
-                    (merge (map->Context {})
-                           (assoc context :ctx/config (gdl.start/slurpquire config)))
+                    (merge (map->Context {}) context)
                     create-fns)
         ctx (dissoc ctx :ctx/files)]
     (m/validate-humanize schema ctx)
