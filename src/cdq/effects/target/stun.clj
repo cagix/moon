@@ -1,8 +1,8 @@
 (ns cdq.effects.target.stun
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects.target/stun
+(defmethods :effects.target/stun
   (effect/applicable? [_ {:keys [effect/target]}]
     (and target
          (:entity/fsm @target)))

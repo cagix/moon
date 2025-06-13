@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.raycaster :as raycaster]
-            [cdq.utils :refer [defcomponent]]
+            [cdq.utils :refer [defmethods]]
             [gdl.math.vector2 :as v]))
 
 (defn- start-point [entity direction size]
@@ -10,7 +10,7 @@
          (v/scale direction
                   (+ (:radius entity) size 0.1))))
 
-(defcomponent :effects/projectile
+(defmethods :effects/projectile
   ; TODO for npcs need target -- anyway only with direction
   (effect/applicable? [_ {:keys [effect/target-direction]}]
     target-direction) ; faction @ source also ?

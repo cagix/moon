@@ -2,9 +2,9 @@
   (:require [cdq.controls :as controls]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :player-moving
+(defmethods :player-moving
   (entity/create [[_ eid movement-vector] _ctx]
     {:movement-vector movement-vector})
 

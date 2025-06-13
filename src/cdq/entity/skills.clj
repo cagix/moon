@@ -1,9 +1,9 @@
 (ns cdq.entity.skills
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :entity/skills
+(defmethods :entity/skills
   (entity/create! [[k skills] eid _ctx]
     (cons [:tx/assoc eid k nil]
           (for [skill skills]

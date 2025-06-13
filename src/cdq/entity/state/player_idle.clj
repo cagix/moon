@@ -3,9 +3,9 @@
             [cdq.ctx :as ctx]
             [cdq.state :as state]
             [gdl.input :as input]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :player-idle
+(defmethods :player-idle
   (state/pause-game? [_] true)
 
   (state/cursor [_ eid ctx]

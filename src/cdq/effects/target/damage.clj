@@ -1,8 +1,8 @@
 (ns cdq.effects.target.damage
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects.target/damage
+(defmethods :effects.target/damage
   (effect/applicable? [_ {:keys [effect/target]}]
     (and target
          #_(:entity/hp @target))) ; not exist anymore ... bugfix .... -> is 'creature?'

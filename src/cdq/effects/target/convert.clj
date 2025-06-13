@@ -1,9 +1,9 @@
 (ns cdq.effects.target.convert
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects.target/convert
+(defmethods :effects.target/convert
   (effect/applicable? [_ {:keys [effect/source effect/target]}]
     (and target
          (= (entity/faction @target)

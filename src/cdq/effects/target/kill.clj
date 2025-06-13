@@ -1,8 +1,8 @@
 (ns cdq.effects.target.kill
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects.target/kill
+(defmethods :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]
     (and target
          (:entity/fsm @target)))

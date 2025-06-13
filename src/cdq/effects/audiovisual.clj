@@ -1,8 +1,8 @@
 (ns cdq.effects.audiovisual
   (:require [cdq.effect :as effect]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects/audiovisual
+(defmethods :effects/audiovisual
   (effect/applicable? [_ {:keys [effect/target-position]}]
     target-position)
 

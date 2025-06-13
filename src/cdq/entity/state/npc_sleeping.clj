@@ -2,9 +2,9 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :npc-sleeping
+(defmethods :npc-sleeping
   (entity/tick! [_ eid ctx]
     (let [entity @eid]
       (when-let [distance (ctx/nearest-enemy-distance ctx entity)]

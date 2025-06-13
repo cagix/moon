@@ -2,9 +2,9 @@
   (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :entity/alert-friendlies-after-duration
+(defmethods :entity/alert-friendlies-after-duration
   (entity/tick! [[_ {:keys [counter faction]}]
                  eid
                  {:keys [ctx/elapsed-time

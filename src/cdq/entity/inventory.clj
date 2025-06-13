@@ -1,9 +1,9 @@
 (ns cdq.entity.inventory
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :entity/inventory
+(defmethods :entity/inventory
   (entity/create! [[k items] eid _ctx]
     (cons [:tx/assoc eid k inventory/empty-inventory]
           (for [item items]

@@ -1,8 +1,8 @@
 (ns cdq.entity.stats
   (:require [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :creature/stats
+(defmethods :creature/stats
   (entity/create [[_ stats] _ctx]
     (-> (if (:entity/mana stats)
           (update stats :entity/mana (fn [v] [v v]))

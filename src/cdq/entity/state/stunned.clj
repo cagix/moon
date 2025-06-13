@@ -2,9 +2,9 @@
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :stunned
+(defmethods :stunned
   (entity/create [[_ _eid duration] {:keys [ctx/elapsed-time]}]
     {:counter (timer/create elapsed-time duration)})
 

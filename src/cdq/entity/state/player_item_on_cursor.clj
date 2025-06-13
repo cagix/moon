@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]
+            [cdq.utils :refer [defmethods]]
             [gdl.c :as c]
             [gdl.input :as input]
             [gdl.math.vector2 :as v]
@@ -60,7 +60,7 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defcomponent :player-item-on-cursor
+(defmethods :player-item-on-cursor
   (entity/create [[_ eid item] _ctx]
     {:item item})
 

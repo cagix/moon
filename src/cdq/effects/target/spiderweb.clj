@@ -1,11 +1,11 @@
 (ns cdq.effects.target.spiderweb
   (:require [cdq.effect :as effect]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
-  (defcomponent :effects.target/spiderweb
+  (defmethods :effects.target/spiderweb
     (effect/applicable? [_ _]
       ; ?
       true)

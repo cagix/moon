@@ -1,6 +1,6 @@
 (ns cdq.entity.fsm
   (:require [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]
+            [cdq.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -53,7 +53,7 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defcomponent :entity/fsm
+(defmethods :entity/fsm
   (entity/create! [[k {:keys [fsm initial-state]}] eid ctx]
     ; fsm throws when initial-state is not part of states, so no need to assert initial-state
     ; initial state is nil, so associng it. make bug report at reduce-fsm?

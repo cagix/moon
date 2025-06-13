@@ -2,9 +2,9 @@
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.utils :refer [defcomponent find-first]]))
+            [cdq.utils :refer [defmethods find-first]]))
 
-(defcomponent :entity/projectile-collision
+(defmethods :entity/projectile-collision
   (entity/create [[_ v] _ctx]
     (assoc v :already-hit-bodies #{}))
 

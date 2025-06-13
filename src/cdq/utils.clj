@@ -42,9 +42,9 @@
 
 (def overwrite-warnings? false)
 
-(defmacro defcomponent [k & sys-impls] ; == defmethods
+(defmacro defmethods [k & impls]
   `(do
-    ~@(for [[sys & fn-body] sys-impls
+    ~@(for [[sys & fn-body] impls
             :let [sys-var (resolve sys)]]
         `(do
           (when (and overwrite-warnings?

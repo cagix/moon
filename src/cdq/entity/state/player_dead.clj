@@ -1,9 +1,9 @@
 (ns cdq.entity.state.player-dead
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :player-dead
+(defmethods :player-dead
   (state/cursor [_ _eid _ctx] :cursors/black-x)
 
   (state/pause-game? [_] true)

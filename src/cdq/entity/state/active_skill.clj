@@ -4,7 +4,7 @@
             [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -21,7 +21,7 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
-(defcomponent :active-skill
+(defmethods :active-skill
   (entity/create [[_ eid [skill effect-ctx]]
                   {:keys [ctx/elapsed-time]}]
     {:skill skill

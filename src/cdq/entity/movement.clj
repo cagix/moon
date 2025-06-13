@@ -1,7 +1,7 @@
 (ns cdq.entity.movement
   (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.utils :refer [defcomponent]]
+            [cdq.utils :refer [defmethods]]
             [gdl.math.vector2 :as v]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
@@ -28,7 +28,7 @@
         (try-move grid body (assoc movement :direction [xdir 0]))
         (try-move grid body (assoc movement :direction [0 ydir])))))
 
-(defcomponent :entity/movement
+(defmethods :entity/movement
   (entity/tick! [[_ {:keys [direction
                             speed
                             rotate-in-movement-direction?]

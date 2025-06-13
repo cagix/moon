@@ -2,9 +2,9 @@
   (:require [cdq.entity :as entity]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :npc-moving
+(defmethods :npc-moving
   (entity/create [[_ eid movement-vector] {:keys [ctx/elapsed-time]}]
     {:movement-vector movement-vector
      :counter (timer/create elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})

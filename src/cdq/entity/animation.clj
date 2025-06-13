@@ -1,9 +1,9 @@
 (ns cdq.entity.animation
   (:require [cdq.animation :as animation]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :entity/animation
+(defmethods :entity/animation
   (entity/create [[_ v] _ctx]
     (animation/create v))
 

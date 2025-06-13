@@ -1,9 +1,9 @@
 (ns cdq.entity.temp-modifier
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :entity/temp-modifier
+(defmethods :entity/temp-modifier
   (entity/tick! [[k {:keys [modifiers counter]}]
                  eid
                  {:keys [ctx/elapsed-time]}]

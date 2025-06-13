@@ -1,9 +1,9 @@
 (ns cdq.effects.spawn
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects/spawn
+(defmethods :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]
     (and (entity/faction @source)
          target-position))

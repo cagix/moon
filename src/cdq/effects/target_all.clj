@@ -2,9 +2,9 @@
   (:require [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
-(defcomponent :effects/target-all
+(defmethods :effects/target-all
   ; TODO targets projectiles with -50% hp !!
   (effect/applicable? [_ _]
     true)

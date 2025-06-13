@@ -1,12 +1,12 @@
 (ns cdq.effects.target.audiovisual
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
 ; creates an audiovisual at the target position
 ; requires a :effect/target in the effect context
 
-(defcomponent :effects.target/audiovisual
+(defmethods :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
     target)
 

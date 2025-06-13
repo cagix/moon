@@ -1,7 +1,7 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.utils :refer [defcomponent]]
+            [cdq.utils :refer [defmethods]]
             [gdl.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
@@ -17,7 +17,7 @@
                                (entity/position target*))
                   maxrange)))
 
-(defcomponent :effects/target-entity
+(defmethods :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
     (and target
          (seq (effect/filter-applicable? effect-ctx entity-effects))))

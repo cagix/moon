@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.ctx :as ctx]
             [cdq.state :as state]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defmethods]]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity
@@ -15,7 +15,7 @@
                      (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
        first))
 
-(defcomponent :npc-idle
+(defmethods :npc-idle
   (entity/tick! [_ eid ctx]
     (let [effect-ctx (ctx/npc-effect-ctx ctx eid)]
       (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
