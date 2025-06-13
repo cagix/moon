@@ -31,3 +31,7 @@
   (mana-val [_])
   (hitpoints [_])
   (pay-mana-cost [_ cost]))
+
+(defn set-movement [entity movement-vector]
+  (assoc entity :entity/movement {:direction movement-vector
+                                  :speed (or (stat entity :entity/movement-speed) 0)}))

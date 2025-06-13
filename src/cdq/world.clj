@@ -19,10 +19,6 @@
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
 
-(defn- set-movement* [entity movement-vector]
-  (assoc entity :entity/movement {:direction movement-vector
-                                  :speed (or (entity/stat entity :entity/movement-speed) 0)}))
-
 (defn- add-skill [skills {:keys [property/id] :as skill}]
   {:pre [(not (contains? skills id))]}
   (assoc skills id skill))
@@ -367,7 +363,7 @@
   nil)
 
 (defmethod do! :tx/set-movement [[_ eid movement-vector] _ctx]
-  (swap! eid set-movement* movement-vector)
+  (swap! eid entity/set-movement movement-vector)
   nil)
 
 ; TODO what about components which get added later/??
