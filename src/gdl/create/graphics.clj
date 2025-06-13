@@ -16,7 +16,8 @@
             [gdx.graphics.shape-drawer :as sd]
             [gdx.math.vector3 :as vector3]
             [gdx.tiled :as tiled]
-            [gdx.utils.screen :as screen-utils])
+            [gdx.utils.screen :as screen-utils]
+            [gdx.utils.viewport :as viewport])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -50,18 +51,18 @@
     (screen-utils/clear! color))
 
   (resize-viewports! [_ width height]
-    (.update ui-viewport    width height true)
-    (.update world-viewport width height false))
+    (viewport/update! ui-viewport    width height :center-camera? true)
+    (viewport/update! world-viewport width height :center-camera? false))
 
   (delta-time [_]
-    (.getDeltaTime graphics))
+    (graphics/delta-time graphics))
 
   (frames-per-second [_]
-    (.getFramesPerSecond graphics))
+    (graphics/frames-per-second graphics))
 
   (set-cursor! [_ cursor-key]
     (assert (contains? cursors cursor-key))
-    (.setCursor graphics (get cursors cursor-key)))
+    (graphics/set-cursor! graphics (get cursors cursor-key)))
 
   ; TODO probably not needed I only work with texture-regions
   (texture [_ path]
