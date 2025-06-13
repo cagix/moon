@@ -26,10 +26,10 @@
         (try-move grid body (assoc movement :direction [xdir 0]))
         (try-move grid body (assoc movement :direction [0 ydir])))))
 
-(defn tick! [[_ {:keys [direction
-                        speed
-                        rotate-in-movement-direction?]
-                 :as movement}]
+(defn tick! [{:keys [direction
+                     speed
+                     rotate-in-movement-direction?]
+              :as movement}
              eid
              {:keys [ctx/delta-time
                      ctx/max-speed

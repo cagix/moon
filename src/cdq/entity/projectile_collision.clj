@@ -4,7 +4,7 @@
             [cdq.grid :as grid]
             [cdq.utils :refer [find-first]]))
 
-(defn tick! [[k {:keys [entity-effects already-hit-bodies piercing?]}]
+(defn tick! [{:keys [entity-effects already-hit-bodies piercing?]}
              eid
              {:keys [ctx/grid]}]
   ; TODO this could be called from body on collision
@@ -24,7 +24,7 @@
     [(when destroy?
        [:tx/mark-destroyed eid])
      (when hit-entity
-       [:tx/assoc-in eid [k :already-hit-bodies] (conj already-hit-bodies hit-entity)] ; this is only necessary in case of not piercing ...
+       [:tx/assoc-in eid [:entity/projectile-collision :already-hit-bodies] (conj already-hit-bodies hit-entity)] ; this is only necessary in case of not piercing ...
        )
      (when hit-entity
        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))

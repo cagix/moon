@@ -3,7 +3,7 @@
             [cdq.grid :as grid]
             [cdq.timer :as timer]))
 
-(defn tick! [[_ {:keys [counter faction]}]
+(defn tick! [{:keys [counter faction]}
              eid
              {:keys [ctx/elapsed-time
                      ctx/grid]}]

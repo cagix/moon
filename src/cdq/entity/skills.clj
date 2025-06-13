@@ -3,11 +3,11 @@
             [cdq.timer :as timer]
             [cdq.utils :refer [defmethods]]))
 
-(defn tick! [[k skills] eid {:keys [ctx/elapsed-time]}]
+(defn tick! [skills eid {:keys [ctx/elapsed-time]}]
   (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
         :when (and cooling-down?
                    (timer/stopped? elapsed-time cooling-down?))]
-    [:tx/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false]))
+    [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
 
 (defmethods :entity/skills
   (entity/create! [[k skills] eid _ctx]

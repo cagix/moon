@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.utils :refer [defmethods]]))
 
-(defn tick! [[_ animation] eid {:keys [ctx/delta-time]}]
+(defn tick! [animation eid {:keys [ctx/delta-time]}]
   [[:tx/assoc eid :entity/image (animation/current-frame animation)]
    [:tx/assoc eid :entity/animation (animation/tick animation delta-time)]])
 

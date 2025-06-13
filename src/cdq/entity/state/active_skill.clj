@@ -21,7 +21,7 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
-(defn tick! [[_ {:keys [skill effect-ctx counter]}]
+(defn tick! [{:keys [skill effect-ctx counter]}
              eid
              {:keys [ctx/elapsed-time] :as ctx}]
   (cond

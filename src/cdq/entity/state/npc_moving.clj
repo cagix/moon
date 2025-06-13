@@ -4,7 +4,7 @@
             [cdq.timer :as timer]
             [cdq.utils :refer [defmethods]]))
 
-(defn tick! [[_ {:keys [counter]}] eid {:keys [ctx/elapsed-time]}]
+(defn tick! [{:keys [counter]} eid {:keys [ctx/elapsed-time]}]
   (when (timer/stopped? elapsed-time counter)
     [[:tx/event eid :timer-finished]]))
 
