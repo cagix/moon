@@ -3,8 +3,6 @@
 (ns clojure.gdx
   (:require [clojure.string :as str])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Input$Buttons
-                             Input$Keys)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
