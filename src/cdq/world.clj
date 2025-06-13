@@ -19,10 +19,6 @@
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
 
-(defn- add-skill [skills {:keys [property/id] :as skill}]
-  {:pre [(not (contains? skills id))]}
-  (assoc skills id skill))
-
 (defn- add-text-effect* [entity text {:keys [ctx/elapsed-time]}]
   (assoc entity
          :entity/string-effect
@@ -188,7 +184,7 @@
           nil)))))
 
 (defmethod do! :tx/add-skill [[_ eid skill] _ctx]
-  (swap! eid update :entity/skills add-skill skill)
+  (swap! eid entity/add-skill skill)
   (when (:entity/player? @eid)
     [:world.event/player-skill-added skill]))
 
