@@ -10,6 +10,7 @@
             [gdl.graphics.viewport]
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
+            [gdx.graphics.color :as color]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.g2d.freetype :as freetype])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
@@ -79,7 +80,7 @@
           camera (:camera world-viewport)]
       (.setColorSetter renderer (reify ColorSetter
                                   (apply [_ color x y]
-                                    (gdx/->float-bits (color-setter color x y)))))
+                                    (color/float-bits (color-setter color x y)))))
       (.setView renderer camera)
       ; there is also:
       ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)

@@ -1,11 +1,9 @@
-; TODO
-; * ->Color ignored with lein codox (thinks its a defrecord constructor)
 (ns clojure.gdx
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Colors
+           (com.badlogic.gdx.graphics Colors
                                       OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
@@ -19,64 +17,9 @@
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
 
-(defn- safe-get-option [mapping k]
-  (when-not (contains? mapping k)
-    (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
-  (k mapping))
-
-(let [mapping {:black       Color/BLACK
-               :blue        Color/BLUE
-               :brown       Color/BROWN
-               :chartreuse  Color/CHARTREUSE
-               :clear       Color/CLEAR
-               :clear-white Color/CLEAR_WHITE
-               :coral       Color/CORAL
-               :cyan        Color/CYAN
-               :dark-gray   Color/DARK_GRAY
-               :firebrick   Color/FIREBRICK
-               :forest      Color/FOREST
-               :gold        Color/GOLD
-               :goldenrod   Color/GOLDENROD
-               :gray        Color/GRAY
-               :green       Color/GREEN
-               :light-gray  Color/LIGHT_GRAY
-               :lime        Color/LIME
-               :magenta     Color/MAGENTA
-               :maroon      Color/MAROON
-               :navy        Color/NAVY
-               :olive       Color/OLIVE
-               :orange      Color/ORANGE
-               :pink        Color/PINK
-               :purple      Color/PURPLE
-               :red         Color/RED
-               :royal       Color/ROYAL
-               :salmon      Color/SALMON
-               :scarlet     Color/SCARLET
-               :sky         Color/SKY
-               :slate       Color/SLATE
-               :tan         Color/TAN
-               :teal        Color/TEAL
-               :violet      Color/VIOLET
-               :white       Color/WHITE
-               :yellow      Color/YELLOW}]
-  (defn k->Color [k]
-    (safe-get-option mapping k)))
-
-(defn ->Color ^Color [c]
-  (cond (keyword? c) (k->Color c)
-        (vector?  c) (let [[r g b a] c]
-                       (Color. r g b a))
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(defn ->float-bits [[r g b a]]
-  (Color/toFloatBits (float r)
-                     (float g)
-                     (float b)
-                     (float a)))
-
 (defn def-colors [colors]
   (doseq [[name color-params] colors]
-    (Colors/put name (->Color color-params))))
+    (Colors/put name (color/->obj color-params))))
 
 (defn recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
@@ -99,7 +42,7 @@
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor (->Color :white))
+                 (.setColor (color/->obj :white))
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -160,7 +103,7 @@
 (defn draw-on-viewport! [^Batch batch ^Viewport viewport f]
   ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
   ; -> also Widgets, etc. ? check.
-  (.setColor batch (->Color :white))
+  (.setColor batch (color/->obj :white))
   (.setProjectionMatrix batch (.combined (:camera viewport)))
   (.begin batch)
   (f)
@@ -177,7 +120,7 @@
                    (int h))))
 
 (defn clear-screen! [color]
-  (ScreenUtils/clear (->Color color)))
+  (ScreenUtils/clear (color/->obj color)))
 
 (defn vector3->clj-vec [^Vector3 v3]
   [(.x v3)

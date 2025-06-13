@@ -1,5 +1,5 @@
 (ns clojure.gdx.shape-drawer
-  (:require [clojure.gdx :as gdx])
+  (:require [gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (def ^:private degrees-to-radians (float (/ Math/PI 180)))
@@ -11,7 +11,7 @@
   (ShapeDrawer. batch texture-region))
 
 (defn- set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (gdx/->Color color)))
+  (ShapeDrawer/.setColor shape-drawer (color/->obj color)))
 
 (defn ellipse! [shape-drawer [x y] radius-x radius-y color]
   (set-color! shape-drawer color)
