@@ -1,6 +1,6 @@
 (ns gdx.graphics.g2d.bitmap-font
-  (:require [clojure.gdx :as gdx]
-            [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [gdx.utils.align :as align])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn configure! [^BitmapFont font {:keys [scale enable-markup? use-integer-positions?]}]
@@ -31,6 +31,6 @@
            (float x)
            (float (+ y (if up? (text-height font text) 0)))
            (float target-width)
-           (gdx/k->Align (or h-align :center))
+           (align/k->value (or h-align :center))
            wrap?)
     (.setScale (.getData font) (float old-scale))))

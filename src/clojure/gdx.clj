@@ -16,8 +16,7 @@
                                           TextureRegion)
            (com.badlogic.gdx.math Vector2
                                   Vector3)
-           (com.badlogic.gdx.utils Align
-                                   ScreenUtils)
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
 
@@ -28,18 +27,6 @@
 
 (let [mapping {:linear Texture$TextureFilter/Linear}]
   (defn k->TextureFilter [k]
-    (safe-get-option mapping k)))
-
-(let [mapping {:bottom       Align/bottom
-               :bottom-left  Align/bottomLeft
-               :bottom-right Align/bottomRight
-               :center       Align/center
-               :left         Align/left
-               :right        Align/right
-               :top          Align/top
-               :top-left     Align/topLeft
-               :top-right    Align/topRight}]
-  (defn k->Align [k]
     (safe-get-option mapping k)))
 
 (let [mapping {:black       Color/BLACK
