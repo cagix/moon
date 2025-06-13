@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.timers :as timers]
             [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
@@ -18,16 +19,6 @@
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
-
-(defn- add-text-effect* [entity text duration elapsed-time]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter timer/increment duration))
-           {:text text
-            :counter (timer/create elapsed-time duration)})))
 
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
@@ -201,7 +192,7 @@
   nil)
 
 (defmethod do! :tx/add-text-effect [[_ eid text duration] {:keys [ctx/elapsed-time]}]
-  (swap! eid add-text-effect* text duration elapsed-time)
+  (swap! eid timers/add-text-effect text duration elapsed-time)
   nil)
 
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
