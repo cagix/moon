@@ -3,8 +3,7 @@
             [gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Colors
-                                      OrthographicCamera
+           (com.badlogic.gdx.graphics OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
@@ -16,10 +15,6 @@
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
-
-(defn def-colors [colors]
-  (doseq [[name color-params] colors]
-    (Colors/put name (color/->obj color-params))))
 
 (defn recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)

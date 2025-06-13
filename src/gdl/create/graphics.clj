@@ -11,6 +11,7 @@
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
             [gdx.graphics.color :as color]
+            [gdx.graphics.colors :as colors]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.g2d.freetype :as freetype])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
@@ -118,7 +119,7 @@
            tile-size
            ui-viewport
            world-viewport]}]
-  (gdx/def-colors colors)
+  (colors/put! colors)
   (let [batch (gdx/sprite-batch)
         shape-drawer-texture (gdx/white-pixel-texture)
         world-unit-scale (float (/ tile-size))
