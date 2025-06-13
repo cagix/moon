@@ -15,7 +15,6 @@
             [cdq.raycaster :as raycaster]
             [cdq.state :as state]
             [cdq.timer :as timer]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.utils :as utils]
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]
@@ -696,15 +695,3 @@
                                          ctx/player-eid]}
                                  _params]
   (content-grid/active-entities content-grid @player-eid))
-
-(defn update-potential-fields!
-  [{:keys [ctx/potential-field-cache
-           ctx/factions-iterations
-           ctx/grid
-           ctx/active-entities]}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (potential-fields.update/tick! potential-field-cache
-                                   grid
-                                   faction
-                                   active-entities
-                                   max-iterations)))
