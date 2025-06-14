@@ -149,8 +149,6 @@
   (swap! eid entity/mod-remove modifiers)
   nil)
 
-; HOW CAN WE TEST THIS ?
-; HAVE TO DEFINE MULTIMETHODS ...
 (defmethod do! :tx/effect [[_ effect-ctx effects] ctx]
   (run! #(handle-txs! ctx (effect/handle % effect-ctx ctx))
         (effect/filter-applicable? effect-ctx effects)))
