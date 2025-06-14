@@ -1,5 +1,8 @@
 (ns cdq.ctx)
 
+(defprotocol TxHandler
+  (handle-txs! [_ txs]))
+
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
 

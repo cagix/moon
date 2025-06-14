@@ -1,5 +1,5 @@
 (ns cdq.render.player-state-handle-input
-  (:require [cdq.world :as world]))
+  (:require [cdq.ctx :as ctx]))
 
 (defn do! [{:keys [ctx/player-eid]
             :as ctx}
@@ -8,5 +8,5 @@
         txs (if handle-input
               (handle-input player-eid ctx)
               nil)]
-    (world/handle-txs! ctx txs))
+    (ctx/handle-txs! ctx txs))
   ctx)

@@ -1,8 +1,8 @@
 (ns cdq.ui.windows.inventory
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.ctx :as ctx]
+            [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
-            [cdq.world :as world]
             [gdl.c :as c]
             [gdl.graphics :as g]
             [gdl.ui :as ui]))
@@ -70,7 +70,7 @@
         cell-click-listener
         (fn [cell]
           (fn [{:keys [ctx/player-eid] :as ctx}]
-            (world/handle-txs!
+            (ctx/handle-txs!
              ctx
              (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
                (f player-eid cell)))))
