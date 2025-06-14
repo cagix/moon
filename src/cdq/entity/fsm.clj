@@ -53,6 +53,20 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
+(defn create-state-v [{:keys [ctx/entity-states] :as ctx} state-k eid params]
+  {:pre [(keyword? state-k)
+         (map? (:state->create entity-states))]}
+  (let [result (if-let [f (state-k (:state->create entity-states))]
+                 (f eid params ctx)
+                 (if params
+                   params
+                   :something ; nil components are not tick'ed1
+                   ))]
+    #_(binding [*print-level* 2]
+        (println "result of create-state-v " state-k)
+        (clojure.pprint/pprint result))
+    result))
+
 (defmethods :entity/fsm
   (entity/create! [[k {:keys [fsm initial-state]}] eid ctx]
     ; fsm throws when initial-state is not part of states, so no need to assert initial-state
@@ -60,8 +74,7 @@
     [[:tx/assoc eid k (assoc ((case fsm
                                 :fsms/player player-fsm
                                 :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
-     [:tx/assoc eid initial-state (entity/create [initial-state eid]
-                                                 ctx)]]))
+     [:tx/assoc eid initial-state (create-state-v ctx initial-state eid nil)]]))
 
 (defn event->txs [ctx eid event params]
   (let [fsm (:entity/fsm @eid)
@@ -72,10 +85,7 @@
     (when-not (= old-state-k new-state-k)
       (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                             [k (k @eid)])
-            new-state-obj [new-state-k (entity/create (if params
-                                                        [new-state-k eid params]
-                                                        [new-state-k eid])
-                                                      ctx)]]
+            new-state-obj [new-state-k (create-state-v ctx new-state-k eid params)]]
         [[:tx/assoc eid :entity/fsm new-fsm]
          [:tx/assoc eid new-state-k (new-state-obj 1)]
          [:tx/dissoc eid old-state-k]

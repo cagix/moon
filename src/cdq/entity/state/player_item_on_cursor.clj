@@ -1,7 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.utils :refer [defmethods]]
             [gdl.c :as c]
             [gdl.input :as input]
             [gdl.math.vector2 :as v]
@@ -73,9 +72,8 @@
        [:tx/dissoc eid :entity/item-on-cursor]
        [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-(defmethods :player-item-on-cursor
-  (entity/create [[_ eid item] _ctx]
-    {:item item}))
+(defn create [_eid item _ctx]
+  {:item item})
 
 (defn draw-gui-view [eid ctx]
   (when (not (world-item? ctx))

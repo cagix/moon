@@ -1,16 +1,14 @@
 (ns cdq.entity.state.npc-moving
   (:require [cdq.entity :as entity]
-            [cdq.timer :as timer]
-            [cdq.utils :refer [defmethods]]))
+            [cdq.timer :as timer]))
 
 (defn tick! [{:keys [counter]} eid {:keys [ctx/elapsed-time]}]
   (when (timer/stopped? elapsed-time counter)
     [[:tx/event eid :timer-finished]]))
 
-(defmethods :npc-moving
-  (entity/create [[_ eid movement-vector] {:keys [ctx/elapsed-time]}]
-    {:movement-vector movement-vector
-     :counter (timer/create elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))}))
+(defn create [eid movement-vector {:keys [ctx/elapsed-time]}]
+  {:movement-vector movement-vector
+   :counter (timer/create elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defn enter [{:keys [movement-vector]} eid]
   [[:tx/set-movement eid movement-vector]])

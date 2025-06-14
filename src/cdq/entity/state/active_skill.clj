@@ -2,8 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.timer :as timer]
-            [cdq.utils :refer [defmethods]]))
+            [cdq.timer :as timer]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -34,15 +33,13 @@
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
-(defmethods :active-skill
-  (entity/create [[_ eid [skill effect-ctx]]
-                  {:keys [ctx/elapsed-time]}]
-    {:skill skill
-     :effect-ctx effect-ctx
-     :counter (->> skill
-                   :skill/action-time
-                   (apply-action-speed-modifier @eid skill)
-                   (timer/create elapsed-time))}))
+(defn create [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
+  {:skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 (timer/create elapsed-time))})
 
 (defn enter [{:keys [skill]} eid]
   [[:tx/sound (:skill/start-action-sound skill)]
