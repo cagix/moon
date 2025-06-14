@@ -79,13 +79,13 @@
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
   (state/clicked-inventory-cell [_ eid cell]
-    (clicked-cell eid cell))
+    (clicked-cell eid cell)))
 
-  (state/draw-gui-view [_ eid ctx]
-    (when (not (world-item? ctx))
-      [[:draw/centered
-        (:entity/image (:entity/item-on-cursor @eid))
-        (c/ui-mouse-position ctx)]])))
+(defn draw-gui-view [eid ctx]
+  (when (not (world-item? ctx))
+    [[:draw/centered
+      (:entity/image (:entity/item-on-cursor @eid))
+      (c/ui-mouse-position ctx)]]))
 
 (defn handle-input [eid {:keys [ctx/input]
                          :as ctx}]

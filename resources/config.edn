@@ -18,7 +18,10 @@
                                                                                              :id :inventory-window
                                                                                              :visible? false ; position
                                                                                              }]]}]
-                          [cdq.ui.player-state-draw/create] ; ... pass the fn itself ?
+                          [cdq.ui.player-state-draw/create
+                           {:state->draw-gui-view
+                            {:player-item-on-cursor
+                             cdq.entity.state.player-item-on-cursor/draw-gui-view}}]
                           [cdq.ui.message/create {:duration-seconds 0.5
                                                   :name "player-message"}]]
  :cdq.ctx.game/player-props {:creature-id :creatures/vampire
