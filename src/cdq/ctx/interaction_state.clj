@@ -8,6 +8,12 @@
             [gdl.ui :as ui]
             [gdl.c :as c]))
 
+(defn inventory-window-visible? [stage]
+  (-> stage :windows :inventory-window ui/visible?))
+
+(defn can-pickup-item? [entity item]
+  (inventory/can-pickup-item? (:entity/inventory entity) item))
+
 (defmulti on-clicked
   (fn [ctx eid]
     (:type (:entity/clickable @eid))))
@@ -17,12 +23,12 @@
                                        eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> stage :windows :inventory-window ui/visible?)
+     (inventory-window-visible? stage)
      [[:tx/sound "bfxr_takeit"]
       [:tx/mark-destroyed eid]
       [:tx/event player-eid :pickup-item item]]
 
-     (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
+     (can-pickup-item? @player-eid item)
      [[:tx/sound "bfxr_pickup"]
       [:tx/mark-destroyed eid]
       [:tx/pickup-item player-eid item]]
