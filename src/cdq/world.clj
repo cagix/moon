@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.fsm :as fsm]
             [cdq.entity.timers :as timers]
             [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
@@ -17,8 +18,7 @@
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [gdl.math.vector2 :as v]
-            [qrecord.core :as q]
-            [reduce-fsm :as fsm]))
+            [qrecord.core :as q]))
 
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
@@ -125,6 +125,12 @@
       )
     (run! (partial handle-world-event! ctx) world-events)))
 
+(defmethod do! :tx/state-exit [[_ eid state-obj] ctx]
+  (handle-txs! ctx (state/exit! state-obj eid ctx)))
+
+(defmethod do! :tx/state-enter [[_ eid state-obj] ctx]
+  (handle-txs! ctx (state/enter! state-obj eid)))
+
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
   nil)
@@ -154,25 +160,7 @@
         (effect/filter-applicable? effect-ctx effects)))
 
 (defmethod do! :tx/event [[_ eid event params] ctx]
-  (let [fsm (:entity/fsm @eid)
-        _ (assert fsm)
-        old-state-k (:state fsm)
-        new-fsm (fsm/fsm-event fsm event)
-        new-state-k (:state new-fsm)]
-    (when-not (= old-state-k new-state-k)
-      (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
-                            [k (k @eid)])
-            new-state-obj [new-state-k (entity/create (if params
-                                                        [new-state-k eid params]
-                                                        [new-state-k eid])
-                                                      ctx)]]
-        (swap! eid #(-> %
-                        (assoc :entity/fsm new-fsm
-                               new-state-k (new-state-obj 1))
-                        (dissoc old-state-k)))
-        (handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-        (handle-txs! ctx (state/enter! new-state-obj eid))
-        nil))))
+  (handle-txs! ctx (fsm/event->txs ctx eid event params)))
 
 (defmethod do! :tx/add-skill [[_ eid skill] _ctx]
   (swap! eid entity/add-skill skill)
