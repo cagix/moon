@@ -4,7 +4,7 @@
   (reset-game-state! [_ world-fn]))
 
 (defprotocol InteractionState
-  (interaction-state [_ eid]))
+  (interaction-state [_]))
 
 (defprotocol EffectContext
   (player-effect-ctx [_ eid])

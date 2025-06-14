@@ -23,7 +23,7 @@
 ; _ENTITY VIEWER_
 ; _OVERSEVABILITY_
 
-(def interaction-state
+#_(def interaction-state
   {:label "Interaction State"
    :update-fn (fn [ctx]
                 (let [[cursor txs] (ctx/interaction-state ctx (:ctx/player-eid ctx))]
