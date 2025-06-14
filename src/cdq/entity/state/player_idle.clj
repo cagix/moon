@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.controls :as controls]
-            [cdq.ctx :as ctx]
+            [cdq.ctx.interaction-state :as interaction-state]
             [cdq.state :as state]
             [gdl.input :as input]
             [cdq.utils :refer [defmethods]]))
@@ -10,8 +10,7 @@
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
       (when (input/button-just-pressed? input :left)
-        (let [[_cursor on-click] (ctx/interaction-state ctx eid)]
-          on-click))))
+        (interaction-state/->txs ctx eid))))
 
   (state/clicked-inventory-cell [_ eid cell]
     ; TODO no else case

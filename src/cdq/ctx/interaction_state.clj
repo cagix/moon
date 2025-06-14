@@ -49,5 +49,9 @@
          [:tx/show-message "No selected skill"]]]))))
 
 (defn ->cursor [player-eid ctx]
-  (let [[cursor _on-click] (interaction-state ctx player-eid)]
+  (let [[cursor _txs] (interaction-state ctx player-eid)]
     cursor))
+
+(defn ->txs [ctx player-eid]
+  (let [[_cursor txs] (interaction-state ctx player-eid)]
+    txs))
