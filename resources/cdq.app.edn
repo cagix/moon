@@ -65,7 +65,19 @@
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
        [cdq.utils/assoc* [:ctx/world-event-handlers [cdq.create.world-event-handlers/do!]]]
-       [cdq.utils/assoc* [:ctx/entity-states [cdq.utils/const* {:foo :bar}]]]
+       [cdq.utils/assoc*
+        [:ctx/entity-states
+         [cdq.utils/const*
+          {:state->enter {:npc-dead cdq.entity.state.npc-dead/enter
+                          :npc-moving cdq.entity.state.npc-moving/enter
+                          :player-dead cdq.entity.state.player-dead/enter
+                          :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
+                          :player-moving cdq.entity.state.player-moving/enter
+                          :active-skill cdq.entity.state.active-skill/enter}
+           :state->exit {:npc-moving cdq.entity.state.npc-moving/exit
+                         :npc-sleeping cdq.entity.state.npc-sleeping/exit
+                         :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
+                         :player-moving cdq.entity.state.player-moving/exit}}]]]
        [cdq.ctx/reset-game-state! cdq.level.vampire/create]
        cdq.create.player-movement-vector/do!]}]
     :dispose! cdq.application/dispose!

@@ -1,6 +1,5 @@
 (ns cdq.create.world-event-handlers
   (:require [cdq.ctx]
-            [cdq.state :as state]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ui.message]

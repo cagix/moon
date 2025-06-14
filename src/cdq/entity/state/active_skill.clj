@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defmethods]]))
 
@@ -43,12 +42,12 @@
      :counter (->> skill
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
-                   (timer/create elapsed-time))})
+                   (timer/create elapsed-time))}))
 
-  (state/enter! [[_ {:keys [skill]}] eid]
-    [[:tx/sound (:skill/start-action-sound skill)]
-     (when (:skill/cooldown skill)
-       [:tx/set-cooldown eid skill])
-     (when (and (:skill/cost skill)
-                (not (zero? (:skill/cost skill))))
-       [:tx/pay-mana-cost eid (:skill/cost skill)])]))
+(defn enter [{:keys [skill]} eid]
+  [[:tx/sound (:skill/start-action-sound skill)]
+   (when (:skill/cooldown skill)
+     [:tx/set-cooldown eid skill])
+   (when (and (:skill/cost skill)
+              (not (zero? (:skill/cost skill))))
+     [:tx/pay-mana-cost eid (:skill/cost skill)])])

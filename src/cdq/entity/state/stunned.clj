@@ -1,6 +1,5 @@
 (ns cdq.entity.state.stunned
   (:require [cdq.entity :as entity]
-            [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :refer [defmethods]]))
 

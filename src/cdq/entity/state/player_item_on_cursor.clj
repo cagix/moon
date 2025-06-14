@@ -1,7 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.state :as state]
             [cdq.utils :refer [defmethods]]
             [gdl.c :as c]
             [gdl.input :as input]
@@ -60,23 +59,23 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
+(defn enter [{:keys [item]} eid]
+  [[:tx/assoc eid :entity/item-on-cursor item]])
+
+(defn exit [_ eid ctx]
+  ; at clicked-cell when we put it into a inventory-cell
+  ; we do not want to drop it on the ground too additonally,
+  ; so we dissoc it there manually. Otherwise it creates another item
+  ; on the ground
+  (let [entity @eid]
+    (when (:entity/item-on-cursor entity)
+      [[:tx/sound "bfxr_itemputground"]
+       [:tx/dissoc eid :entity/item-on-cursor]
+       [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
+
 (defmethods :player-item-on-cursor
   (entity/create [[_ eid item] _ctx]
-    {:item item})
-
-  (state/enter! [[_ {:keys [item]}] eid]
-    [[:tx/assoc eid :entity/item-on-cursor item]])
-
-  (state/exit! [_ eid ctx]
-    ; at clicked-cell when we put it into a inventory-cell
-    ; we do not want to drop it on the ground too additonally,
-    ; so we dissoc it there manually. Otherwise it creates another item
-    ; on the ground
-    (let [entity @eid]
-      (when (:entity/item-on-cursor entity)
-        [[:tx/sound "bfxr_itemputground"]
-         [:tx/dissoc eid :entity/item-on-cursor]
-         [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]]))))
+    {:item item}))
 
 (defn draw-gui-view [eid ctx]
   (when (not (world-item? ctx))

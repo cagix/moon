@@ -14,7 +14,6 @@
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
-            [cdq.state :as state]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [gdl.math.vector2 :as v]
@@ -125,11 +124,17 @@
       )
     (run! (partial handle-world-event! ctx) world-events)))
 
-(defmethod do! :tx/state-exit [[_ eid state-obj] ctx]
-  (handle-txs! ctx (state/exit! state-obj eid ctx)))
+(defmethod do! :tx/state-exit [[_ eid [state-k state-v]]
+                               {:keys [ctx/entity-states] :as ctx}]
+  (handle-txs! ctx
+               (when-let [f (state-k (:state->exit entity-states))]
+                 (f state-v eid ctx))))
 
-(defmethod do! :tx/state-enter [[_ eid state-obj] ctx]
-  (handle-txs! ctx (state/enter! state-obj eid)))
+(defmethod do! :tx/state-enter [[_ eid [state-k state-v]]
+                                {:keys [ctx/entity-states] :as ctx}]
+  (handle-txs! ctx
+               (when-let [f (state-k (:state->enter entity-states))]
+                 (f state-v eid))))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)

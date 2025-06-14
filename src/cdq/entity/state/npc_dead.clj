@@ -1,7 +1,4 @@
-(ns cdq.entity.state.npc-dead
-  (:require [cdq.state :as state]
-            [cdq.utils :refer [defmethods]]))
+(ns cdq.entity.state.npc-dead)
 
-(defmethods :npc-dead
-  (state/enter! [_ eid]
-    [[:tx/mark-destroyed eid]]))
+(defn enter [_ eid]
+  [[:tx/mark-destroyed eid]])

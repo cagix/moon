@@ -1,7 +1,6 @@
 (ns cdq.entity.state.player-moving
   (:require [cdq.controls :as controls]
             [cdq.entity :as entity]
-            [cdq.state :as state]
             [cdq.utils :refer [defmethods]]))
 
 (defn handle-input [eid ctx]
@@ -11,10 +10,10 @@
 
 (defmethods :player-moving
   (entity/create [[_ eid movement-vector] _ctx]
-    {:movement-vector movement-vector})
+    {:movement-vector movement-vector}))
 
-  (state/enter! [[_ {:keys [movement-vector]}] eid]
-    [[:tx/set-movement eid movement-vector]])
+(defn enter [{:keys [movement-vector]} eid]
+  [[:tx/set-movement eid movement-vector]])
 
-  (state/exit! [_ eid _ctx]
-    [[:tx/dissoc eid :entity/movement]]))
+(defn exit [_ eid _ctx]
+  [[:tx/dissoc eid :entity/movement]])
