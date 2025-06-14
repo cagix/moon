@@ -4,14 +4,14 @@
             [cdq.state :as state]
             [cdq.utils :refer [defmethods]]))
 
+(defn handle-input [eid ctx]
+  (if-let [movement-vector (controls/player-movement-vector ctx)]
+    [[:tx/set-movement eid movement-vector]]
+    [[:tx/event eid :no-movement-input]]))
+
 (defmethods :player-moving
   (entity/create [[_ eid movement-vector] _ctx]
     {:movement-vector movement-vector})
-
-  (state/manual-tick [[_ {:keys [movement-vector]}] eid ctx]
-    (if-let [movement-vector (controls/player-movement-vector ctx)]
-      [[:tx/set-movement eid movement-vector]]
-      [[:tx/event eid :no-movement-input]]))
 
   (state/enter! [[_ {:keys [movement-vector]}] eid]
     [[:tx/set-movement eid movement-vector]])

@@ -5,13 +5,13 @@
             [gdl.input :as input]
             [cdq.utils :refer [defmethods]]))
 
-(defmethods :player-idle
-  (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
-    (if-let [movement-vector (controls/player-movement-vector ctx)]
-      [[:tx/event eid :movement-input movement-vector]]
-      (when (input/button-just-pressed? input :left)
-        (interaction-state/->txs ctx eid))))
+(defn handle-input [eid {:keys [ctx/input] :as ctx}]
+  (if-let [movement-vector (controls/player-movement-vector ctx)]
+    [[:tx/event eid :movement-input movement-vector]]
+    (when (input/button-just-pressed? input :left)
+      (interaction-state/->txs ctx eid))))
 
+(defmethods :player-idle
   (state/clicked-inventory-cell [_ eid cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]

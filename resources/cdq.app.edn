@@ -88,7 +88,10 @@
                         :player-item-on-cursor :cursors/hand-grab
                         :player-moving :cursors/walking
                         :stunned :cursors/denied}}]
-      cdq.render.player-state-handle-click/do!
+      [cdq.render.player-state-handle-input/do!
+       {:state->handle-input {:player-idle cdq.entity.state.player-idle/handle-input
+                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+                              :player-moving cdq.entity.state.player-moving/handle-input}}]
       cdq.render.update-mouseover-entity/do!
       [cdq.utils/assoc*
        [:ctx/paused?

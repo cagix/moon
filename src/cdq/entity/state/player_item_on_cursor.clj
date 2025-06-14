@@ -78,12 +78,6 @@
          [:tx/dissoc eid :entity/item-on-cursor]
          [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-  (state/manual-tick [_ eid {:keys [ctx/input]
-                             :as ctx}]
-    (when (and (input/button-just-pressed? input :left)
-               (world-item? ctx))
-      [[:tx/event eid :drop-item]]))
-
   (state/clicked-inventory-cell [_ eid cell]
     (clicked-cell eid cell))
 
@@ -92,3 +86,9 @@
       [[:draw/centered
         (:entity/image (:entity/item-on-cursor @eid))
         (c/ui-mouse-position ctx)]])))
+
+(defn handle-input [eid {:keys [ctx/input]
+                         :as ctx}]
+  (when (and (input/button-just-pressed? input :left)
+             (world-item? ctx))
+    [[:tx/event eid :drop-item]]))

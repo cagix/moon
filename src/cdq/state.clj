@@ -12,10 +12,6 @@
                                    k))
 (defmethod clicked-inventory-cell :default [_ _eid _cell])
 
-(defmulti manual-tick (fn [[k] _eid ctx]
-                        k))
-(defmethod manual-tick :default [_ _eid ctx])
-
 (defmulti draw-gui-view (fn [[k] _eid ctx]
                           k))
 (defmethod draw-gui-view :default [_ _eid ctx])
