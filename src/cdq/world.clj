@@ -161,7 +161,8 @@
           new-fsm (fsm/fsm-event fsm event)
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (entity/state-obj @eid)
+        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
+                              [k (k @eid)])
               new-state-obj [new-state-k (entity/create (if params
                                                           [new-state-k eid params]
                                                           [new-state-k eid])
@@ -436,10 +437,6 @@
     (case (entity/faction this)
       :evil :good
       :good :evil))
-
-  (state-obj [this]
-    (let [k (:state (:entity/fsm this))]
-      [k (k this)]))
 
   (skill-usable-state [entity
                        {:keys [skill/cooling-down? skill/effects] :as skill}
