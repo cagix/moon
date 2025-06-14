@@ -13,6 +13,9 @@
       (f ctx params))
     (render-element ctx)))
 
+(defn const* [_ctx params]
+  params)
+
 (defn assoc* [ctx [k [f params]]]
   (assoc ctx k (f ctx params)))
 

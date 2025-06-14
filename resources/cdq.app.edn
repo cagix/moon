@@ -65,6 +65,7 @@
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
        [cdq.utils/assoc* [:ctx/world-event-handlers [cdq.create.world-event-handlers/do!]]]
+       [cdq.utils/assoc* [:ctx/entity-states [cdq.utils/const* {:foo :bar}]]]
        [cdq.ctx/reset-game-state! cdq.level.vampire/create]
        cdq.create.player-movement-vector/do!]}]
     :dispose! cdq.application/dispose!
