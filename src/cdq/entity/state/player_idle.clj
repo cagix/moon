@@ -9,8 +9,8 @@
   (state/manual-tick [_ eid {:keys [ctx/input] :as ctx}]
     (if-let [movement-vector (controls/player-movement-vector ctx)]
       [[:tx/event eid :movement-input movement-vector]]
-      (let [[_cursor on-click] (ctx/interaction-state ctx eid)]
-        (when (input/button-just-pressed? input :left)
+      (when (input/button-just-pressed? input :left)
+        (let [[_cursor on-click] (ctx/interaction-state ctx eid)]
           on-click))))
 
   (state/clicked-inventory-cell [_ eid cell]
