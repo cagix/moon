@@ -3,9 +3,6 @@
             [cdq.entity :as entity]
             [cdq.utils :refer [defmethods]]))
 
-; creates an audiovisual at the target position
-; requires a :effect/target in the effect context
-
 (defmethods :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
     target)
