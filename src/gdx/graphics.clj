@@ -7,7 +7,6 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.graphics.g2d Batch)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)))
@@ -47,19 +46,6 @@
                   world-width
                   world-height))))
 
-(defn draw-texture-region! [^Batch batch texture-region [x y] [w h] rotation]
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; origin-x
-         (/ (float h) 2) ; origin-y
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation))
-
 (defn fit-viewport [width height camera]
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
@@ -84,12 +70,3 @@
     (let [vector2 (.unproject viewport (Vector2. x y))]
       [(.x vector2)
        (.y vector2)])))
-
-(defn draw-on-viewport! [^Batch batch viewport f]
-  ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-  ; -> also Widgets, etc. ? check.
-  (.setColor batch (color/->obj :white))
-  (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
-  (.begin batch)
-  (f)
-  (.end batch))

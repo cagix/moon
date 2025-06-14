@@ -1,6 +1,7 @@
 (ns gdl.create.graphics
   (:require [gdl.files :as files]
             [gdl.graphics]
+            [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.texture :as texture]
             [gdl.utils.assets :as assets]
             [gdl.utils.disposable]
@@ -71,14 +72,14 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (graphics/draw-on-viewport! batch
-                                world-viewport
-                                (fn []
-                                  (sd/with-line-width shape-drawer world-unit-scale
-                                    (fn []
-                                      (reset! unit-scale world-unit-scale)
-                                      (f)
-                                      (reset! unit-scale 1))))))
+    (batch/draw-on-viewport! batch
+                             world-viewport
+                             (fn []
+                               (sd/with-line-width shape-drawer world-unit-scale
+                                 (fn []
+                                   (reset! unit-scale world-unit-scale)
+                                   (f)
+                                   (reset! unit-scale 1))))))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)

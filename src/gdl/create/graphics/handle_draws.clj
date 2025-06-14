@@ -1,8 +1,8 @@
 (ns gdl.create.graphics.handle-draws
   (:require [gdl.create.graphics]
             [gdl.graphics]
+            [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.g2d.texture-region :as texture-region]
-            [gdx.graphics :as graphics]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.shape-drawer :as sd]))
 
@@ -29,36 +29,33 @@
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  (graphics/draw-texture-region! batch
-                                 texture-region
-                                 [x y]
-                                 (texture-region/dimensions texture-region)
-                                 0  ;rotation
-                                 ))
+  (batch/draw! batch
+               texture-region
+               [x y]
+               (texture-region/dimensions texture-region)
+               0))
 
 (defmethod draw! :draw/image [[_ image position]
                               {:keys [batch]
                                :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (graphics/draw-texture-region! batch
-                                   texture-region
-                                   position
-                                   (texture-region-drawing-dimensions graphics texture-region)
-                                   0 ; rotation
-                                   )))
+    (batch/draw! batch
+                 texture-region
+                 position
+                 (texture-region-drawing-dimensions graphics texture-region)
+                 0)))
 
 (defmethod draw! :draw/rotated-centered [[_ image rotation [x y]]
                                          {:keys [batch]
                                           :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)
         [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (graphics/draw-texture-region! batch
-                                   texture-region
-                                   [(- (float x) (/ (float w) 2))
-                                    (- (float y) (/ (float h) 2))]
-                                   [w h]
-                                   rotation
-                                   )))
+    (batch/draw! batch
+                 texture-region
+                 [(- (float x) (/ (float w) 2))
+                  (- (float y) (/ (float h) 2))]
+                 [w h]
+                 rotation)))
 
 (defmethod draw! :draw/centered [[_ image position] this]
   (draw! [:draw/rotated-centered image 0 position] this))
