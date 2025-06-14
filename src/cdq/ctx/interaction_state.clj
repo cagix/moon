@@ -11,6 +11,9 @@
 (defn inventory-window-visible? [stage]
   (-> stage :windows :inventory-window ui/visible?))
 
+(defn selected-skill [stage]
+  (action-bar/selected-skill (:action-bar stage)))
+
 (defn can-pickup-item? [entity item]
   (inventory/can-pickup-item? (:entity/inventory entity) item))
 
@@ -75,7 +78,7 @@
 (defn interaction-state
   [{:keys [ctx/stage
            ctx/mouseover-eid] :as ctx}
-   eid]
+   player-eid]
   (let [mouseover-actor (c/mouseover-actor ctx)]
     (cond
      mouseover-actor
@@ -86,8 +89,8 @@
      [:interaction-state/clickable-mouseover-eid mouseover-eid]
 
      :else
-     (if-let [skill-id (action-bar/selected-skill (:action-bar stage))]
-       (skill-interaction-state ctx eid skill-id)
+     (if-let [skill-id (selected-skill stage)]
+       (skill-interaction-state ctx player-eid skill-id)
        [:interaction-state/no-skill-selected]))))
 
 (defn- mouseover-actor->cursor [actor player-entity-inventory]
