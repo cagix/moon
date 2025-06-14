@@ -3,9 +3,6 @@
 (defprotocol Game
   (reset-game-state! [_ world-fn]))
 
-(defprotocol InteractionState
-  (interaction-state [_]))
-
 (defprotocol EffectContext
   (player-effect-ctx [_ eid])
   (npc-effect-ctx [_ eid]))

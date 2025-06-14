@@ -11,24 +11,6 @@
             [gdl.graphics :as graphics]
             [cdq.utils :as utils]))
 
-(comment
- (let [ctx @cdq.application/state
-       [cursor txs] (ctx/interaction-state ctx (:ctx/player-eid ctx))]
-   [cursor (map first txs)])
- )
-
-;; => this is _actually_ :: _CONTEXT INFO_
-; _CONTEXT VIEWER_
-; _TILE VIEWER_
-; _ENTITY VIEWER_
-; _OVERSEVABILITY_
-
-#_(def interaction-state
-  {:label "Interaction State"
-   :update-fn (fn [ctx]
-                (let [[cursor txs] (ctx/interaction-state ctx (:ctx/player-eid ctx))]
-                  (pr-str [cursor (map first txs)])))})
-
 (defn mouseover-entity-id [icon]
   {:label "Mouseover-entity id"
    :update-fn (fn [{:keys [ctx/mouseover-eid]}]
@@ -100,7 +82,6 @@
             (db-editor db)
             ]
     :update-labels [
-                    #_interaction-state
                     (mouseover-entity-id (graphics/texture graphics "images/mouseover.png"))
                     (elapsed-time        (graphics/texture graphics "images/clock.png"))
                     paused
