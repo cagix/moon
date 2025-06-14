@@ -47,6 +47,10 @@
             :unpause-once :p
             :unpause-continously :space}
 
+ ; TODO remove 'defmethods'
+ ; TODO wiring for editor widgets also via some config
+ ; TODO also 'do!' defmethods just wire -> see 'defmethod'...
+
  :requires [
             cdq.effects.target.audiovisual
             cdq.effects.target.convert
@@ -62,31 +66,6 @@
             cdq.effects.spawn
             cdq.effects.target-all
             cdq.effects.target-entity
-
-            cdq.entity.state.active-skill
-            cdq.entity.state.npc-dead
-            cdq.entity.state.npc-idle
-            cdq.entity.state.npc-moving
-            cdq.entity.state.npc-sleeping
-            cdq.entity.state.player-dead
-            cdq.entity.state.player-idle
-            cdq.entity.state.player-item-on-cursor
-            cdq.entity.state.player-moving
-            cdq.entity.state.stunned
-
-            cdq.entity.alert-friendlies-after-duration
-            cdq.entity.animation
-            cdq.entity.delete-after-animation-stopped
-            cdq.entity.delete-after-duration
-            cdq.entity.destroy-audiovisual
-            cdq.entity.fsm
-            cdq.entity.inventory
-            cdq.entity.movement
-            cdq.entity.projectile-collision
-            cdq.entity.skills
-            cdq.entity.stats
-            cdq.entity.string-effect
-            cdq.entity.temp-modifier
 
             cdq.ui.editor.widget.default
             cdq.ui.editor.widget.edn

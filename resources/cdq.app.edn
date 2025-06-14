@@ -66,6 +66,28 @@
        [cdq.create.extend-protocols/do! cdq.ctx]
        [cdq.utils/assoc* [:ctx/world-event-handlers [cdq.create.world-event-handlers/do!]]]
        [cdq.utils/assoc*
+        [:ctx/entity-components
+         [cdq.utils/const*
+          {:entity/animation
+           {:create cdq.entity.animation/create
+            :create! cdq.entity.animation/create!}
+           :entity/delete-after-animation-stopped?
+           {:create! cdq.entity.delete-after-animation-stopped/create!}
+           :entity/delete-after-duration
+           {:create cdq.entity.delete-after-duration/create}
+           :entity/projectile-collision
+           {:create cdq.entity.projectile-collision/create}
+           :creature/stats
+           {:create cdq.entity.stats/create}
+           :entity/fsm
+           {:create! cdq.entity.fsm/create!}
+           :entity/inventory
+           {:create! cdq.entity.inventory/create!}
+           :entity/skills
+           {:create! cdq.entity.skills/create!}
+           :entity/destroy-audiovisual
+           {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]]]
+       [cdq.utils/assoc*
         [:ctx/entity-states
          [cdq.utils/const*
           {:state->create {:active-skill cdq.entity.state.active-skill/create

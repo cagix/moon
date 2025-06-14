@@ -1,7 +1,5 @@
 (ns cdq.entity.fsm
-  (:require [cdq.entity :as entity]
-            [cdq.utils :refer [defmethods]]
-            [reduce-fsm :as fsm]))
+  (:require [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
   (fsm/fsm-inc
@@ -67,14 +65,13 @@
         (clojure.pprint/pprint result))
     result))
 
-(defmethods :entity/fsm
-  (entity/create! [[k {:keys [fsm initial-state]}] eid ctx]
-    ; fsm throws when initial-state is not part of states, so no need to assert initial-state
-    ; initial state is nil, so associng it. make bug report at reduce-fsm?
-    [[:tx/assoc eid k (assoc ((case fsm
-                                :fsms/player player-fsm
-                                :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
-     [:tx/assoc eid initial-state (create-state-v ctx initial-state eid nil)]]))
+(defn create! [{:keys [fsm initial-state]} eid ctx]
+  ; fsm throws when initial-state is not part of states, so no need to assert initial-state
+  ; initial state is nil, so associng it. make bug report at reduce-fsm?
+  [[:tx/assoc eid :entity/fsm (assoc ((case fsm
+                                        :fsms/player player-fsm
+                                        :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
+   [:tx/assoc eid initial-state (create-state-v ctx initial-state eid nil)]])
 
 (defn event->txs [ctx eid event params]
   (let [fsm (:entity/fsm @eid)

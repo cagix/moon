@@ -496,9 +496,25 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
+(defn- create-component-value
+  [{:keys [ctx/entity-components] :as ctx} k v]
+  (if-let [create (:create (k entity-components))]
+    (create v ctx)
+    v))
+
+(defn- create!-component-value
+  [{:keys [ctx/entity-components] :as ctx} [k v] eid]
+  (when-let [create! (:create! (k entity-components))]
+    (create! v eid ctx)))
+
+(defn component-destroy!
+  [{:keys [ctx/entity-components] :as ctx} [k v] eid]
+  (when-let [destroy! (:destroy! (k entity-components))]
+    (destroy! v eid ctx)))
+
 (defn- create-vs [components ctx]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/create [k v] ctx)))
+            (assoc m k (create-component-value ctx k v)))
           {}
           components))
 
@@ -521,7 +537,7 @@
                                             (create-vs ctx)))))]
     (context-entity-add! ctx eid)
     (->> @eid
-         (mapcat #(entity/create! % eid ctx))
+         (mapcat #(create!-component-value ctx % eid))
          (handle-txs! ctx))
     eid))
 

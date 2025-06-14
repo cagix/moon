@@ -29,6 +29,5 @@
      (when hit-entity
        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
 
-(defmethod entity/create :entity/projectile-collision
-  [[_ v] _ctx]
+(defn create [v _ctx]
   (assoc v :already-hit-bodies #{}))

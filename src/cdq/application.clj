@@ -20,6 +20,7 @@
              [:ctx/stage :some]
              [:ctx/graphics :some]
              [:ctx/world-event-handlers :some]
+             [:ctx/entity-components :some]
              [:ctx/entity-states :some]
              [:ctx/elapsed-time number?]
              [:ctx/delta-time {:optional true} number?]
