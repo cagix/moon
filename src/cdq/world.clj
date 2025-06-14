@@ -437,11 +437,8 @@
       :evil :good
       :good :evil))
 
-  (state-k [{:keys [entity/fsm]}]
-    (:state fsm))
-
   (state-obj [this]
-    (let [k (entity/state-k this)]
+    (let [k (:state (:entity/fsm this))]
       [k (k this)]))
 
   (skill-usable-state [entity

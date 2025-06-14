@@ -21,7 +21,6 @@
   (id [_])
   (faction [_])
   (enemy [_])
-  (state-k [_])
   (state-obj [_])
   (skill-usable-state [_ skill effect-ctx])
   (mod-add    [_ mods])

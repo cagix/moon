@@ -8,7 +8,7 @@
             [gdl.math.vector2 :as v]
             [gdl.ui :as ui]))
 
-(defn- clicked-cell [eid cell]
+(defn clicked-cell [eid cell]
   (let [entity @eid
         inventory (:entity/inventory entity)
         item-in-cell (get-in inventory cell)
@@ -76,10 +76,7 @@
       (when (:entity/item-on-cursor entity)
         [[:tx/sound "bfxr_itemputground"]
          [:tx/dissoc eid :entity/item-on-cursor]
-         [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
-
-  (state/clicked-inventory-cell [_ eid cell]
-    (clicked-cell eid cell)))
+         [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]]))))
 
 (defn draw-gui-view [eid ctx]
   (when (not (world-item? ctx))

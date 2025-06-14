@@ -1,8 +1,6 @@
 (ns cdq.ui.windows.inventory
-  (:require [cdq.entity :as entity]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
-            [cdq.state :as state]
             [cdq.utils :as utils]
             [cdq.world :as world]
             [gdl.c :as c]
@@ -13,7 +11,8 @@
   [{:keys [ctx/graphics]}
    {:keys [title
            id
-           visible?]}]
+           visible?
+           state->clicked-inventory-cell]}]
   (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
                                              :shield   1
                                              :rings    2
@@ -48,7 +47,7 @@
         draw-cell-rect (fn [player-entity x y mouseover? cell]
                          [[:draw/rectangle x y cell-size cell-size :gray]
                           (when (and mouseover?
-                                     (= :player-item-on-cursor (entity/state-k player-entity)))
+                                     (= :player-item-on-cursor (:state (:entity/fsm player-entity))))
                             (let [item (:entity/item-on-cursor player-entity)
                                   color (if (inventory/valid-slot? cell item)
                                           droppable-color
@@ -68,16 +67,20 @@
                                                               (ui/get-y actor)
                                                               (ui/hit actor (c/ui-mouse-position ctx))
                                                               (ui/user-object (ui/parent actor)))))})
+        cell-click-listener
+        (fn [cell]
+          (fn [{:keys [ctx/player-eid] :as ctx}]
+            (world/handle-txs!
+             ctx
+             (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+               (f player-eid cell)))))
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
                    {:actor {:actor/type :actor.type/stack
                             :name "inventory-cell"
                             :user-object cell
-                            :click-listener (fn [{:keys [ctx/player-eid] :as ctx}]
-                                              (world/handle-txs! ctx (-> @player-eid
-                                                                         entity/state-obj
-                                                                         (state/clicked-inventory-cell player-eid cell))))
+                            :click-listener (cell-click-listener cell)
                             :actors [(draw-rect-actor)
                                      (ui/image-widget background-drawable
                                                       {:name "image-widget"

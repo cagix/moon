@@ -7,7 +7,3 @@
 (defmulti exit! (fn [[k] _eid _ctx]
                   k))
 (defmethod exit! :default [_ _eid _ctx])
-
-(defmulti clicked-inventory-cell (fn [[k] _eid _cell]
-                                   k))
-(defmethod clicked-inventory-cell :default [_ _eid _cell])
