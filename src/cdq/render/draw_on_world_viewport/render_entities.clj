@@ -1,5 +1,6 @@
 (ns cdq.render.draw-on-world-viewport.render-entities
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.animation :as animation]
+            [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state.player-item-on-cursor]
@@ -101,6 +102,11 @@
     (or (:rotation-angle entity) 0)
     (entity/position entity)]])
 
+(defn call-render-image [animation entity ctx]
+  (draw-centered-rotated-image (animation/current-frame animation)
+                               entity
+                               ctx))
+
 (defn draw-line-entity [{:keys [thick? end color]} entity _ctx]
   (let [position (entity/position entity)]
     (if thick?
@@ -172,6 +178,7 @@
                    :player-item-on-cursor draw-item-on-cursor-state})
 
 (def render-default {:entity/clickable draw-clickable-mouseover-text
+                     :entity/animation call-render-image
                      :entity/image draw-centered-rotated-image
                      :entity/line-render draw-line-entity})
 
