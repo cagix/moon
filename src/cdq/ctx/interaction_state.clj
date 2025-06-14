@@ -26,17 +26,9 @@
           effect-ctx (ctx/player-effect-ctx ctx eid)
           state (entity/skill-usable-state entity skill effect-ctx)]
       (if (= state :usable)
-        [:cursors/use-skill
-         [[:tx/event eid :start-action [skill effect-ctx]]]]
-        [:cursors/skill-not-usable
-         [[:tx/sound "bfxr_denied"]
-          [:tx/show-message (case state
-                              :cooldown "Skill is still on cooldown"
-                              :not-enough-mana "Not enough mana"
-                              :invalid-params "Cannot use this here")]]]))
-    [:cursors/no-skill-selected
-     [[:tx/sound "bfxr_denied"]
-      [:tx/show-message "No selected skill"]]]))
+        [:try-use-skill/usable [skill effect-ctx]]
+        [:try-use-skill/not-usable state]))
+    [:try-use-skill/no-skill-selected]))
 
 (defn- mouseover-actor->cursor [actor player-entity-inventory]
   (let [inventory-slot (inventory-window/cell-with-item? actor)]
@@ -55,8 +47,11 @@
       :interaction-state/clickable-mouseover-eid (let [mouseover-eid params
                                                        [cursor _txs] (ctx/clickable-entity-interaction ctx @player-eid mouseover-eid)]
                                                    cursor)
-      :interaction-state/try-use-skill (let [[cursor _txs] (try-use-skill ctx player-eid)]
-                                         cursor))))
+      :interaction-state/try-use-skill (let [[k params] (try-use-skill ctx player-eid)]
+                                         (case k
+                                           :try-use-skill/no-skill-selected :cursors/no-skill-selected
+                                           :try-use-skill/usable            :cursors/use-skill
+                                           :try-use-skill/not-usable        :cursors/skill-not-usable)))))
 
 (defn ->txs [ctx player-eid]
   (let [[k params] (interaction-state ctx)]
@@ -65,5 +60,15 @@
       :interaction-state/clickable-mouseover-eid (let [mouseover-eid params
                                                        [_cursor txs] (ctx/clickable-entity-interaction ctx @player-eid mouseover-eid)]
                                                    txs)
-      :interaction-state/try-use-skill (let [[_cursor txs] (try-use-skill ctx player-eid)]
-                                         txs))))
+      :interaction-state/try-use-skill (let [[k params] (try-use-skill ctx player-eid)]
+                                         (case k
+                                           :try-use-skill/no-skill-selected [[:tx/sound "bfxr_denied"]
+                                                                             [:tx/show-message "No selected skill"]]
+                                           :try-use-skill/usable (let [[skill effect-ctx] params]
+                                                                   [[:tx/event player-eid :start-action [skill effect-ctx]]])
+                                           :try-use-skill/not-usable (let [state params]
+                                                                       [[:tx/sound "bfxr_denied"]
+                                                                        [:tx/show-message (case state
+                                                                                            :cooldown "Skill is still on cooldown"
+                                                                                            :not-enough-mana "Not enough mana"
+                                                                                            :invalid-params "Cannot use this here")]]))))))
