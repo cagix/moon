@@ -3,6 +3,7 @@
             [gdl.graphics]
             [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.texture :as texture]
+            [gdl.graphics.viewport :as viewport]
             [gdl.utils.assets :as assets]
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
@@ -12,8 +13,7 @@
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd]
             [gdx.tiled :as tiled]
-            [gdx.utils.screen :as screen-utils]
-            [gdx.utils.viewport :as viewport])
+            [gdx.utils.screen :as screen-utils])
   (:import (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -52,8 +52,8 @@
     (screen-utils/clear! color))
 
   (resize-viewports! [_ width height]
-    (viewport/update! ui-viewport    width height :center-camera? true)
-    (viewport/update! world-viewport width height :center-camera? false))
+    (viewport/update! ui-viewport    width height true)
+    (viewport/update! world-viewport width height false))
 
   (delta-time [_]
     (graphics/delta-time graphics))

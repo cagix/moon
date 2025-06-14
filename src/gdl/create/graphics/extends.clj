@@ -2,15 +2,8 @@
   (:require [gdl.graphics.camera]
             [gdl.graphics.texture]
             [gdl.graphics.g2d.texture-region]
-            [gdl.graphics.viewport]
-            [gdx.graphics :as graphics]
             [gdx.graphics.g2d :as g2d]
             [gdx.math.vector3 :as vector3]))
-
-(extend-type com.badlogic.gdx.utils.viewport.FitViewport
-  gdl.graphics.viewport/Viewport
-  (unproject [this position]
-    (graphics/unproject this position)))
 
 (extend-type com.badlogic.gdx.graphics.g2d.TextureRegion
   gdl.graphics.g2d.texture-region/TextureRegion

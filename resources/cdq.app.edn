@@ -7,6 +7,9 @@
    [com.badlogic.gdx.graphics.g2d.Batch
     gdx.graphics.g2d.batch
     gdl.graphics.g2d.batch/Batch]
+   [com.badlogic.gdx.utils.viewport.Viewport
+    gdx.utils.viewport
+    gdl.graphics.viewport/Viewport]
    ]]
 
  [master.yoda/dispatch
