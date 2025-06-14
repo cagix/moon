@@ -156,24 +156,25 @@
         (effect/filter-applicable? effect-ctx effects)))
 
 (defmethod do! :tx/event [[_ eid event params] ctx]
-  (when-let [fsm (:entity/fsm @eid)]
-    (let [old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
-          new-state-k (:state new-fsm)]
-      (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
-                              [k (k @eid)])
-              new-state-obj [new-state-k (entity/create (if params
-                                                          [new-state-k eid params]
-                                                          [new-state-k eid])
-                                                        ctx)]]
-          (swap! eid #(-> %
-                          (assoc :entity/fsm new-fsm
-                                 new-state-k (new-state-obj 1))
-                          (dissoc old-state-k)))
-          (handle-txs! ctx (state/exit!  old-state-obj eid ctx))
-          (handle-txs! ctx (state/enter! new-state-obj eid))
-          nil)))))
+  (let [fsm (:entity/fsm @eid)
+        _ (assert fsm)
+        old-state-k (:state fsm)
+        new-fsm (fsm/fsm-event fsm event)
+        new-state-k (:state new-fsm)]
+    (when-not (= old-state-k new-state-k)
+      (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
+                            [k (k @eid)])
+            new-state-obj [new-state-k (entity/create (if params
+                                                        [new-state-k eid params]
+                                                        [new-state-k eid])
+                                                      ctx)]]
+        (swap! eid #(-> %
+                        (assoc :entity/fsm new-fsm
+                               new-state-k (new-state-obj 1))
+                        (dissoc old-state-k)))
+        (handle-txs! ctx (state/exit!  old-state-obj eid ctx))
+        (handle-txs! ctx (state/enter! new-state-obj eid))
+        nil))))
 
 (defmethod do! :tx/add-skill [[_ eid skill] _ctx]
   (swap! eid entity/add-skill skill)
