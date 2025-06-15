@@ -1,12 +1,15 @@
 (ns gdx.ui
-  (:require [gdx.ui.actor :as actor]
+  (:require [gdx.graphics.color :as color]
+            [gdx.ui.actor :as actor]
             [gdx.ui.group :as group])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Widget
                                                WidgetGroup)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
+                                                  ChangeListener
+                                                  TextureRegionDrawable)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip
@@ -95,3 +98,11 @@
   (doto (VisSelectBox.)
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
+
+(defn drawable [texture-region & {:keys [width height tint-color]}]
+  (let [drawable (TextureRegionDrawable. texture-region)]
+    (when (and width height)
+      (BaseDrawable/.setMinSize drawable (float width) (float height)))
+    (if tint-color
+      (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
+      drawable)))

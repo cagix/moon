@@ -3,7 +3,6 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdx.graphics.color :as color]
             [gdx.ui :as ui]
             [gdx.ui.actor]
             [gdx.ui.group]
@@ -23,9 +22,7 @@
                                                VerticalGroup
                                                WidgetGroup
                                                Window)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  Drawable
-                                                  TextureRegionDrawable)
+           (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.badlogic.gdx.utils Align
                                    Scaling)
            (com.kotcrab.vis.ui.widget Separator
@@ -142,22 +139,16 @@
   (doto (VisTextButton. (str text))
     (.addListener (ui/change-listener on-clicked))))
 
-(defn texture-region-drawable [texture-region]
-  (TextureRegionDrawable. texture-region))
-
 (defn image-button
   ([texture-region on-clicked]
    (image-button texture-region on-clicked {}))
   ([texture-region on-clicked {:keys [scale]}]
-   (let [drawable (texture-region-drawable texture-region)
-         button (VisImageButton. ^Drawable drawable)]
-     (when scale
-       (let [[w h] (texture-region/dimensions texture-region)]
-         (BaseDrawable/.setMinSize drawable
-                                   (float (* scale w))
-                                   (float (* scale h)))))
-     (.addListener button (ui/change-listener on-clicked))
-     button)))
+   (let [[w h] (texture-region/dimensions texture-region)
+         drawable (ui/drawable texture-region
+                               :width  (* scale w)
+                               :height (* scale h))]
+     (doto (VisImageButton. ^Drawable drawable)
+       (.addListener (ui/change-listener on-clicked))))))
 
 (defn tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
@@ -205,15 +196,3 @@
       (when-let [p (actor/parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
-
-(defn create-drawable
-  [texture-region
-   & {:keys [width
-             height
-             tint-color]}]
-  (let [drawable (doto (texture-region-drawable texture-region)
-                   (BaseDrawable/.setMinSize (float width)
-                                             (float height)))]
-    (if tint-color
-      (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
-      drawable)))
