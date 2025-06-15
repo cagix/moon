@@ -217,6 +217,3 @@
     (if tint-color
       (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
       drawable)))
-
-(defn set-drawable! [image-widget drawable]
-  (Image/.setDrawable image-widget drawable))
