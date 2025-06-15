@@ -4,6 +4,7 @@
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
+                                               Widget
                                                Window)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
@@ -12,7 +13,7 @@
                                       VisWindow)
            (gdl.ui CtxStage)))
 
-(defn get-stage-ctx [^Actor actor]
+(defn- get-stage-ctx [^Actor actor]
   (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
     @(.ctx ^CtxStage stage)))
 
@@ -146,3 +147,28 @@
 
 (defn pack-ancestor-window! [actor]
   (.pack (find-ancestor-window actor)))
+
+; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
+(defn- try-act [actor delta f]
+  (when-let [ctx (get-stage-ctx actor)]
+    (f actor delta ctx)))
+
+(defn- try-draw [actor f]
+  (when-let [ctx (get-stage-ctx actor)]
+    (f actor ctx)))
+
+(defmethod construct :actor.type/actor [opts]
+  (doto (proxy [Actor] []
+          (act [delta]
+            (when-let [f (:act opts)]
+              (try-act this delta f)))
+          (draw [_batch _parent-alpha]
+            (when-let [f (:draw opts)]
+              (try-draw this f))))
+    (set-opts! opts)))
+
+(defmethod construct :actor.type/widget [opts]
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (when-let [f (:draw opts)]
+        (try-draw this f)))))

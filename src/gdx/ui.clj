@@ -8,8 +8,7 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+           (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                HorizontalGroup
                                                Image
@@ -17,7 +16,6 @@
                                                Stack
                                                Tree$Node
                                                VerticalGroup
-                                               Widget
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   Drawable
@@ -69,31 +67,6 @@
   (proxy [ChangeListener] []
     (changed [event actor]
       (on-clicked actor @(.ctx ^CtxStage (.getStage event))))))
-
-; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
-(defn- try-act [actor delta f]
-  (when-let [ctx (actor/get-stage-ctx actor)]
-    (f actor delta ctx)))
-
-(defn- try-draw [actor f]
-  (when-let [ctx (actor/get-stage-ctx actor)]
-    (f actor ctx)))
-
-(defn -actor [opts]
-  (doto (proxy [Actor] []
-          (act [delta]
-            (when-let [f (:act opts)]
-              (try-act this delta f)))
-          (draw [_batch _parent-alpha]
-            (when-let [f (:draw opts)]
-              (try-draw this f))))
-    (actor/set-opts! opts)))
-
-(defn -widget [opts]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (when-let [f (:draw opts)]
-        (try-draw this f)))))
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -173,7 +146,6 @@
       group))
 
 (import 'clojure.lang.MultiFn)
-(MultiFn/.addMethod actor/construct :actor.type/actor -actor)
 (MultiFn/.addMethod actor/construct :actor.type/check-box -check-box)
 (MultiFn/.addMethod actor/construct :actor.type/group -group)
 (MultiFn/.addMethod actor/construct :actor.type/horizontal-group -horizontal-group)
@@ -182,7 +154,6 @@
 (MultiFn/.addMethod actor/construct :actor.type/stack -stack)
 (MultiFn/.addMethod actor/construct :actor.type/table table)
 (MultiFn/.addMethod actor/construct :actor.type/text-field -text-field)
-(MultiFn/.addMethod actor/construct :actor.type/widget -widget)
 
 (def checked? VisCheckBox/.isChecked)
 
