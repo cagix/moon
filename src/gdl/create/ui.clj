@@ -3,11 +3,9 @@
             [gdl.ui :as ui]
             [gdl.ui.stage])
   (:import (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip
-                                      VisLabel)
+           (com.kotcrab.vis.ui.widget Tooltip)
            (gdl.ui CtxStage)))
 
 (defn- load-vis-ui! [{:keys [skin-scale]}]
@@ -85,65 +83,6 @@
     (.clearChildren group))
   (children [group]
     (.getChildren group)))
-
-(extend-type com.badlogic.gdx.scenes.scene2d.Actor
-  gdl.ui/PActor
-  (get-x [actor]
-    (.getX actor))
-
-  (get-y [actor]
-    (.getY actor))
-
-  (get-name [actor]
-    (.getName actor))
-
-  (user-object [actor]
-    (.getUserObject actor))
-
-  (set-user-object! [actor object]
-    (.setUserObject actor object))
-
-  (visible? [actor]
-    (.isVisible actor))
-
-  (set-visible! [actor visible?]
-    (.setVisible actor visible?))
-
-  (set-touchable! [actor touchable]
-    (.setTouchable actor (case touchable
-                           :disabled com.badlogic.gdx.scenes.scene2d.Touchable/disabled)))
-
-  (remove! [actor]
-    (.remove actor))
-
-  (parent [actor]
-    (.getParent actor)))
-
-(extend-type com.badlogic.gdx.scenes.scene2d.Actor
-  gdl.ui/PActorTooltips
-  (add-tooltip! [actor tooltip-text]
-    (let [text? (string? tooltip-text)
-          label (VisLabel. (if text? tooltip-text ""))
-          tooltip (proxy [Tooltip] []
-                    ; hooking into getWidth because at
-                    ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                    ; when tooltip position gets calculated we setText (which calls pack) before that
-                    ; so that the size is correct for the newly calculated text.
-                    (getWidth []
-                      (let [^Tooltip this this]
-                        (when-not text?
-                          (let [actor (.getTarget this)
-                                ctx (ui/get-stage-ctx actor)]
-                            (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                              (.setText this (str (tooltip-text ctx))))))
-                        (proxy-super getWidth))))]
-      (.setAlignment label Align/center)
-      (.setTarget  tooltip actor)
-      (.setContent tooltip label))
-    actor)
-
-  (remove-tooltip! [actor]
-    (Tooltip/removeTooltip actor)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
   gdl.ui/PTable

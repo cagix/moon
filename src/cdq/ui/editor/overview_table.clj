@@ -3,7 +3,8 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.graphics :as graphics]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]))
 
 ; FIXME not refreshed after changes in properties
 
@@ -63,8 +64,8 @@
                           stack {:actor/type :actor.type/stack
                                  :actors [button
                                           top-widget]}]
-                      (ui/add-tooltip! button (pprint-to-str property))
-                      (ui/set-touchable! top-widget :disabled)
+                      (actor/add-tooltip! button (pprint-to-str property))
+                      (actor/set-touchable! top-widget :disabled)
                       {:actor stack})
                     (catch Throwable t
                       (throw (ex-info "" {:property property} t))))))}))

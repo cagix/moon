@@ -3,10 +3,11 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.db :as db]
             [cdq.property :as property]
+            [cdq.utils :refer [pprint-to-str]]
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
-            [cdq.utils :refer [pprint-to-str]]))
+            [gdl.ui.actor :as actor]
+            [gdl.ui.stage :as stage]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
@@ -38,7 +39,7 @@
               texture-region (graphics/image->texture-region graphics (property/image property))
               image-widget (ui/image-widget texture-region
                                             {:id property-id})]
-          (ui/add-tooltip! image-widget (pprint-to-str property))))
+          (actor/add-tooltip! image-widget (pprint-to-str property))))
       (for [id property-ids]
         (ui/text-button "-"
                         (fn [_actor ctx]
@@ -51,5 +52,5 @@
 
 (defmethod widget/value :s/one-to-many [_  _attribute widget _schemas]
   (->> (ui/children widget)
-       (keep ui/user-object)
+       (keep actor/user-object)
        set))

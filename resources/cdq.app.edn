@@ -19,6 +19,9 @@
    [com.badlogic.gdx.graphics.OrthographicCamera
     gdx.graphics.camera
     gdl.graphics.camera/Camera]
+   [com.badlogic.gdx.scenes.scene2d.Actor
+    gdx.ui.actor
+    gdl.ui.actor/Actor]
    ]]
 
  [master.yoda/dispatch

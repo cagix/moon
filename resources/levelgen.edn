@@ -19,6 +19,9 @@
    [com.badlogic.gdx.graphics.OrthographicCamera
     gdx.graphics.camera
     gdl.graphics.camera/Camera]
+   [com.badlogic.gdx.scenes.scene2d.Actor
+    gdx.ui.actor
+    gdl.ui.actor/Actor]
    ]]
 
  [master.yoda/dispatch [gdx.utils.shared-library-loader/operating-system {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}]]

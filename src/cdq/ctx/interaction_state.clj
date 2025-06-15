@@ -4,12 +4,13 @@
             [cdq.inventory :as inventory]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
+            [gdl.c :as c]
             [gdl.math.vector2 :as v]
             [gdl.ui :as ui]
-            [gdl.c :as c]))
+            [gdl.ui.actor :as actor]))
 
 (defn inventory-window-visible? [stage]
-  (-> stage :windows :inventory-window ui/visible?))
+  (-> stage :windows :inventory-window actor/visible?))
 
 (defn selected-skill [stage]
   (action-bar/selected-skill (:action-bar stage)))

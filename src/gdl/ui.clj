@@ -1,6 +1,7 @@
 (ns gdl.ui
   (:require [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
+            [gdl.ui.actor :as actor]
             [gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
@@ -40,26 +41,6 @@
                                       VisWindow)
            (gdl.ui CtxStage)))
 
-(defprotocol PActor
-  (get-x [_])
-  (get-y [_])
-  (get-name [_])
-  (user-object [_])
-  (set-user-object! [_ object])
-  (visible? [_])
-  (set-visible! [_ visible?])
-  (set-touchable! [_ touchable])
-  (remove! [_])
-  (parent [_]))
-
-(defn toggle-visible! [actor]
-  (set-visible! actor (not (visible? actor))))
-
-(defprotocol PActorTooltips
-  (add-tooltip! [_ tooltip-text]
-                "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.  Returns the actor.")
-  (remove-tooltip! [_]))
-
 (defprotocol PGroup
   (find-actor [_ name])
   (clear-children! [_])
@@ -93,13 +74,13 @@
                                              center-position
                                              position] :as opts}]
   (when id
-    (set-user-object! actor id))
+    (actor/set-user-object! actor id))
   (when name
     (.setName actor name))
   (when user-object
-    (set-user-object! actor user-object))
+    (actor/set-user-object! actor user-object))
   (when (contains? opts :visible?)
-    (set-visible! actor visible?))
+    (actor/set-visible! actor visible?))
   (when-let [[x y] center-position]
     (.setPosition actor
                   (- x (/ (.getWidth  actor) 2))
@@ -109,9 +90,9 @@
   (when-let [f (:click-listener opts)]
     (.addListener actor (-click-listener f)))
   (when-let [tooltip (:tooltip opts)]
-    (add-tooltip! actor tooltip))
+    (actor/add-tooltip! actor tooltip))
   (when-let [touchable (:actor/touchable opts)]
-    (set-touchable! actor touchable))
+    (actor/set-touchable! actor touchable))
   actor)
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
@@ -189,11 +170,11 @@
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
-        ids (keep user-object actors)]
+        ids (keep actor/user-object actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (user-object %)) actors))))
+    (first (filter #(= id (actor/user-object %)) actors))))
 
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
@@ -327,7 +308,7 @@
 
 (defn scroll-pane [actor]
   (doto (VisScrollPane. actor)
-    (set-user-object! :scroll-pane)
+    (actor/set-user-object! :scroll-pane)
     (.setFlickScroll false)
     (.setFadeScrollBars false)))
 
@@ -361,7 +342,7 @@
   (proxy [Tree$Node] [actor]))
 
 (defn find-ancestor-window ^Window [actor]
-  (if-let [p (parent actor)]
+  (if-let [p (actor/parent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))
@@ -392,15 +373,15 @@
   "Returns true if the actor or its parent is a button."
   [^Actor actor]
   (or (button-class? actor)
-      (and (parent actor)
-           (button-class? (parent actor)))))
+      (and (actor/parent actor)
+           (button-class? (actor/parent actor)))))
 
 (defn window-title-bar? ; TODO buggy FIXME
   "Returns true if the actor is a window title bar."
   [^Actor actor]
   (when (instance? Label actor)
-    (when-let [p (parent actor)]
-      (when-let [p (parent p)]
+    (when-let [p (actor/parent actor)]
+      (when-let [p (actor/parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
 

@@ -1,20 +1,21 @@
 (ns cdq.ctx.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
-            [gdl.input :as input]
             [cdq.property :as property]
-            [gdl.ui :as ui]
             [cdq.ui.editor.overview-table]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
-            [gdl.ui.stage :as stage]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [gdl.input :as input]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.stage :as stage]))
 
 (defn- apply-context-fn [window f]
   (fn [{:keys [ctx/stage] :as ctx}]
     (try (f ctx)
-         (ui/remove! window)
+         (actor/remove! window)
          (catch Throwable t
            (utils/pretty-pst t)
            (stage/add! stage (error-window/create t))))))

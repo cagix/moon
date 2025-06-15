@@ -7,6 +7,7 @@
             [gdl.audio :as audio]
             [gdl.graphics :as g]
             [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]))
 
 (defn- add-skill!
@@ -63,7 +64,7 @@
                                            :label/text text}}]
                                  [(ui/text-button button-text
                                                   (fn [_actor _ctx]
-                                                    (ui/remove! (::modal stage))
+                                                    (actor/remove! (::modal stage))
                                                     (on-click)))]]
                           :id ::modal
                           :modal? true
@@ -72,7 +73,7 @@
                           :pack? true})))
 
 (defn- toggle-inventory-visible! [{:keys [ctx/stage]} _]
-  (-> stage :windows :inventory-window ui/toggle-visible!))
+  (-> stage :windows :inventory-window actor/toggle-visible!))
 
 (defn do! [_ctx _params]
   {:world.event/player-skill-added add-skill!

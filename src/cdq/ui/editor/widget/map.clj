@@ -2,11 +2,12 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schemas :as schemas]
+            [cdq.ui.editor.widget :as widget]
+            [cdq.utils :as utils]
             [clojure.set :as set]
             [gdl.ui :as ui]
-            [cdq.ui.editor.widget :as widget]
-            [gdl.ui.stage :as stage]
-            [cdq.utils :as utils]))
+            [gdl.ui.actor :as actor]
+            [gdl.ui.stage :as stage]))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -37,13 +38,13 @@
                                        ctx/stage] :as ctx}]
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
-    (ui/remove! window)
+    (actor/remove! window)
     (ctx/open-property-editor-window! ctx prop-value)))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
-                      (and (ui/user-object actor)
-                           (= k ((ui/user-object actor) 0))))
+                      (and (actor/user-object actor)
+                           (= k ((actor/user-object actor) 0))))
                     (ui/children table)))
 
 (def ^:private component-row-cols 3)
@@ -54,7 +55,7 @@
             :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
                               (ui/text-button "-"
                                               (fn [_actor ctx]
-                                                (ui/remove! (find-kv-widget table k))
+                                                (actor/remove! (find-kv-widget table k))
                                                 (rebuild-editor-window! ctx))))
                      :left? true}
                     {:actor {:actor/type :actor.type/label
@@ -63,7 +64,7 @@
     :right? true}
    (ui/vertical-separator-cell)
    {:actor (let [widget (ui/-create-actor (widget/create (get schemas k) k v ctx))]
-             (ui/set-user-object! widget [k v])
+             (actor/set-user-object! widget [k v])
              widget)
     :left? true}])
 
@@ -128,10 +129,10 @@
              component-rows))
     table))
 
-(def ^:private value-widget? (comp vector? ui/user-object))
+(def ^:private value-widget? (comp vector? actor/user-object))
 
 (defmethod widget/value :s/map [_  _attribute table schemas]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
-              :let [[k _] (ui/user-object widget)]]
+              :let [[k _] (actor/user-object widget)]]
           [k (widget/value (get schemas k) k widget schemas)])))

@@ -3,6 +3,7 @@
             [cdq.ui.editor.widget :as widget]
             [gdl.audio :as audio]
             [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]))
 
 (defn- play-button [sound-name]
@@ -23,8 +24,8 @@
                                   (ui/add-rows! table [(columns table sound-name)])
                                   (.remove (ui/find-ancestor-window actor))
                                   (ui/pack-ancestor-window! table)
-                                  (let [[k _] (ui/user-object table)]
-                                    (ui/set-user-object! table [k sound-name]))))
+                                  (let [[k _] (actor/user-object table)]
+                                    (actor/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
     (stage/add! stage (scroll-pane/choose-window (:width (:ui-viewport graphics))
                                                      rows))))

@@ -5,7 +5,8 @@
             [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.graphics :as g]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -63,10 +64,10 @@
                                               ctx/player-eid] :as ctx}]
                              (g/handle-draws! graphics
                                               (draw-cell-rect @player-eid
-                                                              (ui/get-x actor)
-                                                              (ui/get-y actor)
+                                                              (actor/get-x actor)
+                                                              (actor/get-y actor)
                                                               (ui/hit actor (c/ui-mouse-position ctx))
-                                                              (ui/user-object (ui/parent actor)))))})
+                                                              (actor/user-object (actor/parent actor)))))})
         cell-click-listener
         (fn [cell]
           (fn [{:keys [ctx/player-eid] :as ctx}]
@@ -121,23 +122,23 @@
            tooltip-text]}]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (ui/find-actor cell-widget "image-widget")
-        cell-size (:cell-size (ui/user-object image-widget))
+        cell-size (:cell-size (actor/user-object image-widget))
         drawable (ui/create-drawable texture-region
                                      :width cell-size
                                      :height cell-size)]
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget tooltip-text)))
+    (actor/add-tooltip! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (ui/find-actor cell-widget "image-widget")]
-    (ui/set-drawable! image-widget (:background-drawable (ui/user-object image-widget)))
-    (ui/remove-tooltip! cell-widget)))
+    (ui/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
+    (actor/remove-tooltip! cell-widget)))
 
 (defn cell-with-item?
   "If the actor is an inventory-cell, returns the inventory slot."
   [actor]
   {:pre [actor]}
-  (and (ui/parent actor)
-       (= "inventory-cell" (ui/get-name (ui/parent actor)))
-       (ui/user-object (ui/parent actor))))
+  (and (actor/parent actor)
+       (= "inventory-cell" (actor/get-name (actor/parent actor)))
+       (actor/user-object (actor/parent actor))))
