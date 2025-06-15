@@ -92,35 +92,19 @@
       (run! #(add! group %) actors) ; redundant if we use map based
       group))
 
-; schemas for components would prevents weird errors
-; e.g. needs on-clicked ...
-(let [type->constructor {:actor.type/actor ui/-actor
-                         :actor.type/check-box ui/-check-box
-                         :actor.type/group -group
-                         :actor.type/horizontal-group -horizontal-group
-                         :actor.type/label label
-                         :actor.type/select-box ui/-select-box
-                         :actor.type/stack -stack
-                         :actor.type/table table
-                         :actor.type/text-field -text-field
-                         :actor.type/widget ui/-widget}]
-  (defn -create-actor ^Actor [actor-declaration]
-    (try
-     (cond
-      (instance? Actor actor-declaration) actor-declaration
-      (map? actor-declaration) (do
-                                (assert (:actor/type actor-declaration))
-                                (let [constructor (type->constructor (:actor/type actor-declaration))]
-                                  (assert constructor (str "Cannot find constructor for " (:actor/type actor-declaration)))
-                                  (constructor actor-declaration)))
-      (nil? actor-declaration) nil
-      :else (throw (ex-info "Cannot find constructor"
-                            {:instance-actor? (instance? Actor actor-declaration)
-                             :map? (map? actor-declaration)})))
-     (catch Throwable t
-       (throw (ex-info "Cannot create-actor"
-                       {:actor-declaration actor-declaration}
-                       t))))))
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/actor ui/-actor)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/check-box ui/-check-box)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/group -group)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/horizontal-group -horizontal-group)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/label label)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/select-box ui/-select-box)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/stack -stack)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/table table)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/text-field -text-field)
+(clojure.lang.MultiFn/.addMethod ui/construct :actor.type/widget ui/-widget)
+
+(defn -create-actor [actor-declaration]
+  (ui/->actor actor-declaration))
 
 (def checked? VisCheckBox/.isChecked)
 
