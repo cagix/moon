@@ -45,9 +45,16 @@
                                                         (on-click actor ctx))))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
+(import 'com.kotcrab.vis.ui.VisUI)
+(import 'com.kotcrab.vis.ui.widget.MenuBar$MenuBarStyle)
+
+(defn ->MenuBar []
+  (MenuBar. ^MenuBar$MenuBarStyle
+            (.get (VisUI/getSkin) "default", MenuBar$MenuBarStyle)))
+
 (defn create [{:keys [menus update-labels]}]
   {:actor/type :actor.type/table
-   :rows [[{:actor (let [menu-bar (MenuBar.)]
+   :rows [[{:actor (let [menu-bar (->MenuBar)]
                      (run! #(add-menu! menu-bar %) menus)
                      (add-update-labels! menu-bar update-labels)
                      (MenuBar/.getTable menu-bar))
