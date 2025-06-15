@@ -10,7 +10,8 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]
+            [gdl.ui.table :as table]))
 
 (defn- apply-context-fn [window f]
   (fn [{:keys [ctx/stage] :as ctx}]
@@ -45,16 +46,16 @@
                                            (swap! application/state update :ctx/db
                                                   db/delete!
                                                   (:property/id props))))]
-    (ui/add-rows! window [[(scroll-pane/table-cell (:height (:ui-viewport graphics))
-                                                   [[{:actor widget :colspan 2}]
-                                                    [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
-                                                                             (fn [_actor ctx]
-                                                                               (save! ctx)))
-                                                      :center? true}
-                                                     {:actor (ui/text-button "Delete"
-                                                                             (fn [_actor ctx]
-                                                                               (delete! ctx)))
-                                                      :center? true}]])]])
+    (table/add-rows! window [[(scroll-pane/table-cell (:height (:ui-viewport graphics))
+                                                      [[{:actor widget :colspan 2}]
+                                                       [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
+                                                                                (fn [_actor ctx]
+                                                                                  (save! ctx)))
+                                                         :center? true}
+                                                        {:actor (ui/text-button "Delete"
+                                                                                (fn [_actor ctx]
+                                                                                  (delete! ctx)))
+                                                         :center? true}]])]])
     (ui/add! window {:actor/type :actor.type/actor
                      :act (fn [_this _delta {:keys [ctx/input]}]
                             (when (input/key-just-pressed? input :enter)

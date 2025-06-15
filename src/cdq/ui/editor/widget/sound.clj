@@ -5,7 +5,8 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]
+            [gdl.ui.table :as table]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"
@@ -22,7 +23,7 @@
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
                                   (group/clear-children! table)
-                                  (ui/add-rows! table [(columns table sound-name)])
+                                  (table/add-rows! table [(columns table sound-name)])
                                   (.remove (ui/find-ancestor-window actor))
                                   (ui/pack-ancestor-window! table)
                                   (let [[k _] (actor/user-object table)]
@@ -39,9 +40,9 @@
 
 (defmethod widget/create :s/sound [_  _attribute sound-name _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (ui/add-rows! table [(if sound-name
-                           (columns table sound-name)
-                           [(ui/text-button "No sound"
-                                            (fn [_actor ctx]
-                                              (open-choose-sound-window! table ctx)))])])
+    (table/add-rows! table [(if sound-name
+                              (columns table sound-name)
+                              [(ui/text-button "No sound"
+                                               (fn [_actor ctx]
+                                                 (open-choose-sound-window! table ctx)))])])
     table))

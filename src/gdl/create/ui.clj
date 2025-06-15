@@ -3,6 +3,7 @@
             [gdl.ui :as ui]
             [gdl.ui.group :as group]
             [gdl.ui.stage]
+            [gdl.ui.table]
             [gdx.ui.table.cell :as cell])
   (:import (com.badlogic.gdx.math Vector2)
            (com.kotcrab.vis.ui VisUI
@@ -78,7 +79,7 @@
         (group/find-actor actor-name))))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
-  gdl.ui/PTable
+  gdl.ui.table/Table
   (add-rows! [table rows]
     (doseq [row rows]
       (doseq [props-or-actor row]

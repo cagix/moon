@@ -8,7 +8,8 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]
+            [gdl.ui.table :as table]))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -82,17 +83,17 @@
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (widget/value schema nil map-widget-table schemas)))
                                    (schemas/map-keys schemas schema)))]
-    (ui/add-rows!
+    (table/add-rows!
      window
      (for [k remaining-ks]
        [(ui/text-button (name k)
                         (fn [_actor ctx]
                           (.remove window)
-                          (ui/add-rows! map-widget-table [(component-row ctx
-                                                                         [k (schemas/k->default-value schemas k)]
-                                                                         schema
-                                                                         schemas
-                                                                         map-widget-table)])
+                          (table/add-rows! map-widget-table [(component-row ctx
+                                                                            [k (schemas/k->default-value schemas k)]
+                                                                            schema
+                                                                            schemas
+                                                                            map-widget-table)])
                           (rebuild-editor-window! ctx)))]))
     (.pack window)
     (stage/add! stage window)))
@@ -118,7 +119,7 @@
         colspan component-row-cols
         opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
                                   (set (keys m))))]
-    (ui/add-rows!
+    (table/add-rows!
      table
      (concat [(when opt?
                 [{:actor (ui/text-button "Add component"

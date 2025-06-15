@@ -3,6 +3,7 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
+            [gdl.ui.table :as table]
             [gdx.graphics.color :as color]
             [gdx.ui :as ui]
             [gdx.ui.table.cell :as cell])
@@ -46,15 +47,9 @@
 (defprotocol CanHit
   (hit [_ [x y]]))
 
-(defprotocol PTable
-  (add-rows! [_ rows]
-             "rows is a seq of seqs of columns.
-             Elements are actors or nil (for just adding empty cells ) or a map of
-             {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
-
 (defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
   (cell/set-opts! (.defaults table) cell-defaults)
-  (add-rows! table rows))
+  (table/add-rows! table rows))
 
 (defn- set-opts! [actor opts]
   (ui/set-actor-opts! actor opts)

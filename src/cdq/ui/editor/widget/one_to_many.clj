@@ -8,7 +8,8 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]
+            [gdl.ui.table :as table]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
@@ -20,7 +21,7 @@
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
                     (ui/pack-ancestor-window! table))]
-    (ui/add-rows!
+    (table/add-rows!
      table
      [[(ui/text-button "+"
                        (fn [_actor {:keys [ctx/stage] :as ctx}]
