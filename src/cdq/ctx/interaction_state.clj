@@ -1,21 +1,14 @@
 (ns cdq.ctx.interaction-state
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.inventory :as inventory]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]
             [gdl.ui.actor :as actor]))
 
-(defn inventory-window-visible? [stage]
-  (-> stage :windows :inventory-window actor/visible?))
-
 (defn selected-skill [stage]
   (action-bar/selected-skill (:action-bar stage)))
-
-(defn can-pickup-item? [entity item]
-  (inventory/can-pickup-item? (:entity/inventory entity) item))
 
 (defn distance [a b]
   (v/distance (entity/position a)
@@ -81,51 +74,3 @@
 
       :interaction-state/no-skill-selected
       :cursors/no-skill-selected)))
-
-(defn ->txs [ctx player-eid]
-  (let [[k params] (interaction-state ctx player-eid)]
-    (case k
-      :interaction-state/mouseover-actor nil ; handled by ui actors themself.
-
-      :interaction-state/clickable-mouseover-eid
-      (let [{:keys [clicked-eid
-                    in-click-range?]} params]
-        (if in-click-range?
-          (case (:type (:entity/clickable @clicked-eid))
-            :clickable/player
-            [[:tx/toggle-inventory-visible]]
-
-            :clickable/item
-            (let [item (:entity/item @clicked-eid)]
-              (cond
-               (inventory-window-visible? (:ctx/stage ctx))
-               [[:tx/sound "bfxr_takeit"]
-                [:tx/mark-destroyed clicked-eid]
-                [:tx/event player-eid :pickup-item item]]
-
-               (can-pickup-item? @player-eid item)
-               [[:tx/sound "bfxr_pickup"]
-                [:tx/mark-destroyed clicked-eid]
-                [:tx/pickup-item player-eid item]]
-
-               :else
-               [[:tx/sound "bfxr_denied"]
-                [:tx/show-message "Your Inventory is full"]])))
-          [[:tx/sound "bfxr_denied"]
-           [:tx/show-message "Too far away"]]))
-
-      :interaction-state.skill/usable
-      (let [[skill effect-ctx] params]
-        [[:tx/event player-eid :start-action [skill effect-ctx]]])
-
-      :interaction-state.skill/not-usable
-      (let [state params]
-        [[:tx/sound "bfxr_denied"]
-         [:tx/show-message (case state
-                             :cooldown "Skill is still on cooldown"
-                             :not-enough-mana "Not enough mana"
-                             :invalid-params "Cannot use this here")]])
-
-      :interaction-state/no-skill-selected
-      [[:tx/sound "bfxr_denied"]
-       [:tx/show-message "No selected skill"]])))
