@@ -2,7 +2,8 @@
   (:require [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.group :as group]
-            [gdl.ui.stage])
+            [gdl.ui.stage]
+            [gdx.ui.table.cell :as cell])
   (:import (com.badlogic.gdx.math Vector2)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
@@ -84,7 +85,7 @@
         (cond
          ; this is weird now as actor declarations are all maps ....
          (map? props-or-actor) (-> (ui/add! table (:actor props-or-actor))
-                                   (ui/set-cell-opts! (dissoc props-or-actor :actor)))
+                                   (cell/set-opts! (dissoc props-or-actor :actor)))
          :else (ui/add! table props-or-actor)))
       (.row table))
     table))

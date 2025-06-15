@@ -4,7 +4,8 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdx.graphics.color :as color]
-            [gdx.ui :as ui])
+            [gdx.ui :as ui]
+            [gdx.ui.table.cell :as cell])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -12,7 +13,6 @@
                                             Group
                                             Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               Cell
                                                HorizontalGroup
                                                Image
                                                Label
@@ -52,27 +52,8 @@
              Elements are actors or nil (for just adding empty cells ) or a map of
              {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
 
-(defn set-cell-opts! [^Cell cell opts]
-  (doseq [[option arg] opts]
-    (case option
-      :fill-x?    (.fillX     cell)
-      :fill-y?    (.fillY     cell)
-      :expand?    (.expand    cell)
-      :expand-x?  (.expandX   cell)
-      :expand-y?  (.expandY   cell)
-      :bottom?    (.bottom    cell)
-      :colspan    (.colspan   cell (int   arg))
-      :pad        (.pad       cell (float arg))
-      :pad-top    (.padTop    cell (float arg))
-      :pad-bottom (.padBottom cell (float arg))
-      :width      (.width     cell (float arg))
-      :height     (.height    cell (float arg))
-      :center?    (.center    cell)
-      :right?     (.right     cell)
-      :left?      (.left      cell))))
-
 (defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
-  (set-cell-opts! (.defaults table) cell-defaults)
+  (cell/set-opts! (.defaults table) cell-defaults)
   (add-rows! table rows))
 
 (defn- set-opts! [actor opts]
