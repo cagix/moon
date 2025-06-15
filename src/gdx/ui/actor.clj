@@ -1,17 +1,22 @@
 (ns gdx.ui.actor
-  (:require [gdx.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
                                                Widget
                                                Window)
+           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget Tooltip
                                       VisLabel
                                       VisWindow)
            (gdl.ui CtxStage)))
+
+(defn- click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f @(.ctx ^CtxStage (.getStage event))))))
 
 (defn- get-stage-ctx [^Actor actor]
   (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
@@ -99,7 +104,7 @@
   (when-let [[x y] position]
     (.setPosition actor x y))
   (when-let [f (:click-listener opts)]
-    (.addListener actor (utils/click-listener f)))
+    (.addListener actor (click-listener f)))
   (when-let [tooltip (:tooltip opts)]
     (add-tooltip! actor tooltip))
   (when-let [touchable (:actor/touchable opts)]

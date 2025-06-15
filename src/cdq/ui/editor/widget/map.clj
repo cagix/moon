@@ -10,7 +10,8 @@
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]
             [gdx.ui :as ui]
-            [gdx.ui.actor]))
+            [gdx.ui.actor]
+            [gdx.ui.separator :as separator]))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -65,7 +66,7 @@
                              :label/text (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                              }}]]}
     :right? true}
-   (ui/vertical-separator-cell)
+   (separator/vertical)
    {:actor (let [widget (gdx.ui.actor/construct? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
@@ -100,7 +101,7 @@
     (stage/add! stage window)))
 
 (defn- horiz-sep []
-  [(ui/horizontal-separator-cell component-row-cols)])
+  [(separator/horizontal component-row-cols)])
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -128,7 +129,7 @@
                                            (open-add-component-window! ctx schema table)))
                   :colspan colspan}])]
              [(when opt?
-                [(ui/horizontal-separator-cell colspan)])]
+                [(separator/horizontal colspan)])]
              component-rows))
     table))
 

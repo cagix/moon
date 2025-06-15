@@ -14,7 +14,6 @@
                                                Image
                                                Table
                                                Stack
-                                               Tree$Node
                                                VerticalGroup
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
@@ -25,8 +24,7 @@
                                    Scaling)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Separator
-                                      Tooltip
+           (com.kotcrab.vis.ui.widget Tooltip
                                       VisCheckBox
                                       VisImage
                                       VisImageButton
@@ -214,21 +212,3 @@
                             :height (* scale h))]
      (doto (VisImageButton. ^Drawable drawable)
        (.addListener (change-listener on-clicked))))))
-
-(defn tree-node ^Tree$Node [actor]
-  (proxy [Tree$Node] [actor]))
-
-(defn horizontal-separator-cell [colspan]
-  {:actor (Separator. "default")
-   :pad-top 2
-   :pad-bottom 2
-   :colspan colspan
-   :fill-x? true
-   :expand-x? true})
-
-(defn vertical-separator-cell []
-  {:actor (Separator. "vertical")
-   :pad-top 2
-   :pad-bottom 2
-   :fill-y? true
-   :expand-y? true})
