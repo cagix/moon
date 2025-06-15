@@ -3,7 +3,8 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdx.graphics.color :as color])
+            [gdx.graphics.color :as color]
+            [gdx.ui :as ui])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -19,12 +20,10 @@
                                                Stack
                                                Tree$Node
                                                VerticalGroup
-                                               Widget
                                                WidgetGroup
                                                Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   ChangeListener
-                                                  ClickListener
                                                   Drawable
                                                   TextureRegionDrawable)
            (com.badlogic.gdx.utils Align
@@ -39,8 +38,7 @@
                                       VisTable
                                       VisTextButton
                                       VisTextField
-                                      VisWindow)
-           (gdl.ui CtxStage)))
+                                      VisWindow)))
 
 (defprotocol CanAddActor
   (add! [_ actor]))
@@ -53,83 +51,6 @@
              "rows is a seq of seqs of columns.
              Elements are actors or nil (for just adding empty cells ) or a map of
              {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."))
-
-(defn- -click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (.getStage event))))))
-
-(defn get-stage-ctx [^Actor actor]
-  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
-    @(.ctx ^CtxStage stage)))
-
-(defn- set-actor-opts! [^Actor actor {:keys [id
-                                             name
-                                             user-object
-                                             visible?
-                                             center-position
-                                             position] :as opts}]
-  (when id
-    (actor/set-user-object! actor id))
-  (when name
-    (.setName actor name))
-  (when user-object
-    (actor/set-user-object! actor user-object))
-  (when (contains? opts :visible?)
-    (actor/set-visible! actor visible?))
-  (when-let [[x y] center-position]
-    (.setPosition actor
-                  (- x (/ (.getWidth  actor) 2))
-                  (- y (/ (.getHeight actor) 2))))
-  (when-let [[x y] position]
-    (.setPosition actor x y))
-  (when-let [f (:click-listener opts)]
-    (.addListener actor (-click-listener f)))
-  (when-let [tooltip (:tooltip opts)]
-    (actor/add-tooltip! actor tooltip))
-  (when-let [touchable (:actor/touchable opts)]
-    (actor/set-touchable! actor touchable))
-  actor)
-
-; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
-(defn- try-act [actor delta f]
-  (when-let [ctx (get-stage-ctx actor)]
-    (f actor delta ctx)))
-
-(defn- try-draw [actor f]
-  (when-let [ctx (get-stage-ctx actor)]
-    (f actor ctx)))
-
-(defn- -actor [opts]
-  (doto (proxy [Actor] []
-          (act [delta]
-            (when-let [f (:act opts)]
-              (try-act this delta f)))
-          (draw [_batch _parent-alpha]
-            (when-let [f (:draw opts)]
-              (try-draw this f))))
-    (set-actor-opts! opts)))
-
-(defn- -widget [opts]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (when-let [f (:draw opts)]
-        (try-draw this f)))))
-
-
-
-(comment
- ; fill parent & pack is from Widget TODO ( not widget-group ?)
- com.badlogic.gdx.scenes.scene2d.ui.Widget
- ; about .pack :
- ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
- )
-
-(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
-  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
-  (when pack?
-    (.pack widget-group))
-  widget-group)
 
 (defn set-cell-opts! [^Cell cell opts]
   (doseq [[option arg] opts]
@@ -155,11 +76,11 @@
   (add-rows! table rows))
 
 (defn- set-opts! [actor opts]
-  (set-actor-opts! actor opts)
+  (ui/set-actor-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
-    (set-widget-group-opts actor opts))
+    (ui/set-widget-group-opts actor opts))
   (when (instance? Group actor) ; Check Addable protocol
     (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
@@ -232,7 +153,7 @@
 
 ; schemas for components would prevents weird errors
 ; e.g. needs on-clicked ...
-(let [type->constructor {:actor.type/actor -actor
+(let [type->constructor {:actor.type/actor ui/-actor
                          :actor.type/check-box -check-box
                          :actor.type/group -group
                          :actor.type/horizontal-group -horizontal-group
@@ -241,7 +162,7 @@
                          :actor.type/stack -stack
                          :actor.type/table table
                          :actor.type/text-field -text-field
-                         :actor.type/widget -widget}]
+                         :actor.type/widget ui/-widget}]
   (defn -create-actor ^Actor [actor-declaration]
     (try
      (cond
@@ -308,14 +229,9 @@
     (.setFlickScroll false)
     (.setFadeScrollBars false)))
 
-(defn change-listener ^ChangeListener [on-clicked]
-  (proxy [ChangeListener] []
-    (changed [event actor]
-      (on-clicked actor @(.ctx ^CtxStage (.getStage event))))))
-
 (defn text-button [text on-clicked]
   (doto (VisTextButton. (str text))
-    (.addListener (change-listener on-clicked))))
+    (.addListener (ui/change-listener on-clicked))))
 
 (defn texture-region-drawable [texture-region]
   (TextureRegionDrawable. texture-region))
@@ -331,7 +247,7 @@
          (BaseDrawable/.setMinSize drawable
                                    (float (* scale w))
                                    (float (* scale h)))))
-     (.addListener button (change-listener on-clicked))
+     (.addListener button (ui/change-listener on-clicked))
      button)))
 
 (defn tree-node ^Tree$Node [actor]

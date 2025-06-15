@@ -1,0 +1,85 @@
+(ns gdx.ui
+  (:require [gdx.ui.actor :as actor])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Widget
+                                               WidgetGroup)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
+                                                  ClickListener)
+           (gdl.ui CtxStage)))
+
+(defn- click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f @(.ctx ^CtxStage (.getStage event))))))
+
+(defn change-listener ^ChangeListener [on-clicked]
+  (proxy [ChangeListener] []
+    (changed [event actor]
+      (on-clicked actor @(.ctx ^CtxStage (.getStage event))))))
+
+(defn set-actor-opts!
+  [^Actor actor
+   {:keys [id
+           name
+           user-object
+           visible?
+           center-position
+           position] :as opts}]
+  (when id
+    (actor/set-user-object! actor id))
+  (when name
+    (.setName actor name))
+  (when user-object
+    (actor/set-user-object! actor user-object))
+  (when (contains? opts :visible?)
+    (actor/set-visible! actor visible?))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  (when-let [f (:click-listener opts)]
+    (.addListener actor (click-listener f)))
+  (when-let [tooltip (:tooltip opts)]
+    (actor/add-tooltip! actor tooltip))
+  (when-let [touchable (:actor/touchable opts)]
+    (actor/set-touchable! actor touchable))
+  actor)
+
+; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
+(defn- try-act [actor delta f]
+  (when-let [ctx (actor/get-stage-ctx actor)]
+    (f actor delta ctx)))
+
+(defn- try-draw [actor f]
+  (when-let [ctx (actor/get-stage-ctx actor)]
+    (f actor ctx)))
+
+(defn -actor [opts]
+  (doto (proxy [Actor] []
+          (act [delta]
+            (when-let [f (:act opts)]
+              (try-act this delta f)))
+          (draw [_batch _parent-alpha]
+            (when-let [f (:draw opts)]
+              (try-draw this f))))
+    (set-actor-opts! opts)))
+
+(defn -widget [opts]
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (when-let [f (:draw opts)]
+        (try-draw this f)))))
+
+(comment
+ ; fill parent & pack is from Widget TODO ( not widget-group ?)
+ com.badlogic.gdx.scenes.scene2d.ui.Widget
+ ; about .pack :
+ ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
+ )
+(defn set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
+  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
+  (when pack?
+    (.pack widget-group))
+  widget-group)

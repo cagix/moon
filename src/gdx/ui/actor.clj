@@ -1,10 +1,14 @@
 (ns gdx.ui.actor
-  (:require [gdl.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget Tooltip
-                                      VisLabel)))
+                                      VisLabel)
+           (gdl.ui CtxStage)))
+
+(defn get-stage-ctx [^Actor actor]
+  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
+    @(.ctx ^CtxStage stage)))
 
 (defn get-x [^Actor actor]
   (.getX actor))
@@ -49,7 +53,7 @@
                     (let [^Tooltip this this]
                       (when-not text?
                         (let [actor (.getTarget this)
-                              ctx (ui/get-stage-ctx actor)]
+                              ctx (get-stage-ctx actor)]
                           (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
                             (.setText this (str (tooltip-text ctx))))))
                       (proxy-super getWidth))))]
