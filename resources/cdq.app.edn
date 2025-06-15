@@ -31,6 +31,9 @@
    [gdl.ui.CtxStage
     gdx.ui.stage
     gdl.ui.stage/Stage]
+   [com.badlogic.gdx.scenes.scene2d.ui.Image
+    gdx.ui.image
+    gdl.ui.image/Image]
    ]]
 
  [master.yoda/dispatch
