@@ -1,4 +1,5 @@
 (ns gdx.ui.actor
+  (:require [gdx.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.math Vector2)
@@ -69,3 +70,33 @@
 
 (defn remove-tooltip! [actor]
   (Tooltip/removeTooltip actor))
+
+(defn set-opts!
+  [^Actor actor
+   {:keys [id
+           name
+           user-object
+           visible?
+           center-position
+           position] :as opts}]
+  (when id
+    (set-user-object! actor id))
+  (when name
+    (.setName actor name))
+  (when user-object
+    (set-user-object! actor user-object))
+  (when (contains? opts :visible?)
+    (set-visible! actor visible?))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  (when-let [f (:click-listener opts)]
+    (.addListener actor (utils/click-listener f)))
+  (when-let [tooltip (:tooltip opts)]
+    (add-tooltip! actor tooltip))
+  (when-let [touchable (:actor/touchable opts)]
+    (set-touchable! actor touchable))
+  actor)

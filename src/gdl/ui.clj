@@ -6,6 +6,7 @@
             [gdl.ui.table :as table]
             [gdx.graphics.color :as color]
             [gdx.ui :as ui]
+            [gdx.ui.actor]
             [gdx.ui.group]
             [gdx.ui.table.cell :as cell])
   (:import (clojure.lang ILookup)
@@ -52,7 +53,7 @@
   (table/add-rows! table rows))
 
 (defn- set-opts! [actor opts]
-  (ui/set-actor-opts! actor opts)
+  (gdx.ui.actor/set-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)

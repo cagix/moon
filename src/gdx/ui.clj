@@ -6,8 +6,7 @@
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Widget
                                                WidgetGroup)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
-                                                  ClickListener)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip
@@ -39,45 +38,10 @@
     (valAt [id]
       (group/find-actor-with-id (CtxStage/.getRoot this) id))))
 
-(defn- click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (.getStage event))))))
-
 (defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
       (on-clicked actor @(.ctx ^CtxStage (.getStage event))))))
-
-(defn set-actor-opts!
-  [^Actor actor
-   {:keys [id
-           name
-           user-object
-           visible?
-           center-position
-           position] :as opts}]
-  (when id
-    (actor/set-user-object! actor id))
-  (when name
-    (.setName actor name))
-  (when user-object
-    (actor/set-user-object! actor user-object))
-  (when (contains? opts :visible?)
-    (actor/set-visible! actor visible?))
-  (when-let [[x y] center-position]
-    (.setPosition actor
-                  (- x (/ (.getWidth  actor) 2))
-                  (- y (/ (.getHeight actor) 2))))
-  (when-let [[x y] position]
-    (.setPosition actor x y))
-  (when-let [f (:click-listener opts)]
-    (.addListener actor (click-listener f)))
-  (when-let [tooltip (:tooltip opts)]
-    (actor/add-tooltip! actor tooltip))
-  (when-let [touchable (:actor/touchable opts)]
-    (actor/set-touchable! actor touchable))
-  actor)
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]
@@ -96,7 +60,7 @@
           (draw [_batch _parent-alpha]
             (when-let [f (:draw opts)]
               (try-draw this f))))
-    (set-actor-opts! opts)))
+    (actor/set-opts! opts)))
 
 (defn -widget [opts]
   (proxy [Widget] []
