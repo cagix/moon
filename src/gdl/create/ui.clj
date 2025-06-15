@@ -5,8 +5,7 @@
             [gdl.ui.stage]
             [gdl.ui.table]
             [gdx.ui.table.cell :as cell])
-  (:import (com.badlogic.gdx.math Vector2)
-           (com.kotcrab.vis.ui VisUI
+  (:import (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (gdl.ui CtxStage)))
@@ -105,11 +104,6 @@
     (.add table (ui/-create-actor actor))))
 
 (extend-protocol gdl.ui/CanHit
-  com.badlogic.gdx.scenes.scene2d.Actor
-  (hit [actor [x y]]
-    (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-      (.hit actor (.x v) (.y v) true)))
-
   com.badlogic.gdx.scenes.scene2d.Stage
   (hit [stage [x y]]
     (.hit stage x y true)))

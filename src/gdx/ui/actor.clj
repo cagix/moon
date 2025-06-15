@@ -1,6 +1,7 @@
 (ns gdx.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget Tooltip
                                       VisLabel)
@@ -40,6 +41,10 @@
 
 (defn parent [^Actor actor]
   (.getParent actor))
+
+(defn hit [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
 
 (defn add-tooltip! [actor tooltip-text]
   (let [text? (string? tooltip-text)

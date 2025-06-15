@@ -67,7 +67,7 @@
                                               (draw-cell-rect @player-eid
                                                               (actor/get-x actor)
                                                               (actor/get-y actor)
-                                                              (ui/hit actor (c/ui-mouse-position ctx))
+                                                              (actor/hit actor (c/ui-mouse-position ctx))
                                                               (actor/user-object (actor/parent actor)))))})
         cell-click-listener
         (fn [cell]
