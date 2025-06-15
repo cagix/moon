@@ -10,6 +10,7 @@
             [gdl.input :as input]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]))
 
@@ -56,10 +57,10 @@
                                                                                 (fn [_actor ctx]
                                                                                   (delete! ctx)))
                                                          :center? true}]])]])
-    (ui/add! window {:actor/type :actor.type/actor
-                     :act (fn [_this _delta {:keys [ctx/input]}]
-                            (when (input/key-just-pressed? input :enter)
-                              (save! ctx)))})
+    (group/add! window {:actor/type :actor.type/actor
+                        :act (fn [_this _delta {:keys [ctx/input]}]
+                               (when (input/key-just-pressed? input :enter)
+                                 (save! ctx)))})
     (.pack window)
     window))
 

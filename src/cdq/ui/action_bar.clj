@@ -40,7 +40,7 @@
                                 {:scale 2})]
     (actor/set-user-object! button skill-id)
     (actor/add-tooltip!     button tooltip-text)
-    (ui/add!           horizontal-group button)
+    (group/add!        horizontal-group button)
     (button-group/add! button-group     button)
     nil))
 

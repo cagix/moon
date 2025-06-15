@@ -3,6 +3,9 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Group)))
 
+(defn add! [^Group group actor-or-decl]
+  (.addActor group (actor/construct? actor-or-decl)))
+
 (defn find-actor [^Group group name]
   (.findActor group name))
 

@@ -39,7 +39,7 @@
     #_(reset! (.ctx (-k ctx)) nil)
     ctx)
 
-  (add! [stage actor] ; -> re-use gdl.ui/add! ?
+  (add! [stage actor]
     (ui/add! stage actor))
 
   (clear! [stage]
@@ -67,10 +67,6 @@
     table))
 
 (extend-protocol gdl.ui/CanAddActor
-  com.badlogic.gdx.scenes.scene2d.Group
-  (add! [group actor]
-    (.addActor group (gdx.ui.actor/construct? actor)))
-
   com.badlogic.gdx.scenes.scene2d.Stage
   (add! [stage actor]
     (.addActor stage (gdx.ui.actor/construct? actor)))

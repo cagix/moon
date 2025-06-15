@@ -59,7 +59,7 @@
   (when (instance? WidgetGroup actor)
     (ui/set-widget-group-opts actor opts))
   (when (instance? Group actor) ; Check Addable protocol
-    (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
+    (run! #(group/add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
 
 (defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
@@ -90,7 +90,7 @@
 
 #_(defn- -vertical-group [actors]
     (let [group (gdx.ui.group/proxy-ILookup VerticalGroup [])]
-      (run! #(add! group %) actors) ; redundant if we use map based
+      (run! #(group/add! group %) actors) ; redundant if we use map based
       group))
 
 (clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/actor ui/-actor)
