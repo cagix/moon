@@ -1,5 +1,6 @@
 (ns gdl.ui.menu
   (:require [gdl.ui :as ui]
+            [gdl.ui.group :as group]
             [gdx.ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
@@ -20,11 +21,11 @@
    (let [icon (ui/image-widget icon {})
          label (ui/label {:label/text ""})
          sub-table (ui/table {:rows [[icon label]]})]
-     (ui/add! table (set-label-text-actor label text-fn))
+     (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (ui/label {:label/text ""})]
-     (ui/add! table (set-label-text-actor label text-fn))
+     (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]

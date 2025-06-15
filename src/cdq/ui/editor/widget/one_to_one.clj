@@ -34,7 +34,7 @@
                                  clicked-id-fn (fn [id ctx]
                                                  (.remove window)
                                                  (redo-rows ctx id))]
-                             (ui/add! window (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn))
+                             (table/add! window (cdq.ui.editor.overview-table/create ctx property-type clicked-id-fn))
                              (.pack window)
                              (stage/add! stage window)))))]
       [(when property-id

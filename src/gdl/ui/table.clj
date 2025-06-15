@@ -1,6 +1,7 @@
 (ns gdl.ui.table)
 
 (defprotocol Table
+  (add! [_ actor-or-decl])
   (add-rows! [_ rows]
              "rows is a seq of seqs of columns.
              Elements are actors or nil (for just adding empty cells ) or a map of
