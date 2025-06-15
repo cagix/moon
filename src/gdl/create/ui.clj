@@ -69,15 +69,15 @@
 (extend-protocol gdl.ui/CanAddActor
   com.badlogic.gdx.scenes.scene2d.Group
   (add! [group actor]
-    (.addActor group (ui/-create-actor actor)))
+    (.addActor group (gdx.ui/->actor actor)))
 
   com.badlogic.gdx.scenes.scene2d.Stage
   (add! [stage actor]
-    (.addActor stage (ui/-create-actor actor)))
+    (.addActor stage (gdx.ui/->actor actor)))
 
   com.badlogic.gdx.scenes.scene2d.ui.Table
   (add! [table actor]
-    (.add table (ui/-create-actor actor))))
+    (.add table (gdx.ui/->actor actor))))
 
 (extend-protocol gdl.ui/CanHit
   com.badlogic.gdx.scenes.scene2d.Stage

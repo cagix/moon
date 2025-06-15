@@ -9,7 +9,8 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
-            [gdl.ui.table :as table]))
+            [gdl.ui.table :as table]
+            [gdx.ui]))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -65,7 +66,7 @@
                              }}]]}
     :right? true}
    (ui/vertical-separator-cell)
-   {:actor (let [widget (ui/-create-actor (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (gdx.ui/->actor (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])

@@ -104,9 +104,6 @@
 (clojure.lang.MultiFn/.addMethod ui/construct :actor.type/text-field -text-field)
 (clojure.lang.MultiFn/.addMethod ui/construct :actor.type/widget ui/-widget)
 
-(defn -create-actor [actor-declaration]
-  (ui/->actor actor-declaration))
-
 (def checked? VisCheckBox/.isChecked)
 
 (def get-selected VisSelectBox/.getSelected)
