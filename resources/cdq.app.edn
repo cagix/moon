@@ -47,7 +47,8 @@
     :foreground-fps 60}
    {:create!
     [cdq.application/create!
-     {:create-fns
+     {:initial-context cdq.application/initial-context
+      :create-fns
       [gdl.create.gdx/do!
        [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
        [cdq.utils/assoc*
@@ -137,11 +138,13 @@
                          :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
                          :player-moving cdq.entity.state.player-moving/exit}}]]]
        [cdq.ctx/reset-game-state! cdq.level.vampire/create]
-       cdq.create.player-movement-vector/do!]}]
+       cdq.create.player-movement-vector/do!
+       cdq.application/validate-ctx]}]
     :dispose! cdq.application/dispose!
     :render!
     [cdq.application/render!
-     [[cdq.utils/assoc* [:ctx/active-entities [cdq.world/calculate-active-entities]]]
+     [cdq.application/validate-ctx
+      [cdq.utils/assoc* [:ctx/active-entities [cdq.world/calculate-active-entities]]]
       cdq.render.set-camera-on-player/do!
       cdq.render.clear-screen/do!
       cdq.render.draw-world-map/do!
@@ -197,5 +200,6 @@
       [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
       [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
                                             :toggle-inventory   :i
-                                            :toggle-entity-info :e}]]]
+                                            :toggle-entity-info :e}]
+      cdq.application/validate-ctx]]
     :resize! cdq.application/resize!}]]]

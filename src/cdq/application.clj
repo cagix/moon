@@ -13,6 +13,7 @@
 (def ^:private schema
   (m/schema [:map {:closed true}
              [:ctx/app :some]
+             [:ctx/files :some]
              [:ctx/config :some]
              [:ctx/input :some]
              [:ctx/db :some]
@@ -43,13 +44,19 @@
              [:ctx/player-eid :some]
              [:ctx/active-entities {:optional true} :some]]))
 
+(defn initial-context []
+  (map->Context {}))
+
+(defn validate-ctx [ctx]
+  (m/validate-humanize schema ctx)
+  ctx)
+
 (def state (atom nil))
 
-(defn create! [{:keys [create-fns]}]
-  (let [ctx (reduce utils/render* (map->Context {}) create-fns)
-        ctx (dissoc ctx :ctx/files)]
-    (m/validate-humanize schema ctx)
-    (reset! state ctx)))
+(defn create! [{:keys [initial-context create-fns]}]
+  (reset! state (reduce utils/render*
+                        (initial-context)
+                        create-fns)))
 
 (defn dispose! []
   (let [{:keys [ctx/audio
@@ -65,12 +72,8 @@
 
 (defn render! [render-fns]
   (swap! state (fn [ctx]
-                 (m/validate-humanize schema ctx)
-                 (let [ctx (reduce utils/render* ctx render-fns)]
-                   (m/validate-humanize schema ctx)
-                   ctx))))
+                 (reduce utils/render* ctx render-fns))))
 
 (defn resize! [width height]
-  (m/validate-humanize schema @state)
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
