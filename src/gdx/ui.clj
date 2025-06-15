@@ -3,13 +3,16 @@
             [gdx.ui.group :as group])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget
+           (com.badlogic.gdx.scenes.scene2d.ui Button
+                                               Widget
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
                                                   ClickListener)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip)
+           (com.kotcrab.vis.ui.widget Tooltip
+                                      VisCheckBox
+                                      VisSelectBox)
            (gdl.ui CtxStage)))
 
 (defn load! [{:keys [skin-scale]}]
@@ -112,3 +115,19 @@
   (when pack?
     (.pack widget-group))
   widget-group)
+
+(defn -check-box
+  "on-clicked is a fn of one arg, taking the current isChecked state"
+  [{:keys [text on-clicked checked?]}]
+  (let [^Button button (VisCheckBox. (str text))]
+    (.setChecked button checked?)
+    (.addListener button
+                  (proxy [ChangeListener] []
+                    (changed [event ^Button actor]
+                      (on-clicked (.isChecked actor)))))
+    button))
+
+(defn -select-box [{:keys [items selected]}]
+  (doto (VisSelectBox.)
+    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
+    (.setSelected selected)))

@@ -25,7 +25,6 @@
                                                WidgetGroup
                                                Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  ChangeListener
                                                   Drawable
                                                   TextureRegionDrawable)
            (com.badlogic.gdx.utils Align
@@ -62,41 +61,19 @@
     (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
 
-(defmacro ^:private proxy-ILookup
-  "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
-  via [find-actor-with-id]."
-  [class args]
-  `(proxy [~class ILookup] ~args
-     (valAt
-       ([id#]
-        (gdx.ui.group/find-actor-with-id ~'this id#))
-       ([id# not-found#]
-        (or (gdx.ui.group/find-actor-with-id ~'this id#) not-found#)))))
-
 (defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
-  (let [group (proxy-ILookup HorizontalGroup [])]
+  (let [group (gdx.ui.group/proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     (set-opts! group opts)))
 
 (defn table ^Table [opts]
-  (-> (proxy-ILookup VisTable [])
+  (-> (gdx.ui.group/proxy-ILookup VisTable [])
       (set-opts! opts)))
 
 (defn- -stack ^Stack [opts]
-  (doto (proxy-ILookup Stack [])
+  (doto (gdx.ui.group/proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
-
-(defn- -check-box
-  "on-clicked is a fn of one arg, taking the current isChecked state"
-  [{:keys [text on-clicked checked?]}]
-  (let [^Button button (VisCheckBox. (str text))]
-    (.setChecked button checked?)
-    (.addListener button
-                  (proxy [ChangeListener] []
-                    (changed [event ^Button actor]
-                      (on-clicked (.isChecked actor)))))
-    button))
 
 (defn label ^VisLabel [{:keys [label/text] :as opts}]
   (doto (VisLabel. ^CharSequence text)
@@ -106,28 +83,23 @@
   (-> (VisTextField. (str text))
       (set-opts! opts)))
 
-(defn- -select-box [{:keys [items selected]}]
-  (doto (VisSelectBox.)
-    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
-    (.setSelected selected)))
-
 (defn- -group [opts]
-  (doto (proxy-ILookup Group [])
+  (doto (gdx.ui.group/proxy-ILookup Group [])
     (set-opts! opts)))
 
 #_(defn- -vertical-group [actors]
-    (let [group (proxy-ILookup VerticalGroup [])]
+    (let [group (gdx.ui.group/proxy-ILookup VerticalGroup [])]
       (run! #(add! group %) actors) ; redundant if we use map based
       group))
 
 ; schemas for components would prevents weird errors
 ; e.g. needs on-clicked ...
 (let [type->constructor {:actor.type/actor ui/-actor
-                         :actor.type/check-box -check-box
+                         :actor.type/check-box ui/-check-box
                          :actor.type/group -group
                          :actor.type/horizontal-group -horizontal-group
                          :actor.type/label label
-                         :actor.type/select-box -select-box
+                         :actor.type/select-box ui/-select-box
                          :actor.type/stack -stack
                          :actor.type/table table
                          :actor.type/text-field -text-field
@@ -158,7 +130,7 @@
   (.getCells table))
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+  (-> (let [window (doto (gdx.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
         (when close-button?    (.addCloseButton window))
         (when center?          (.centerWindow   window))

@@ -1,6 +1,7 @@
 (ns gdx.ui.group
   (:require [gdx.ui.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)))
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn find-actor [^Group group name]
   (.findActor group name))
@@ -18,3 +19,14 @@
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (actor/user-object %)) actors))))
+
+(defmacro proxy-ILookup
+  "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
+  via [find-actor-with-id]."
+  [class args]
+  `(proxy [~class ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
