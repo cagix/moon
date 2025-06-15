@@ -2,10 +2,14 @@
   (:require [gdx.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
+           (com.badlogic.gdx.scenes.scene2d.ui Button
+                                               Label
+                                               Window)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget Tooltip
-                                      VisLabel)
+                                      VisLabel
+                                      VisWindow)
            (gdl.ui CtxStage)))
 
 (defn get-stage-ctx [^Actor actor]
@@ -116,3 +120,29 @@
      (throw (ex-info "Cannot create-actor"
                      {:actor-declaration actor-declaration}
                      t)))))
+
+(defn- button-class? [actor]
+  (some #(= Button %) (supers (class actor))))
+
+(defn button? [^Actor actor]
+  (or (button-class? actor)
+      (and (parent actor)
+           (button-class? (parent actor)))))
+
+; TODO buggy FIXME
+(defn window-title-bar? [^Actor actor]
+  (when (instance? Label actor)
+    (when-let [p (parent actor)]
+      (when-let [p (parent p)]
+        (and (instance? VisWindow actor)
+             (= (.getTitleLabel ^Window p) actor))))))
+
+(defn find-ancestor-window ^Window [actor]
+  (if-let [p (parent actor)]
+    (if (instance? Window p)
+      p
+      (find-ancestor-window p))
+    (throw (Error. (str "Actor has no parent window " actor)))))
+
+(defn pack-ancestor-window! [actor]
+  (.pack (find-ancestor-window actor)))

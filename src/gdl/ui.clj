@@ -12,16 +12,13 @@
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             Stage)
-           (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               HorizontalGroup
+           (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup
                                                Image
-                                               Label
                                                Table
                                                Stack
                                                Tree$Node
                                                VerticalGroup
-                                               WidgetGroup
-                                               Window)
+                                               WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.badlogic.gdx.utils Align
                                    Scaling)
@@ -153,16 +150,6 @@
 (defn tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
 
-(defn find-ancestor-window ^Window [actor]
-  (if-let [p (actor/parent actor)]
-    (if (instance? Window p)
-      p
-      (find-ancestor-window p))
-    (throw (Error. (str "Actor has no parent window " actor)))))
-
-(defn pack-ancestor-window! [actor]
-  (.pack (find-ancestor-window actor)))
-
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
    :pad-top 2
@@ -177,22 +164,3 @@
    :pad-bottom 2
    :fill-y? true
    :expand-y? true})
-
-(defn- button-class? [actor]
-  (some #(= Button %) (supers (class actor))))
-
-(defn button?
-  "Returns true if the actor or its parent is a button."
-  [^Actor actor]
-  (or (button-class? actor)
-      (and (actor/parent actor)
-           (button-class? (actor/parent actor)))))
-
-(defn window-title-bar? ; TODO buggy FIXME
-  "Returns true if the actor is a window title bar."
-  [^Actor actor]
-  (when (instance? Label actor)
-    (when-let [p (actor/parent actor)]
-      (when-let [p (actor/parent p)]
-        (and (instance? VisWindow actor)
-             (= (.getTitleLabel ^Window p) actor))))))

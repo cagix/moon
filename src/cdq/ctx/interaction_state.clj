@@ -6,7 +6,6 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]
-            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]))
 
 (defn inventory-window-visible? [stage]
@@ -61,8 +60,8 @@
           (cond
            (and inventory-slot
                 (get-in (:entity/inventory @player-eid) inventory-slot)) :cursors/hand-before-grab
-           (ui/window-title-bar? actor) :cursors/move-window
-           (ui/button? actor) :cursors/over-button
+           (actor/window-title-bar? actor) :cursors/move-window
+           (actor/button?           actor) :cursors/over-button
            :else :cursors/default)))
 
       :interaction-state/clickable-mouseover-eid

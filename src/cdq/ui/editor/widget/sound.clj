@@ -24,8 +24,8 @@
                                 (fn [actor _ctx]
                                   (group/clear-children! table)
                                   (table/add-rows! table [(columns table sound-name)])
-                                  (.remove (ui/find-ancestor-window actor))
-                                  (ui/pack-ancestor-window! table)
+                                  (.remove (actor/find-ancestor-window actor))
+                                  (actor/pack-ancestor-window! table)
                                   (let [[k _] (actor/user-object table)]
                                     (actor/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]

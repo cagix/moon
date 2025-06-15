@@ -20,7 +20,7 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (ui/pack-ancestor-window! table))]
+                    (actor/pack-ancestor-window! table))]
     (table/add-rows!
      table
      [[(ui/text-button "+"
