@@ -15,10 +15,22 @@
 (defn- valid-tx? [transaction]
   (vector? transaction))
 
+(def txs (atom []))
+
+(def record-txs? false)
+
+(comment
+ (binding [*print-level* 3]
+   (clojure.pprint/pprint @txs)))
+
+; I don;'t like multimethods in the ctx... ctx is the state right
+
 (defn- handle-world-event!
   [{:keys [ctx/world-event-handlers]
     :as ctx}
    [world-event-k params]]
+  (when record-txs?
+    (swap! txs conj [world-event-k params]))
   ((utils/safe-get world-event-handlers world-event-k) ctx params))
 
 (defmulti do! (fn [[k & _params] _ctx]
@@ -34,6 +46,8 @@
                                    :when transaction]
                                (do
                                 (assert (valid-tx? transaction) (pr-str transaction))
+                                (when record-txs?
+                                  (swap! txs conj transaction))
                                 (try (do! transaction ctx)
                                      (catch Throwable t
                                        (throw (ex-info "" {:transaction transaction} t)))))))]
