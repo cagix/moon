@@ -1,29 +1,22 @@
 (ns cdq.create.world-event-handlers
-  (:require [cdq.ctx]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.windows.inventory :as inventory-window]
-            [cdq.ui.message]
-            [cdq.utils :as utils]
+  (:require [cdq.ctx :as ctx]
+            [cdq.ui.stage :as stage]
             [gdl.audio :as audio]
-            [gdl.graphics :as g]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.stage :as stage]
-            [gdx.ui :as ui]))
+            [gdl.graphics :as g]))
 
 (defn- add-skill!
   [{:keys [ctx/graphics
            ctx/stage]}
    skill]
-  (-> stage
-      :action-bar
-      (action-bar/add-skill! {:skill-id (:property/id skill)
-                              :texture-region (g/image->texture-region graphics (:entity/image skill))
-                              :tooltip-text #(cdq.ctx/info-text % skill) ; (assoc ctx :effect/source (world/player)) FIXME
-                              }))
+  (stage/add-action-bar-skill! stage
+                               {:skill-id (:property/id skill)
+                                :texture-region (g/image->texture-region graphics (:entity/image skill))
+                                ; (assoc ctx :effect/source (world/player)) FIXME
+                                :tooltip-text #(ctx/info-text % skill)})
   nil)
 
-(defn- remove-skill! [ctx skill]
-  (-> ctx :ctx/stage :action-bar (action-bar/remove-skill! (:property/id skill)))
+(defn- remove-skill! [{:keys [ctx/stage]} skill]
+  (stage/remove-action-bar-skill! stage (:property/id skill))
   nil)
 
 (defn- set-item!
@@ -31,14 +24,13 @@
            ctx/stage]
     :as ctx}
    [inventory-cell item]]
-  (-> stage
-      :windows
-      :inventory-window
-      (inventory-window/set-item! inventory-cell {:texture-region (g/image->texture-region graphics (:entity/image item))
-                                                  :tooltip-text (cdq.ctx/info-text ctx item)})))
+  (stage/set-inventory-item! stage
+                             inventory-cell
+                             {:texture-region (g/image->texture-region graphics (:entity/image item))
+                              :tooltip-text (ctx/info-text ctx item)}))
 
-(defn- remove-item! [ctx inventory-cell]
-  (-> ctx :ctx/stage :windows :inventory-window (inventory-window/remove-item! inventory-cell)))
+(defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
+  (stage/remove-inventory-item! stage inventory-cell))
 
 (defn play-sound! [{:keys [ctx/audio]} sound-name]
   (->> sound-name
@@ -46,34 +38,17 @@
        (audio/play-sound! audio)))
 
 (defn show-player-ui-msg! [{:keys [ctx/stage]} message]
-  (-> stage
-      (stage/find-actor "player-message")
-      (cdq.ui.message/show! message)))
+  (stage/show-player-ui-msg! stage message))
 
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal-window! [{:keys [ctx/graphics
                                   ctx/stage]}
-                          {:keys [title text button-text on-click]}]
-  (assert (not (::modal stage)))
-  (stage/add! stage
-              (ui/window {:title title
-                          :rows [[{:actor {:actor/type :actor.type/label
-                                           :label/text text}}]
-                                 [(ui/text-button button-text
-                                                  (fn [_actor _ctx]
-                                                    (actor/remove! (::modal stage))
-                                                    (on-click)))]]
-                          :id ::modal
-                          :modal? true
-                          :center-position [(/ (:width (:ui-viewport graphics)) 2)
-                                            (* (:height (:ui-viewport graphics)) (/ 3 4))]
-                          :pack? true})))
+                          opts]
+  (stage/show-modal-window! stage
+                            (:ui-viewport graphics)
+                            opts))
 
 (defn- toggle-inventory-visible! [{:keys [ctx/stage]} _]
-  (-> stage :windows :inventory-window actor/toggle-visible!))
+  (stage/toggle-inventory-visible! stage))
 
 (defn do! [_ctx _params]
   {:world.event/player-skill-added add-skill!
