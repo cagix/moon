@@ -50,12 +50,9 @@
     (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
   nil)
 
-; TODO what about components which get added later/??
-; => validate?
-; => :entity/id ... body
 (def ^:private components-schema
   (m/schema [:map {:closed true}
-             [:entity/image {:optional true} :some] ; what do we really want to do - draw a creature or projectile as of 'type' ??? game world logic should not contain graphical representation ...
+             [:entity/image {:optional true} :some]
              [:entity/animation {:optional true} :some]
              [:entity/delete-after-animation-stopped? {:optional true} :some]
              [:entity/alert-friendlies-after-duration {:optional true} :some]
@@ -74,32 +71,19 @@
              [:entity/species {:optional true} :some]
              [:entity/movement {:optional true} :some]
              [:entity/skills {:optional true} :some]
-             [:creature/stats {:optional true} :some] ; only for creatures thats why optional -> create separate schema ther
+             [:creature/stats {:optional true} :some]
              [:entity/inventory    {:optional true} :some]
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-
-; :body/foo ?
-
-
-; 1. make namespaced keys
-; start with position !!!
-
-; also cell ...  !! impossible to find ...
-; what other 'records' /key words do I have ?
-
-; math.geom rectangle->tiles uses actually entity / body !
-; with 'left-bottom' ...
-
 (q/defrecord Body [entity/position
-                   left-bottom ; dry
+                   left-bottom
 
                    width
                    height
-                   half-width ; dry
-                   half-height ; dry
-                   radius ; ??
+                   half-width
+                   half-height
+                   radius
 
                    collides?
                    z-order
