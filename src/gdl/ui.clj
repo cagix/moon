@@ -3,14 +3,12 @@
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.ui.table :as table]
             [gdx.graphics.color :as color]
             [gdx.ui :as ui]
             [gdx.ui.actor]
             [gdx.ui.group]
-            [gdx.ui.table.cell :as cell])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+            [gdx.ui.table :as table])
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
@@ -42,18 +40,14 @@
                                       VisTextField
                                       VisWindow)))
 
-(defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
-  (cell/set-opts! (.defaults table) cell-defaults)
-  (table/add-rows! table rows))
-
 (defn- set-opts! [actor opts]
   (gdx.ui.actor/set-opts! actor opts)
   (when (instance? Table actor)
-    (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
+    (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
     (ui/set-widget-group-opts actor opts))
-  (when (instance? Group actor) ; Check Addable protocol
-    (run! #(group/add! actor %) (:actors opts))) ; or :group/actors ?
+  (when (instance? Group actor)
+    (run! #(group/add! actor %) (:actors opts)))
   actor)
 
 (defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]

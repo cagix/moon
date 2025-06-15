@@ -15,3 +15,7 @@
        :else (add! table props-or-actor)))
     (.row table))
   table)
+
+(defn set-opts! [^Table table {:keys [rows cell-defaults]}]
+  (cell/set-opts! (.defaults table) cell-defaults)
+  (add-rows! table rows))
