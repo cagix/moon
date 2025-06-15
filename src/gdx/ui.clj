@@ -1,6 +1,8 @@
 (ns gdx.ui
-  (:require [gdx.ui.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+  (:require [gdx.ui.actor :as actor]
+            [gdx.ui.group :as group])
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Widget
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
@@ -28,6 +30,11 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+
+(defn stage [viewport batch]
+  (proxy [CtxStage ILookup] [viewport batch (atom nil)]
+    (valAt [id]
+      (group/find-actor-with-id (CtxStage/.getRoot this) id))))
 
 (defn- click-listener [f]
   (proxy [ClickListener] []

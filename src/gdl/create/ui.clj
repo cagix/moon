@@ -5,18 +5,14 @@
             [gdl.ui.stage]
             [gdl.ui.table]
             [gdx.ui]
-            [gdx.ui.group]
             [gdx.ui.table.cell :as cell])
   (:import (gdl.ui CtxStage)))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/input] :as ctx} params]
   (gdx.ui/load! params)
-  (let [stage (proxy [CtxStage clojure.lang.ILookup] [(:ui-viewport graphics)
-                                                      (:batch graphics)
-                                                      (atom nil)]
-                (valAt [id]
-                  (gdx.ui.group/find-actor-with-id (CtxStage/.getRoot this) id)))]
+  (let [stage (gdx.ui/stage (:ui-viewport graphics)
+                            (:batch       graphics))]
     (input/set-processor! input stage)
     stage))
 
