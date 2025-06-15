@@ -4,7 +4,7 @@
             [gdl.c :as c]
             [gdl.input :as input]
             [gdl.math.vector2 :as v]
-            [gdl.ui :as ui]))
+            [gdx.ui :as ui]))
 
 (defn clicked-cell [eid cell]
   (let [entity @eid

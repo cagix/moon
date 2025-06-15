@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.scroll-pane
-  (:require [gdl.ui :as ui]))
+  (:require [gdx.ui :as ui]))
 
 (defn table-cell [viewport-height rows]
   (let [table (ui/table {:rows rows

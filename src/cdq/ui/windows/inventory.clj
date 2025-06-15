@@ -5,11 +5,10 @@
             [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.graphics :as g]
-            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.image :as image]
-            [gdx.ui]))
+            [gdx.ui :as ui]))
 
 (defn create
   [{:keys [ctx/graphics]}

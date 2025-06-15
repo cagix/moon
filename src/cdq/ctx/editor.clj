@@ -8,11 +8,11 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [gdl.input :as input]
-            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
-            [gdl.ui.table :as table]))
+            [gdl.ui.table :as table]
+            [gdx.ui :as ui]))
 
 (defn- apply-context-fn [window f]
   (fn [{:keys [ctx/stage] :as ctx}]

@@ -11,10 +11,10 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.input :as input]
-            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp]
-            [gdx.tiled :as tiled]))
+            [gdx.tiled :as tiled]
+            [gdx.ui :as ui]))
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]

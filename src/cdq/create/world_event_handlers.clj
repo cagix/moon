@@ -6,9 +6,9 @@
             [cdq.utils :as utils]
             [gdl.audio :as audio]
             [gdl.graphics :as g]
-            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]
+            [gdx.ui :as ui]))
 
 (defn- add-skill!
   [{:keys [ctx/graphics

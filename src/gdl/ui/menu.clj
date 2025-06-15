@@ -1,7 +1,6 @@
 (ns gdl.ui.menu
-  (:require [gdl.ui :as ui]
-            [gdl.ui.group :as group]
-            [gdx.ui])
+  (:require [gdl.ui.group :as group]
+            [gdx.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label

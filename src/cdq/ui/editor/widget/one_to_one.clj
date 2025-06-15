@@ -5,11 +5,11 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.graphics :as graphics]
-            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
-            [gdl.ui.table :as table]))
+            [gdl.ui.table :as table]
+            [gdx.ui :as ui]))
 
 (defn- add-one-to-one-rows
   [{:keys [ctx/db
