@@ -35,9 +35,8 @@
            texture-region
            tooltip-text]}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (ui/image-button texture-region
-                                (fn [_actor _ctx])
-                                {:scale 2})]
+        button (ui/image-button {:texture-region texture-region
+                                 :scale 2})]
     (actor/set-user-object! button skill-id)
     (actor/add-tooltip!     button tooltip-text)
     (group/add!        horizontal-group button)

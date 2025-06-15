@@ -195,13 +195,13 @@
   (doto (VisTextButton. (str text))
     (.addListener (change-listener on-clicked))))
 
-(defn image-button
-  ([texture-region on-clicked]
-   (image-button texture-region on-clicked {}))
-  ([texture-region on-clicked {:keys [scale]}]
-   (let [[w h] (texture-region/dimensions texture-region)
-         drawable (drawable texture-region
-                            :width  (* scale w)
-                            :height (* scale h))]
-     (doto (VisImageButton. ^Drawable drawable)
-       (.addListener (change-listener on-clicked))))))
+(defn image-button [{:keys [texture-region on-clicked scale]}]
+  (let [scale (or scale 1)
+        [w h] (texture-region/dimensions texture-region)
+        drawable (drawable texture-region
+                           :width  (* scale w)
+                           :height (* scale h))
+        image-button (VisImageButton. ^Drawable drawable)]
+    (when on-clicked
+      (.addListener image-button (change-listener on-clicked)))
+    image-button))

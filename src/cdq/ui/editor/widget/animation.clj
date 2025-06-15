@@ -6,7 +6,6 @@
 (defmethod widget/create :widget/animation [_ _attribute animation {:keys [ctx/graphics]}]
   {:actor/type :actor.type/table
    :rows [(for [image (:animation/frames animation)]
-            (ui/image-button (graphics/image->texture-region graphics image)
-                             (fn [_actor _ctx])
-                             {:scale 2}))]
+            (ui/image-button {:texture-region (graphics/image->texture-region graphics image)
+                              :scale 2}))]
    :cell-defaults {:pad 1}})

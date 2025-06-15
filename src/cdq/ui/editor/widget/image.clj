@@ -7,15 +7,13 @@
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows [ctx]
     (for [file (sort (assets/all-of-type assets :texture))]
-      [(ui/image-button (texture/region (assets file))
-                        (fn [_actor _ctx]))]
+      [(ui/image-button {:texture-region (texture/region (assets file))})]
       #_[(ui/text-button file
                          (fn [_actor _ctx]))]))
 
 (defmethod widget/create :widget/image [schema  _attribute image {:keys [ctx/graphics]}]
-  (ui/image-button (graphics/image->texture-region graphics image)
-                   (fn [_actor _ctx])
-                   {:scale 2})
+  (ui/image-button {:texture-region (graphics/image->texture-region graphics image)
+                    :scale 2})
   #_(ui/image-button image
                      (fn [_actor ctx]
                        (c/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))

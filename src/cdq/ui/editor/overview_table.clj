@@ -53,9 +53,9 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (ui/image-button (graphics/image->texture-region graphics image)
-                                                    on-clicked
-                                                    {:scale scale})
+                                   (ui/image-button {:texture-region (graphics/image->texture-region graphics image)
+                                                     :on-clicked on-clicked
+                                                     :scale scale})
                                    (ui/text-button (name id)
                                                    on-clicked))
                           top-widget (ui/label {:label/text (or (and extra-info-text
