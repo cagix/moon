@@ -5,6 +5,7 @@
             [gdl.ui.stage]
             [gdl.ui.table]
             [gdx.ui]
+            [gdx.ui.group]
             [gdx.ui.table.cell :as cell])
   (:import (gdl.ui CtxStage)))
 
@@ -15,7 +16,7 @@
                                                       (:batch graphics)
                                                       (atom nil)]
                 (valAt [id]
-                  (ui/find-actor-with-id (CtxStage/.getRoot this) id)))]
+                  (gdx.ui.group/find-actor-with-id (CtxStage/.getRoot this) id)))]
     (input/set-processor! input stage)
     stage))
 

@@ -6,6 +6,7 @@
             [gdl.ui.table :as table]
             [gdx.graphics.color :as color]
             [gdx.ui :as ui]
+            [gdx.ui.group]
             [gdx.ui.table.cell :as cell])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
@@ -61,14 +62,6 @@
     (run! #(add! actor %) (:actors opts))) ; or :group/actors ?
   actor)
 
-(defn find-actor-with-id [group id]
-  (let [actors (group/children group)
-        ids (keep actor/user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (actor/user-object %)) actors))))
-
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
   via [find-actor-with-id]."
@@ -76,9 +69,9 @@
   `(proxy [~class ILookup] ~args
      (valAt
        ([id#]
-        (find-actor-with-id ~'this id#))
+        (gdx.ui.group/find-actor-with-id ~'this id#))
        ([id# not-found#]
-        (or (find-actor-with-id ~'this id#) not-found#)))))
+        (or (gdx.ui.group/find-actor-with-id ~'this id#) not-found#)))))
 
 (defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
   (let [group (proxy-ILookup HorizontalGroup [])]
