@@ -78,8 +78,7 @@
     (.pack widget-group))
   widget-group)
 
-(defn -check-box
-  "on-clicked is a fn of one arg, taking the current isChecked state"
+(defmethod actor/construct :actor.type/check-box -check-box
   [{:keys [text on-clicked checked?]}]
   (let [^Button button (VisCheckBox. (str text))]
     (.setChecked button checked?)
@@ -89,7 +88,7 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(defn -select-box [{:keys [items selected]}]
+(defmethod actor/construct :actor.type/select-box [{:keys [items selected]}]
   (doto (VisSelectBox.)
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
@@ -112,7 +111,7 @@
     (run! #(group/add! actor %) (:actors opts)))
   actor)
 
-(defn- -horizontal-group ^HorizontalGroup [{:keys [space pad] :as opts}]
+(defmethod actor/construct :actor.type/horizontal-group [{:keys [space pad] :as opts}]
   (let [group (gdx.ui.group/proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
@@ -122,7 +121,7 @@
   (-> (gdx.ui.group/proxy-ILookup VisTable [])
       (set-opts! opts)))
 
-(defn- -stack ^Stack [opts]
+(defmethod actor/construct :actor.type/stack [opts]
   (doto (gdx.ui.group/proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
@@ -130,11 +129,11 @@
   (doto (VisLabel. ^CharSequence text)
     (set-opts! opts)))
 
-(defn- -text-field [{:keys [text-field/text] :as opts}]
+(defmethod actor/construct :actor.type/text-field [{:keys [text-field/text] :as opts}]
   (-> (VisTextField. (str text))
       (set-opts! opts)))
 
-(defn- -group [opts]
+(defmethod actor/construct :actor.type/group [opts]
   (doto (gdx.ui.group/proxy-ILookup Group [])
     (set-opts! opts)))
 
@@ -144,14 +143,8 @@
       group))
 
 (import 'clojure.lang.MultiFn)
-(MultiFn/.addMethod actor/construct :actor.type/check-box -check-box)
-(MultiFn/.addMethod actor/construct :actor.type/group -group)
-(MultiFn/.addMethod actor/construct :actor.type/horizontal-group -horizontal-group)
 (MultiFn/.addMethod actor/construct :actor.type/label label)
-(MultiFn/.addMethod actor/construct :actor.type/select-box -select-box)
-(MultiFn/.addMethod actor/construct :actor.type/stack -stack)
 (MultiFn/.addMethod actor/construct :actor.type/table table)
-(MultiFn/.addMethod actor/construct :actor.type/text-field -text-field)
 
 (def checked? VisCheckBox/.isChecked)
 
