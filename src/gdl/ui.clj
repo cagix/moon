@@ -81,16 +81,17 @@
       (run! #(group/add! group %) actors) ; redundant if we use map based
       group))
 
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/actor ui/-actor)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/check-box ui/-check-box)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/group -group)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/horizontal-group -horizontal-group)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/label label)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/select-box ui/-select-box)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/stack -stack)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/table table)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/text-field -text-field)
-(clojure.lang.MultiFn/.addMethod gdx.ui.actor/construct :actor.type/widget ui/-widget)
+(import 'clojure.lang.MultiFn)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/actor ui/-actor)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/check-box ui/-check-box)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/group -group)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/horizontal-group -horizontal-group)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/label label)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/select-box ui/-select-box)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/stack -stack)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/table table)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/text-field -text-field)
+(MultiFn/.addMethod gdx.ui.actor/construct :actor.type/widget ui/-widget)
 
 (def checked? VisCheckBox/.isChecked)
 
