@@ -33,7 +33,7 @@
 (defn- window->property-value [property-editor-window schemas]
  (let [window property-editor-window
        scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (ui/cells scroll-pane-table)))
+       m-widget-cell (first (seq (table/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] nil table schemas)))
 

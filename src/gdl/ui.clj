@@ -97,9 +97,6 @@
 
 (def get-selected VisSelectBox/.getSelected)
 
-(defn cells [^Table table]
-  (.getCells table))
-
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
   (-> (let [window (doto (gdx.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]

@@ -6,6 +6,9 @@
 (defn add! [^Table table actor-or-decl]
   (.add table (actor/construct? actor-or-decl)))
 
+(defn cells [^Table table]
+  (.getCells table))
+
 (defn add-rows! [^Table table rows]
   (doseq [row rows]
     (doseq [props-or-actor row]
