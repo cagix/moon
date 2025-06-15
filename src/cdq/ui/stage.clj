@@ -3,6 +3,7 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ui.message]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdx.ui :as ui]))
 
@@ -57,3 +58,9 @@
 
 (defn toggle-inventory-visible! [stage]
   (-> stage :windows :inventory-window actor/toggle-visible!))
+
+(defn toggle-entity-info-window! [stage]
+  (-> stage :windows :entity-info-window actor/toggle-visible!))
+
+(defn close-all-windows! [stage]
+  (run! #(actor/set-visible! % false) (group/children (:windows stage))))

@@ -195,5 +195,7 @@
            :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]]]
       cdq.render.remove-destroyed-entities/do!
       [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
-      cdq.render.check-window-hotkeys/do!]]
+      [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
+                                            :toggle-inventory   :i
+                                            :toggle-entity-info :e}]]]
     :resize! cdq.application/resize!}]]]
