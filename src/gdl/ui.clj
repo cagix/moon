@@ -2,6 +2,7 @@
   (:require [gdl.graphics.texture :as texture]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
@@ -40,11 +41,6 @@
                                       VisTextField
                                       VisWindow)
            (gdl.ui CtxStage)))
-
-(defprotocol PGroup
-  (find-actor [_ name])
-  (clear-children! [_])
-  (children [_]))
 
 (defprotocol CanAddActor
   (add! [_ actor]))
@@ -169,7 +165,7 @@
   actor)
 
 (defn find-actor-with-id [group id]
-  (let [actors (children group)
+  (let [actors (group/children group)
         ids (keep actor/user-object actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add

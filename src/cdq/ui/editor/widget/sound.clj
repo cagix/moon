@@ -4,6 +4,7 @@
             [gdl.audio :as audio]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]))
 
 (defn- play-button [sound-name]
@@ -20,7 +21,7 @@
   (let [rows (for [sound-name (audio/all-sounds audio)]
                [(ui/text-button sound-name
                                 (fn [actor _ctx]
-                                  (ui/clear-children! table)
+                                  (group/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-name)])
                                   (.remove (ui/find-ancestor-window actor))
                                   (ui/pack-ancestor-window! table)

@@ -7,6 +7,7 @@
             [clojure.set :as set]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]))
 
 (def ^:private property-k-sort-order
@@ -29,7 +30,7 @@
 
 (defn- window->property-value [property-editor-window schemas]
  (let [window property-editor-window
-       scroll-pane-table (ui/find-actor (:scroll-pane window) "scroll-pane-table")
+       scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (ui/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] nil table schemas)))
@@ -45,7 +46,7 @@
   (utils/find-first (fn [actor]
                       (and (actor/user-object actor)
                            (= k ((actor/user-object actor) 0))))
-                    (ui/children table)))
+                    (group/children table)))
 
 (def ^:private component-row-cols 3)
 
@@ -133,6 +134,6 @@
 
 (defmethod widget/value :s/map [_  _attribute table schemas]
   (into {}
-        (for [widget (filter value-widget? (ui/children table))
+        (for [widget (filter value-widget? (group/children table))
               :let [[k _] (actor/user-object widget)]]
           [k (widget/value (get schemas k) k widget schemas)])))

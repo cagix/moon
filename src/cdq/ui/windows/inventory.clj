@@ -6,7 +6,8 @@
             [gdl.c :as c]
             [gdl.graphics :as g]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]))
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -121,7 +122,7 @@
    {:keys [texture-region
            tooltip-text]}]
   (let [cell-widget (get (::table inventory-window) cell)
-        image-widget (ui/find-actor cell-widget "image-widget")
+        image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (ui/create-drawable texture-region
                                      :width cell-size
@@ -131,7 +132,7 @@
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
-        image-widget (ui/find-actor cell-widget "image-widget")]
+        image-widget (group/find-actor cell-widget "image-widget")]
     (ui/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (actor/remove-tooltip! cell-widget)))
 

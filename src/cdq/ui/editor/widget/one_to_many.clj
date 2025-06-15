@@ -7,6 +7,7 @@
             [gdl.graphics :as graphics]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]))
 
 (defn- add-one-to-many-rows
@@ -16,7 +17,7 @@
    property-type
    property-ids]
   (let [redo-rows (fn [ctx property-ids]
-                    (ui/clear-children! table)
+                    (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
                     (ui/pack-ancestor-window! table))]
     (ui/add-rows!
@@ -51,6 +52,6 @@
     table))
 
 (defmethod widget/value :s/one-to-many [_  _attribute widget _schemas]
-  (->> (ui/children widget)
+  (->> (group/children widget)
        (keep actor/user-object)
        set))

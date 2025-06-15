@@ -1,7 +1,8 @@
 (ns cdq.ui.action-bar
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.ui.button-group :as button-group]))
+            [gdl.ui.button-group :as button-group]
+            [gdl.ui.group :as group]))
 
 (defn create [_ctx {:keys [id]}]
   {:actor/type :actor.type/table
@@ -22,7 +23,7 @@
 (defn- get-data [action-bar]
   (let [group (:horizontal-group action-bar)]
     {:horizontal-group group
-     :button-group (actor/user-object (ui/find-actor group "button-group-container"))}))
+     :button-group (actor/user-object (group/find-actor group "button-group-container"))}))
 
 (defn selected-skill [action-bar]
   (when-let [skill-button (button-group/checked (:button-group (get-data action-bar)))]

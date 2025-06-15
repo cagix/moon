@@ -1,6 +1,7 @@
 (ns gdl.create.ui
   (:require [gdl.input :as input]
             [gdl.ui :as ui]
+            [gdl.ui.group :as group]
             [gdl.ui.stage])
   (:import (com.badlogic.gdx.math Vector2)
            (com.kotcrab.vis.ui VisUI
@@ -73,16 +74,7 @@
   (find-actor [stage actor-name]
     (-> stage
         .getRoot
-        (ui/find-actor actor-name))))
-
-(extend-type com.badlogic.gdx.scenes.scene2d.Group
-  gdl.ui/PGroup
-  (find-actor [group name]
-    (.findActor group name))
-  (clear-children! [group]
-    (.clearChildren group))
-  (children [group]
-    (.getChildren group)))
+        (group/find-actor actor-name))))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
   gdl.ui/PTable
