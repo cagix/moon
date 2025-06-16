@@ -19,8 +19,8 @@
 (defn assoc* [ctx [k [f params]]]
   (assoc ctx k (f ctx params)))
 
-(defn render-when-not [ctx [condition render-fns]]
-  (if (condition ctx)
+(defn render-when-not [ctx [ks render-fns]]
+  (if (get-in ctx ks)
     ctx
     (reduce render* ctx render-fns)))
 

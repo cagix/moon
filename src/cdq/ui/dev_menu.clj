@@ -26,8 +26,7 @@
 
 (def paused
   {:label "paused?"
-   :update-fn (fn [{:keys [ctx/paused?]}]
-                paused?)})
+   :update-fn (comp :world/paused? :ctx/world)})
 
 (def ui-mouse-position
   {:label "GUI"

@@ -62,7 +62,6 @@
                          [:ctx/raycaster :some]
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
-                         [:ctx/paused?         #_{:optional true} :any #_:boolean]
                          [:ctx/mouseover-eid   #_{:optional true} :any #_:any]
                          [:ctx/active-entities #_{:optional true} :any #_:some]
                          ]]
@@ -144,18 +143,16 @@
                               :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                               :player-moving cdq.entity.state.player-moving/handle-input}}]
       cdq.render.update-mouseover-entity/do!
-      [cdq.utils/assoc*
-       [:ctx/paused?
-        [cdq.render.assoc-paused/do!
-         {:pausing? true
-          :state->pause-game? {:stunned false
-                               :player-moving false
-                               :player-item-on-cursor true
-                               :player-idle true
-                               :player-dead true
-                               :active-skill false}}]]]
+      [cdq.render.assoc-paused/do!
+       {:pausing? true
+        :state->pause-game? {:stunned false
+                             :player-moving false
+                             :player-item-on-cursor true
+                             :player-idle true
+                             :player-dead true
+                             :active-skill false}}]
       [cdq.utils/render-when-not
-       [:ctx/paused?
+       [[:ctx/world :world/paused?]
         [cdq.render.update-time/do!
          cdq.render.update-potential-fields/do!
          [cdq.render.tick-entities/do!
