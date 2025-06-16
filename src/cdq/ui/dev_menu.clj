@@ -22,7 +22,7 @@
 (defn elapsed-time [icon]
   {:label "elapsed-time"
    :update-fn (fn [ctx]
-                (str (utils/readable-number (:ctx/elapsed-time ctx)) " seconds"))
+                (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
    :icon icon})
 
 (def paused

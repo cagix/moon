@@ -83,12 +83,12 @@
 
 (defn draw-active-skill [{:keys [skill effect-ctx counter]}
                          entity
-                         {:keys [ctx/elapsed-time] :as ctx}]
+                         {:keys [ctx/world] :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
     (concat (draw-skill-image image
                               entity
                               (entity/position entity)
-                              (timer/ratio elapsed-time counter))
+                              (timer/ratio (:world/elapsed-time world) counter))
             (render-active-effect ctx
                                   effect-ctx ; TODO !!!
                                   ; !! FIXME !!

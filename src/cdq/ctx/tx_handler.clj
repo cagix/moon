@@ -155,14 +155,14 @@
     (when (:entity/player? @eid)
       (remove-skill! ctx skill)))
 
-(defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/elapsed-time]}]
+(defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/world]}]
   (swap! eid assoc-in
          [:entity/skills (:property/id skill) :skill/cooling-down?]
-         (timer/create elapsed-time (:skill/cooldown skill)))
+         (timer/create (:world/elapsed-time world) (:skill/cooldown skill)))
   nil)
 
-(defmethod do! :tx/add-text-effect [[_ eid text duration] {:keys [ctx/elapsed-time]}]
-  (swap! eid timers/add-text-effect text duration elapsed-time)
+(defmethod do! :tx/add-text-effect [[_ eid text duration] {:keys [ctx/world]}]
+  (swap! eid timers/add-text-effect text duration (:world/elapsed-time world))
   nil)
 
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
@@ -243,11 +243,11 @@
     nil))
 
 (defmethod do! :tx/spawn-alert [[_ position faction duration]
-                                {:keys [ctx/elapsed-time] :as ctx}]
+                                {:keys [ctx/world] :as ctx}]
   (do! [:tx/spawn-effect
         position
         {:entity/alert-friendlies-after-duration
-         {:counter (timer/create elapsed-time duration)
+         {:counter (timer/create (:world/elapsed-time world) duration)
           :faction faction}}]
        ctx)
   nil)

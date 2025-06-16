@@ -7,4 +7,4 @@
   (let [delta-ms (min (g/delta-time graphics) (:world/max-delta world))]
     (-> ctx
         (assoc-in [:ctx/world :world/delta-time] delta-ms)
-        (update :ctx/elapsed-time + delta-ms))))
+        (update-in [:ctx/world :world/elapsed-time] + delta-ms))))

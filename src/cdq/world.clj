@@ -276,7 +276,6 @@
         max-speed (/ minimum-size max-delta)
         ctx (merge ctx
                    {
-                    :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/world {
                                 ; added later - make schema ?
                                 ; * :world/delta-time
@@ -297,6 +296,7 @@
                                 :world/factions-iterations (:potential-field-factions-iterations config)
                                 :world/id-counter (atom 0)
                                 :world/entity-ids (atom {})
+                                :world/elapsed-time 0
                                 :world/max-delta max-delta
                                 :world/max-speed max-speed
                                 :world/minimum-size minimum-size

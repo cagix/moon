@@ -13,8 +13,8 @@
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
     (effect/handle [_
                     {:keys [effect/target]}
-                    {:keys [ctx/elapsed-time]}]
+                    {:keys [ctx/world]}]
       (when-not (:entity/temp-modifier @target)
         [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
-                                                  :counter (timer/create elapsed-time duration)}]
+                                                  :counter (timer/create (:world/elapsed-time world) duration)}]
          [:tx/mod-add target modifiers]]))))

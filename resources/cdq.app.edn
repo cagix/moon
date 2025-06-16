@@ -56,9 +56,7 @@
                          [:ctx/audio :some]
                          [:ctx/stage :some]
                          [:ctx/graphics :some]
-                         [:ctx/world :some]
-                         [:ctx/elapsed-time number?]
-                         ]]
+                         [:ctx/world :some]]]
       :create-fns
       [gdl.create.gdx/do!
        [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]

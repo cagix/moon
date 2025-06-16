@@ -193,8 +193,8 @@
 (defmethod info-segment :effects/target-all [_ _ctx]
   "All visible targets")
 
-(defmethod info-segment :entity/delete-after-duration [[_ counter] {:keys [ctx/elapsed-time]}]
-  (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+(defmethod info-segment :entity/delete-after-duration [[_ counter] {:keys [ctx/world]}]
+  (str "Remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))
 
 (defmethod info-segment :entity/faction [[_ faction] _ctx]
   (str "Faction: " (name faction)))
@@ -211,8 +211,8 @@
 (defmethod info-segment :entity/species [[_ species] _ctx]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] {:keys [ctx/elapsed-time]}]
-  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+(defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] {:keys [ctx/world]}]
+  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))
 
 ; recursively printing all effects ... thaths why deactivated ...
 ; custom createure info foobaz?
