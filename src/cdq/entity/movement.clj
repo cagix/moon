@@ -32,9 +32,9 @@
               :as movement}
              eid
              {:keys [ctx/delta-time
-                     ctx/max-speed
+                     ctx/world
                      ctx/grid]}]
-  (assert (<= 0 speed max-speed)
+  (assert (<= 0 speed (:world/max-speed world))
           (pr-str speed))
   (assert (or (zero? (v/length direction))
               (v/nearly-normalised? direction))
