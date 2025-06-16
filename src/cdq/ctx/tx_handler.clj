@@ -19,12 +19,6 @@
 
 (def record-txs? false)
 
-(comment
- (binding [*print-level* 3]
-   (clojure.pprint/pprint @txs)))
-
-; I don;'t like multimethods in the ctx... ctx is the state right
-
 (defn- handle-world-event!
   [{:keys [ctx/world-event-handlers]
     :as ctx}
@@ -39,8 +33,6 @@
 (defn handle-txs!
   [ctx
    transactions]
-  ;(println "\n~handle-txs! " (map first (remove nil? transactions)))
-  ;(println "~\n")
   (let [world-events (remove nil?
                              (for [transaction transactions
                                    :when transaction]
@@ -51,10 +43,6 @@
                                 (try (do! transaction ctx)
                                      (catch Throwable t
                                        (throw (ex-info "" {:transaction transaction} t)))))))]
-    (binding [*print-level* 2]
-      ;(println "\n~world-events: " world-events)
-      ;(println "~\n")
-      )
     (run! (partial handle-world-event! ctx) world-events)))
 
 (defmethod do! :tx/toggle-inventory-visible [_ _ctx]
