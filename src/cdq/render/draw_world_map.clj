@@ -5,12 +5,12 @@
             [gdl.graphics.camera :as camera]))
 
 (defn do! [{:keys [ctx/graphics
-                   ctx/tiled-map
+                   ctx/world
                    ctx/explored-tile-corners
                    ctx/raycaster]
             :as ctx}]
   (g/draw-tiled-map! graphics
-                     tiled-map
+                     (:world/tiled-map world)
                      (tile-color-setter/create
                       {:ray-blocked? (fn [start end] (raycaster/blocked? raycaster start end))
                        :explored-tile-corners explored-tile-corners

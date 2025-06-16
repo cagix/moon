@@ -273,7 +273,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
         ctx (merge ctx
-                   {:ctx/tiled-map tiled-map ; only @ cdq.render.draw-world-map -> pass graphics??
+                   {
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
@@ -284,7 +284,9 @@
                                                                       (:tiled-map/height tiled-map)
                                                                       (constantly false)))
                     :ctx/entity-ids (atom {})
-                    :ctx/world {:world/entity-components (:entity-components config)
+                    :ctx/world {
+                                :world/tiled-map tiled-map
+                                :world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)
                                 :world/factions-iterations (:potential-field-factions-iterations config)
