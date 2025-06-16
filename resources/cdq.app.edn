@@ -47,7 +47,40 @@
     :foreground-fps 60}
    {:create!
     [cdq.application/create!
-     {:initial-context cdq.application/initial-context
+     {:initial-context [cdq.application/initial-context
+                        [[:ctx/app :some]
+                         [:ctx/files :some]
+                         [:ctx/config :some]
+                         [:ctx/input :some]
+                         [:ctx/db :some]
+                         [:ctx/audio :some]
+                         [:ctx/stage :some]
+                         [:ctx/graphics :some]
+                         [:ctx/world-event-handlers :some]
+                         [:ctx/entity-components :some]
+                         [:ctx/entity-states :some]
+                         [:ctx/elapsed-time number?]
+                         [:ctx/max-delta number?]
+                         [:ctx/max-speed number?]
+                         [:ctx/minimum-size number?]
+                         [:ctx/tiled-map :some]
+                         [:ctx/grid :some]
+                         [:ctx/raycaster :some]
+                         [:ctx/content-grid :some]
+                         [:ctx/explored-tile-corners :some]
+                         [:ctx/id-counter :some]
+                         [:ctx/entity-ids :some]
+                         [:ctx/potential-field-cache :some]
+                         [:ctx/factions-iterations :some]
+                         [:ctx/z-orders :some]
+                         [:ctx/render-z-order :some]
+                         [:ctx/player-eid :some]
+                         ; optional keys get created as nil and so are wrong
+                         [:ctx/delta-time      #_{:optional true} :any #_number?]
+                         [:ctx/paused?         #_{:optional true} :any #_:boolean]
+                         [:ctx/mouseover-eid   #_{:optional true} :any #_:any]
+                         [:ctx/active-entities #_{:optional true} :any #_:some]
+                         ]]
       :create-fns
       [gdl.create.gdx/do!
        [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]

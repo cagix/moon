@@ -5,57 +5,24 @@
             [gdl.utils.disposable :as disp]
             [qrecord.core :as q]))
 
-(q/defrecord Context [ctx/config
-                      ctx/db
-                      ctx/graphics
-                      ctx/stage])
-
-(def ^:private schema
-  (m/schema [:map {:closed true}
-             [:ctx/app :some]
-             [:ctx/files :some]
-             [:ctx/config :some]
-             [:ctx/input :some]
-             [:ctx/db :some]
-             [:ctx/audio :some]
-             [:ctx/stage :some]
-             [:ctx/graphics :some]
-             [:ctx/world-event-handlers :some]
-             [:ctx/entity-components :some]
-             [:ctx/entity-states :some]
-             [:ctx/elapsed-time number?]
-             [:ctx/delta-time {:optional true} number?]
-             [:ctx/max-delta number?]
-             [:ctx/max-speed number?]
-             [:ctx/minimum-size number?]
-             [:ctx/paused? {:optional true} :boolean]
-             [:ctx/tiled-map :some]
-             [:ctx/grid :some]
-             [:ctx/raycaster :some]
-             [:ctx/content-grid :some]
-             [:ctx/explored-tile-corners :some]
-             [:ctx/id-counter :some]
-             [:ctx/entity-ids :some]
-             [:ctx/potential-field-cache :some]
-             [:ctx/factions-iterations :some]
-             [:ctx/z-orders :some]
-             [:ctx/render-z-order :some]
-             [:ctx/mouseover-eid {:optional true} :any]
-             [:ctx/player-eid :some]
-             [:ctx/active-entities {:optional true} :some]]))
-
-(defn initial-context []
-  (map->Context {}))
+(defn initial-context [ks]
+  (in-ns 'cdq.application) ; otherwise 'user
+  (eval `(q/defrecord ~'Context ~(mapv (comp symbol first) ks)))
+  (def schema (m/schema (apply vector :map {:closed true} ks)))
+  (eval `(map->Context {})))
 
 (defn validate-ctx [ctx]
   (m/validate-humanize schema ctx)
   ctx)
 
+(defn invoke [[f params]]
+  (f params))
+
 (def state (atom nil))
 
 (defn create! [{:keys [initial-context create-fns]}]
   (reset! state (reduce utils/render*
-                        (initial-context)
+                        (invoke initial-context)
                         create-fns)))
 
 (defn dispose! []
