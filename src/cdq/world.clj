@@ -283,6 +283,7 @@
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
                     :ctx/world {
+                                ; FIXME !! :world/delta-time added later - if you make schema
                                 :world/tiled-map tiled-map
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                 :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)

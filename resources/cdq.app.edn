@@ -62,7 +62,6 @@
                          [:ctx/raycaster :some]
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
-                         [:ctx/delta-time      #_{:optional true} :any #_number?]
                          [:ctx/paused?         #_{:optional true} :any #_:boolean]
                          [:ctx/mouseover-eid   #_{:optional true} :any #_:any]
                          [:ctx/active-entities #_{:optional true} :any #_:some]
