@@ -1,10 +1,9 @@
 (ns cdq.ctx.world
-  (:require [cdq.ctx :as ctx]))
+  (:require [cdq.w :as w]))
 
-(defn creatures-in-los-of-player [{:keys [ctx/world]
-                                   :as ctx}]
+(defn creatures-in-los-of-player [{:keys [ctx/world]}]
   (let [player-eid (:world/player-eid world)]
     (->> (:world/active-entities world)
          (filter #(:entity/species @%))
-         (filter #(ctx/line-of-sight? ctx @player-eid @%))
+         (filter #(w/line-of-sight? world @player-eid @%))
          (remove #(:entity/player? @%)))))

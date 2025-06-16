@@ -1,12 +1,12 @@
 (ns cdq.render.draw-on-world-viewport.render-entities
   (:require [cdq.animation :as animation]
-            [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state.player-item-on-cursor]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
+            [cdq.w :as w]
             [gdl.graphics :as graphics]))
 
 (def ^:private skill-image-radius-world-units
@@ -209,7 +209,7 @@
         player @(:world/player-eid world)
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
-                           (ctx/line-of-sight? ctx player entity)))]
+                           (w/line-of-sight? world player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
                                                     (:world/render-z-order world))

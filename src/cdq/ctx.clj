@@ -13,9 +13,6 @@
 (defprotocol InfoText
   (info-text [_ object]))
 
-(defprotocol LineOfSight
-  (line-of-sight? [_ source target]))
-
 (defprotocol Grid
   (nearest-enemy-distance [_ entity])
   (nearest-enemy [_ entity])
