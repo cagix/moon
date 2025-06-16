@@ -58,7 +58,6 @@
                          [:ctx/graphics :some]
                          [:ctx/world :some]
                          [:ctx/elapsed-time number?]
-                         [:ctx/player-eid :some]
                          ]]
       :create-fns
       [gdl.create.gdx/do!

@@ -6,7 +6,7 @@
          effects))
 
  (let [ctx @cdq.application/state
-       eid (:ctx/player-eid ctx)
+       eid (:world/player-eid (:ctx/world ctx))
        effect-ctx (ctx/player-effect-ctx ctx eid)
        selected-skill (action-bar/selected-skill (:action-bar (:ctx/stage ctx))) ; TODO ID !!!
        skill (selected-skill (:entity/skills @eid))

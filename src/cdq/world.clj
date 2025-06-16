@@ -283,6 +283,7 @@
                                 ; * :world/paused?
                                 ; * :world/active-entities
                                 ; * :world/mouseover-eid
+                                ; * :world/player-eid
                                 :world/tiled-map tiled-map
                                 :world/grid grid
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
@@ -303,14 +304,13 @@
                                 :world/render-z-order (utils/define-order z-orders)
                                 }
                     })
-        ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]
+        ctx (assoc-in ctx [:ctx/world :world/player-eid] (spawn-creature! ctx player-entity))]
     (run! (partial spawn-creature! ctx) creatures)
     ctx))
 
-(defn assoc-active-entities [{:keys [ctx/world
-                                     ctx/player-eid]
+(defn assoc-active-entities [{:keys [ctx/world]
                               :as ctx}]
   (assoc-in ctx
             [:ctx/world :world/active-entities]
             (content-grid/active-entities (:world/content-grid world)
-                                          @player-eid)))
+                                          @(:world/player-eid world))))

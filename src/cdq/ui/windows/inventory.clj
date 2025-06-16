@@ -63,20 +63,21 @@
                           {:actor/type :actor.type/widget
                            :draw
                            (fn [actor {:keys [ctx/graphics
-                                              ctx/player-eid] :as ctx}]
+                                              ctx/world] :as ctx}]
                              (g/handle-draws! graphics
-                                              (draw-cell-rect @player-eid
+                                              (draw-cell-rect @(:world/player-eid world)
                                                               (actor/get-x actor)
                                                               (actor/get-y actor)
                                                               (actor/hit actor (c/ui-mouse-position ctx))
                                                               (actor/user-object (actor/parent actor)))))})
         cell-click-listener
         (fn [cell]
-          (fn [{:keys [ctx/player-eid] :as ctx}]
+          (fn [{:keys [ctx/world] :as ctx}]
             (ctx/handle-txs!
              ctx
-             (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
-               (f player-eid cell)))))
+             (let [player-eid (:world/player-eid world)]
+               (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+                 (f player-eid cell))))))
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]

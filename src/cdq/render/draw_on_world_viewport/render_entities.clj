@@ -30,8 +30,8 @@
       (:entity/image item)
       (cdq.entity.state.player-item-on-cursor/item-place-position ctx entity)]]))
 
-(defn draw-mouseover-highlighting [_ entity {:keys [ctx/player-eid]}]
-  (let [player @player-eid
+(defn draw-mouseover-highlighting [_ entity {:keys [ctx/world]}]
+  (let [player @(:world/player-eid world)
         faction (entity/faction entity)]
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse
@@ -203,11 +203,10 @@
      (graphics/handle-draws! graphics (draw-body-rect entity :red))
      (utils/pretty-pst t))))
 
-(defn do! [{:keys [ctx/player-eid
-                   ctx/world]
+(defn do! [{:keys [ctx/world]
             :as ctx}]
   (let [entities (map deref (:world/active-entities world))
-        player @player-eid
+        player @(:world/player-eid world)
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (ctx/line-of-sight? ctx player entity)))]

@@ -2,12 +2,13 @@
   (:require [gdl.graphics :as g]))
 
 (defn do! [{:keys [ctx/graphics
-                   ctx/player-eid]
+                   ctx/world]
             :as ctx}
            {:keys [state->cursor]}]
-  (g/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
-                            (if (keyword? ->cursor)
-                              ->cursor
-                              (->cursor player-eid ctx))))
+  (let [player-eid (:world/player-eid world)]
+    (g/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
+                              (if (keyword? ->cursor)
+                                ->cursor
+                                (->cursor player-eid ctx)))))
   ctx)
 

@@ -32,8 +32,8 @@
                                           :y (+ y 2)
                                           :up? true}]])
         create-draws (fn [{:keys [ctx/graphics
-                                  ctx/player-eid]}]
-                       (let [player-entity @player-eid
+                                  ctx/world]}]
+                       (let [player-entity @(:world/player-eid world)
                              x (- x (/ rahmenw 2))]
                          (concat
                           (render-hpmana-bar graphics x y-hp   hpcontent-file   (entity/hitpoints player-entity) "HP")
