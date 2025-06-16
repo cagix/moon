@@ -207,7 +207,10 @@
           components))
 
 (defn spawn-entity!
-  [{:keys [ctx/world] :as ctx}
+  [{:keys [world/minimum-size
+           world/z-orders
+           world/id-counter]
+    :as world}
    position
    body
    components]
@@ -216,14 +219,12 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      (create-body (:world/minimum-size world) (:world/z-orders world))
+                      (create-body minimum-size z-orders)
                       (utils/safe-merge (-> components
-                                            (assoc :entity/id (swap! (:world/id-counter world) inc))
+                                            (assoc :entity/id (swap! id-counter inc))
                                             (create-vs world)))))]
     (context-entity-add! world eid)
-    (->> @eid
-         (mapcat #(create!-component-value world % eid))
-         (ctx/handle-txs! ctx))))
+    (mapcat #(create!-component-value world % eid) @eid)))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
@@ -239,13 +240,13 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn spawn-creature! [ctx
+(defn spawn-creature! [world
                        {:keys [position
                                creature-property
                                components]}]
   (assert creature-property)
   (let [props creature-property]
-    (spawn-entity! ctx
+    (spawn-entity! world
                    position
                    (create-creature-body (:entity/body props))
                    (-> props
@@ -305,11 +306,13 @@
                                :world/render-z-order (utils/define-order z-orders)
                                }
                    )
-        _ (spawn-creature! ctx player-entity)
+        _ (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) player-entity))
         player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)
         _ (assert (:entity/player? @player-eid))
         ctx (assoc-in ctx [:ctx/world :world/player-eid] player-eid)]
-    (run! (partial spawn-creature! ctx) creatures)
+    (run! (fn [creature]
+            (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) creature)))
+          creatures)
     ctx))
 
 (defn assoc-active-entities [{:keys [ctx/world]

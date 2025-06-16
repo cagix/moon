@@ -304,45 +304,49 @@
             entity-effects
             projectile/size
             projectile/piercing?] :as projectile}]
-   ctx]
-  (world/spawn-entity! ctx
-                       position
-                       {:width size
-                        :height size
-                        :z-order :z-order/flying
-                        :rotation-angle (v/angle-from-vector direction)}
-                       {:entity/movement {:direction direction
-                                          :speed speed}
-                        :entity/image image
-                        :entity/faction faction
-                        :entity/delete-after-duration (/ max-range speed)
-                        :entity/destroy-audiovisual :audiovisuals/hit-wall
-                        :entity/projectile-collision {:entity-effects entity-effects
-                                                      :piercing? piercing?}})
+   {:keys [ctx/world] :as ctx}]
+  (ctx/handle-txs! ctx
+                   (world/spawn-entity! world
+                                        position
+                                        {:width size
+                                         :height size
+                                         :z-order :z-order/flying
+                                         :rotation-angle (v/angle-from-vector direction)}
+                                        {:entity/movement {:direction direction
+                                                           :speed speed}
+                                         :entity/image image
+                                         :entity/faction faction
+                                         :entity/delete-after-duration (/ max-range speed)
+                                         :entity/destroy-audiovisual :audiovisuals/hit-wall
+                                         :entity/projectile-collision {:entity-effects entity-effects
+                                                                       :piercing? piercing?}}))
   nil)
 
 (defmethod do! :tx/spawn-effect
   [[_ position components]
-   {:keys [ctx/config]
+   {:keys [ctx/config
+           ctx/world]
     :as ctx}]
-  (world/spawn-entity! ctx
-                       position
-                       (:effect-body-props config)
-                       components)
+  (ctx/handle-txs! ctx (world/spawn-entity! world
+                                            position
+                                            (:effect-body-props config)
+                                            components))
   nil)
 
-(defmethod do! :tx/spawn-item [[_ position item] ctx]
-  (world/spawn-entity! ctx
-                       position
-                       {:width 0.75
-                        :height 0.75
-                        :z-order :z-order/on-ground}
-                       {:entity/image (:entity/image item)
-                        :entity/item item
-                        :entity/clickable {:type :clickable/item
-                                           :text (:property/pretty-name item)}})
+(defmethod do! :tx/spawn-item [[_ position item]
+                               {:keys [ctx/world]
+                                :as ctx}]
+  (ctx/handle-txs! ctx (world/spawn-entity! world
+                                            position
+                                            {:width 0.75
+                                             :height 0.75
+                                             :z-order :z-order/on-ground}
+                                            {:entity/image (:entity/image item)
+                                             :entity/item item
+                                             :entity/clickable {:type :clickable/item
+                                                                :text (:property/pretty-name item)}}))
   nil)
 
-(defmethod do! :tx/spawn-creature [[_ opts] ctx]
-  (world/spawn-creature! ctx opts)
+(defmethod do! :tx/spawn-creature [[_ opts] {:keys [ctx/world] :as ctx}]
+  (ctx/handle-txs! ctx (world/spawn-creature! world opts))
   nil)
