@@ -18,11 +18,11 @@
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
                    {:keys [effect/source effect/target]}
-                   {:keys [ctx/raycaster]}]
+                   {:keys [ctx/world]}]
     (let [source-p (entity/position @source)
           target-p (entity/position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (raycaster/path-blocked? raycaster
+      (and (not (raycaster/path-blocked? (:world/raycaster world)
                                          source-p
                                          target-p
                                          (:projectile/size projectile)))

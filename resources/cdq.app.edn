@@ -59,7 +59,6 @@
                          [:ctx/world :some]
                          [:ctx/elapsed-time number?]
                          [:ctx/grid :some]
-                         [:ctx/raycaster :some]
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
                          [:ctx/mouseover-eid   #_{:optional true} :any #_:any]

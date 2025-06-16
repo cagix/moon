@@ -281,7 +281,6 @@
                    {
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
-                    :ctx/raycaster (raycaster/create grid)
                     :ctx/world {
                                 ; added later:
                                 ; * :world/delta-time
@@ -292,6 +291,7 @@
                                 :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                                          (:tiled-map/height tiled-map)
                                                                          (:content-grid-cell-size config))
+                                :world/raycaster (raycaster/create grid)
                                 :world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)
