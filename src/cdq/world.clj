@@ -185,19 +185,19 @@
     :rotation-angle (or rotation-angle 0)}))
 
 (defn- create-component-value
-  [{:keys [ctx/entity-components] :as ctx} k v]
-  (if-let [create (:create (k entity-components))]
+  [{:keys [ctx/world] :as ctx} k v]
+  (if-let [create (:create (k (:world/entity-components world)))]
     (create v ctx)
     v))
 
 (defn- create!-component-value
-  [{:keys [ctx/entity-components] :as ctx} [k v] eid]
-  (when-let [create! (:create! (k entity-components))]
+  [{:keys [ctx/world] :as ctx} [k v] eid]
+  (when-let [create! (:create! (k (:world/entity-components world)))]
     (create! v eid ctx)))
 
 (defn component-destroy!
-  [{:keys [ctx/entity-components] :as ctx} [k v] eid]
-  (when-let [destroy! (:destroy! (k entity-components))]
+  [{:keys [ctx/world] :as ctx} [k v] eid]
+  (when-let [destroy! (:destroy! (k (:world/entity-components world)))]
     (destroy! v eid ctx)))
 
 (defn- create-vs [components ctx]
@@ -294,7 +294,9 @@
                     :ctx/render-z-order (utils/define-order z-orders)
                     :ctx/minimum-size minimum-size
                     :ctx/max-delta max-delta
-                    :ctx/max-speed max-speed})
+                    :ctx/max-speed max-speed
+                    :ctx/world {:world/entity-components (:entity-components config)}
+                    })
         ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]
     (run! (partial spawn-creature! ctx) creatures)
     ctx))
