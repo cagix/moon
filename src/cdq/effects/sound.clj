@@ -6,8 +6,8 @@
   (effect/applicable? [_ _ctx]
     true)
 
-  (effect/useful? [_ _effect-ctx _ctx]
+  (effect/useful? [_ _effect-ctx _world]
     false)
 
-  (effect/handle [[_ sound] _effect-ctx _ctx]
+  (effect/handle [[_ sound] _effect-ctx _world]
     [[:tx/sound sound]]))

@@ -136,8 +136,11 @@
   (swap! eid entity/mod-remove modifiers)
   nil)
 
-(defmethod do! :tx/effect [[_ effect-ctx effects] ctx]
-  (run! #(handle-txs! ctx (effect/handle % effect-ctx ctx))
+(defmethod do! :tx/effect
+  [[_ effect-ctx effects]
+   {:keys [ctx/world]
+    :as ctx}]
+  (run! #(handle-txs! ctx (effect/handle % effect-ctx world))
         (effect/filter-applicable? effect-ctx effects)))
 
 (defmethod do! :tx/event [[_ eid event params] ctx]

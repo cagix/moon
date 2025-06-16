@@ -10,7 +10,7 @@
 
   (effect/handle [[_ {:keys [property/id] :as property}]
                   {:keys [effect/source effect/target-position]}
-                  _ctx]
+                  _world]
     [[:tx/spawn-creature {:position target-position
                           :creature-property property
                           :components {:entity/fsm {:fsm :fsms/npc

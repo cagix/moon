@@ -45,3 +45,6 @@
      :effect/target-direction (when target
                                 (v/direction (entity/position entity)
                                              (entity/position @target)))}))
+
+(defn path-blocked? [{:keys [world/raycaster]} start end width]
+  (raycaster/path-blocked? raycaster start end width))

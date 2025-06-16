@@ -7,5 +7,5 @@
     (and target
          (:entity/fsm @target)))
 
-  (effect/handle [_ {:keys [effect/target]} _ctx]
+  (effect/handle [_ {:keys [effect/target]} _world]
     [[:tx/event target :kill]]))

@@ -9,11 +9,11 @@
   (effect/applicable? [_ _]
     true)
 
-  (effect/useful? [_ _effect-ctx _ctx]
+  (effect/useful? [_ _effect-ctx _world]
     ; TODO
     false)
 
-  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} {:keys [ctx/world]}]
+  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} world]
     (let [source* @source]
       (apply concat
              (for [target (w/creatures-in-los-of-player world)]

@@ -9,5 +9,5 @@
 
   (effect/handle [[_ damage]
                   {:keys [effect/source effect/target]}
-                  _ctx]
+                  _world]
     [[:tx/deal-damage source target damage]]))

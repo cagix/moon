@@ -6,8 +6,8 @@
   (effect/applicable? [_ {:keys [effect/target-position]}]
     target-position)
 
-  (effect/useful? [_ _effect-ctx _ctx]
+  (effect/useful? [_ _effect-ctx _world]
     false)
 
-  (effect/handle [[_ audiovisual] {:keys [effect/target-position]} _ctx]
+  (effect/handle [[_ audiovisual] {:keys [effect/target-position]} _world]
     [[:tx/audiovisual target-position audiovisual]]))
