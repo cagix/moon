@@ -295,7 +295,9 @@
                     :ctx/minimum-size minimum-size
                     :ctx/max-delta max-delta
                     :ctx/max-speed max-speed
-                    :ctx/world {:world/entity-components (:entity-components config)}
+                    :ctx/world {:world/entity-components (:entity-components config)
+                                :world/entity-states (:entity-states config)
+                                }
                     })
         ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]
     (run! (partial spawn-creature! ctx) creatures)

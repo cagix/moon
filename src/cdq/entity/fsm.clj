@@ -51,10 +51,10 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defn create-state-v [{:keys [ctx/entity-states] :as ctx} state-k eid params]
+(defn create-state-v [{:keys [ctx/world] :as ctx} state-k eid params]
   {:pre [(keyword? state-k)
-         (map? (:state->create entity-states))]}
-  (let [result (if-let [f (state-k (:state->create entity-states))]
+         (map? (:state->create (:world/entity-states world)))]}
+  (let [result (if-let [f (state-k (:state->create (:world/entity-states world)))]
                  (f eid params ctx)
                  (if params
                    params

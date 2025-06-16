@@ -101,15 +101,15 @@
   nil)
 
 (defmethod do! :tx/state-exit [[_ eid [state-k state-v]]
-                               {:keys [ctx/entity-states] :as ctx}]
+                               {:keys [ctx/world] :as ctx}]
   (handle-txs! ctx
-               (when-let [f (state-k (:state->exit entity-states))]
+               (when-let [f (state-k (:state->exit (:world/entity-states world)))]
                  (f state-v eid ctx))))
 
 (defmethod do! :tx/state-enter [[_ eid [state-k state-v]]
-                                {:keys [ctx/entity-states] :as ctx}]
+                                {:keys [ctx/world] :as ctx}]
   (handle-txs! ctx
-               (when-let [f (state-k (:state->enter entity-states))]
+               (when-let [f (state-k (:state->enter (:world/entity-states world)))]
                  (f state-v eid))))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
