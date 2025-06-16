@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.world :as world]))
 
-; do not pause as pickup item should be destroyed
 (defn do! [{:keys [ctx/entity-ids]
             :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
