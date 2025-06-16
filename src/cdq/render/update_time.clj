@@ -2,9 +2,9 @@
   (:require [gdl.graphics :as g]))
 
 (defn do! [{:keys [ctx/graphics
-                   ctx/max-delta]
+                   ctx/world]
             :as ctx}]
-  (let [delta-ms (min (g/delta-time graphics) max-delta)]
+  (let [delta-ms (min (g/delta-time graphics) (:world/max-delta world))]
     (-> ctx
         (assoc :ctx/delta-time delta-ms)
         (update :ctx/elapsed-time + delta-ms))))
