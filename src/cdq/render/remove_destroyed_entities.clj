@@ -2,10 +2,10 @@
   (:require [cdq.ctx :as ctx]
             [cdq.world :as world]))
 
-(defn do! [{:keys [ctx/entity-ids]
+(defn do! [{:keys [ctx/world]
             :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @entity-ids))]
+                      (vals @(:world/entity-ids world)))]
     (world/context-entity-remove! ctx eid)
     (doseq [component @eid]
       (ctx/handle-txs! ctx (world/component-destroy! ctx component eid))))

@@ -14,22 +14,23 @@
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 
-(defn- context-entity-add! [{:keys [ctx/entity-ids
+(defn- context-entity-add! [{:keys [ctx/world
                                     ctx/content-grid
                                     ctx/grid]}
                             eid]
   (let [id (entity/id @eid)]
     (assert (number? id))
-    (swap! entity-ids assoc id eid))
+    (swap! (:world/entity-ids world) assoc id eid))
   (content-grid/add-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity! grid eid))
 
-(defn context-entity-remove! [{:keys [ctx/entity-ids
+(defn context-entity-remove! [{:keys [ctx/world
                                       ctx/grid]}
                               eid]
-  (let [id (entity/id @eid)]
+  (let [entity-ids (:world/entity-ids world)
+        id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (content-grid/remove-entity! eid)
@@ -285,7 +286,6 @@
                     :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                            (:tiled-map/height tiled-map)
                                                            (:content-grid-cell-size config))
-                    :ctx/entity-ids (atom {})
                     :ctx/world {
                                 :world/tiled-map tiled-map
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
@@ -294,6 +294,7 @@
                                 :world/potential-field-cache (atom nil)
                                 :world/factions-iterations (:potential-field-factions-iterations config)
                                 :world/id-counter (atom 0)
+                                :world/entity-ids (atom {})
                                 :world/max-delta max-delta
                                 :world/max-speed max-speed
                                 :world/minimum-size minimum-size
