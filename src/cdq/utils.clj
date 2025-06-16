@@ -16,20 +16,6 @@
 (defn io-slurp-edn [path]
   (->> path io/resource slurp edn/read-string))
 
-(def overwrite-warnings? false)
-
-(defmacro defmethods [k & impls]
-  `(do
-    ~@(for [[sys & fn-body] impls
-            :let [sys-var (resolve sys)]]
-        `(do
-          (when (and overwrite-warnings?
-                     (get (methods @~sys-var) ~k))
-            (println "warning: overwriting defmethod" ~k "on" ~sys-var))
-          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
-            ~@fn-body)))
-    ~k))
-
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))
 

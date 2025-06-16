@@ -83,8 +83,10 @@
   (add-methods required ns-sym k)
   (add-methods optional ns-sym k :optional? true))
 
-; TODO remove cdq.utils/defmethods & install also editor widgets
+; TODO  install also editor widgets
 ; also defmethod tx/do! can separate ....
+; or draws
+; grep 'defmethod'
 
 (require 'cdq.effect)
 
