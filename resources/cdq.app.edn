@@ -56,7 +56,6 @@
                          [:ctx/audio :some]
                          [:ctx/stage :some]
                          [:ctx/graphics :some]
-                         [:ctx/world-event-handlers :some]
                          [:ctx/entity-components :some]
                          [:ctx/entity-states :some]
                          [:ctx/elapsed-time number?]
@@ -129,7 +128,6 @@
           {:schemas "schema.edn"
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
-       [cdq.utils/assoc* [:ctx/world-event-handlers [cdq.create.world-event-handlers/do!]]]
        [cdq.utils/assoc*
         [:ctx/entity-components
          [cdq.utils/const*

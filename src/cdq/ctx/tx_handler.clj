@@ -1,5 +1,6 @@
 (ns cdq.ctx.tx-handler
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
@@ -8,8 +9,11 @@
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
             [cdq.timer :as timer]
+            [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
+            [gdl.audio :as audio]
+            [gdl.graphics :as g]
             [gdl.math.vector2 :as v]))
 
 (defn- valid-tx? [transaction]
@@ -19,43 +23,82 @@
 
 (def record-txs? false)
 
-(defn- handle-world-event!
-  [{:keys [ctx/world-event-handlers]
-    :as ctx}
-   [world-event-k params]]
-  (when record-txs?
-    (swap! txs conj [world-event-k params]))
-  ((utils/safe-get world-event-handlers world-event-k) ctx params))
-
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
 
 (defn handle-txs!
   [ctx
    transactions]
-  (let [world-events (remove nil?
-                             (for [transaction transactions
-                                   :when transaction]
-                               (do
-                                (assert (valid-tx? transaction) (pr-str transaction))
-                                (when record-txs?
-                                  (swap! txs conj transaction))
-                                (try (do! transaction ctx)
-                                     (catch Throwable t
-                                       (throw (ex-info "" {:transaction transaction} t)))))))]
-    (run! (partial handle-world-event! ctx) world-events)))
+  (doseq [transaction transactions
+          :when transaction]
+    (do
+     (assert (valid-tx? transaction) (pr-str transaction))
+     (when record-txs?
+       (swap! txs conj transaction))
+     (try (do! transaction ctx)
+          (catch Throwable t
+            (throw (ex-info "" {:transaction transaction} t)))))))
 
-(defmethod do! :tx/toggle-inventory-visible [_ _ctx]
-  [:world.event/toggle-inventory-visible])
+(defn- add-skill!
+  [{:keys [ctx/graphics
+           ctx/stage]}
+   skill]
+  (stage/add-action-bar-skill! stage
+                               {:skill-id (:property/id skill)
+                                :texture-region (g/image->texture-region graphics (:entity/image skill))
+                                ; (assoc ctx :effect/source (world/player)) FIXME
+                                :tooltip-text #(ctx/info-text % skill)})
+  nil)
 
-(defmethod do! :tx/show-message [[_ message] _ctx]
-  [:world.event/show-player-message message])
+(defn- remove-skill! [{:keys [ctx/stage]} skill]
+  (stage/remove-action-bar-skill! stage (:property/id skill))
+  nil)
 
-(defmethod do! :tx/show-modal [[_ opts] _ctx]
-  [:world.event/show-modal-window opts])
+(defn- set-item!
+  [{:keys [ctx/graphics
+           ctx/stage]
+    :as ctx}
+   inventory-cell item]
+  (stage/set-inventory-item! stage
+                             inventory-cell
+                             {:texture-region (g/image->texture-region graphics (:entity/image item))
+                              :tooltip-text (ctx/info-text ctx item)}))
 
-(defmethod do! :tx/sound [[_ sound-name] _ctx]
-  [:world.event/sound sound-name])
+(defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
+  (stage/remove-inventory-item! stage inventory-cell))
+
+(defn- play-sound! [{:keys [ctx/audio]} sound-name]
+  (->> sound-name
+       (format "sounds/%s.wav")
+       (audio/play-sound! audio)))
+
+(defn- show-player-ui-msg! [{:keys [ctx/stage]} message]
+  (stage/show-player-ui-msg! stage message))
+
+(defn- show-modal-window! [{:keys [ctx/graphics
+                                   ctx/stage]}
+                           opts]
+  (stage/show-modal-window! stage
+                            (:ui-viewport graphics)
+                            opts))
+
+(defn- toggle-inventory-visible! [{:keys [ctx/stage]}]
+  (stage/toggle-inventory-visible! stage))
+
+(defmethod do! :tx/toggle-inventory-visible [_ ctx]
+  (toggle-inventory-visible! ctx)
+  nil)
+
+(defmethod do! :tx/show-message [[_ message] ctx]
+  (show-player-ui-msg! ctx message)
+  nil)
+
+(defmethod do! :tx/show-modal [[_ opts] ctx]
+  (show-modal-window! ctx opts))
+
+(defmethod do! :tx/sound [[_ sound-name] ctx]
+  (play-sound! ctx sound-name)
+  nil)
 
 (defmethod do! :tx/state-exit [[_ eid [state-k state-v]]
                                {:keys [ctx/entity-states] :as ctx}]
@@ -100,16 +143,17 @@
 (defmethod do! :tx/event [[_ eid event params] ctx]
   (handle-txs! ctx (fsm/event->txs ctx eid event params)))
 
-(defmethod do! :tx/add-skill [[_ eid skill] _ctx]
+(defmethod do! :tx/add-skill [[_ eid skill] ctx]
   (swap! eid entity/add-skill skill)
   (when (:entity/player? @eid)
-    [:world.event/player-skill-added skill]))
+    (add-skill! ctx skill))
+  nil)
 
 #_(defn remove-skill [eid {:keys [property/id] :as skill}]
     {:pre [(contains? (:entity/skills @eid) id)]}
     (swap! eid update :entity/skills dissoc id)
     (when (:entity/player? @eid)
-      [:world.event/player-skill-removed skill]))
+      (remove-skill! ctx skill)))
 
 (defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/elapsed-time]}]
   (swap! eid assoc-in
@@ -134,7 +178,8 @@
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))
     (when (:entity/player? entity)
-      [:world.event/player-item-set [cell item]])))
+      (set-item! ctx cell item))
+    nil))
 
 (defmethod do! :tx/pickup-item [[_ eid item] ctx]
   (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
@@ -154,7 +199,8 @@
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-remove (:entity/modifiers item)))
     (when (:entity/player? entity)
-      [:world.event/player-item-removed cell])))
+      (remove-item! ctx cell))
+    nil))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

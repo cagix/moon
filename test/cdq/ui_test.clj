@@ -1,6 +1,6 @@
 (ns cdq.ui-test
   (:require [cdq.application :as application]
-            [cdq.create.world-event-handlers :refer [show-modal-window!]]
+            #_[cdq.create.world-event-handlers :refer [show-modal-window!]]
             [cdq.ui.error-window :as error-window]
             [gdl.ui.stage :as stage]))
 
