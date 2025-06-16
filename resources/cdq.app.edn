@@ -58,7 +58,6 @@
                          [:ctx/graphics :some]
                          [:ctx/world :some]
                          [:ctx/elapsed-time number?]
-                         [:ctx/minimum-size number?]
                          [:ctx/tiled-map :some]
                          [:ctx/grid :some]
                          [:ctx/raycaster :some]
