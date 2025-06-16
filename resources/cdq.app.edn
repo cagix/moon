@@ -46,7 +46,7 @@
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
    {:create!
-    [cdq.utils/create!-reset!
+    [master.yoda/create!-reset!
      {:state-atom cdq.application/state
       :initial-context [cdq.application.context/create
                         [[:ctx/app :some]
@@ -60,8 +60,8 @@
                          [:ctx/world :some]]]
       :create-fns
       [gdl.create.gdx/do!
-       [cdq.utils/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
-       [cdq.utils/assoc*
+       [master.yoda/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
+       [master.yoda/assoc*
         [:ctx/graphics
          [gdl.create.g/do!
           {:textures {:folder "resources/"
@@ -91,16 +91,16 @@
                                    :enable-markup? true
                                    ; false, otherwise scaling to world-units not visible
                                    :use-integer-positions? false}}}]]]
-       [cdq.utils/assoc*
+       [master.yoda/assoc*
         [:ctx/stage
          [gdl.create.ui/do!
           {:skin-scale :x1}]]]
-       [cdq.utils/assoc*
+       [master.yoda/assoc*
         [:ctx/audio
          [gdl.create.audio/do!
           {:sounds {:folder "resources/"
                     :extensions #{"wav"}}}]]]
-       [cdq.utils/assoc*
+       [master.yoda/assoc*
         [:ctx/db
          [cdq.create.db/do!
           {:schemas "schema.edn"
@@ -111,62 +111,64 @@
        cdq.application.context/validate]}]
     :dispose! cdq.application/dispose!
     :render!
-    [cdq.application/render!
-     [cdq.application.context/validate
-      cdq.world/assoc-active-entities
-      cdq.render.set-camera-on-player/do!
-      cdq.render.clear-screen/do!
-      cdq.render.draw-world-map/do!
-      [cdq.render.draw-on-world-viewport/do!
-       [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
-        cdq.render.draw-on-world-viewport.draw-cell-debug/do!
-        cdq.render.draw-on-world-viewport.render-entities/do!
-        ; cdq.render.draw-on-world-viewport.geom-test/do!
-        cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
-      cdq.render.stage/do!
-      [cdq.render.set-cursor/do!
-       {:state->cursor {:active-skill :cursors/sandclock
-                        :player-dead :cursors/black-x
-                        :player-idle cdq.ctx.interaction-state/->cursor
-                        :player-item-on-cursor :cursors/hand-grab
-                        :player-moving :cursors/walking
-                        :stunned :cursors/denied}}]
-      [cdq.render.player-state-handle-input/do!
-       {:state->handle-input {:player-idle cdq.entity.state.player-idle/handle-input
-                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-                              :player-moving cdq.entity.state.player-moving/handle-input}}]
-      cdq.render.update-mouseover-entity/do!
-      [cdq.render.assoc-paused/do!
-       {:pausing? true
-        :state->pause-game? {:stunned false
-                             :player-moving false
-                             :player-item-on-cursor true
-                             :player-idle true
-                             :player-dead true
-                             :active-skill false}}]
-      [cdq.utils/render-when-not
-       [[:ctx/world :world/paused?]
-        [cdq.render.update-time/do!
-         cdq.render.update-potential-fields/do!
-         [cdq.render.tick-entities/do!
-          {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
-           :entity/animation cdq.entity.animation/tick!
-           :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
-           :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
-           :entity/movement cdq.entity.movement/tick!
-           :entity/projectile-collision cdq.entity.projectile-collision/tick!
-           :entity/skills cdq.entity.skills/tick!
-           :active-skill cdq.entity.state.active-skill/tick!
-           :npc-idle cdq.entity.state.npc-idle/tick!
-           :npc-moving cdq.entity.state.npc-moving/tick!
-           :npc-sleeping cdq.entity.state.npc-sleeping/tick!
-           :stunned cdq.entity.state.stunned/tick!
-           :entity/string-effect cdq.entity.string-effect/tick!
-           :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]]]
-      cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-      [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
-      [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
-                                            :toggle-inventory   :i
-                                            :toggle-entity-info :e}]
-      cdq.application.context/validate]]
+    [master.yoda/render-swap!
+     {:state-atom cdq.application/state
+      :render-fns
+      [cdq.application.context/validate
+       cdq.world/assoc-active-entities
+       cdq.render.set-camera-on-player/do!
+       cdq.render.clear-screen/do!
+       cdq.render.draw-world-map/do!
+       [cdq.render.draw-on-world-viewport/do!
+        [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
+         cdq.render.draw-on-world-viewport.draw-cell-debug/do!
+         cdq.render.draw-on-world-viewport.render-entities/do!
+         ; cdq.render.draw-on-world-viewport.geom-test/do!
+         cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
+       cdq.render.stage/do!
+       [cdq.render.set-cursor/do!
+        {:state->cursor {:active-skill :cursors/sandclock
+                         :player-dead :cursors/black-x
+                         :player-idle cdq.ctx.interaction-state/->cursor
+                         :player-item-on-cursor :cursors/hand-grab
+                         :player-moving :cursors/walking
+                         :stunned :cursors/denied}}]
+       [cdq.render.player-state-handle-input/do!
+        {:state->handle-input {:player-idle cdq.entity.state.player-idle/handle-input
+                               :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+                               :player-moving cdq.entity.state.player-moving/handle-input}}]
+       cdq.render.update-mouseover-entity/do!
+       [cdq.render.assoc-paused/do!
+        {:pausing? true
+         :state->pause-game? {:stunned false
+                              :player-moving false
+                              :player-item-on-cursor true
+                              :player-idle true
+                              :player-dead true
+                              :active-skill false}}]
+       [master.yoda/render-when-not
+        [[:ctx/world :world/paused?]
+         [cdq.render.update-time/do!
+          cdq.render.update-potential-fields/do!
+          [cdq.render.tick-entities/do!
+           {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+            :entity/animation cdq.entity.animation/tick!
+            :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
+            :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
+            :entity/movement cdq.entity.movement/tick!
+            :entity/projectile-collision cdq.entity.projectile-collision/tick!
+            :entity/skills cdq.entity.skills/tick!
+            :active-skill cdq.entity.state.active-skill/tick!
+            :npc-idle cdq.entity.state.npc-idle/tick!
+            :npc-moving cdq.entity.state.npc-moving/tick!
+            :npc-sleeping cdq.entity.state.npc-sleeping/tick!
+            :stunned cdq.entity.state.stunned/tick!
+            :entity/string-effect cdq.entity.string-effect/tick!
+            :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]]]
+       cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+       [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
+       [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
+                                             :toggle-inventory   :i
+                                             :toggle-entity-info :e}]
+       cdq.application.context/validate]}]
     :resize! cdq.application/resize!}]]]

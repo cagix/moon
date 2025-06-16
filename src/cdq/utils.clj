@@ -7,41 +7,6 @@
   (:import (clojure.lang ILookup
                          PersistentVector)))
 
-(defn render* [ctx render-element]
-  (if (vector? render-element)
-    (let [[f params] render-element]
-      (f ctx params))
-    (render-element ctx)))
-
-(defn invoke [[f params]]
-  (f params))
-
-(defn create!-reset! [{:keys [state-atom initial-context create-fns]}]
-  (reset! @state-atom (reduce render*
-                              (invoke initial-context)
-                              create-fns)))
-
-(defn const* [_ctx params]
-  params)
-
-(defn assoc* [ctx [k [f params]]]
-  (assoc ctx k (f ctx params)))
-
-(defn render-when-not [ctx [ks render-fns]]
-  (if (get-in ctx ks)
-    ctx
-    (reduce render* ctx render-fns)))
-
-(comment
- (= (let [->graphics (fn [ctx params] (str :GRAPHICS "-" params))
-          ->audio    (fn [ctx params] (str :AUDIO "-" params))]
-      (reduce render*
-              {:initial-context :foobar}
-              [[assoc* [:ctx/graphics [->graphics :GDX]]]
-               [assoc* [:ctx/audio    [->audio "OpenAL"]]]]))
-    {:initial-context :foobar, :ctx/graphics ":GRAPHICS-:GDX", :ctx/audio ":AUDIO-OpenAL"})
- )
-
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)

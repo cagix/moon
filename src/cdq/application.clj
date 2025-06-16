@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require [cdq.utils :as utils]
-            [gdl.graphics :as graphics]
+  (:require [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]))
 
 (def state (atom nil))
@@ -16,10 +15,6 @@
     ; TODO what else disposable?
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
-
-(defn render! [render-fns]
-  (swap! state (fn [ctx]
-                 (reduce utils/render* ctx render-fns))))
 
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
