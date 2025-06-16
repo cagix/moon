@@ -3,7 +3,8 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.raycaster :as raycaster]
-            [cdq.potential-fields.movement :as potential-fields.movement]))
+            [cdq.potential-fields.movement :as potential-fields.movement]
+            [gdl.math.vector2 :as v]))
 
 (defn line-of-sight? [{:keys [world/raycaster]}
                       source
@@ -32,3 +33,15 @@
        (filter #(:entity/species @%))
        (filter #(line-of-sight? world @player-eid @%))
        (remove #(:entity/player? @%))))
+
+(defn npc-effect-ctx [world eid]
+  (let [entity @eid
+        target (nearest-enemy world entity)
+        target (when (and target
+                          (line-of-sight? world entity @target))
+                 target)]
+    {:effect/source eid
+     :effect/target target
+     :effect/target-direction (when target
+                                (v/direction (entity/position entity)
+                                             (entity/position @target)))}))

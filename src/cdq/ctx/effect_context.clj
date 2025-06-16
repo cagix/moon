@@ -1,6 +1,5 @@
 (ns cdq.ctx.effect-context
   (:require [cdq.entity :as entity]
-            [cdq.w :as w]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]))
 
@@ -15,15 +14,3 @@
      :effect/target mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @eid) target-position)}))
-
-(defn npc-effect-ctx [{:keys [ctx/world]} eid]
-  (let [entity @eid
-        target (w/nearest-enemy world entity)
-        target (when (and target
-                          (w/line-of-sight? world entity @target))
-                 target)]
-    {:effect/source eid
-     :effect/target target
-     :effect/target-direction (when target
-                                (v/direction (entity/position entity)
-                                             (entity/position @target)))}))

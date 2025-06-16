@@ -7,8 +7,7 @@
   (reset-game-state! [_ world-fn]))
 
 (defprotocol EffectContext
-  (player-effect-ctx [_ eid])
-  (npc-effect-ctx [_ eid]))
+  (player-effect-ctx [_ eid]))
 
 (defprotocol InfoText
   (info-text [_ object]))
