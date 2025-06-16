@@ -1,10 +1,8 @@
 (ns cdq.render.update-time
-  (:require [gdl.graphics :as g]))
+  (:require [cdq.w :as w]
+            [gdl.graphics :as g]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/world]
             :as ctx}]
-  (let [delta-ms (min (g/delta-time graphics) (:world/max-delta world))]
-    (-> ctx
-        (assoc-in [:ctx/world :world/delta-time] delta-ms)
-        (update-in [:ctx/world :world/elapsed-time] + delta-ms))))
+  (update ctx :ctx/world w/update-time (g/delta-time graphics)))

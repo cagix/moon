@@ -16,6 +16,17 @@
             [gdl.graphics :as g]
             [gdl.math.vector2 :as v]))
 
+(comment
+ (defmethod do! :tx/add-skill [[_ eid skill] world]
+   ; add skill to eid
+   {:notifications (when player)}
+   )
+
+ ; nil or ?
+ {:notifications
+  :more-transactions }
+ )
+
 (defn- valid-tx? [transaction]
   (vector? transaction))
 

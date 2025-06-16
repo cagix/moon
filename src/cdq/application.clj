@@ -1,19 +1,7 @@
 (ns cdq.application
-  (:require [cdq.malli :as m]
-            [cdq.utils :as utils]
+  (:require [cdq.utils :as utils]
             [gdl.graphics :as graphics]
-            [gdl.utils.disposable :as disp]
-            [qrecord.core :as q]))
-
-(defn initial-context [ks]
-  (in-ns 'cdq.application) ; otherwise 'user
-  (eval `(q/defrecord ~'Context ~(mapv (comp symbol first) ks)))
-  (def schema (m/schema (apply vector :map {:closed true} ks)))
-  (eval `(map->Context {})))
-
-(defn validate-ctx [ctx]
-  (m/validate-humanize schema ctx)
-  ctx)
+            [gdl.utils.disposable :as disp]))
 
 (defn invoke [[f params]]
   (f params))

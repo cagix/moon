@@ -47,7 +47,7 @@
     :foreground-fps 60}
    {:create!
     [cdq.application/create!
-     {:initial-context [cdq.application/initial-context
+     {:initial-context [cdq.application.context/create
                         [[:ctx/app :some]
                          [:ctx/files :some]
                          [:ctx/config :some]
@@ -107,11 +107,11 @@
        [cdq.create.extend-protocols/do! cdq.ctx]
        [cdq.ctx/reset-game-state! cdq.level.vampire/create]
        cdq.create.player-movement-vector/do!
-       cdq.application/validate-ctx]}]
+       cdq.application.context/validate]}]
     :dispose! cdq.application/dispose!
     :render!
     [cdq.application/render!
-     [cdq.application/validate-ctx
+     [cdq.application.context/validate
       cdq.world/assoc-active-entities
       cdq.render.set-camera-on-player/do!
       cdq.render.clear-screen/do!
@@ -167,5 +167,5 @@
       [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
                                             :toggle-inventory   :i
                                             :toggle-entity-info :e}]
-      cdq.application/validate-ctx]]
+      cdq.application.context/validate]]
     :resize! cdq.application/resize!}]]]

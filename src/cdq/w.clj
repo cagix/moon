@@ -4,6 +4,7 @@
             [cdq.grid :as grid]
             [cdq.raycaster :as raycaster]
             [cdq.potential-fields.movement :as potential-fields.movement]
+            [cdq.potential-fields.update :as potential-fields.update]
             [gdl.math.vector2 :as v]))
 
 (defn line-of-sight? [{:keys [world/raycaster]}
@@ -48,3 +49,21 @@
 
 (defn path-blocked? [{:keys [world/raycaster]} start end width]
   (raycaster/path-blocked? raycaster start end width))
+
+(defn tick-potential-fields!
+  [{:keys [world/factions-iterations
+           world/potential-field-cache
+           world/grid
+           world/active-entities]}]
+  (doseq [[faction max-iterations] factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations)))
+
+(defn update-time [{:keys [world/max-delta] :as world} delta-ms]
+  (let [delta-ms (min delta-ms max-delta)]
+    (-> world
+        (assoc :world/delta-time delta-ms)
+        (update :world/elapsed-time + delta-ms))))
