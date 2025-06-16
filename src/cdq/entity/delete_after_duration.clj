@@ -5,5 +5,5 @@
   (when (timer/stopped? elapsed-time counter)
     [[:tx/mark-destroyed eid]]))
 
-(defn create [duration {:keys [ctx/world]}]
-  (timer/create (:world/elapsed-time world) duration))
+(defn create [duration {:keys [world/elapsed-time]}]
+  (timer/create elapsed-time duration))

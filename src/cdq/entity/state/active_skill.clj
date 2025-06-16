@@ -34,13 +34,13 @@
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
-(defn create [eid [skill effect-ctx] {:keys [ctx/world]}]
+(defn create [eid [skill effect-ctx] {:keys [world/elapsed-time]}]
   {:skill skill
    :effect-ctx effect-ctx
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (timer/create (:world/elapsed-time world)))})
+                 (timer/create elapsed-time))})
 
 (defn enter [{:keys [skill]} eid]
   [[:tx/sound (:skill/start-action-sound skill)]

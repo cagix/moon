@@ -1,7 +1,7 @@
 (ns cdq.entity.animation
   (:require [cdq.animation :as animation]))
 
-(defn create [v _ctx]
+(defn create [v _world]
   (animation/create v))
 
 (defn tick! [animation eid {:keys [world/delta-time]}]

@@ -143,8 +143,8 @@
   (run! #(handle-txs! ctx (effect/handle % effect-ctx world))
         (effect/filter-applicable? effect-ctx effects)))
 
-(defmethod do! :tx/event [[_ eid event params] ctx]
-  (handle-txs! ctx (fsm/event->txs ctx eid event params)))
+(defmethod do! :tx/event [[_ eid event params] {:keys [ctx/world] :as ctx}]
+  (handle-txs! ctx (fsm/event->txs world eid event params)))
 
 (defmethod do! :tx/add-skill [[_ eid skill] ctx]
   (swap! eid entity/add-skill skill)

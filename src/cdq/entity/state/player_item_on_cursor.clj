@@ -72,7 +72,7 @@
        [:tx/dissoc eid :entity/item-on-cursor]
        [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
 
-(defn create [_eid item _ctx]
+(defn create [_eid item _world]
   {:item item})
 
 (defn draw-gui-view [eid ctx]

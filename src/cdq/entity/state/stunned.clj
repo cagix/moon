@@ -5,5 +5,5 @@
   (when (timer/stopped? elapsed-time counter)
     [[:tx/event eid :effect-wears-off]]))
 
-(defn create [_eid duration {:keys [ctx/world]}]
-  {:counter (timer/create (:world/elapsed-time world) duration)})
+(defn create [_eid duration {:keys [world/elapsed-time]}]
+  {:counter (timer/create elapsed-time duration)})

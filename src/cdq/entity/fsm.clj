@@ -51,11 +51,11 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defn create-state-v [{:keys [ctx/world] :as ctx} state-k eid params]
+(defn create-state-v [world state-k eid params]
   {:pre [(keyword? state-k)
          (map? (:state->create (:world/entity-states world)))]}
   (let [result (if-let [f (state-k (:state->create (:world/entity-states world)))]
-                 (f eid params ctx)
+                 (f eid params world)
                  (if params
                    params
                    :something ; nil components are not tick'ed1
@@ -65,15 +65,15 @@
         (clojure.pprint/pprint result))
     result))
 
-(defn create! [{:keys [fsm initial-state]} eid ctx]
+(defn create! [{:keys [fsm initial-state]} eid world]
   ; fsm throws when initial-state is not part of states, so no need to assert initial-state
   ; initial state is nil, so associng it. make bug report at reduce-fsm?
   [[:tx/assoc eid :entity/fsm (assoc ((case fsm
                                         :fsms/player player-fsm
                                         :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
-   [:tx/assoc eid initial-state (create-state-v ctx initial-state eid nil)]])
+   [:tx/assoc eid initial-state (create-state-v world initial-state eid nil)]])
 
-(defn event->txs [ctx eid event params]
+(defn event->txs [world eid event params]
   (let [fsm (:entity/fsm @eid)
         _ (assert fsm)
         old-state-k (:state fsm)
@@ -82,7 +82,7 @@
     (when-not (= old-state-k new-state-k)
       (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                             [k (k @eid)])
-            new-state-obj [new-state-k (create-state-v ctx new-state-k eid params)]]
+            new-state-obj [new-state-k (create-state-v world new-state-k eid params)]]
         [[:tx/assoc eid :entity/fsm new-fsm]
          [:tx/assoc eid new-state-k (new-state-obj 1)]
          [:tx/dissoc eid old-state-k]

@@ -29,5 +29,5 @@
      (when hit-entity
        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
 
-(defn create [v _ctx]
+(defn create [v _world]
   (assoc v :already-hit-bodies #{}))

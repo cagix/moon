@@ -1,6 +1,6 @@
 (ns cdq.entity.stats)
 
-(defn create [stats _ctx]
+(defn create [stats _world]
   (-> (if (:entity/mana stats)
         (update stats :entity/mana (fn [v] [v v]))
         stats)

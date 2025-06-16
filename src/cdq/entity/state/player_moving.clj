@@ -6,7 +6,7 @@
     [[:tx/set-movement eid movement-vector]]
     [[:tx/event eid :no-movement-input]]))
 
-(defn create [eid movement-vector _ctx]
+(defn create [eid movement-vector _world]
   {:movement-vector movement-vector})
 
 (defn enter [{:keys [movement-vector]} eid]

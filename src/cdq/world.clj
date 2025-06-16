@@ -185,24 +185,24 @@
     :rotation-angle (or rotation-angle 0)}))
 
 (defn- create-component-value
-  [{:keys [ctx/world] :as ctx} k v]
+  [world k v]
   (if-let [create (:create (k (:world/entity-components world)))]
-    (create v ctx)
+    (create v world)
     v))
 
 (defn- create!-component-value
-  [{:keys [ctx/world] :as ctx} [k v] eid]
+  [world [k v] eid]
   (when-let [create! (:create! (k (:world/entity-components world)))]
-    (create! v eid ctx)))
+    (create! v eid world)))
 
 (defn component-destroy!
-  [{:keys [ctx/world] :as ctx} [k v] eid]
+  [world [k v] eid]
   (when-let [destroy! (:destroy! (k (:world/entity-components world)))]
-    (destroy! v eid ctx)))
+    (destroy! v eid world)))
 
-(defn- create-vs [components ctx]
+(defn- create-vs [components world]
   (reduce (fn [m [k v]]
-            (assoc m k (create-component-value ctx k v)))
+            (assoc m k (create-component-value world k v)))
           {}
           components))
 
@@ -219,10 +219,10 @@
                       (create-body (:world/minimum-size world) (:world/z-orders world))
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! (:world/id-counter world) inc))
-                                            (create-vs ctx)))))]
+                                            (create-vs world)))))]
     (context-entity-add! world eid)
     (->> @eid
-         (mapcat #(create!-component-value ctx % eid))
+         (mapcat #(create!-component-value world % eid))
          (ctx/handle-txs! ctx))
     eid))
 
@@ -277,36 +277,35 @@
         ; set max speed so small entities are not skipped by projectiles
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
-        ctx (merge ctx
-                   {
-                    :ctx/world {
-                                ; added later - make schema ?
-                                ; * :world/delta-time
-                                ; * :world/paused?
-                                ; * :world/active-entities
-                                ; * :world/mouseover-eid
-                                ; * :world/player-eid
-                                :world/tiled-map tiled-map
-                                :world/grid grid
-                                :world/explored-tile-corners (create-explored-tile-corners tiled-map)
-                                :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                                         (:tiled-map/height tiled-map)
-                                                                         (:content-grid-cell-size config))
-                                :world/raycaster (raycaster/create grid)
-                                :world/entity-components (:entity-components config)
-                                :world/entity-states (:entity-states config)
-                                :world/potential-field-cache (atom nil)
-                                :world/factions-iterations (:potential-field-factions-iterations config)
-                                :world/id-counter (atom 0)
-                                :world/entity-ids (atom {})
-                                :world/elapsed-time 0
-                                :world/max-delta max-delta
-                                :world/max-speed max-speed
-                                :world/minimum-size minimum-size
-                                :world/z-orders z-orders
-                                :world/render-z-order (utils/define-order z-orders)
-                                }
-                    })
+        ctx (assoc ctx
+                   :ctx/world {
+                               ; added later - make schema ?
+                               ; * :world/delta-time
+                               ; * :world/paused?
+                               ; * :world/active-entities
+                               ; * :world/mouseover-eid
+                               ; * :world/player-eid
+                               :world/tiled-map tiled-map
+                               :world/grid grid
+                               :world/explored-tile-corners (create-explored-tile-corners tiled-map)
+                               :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                                        (:tiled-map/height tiled-map)
+                                                                        (:content-grid-cell-size config))
+                               :world/raycaster (raycaster/create grid)
+                               :world/entity-components (:entity-components config)
+                               :world/entity-states (:entity-states config)
+                               :world/potential-field-cache (atom nil)
+                               :world/factions-iterations (:potential-field-factions-iterations config)
+                               :world/id-counter (atom 0)
+                               :world/entity-ids (atom {})
+                               :world/elapsed-time 0
+                               :world/max-delta max-delta
+                               :world/max-speed max-speed
+                               :world/minimum-size minimum-size
+                               :world/z-orders z-orders
+                               :world/render-z-order (utils/define-order z-orders)
+                               }
+                   )
         ctx (assoc-in ctx [:ctx/world :world/player-eid] (spawn-creature! ctx player-entity))]
     (run! (partial spawn-creature! ctx) creatures)
     ctx))

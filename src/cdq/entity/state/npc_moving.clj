@@ -6,9 +6,10 @@
   (when (timer/stopped? elapsed-time counter)
     [[:tx/event eid :timer-finished]]))
 
-(defn create [eid movement-vector {:keys [ctx/world]}]
+(defn create [eid movement-vector {:keys [world/elapsed-time]}]
   {:movement-vector movement-vector
-   :counter (timer/create (:world/elapsed-time world) (* (entity/stat @eid :entity/reaction-time) 0.016))})
+   :counter (timer/create elapsed-time
+                          (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defn enter [{:keys [movement-vector]} eid]
   [[:tx/set-movement eid movement-vector]])
