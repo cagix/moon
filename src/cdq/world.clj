@@ -254,6 +254,11 @@
                        (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                        (utils/safe-merge components)))))
 
+(defn- create-explored-tile-corners [tiled-map]
+  (atom (g2d/create-grid (:tiled-map/width  tiled-map)
+                         (:tiled-map/height tiled-map)
+                         (constantly false))))
+
 (defn create [ctx config {:keys [tiled-map
                                  start-position
                                  creatures
@@ -280,12 +285,10 @@
                     :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                            (:tiled-map/height tiled-map)
                                                            (:content-grid-cell-size config))
-                    :ctx/explored-tile-corners (atom (g2d/create-grid (:tiled-map/width  tiled-map)
-                                                                      (:tiled-map/height tiled-map)
-                                                                      (constantly false)))
                     :ctx/entity-ids (atom {})
                     :ctx/world {
                                 :world/tiled-map tiled-map
+                                :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                 :world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)

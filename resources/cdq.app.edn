@@ -61,7 +61,6 @@
                          [:ctx/grid :some]
                          [:ctx/raycaster :some]
                          [:ctx/content-grid :some]
-                         [:ctx/explored-tile-corners :some]
                          [:ctx/entity-ids :some]
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
