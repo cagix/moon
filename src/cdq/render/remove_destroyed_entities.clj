@@ -6,7 +6,7 @@
             :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @(:world/entity-ids world)))]
-    (world/context-entity-remove! ctx eid)
+    (world/context-entity-remove! world eid)
     (doseq [component @eid]
       (ctx/handle-txs! ctx (world/component-destroy! ctx component eid))))
   ctx)

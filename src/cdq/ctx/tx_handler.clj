@@ -292,8 +292,8 @@
   (swap! eid entity/set-movement movement-vector)
   nil)
 
-(defmethod do! :tx/move-entity [[_ & opts] ctx]
-  (apply world/move-entity! ctx opts))
+(defmethod do! :tx/move-entity [[_ & opts] {:keys [ctx/world]}]
+  (apply world/move-entity! world opts))
 
 (defmethod do! :tx/spawn-projectile
   [[_

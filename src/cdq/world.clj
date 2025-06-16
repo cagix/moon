@@ -14,32 +14,35 @@
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 
-(defn- context-entity-add! [{:keys [ctx/world]}
+(defn- context-entity-add! [{:keys [world/entity-ids
+                                    world/content-grid
+                                    world/grid]}
                             eid]
   (let [id (entity/id @eid)]
     (assert (number? id))
-    (swap! (:world/entity-ids world) assoc id eid))
-  (content-grid/add-entity! (:world/content-grid world) eid)
+    (swap! entity-ids assoc id eid))
+  (content-grid/add-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid/add-entity! (:world/grid world) eid))
+  (grid/add-entity! grid eid))
 
-(defn context-entity-remove! [{:keys [ctx/world]}
+(defn context-entity-remove! [{:keys [world/entity-ids
+                                      world/grid]}
                               eid]
-  (let [entity-ids (:world/entity-ids world)
-        id (entity/id @eid)]
+  (let [id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (content-grid/remove-entity! eid)
-  (grid/remove-entity! (:world/grid world) eid))
+  (grid/remove-entity! grid eid))
 
-(defn- context-entity-moved! [{:keys [ctx/world]}
+(defn- context-entity-moved! [{:keys [world/content-grid
+                                      world/grid]}
                               eid]
-  (content-grid/position-changed! (:world/content-grid world) eid)
-  (grid/position-changed! (:world/grid world) eid))
+  (content-grid/position-changed! content-grid eid)
+  (grid/position-changed! grid eid))
 
-(defn move-entity! [ctx eid body direction rotate-in-movement-direction?]
-  (context-entity-moved! ctx eid)
+(defn move-entity! [world eid body direction rotate-in-movement-direction?]
+  (context-entity-moved! world eid)
   (swap! eid assoc
          :entity/position (:entity/position body)
          :left-bottom (:left-bottom body))
@@ -217,7 +220,7 @@
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! (:world/id-counter world) inc))
                                             (create-vs ctx)))))]
-    (context-entity-add! ctx eid)
+    (context-entity-add! world eid)
     (->> @eid
          (mapcat #(create!-component-value ctx % eid))
          (ctx/handle-txs! ctx))
