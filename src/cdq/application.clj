@@ -3,15 +3,7 @@
             [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]))
 
-(defn invoke [[f params]]
-  (f params))
-
 (def state (atom nil))
-
-(defn create! [{:keys [initial-context create-fns]}]
-  (reset! state (reduce utils/render*
-                        (invoke initial-context)
-                        create-fns)))
 
 (defn dispose! []
   (let [{:keys [ctx/audio

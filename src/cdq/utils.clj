@@ -13,6 +13,14 @@
       (f ctx params))
     (render-element ctx)))
 
+(defn invoke [[f params]]
+  (f params))
+
+(defn create!-reset! [{:keys [state-atom initial-context create-fns]}]
+  (reset! @state-atom (reduce render*
+                              (invoke initial-context)
+                              create-fns)))
+
 (defn const* [_ctx params]
   params)
 

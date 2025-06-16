@@ -46,8 +46,9 @@
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
    {:create!
-    [cdq.application/create!
-     {:initial-context [cdq.application.context/create
+    [cdq.utils/create!-reset!
+     {:state-atom cdq.application/state
+      :initial-context [cdq.application.context/create
                         [[:ctx/app :some]
                          [:ctx/files :some]
                          [:ctx/config :some]
