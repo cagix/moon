@@ -1,6 +1,5 @@
 (ns cdq.ctx.effect-context
   (:require [cdq.entity :as entity]
-            [cdq.ctx :as ctx]
             [cdq.w :as w]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]))
@@ -17,9 +16,9 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @eid) target-position)}))
 
-(defn npc-effect-ctx [{:keys [ctx/world] :as ctx} eid]
+(defn npc-effect-ctx [{:keys [ctx/world]} eid]
   (let [entity @eid
-        target (ctx/nearest-enemy ctx entity)
+        target (w/nearest-enemy world entity)
         target (when (and target
                           (w/line-of-sight? world entity @target))
                  target)]

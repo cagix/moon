@@ -13,14 +13,6 @@
 (defprotocol InfoText
   (info-text [_ object]))
 
-(defprotocol Grid
-  (nearest-enemy-distance [_ entity])
-  (nearest-enemy [_ entity])
-  (potential-field-find-direction [_ eid]))
-
 (defprotocol Editor
   (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))
-
-(defprotocol World
-  (creatures-in-los-of-player [_]))
