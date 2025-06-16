@@ -11,8 +11,7 @@
 (defn req [form]
   (if (symbol? form)
     (if (namespace form)
-      (do
-       (requiring-resolve form))
+      (requiring-resolve form)
       (try (require form)
            form
            (catch Exception e ; Java classes
