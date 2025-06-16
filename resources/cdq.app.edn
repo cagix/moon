@@ -63,7 +63,6 @@
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
                          [:ctx/mouseover-eid   #_{:optional true} :any #_:any]
-                         [:ctx/active-entities #_{:optional true} :any #_:some]
                          ]]
       :create-fns
       [gdl.create.gdx/do!
@@ -120,7 +119,7 @@
     :render!
     [cdq.application/render!
      [cdq.application/validate-ctx
-      [cdq.utils/assoc* [:ctx/active-entities [cdq.world/calculate-active-entities]]]
+      cdq.world/assoc-active-entities
       cdq.render.set-camera-on-player/do!
       cdq.render.clear-screen/do!
       cdq.render.draw-world-map/do!

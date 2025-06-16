@@ -17,12 +17,12 @@
                            t))))))
 
 (defn do!
-  [{:keys [ctx/active-entities
+  [{:keys [ctx/world
            ctx/stage]
     :as ctx}
    entity->tick]
   (try
-   (doseq [eid active-entities]
+   (doseq [eid (:world/active-entities world)]
      (tick-entity! ctx eid entity->tick))
    (catch Throwable t
      (utils/pretty-pst t)

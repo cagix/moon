@@ -3,13 +3,12 @@
 
 (defn do!
   [{:keys [ctx/grid
-           ctx/active-entities
            ctx/world]
     :as ctx}]
   (doseq [[faction max-iterations] (:world/factions-iterations  world)]
     (potential-fields.update/tick! (:world/potential-field-cache world)
                                    grid
                                    faction
-                                   active-entities
+                                   (:world/active-entities world)
                                    max-iterations))
   ctx)

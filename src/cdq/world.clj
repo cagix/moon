@@ -283,9 +283,10 @@
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
                     :ctx/world {
-                                ; FIXME !!
-                                ; * :world/delta-time added later - if you make schema
-                                ; * :world/paused? also
+                                ; added later:
+                                ; * :world/delta-time
+                                ; * :world/paused?
+                                ; * :world/active-entities
                                 :world/tiled-map tiled-map
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                 :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
@@ -308,8 +309,10 @@
     (run! (partial spawn-creature! ctx) creatures)
     ctx))
 
-(defn calculate-active-entities [{:keys [ctx/world
-                                         ctx/player-eid]}
-                                 _params]
-  (content-grid/active-entities (:world/content-grid world)
-                                @player-eid))
+(defn assoc-active-entities [{:keys [ctx/world
+                                     ctx/player-eid]
+                              :as ctx}]
+  (assoc-in ctx
+            [:ctx/world :world/active-entities]
+            (content-grid/active-entities (:world/content-grid world)
+                                          @player-eid)))

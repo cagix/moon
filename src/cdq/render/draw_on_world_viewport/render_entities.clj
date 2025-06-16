@@ -203,11 +203,10 @@
      (graphics/handle-draws! graphics (draw-body-rect entity :red))
      (utils/pretty-pst t))))
 
-(defn do! [{:keys [ctx/active-entities
-                   ctx/player-eid
+(defn do! [{:keys [ctx/player-eid
                    ctx/world]
             :as ctx}]
-  (let [entities (map deref active-entities)
+  (let [entities (map deref (:world/active-entities world))
         player @player-eid
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
