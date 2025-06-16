@@ -8,7 +8,7 @@
 (def ^:dbg-flag show-cell-occupied? false)
 
 (defn- draw-cell-debug* [{:keys [ctx/grid
-                                 ctx/factions-iterations
+                                 ctx/world
                                  ctx/graphics]}]
   (apply concat
          (for [[x y] (camera-utils/visible-tiles (:camera (:world-viewport graphics)))
@@ -22,7 +22,7 @@
             (when-let [faction show-potential-field-colors?]
               (let [{:keys [distance]} (faction cell*)]
                 (when distance
-                  (let [ratio (/ distance (factions-iterations faction))]
+                  (let [ratio (/ distance ((:world/factions-iterations world) faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn do! [{:keys [ctx/graphics] :as ctx}]

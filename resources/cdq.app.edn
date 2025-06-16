@@ -68,8 +68,6 @@
                          [:ctx/explored-tile-corners :some]
                          [:ctx/id-counter :some]
                          [:ctx/entity-ids :some]
-                         [:ctx/potential-field-cache :some]
-                         [:ctx/factions-iterations :some]
                          [:ctx/z-orders :some]
                          [:ctx/render-z-order :some]
                          [:ctx/player-eid :some]

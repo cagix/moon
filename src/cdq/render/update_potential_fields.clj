@@ -2,13 +2,12 @@
   (:require [cdq.potential-fields.update :as potential-fields.update]))
 
 (defn do!
-  [{:keys [ctx/potential-field-cache
-           ctx/factions-iterations
-           ctx/grid
-           ctx/active-entities]
+  [{:keys [ctx/grid
+           ctx/active-entities
+           ctx/world]
     :as ctx}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (potential-fields.update/tick! potential-field-cache
+  (doseq [[faction max-iterations] (:world/factions-iterations  world)]
+    (potential-fields.update/tick! (:world/potential-field-cache world)
                                    grid
                                    faction
                                    active-entities

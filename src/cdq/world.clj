@@ -288,8 +288,6 @@
                                                                       (constantly false)))
                     :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})
-                    :ctx/potential-field-cache (atom nil)
-                    :ctx/factions-iterations (:potential-field-factions-iterations config)
                     :ctx/z-orders z-orders
                     :ctx/render-z-order (utils/define-order z-orders)
                     :ctx/minimum-size minimum-size
@@ -297,6 +295,8 @@
                     :ctx/max-speed max-speed
                     :ctx/world {:world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
+                                :world/potential-field-cache (atom nil)
+                                :world/factions-iterations (:potential-field-factions-iterations config)
                                 }
                     })
         ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]
