@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.w :as w]))
 
-(defn tick! [_ eid {:keys [ctx/world]}]
+(defn tick! [_ eid world]
   (let [entity @eid]
     (when-let [distance (w/nearest-enemy-distance world entity)]
       (when (<= distance (entity/stat entity :entity/aggro-range))

@@ -1,8 +1,8 @@
 (ns cdq.entity.delete-after-duration
   (:require [cdq.timer :as timer]))
 
-(defn tick! [counter eid {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+(defn tick! [counter eid {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
     [[:tx/mark-destroyed eid]]))
 
 (defn create [duration {:keys [ctx/world]}]

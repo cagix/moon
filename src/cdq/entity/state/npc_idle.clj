@@ -13,7 +13,7 @@
                      (effect/applicable-and-useful? world effect-ctx (:skill/effects %))))
        first))
 
-(defn tick! [_ eid {:keys [ctx/world]}]
+(defn tick! [_ eid world]
   (let [effect-ctx (w/npc-effect-ctx world eid)]
     (if-let [skill (npc-choose-skill world @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]

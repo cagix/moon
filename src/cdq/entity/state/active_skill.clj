@@ -21,7 +21,8 @@
 
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
-             {:keys [ctx/world]}]
+             {:keys [world/elapsed-time]
+              :as world}]
   (cond
    (not (effect/some-applicable? (update-effect-ctx world effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
@@ -29,7 +30,7 @@
     ; TODO some sound ?
     ]
 
-   (timer/stopped? (:world/elapsed-time world) counter)
+   (timer/stopped? elapsed-time counter)
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 

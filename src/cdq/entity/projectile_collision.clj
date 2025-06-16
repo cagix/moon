@@ -6,13 +6,12 @@
 
 (defn tick! [{:keys [entity-effects already-hit-bodies piercing?]}
              eid
-             {:keys [ctx/world]}]
+             {:keys [world/grid]}]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        grid (:world/grid world)
         cells* (map deref (grid/rectangle->cells grid entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??

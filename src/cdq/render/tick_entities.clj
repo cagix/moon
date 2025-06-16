@@ -5,11 +5,11 @@
             [cdq.utils :as utils]
             [gdl.ui.stage :as stage]))
 
-(defn- tick-entity! [ctx eid entity->tick]
+(defn- tick-entity! [{:keys [ctx/world] :as ctx} eid entity->tick]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
            (ctx/handle-txs! ctx (when-let [f (entity->tick k)]
-                                  (f v eid ctx))))
+                                  (f v eid world))))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k
