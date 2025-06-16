@@ -5,7 +5,6 @@
             [gdl.c :as c]))
 
 (defn do! [{:keys [ctx/player-eid
-                   ctx/mouseover-eid
                    ctx/grid
                    ctx/world]
             :as ctx}]
@@ -19,8 +18,8 @@
                          reverse
                          (filter #(ctx/line-of-sight? ctx player @%))
                          first)))]
-    (when-let [eid mouseover-eid]
+    (when-let [eid (:world/mouseover-eid world)]
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc ctx :ctx/mouseover-eid new-eid)))
+    (assoc-in ctx [:ctx/world :world/mouseover-eid] new-eid)))

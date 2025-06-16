@@ -282,10 +282,11 @@
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/world {
-                                ; added later:
+                                ; added later - make schema ?
                                 ; * :world/delta-time
                                 ; * :world/paused?
                                 ; * :world/active-entities
+                                ; * :world/mouseover-eid
                                 :world/tiled-map tiled-map
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                 :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)

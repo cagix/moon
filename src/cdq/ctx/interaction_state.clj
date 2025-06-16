@@ -20,9 +20,10 @@
 
 (defn interaction-state
   [{:keys [ctx/stage
-           ctx/mouseover-eid] :as ctx}
+           ctx/world] :as ctx}
    player-eid]
-  (let [mouseover-actor (c/mouseover-actor ctx)]
+  (let [mouseover-eid (:world/mouseover-eid world)
+        mouseover-actor (c/mouseover-actor ctx)]
     (cond
      mouseover-actor
      [:interaction-state/mouseover-actor mouseover-actor]

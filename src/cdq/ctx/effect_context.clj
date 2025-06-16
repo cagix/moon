@@ -4,10 +4,11 @@
             [gdl.c :as c]
             [gdl.math.vector2 :as v]))
 
-(defn player-effect-ctx [{:keys [ctx/mouseover-eid]
+(defn player-effect-ctx [{:keys [ctx/world]
                           :as ctx}
                          eid]
-  (let [target-position (or (and mouseover-eid
+  (let [mouseover-eid (:world/mouseover-eid world)
+        target-position (or (and mouseover-eid
                                  (entity/position @mouseover-eid))
                             (c/world-mouse-position ctx))]
     {:effect/source eid
