@@ -60,7 +60,6 @@
                          [:ctx/elapsed-time number?]
                          [:ctx/grid :some]
                          [:ctx/raycaster :some]
-                         [:ctx/content-grid :some]
                          [:ctx/player-eid :some]
                          ; optional keys get created as nil and so are wrong
                          [:ctx/delta-time      #_{:optional true} :any #_number?]

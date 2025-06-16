@@ -15,13 +15,12 @@
             [qrecord.core :as q]))
 
 (defn- context-entity-add! [{:keys [ctx/world
-                                    ctx/content-grid
                                     ctx/grid]}
                             eid]
   (let [id (entity/id @eid)]
     (assert (number? id))
     (swap! (:world/entity-ids world) assoc id eid))
-  (content-grid/add-entity! content-grid eid)
+  (content-grid/add-entity! (:world/content-grid world) eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity! grid eid))
@@ -36,10 +35,10 @@
   (content-grid/remove-entity! eid)
   (grid/remove-entity! grid eid))
 
-(defn- context-entity-moved! [{:keys [ctx/content-grid
-                                     ctx/grid]}
-                             eid]
-  (content-grid/position-changed! content-grid eid)
+(defn- context-entity-moved! [{:keys [ctx/world
+                                      ctx/grid]}
+                              eid]
+  (content-grid/position-changed! (:world/content-grid world) eid)
   (grid/position-changed! grid eid))
 
 (defn move-entity! [ctx eid body direction rotate-in-movement-direction?]
@@ -283,12 +282,12 @@
                     :ctx/elapsed-time 0 ; -> everywhere
                     :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/raycaster (raycaster/create grid)
-                    :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                           (:tiled-map/height tiled-map)
-                                                           (:content-grid-cell-size config))
                     :ctx/world {
                                 :world/tiled-map tiled-map
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
+                                :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                                         (:tiled-map/height tiled-map)
+                                                                         (:content-grid-cell-size config))
                                 :world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)
@@ -306,7 +305,8 @@
     (run! (partial spawn-creature! ctx) creatures)
     ctx))
 
-(defn calculate-active-entities [{:keys [ctx/content-grid
+(defn calculate-active-entities [{:keys [ctx/world
                                          ctx/player-eid]}
                                  _params]
-  (content-grid/active-entities content-grid @player-eid))
+  (content-grid/active-entities (:world/content-grid world)
+                                @player-eid))
