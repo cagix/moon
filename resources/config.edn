@@ -87,21 +87,6 @@
  ; TODO also 'do!' defmethods just wire -> see 'defmethod'...
 
  :requires [
-            cdq.effects.target.audiovisual
-            cdq.effects.target.convert
-            cdq.effects.target.damage
-            cdq.effects.target.kill
-            cdq.effects.target.melee-damage
-            cdq.effects.target.spiderweb
-            cdq.effects.target.stun
-
-            cdq.effects.audiovisual
-            cdq.effects.projectile
-            cdq.effects.sound
-            cdq.effects.spawn
-            cdq.effects.target-all
-            cdq.effects.target-entity
-
             cdq.ui.editor.widget.default
             cdq.ui.editor.widget.edn
             cdq.ui.editor.widget.string

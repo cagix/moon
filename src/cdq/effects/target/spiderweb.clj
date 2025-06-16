@@ -1,20 +1,18 @@
 (ns cdq.effects.target.spiderweb
-  (:require [cdq.effect :as effect]
-            [cdq.timer :as timer]
-            [cdq.utils :refer [defmethods]]))
+  (:require [cdq.timer :as timer]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
-  (defmethods :effects.target/spiderweb
-    (effect/applicable? [_ _]
-      ; ?
-      true)
 
-    ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (effect/handle [_
-                    {:keys [effect/target]}
-                    {:keys [world/elapsed-time]}]
-      (when-not (:entity/temp-modifier @target)
-        [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
-                                                  :counter (timer/create elapsed-time duration)}]
-         [:tx/mod-add target modifiers]]))))
+  (defn applicable? [_ _]
+    ; ?
+    true)
+
+  ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
+  (defn handle [_
+                {:keys [effect/target]}
+                {:keys [world/elapsed-time]}]
+    (when-not (:entity/temp-modifier @target)
+      [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
+                                                :counter (timer/create elapsed-time duration)}]
+       [:tx/mod-add target modifiers]])))

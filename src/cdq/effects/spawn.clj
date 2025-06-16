@@ -1,21 +1,18 @@
 (ns cdq.effects.spawn
-  (:require [cdq.effect :as effect]
-            [cdq.entity :as entity]
-            [cdq.utils :refer [defmethods]]))
+  (:require [cdq.entity :as entity]))
 
-(defmethods :effects/spawn
-  (effect/applicable? [_ {:keys [effect/source effect/target-position]}]
-    (and (entity/faction @source)
-         target-position))
+(defn applicable? [_ {:keys [effect/source effect/target-position]}]
+  (and (entity/faction @source)
+       target-position))
 
-  (effect/handle [[_ {:keys [property/id] :as property}]
-                  {:keys [effect/source effect/target-position]}
-                  _world]
-    [[:tx/spawn-creature {:position target-position
-                          :creature-property property
-                          :components {:entity/fsm {:fsm :fsms/npc
-                                                    :initial-state :npc-idle}
-                                       :entity/faction (entity/faction @source)}}]]))
+(defn handle [[_ {:keys [property/id] :as property}]
+              {:keys [effect/source effect/target-position]}
+              _world]
+  [[:tx/spawn-creature {:position target-position
+                        :creature-property property
+                        :components {:entity/fsm {:fsm :fsms/npc
+                                                  :initial-state :npc-idle}
+                                     :entity/faction (entity/faction @source)}}]])
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
