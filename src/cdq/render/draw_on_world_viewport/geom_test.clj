@@ -4,8 +4,9 @@
             [gdl.c :as c]
             [gdl.graphics :as graphics]))
 
-(defn- geom-test* [{:keys [ctx/grid] :as ctx}]
-  (let [position (c/world-mouse-position ctx)
+(defn- geom-test* [{:keys [ctx/world] :as ctx}]
+  (let [grid (:world/grid world)
+        position (c/world-mouse-position ctx)
         radius 0.8
         circle {:position position
                 :radius radius}]

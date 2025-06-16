@@ -31,8 +31,7 @@
                      rotate-in-movement-direction?]
               :as movement}
              eid
-             {:keys [ctx/world
-                     ctx/grid]}]
+             {:keys [ctx/world]}]
   (assert (<= 0 speed (:world/max-speed world))
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -44,6 +43,6 @@
     (let [movement (assoc movement :delta-time (:world/delta-time world))
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                        (try-move-solid-body grid body movement)
+                        (try-move-solid-body (:world/grid world) body movement)
                         (move-body body movement))]
         [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))

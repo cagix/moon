@@ -5,14 +5,13 @@
             [gdl.c :as c]))
 
 (defn do! [{:keys [ctx/player-eid
-                   ctx/grid
                    ctx/world]
             :as ctx}]
   (let [new-eid (if (c/mouseover-actor ctx)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (c/world-mouse-position ctx)))]
+                                     (grid/point->entities (:world/grid world) (c/world-mouse-position ctx)))]
                     (->> (:world/render-z-order world)
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse

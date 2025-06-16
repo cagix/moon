@@ -14,8 +14,7 @@
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 
-(defn- context-entity-add! [{:keys [ctx/world
-                                    ctx/grid]}
+(defn- context-entity-add! [{:keys [ctx/world]}
                             eid]
   (let [id (entity/id @eid)]
     (assert (number? id))
@@ -23,23 +22,21 @@
   (content-grid/add-entity! (:world/content-grid world) eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid/add-entity! grid eid))
+  (grid/add-entity! (:world/grid world) eid))
 
-(defn context-entity-remove! [{:keys [ctx/world
-                                      ctx/grid]}
+(defn context-entity-remove! [{:keys [ctx/world]}
                               eid]
   (let [entity-ids (:world/entity-ids world)
         id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (content-grid/remove-entity! eid)
-  (grid/remove-entity! grid eid))
+  (grid/remove-entity! (:world/grid world) eid))
 
-(defn- context-entity-moved! [{:keys [ctx/world
-                                      ctx/grid]}
+(defn- context-entity-moved! [{:keys [ctx/world]}
                               eid]
   (content-grid/position-changed! (:world/content-grid world) eid)
-  (grid/position-changed! grid eid))
+  (grid/position-changed! (:world/grid world) eid))
 
 (defn move-entity! [ctx eid body direction rotate-in-movement-direction?]
   (context-entity-moved! ctx eid)
@@ -280,7 +277,6 @@
         ctx (merge ctx
                    {
                     :ctx/elapsed-time 0 ; -> everywhere
-                    :ctx/grid grid ; -> everywhere -> abstract ?
                     :ctx/world {
                                 ; added later - make schema ?
                                 ; * :world/delta-time
@@ -288,6 +284,7 @@
                                 ; * :world/active-entities
                                 ; * :world/mouseover-eid
                                 :world/tiled-map tiled-map
+                                :world/grid grid
                                 :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                 :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                                          (:tiled-map/height tiled-map)

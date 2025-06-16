@@ -4,10 +4,10 @@
             [gdl.graphics :as graphics]))
 
 (defn do! [{:keys [ctx/graphics
-                   ctx/grid] :as ctx}]
+                   ctx/world] :as ctx}]
   (graphics/handle-draws! graphics
                           (let [[x y] (mapv int (c/world-mouse-position ctx))
-                                cell (grid/cell grid [x y])]
+                                cell (grid/cell (:world/grid world) [x y])]
                             (when (and cell (#{:air :none} (:movement @cell)))
                               [[:draw/rectangle x y 1 1
                                 (case (:movement @cell)
