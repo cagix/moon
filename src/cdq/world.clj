@@ -207,9 +207,7 @@
           components))
 
 (defn spawn-entity!
-  [{:keys [ctx/world
-           ctx/z-orders]
-    :as ctx}
+  [{:keys [ctx/world] :as ctx}
    position
    body
    components]
@@ -218,7 +216,7 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      (create-body (:world/minimum-size world) z-orders)
+                      (create-body (:world/minimum-size world) (:world/z-orders world))
                       (utils/safe-merge (-> components
                                             (assoc :entity/id (swap! (:world/id-counter world) inc))
                                             (create-vs ctx)))))]
@@ -286,8 +284,6 @@
                                                                       (:tiled-map/height tiled-map)
                                                                       (constantly false)))
                     :ctx/entity-ids (atom {})
-                    :ctx/z-orders z-orders
-                    :ctx/render-z-order (utils/define-order z-orders)
                     :ctx/world {:world/entity-components (:entity-components config)
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)
@@ -296,6 +292,8 @@
                                 :world/max-delta max-delta
                                 :world/max-speed max-speed
                                 :world/minimum-size minimum-size
+                                :world/z-orders z-orders
+                                :world/render-z-order (utils/define-order z-orders)
                                 }
                     })
         ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]

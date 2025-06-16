@@ -205,7 +205,7 @@
 
 (defn do! [{:keys [ctx/active-entities
                    ctx/player-eid
-                   ctx/render-z-order]
+                   ctx/world]
             :as ctx}]
   (let [entities (map deref active-entities)
         player @player-eid
@@ -214,7 +214,7 @@
                            (ctx/line-of-sight? ctx player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
                                                     first
-                                                    render-z-order)
+                                                    (:world/render-z-order world))
             render-layer [render-below
                           render-default
                           render-above
