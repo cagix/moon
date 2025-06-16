@@ -207,7 +207,7 @@
           components))
 
 (defn spawn-entity!
-  [{:keys [ctx/id-counter
+  [{:keys [ctx/world
            ctx/z-orders
            ctx/minimum-size]
     :as ctx}
@@ -221,7 +221,7 @@
                       (assoc :position position)
                       (create-body minimum-size z-orders)
                       (utils/safe-merge (-> components
-                                            (assoc :entity/id (swap! id-counter inc))
+                                            (assoc :entity/id (swap! (:world/id-counter world) inc))
                                             (create-vs ctx)))))]
     (context-entity-add! ctx eid)
     (->> @eid
@@ -286,7 +286,6 @@
                     :ctx/explored-tile-corners (atom (g2d/create-grid (:tiled-map/width  tiled-map)
                                                                       (:tiled-map/height tiled-map)
                                                                       (constantly false)))
-                    :ctx/id-counter (atom 0)
                     :ctx/entity-ids (atom {})
                     :ctx/z-orders z-orders
                     :ctx/render-z-order (utils/define-order z-orders)
@@ -297,6 +296,7 @@
                                 :world/entity-states (:entity-states config)
                                 :world/potential-field-cache (atom nil)
                                 :world/factions-iterations (:potential-field-factions-iterations config)
+                                :world/id-counter (atom 0)
                                 }
                     })
         ctx (assoc ctx :ctx/player-eid (spawn-creature! ctx player-entity))]

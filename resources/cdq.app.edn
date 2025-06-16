@@ -66,7 +66,6 @@
                          [:ctx/raycaster :some]
                          [:ctx/content-grid :some]
                          [:ctx/explored-tile-corners :some]
-                         [:ctx/id-counter :some]
                          [:ctx/entity-ids :some]
                          [:ctx/z-orders :some]
                          [:ctx/render-z-order :some]
