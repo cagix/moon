@@ -223,8 +223,7 @@
     (context-entity-add! world eid)
     (->> @eid
          (mapcat #(create!-component-value world % eid))
-         (ctx/handle-txs! ctx))
-    eid))
+         (ctx/handle-txs! ctx))))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
@@ -306,7 +305,10 @@
                                :world/render-z-order (utils/define-order z-orders)
                                }
                    )
-        ctx (assoc-in ctx [:ctx/world :world/player-eid] (spawn-creature! ctx player-entity))]
+        _ (spawn-creature! ctx player-entity)
+        player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)
+        _ (assert (:entity/player? @player-eid))
+        ctx (assoc-in ctx [:ctx/world :world/player-eid] player-eid)]
     (run! (partial spawn-creature! ctx) creatures)
     ctx))
 
