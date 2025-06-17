@@ -66,11 +66,6 @@
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
   (stage/remove-inventory-item! stage inventory-cell))
 
-(defmethod do! :tx/state-enter [[_ eid [state-k state-v]]
-                                {:keys [ctx/world] :as ctx}]
-  (when-let [f (state-k (:state->enter (:world/entity-states world)))]
-    (f state-v eid)))
-
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
   nil)

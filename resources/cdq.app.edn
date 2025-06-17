@@ -72,22 +72,20 @@
 
  [cdq.utils.multifn/add-methods! [{:required [cdq.ctx.tx-handler/do!]}
                                   [
-                                   ;;; stage txs~!
                                    [cdq.tx.toggle-inventory-visible
                                     :tx/toggle-inventory-visible]
                                    [cdq.tx.show-message
                                     :tx/show-message]
                                    [cdq.tx.show-modal
                                     :tx/show-modal]
-                                   ;;;
 
-                                   ;;; :ctx/audio
                                    [cdq.tx.sound
                                     :tx/sound]
-                                   ;;;
 
                                    [cdq.tx.state-exit
                                     :tx/state-exit]
+                                   [cdq.tx.state-enter
+                                    :tx/state-enter]
 
                                    ]]]
 
