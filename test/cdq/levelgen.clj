@@ -2,7 +2,7 @@
   (:require [cdq.create.db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
-            [cdq.level.vampire]
+            [cdq.level.from-tmx]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
             [gdl.create.gdx]
@@ -15,6 +15,26 @@
             [gdl.utils.disposable :as disp]
             [gdx.tiled :as tiled]
             [gdx.ui :as ui]))
+
+(def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
+                                                  :texture "maps/uf_terrain.png"
+                                                  :spawn-rate 0.02
+                                                  :scaling 3
+                                                  :cave-size 200
+                                                  :cave-style :wide}])
+
+(def level-fns
+  [[#'cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
+                                 :start-position [32 71]}]
+   [#'cdq.level.uf-caves/create {:tile-size 48
+                                 :texture "maps/uf_terrain.png"
+                                 :spawn-rate 0.02
+                                 :scaling 3
+                                 :cave-size 200
+                                 :cave-style :wide}]
+   [#'cdq.level.modules/create {:world/map-size 5,
+                                :world/max-area-level 3,
+                                :world/spawn-rate 0.05}]])
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -39,7 +59,8 @@
 (defn- generate-level [{:keys [ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
     (disp/dispose! tiled-map))
-  (let [level (level-fn ctx)
+  (let [level (let [[f params] level-fn]
+                (f ctx params))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
@@ -51,12 +72,10 @@
 (defn- edit-window []
   (ui/window {:title "Edit"
               :cell-defaults {:pad 10}
-              :rows (for [level-fn [#'cdq.level.modules/create
-                                    #'cdq.level.uf-caves/create
-                                    #'cdq.level.vampire/create]]
-                      [(ui/text-button (str "Generate " level-fn)
+              :rows (for [level-fn level-fns]
+                      [(ui/text-button (str "Generate " (first level-fn))
                                        (fn [_actor _ctx]
-                                         (swap! state generate-level level-fn)))])
+                                         (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
               :pack? true}))
 
 (defrecord Context [])
@@ -79,7 +98,7 @@
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
-        ctx (generate-level ctx cdq.level.modules/create)]
+        ctx (generate-level ctx initial-level-fn)]
     (stage/add! (:ctx/stage ctx) (edit-window))
     (reset! state ctx)))
 

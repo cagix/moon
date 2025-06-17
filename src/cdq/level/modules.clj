@@ -211,8 +211,6 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defn create [ctx]
-  (generate-modules {:world/map-size 5,
-                     :world/max-area-level 3,
-                     :world/spawn-rate 0.05}
+(defn create [ctx params]
+  (generate-modules params
                     (prepare-creature-properties ctx)))

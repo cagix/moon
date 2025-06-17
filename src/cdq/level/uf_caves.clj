@@ -134,28 +134,33 @@
     (assoc level :level/grid grid)))
 
 (defn create [{:keys [ctx/graphics]
-               :as ctx}]
-  (let [tile-size 48]
-    (reduce (fn [level step]
-              (if (vector? step)
-                (let [[f params] step] (f level params))
-                (let [f step]          (f level))))
-            {:level/tile-size tile-size
-             :level/create-tile (let [texture (graphics/texture graphics "maps/uf_terrain.png")]
-                                  (memoize
-                                   (fn [& {:keys [sprite-idx movement]}]
-                                     {:pre [#{"all" "air" "none"} movement]}
-                                     (tiled/static-tiled-map-tile (texture/region texture
-                                                                                  (* (sprite-idx 0) tile-size)
-                                                                                  (* (sprite-idx 1) tile-size)
-                                                                                  tile-size
-                                                                                  tile-size)
-                                                                  "movement" movement))))
-             :level/spawn-rate 0.02
-             :level/scaling 3
-             :level/creature-properties (prepare-creature-properties ctx)}
-            [[initial-grid-creation {:size 200
-                                     :cave-style :wide
-                                     :random (java.util.Random.)}]
-             fix-nads
-             create*])))
+               :as ctx}
+              {:keys [tile-size
+                      texture
+                      spawn-rate
+                      scaling
+                      cave-size
+                      cave-style]}]
+  (reduce (fn [level step]
+            (if (vector? step)
+              (let [[f params] step] (f level params))
+              (let [f step]          (f level))))
+          {:level/tile-size tile-size
+           :level/create-tile (let [texture (graphics/texture graphics texture)]
+                                (memoize
+                                 (fn [& {:keys [sprite-idx movement]}]
+                                   {:pre [#{"all" "air" "none"} movement]}
+                                   (tiled/static-tiled-map-tile (texture/region texture
+                                                                                (* (sprite-idx 0) tile-size)
+                                                                                (* (sprite-idx 1) tile-size)
+                                                                                tile-size
+                                                                                tile-size)
+                                                                "movement" movement))))
+           :level/spawn-rate spawn-rate
+           :level/scaling scaling
+           :level/creature-properties (prepare-creature-properties ctx)}
+          [[initial-grid-creation {:size cave-size
+                                   :cave-style cave-style
+                                   :random (java.util.Random.)}]
+           fix-nads
+           create*]))

@@ -7,7 +7,8 @@
 
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
   (let [{:keys [tiled-map
-                start-position] :as level} (world-fn ctx)
+                start-position] :as level} (let [[f params] world-fn]
+                                             (f ctx params))
         creatures (for [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
                     {:position (utils/tile->middle position)
                      :creature-property (db/build db (keyword creature-id))

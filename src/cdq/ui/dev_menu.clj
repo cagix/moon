@@ -52,7 +52,7 @@
 (defn select-world [world-fns]
   {:label "World"
    :items (for [world-fn world-fns]
-            {:label (str "Start " world-fn)
+            {:label (str "Start " (first world-fn))
              :on-click (fn [_actor _ctx]
                          (swap! application/state (fn [ctx]
                                                     (-> ctx
