@@ -8,7 +8,6 @@
             [gdl.utils.disposable]
             [gdx.graphics :as graphics]
             [gdx.graphics.color :as color]
-            [gdx.graphics.colors :as colors]
             [gdx.graphics.g2d :as g2d]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd]
@@ -115,16 +114,12 @@
   [{:keys [ctx/files
            ctx/graphics]}
    {:keys [textures
-           colors ; optional
            cursors ; optional
            cursor-path-format ; optional
            default-font ; optional, could use gdx included (BitmapFont.)
            tile-size
            ui-viewport
            world-viewport]}]
-
-  (colors/put! colors)
-
   (let [batch (g2d/sprite-batch)
 
         shape-drawer-texture (graphics/white-pixel-texture)

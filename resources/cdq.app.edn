@@ -95,12 +95,12 @@
       :create-fns
       [gdl.create.gdx/do!
        [master.yoda/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
+       [gdl.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
        [master.yoda/assoc*
         [:ctx/graphics
          [gdl.create.graphics/do!
           {:textures {:folder "resources/"
                       :extensions #{"png" "bmp"}}
-           :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
            :tile-size 48
            :ui-viewport    {:width 1440 :height 900}
            :world-viewport {:width 1440 :height 900}
