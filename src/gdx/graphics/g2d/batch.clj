@@ -1,15 +1,16 @@
 (ns gdx.graphics.g2d.batch
-  (:require [gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics.g2d Batch)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+  (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
-(defn draw-on-viewport! [^Batch batch viewport f]
-  ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-  ; -> also Widgets, etc. ? check.
-  (.setColor batch (color/->obj :white))
-  (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
-  (.begin batch)
-  (f)
+(defn set-color! [^Batch batch color]
+  (.setColor batch color))
+
+(defn set-projection-matrix! [^Batch batch matrix]
+  (.setProjectionMatrix batch matrix))
+
+(defn begin! [^Batch batch]
+  (.begin batch))
+
+(defn end! [^Batch batch]
   (.end batch))
 
 (defn draw! [^Batch batch texture-region [x y] [w h] rotation]

@@ -72,14 +72,17 @@
     (get textures path))
 
   (draw-on-world-viewport! [_ f]
-    (batch/draw-on-viewport! batch
-                             world-viewport
-                             (fn []
-                               (sd/with-line-width shape-drawer world-unit-scale
-                                 (fn []
-                                   (reset! unit-scale world-unit-scale)
-                                   (f)
-                                   (reset! unit-scale 1))))))
+    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
+    ; -> also Widgets, etc. ? check.
+    (batch/set-color! batch (color/->obj :white))
+    (batch/set-projection-matrix! batch (.combined (:camera world-viewport)))
+    (batch/begin! batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (batch/end! batch))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
