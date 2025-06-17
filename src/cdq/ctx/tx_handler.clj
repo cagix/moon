@@ -72,9 +72,6 @@
        (format "sounds/%s.wav")
        (audio/play-sound! audio)))
 
-(defn- show-player-ui-msg! [{:keys [ctx/stage]} message]
-  (stage/show-player-ui-msg! stage message))
-
 (defn- show-modal-window! [{:keys [ctx/graphics
                                    ctx/stage]}
                            opts]
@@ -82,9 +79,6 @@
                             (:ui-viewport graphics)
                             opts))
 
-(defmethod do! :tx/show-message [[_ message] ctx]
-  (show-player-ui-msg! ctx message)
-  nil)
 
 (defmethod do! :tx/show-modal [[_ opts] ctx]
   (show-modal-window! ctx opts))

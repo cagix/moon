@@ -72,7 +72,10 @@
 
  [cdq.utils.multifn/add-methods! [{:required [cdq.ctx.tx-handler/do!]}
                                   [[cdq.tx.toggle-inventory-visible
-                                    :tx/toggle-inventory-visible]]]]
+                                    :tx/toggle-inventory-visible]
+                                   [cdq.tx.show-message
+                                    :tx/show-message]
+                                   ]]]
 
  [master.yoda/dispatch
   [gdx.utils.shared-library-loader/operating-system
