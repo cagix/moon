@@ -1,6 +1,4 @@
 (ns cdq.utils.multifn
-  (:require [cdq.effect :as effect]
-            )
   (:import (clojure.lang MultiFn)))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
@@ -32,7 +30,6 @@
         ))))
 
 (defn install-methods [{:keys [required optional]} ns-sym k]
-  (require ns-sym)
   (add-methods required ns-sym k)
   (add-methods optional ns-sym k :optional? true))
 
@@ -41,39 +38,10 @@
 ; or draws
 ; grep 'defmethod' (info txt ?)
 
-(let [effect-multis {:required [#'cdq.effect/applicable?
-                                #'cdq.effect/handle]
-                     :optional [#'cdq.effect/useful?
-                                #'cdq.effect/render]}]
-  (doseq [[ns-sym k] [
-                      ['cdq.effects.audiovisual
-                       :effects/audiovisual]
-                      ['cdq.effects.projectile
-                       :effects/projectile]
-                      ['cdq.effects.sound
-                       :effects/sound]
-                      ['cdq.effects.spawn
-                       :effects/spawn]
-                      ['cdq.effects.target-all
-                       :effects/target-all]
-                      ['cdq.effects.target-entity
-                       :effects/target-entity]
-                      ['cdq.effects.target.audiovisual
-                       :effects.target/audiovisual]
-                      ['cdq.effects.target.convert
-                       :effects.target/convert]
-                      ['cdq.effects.target.damage
-                       :effects.target/damage]
-                      ['cdq.effects.target.kill
-                       :effects.target/kill]
-                      ['cdq.effects.target.melee-damage
-                       :effects.target/melee-damage]
-                      ['cdq.effects.target.spiderweb
-                       :effects.target/spiderweb]
-                      ['cdq.effects.target.stun
-                       :effects.target/stun]
-                      ]]
-    (install-methods effect-multis ns-sym k)))
+
+(defn add-methods! [[multis components]]
+  (doseq [[ns-sym k] components]
+    (install-methods multis ns-sym k)))
 
 
 
