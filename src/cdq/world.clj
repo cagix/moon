@@ -259,9 +259,13 @@
                          (:tiled-map/height tiled-map)
                          (constantly false))))
 
+; added later - make schema ?
+; * :world/delta-time
+; * :world/paused?
+; * :world/active-entities
+; * :world/mouseover-eid
+; * :world/player-eid
 (defn create [ctx config {:keys [tiled-map
-                                 start-position
-                                 creatures
                                  player-entity]}]
   (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
@@ -278,14 +282,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
         ctx (assoc ctx
-                   :ctx/world {
-                               ; added later - make schema ?
-                               ; * :world/delta-time
-                               ; * :world/paused?
-                               ; * :world/active-entities
-                               ; * :world/mouseover-eid
-                               ; * :world/player-eid
-                               :world/tiled-map tiled-map
+                   :ctx/world {:world/tiled-map tiled-map
                                :world/grid grid
                                :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
@@ -303,17 +300,11 @@
                                :world/max-speed max-speed
                                :world/minimum-size minimum-size
                                :world/z-orders z-orders
-                               :world/render-z-order (utils/define-order z-orders)
-                               }
-                   )
+                               :world/render-z-order (utils/define-order z-orders)})
         _ (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) player-entity))
-        player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)
-        _ (assert (:entity/player? @player-eid))
-        ctx (assoc-in ctx [:ctx/world :world/player-eid] player-eid)]
-    (run! (fn [creature]
-            (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) creature)))
-          creatures)
-    ctx))
+        player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)]
+    (assert (:entity/player? @player-eid))
+    (assoc-in ctx [:ctx/world :world/player-eid] player-eid)))
 
 (defn assoc-active-entities [{:keys [ctx/world]
                               :as ctx}]

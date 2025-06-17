@@ -1,9 +1,10 @@
 (ns cdq.ctx.game
-  (:require [cdq.db :as db]
-            [gdl.ui.stage :as stage]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.world :as world]
+            [gdl.ui.stage :as stage]
             [master.yoda :as yoda]))
 
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
@@ -33,9 +34,12 @@
   ctx)
 
 (defn create-world-state [{:keys [ctx/config] :as ctx}]
-  (world/create ctx
-                (:cdq.ctx.game/world config)
-                (generate-level ctx (:config/starting-world config))))
+  (let [level (generate-level ctx (:config/starting-world config))
+        ctx (world/create ctx (:cdq.ctx.game/world config) level)]
+    (run! (fn [creature]
+            (ctx/handle-txs! ctx (world/spawn-creature! (:ctx/world ctx) creature)))
+          (:creatures level))
+    ctx))
 
 (defn reset-game-state! [{:keys [ctx/config]
                           :as ctx}]
