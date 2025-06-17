@@ -140,8 +140,6 @@
               (if (vector? step)
                 (let [[f params] step] (f level params))
                 (let [f step]          (f level))))
-            ; TODO add uf-caves info
-            ; and probabilities for each tile
             {:level/tile-size tile-size
              :level/create-tile (let [texture (graphics/texture graphics "maps/uf_terrain.png")]
                                   (memoize
