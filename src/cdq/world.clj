@@ -265,8 +265,11 @@
 ; * :world/active-entities
 ; * :world/mouseover-eid
 ; * :world/player-eid
-(defn create [ctx config {:keys [tiled-map
-                                 player-entity]}]
+(defn create
+  [ctx
+   config
+   tiled-map
+   player-entity]
   (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
