@@ -6,16 +6,24 @@
             [cdq.world :as world]
             [master.yoda :as yoda]))
 
+(defn- tiled-map->creatures-to-spawn [tiled-map]
+  (for [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
+    {:position position
+     :creature-property (keyword creature-id)}))
+
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
   (let [{:keys [tiled-map
                 start-position] :as level} (let [[f params] world-fn]
                                              (f ctx params))
-        creatures (for [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
-                    {:position (utils/tile->middle position)
-                     :creature-property (db/build db (keyword creature-id))
-                     :components {:entity/fsm {:fsm :fsms/npc
-                                               :initial-state :npc-sleeping}
-                                  :entity/faction :evil}})
+        enemy-components {:entity/fsm {:fsm :fsms/npc
+                                       :initial-state :npc-sleeping}
+                          :entity/faction :evil}
+        creatures (map (fn [creature]
+                         (-> creature
+                             (update :position utils/tile->middle)
+                             (update :creature-property (partial db/build db))
+                             (assoc :components enemy-components)))
+                       (tiled-map->creatures-to-spawn tiled-map))
         {:keys [creature-id
                 free-skill-points
                 click-distance-tiles]} (:cdq.ctx.game/player-props (:ctx/config ctx))
