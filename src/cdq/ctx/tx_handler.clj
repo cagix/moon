@@ -12,7 +12,6 @@
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [gdl.audio :as audio]
             [gdl.graphics :as g]
             [gdl.math.vector2 :as v]))
 
@@ -66,32 +65,6 @@
 
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
   (stage/remove-inventory-item! stage inventory-cell))
-
-(defn- play-sound! [{:keys [ctx/audio]} sound-name]
-  (->> sound-name
-       (format "sounds/%s.wav")
-       (audio/play-sound! audio)))
-
-(defn- show-modal-window! [{:keys [ctx/graphics
-                                   ctx/stage]}
-                           opts]
-  (stage/show-modal-window! stage
-                            (:ui-viewport graphics)
-                            opts))
-
-
-(defmethod do! :tx/show-modal [[_ opts] ctx]
-  (show-modal-window! ctx opts))
-
-(defmethod do! :tx/sound [[_ sound-name] ctx]
-  (play-sound! ctx sound-name)
-  nil)
-
-(defmethod do! :tx/state-exit [[_ eid [state-k state-v]]
-                               {:keys [ctx/world] :as ctx}]
-  (handle-txs! ctx
-               (when-let [f (state-k (:state->exit (:world/entity-states world)))]
-                 (f state-v eid ctx))))
 
 (defmethod do! :tx/state-enter [[_ eid [state-k state-v]]
                                 {:keys [ctx/world] :as ctx}]
