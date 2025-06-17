@@ -118,6 +118,8 @@
          [master.yoda/const*
           {:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                                               :start-position [32 71]}]
+           :config/game-state-pipeline [cdq.ctx.game/reset-stage!
+                                        cdq.ctx.game/create-world-state]
            :cdq.ctx.game/ui-actors
            [[cdq.ui.dev-menu/create {:world-fns [[cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                                                              :start-position [32 71]}]

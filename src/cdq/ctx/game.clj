@@ -3,7 +3,8 @@
             [gdl.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
-            [cdq.world :as world]))
+            [cdq.world :as world]
+            [master.yoda :as yoda]))
 
 (defn- generate-level [{:keys [ctx/db] :as ctx} world-fn]
   (let [{:keys [tiled-map
@@ -31,12 +32,19 @@
            :creatures creatures
            :player-entity player-entity)))
 
-(defn reset-game-state! [{:keys [ctx/config
-                                 ctx/stage]
-                          :as ctx}]
+(defn reset-stage! [{:keys [ctx/config
+                            ctx/stage]
+                     :as ctx}]
   (stage/clear! stage)
   (doseq [[create-actor params] (:cdq.ctx.game/ui-actors config)]
     (stage/add! stage (create-actor ctx params)))
+  ctx)
+
+(defn create-world-state [{:keys [ctx/config] :as ctx}]
   (world/create ctx
                 (:cdq.ctx.game/world config)
                 (generate-level ctx (:config/starting-world config))))
+
+(defn reset-game-state! [{:keys [ctx/config]
+                          :as ctx}]
+  (reduce yoda/render* ctx (:config/game-state-pipeline config)))
