@@ -34,6 +34,9 @@
    [com.badlogic.gdx.scenes.scene2d.ui.Image
     gdx.ui.image
     gdl.ui.image/Image]
+   [gdl.create.graphics.Graphics
+    gdl.create.graphics.handle-draws
+    gdl.graphics/DeclarativeDraws]
    ]]
 
  [cdq.utils.multifn/add-methods! [{:required [cdq.effect/applicable?
@@ -94,7 +97,7 @@
        [master.yoda/assoc* [:ctx/config [gdl.start/slurpquire "config.edn"]]]
        [master.yoda/assoc*
         [:ctx/graphics
-         [gdl.create.g/do!
+         [gdl.create.graphics/do!
           {:textures {:folder "resources/"
                       :extensions #{"png" "bmp"}}
            :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]

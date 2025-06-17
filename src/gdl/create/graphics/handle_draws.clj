@@ -1,6 +1,5 @@
 (ns gdl.create.graphics.handle-draws
-  (:require [gdl.create.graphics]
-            [gdl.graphics]
+  (:require [gdl.graphics]
             [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.g2d.texture-region :as texture-region]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
@@ -10,12 +9,10 @@
   (fn [[k] _graphics]
     k))
 
-(extend-type gdl.create.graphics.Graphics
-  gdl.graphics/DeclarativeDraws
-  (handle-draws! [graphics draws]
-    (doseq [component draws
-            :when component]
-      (draw! component graphics))))
+(defn handle-draws! [graphics draws]
+  (doseq [component draws
+          :when component]
+    (draw! component graphics)))
 
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
@@ -29,7 +26,6 @@
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  ; could use batch/.draw region x y
   (batch/draw! batch
                texture-region
                [x y]
