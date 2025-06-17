@@ -116,7 +116,7 @@
        [master.yoda/assoc*
         [:ctx/config
          [master.yoda/const*
-          {
+          {:config/starting-world cdq.level.vampire/create
            :cdq.ctx.game/ui-actors
            [[cdq.ui.dev-menu/create {:world-fns [cdq.level.vampire/create
                                                  cdq.level.uf-caves/create
@@ -264,7 +264,7 @@
           {:schemas "schema.edn"
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
-       [cdq.ctx/reset-game-state! cdq.level.vampire/create]
+       cdq.ctx/reset-game-state!
        cdq.create.player-movement-vector/do!
        cdq.application.context/validate]}]
     :dispose! cdq.application/dispose!

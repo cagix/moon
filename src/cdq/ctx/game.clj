@@ -32,11 +32,10 @@
 
 (defn reset-game-state! [{:keys [ctx/config
                                  ctx/stage]
-                          :as ctx}
-                         world-fn]
+                          :as ctx}]
   (stage/clear! stage)
   (doseq [[create-actor params] (:cdq.ctx.game/ui-actors config)]
     (stage/add! stage (create-actor ctx params)))
   (world/create ctx
                 (:cdq.ctx.game/world config)
-                (generate-level ctx world-fn)))
+                (generate-level ctx (:config/starting-world config))))
