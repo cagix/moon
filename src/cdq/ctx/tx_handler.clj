@@ -82,13 +82,6 @@
                             (:ui-viewport graphics)
                             opts))
 
-(defn- toggle-inventory-visible! [{:keys [ctx/stage]}]
-  (stage/toggle-inventory-visible! stage))
-
-(defmethod do! :tx/toggle-inventory-visible [_ ctx]
-  (toggle-inventory-visible! ctx)
-  nil)
-
 (defmethod do! :tx/show-message [[_ message] ctx]
   (show-player-ui-msg! ctx message)
   nil)
