@@ -29,6 +29,7 @@
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
+  ; could use batch/.draw region x y
   (batch/draw! batch
                texture-region
                [x y]

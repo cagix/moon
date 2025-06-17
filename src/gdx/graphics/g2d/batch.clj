@@ -1,17 +1,10 @@
 (ns gdx.graphics.g2d.batch
   (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
-(defn set-color! [^Batch batch color]
-  (.setColor batch color))
-
-(defn set-projection-matrix! [^Batch batch matrix]
-  (.setProjectionMatrix batch matrix))
-
-(defn begin! [^Batch batch]
-  (.begin batch))
-
-(defn end! [^Batch batch]
-  (.end batch))
+(def set-color!             Batch/.setColor)
+(def set-projection-matrix! Batch/.setProjectionMatrix)
+(def begin!                 Batch/.begin)
+(def end!                   Batch/.end)
 
 (defn draw! [^Batch batch texture-region [x y] [w h] rotation]
   (.draw batch
