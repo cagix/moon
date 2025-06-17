@@ -5,4 +5,5 @@
                             ctx/stage]}]
   (stage/show-modal-window! stage
                             (:ui-viewport graphics)
-                            opts))
+                            opts)
+  nil)

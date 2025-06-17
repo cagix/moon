@@ -34,7 +34,7 @@
      (assert (valid-tx? transaction) (pr-str transaction))
      (when record-txs?
        (swap! txs conj transaction))
-     (try (do! transaction ctx)
+     (try (handle-txs! ctx (do! transaction ctx))
           (catch Throwable t
             (throw (ex-info "" {:transaction transaction} t)))))))
 
@@ -68,9 +68,8 @@
 
 (defmethod do! :tx/state-enter [[_ eid [state-k state-v]]
                                 {:keys [ctx/world] :as ctx}]
-  (handle-txs! ctx
-               (when-let [f (state-k (:state->enter (:world/entity-states world)))]
-                 (f state-v eid))))
+  (when-let [f (state-k (:state->enter (:world/entity-states world)))]
+    (f state-v eid)))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
@@ -96,15 +95,12 @@
   (swap! eid entity/mod-remove modifiers)
   nil)
 
-(defmethod do! :tx/effect
-  [[_ effect-ctx effects]
-   {:keys [ctx/world]
-    :as ctx}]
-  (run! #(handle-txs! ctx (effect/handle % effect-ctx world))
-        (effect/filter-applicable? effect-ctx effects)))
+(defmethod do! :tx/effect [[_ effect-ctx effects] {:keys [ctx/world]}]
+  (mapcat #(effect/handle % effect-ctx world)
+          (effect/filter-applicable? effect-ctx effects)))
 
-(defmethod do! :tx/event [[_ eid event params] {:keys [ctx/world] :as ctx}]
-  (handle-txs! ctx (fsm/event->txs world eid event params)))
+(defmethod do! :tx/event [[_ eid event params] {:keys [ctx/world]}]
+  (fsm/event->txs world eid event params))
 
 (defmethod do! :tx/add-skill [[_ eid skill] ctx]
   (swap! eid entity/add-skill skill)
@@ -189,71 +185,62 @@
 #_(defn do! [ctx eid cell item]
   #_(tx/stack-item ctx eid cell item))
 
-(defmethod do! :tx/audiovisual [[_ position audiovisual]
-                                {:keys [ctx/db]
-                                 :as ctx}]
+(defmethod do! :tx/audiovisual [[_ position audiovisual] {:keys [ctx/db]}]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
                                      (db/build db audiovisual)
                                      audiovisual)]
-    (do! [:tx/sound sound]
-         ctx)
-    (do! [:tx/spawn-effect
-          position
-          {:entity/animation animation
-           :entity/delete-after-animation-stopped? true}]
-         ctx)
-    nil))
+    [[:tx/sound sound]
+     [:tx/spawn-effect
+      position
+      {:entity/animation animation
+       :entity/delete-after-animation-stopped? true}]]))
 
 (defmethod do! :tx/spawn-alert [[_ position faction duration]
-                                {:keys [ctx/world] :as ctx}]
-  (do! [:tx/spawn-effect
-        position
-        {:entity/alert-friendlies-after-duration
-         {:counter (timer/create (:world/elapsed-time world) duration)
-          :faction faction}}]
-       ctx)
-  nil)
+                                {:keys [ctx/world]}]
+  [[:tx/spawn-effect
+    position
+    {:entity/alert-friendlies-after-duration
+     {:counter (timer/create (:world/elapsed-time world) duration)
+      :faction faction}}]])
 
-(defmethod do! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] ctx]
-  (do! [:tx/spawn-effect
-        start
-        {:entity/line-render {:thick? thick? :end end :color color}
-         :entity/delete-after-duration duration}]
-       ctx)
-  nil)
+(defmethod do! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] _ctx]
+  [[:tx/spawn-effect
+    start
+    {:entity/line-render {:thick? thick? :end end :color color}
+     :entity/delete-after-duration duration}]])
 
-(defmethod do! :tx/deal-damage [[_ source target damage] ctx]
+(defmethod do! :tx/deal-damage [[_ source target damage] _ctx]
   (let [source* @source
         target* @target
         hp (entity/hitpoints target*)]
-    (handle-txs! ctx
-                 (cond
-                  (zero? (hp 0))
-                  nil
+    (cond
+     (zero? (hp 0))
+     nil
 
-                  (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
-                                                            (:creature/stats target*)))
-                  [[:tx/add-text-effect target "[WHITE]ARMOR" 0.3]]
+     (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
+                                               (:creature/stats target*)))
+     [[:tx/add-text-effect target "[WHITE]ARMOR" 0.3]]
 
-                  :else
-                  (let [min-max (:damage/min-max (modifiers/damage (:creature/stats source*)
-                                                                   (:creature/stats target*)
-                                                                   damage))
-                        dmg-amount (rand-int-between min-max)
-                        new-hp-val (max (- (hp 0) dmg-amount)
-                                        0)]
-                    [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
-                     [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
-                     [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
-                     [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]])))))
+     :else
+     (let [min-max (:damage/min-max (modifiers/damage (:creature/stats source*)
+                                                      (:creature/stats target*)
+                                                      damage))
+           dmg-amount (rand-int-between min-max)
+           new-hp-val (max (- (hp 0) dmg-amount)
+                           0)]
+       [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
+        [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
+        [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
+        [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]]))))
 
 (defmethod do! :tx/set-movement [[_ eid movement-vector] _ctx]
   (swap! eid entity/set-movement movement-vector)
   nil)
 
 (defmethod do! :tx/move-entity [[_ & opts] {:keys [ctx/world]}]
-  (apply world/move-entity! world opts))
+  (apply world/move-entity! world opts)
+  nil)
 
 (defmethod do! :tx/spawn-projectile
   [[_
@@ -264,49 +251,42 @@
             entity-effects
             projectile/size
             projectile/piercing?] :as projectile}]
-   {:keys [ctx/world] :as ctx}]
-  (ctx/handle-txs! ctx
-                   (world/spawn-entity! world
-                                        position
-                                        {:width size
-                                         :height size
-                                         :z-order :z-order/flying
-                                         :rotation-angle (v/angle-from-vector direction)}
-                                        {:entity/movement {:direction direction
-                                                           :speed speed}
-                                         :entity/image image
-                                         :entity/faction faction
-                                         :entity/delete-after-duration (/ max-range speed)
-                                         :entity/destroy-audiovisual :audiovisuals/hit-wall
-                                         :entity/projectile-collision {:entity-effects entity-effects
-                                                                       :piercing? piercing?}}))
-  nil)
+   {:keys [ctx/world]}]
+  (world/spawn-entity! world
+                       position
+                       {:width size
+                        :height size
+                        :z-order :z-order/flying
+                        :rotation-angle (v/angle-from-vector direction)}
+                       {:entity/movement {:direction direction
+                                          :speed speed}
+                        :entity/image image
+                        :entity/faction faction
+                        :entity/delete-after-duration (/ max-range speed)
+                        :entity/destroy-audiovisual :audiovisuals/hit-wall
+                        :entity/projectile-collision {:entity-effects entity-effects
+                                                      :piercing? piercing?}}))
 
 (defmethod do! :tx/spawn-effect
   [[_ position components]
    {:keys [ctx/config
-           ctx/world]
-    :as ctx}]
-  (ctx/handle-txs! ctx (world/spawn-entity! world
-                                            position
-                                            (:effect-body-props config)
-                                            components))
-  nil)
+           ctx/world]}]
+  (world/spawn-entity! world
+                       position
+                       (:effect-body-props config)
+                       components))
 
 (defmethod do! :tx/spawn-item [[_ position item]
-                               {:keys [ctx/world]
-                                :as ctx}]
-  (ctx/handle-txs! ctx (world/spawn-entity! world
-                                            position
-                                            {:width 0.75
-                                             :height 0.75
-                                             :z-order :z-order/on-ground}
-                                            {:entity/image (:entity/image item)
-                                             :entity/item item
-                                             :entity/clickable {:type :clickable/item
-                                                                :text (:property/pretty-name item)}}))
-  nil)
+                               {:keys [ctx/world]}]
+  (world/spawn-entity! world
+                       position
+                       {:width 0.75
+                        :height 0.75
+                        :z-order :z-order/on-ground}
+                       {:entity/image (:entity/image item)
+                        :entity/item item
+                        :entity/clickable {:type :clickable/item
+                                           :text (:property/pretty-name item)}}))
 
-(defmethod do! :tx/spawn-creature [[_ opts] {:keys [ctx/world] :as ctx}]
-  (ctx/handle-txs! ctx (world/spawn-creature! world opts))
-  nil)
+(defmethod do! :tx/spawn-creature [[_ opts] {:keys [ctx/world]}]
+  (world/spawn-creature! world opts))
