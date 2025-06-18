@@ -45,15 +45,6 @@
   (content-grid/position-changed! content-grid eid)
   (grid/position-changed! grid eid))
 
-(defn move-entity! [world eid body direction rotate-in-movement-direction?]
-  (context-entity-moved! world eid)
-  (swap! eid assoc
-         :entity/position (:entity/position body)
-         :left-bottom     (:left-bottom     body))
-  (when rotate-in-movement-direction?
-    (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
-  nil)
-
 (def ^:private components-schema
   (m/schema [:map {:closed true}
              [:entity/image {:optional true} :some]
@@ -214,26 +205,6 @@
           {}
           components))
 
-(defn spawn-entity!
-  [{:keys [world/minimum-size
-           world/z-orders
-           world/id-counter]
-    :as world}
-   position
-   body
-   components]
-  (m/validate-humanize components-schema components)
-  (assert (and (not (contains? components :position))
-               (not (contains? components :entity/id))))
-  (let [eid (atom (-> body
-                      (assoc :position position)
-                      (create-body minimum-size z-orders)
-                      (utils/safe-merge (-> components
-                                            (assoc :entity/id (swap! id-counter inc))
-                                            (create-vs world)))))]
-    (context-entity-add! world eid)
-    (mapcat #(create!-component-value world % eid) @eid)))
-
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
 ; because using potential-field for z-order/ground
@@ -247,20 +218,6 @@
    :height height
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
-
-(defn spawn-creature! [world
-                       {:keys [position
-                               creature-property
-                               components]}]
-  (assert creature-property)
-  (let [props creature-property]
-    (spawn-entity! world
-                   position
-                   (create-creature-body (:entity/body props))
-                   (-> props
-                       (dissoc :entity/body)
-                       (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                       (utils/safe-merge components)))))
 
 (defn- create-explored-tile-corners [tiled-map]
   (atom (g2d/create-grid (:tiled-map/width  tiled-map)
@@ -295,9 +252,52 @@
                     ;
                     ]
   w/World
+  (spawn-entity!
+    [{:keys [world/minimum-size
+             world/z-orders
+             world/id-counter]
+      :as world}
+     position
+     body
+     components]
+    (m/validate-humanize components-schema components)
+    (assert (and (not (contains? components :position))
+                 (not (contains? components :entity/id))))
+    (let [eid (atom (-> body
+                        (assoc :position position)
+                        (create-body minimum-size z-orders)
+                        (utils/safe-merge (-> components
+                                              (assoc :entity/id (swap! id-counter inc))
+                                              (create-vs world)))))]
+      (context-entity-add! world eid)
+      (mapcat #(create!-component-value world % eid) @eid)))
+
+  (spawn-creature! [world
+                    {:keys [position
+                            creature-property
+                            components]}]
+    (assert creature-property)
+    (let [props creature-property]
+      (w/spawn-entity! world
+                       position
+                       (create-creature-body (:entity/body props))
+                       (-> props
+                           (dissoc :entity/body)
+                           (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                           (utils/safe-merge components)))))
+
   (remove-entity! [world eid]
     (context-entity-remove! world eid)
     (mapcat #(component-destroy! world % eid) @eid))
+
+  (move-entity! [world eid body direction rotate-in-movement-direction?]
+    (context-entity-moved! world eid)
+    (swap! eid assoc
+           :entity/position (:entity/position body)
+           :left-bottom     (:left-bottom     body))
+    (when rotate-in-movement-direction?
+      (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
+    nil)
 
   (line-of-sight? [{:keys [world/raycaster]}
                    source
@@ -400,7 +400,7 @@
                                       :world/minimum-size minimum-size
                                       :world/z-orders z-orders
                                       :world/render-z-order (utils/define-order z-orders)}))
-        _ (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) player-entity))
+        _ (ctx/handle-txs! ctx (w/spawn-creature! (:ctx/world ctx) player-entity))
         player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)]
     (assert (:entity/player? @player-eid))
     (assoc-in ctx [:ctx/world :world/player-eid] player-eid)))

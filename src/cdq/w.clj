@@ -10,4 +10,7 @@
   (path-blocked? [_ start end width])
   (tick-potential-fields! [_])
   (update-time [_ delta-ms])
-  (remove-entity! [_ eid]))
+  (remove-entity! [_ eid])
+  (move-entity! [_ eid body direction rotate-in-movement-direction?])
+  (spawn-entity! [_ position body components])
+  (spawn-creature! [_ opts]))

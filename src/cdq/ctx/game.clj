@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
+            [cdq.w :as w]
             [cdq.world :as world]
             [gdl.ui.stage :as stage]
             [master.yoda :as yoda]))
@@ -36,7 +37,7 @@
                           tiled-map
                           player-entity)]
     (run! (fn [creature]
-            (ctx/handle-txs! ctx (world/spawn-creature! (:ctx/world ctx) creature)))
+            (ctx/handle-txs! ctx (w/spawn-creature! (:ctx/world ctx) creature)))
           creatures-to-spawn)
     ctx))
 
