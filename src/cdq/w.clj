@@ -9,4 +9,5 @@
   (npc-effect-ctx [_ eid])
   (path-blocked? [_ start end width])
   (tick-potential-fields! [_])
-  (update-time [_ delta-ms]))
+  (update-time [_ delta-ms])
+  (remove-entity! [_ eid]))

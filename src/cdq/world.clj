@@ -30,9 +30,9 @@
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity! grid eid))
 
-(defn context-entity-remove! [{:keys [world/entity-ids
-                                      world/grid]}
-                              eid]
+(defn- context-entity-remove! [{:keys [world/entity-ids
+                                       world/grid]}
+                               eid]
   (let [id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -203,7 +203,7 @@
   (when-let [create! (:create! (k (:world/entity-components world)))]
     (create! v eid world)))
 
-(defn component-destroy!
+(defn- component-destroy!
   [world [k v] eid]
   (when-let [destroy! (:destroy! (k (:world/entity-components world)))]
     (destroy! v eid world)))
@@ -295,6 +295,10 @@
                     ;
                     ]
   w/World
+  (remove-entity! [world eid]
+    (context-entity-remove! world eid)
+    (mapcat #(component-destroy! world % eid) @eid))
+
   (line-of-sight? [{:keys [world/raycaster]}
                    source
                    target]
