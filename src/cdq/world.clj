@@ -49,7 +49,7 @@
   (context-entity-moved! world eid)
   (swap! eid assoc
          :entity/position (:entity/position body)
-         :left-bottom (:left-bottom body))
+         :left-bottom     (:left-bottom     body))
   (when rotate-in-movement-direction?
     (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
   nil)
@@ -176,14 +176,18 @@
               (<= 0 rotation-angle 360)))
   (map->Body
    {:position (mapv float position)
+
     :left-bottom [(float (- x (/ width  2)))
                   (float (- y (/ height 2)))]
+
     :width  (float width)
     :height (float height)
+
     :half-width  (float (/ width  2))
     :half-height (float (/ height 2))
     :radius (float (max (/ width  2)
                         (/ height 2)))
+
     :collides? collides?
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
