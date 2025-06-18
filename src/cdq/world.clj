@@ -259,12 +259,34 @@
                          (:tiled-map/height tiled-map)
                          (constantly false))))
 
-; added later - make schema ?
-; * :world/delta-time
-; * :world/paused?
-; * :world/active-entities
-; * :world/mouseover-eid
-; * :world/player-eid
+(q/defrecord World [
+                    world/tiled-map
+                    world/grid
+                    world/explored-tile-corners
+                    world/content-grid
+                    world/raycaster
+                    world/entity-components
+                    world/entity-states
+                    world/potential-field-cache
+                    world/factions-iterations
+                    world/id-counter
+                    world/entity-ids
+                    world/elapsed-time
+                    world/max-delta
+                    world/max-speed
+                    world/minimum-size
+                    world/z-orders
+                    world/render-z-order
+
+                    ; added later
+                    world/delta-time
+                    world/paused?
+                    world/active-entities
+                    world/mouseover-eid
+                    world/player-eid
+                    ;
+                    ])
+
 (defn create
   [ctx
    config
@@ -285,25 +307,26 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)
         ctx (assoc ctx
-                   :ctx/world {:world/tiled-map tiled-map
-                               :world/grid grid
-                               :world/explored-tile-corners (create-explored-tile-corners tiled-map)
-                               :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                                        (:tiled-map/height tiled-map)
-                                                                        (:content-grid-cell-size config))
-                               :world/raycaster (raycaster/create grid)
-                               :world/entity-components (:entity-components config)
-                               :world/entity-states (:entity-states config)
-                               :world/potential-field-cache (atom nil)
-                               :world/factions-iterations (:potential-field-factions-iterations config)
-                               :world/id-counter (atom 0)
-                               :world/entity-ids (atom {})
-                               :world/elapsed-time 0
-                               :world/max-delta max-delta
-                               :world/max-speed max-speed
-                               :world/minimum-size minimum-size
-                               :world/z-orders z-orders
-                               :world/render-z-order (utils/define-order z-orders)})
+                   :ctx/world (merge (map->World {})
+                                     {:world/tiled-map tiled-map
+                                      :world/grid grid
+                                      :world/explored-tile-corners (create-explored-tile-corners tiled-map)
+                                      :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                                               (:tiled-map/height tiled-map)
+                                                                               (:content-grid-cell-size config))
+                                      :world/raycaster (raycaster/create grid)
+                                      :world/entity-components (:entity-components config)
+                                      :world/entity-states (:entity-states config)
+                                      :world/potential-field-cache (atom nil)
+                                      :world/factions-iterations (:potential-field-factions-iterations config)
+                                      :world/id-counter (atom 0)
+                                      :world/entity-ids (atom {})
+                                      :world/elapsed-time 0
+                                      :world/max-delta max-delta
+                                      :world/max-speed max-speed
+                                      :world/minimum-size minimum-size
+                                      :world/z-orders z-orders
+                                      :world/render-z-order (utils/define-order z-orders)}))
         _ (ctx/handle-txs! ctx (spawn-creature! (:ctx/world ctx) player-entity))
         player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)]
     (assert (:entity/player? @player-eid))
