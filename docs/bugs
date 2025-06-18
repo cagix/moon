@@ -3,3 +3,8 @@
 * movement speed -0.5% => you can see is just 2.995 instead of 3 for the rat after slow.
 
 * dragon disappears after blood curse (convert ) ?
+
+* trying to attack projectiles because damage effect no creature stats check (before hp check )
+
+ ; TODO also remember actor needs to call (super) from 'act' thath's why maybe ui
+ ; problems of tooltips?

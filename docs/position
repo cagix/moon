@@ -1,7 +1,0 @@
-src/clojure/ctx/spawn_entity.clj|71 col 20-28| (q/defrecord Body [position
-
-
-src/clojure/grid_impl.clj|56 col 35-43| (circle->entities [this {:keys [position radius] :as circle}]
-
-
-src/clojure/math/geom.clj|68 col 40-48| (defn circle->outer-rectangle [{[x y] :position :keys [radius]}]

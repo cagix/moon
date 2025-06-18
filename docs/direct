@@ -1,9 +1,0 @@
-
-; with the direct path I don't have to invent names for things
-; and don't need to see the namespace context for names
-; everything is clear and direct.
-; also stop with this 'if' and 'when'
-; why does everything need a fucking name
-; each component tx can be an anonymous fn has a name through the keyword only
-; also context transactions only w. 'gdl.c/'
-; and them make application-listener separate because it became immense

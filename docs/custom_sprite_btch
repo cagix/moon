@@ -1,0 +1,81 @@
+
+(ns gdx.graphics.g2d.sprite-batch)
+
+(defn create []
+  {
+   ; VertexDataType
+   :currentDataType
+
+   ; Mesh
+   :mesh
+
+   ; float[]
+   :vertices
+
+   :idx 0
+   :lastTexture nil
+   :invTexWidth 0
+   :invTexHeight 0
+   :drawing? false
+   :transformMatrix  (Matrix4.)
+   :projectionMatrix (Matrix4.)
+   :combinedMatrix   (Matrix4.)
+   :blendingDisabled false
+   :blendSrcFunc GL20/GL_SRC_ALPHA
+   :blendDstFunc GL20/GL_ONE_MINUS_SRC_ALPHA
+   :blendSrcFuncAlpha GL20/GL_SRC_ALPHA
+   :blendDstFuncAlpha GL20/GL_ONE_MINUS_SRC_ALPHA
+   :shader
+   :customShader nil
+   :ownsShader
+   :color (Color. 1 1 1 1)
+   :colorPacked Color/WHITE_FLOAT_BITS
+   :renderCells 0
+   :totalRenderCalls 0
+   :maxSpritesInBatch 0
+
+   }
+  (let [size 1000
+        _ (when (> size 8191)
+            (throw (IllegalArgumentException. "Can't have more than 8191 sprites per batch: " size)))
+        defaultShader nil
+        graphics Gdx/graphics
+        vertexDataType (if (.getGL30 graphics)
+                         VertexDataType/VertexBufferObjectWithVAO
+                         VertexDataType/VertexBufferObject)
+        vertexDataType (if overrideVertexType
+                         overrideVertexType
+                         vertexDataType)
+        currentDataType vertexDataType
+        mesh (Mesh. currentDataType
+                    false
+                    (* size 4)
+                    (* size 6)
+                    (VertexAttribute. Usage/Position,    2, ShaderProgram/POSITION_ATTRIBUTE)
+                    (VertexAttribute. Usage/ColorPacked, 4, ShaderProgram/COLOR_ATTRIBUTE)
+                    (VertexAttribute. Usage/TextureCoordinates, 2, (str ShaderProgram/TEXCOORD_ATTRIBUTE "0")))
+        _ (.setToOrtho2D projectionMatrix 0 0 (.getWidth graphics) (.getHeight graphics))
+        vertices (into-array ) ; new float[size * Sprite.SPRITE_SIZE]
+        ;		int len = size * 6;
+        ;		short[] indices = new short[len];
+        ;		short j = 0;
+        ;		for  int i = 0; i < len; i += 6, j += 4) {
+        ;			indices[i] = j;
+        ;			indices[i + 1] = (short)(j + 1);
+        ;			indices[i + 2] = (short)(j + 2);
+        ;			indices[i + 3] = (short)(j + 2);
+        ;			indices[i + 4] = (short)(j + 3);
+        ;			indices[i + 5] = j;
+        _ (.setIndices mesh indices)
+        shader (if defaultShader
+                 defaultShader
+                 (do
+                  (createDefaultShader)
+                  ; ownsShader = true
+                  ))
+        ]
+    (when-not (= vertexDataType VertexDataType/VertexArray)
+      (.bind   (.getIndexData mesh))
+      (.unbind (.getIndexData mesh)))
+
+    sprite-batch))
