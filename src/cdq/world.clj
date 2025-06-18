@@ -361,8 +361,7 @@
           (update :world/elapsed-time + delta-ms)))))
 
 (defn create
-  [ctx
-   config
+  [config
    {:keys [tiled-map
            start-position]}]
   (let [grid (grid-impl/create tiled-map)
@@ -378,27 +377,25 @@
         minimum-size 0.39 ; == spider smallest creature size.
         ; set max speed so small entities are not skipped by projectiles
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-        max-speed (/ minimum-size max-delta)
-        ctx (assoc ctx
-                   :ctx/world (merge (map->World {})
-                                     {:world/tiled-map tiled-map
-                                      :world/start-position start-position
-                                      :world/grid grid
-                                      :world/explored-tile-corners (create-explored-tile-corners tiled-map)
-                                      :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                                               (:tiled-map/height tiled-map)
-                                                                               (:content-grid-cell-size config))
-                                      :world/raycaster (raycaster/create grid)
-                                      :world/entity-components (:entity-components config)
-                                      :world/entity-states (:entity-states config)
-                                      :world/potential-field-cache (atom nil)
-                                      :world/factions-iterations (:potential-field-factions-iterations config)
-                                      :world/id-counter (atom 0)
-                                      :world/entity-ids (atom {})
-                                      :world/elapsed-time 0
-                                      :world/max-delta max-delta
-                                      :world/max-speed max-speed
-                                      :world/minimum-size minimum-size
-                                      :world/z-orders z-orders
-                                      :world/render-z-order (utils/define-order z-orders)}))]
-    ctx))
+        max-speed (/ minimum-size max-delta)]
+    (merge (map->World {})
+           {:world/tiled-map tiled-map
+            :world/start-position start-position
+            :world/grid grid
+            :world/explored-tile-corners (create-explored-tile-corners tiled-map)
+            :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                     (:tiled-map/height tiled-map)
+                                                     (:content-grid-cell-size config))
+            :world/raycaster (raycaster/create grid)
+            :world/entity-components (:entity-components config)
+            :world/entity-states (:entity-states config)
+            :world/potential-field-cache (atom nil)
+            :world/factions-iterations (:potential-field-factions-iterations config)
+            :world/id-counter (atom 0)
+            :world/entity-ids (atom {})
+            :world/elapsed-time 0
+            :world/max-delta max-delta
+            :world/max-speed max-speed
+            :world/minimum-size minimum-size
+            :world/z-orders z-orders
+            :world/render-z-order (utils/define-order z-orders)})))

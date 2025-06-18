@@ -6,6 +6,5 @@
     :as ctx}]
   (let [level (let [[f params] (:config/starting-world config)]
                 (f ctx params))]
-    (world/create ctx
-                  (:cdq.ctx.game/world config)
-                  level)))
+    (assoc ctx :ctx/world (world/create (:cdq.ctx.game/world config)
+                                        level))))
