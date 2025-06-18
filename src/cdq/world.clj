@@ -1,5 +1,6 @@
 (ns cdq.world
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.cell :as cell]
+            [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -9,8 +10,11 @@
             [cdq.malli :as m]
             [cdq.math.geom :as geom]
             [cdq.modifiers :as modifiers]
+            [cdq.potential-fields.movement :as potential-fields.movement]
+            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
+            [cdq.w :as w]
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 
@@ -285,7 +289,68 @@
                     world/mouseover-eid
                     world/player-eid
                     ;
-                    ])
+                    ]
+  w/World
+  (line-of-sight? [{:keys [world/raycaster]}
+                   source
+                   target]
+    (assert raycaster)
+    (not (raycaster/blocked? raycaster
+                             (entity/position source)
+                             (entity/position target))))
+
+  (nearest-enemy-distance [{:keys [world/grid]} entity]
+    (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
+                                  (entity/enemy entity)))
+
+  (nearest-enemy [{:keys [world/grid]} entity]
+    (cell/nearest-entity @(grid/cell grid (mapv int (entity/position entity)))
+                         (entity/enemy entity)))
+
+  (potential-field-find-direction [{:keys [world/grid]} eid]
+    (potential-fields.movement/find-direction grid eid))
+
+  (creatures-in-los-of-player
+    [{:keys [world/active-entities
+             world/player-eid]
+      :as world}]
+    (->> active-entities
+         (filter #(:entity/species @%))
+         (filter #(w/line-of-sight? world @player-eid @%))
+         (remove #(:entity/player? @%))))
+
+  (npc-effect-ctx [world eid]
+    (let [entity @eid
+          target (w/nearest-enemy world entity)
+          target (when (and target
+                            (w/line-of-sight? world entity @target))
+                   target)]
+      {:effect/source eid
+       :effect/target target
+       :effect/target-direction (when target
+                                  (v/direction (entity/position entity)
+                                               (entity/position @target)))}))
+
+  (path-blocked? [{:keys [world/raycaster]} start end width]
+    (raycaster/path-blocked? raycaster start end width))
+
+  (tick-potential-fields!
+    [{:keys [world/factions-iterations
+             world/potential-field-cache
+             world/grid
+             world/active-entities]}]
+    (doseq [[faction max-iterations] factions-iterations]
+      (potential-fields.update/tick! potential-field-cache
+                                     grid
+                                     faction
+                                     active-entities
+                                     max-iterations)))
+
+  (update-time [{:keys [world/max-delta] :as world} delta-ms]
+    (let [delta-ms (min delta-ms max-delta)]
+      (-> world
+          (assoc :world/delta-time delta-ms)
+          (update :world/elapsed-time + delta-ms)))))
 
 (defn create
   [ctx
