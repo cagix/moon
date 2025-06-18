@@ -14,7 +14,8 @@
             [cdq.utils :as utils]
             [cdq.w :as w]
             [gdl.math.vector2 :as v]
-            [qrecord.core :as q]))
+            [qrecord.core :as q]
+            [master.yoda :as yoda]))
 
 (defn- context-entity-add! [{:keys [world/entity-ids
                                     world/content-grid
@@ -347,10 +348,10 @@
           (assoc :world/delta-time delta-ms)
           (update :world/elapsed-time + delta-ms)))))
 
-(defn- create-world
-  [config
-   {:keys [tiled-map
-           start-position]}]
+(defn create-world
+  [{:keys [tiled-map
+           start-position]
+    :as config}]
   (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
@@ -389,8 +390,12 @@
 
 (defn do!
   [{:keys [ctx/config]
-    :as ctx}]
+    :as ctx}
+   pipeline]
   (let [level (let [[f params] (:config/starting-world config)]
                 (f ctx params))]
-    (assoc ctx :ctx/world (create-world (:cdq.ctx.game/world config)
-                                        level))))
+    (assoc ctx :ctx/world
+           (reduce yoda/render*
+                   (merge (:cdq.ctx.game/world config)
+                          level)
+                   pipeline))))
