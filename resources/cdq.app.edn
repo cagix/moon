@@ -37,6 +37,10 @@
    [gdl.create.graphics.Graphics
     gdl.create.graphics.handle-draws
     gdl.graphics/DeclarativeDraws]
+
+   [gdl.ui.CtxStage
+    cdq.ui.stage
+    cdq.ui/Stage]
    ]]
 
  [cdq.utils.multifn/add-methods! [{:required [cdq.effect/applicable?

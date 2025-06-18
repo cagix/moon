@@ -1,19 +1,12 @@
 (ns cdq.ui)
 
-(defprotocol ActionBar
-  (selected-skill [_]))
-
-
-(comment
-
- (require '[cdq.ui.action-bar :as action-bar])
-
- (extend-type gdl.ui.CtxStage
-   ActionBar
-   (selected-skill [stage]
-     (action-bar/selected-skill (:action-bar stage))))
-
- (let [stage (:ctx/stage @cdq.application/state)]
-   (selected-skill stage))
-
- )
+(defprotocol Stage
+  (add-action-bar-skill! [_ item-opts])
+  (remove-action-bar-skill! [_ id])
+  (set-inventory-item! [_ inventory-cell item-opts])
+  (remove-inventory-item! [_ inventory-cell])
+  (show-player-ui-msg! [_ message])
+  (show-modal-window! [_ ui-viewport {:keys [title text button-text on-click]}])
+  (toggle-inventory-visible! [_])
+  (toggle-entity-info-window! [_])
+  (close-all-windows! [_]))

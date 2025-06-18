@@ -9,7 +9,7 @@
             [cdq.modifiers :as modifiers]
             [cdq.rand :refer [rand-int-between]]
             [cdq.timer :as timer]
-            [cdq.ui.stage :as stage]
+            [cdq.ui :as stage]
             [cdq.utils :as utils]
             [cdq.world :as world]
             [gdl.graphics :as g]
