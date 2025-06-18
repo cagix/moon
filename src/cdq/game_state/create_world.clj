@@ -10,7 +10,6 @@
             [cdq.math.geom :as geom]
             [cdq.modifiers :as modifiers]
             [cdq.potential-fields.movement :as potential-fields.movement]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.w :as w]
@@ -341,18 +340,6 @@
 
   (path-blocked? [{:keys [world/raycaster]} start end width]
     (raycaster/path-blocked? raycaster start end width))
-
-  (tick-potential-fields!
-    [{:keys [world/factions-iterations
-             world/potential-field-cache
-             world/grid
-             world/active-entities]}]
-    (doseq [[faction max-iterations] factions-iterations]
-      (potential-fields.update/tick! potential-field-cache
-                                     grid
-                                     faction
-                                     active-entities
-                                     max-iterations)))
 
   (update-time [{:keys [world/max-delta] :as world} delta-ms]
     (let [delta-ms (min delta-ms max-delta)]

@@ -8,7 +8,6 @@
   (creatures-in-los-of-player [_])
   (npc-effect-ctx [_ eid])
   (path-blocked? [_ start end width])
-  (tick-potential-fields! [_])
   (update-time [_ delta-ms])
   (remove-entity! [_ eid])
   (move-entity! [_ eid body direction rotate-in-movement-direction?])
