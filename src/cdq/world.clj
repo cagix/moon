@@ -1,6 +1,5 @@
 (ns cdq.world
   (:require [cdq.cell :as cell]
-            [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -226,6 +225,7 @@
 
 (q/defrecord World [
                     world/tiled-map
+                    world/start-position
                     world/grid
                     world/explored-tile-corners
                     world/content-grid
@@ -363,8 +363,8 @@
 (defn create
   [ctx
    config
-   tiled-map
-   player-entity]
+   {:keys [tiled-map
+           start-position]}]
   (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
@@ -382,6 +382,7 @@
         ctx (assoc ctx
                    :ctx/world (merge (map->World {})
                                      {:world/tiled-map tiled-map
+                                      :world/start-position start-position
                                       :world/grid grid
                                       :world/explored-tile-corners (create-explored-tile-corners tiled-map)
                                       :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
@@ -399,11 +400,8 @@
                                       :world/max-speed max-speed
                                       :world/minimum-size minimum-size
                                       :world/z-orders z-orders
-                                      :world/render-z-order (utils/define-order z-orders)}))
-        _ (ctx/handle-txs! ctx (w/spawn-creature! (:ctx/world ctx) player-entity))
-        player-eid (get @(:world/entity-ids (:ctx/world ctx)) 1)]
-    (assert (:entity/player? @player-eid))
-    (assoc-in ctx [:ctx/world :world/player-eid] player-eid)))
+                                      :world/render-z-order (utils/define-order z-orders)}))]
+    ctx))
 
 (defn assoc-active-entities [{:keys [ctx/world]
                               :as ctx}]
