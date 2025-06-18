@@ -298,7 +298,7 @@
      {:state-atom cdq.application/state
       :render-fns
       [cdq.application.context/validate
-       cdq.world/assoc-active-entities
+       cdq.render.assoc-active-entities/do!
        cdq.render.set-camera-on-player/do!
        cdq.render.clear-screen/do!
        cdq.render.draw-world-map/do!

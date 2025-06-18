@@ -402,10 +402,3 @@
                                       :world/z-orders z-orders
                                       :world/render-z-order (utils/define-order z-orders)}))]
     ctx))
-
-(defn assoc-active-entities [{:keys [ctx/world]
-                              :as ctx}]
-  (assoc-in ctx
-            [:ctx/world :world/active-entities]
-            (content-grid/active-entities (:world/content-grid world)
-                                          @(:world/player-eid world))))
