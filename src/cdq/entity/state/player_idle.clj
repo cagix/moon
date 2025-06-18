@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.controls :as controls]
-            [cdq.ctx.interaction-state :as interaction-state]
+            [cdq.ctx :as ctx]
             [cdq.inventory :as inventory]
             [gdl.input :as input]
             [gdl.ui.actor :as actor]))
@@ -12,7 +12,7 @@
   (inventory/can-pickup-item? (:entity/inventory entity) item))
 
 (defn interaction-state->txs [ctx player-eid]
-  (let [[k params] (interaction-state/interaction-state ctx player-eid)]
+  (let [[k params] (ctx/interaction-state ctx player-eid)]
     (case k
       :interaction-state/mouseover-actor nil ; handled by ui actors themself.
 
