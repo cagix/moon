@@ -22,11 +22,6 @@
   (let [{:keys [tiled-map
                 start-position] :as level} (let [[f params] (:config/starting-world config)]
                                              (f ctx params))
-        enemy-components (:cdq.ctx.game/enemy-components (:ctx/config ctx))
-        creatures-to-spawn (for [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
-                             {:position (utils/tile->middle position)
-                              :creature-property (db/build db (keyword creature-id))
-                              :components enemy-components})
         {:keys [creature-id
                 components]} (:cdq.ctx.game/player-props (:ctx/config ctx))
         player-entity {:position (utils/tile->middle start-position)
@@ -36,10 +31,23 @@
                           (:cdq.ctx.game/world config)
                           tiled-map
                           player-entity)]
-    (run! (fn [creature]
-            (ctx/handle-txs! ctx (w/spawn-creature! (:ctx/world ctx) creature)))
-          creatures-to-spawn)
+
     ctx))
+
+(defn spawn-enemies!
+  [{:keys [ctx/config
+           ctx/db
+           ctx/world]
+    :as ctx}]
+  (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world)
+                                                                "creatures"
+                                                                "id")]
+    (->> {:position (utils/tile->middle position)
+          :creature-property (db/build db (keyword creature-id))
+          :components (:cdq.ctx.game/enemy-components config)}
+         (w/spawn-creature! world)
+         (ctx/handle-txs! ctx)))
+  ctx)
 
 (defn reset-game-state! [{:keys [ctx/config]
                           :as ctx}]
