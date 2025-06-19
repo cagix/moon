@@ -31,6 +31,6 @@
            (float x)
            (float (+ y (if up? (text-height font text) 0)))
            (float target-width)
-           (align/k->value (or h-align :center))
+           (opts-get align/k->value (or h-align :center))
            wrap?)
     (.setScale (.getData font) (float old-scale))))
