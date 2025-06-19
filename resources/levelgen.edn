@@ -12,7 +12,7 @@
     clojure.gdx.input
     gdl.input/Input]
    [com.badlogic.gdx.utils.Disposable
-    gdx.utils.disposable
+    clojure.gdx.utils.disposable
     gdl.utils.disposable/Disposable]
    [com.badlogic.gdx.graphics.g2d.Batch
     gdx.graphics.g2d.batch
