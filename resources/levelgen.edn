@@ -1,6 +1,6 @@
 [[master.yoda/provide
   [[com.badlogic.gdx.Application
-    clojure.gdx.app
+    clojure.gdx.application
     gdl.app/Application]
    [com.badlogic.gdx.Files
     clojure.gdx.files
