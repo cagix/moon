@@ -1,10 +1,9 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
             [cdq.db :as db]
+            [cdq.dev.app-values]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
             [gdl.app :as app]
             [gdl.c :as c]))
 
@@ -14,6 +13,32 @@
 
 (comment
 
+ ; fsm missing
+ (cdq.dev.app-values/print-app-values-tree "app-values-tree.clj"
+                                           #{"gdl" "gdx" "cdq"})
+
+ (cdq.dev.app-values/ns-value-vars 'cdq.entity.fsm)
+
+ (clojure.pprint/pprint
+  (for [[sym var] (ns-interns 'cdq.entity.fsm)]
+    [sym {:class (class @var)
+          :supers (supers (class @var))}]))
+
+ (clojure.pprint/pprint
+  (sort (keys @cdq.application/state)))
+ (:ctx/app
+  :ctx/audio
+  :ctx/config
+  :ctx/db
+  :ctx/files
+  :ctx/graphics
+  :ctx/input
+  :ctx/stage
+  :ctx/world)
+
+ (clojure.pprint/pprint
+  (sort (keys (:ctx/world @cdq.application/state))))
+
  (post-txs!
   [[:tx/show-modal {:title "hey title"
                     :text "my text"
@@ -21,7 +46,6 @@
                     :on-click (fn []
                                 (println "hoho"))}]])
 
- (print-app-values-tree "app-values-tree.clj" #{"clojure"})
 
  ; use post-runnable! to get proper error messages in console
 
@@ -90,43 +114,3 @@
 
 (defn- mouseover-grid-cell [{:keys [ctx/world] :as ctx}]
   #_@(grid/cell (:world/grid world) (mapv int (c/world-mouse-position ctx))))
-
-(defn get-namespaces [packages]
-  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
-          (all-ns)))
-
-(defn get-vars [nmspace condition]
-  (for [[sym avar] (ns-interns nmspace)
-       :when (condition avar)]
-    avar))
-
-(defn- protocol? [value]
-  (and (instance? clojure.lang.PersistentArrayMap value)
-       (:on value)))
-
-(defn- get-non-fn-vars [nmspace]
-  (get-vars nmspace (fn [avar]
-                      (let [value @avar]
-                        (not (or (fn? value)
-                                 (instance? clojure.lang.MultiFn value)
-                                 (protocol? value)
-                                 ; anonymous class (proxy)
-                                 (instance? java.lang.Class value)))))))
-
-(defn ns-value-vars
-  "Returns a map of ns-name to value-vars (non-function vars).
-  Use to understand the state of your application.
-
-  Example: `(ns-value-vars #{\"forge\"})`"
-  [packages]
-  (into {} (for [nmspace (get-namespaces packages)
-                 :let [value-vars (get-non-fn-vars nmspace)]
-                 :when (seq value-vars)]
-             [(ns-name nmspace) value-vars])))
-
-(defn print-app-values-tree [file namespaces-set]
-  (spit file
-        (with-out-str
-         (pprint
-          (for [[ns-name vars] (ns-value-vars namespaces-set)]
-            [ns-name (map #(:name (meta %)) vars)])))))

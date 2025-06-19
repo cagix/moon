@@ -70,11 +70,23 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
+; make separate component
+; 1. remove left-bottom/half-width/half-height/radius
+; 2. tests ?
+
 (q/defrecord Body [entity/position
                    left-bottom
 
                    width
                    height
+                   ; Occurences:
+                   ; spawn-entity! calls
+                   ; here rectangle
+                   ; create-body call
+                   ; cdq.grid-impl/entity->occupied-cells
+                   ; cdq.math.geom/circle->outer-rectangle , rectangle->tiles
+                   ; render entities draw-body-rect
+                   ; draw-hpbar
                    half-width
                    half-height
                    radius
