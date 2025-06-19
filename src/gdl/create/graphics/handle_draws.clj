@@ -24,9 +24,22 @@
       (mapv (comp float (partial * world-unit-scale))
             dimensions))))
 
+(defn- batch-draw! [batch texture-region [x y] [w h] rotation]
+  (batch/draw! batch
+               texture-region
+               {:x x
+                :y y
+                :origin-x (/ (float w) 2)
+                :origin-y (/ (float h) 2)
+                :w w
+                :h h
+                :scale-x 1
+                :scale-y 1
+                :rotation rotation}))
+
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]
-  (batch/draw! batch
+  (batch-draw! batch
                texture-region
                [x y]
                (texture-region/dimensions texture-region)
@@ -36,7 +49,7 @@
                               {:keys [batch]
                                :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)]
-    (batch/draw! batch
+    (batch-draw! batch
                  texture-region
                  position
                  (texture-region-drawing-dimensions graphics texture-region)
@@ -47,7 +60,7 @@
                                           :as graphics}]
   (let [texture-region (gdl.graphics/image->texture-region graphics image)
         [w h] (texture-region-drawing-dimensions graphics texture-region)]
-    (batch/draw! batch
+    (batch-draw! batch
                  texture-region
                  [(- (float x) (/ (float w) 2))
                   (- (float y) (/ (float h) 2))]

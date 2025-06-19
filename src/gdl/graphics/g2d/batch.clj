@@ -5,4 +5,4 @@
   (set-projection-matrix! [_ matrix])
   (begin! [_])
   (end! [_])
-  (draw! [_ texture-region [x y] [w h] rotation]))
+  (draw! [_ texture-region {:keys [x y origin-x origin-y w h scale-x scale-y rotation]}]))

@@ -6,15 +6,18 @@
 (def begin!                 Batch/.begin)
 (def end!                   Batch/.end)
 
-(defn draw! [^Batch batch texture-region [x y] [w h] rotation]
+(defn draw!
+  [^Batch batch
+   texture-region
+   {:keys [x y origin-x origin-y w h scale-x scale-y rotation]}]
   (.draw batch
          texture-region
          x
          y
-         (/ (float w) 2) ; origin-x
-         (/ (float h) 2) ; origin-y
+         origin-x
+         origin-y
          w
          h
-         1 ; scale-x
-         1 ; scale-y
+         scale-x
+         scale-y
          rotation))
