@@ -1,4 +1,5 @@
-(ns master.yoda)
+(ns master.yoda
+  (:require [clojure.string :as str]))
 
 (defn execute! [[f params]]
   (f params))
@@ -8,24 +9,43 @@
        (get mapping)
        (run! execute!)))
 
+(defn- java-class-symbol? [s]
+  (let [last-segment (last (str/split s #"\."))]
+    (Character/isUpperCase ^Character (first last-segment))))
+
+(defn- var-symbol? [sym]
+  (namespace sym))
+
 (defn req [form]
   (if (symbol? form)
-    (if (namespace form)
+    (if (var-symbol? form)
       (requiring-resolve form)
-      (try (require form)
-           form
-           (catch Exception e ; Java classes
-             form)))
+      (if (java-class-symbol? (str form))
+        (do
+         (try
+          (eval form)
+          (catch clojure.lang.Compiler$CompilerException e
+            ; clojure generated types (e.g. records), need to require the namespace first
+            (require (symbol (str/join "." (drop-last (str/split (str form) #"\.")))))
+            (eval form))))
+        (do
+         (require form)
+         form))) ; otherwise clojure namespace
     form))
 
 (defn provide [impls]
   (doseq [[atype implementation-ns protocol] impls]
-    (let [atype (eval atype)
-          protocol @protocol
-          method-map (update-vals (:sigs protocol)
-                                  (fn [{:keys [name]}]
-                                    (requiring-resolve (symbol (str implementation-ns "/" name)))))]
-      (extend atype protocol method-map))))
+    (try (let [protocol @protocol
+               method-map (update-vals (:sigs protocol)
+                                       (fn [{:keys [name]}]
+                                         (requiring-resolve (symbol (str implementation-ns "/" name)))))]
+           (extend atype protocol method-map))
+         (catch Throwable t
+           (throw (ex-info "Cant extend"
+                           {:atype atype
+                            :implementation-ns implementation-ns
+                            :protocol protocol}
+                           t))))))
 
 (defn render* [ctx render-element]
   (if (vector? render-element)
