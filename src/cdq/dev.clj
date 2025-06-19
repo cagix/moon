@@ -4,7 +4,7 @@
             [cdq.dev.app-values]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [gdl.app :as app]
+            [gdl.application :as app]
             [gdl.c :as c]))
 
 (defmacro post-runnable! [& exprs]
