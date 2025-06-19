@@ -1,15 +1,15 @@
 [[master.yoda/provide
   [[com.badlogic.gdx.Application
-    gdx.app
+    clojure.gdx.app
     gdl.app/Application]
    [com.badlogic.gdx.Files
-    gdx.files
+    clojure.gdx.files
     gdl.files/Files]
    [com.badlogic.gdx.files.FileHandle
-    gdx.files.file-handle
+    clojure.gdx.files.file-handle
     gdl.files.file-handle/FileHandle]
    [com.badlogic.gdx.Input
-    gdx.input
+    clojure.gdx.input
     gdl.input/Input]
    [com.badlogic.gdx.utils.Disposable
     gdx.utils.disposable
