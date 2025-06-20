@@ -71,11 +71,10 @@
              [:entity/projectile-collision {:optional true} :some]]))
 
 ; make separate component
-; 1. remove left-bottom/half-width/half-height/radius
+; 1. remove half-width/half-height/radius
 ; 2. tests ?
 
 (q/defrecord Body [entity/position
-                   left-bottom
 
                    width
                    height
@@ -179,9 +178,6 @@
               (<= 0 rotation-angle 360)))
   (map->Body
    {:position (mapv float position)
-
-    :left-bottom [(float (- x (/ width  2)))
-                  (float (- y (/ height 2)))]
 
     :width  (float width)
     :height (float height)
@@ -305,9 +301,7 @@
 
   (move-entity! [world eid body direction rotate-in-movement-direction?]
     (context-entity-moved! world eid)
-    (swap! eid assoc
-           :entity/position (:entity/position body)
-           :left-bottom     (:left-bottom     body))
+    (swap! eid assoc :entity/position (:entity/position body))
     (when rotate-in-movement-direction?
       (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
     nil)
