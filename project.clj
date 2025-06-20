@@ -26,8 +26,6 @@
 
   :java-source-paths ["src"]
 
-  :injections [(load "clojure/core_inject")]
-
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
 

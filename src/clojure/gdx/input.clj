@@ -1,5 +1,6 @@
 (ns clojure.gdx.input
-  (:require [clojure.gdx.input.buttons :as input.buttons]
+  (:require [clojure.core-inject :refer [opts-get]]
+            [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys    :as input.keys])
   (:import (com.badlogic.gdx Input)))
 

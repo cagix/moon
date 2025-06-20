@@ -1,4 +1,4 @@
-(in-ns 'clojure.core)
+(ns clojure.core-inject)
 
 (defn opts-get [options k]
   (when-not (contains? options k)
