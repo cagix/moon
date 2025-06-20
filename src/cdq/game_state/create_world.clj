@@ -71,7 +71,7 @@
              [:entity/projectile-collision {:optional true} :some]]))
 
 ; make separate component
-; 1. remove half-width/half-height/radius
+; 1. remove radius
 ; 2. tests ?
 
 (q/defrecord Body [entity/position
@@ -86,8 +86,6 @@
                    ; cdq.math.geom/circle->outer-rectangle , rectangle->tiles
                    ; render entities draw-body-rect
                    ; draw-hpbar
-                   half-width
-                   half-height
                    radius
 
                    collides?
@@ -182,8 +180,6 @@
     :width  (float width)
     :height (float height)
 
-    :half-width  (float (/ width  2))
-    :half-height (float (/ height 2))
     :radius (float (max (/ width  2)
                         (/ height 2)))
 

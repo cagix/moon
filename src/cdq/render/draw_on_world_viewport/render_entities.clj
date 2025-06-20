@@ -36,8 +36,8 @@
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse
         (entity/position entity)
-        (:half-width entity)
-        (:half-height entity)
+        (/ (:width  entity) 2)
+        (/ (:height entity) 2)
         (cond (= faction (entity/enemy player))
               enemy-color
               (= faction (entity/faction player))
@@ -56,7 +56,7 @@
     (let [[x y] (entity/position entity)]
       [[:draw/text {:text text
                     :x x
-                    :y (+ y (:half-height entity))
+                    :y (+ y (/ (:height entity) 2))
                     :up? true}]])))
 
 (defn- draw-body-rect [{:keys [entity/position width height]} color]
@@ -67,7 +67,7 @@
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [radius skill-image-radius-world-units
         y (+ (float y)
-             (float (:half-height entity))
+             (float (/ (:height entity) 2))
              (float 0.15))
         center [x (+ y radius)]]
     [[:draw/filled-circle center radius [1 1 1 0.125]]
@@ -118,7 +118,7 @@
   (let [[x y] (entity/position entity)]
     [[:draw/text {:text "zzz"
                   :x x
-                  :y (+ y (:half-height entity))
+                  :y (+ y (/ (:height entity) 2))
                   :up? true}]]))
 
 ; TODO draw opacity as of counter ratio?
@@ -130,7 +130,7 @@
     [[:draw/text {:text text
                   :x x
                   :y (+ y
-                        (:half-height entity)
+                        (/ (:height entity) 2)
                         (* 5 (:world-unit-scale graphics)))
                   :scale 2
                   :up? true}]]))
@@ -152,13 +152,10 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [world-unit-scale
-                   {:keys [width half-width half-height]
-                    :as entity}
-                   ratio]
+(defn- draw-hpbar [world-unit-scale {:keys [width height] :as entity} ratio]
   (let [[x y] (entity/position entity)]
-    (let [x (- x half-width)
-          y (+ y half-height)
+    (let [x (- x (/ width  2))
+          y (+ y (/ height 2))
           height (* 5          world-unit-scale)
           border (* borders-px world-unit-scale)]
       [[:draw/filled-rectangle x y width height :black]
