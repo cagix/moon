@@ -34,7 +34,7 @@
                              :height height}))
 
 (defn- set-touched-cells! [grid eid]
-  (let [cells (grid/body->cells grid @eid)]
+  (let [cells (grid/body->cells grid (:entity/body @eid))]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -48,13 +48,13 @@
 
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
-(defn- entity->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
+(defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/body->cells grid body)
     [(grid/cell grid (mapv int position))]))
 
 (defn- set-occupied-cells! [grid eid]
-  (let [cells (entity->occupied-cells grid @eid)]
+  (let [cells (body->occupied-cells grid (:entity/body @eid))]
     (doseq [cell cells]
       (assert (not (get (:occupied @cell) eid)))
       (swap! cell update :occupied conj eid))
@@ -110,22 +110,22 @@
 
   (add-entity! [this eid]
     (set-touched-cells! this eid)
-    (when (:body/collides? @eid)
+    (when (:body/collides? (:entity/body @eid))
       (set-occupied-cells! this eid)))
 
   (remove-entity! [_ eid]
     (remove-from-touched-cells! eid)
-    (when (:body/collides? @eid)
+    (when (:body/collides? (:entity/body @eid))
       (remove-from-occupied-cells! eid)))
 
   (position-changed! [this eid]
     (remove-from-touched-cells! eid)
     (set-touched-cells! this eid)
-    (when (:body/collides? @eid)
+    (when (:body/collides? (:entity/body @eid))
       (remove-from-occupied-cells! eid)
       (set-occupied-cells! this eid)))
 
-  (valid-position? [this {:keys [body/z-order] :as body}]
+  (valid-position? [this {:keys [body/z-order] :as body} entity-id]
     {:pre [(:body/collides? body)]}
     (let [cells* (into [] (map deref) (grid/body->cells this body))]
       (and (not-any? #(cell/blocked? % z-order) cells*)
@@ -133,9 +133,10 @@
                 (grid/cells->entities this)
                 (not-any? (fn [other-entity]
                             (let [other-entity @other-entity]
-                              (and (not= (entity/id other-entity) (entity/id body))
-                                   (:body/collides? other-entity)
-                                   (entity/overlaps? other-entity body))))))))))
+                              (and (not= (:entity/id other-entity) entity-id)
+                                   (:body/collides? (:entity/body other-entity))
+                                   (geom/overlaps? (entity/rectangle other-entity)
+                                                   (geom/body->gdx-rectangle body)))))))))))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.

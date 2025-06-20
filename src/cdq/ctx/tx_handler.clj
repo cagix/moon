@@ -248,12 +248,12 @@
             projectile/piercing?] :as projectile}]
    {:keys [ctx/world]}]
   (w/spawn-entity! world
-                   position
-                   {:width size
-                    :height size
-                    :z-order :z-order/flying
-                    :rotation-angle (v/angle-from-vector direction)}
-                   {:entity/movement {:direction direction
+                   {:entity/body {:position position
+                                  :width size
+                                  :height size
+                                  :z-order :z-order/flying
+                                  :rotation-angle (v/angle-from-vector direction)}
+                    :entity/movement {:direction direction
                                       :speed speed}
                     :entity/image image
                     :entity/faction faction
@@ -267,18 +267,17 @@
    {:keys [ctx/config
            ctx/world]}]
   (w/spawn-entity! world
-                   position
-                   (:effect-body-props config)
-                   components))
+                   (assoc components
+                          :entity/body (assoc (:effect-body-props config) :position position))))
 
 (defmethod do! :tx/spawn-item [[_ position item]
                                {:keys [ctx/world]}]
   (w/spawn-entity! world
-                   position
-                   {:width 0.75
-                    :height 0.75
-                    :z-order :z-order/on-ground}
-                   {:entity/image (:entity/image item)
+                   {:entity/body {:position position
+                                  :width 0.75
+                                  :height 0.75
+                                  :z-order :z-order/on-ground}
+                    :entity/image (:entity/image item)
                     :entity/item item
                     :entity/clickable {:type :clickable/item
                                        :text (:property/pretty-name item)}}))

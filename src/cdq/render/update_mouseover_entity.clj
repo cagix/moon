@@ -9,10 +9,10 @@
   (let [new-eid (if (c/mouseover-actor ctx)
                   nil
                   (let [player @(:world/player-eid world)
-                        hits (remove #(= (:body/z-order @%) :z-order/effect)
+                        hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
                                      (grid/point->entities (:world/grid world) (c/world-mouse-position ctx)))]
                     (->> (:world/render-z-order world)
-                         (utils/sort-by-order hits #(:body/z-order @%))
+                         (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
                          reverse
                          (filter #(w/line-of-sight? world player @%))
                          first)))]

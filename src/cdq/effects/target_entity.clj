@@ -8,7 +8,7 @@
   (v/add (entity/position entity)
          (v/scale (v/direction (entity/position entity)
                                (entity/position target*))
-                  (/ (:body/width entity) 2))))
+                  (/ (:body/width (:entity/body entity)) 2))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)

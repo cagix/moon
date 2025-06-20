@@ -46,6 +46,7 @@
 
 (def ^:private components-schema
   (m/schema [:map {:closed true}
+             [:entity/body :some]
              [:entity/image {:optional true} :some]
              [:entity/animation {:optional true} :some]
              [:entity/delete-after-animation-stopped? {:optional true} :some]
@@ -70,42 +71,26 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-; 0. remove radius
-; 1. use namespaced keys
-; 2. make separate component
-; 3. tests (gdl, clojure.gdx, potential-fields, ... ? editor (separate app , can remove vis-ui ?)
-; db, schemas ?
-; 4. comments should _not_ be in code ...
-; 5. hardcoded values should not be in code (.. ? keywords ? symbols ?)
-; _assumption_ for some in-range calculations width=height of entities
-; => body/size, body/half-size ??
-; wait some are not width=height like spider, etc.
-; so we use width then for range ok ....
-
-(q/defrecord Body [body/position
-                   body/width
-                   body/height
-                   body/collides?
-                   body/z-order
-                   body/rotation-angle]
+(q/defrecord Entity [
+                     entity/body
+                     ]
   entity/Entity
   (position [_]
-    position)
+    (:body/position body))
 
   (rectangle [_]
-    (let [[x y] [(- (position 0) (/ width  2))
-                 (- (position 1) (/ height 2))]]
-      (geom/rectangle x y width height)))
+    (geom/body->gdx-rectangle body))
 
   (overlaps? [this other-entity]
-    (geom/overlaps? (entity/rectangle this)
-                    (entity/rectangle other-entity)))
+    (geom/overlaps? (geom/body->gdx-rectangle (:entity/body this))
+                    (geom/body->gdx-rectangle (:entity/body other-entity))))
 
+  ; body-fn
   (in-range? [entity target* maxrange]
     (< (- (float (v/distance (entity/position entity)
                              (entity/position target*)))
-          (float (/ (:body/width entity)  2))
-          (float (/ (:body/width target*) 2)))
+          (float (/ (:body/width (:entity/body entity))  2))
+          (float (/ (:body/width (:entity/body target*)) 2)))
        (float maxrange)))
 
   (id [{:keys [entity/id]}]
@@ -153,32 +138,6 @@
   (pay-mana-cost [entity cost]
     (update entity :creature/stats modifiers/pay-mana-cost cost)))
 
-(defn- create-body [{[x y] :position
-                     :keys [position
-                            width
-                            height
-                            collides?
-                            z-order
-                            rotation-angle]}
-                    minimum-size
-                    z-orders]
-  (assert position)
-  (assert width)
-  (assert height)
-  (assert (>= width  (if collides? minimum-size 0)))
-  (assert (>= height (if collides? minimum-size 0)))
-  (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set z-orders) z-order))
-  (assert (or (nil? rotation-angle)
-              (<= 0 rotation-angle 360)))
-  (map->Body
-   {:position (mapv float position)
-    :width  (float width)
-    :height (float height)
-    :collides? collides?
-    :z-order z-order
-    :rotation-angle (or rotation-angle 0)}))
-
 (defn- create-component-value
   [world k v]
   (if-let [create (:create (k (:world/entity-components world)))]
@@ -209,8 +168,9 @@
 ; * they could also go over ground units and not collide with them
 ; ( a test showed then flying OVER player entity )
 ; -> so no flying units for now
-(defn- create-creature-body [{:keys [body/width body/height #_body/flying?]}]
-  {:width  width
+(defn- create-creature-body [position {:keys [body/width body/height #_body/flying?]}]
+  {:position position
+   :width  width
    :height height
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
@@ -250,22 +210,15 @@
                     ]
   w/World
   (spawn-entity!
-    [{:keys [world/minimum-size
-             world/z-orders
-             world/id-counter]
+    [{:keys [world/id-counter]
       :as world}
-     position
-     body
      components]
     (m/validate-humanize components-schema components)
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        (create-body minimum-size z-orders)
-                        (utils/safe-merge (-> components
-                                              (assoc :entity/id (swap! id-counter inc))
-                                              (create-vs world)))))]
+    (assert (and (not (contains? components :entity/id))))
+    (let [eid (atom (merge (map->Entity {})
+                           (-> components
+                               (assoc :entity/id (swap! id-counter inc))
+                               (create-vs world))))]
       (context-entity-add! world eid)
       (mapcat #(create!-component-value world % eid) @eid)))
 
@@ -274,14 +227,12 @@
                             creature-property
                             components]}]
     (assert creature-property)
-    (let [props creature-property]
-      (w/spawn-entity! world
-                       position
-                       (create-creature-body (:entity/body props))
-                       (-> props
-                           (dissoc :entity/body)
-                           (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                           (utils/safe-merge components)))))
+    (w/spawn-entity! world
+                     (-> creature-property
+                         (assoc :entity/body (create-creature-body position
+                                                                   (:entity/body creature-property)))
+                         (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                         (utils/safe-merge components))))
 
   (remove-entity! [world eid]
     (context-entity-remove! world eid)
@@ -289,9 +240,9 @@
 
   (move-entity! [world eid body direction rotate-in-movement-direction?]
     (context-entity-moved! world eid)
-    (swap! eid assoc :body/position (:body/position body))
+    (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
     (when rotate-in-movement-direction?
-      (swap! eid assoc :body/rotation-angle (v/angle-from-vector direction)))
+      (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
     nil)
 
   (line-of-sight? [{:keys [world/raycaster]}

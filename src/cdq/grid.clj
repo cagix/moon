@@ -12,7 +12,7 @@
   (add-entity! [_ eid])
   (remove-entity! [_ eid])
   (position-changed! [_ eid])
-  (valid-position? [_ new-body]))
+  (valid-position? [_ new-body entity-id]))
 
 ; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
 (let [offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]]

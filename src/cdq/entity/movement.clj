@@ -8,21 +8,21 @@
 (defn- move-body [body movement]
   (update body :body/position move-position movement))
 
-(defn- try-move [grid body movement]
+(defn- try-move [grid body entity-id movement]
   (let [new-body (move-body body movement)]
-    (when (grid/valid-position? grid new-body)
+    (when (grid/valid-position? grid new-body entity-id)
       new-body)))
 
 ; TODO sliding threshold
 ; TODO name - with-sliding? 'on'
 ; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
 ; direection [0 0] which is a waste of processor power...
-(defn- try-move-solid-body [grid body {[vx vy] :direction :as movement}]
+(defn- try-move-solid-body [grid body entity-id {[vx vy] :direction :as movement}]
   (let [xdir (Math/signum (float vx))
         ydir (Math/signum (float vy))]
-    (or (try-move grid body movement)
-        (try-move grid body (assoc movement :direction [xdir 0]))
-        (try-move grid body (assoc movement :direction [0 ydir])))))
+    (or (try-move grid body entity-id movement)
+        (try-move grid body entity-id (assoc movement :direction [xdir 0]))
+        (try-move grid body entity-id (assoc movement :direction [0 ydir])))))
 
 (defn tick! [{:keys [direction
                      speed
@@ -41,8 +41,8 @@
                 (nil? speed)
                 (zero? speed))
     (let [movement (assoc movement :delta-time delta-time)
-          body @eid]
+          body (:entity/body @eid)]
       (when-let [body (if (:body/collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                        (try-move-solid-body grid body movement)
+                        (try-move-solid-body grid body (:entity/id @eid) movement)
                         (move-body body movement))]
         [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))

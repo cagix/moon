@@ -12,15 +12,15 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/body->cells grid entity)) ; just use cached-touched -cells
+        cells* (map deref (grid/body->cells grid (:entity/body entity))) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (entity/faction @%))
-                                     (:body/collides? @%)
+                                     (:body/collides? (:entity/body @%))
                                      (entity/overlaps? entity @%))
                                (grid/cells->entities grid cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(cell/blocked? % (:body/z-order entity)) cells*))]
+                     (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]
     [(when destroy?
        [:tx/mark-destroyed eid])
      (when hit-entity

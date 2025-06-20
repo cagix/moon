@@ -11,5 +11,5 @@
   (update-time [_ delta-ms])
   (remove-entity! [_ eid])
   (move-entity! [_ eid body direction rotate-in-movement-direction?])
-  (spawn-entity! [_ position body components])
+  (spawn-entity! [_ components])
   (spawn-creature! [_ opts]))

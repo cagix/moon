@@ -192,6 +192,8 @@
                                 :entity-components {:entity/animation
                                                     {:create cdq.entity.animation/create
                                                      :create! cdq.entity.animation/create!}
+                                                    :entity/body
+                                                    {:create cdq.entity.body/create}
                                                     :entity/delete-after-animation-stopped?
                                                     {:create! cdq.entity.delete-after-animation-stopped/create!}
                                                     :entity/delete-after-duration

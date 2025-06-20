@@ -36,8 +36,8 @@
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse
         (entity/position entity)
-        (/ (:body/width  entity) 2)
-        (/ (:body/height entity) 2)
+        (/ (:body/width  (:entity/body entity)) 2)
+        (/ (:body/height (:entity/body entity)) 2)
         (cond (= faction (entity/enemy player))
               enemy-color
               (= faction (entity/faction player))
@@ -56,7 +56,7 @@
     (let [[x y] (entity/position entity)]
       [[:draw/text {:text text
                     :x x
-                    :y (+ y (/ (:body/height entity) 2))
+                    :y (+ y (/ (:body/height (:entity/body entity)) 2))
                     :up? true}]])))
 
 (defn- draw-body-rect [{:keys [body/position body/width body/height]} color]
@@ -67,7 +67,7 @@
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [radius skill-image-radius-world-units
         y (+ (float y)
-             (float (/ (:body/height entity) 2))
+             (float (/ (:body/height (:entity/body entity)) 2))
              (float 0.15))
         center [x (+ y radius)]]
     [[:draw/filled-circle center radius [1 1 1 0.125]]
@@ -100,7 +100,7 @@
 (defn draw-centered-rotated-image [image entity _ctx]
   [[:draw/rotated-centered
     image
-    (or (:body/rotation-angle entity) 0)
+    (or (:body/rotation-angle (:entity/body entity)) 0)
     (entity/position entity)]])
 
 (defn call-render-image [animation entity ctx]
@@ -118,7 +118,7 @@
   (let [[x y] (entity/position entity)]
     [[:draw/text {:text "zzz"
                   :x x
-                  :y (+ y (/ (:body/height entity) 2))
+                  :y (+ y (/ (:body/height (:entity/body entity)) 2))
                   :up? true}]]))
 
 ; TODO draw opacity as of counter ratio?
@@ -130,7 +130,7 @@
     [[:draw/text {:text text
                   :x x
                   :y (+ y
-                        (/ (:body/height entity) 2)
+                        (/ (:body/height (:entity/body entity)) 2)
                         (* 5 (:world-unit-scale graphics)))
                   :scale 2
                   :up? true}]]))
@@ -152,8 +152,8 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [world-unit-scale {:keys [body/width body/height] :as entity} ratio]
-  (let [[x y] (entity/position entity)]
+(defn- draw-hpbar [world-unit-scale {:keys [body/position body/width body/height]} ratio]
+  (let [[x y] position]
     (let [x (- x (/ width  2))
           y (+ y (/ height 2))
           height (* 5          world-unit-scale)
@@ -169,7 +169,9 @@
 (defn draw-stats [_ entity {:keys [ctx/graphics]}]
   (let [ratio (val-max/ratio (entity/hitpoints entity))] ; <- use stats directly?
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar (:world-unit-scale graphics) entity ratio))))
+      (draw-hpbar (:world-unit-scale graphics)
+                  (:entity/body entity)
+                  ratio))))
 
 (def render-below {:entity/mouseover? draw-mouseover-highlighting
                    :stunned draw-stunned-state
@@ -192,13 +194,13 @@
 (defn- draw-entity [{:keys [ctx/graphics] :as ctx} entity render-layer]
   (try
    (when show-body-bounds?
-     (graphics/handle-draws! graphics (draw-body-rect entity (if (:body/collides? entity) :white :gray))))
+     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) (if (:body/collides? (:entity/body entity)) :white :gray))))
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
      (graphics/handle-draws! graphics (draw-fn v entity ctx)))
    (catch Throwable t
-     (graphics/handle-draws! graphics (draw-body-rect entity :red))
+     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) :red))
      (utils/pretty-pst t))))
 
 (defn do! [{:keys [ctx/world]
@@ -208,7 +210,7 @@
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (w/line-of-sight? world player entity)))]
-    (doseq [[z-order entities] (utils/sort-by-order (group-by :body/z-order entities)
+    (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
             render-layer [render-below

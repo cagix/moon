@@ -72,3 +72,9 @@
      :y (- (float y) radius)
      :width  size
      :height size}))
+
+(defn body->gdx-rectangle [{:keys [body/position body/width body/height]}]
+  {:pre [position width height]}
+  (let [[x y] [(- (position 0) (/ width  2))
+               (- (position 1) (/ height 2))]]
+    (rectangle x y width height)))
