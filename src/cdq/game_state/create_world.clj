@@ -75,12 +75,15 @@
 ; 2. make separate component
 ; 3. tests (gdl, clojure.gdx, potential-fields, ... ? editor (separate app , can remove vis-ui ?)
 ; db, schemas ?
+; 4. comments should _not_ be in code ...
+; 5. hardcoded values should not be in code (.. ? keywords ? symbols ?)
+; _assumption_ for some in-range calculations width=height of entities
+; => body/size, body/half-size ??
 
 (q/defrecord Body [entity/position
 
                    width
                    height
-                   radius
 
                    collides?
                    z-order
@@ -98,11 +101,11 @@
     (geom/overlaps? (entity/rectangle this)
                     (entity/rectangle other-entity)))
 
-  (in-range? [entity target* maxrange] ; == circle-collides?
+  (in-range? [entity target* maxrange]
     (< (- (float (v/distance (entity/position entity)
                              (entity/position target*)))
-          (float (:radius entity))
-          (float (:radius target*)))
+          (float (/ (:width entity)  2))
+          (float (/ (:width target*) 2)))
        (float maxrange)))
 
   (id [{:keys [entity/id]}]
@@ -173,9 +176,6 @@
 
     :width  (float width)
     :height (float height)
-
-    :radius (float (max (/ width  2)
-                        (/ height 2)))
 
     :collides? collides?
     :z-order z-order

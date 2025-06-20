@@ -6,7 +6,7 @@
 (defn- start-point [entity direction size]
   (v/add (entity/position entity)
          (v/scale direction
-                  (+ (:radius entity) size 0.1))))
+                  (+ (/ (:width entity) 2) size 0.1))))
 
 
 ; TODO for npcs need target -- anyway only with direction
