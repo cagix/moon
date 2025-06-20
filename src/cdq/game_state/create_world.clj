@@ -79,11 +79,13 @@
 ; 5. hardcoded values should not be in code (.. ? keywords ? symbols ?)
 ; _assumption_ for some in-range calculations width=height of entities
 ; => body/size, body/half-size ??
+; wait some are not width=height like spider, etc.
+; so we use width then for range ok ....
 
 (q/defrecord Body [entity/position
 
-                   width
-                   height
+                   body/width
+                   body/height
 
                    collides?
                    z-order
@@ -104,8 +106,8 @@
   (in-range? [entity target* maxrange]
     (< (- (float (v/distance (entity/position entity)
                              (entity/position target*)))
-          (float (/ (:width entity)  2))
-          (float (/ (:width target*) 2)))
+          (float (/ (:body/width entity)  2))
+          (float (/ (:body/width target*) 2)))
        (float maxrange)))
 
   (id [{:keys [entity/id]}]

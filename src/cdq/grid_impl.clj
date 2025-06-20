@@ -27,7 +27,7 @@
        [[l b] [l t] [r b] [r t]]))))
 
 (defn- body->touched-tiles
-  [{:keys [entity/position width height]}]
+  [{:keys [entity/position body/width body/height]}]
   (rectangle->touched-tiles {:x (- (position 0) (/ width  2))
                              :y (- (position 1) (/ height 2))
                              :width  width
@@ -48,7 +48,7 @@
 
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
-(defn- entity->occupied-cells [grid {:keys [entity/position width height] :as body}]
+(defn- entity->occupied-cells [grid {:keys [entity/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/body->cells grid body)
     [(grid/cell grid (mapv int position))]))
