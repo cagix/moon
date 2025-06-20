@@ -83,10 +83,8 @@
 ; so we use width then for range ok ....
 
 (q/defrecord Body [entity/position
-
                    body/width
                    body/height
-
                    collides?
                    z-order
                    rotation-angle]
@@ -175,10 +173,8 @@
               (<= 0 rotation-angle 360)))
   (map->Body
    {:position (mapv float position)
-
     :width  (float width)
     :height (float height)
-
     :collides? collides?
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
