@@ -6,7 +6,7 @@
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
 
 (defn- move-body [body movement]
-  (update body :entity/position move-position movement))
+  (update body :body/position move-position movement))
 
 (defn- try-move [grid body movement]
   (let [new-body (move-body body movement)]

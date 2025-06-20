@@ -59,7 +59,7 @@
                     :y (+ y (/ (:body/height entity) 2))
                     :up? true}]])))
 
-(defn- draw-body-rect [{:keys [entity/position body/width body/height]} color]
+(defn- draw-body-rect [{:keys [body/position body/width body/height]} color]
   (let [[x y] [(- (position 0) (/ width  2))
                (- (position 1) (/ height 2))]]
     [[:draw/rectangle x y width height color]]))

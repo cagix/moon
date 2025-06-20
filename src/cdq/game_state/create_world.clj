@@ -82,7 +82,7 @@
 ; wait some are not width=height like spider, etc.
 ; so we use width then for range ok ....
 
-(q/defrecord Body [entity/position
+(q/defrecord Body [body/position
                    body/width
                    body/height
                    body/collides?
@@ -289,7 +289,7 @@
 
   (move-entity! [world eid body direction rotate-in-movement-direction?]
     (context-entity-moved! world eid)
-    (swap! eid assoc :entity/position (:entity/position body))
+    (swap! eid assoc :body/position (:body/position body))
     (when rotate-in-movement-direction?
       (swap! eid assoc :body/rotation-angle (v/angle-from-vector direction)))
     nil)
