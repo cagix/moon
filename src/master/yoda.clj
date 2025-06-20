@@ -56,7 +56,7 @@
 
 (defn create!-reset! [{:keys [state-atom initial-context create-fns]}]
   (reset! @state-atom (reduce render*
-                              (execute! initial-context)
+                              (initial-context)
                               create-fns)))
 
 (defn const* [_ctx params]

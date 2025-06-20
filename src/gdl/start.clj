@@ -2,7 +2,8 @@
   (:require clojure.edn
             clojure.java.io
             clojure.walk
-            master.yoda))
+            master.yoda)
+  (:gen-class))
 
 (defn slurpquire
   ([_context path]

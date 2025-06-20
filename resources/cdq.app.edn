@@ -115,16 +115,7 @@
    {:create!
     [master.yoda/create!-reset!
      {:state-atom cdq.application/state
-      :initial-context [cdq.application.context/create
-                        [[:ctx/app :some]
-                         [:ctx/files :some]
-                         [:ctx/config :some]
-                         [:ctx/input :some]
-                         [:ctx/db :some]
-                         [:ctx/audio :some]
-                         [:ctx/stage :some]
-                         [:ctx/graphics :some]
-                         [:ctx/world :some]]]
+      :initial-context cdq.application.context/create
       :create-fns
       [gdl.create.gdx/do!
        [master.yoda/assoc*

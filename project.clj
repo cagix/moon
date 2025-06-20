@@ -1,5 +1,7 @@
 (def libgdx-version "1.13.5")
 
+(def main-namespace 'gdl.start)
+
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
@@ -31,7 +33,6 @@
 
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
 
-  :uberjar-name "vampire.jar"
 
   :jvm-opts ["-Xms256m"
              "-Xmx256m"
@@ -58,9 +59,10 @@
                 ;*print-level* 3
                 }
 
-  :profiles {:uberjar {:aot [cdq.context]}}
-
-  #_:main #_cdq.context)
+  :profiles {:uberjar {:aot [~main-namespace]}}
+  :uberjar-name "cdq.jar"
+  :main ~main-namespace
+  )
 
 ; * Notes
 

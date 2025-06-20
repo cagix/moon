@@ -2,12 +2,29 @@
   (:require [cdq.malli :as m]
             [qrecord.core :as q]))
 
-(defn create [ks]
-  ; I could even create a namespace here or do in a namespace ...
-  (in-ns 'cdq.application.context) ; otherwise 'user TODO return back to previous ns afterwards
-  (eval `(q/defrecord ~'Context ~(mapv (comp symbol first) ks)))
-  (def schema (m/schema (apply vector :map {:closed true} ks)))
-  (eval `(map->Context {})))
+(q/defrecord Context [ctx/app
+                      ctx/files
+                      ctx/config
+                      ctx/input
+                      ctx/db
+                      ctx/audio
+                      ctx/stage
+                      ctx/graphics
+                      ctx/world])
+
+(def schema [:map {:closed true}
+             [:ctx/app :some]
+             [:ctx/files :some]
+             [:ctx/config :some]
+             [:ctx/input :some]
+             [:ctx/db :some]
+             [:ctx/audio :some]
+             [:ctx/stage :some]
+             [:ctx/graphics :some]
+             [:ctx/world :some]])
+
+(defn create []
+  (map->Context {}))
 
 (defn validate [ctx]
   (m/validate-humanize schema ctx)
