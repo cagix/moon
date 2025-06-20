@@ -2,6 +2,7 @@
 
 (defprotocol Grid
   (cell [_ int-position])
+  (get-cells [_ int-positions])
   (rectangle->cells [_ rectangle])
   (circle->cells [_ circle])
   (circle->entities [_ circle])

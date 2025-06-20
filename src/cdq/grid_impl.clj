@@ -44,6 +44,9 @@
   (cell [_ position]
     (g2d position))
 
+  (get-cells [_ int-positions]
+    (into [] (keep g2d) int-positions))
+
   (rectangle->cells [_ rectangle]
     (into [] (keep g2d) (geom/rectangle->tiles rectangle)))
 
