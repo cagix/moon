@@ -59,9 +59,10 @@
                     :y (+ y (:half-height entity))
                     :up? true}]])))
 
-(defn- draw-body-rect [entity color]
-  (let [[x y] (:left-bottom entity)]
-    [[:draw/rectangle x y (:width entity) (:height entity) color]]))
+(defn- draw-body-rect [{:keys [entity/position width height]} color]
+  (let [[x y] [(- (position 0) (/ width  2))
+               (- (position 1) (/ height 2))]]
+    [[:draw/rectangle x y width height color]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [radius skill-image-radius-world-units

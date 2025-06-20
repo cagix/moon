@@ -22,11 +22,10 @@
 
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
-(defn- entity->occupied-cells [grid {:keys [left-bottom width height] :as rectangle}]
+(defn- entity->occupied-cells [grid {:keys [entity/position width height] :as rectangle}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/rectangle->cells grid rectangle)
-    [(grid/cell grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-                      (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
+    [(grid/cell grid (mapv int position))]))
 
 (defn- set-occupied-cells! [grid eid]
   (let [cells (entity->occupied-cells grid @eid)]

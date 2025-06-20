@@ -26,7 +26,7 @@
     (swap! entity-ids assoc id eid))
   (content-grid/add-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+  ;(assert (valid-position? grid @eid))
   (grid/add-entity! grid eid))
 
 (defn- context-entity-remove! [{:keys [world/entity-ids
@@ -99,7 +99,8 @@
     position)
 
   (rectangle [_]
-    (let [[x y] left-bottom]
+    (let [[x y] [(- (position 0) (/ width  2))
+                 (- (position 1) (/ height 2))]]
       (geom/rectangle x y width height)))
 
   (overlaps? [this other-entity]
