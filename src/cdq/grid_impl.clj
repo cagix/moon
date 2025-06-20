@@ -26,7 +26,7 @@
        [[l b] [l t] [r b] [r t]]))))
 
 (defn- set-touched-cells! [grid eid]
-  (let [cells (grid/rectangle->cells grid @eid)]
+  (let [cells (grid/body->cells grid @eid)]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -40,9 +40,9 @@
 
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
-(defn- entity->occupied-cells [grid {:keys [entity/position width height] :as rectangle}]
+(defn- entity->occupied-cells [grid {:keys [entity/position width height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
-    (grid/rectangle->cells grid rectangle)
+    (grid/body->cells grid body)
     [(grid/cell grid (mapv int position))]))
 
 (defn- set-occupied-cells! [grid eid]
@@ -65,13 +65,13 @@
   (cells [_ int-positions]
     (into [] (keep g2d) int-positions))
 
-  (rectangle->cells [this rectangle]
-    (grid/cells this (body->touched-tiles rectangle)))
+  (body->cells [this body]
+    (grid/cells this (body->touched-tiles body)))
 
   (circle->cells [this circle]
     (->> circle
          geom/circle->outer-rectangle
-         (grid/rectangle->cells this)))
+         (grid/body->cells this)))
 
   (circle->entities [this {:keys [position radius] :as circle}]
     (->> (grid/circle->cells this circle)
@@ -118,7 +118,7 @@
 
   (valid-position? [this {:keys [z-order] :as body}]
     {:pre [(:collides? body)]}
-    (let [cells* (into [] (map deref) (grid/rectangle->cells this body))]
+    (let [cells* (into [] (map deref) (grid/body->cells this body))]
       (and (not-any? #(cell/blocked? % z-order) cells*)
            (->> cells*
                 (grid/cells->entities this)

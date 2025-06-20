@@ -3,7 +3,7 @@
 (defprotocol Grid
   (cell [_ int-position])
   (cells [_ int-positions])
-  (rectangle->cells [_ rectangle])
+  (body->cells [_ body])
   (circle->cells [_ circle])
   (circle->entities [_ circle])
   (cells->entities [_ cells])

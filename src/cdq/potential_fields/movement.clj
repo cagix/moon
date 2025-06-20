@@ -83,7 +83,7 @@
                           own-cell)))}))))
 
 (defn- inside-cell? [grid entity cell]
-  (let [cells (grid/rectangle->cells grid entity)]
+  (let [cells (grid/body->cells grid entity)]
     (and (= 1 (count cells))
          (= cell (first cells)))))
 
