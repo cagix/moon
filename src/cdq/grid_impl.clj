@@ -7,9 +7,10 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
 
-(defn- body->touched-tiles
-  [{[x y] :left-bottom :keys [left-bottom width height]}]
-  {:pre [left-bottom width height]}
+(defn- rectangle->touched-tiles
+  "x is leftmost point and y bottom most point in the rectangle."
+  [{:keys [x y width height]}]
+  {:pre [x y width height]}
   (let [x       (float x)
         y       (float y)
         width   (float width)
@@ -24,6 +25,13 @@
              y (range b (inc t))]
          [x y])
        [[l b] [l t] [r b] [r t]]))))
+
+(defn- body->touched-tiles
+  [{:keys [entity/position width height]}]
+  (rectangle->touched-tiles {:x (- (position 0) (/ width  2))
+                             :y (- (position 1) (/ height 2))
+                             :width  width
+                             :height height}))
 
 (defn- set-touched-cells! [grid eid]
   (let [cells (grid/body->cells grid @eid)]
@@ -71,7 +79,8 @@
   (circle->cells [this circle]
     (->> circle
          geom/circle->outer-rectangle
-         (grid/body->cells this)))
+         rectangle->touched-tiles
+         (grid/cells this)))
 
   (circle->entities [this {:keys [position radius] :as circle}]
     (->> (grid/circle->cells this circle)

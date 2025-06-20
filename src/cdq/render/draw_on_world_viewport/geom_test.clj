@@ -13,8 +13,7 @@
     (conj (cons [:draw/circle position radius [1 0 0 0.5]]
                 (for [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
                   [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
-          (let [{[x y] :left-bottom
-                 :keys [width height]} (geom/circle->outer-rectangle circle)]
+          (let [{:keys [x y width height]} (geom/circle->outer-rectangle circle)]
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
 (defn do! [{:keys [ctx/graphics] :as ctx}]
