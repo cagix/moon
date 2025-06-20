@@ -47,8 +47,8 @@
   (get-cells [_ int-positions]
     (into [] (keep g2d) int-positions))
 
-  (rectangle->cells [_ rectangle]
-    (into [] (keep g2d) (geom/rectangle->tiles rectangle)))
+  (rectangle->cells [this rectangle]
+    (grid/get-cells this (geom/rectangle->tiles rectangle)))
 
   (circle->cells [this circle]
     (->> circle
@@ -66,10 +66,13 @@
   (cells->entities [_ cells]
     (into #{} (mapcat :entities) cells))
 
-  (cached-adjacent-cells [_ cell]
+  (cached-adjacent-cells [this cell]
     (if-let [result (:adjacent-cells @cell)]
       result
-      (let [result (into [] (keep g2d) (-> @cell :position grid/get-8-neighbour-positions))]
+      (let [result (->> @cell
+                        :position
+                        grid/get-8-neighbour-positions
+                        (grid/get-cells this))]
         (swap! cell assoc :adjacent-cells result)
         result)))
 
