@@ -44,11 +44,11 @@
   (cell [_ position]
     (g2d position))
 
-  (get-cells [_ int-positions]
+  (cells [_ int-positions]
     (into [] (keep g2d) int-positions))
 
   (rectangle->cells [this rectangle]
-    (grid/get-cells this (geom/rectangle->tiles rectangle)))
+    (grid/cells this (geom/rectangle->tiles rectangle)))
 
   (circle->cells [this circle]
     (->> circle
@@ -72,7 +72,7 @@
       (let [result (->> @cell
                         :position
                         grid/get-8-neighbour-positions
-                        (grid/get-cells this))]
+                        (grid/cells this))]
         (swap! cell assoc :adjacent-cells result)
         result)))
 
