@@ -70,22 +70,16 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-; make separate component
-; 1. remove radius
-; 2. tests ?
+; 0. remove radius
+; 1. use namespaced keys
+; 2. make separate component
+; 3. tests (gdl, clojure.gdx, potential-fields, ... ? editor (separate app , can remove vis-ui ?)
+; db, schemas ?
 
 (q/defrecord Body [entity/position
 
                    width
                    height
-                   ; Occurences:
-                   ; spawn-entity! calls
-                   ; here rectangle
-                   ; create-body call
-                   ; cdq.grid-impl/entity->occupied-cells
-                   ; cdq.math.geom/circle->outer-rectangle , rectangle->tiles
-                   ; render entities draw-body-rect
-                   ; draw-hpbar
                    radius
 
                    collides?
