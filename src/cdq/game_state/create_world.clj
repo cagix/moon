@@ -85,9 +85,9 @@
 (q/defrecord Body [entity/position
                    body/width
                    body/height
-                   collides?
-                   z-order
-                   rotation-angle]
+                   body/collides?
+                   body/z-order
+                   body/rotation-angle]
   entity/Entity
   (position [_]
     position)
@@ -291,7 +291,7 @@
     (context-entity-moved! world eid)
     (swap! eid assoc :entity/position (:entity/position body))
     (when rotate-in-movement-direction?
-      (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
+      (swap! eid assoc :body/rotation-angle (v/angle-from-vector direction)))
     nil)
 
   (line-of-sight? [{:keys [world/raycaster]}

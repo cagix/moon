@@ -100,7 +100,7 @@
 (defn draw-centered-rotated-image [image entity _ctx]
   [[:draw/rotated-centered
     image
-    (or (:rotation-angle entity) 0)
+    (or (:body/rotation-angle entity) 0)
     (entity/position entity)]])
 
 (defn call-render-image [animation entity ctx]
@@ -192,7 +192,7 @@
 (defn- draw-entity [{:keys [ctx/graphics] :as ctx} entity render-layer]
   (try
    (when show-body-bounds?
-     (graphics/handle-draws! graphics (draw-body-rect entity (if (:collides? entity) :white :gray))))
+     (graphics/handle-draws! graphics (draw-body-rect entity (if (:body/collides? entity) :white :gray))))
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
@@ -208,7 +208,7 @@
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (w/line-of-sight? world player entity)))]
-    (doseq [[z-order entities] (utils/sort-by-order (group-by :z-order entities)
+    (doseq [[z-order entities] (utils/sort-by-order (group-by :body/z-order entities)
                                                     first
                                                     (:world/render-z-order world))
             render-layer [render-below

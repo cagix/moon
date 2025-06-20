@@ -16,11 +16,11 @@
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (entity/faction @%))
-                                     (:collides? @%)
+                                     (:body/collides? @%)
                                      (entity/overlaps? entity @%))
                                (grid/cells->entities grid cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(cell/blocked? % (:z-order entity)) cells*))]
+                     (some #(cell/blocked? % (:body/z-order entity)) cells*))]
     [(when destroy?
        [:tx/mark-destroyed eid])
      (when hit-entity

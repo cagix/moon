@@ -110,23 +110,23 @@
 
   (add-entity! [this eid]
     (set-touched-cells! this eid)
-    (when (:collides? @eid)
+    (when (:body/collides? @eid)
       (set-occupied-cells! this eid)))
 
   (remove-entity! [_ eid]
     (remove-from-touched-cells! eid)
-    (when (:collides? @eid)
+    (when (:body/collides? @eid)
       (remove-from-occupied-cells! eid)))
 
   (position-changed! [this eid]
     (remove-from-touched-cells! eid)
     (set-touched-cells! this eid)
-    (when (:collides? @eid)
+    (when (:body/collides? @eid)
       (remove-from-occupied-cells! eid)
       (set-occupied-cells! this eid)))
 
-  (valid-position? [this {:keys [z-order] :as body}]
-    {:pre [(:collides? body)]}
+  (valid-position? [this {:keys [body/z-order] :as body}]
+    {:pre [(:body/collides? body)]}
     (let [cells* (into [] (map deref) (grid/body->cells this body))]
       (and (not-any? #(cell/blocked? % z-order) cells*)
            (->> cells*
@@ -134,7 +134,7 @@
                 (not-any? (fn [other-entity]
                             (let [other-entity @other-entity]
                               (and (not= (entity/id other-entity) (entity/id body))
-                                   (:collides? other-entity)
+                                   (:body/collides? other-entity)
                                    (entity/overlaps? other-entity body))))))))))
 
 (defrecord RCell [position
