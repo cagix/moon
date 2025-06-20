@@ -19,6 +19,7 @@
         (when (pos? (v/length v))
           v)))))
 
+; TODO do out of 'create'
 (defn do! [ctx]
   (extend (class ctx)
     controls/PlayerMovementInput

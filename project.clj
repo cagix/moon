@@ -3,21 +3,38 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
+
                  [clojure.gdx.backends.lwjgl "1.13.5"]
+
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
+
                  [space.earlygrey/shapedrawer "2.5.0"]
+
+                 ; maybe if I remove the editor outside
+                 ; I can skip vis-ui ....
+                 ; tests would also say I want to start it as a separate app?
                  [com.kotcrab.vis/vis-ui "1.5.2"]
+
                  [metosin/malli "0.13.0"]
+
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
+
                  [com.github.damn/clojure.dev-loop "ef54a03"]
+
                  [fr.reuz/qrecord "0.1.0"]]
+
   :java-source-paths ["src"]
+
   :injections [(load "clojure/core_inject")]
+
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
+
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
+
   :uberjar-name "vampire.jar"
+
   :jvm-opts ["-Xms256m"
              "-Xmx256m"
              "-Dvisualvm.display.name=CDQ"
@@ -28,18 +45,23 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
+
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}
           ;:namespaces [#"^gdl\."]
           }
+
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
+
   :global-vars {*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 ;*print-level* 3
                 }
+
   :profiles {:uberjar {:aot [cdq.context]}}
+
   #_:main #_cdq.context)
 
 ; * Notes

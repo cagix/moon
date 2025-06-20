@@ -11,6 +11,7 @@
                                                "/"
                                                (:name signature))))]))))
 
+; TODO do out of 'create'
 (defn do! [ctx namespace]
   (let [protocols (map (comp deref second)
                        (filter #(:sigs @(% 1)) (ns-publics namespace)))]

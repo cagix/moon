@@ -4,6 +4,7 @@
 
 (def state (atom nil))
 
+; TODO call dispose! on all components
 (defn dispose! []
   (let [{:keys [ctx/audio
                 ctx/graphics
@@ -16,6 +17,7 @@
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
     ))
 
+; TODO call resize! on all components
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
