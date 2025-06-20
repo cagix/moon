@@ -7,6 +7,24 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
 
+(defn- body->touched-tiles
+  [{[x y] :left-bottom :keys [left-bottom width height]}]
+  {:pre [left-bottom width height]}
+  (let [x       (float x)
+        y       (float y)
+        width   (float width)
+        height  (float height)
+        l (int x)
+        b (int y)
+        r (int (+ x width))
+        t (int (+ y height))]
+    (set
+     (if (or (> width 1) (> height 1))
+       (for [x (range l (inc r))
+             y (range b (inc t))]
+         [x y])
+       [[l b] [l t] [r b] [r t]]))))
+
 (defn- set-touched-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
     (assert (not-any? nil? cells))
@@ -48,7 +66,7 @@
     (into [] (keep g2d) int-positions))
 
   (rectangle->cells [this rectangle]
-    (grid/cells this (geom/rectangle->tiles rectangle)))
+    (grid/cells this (body->touched-tiles rectangle)))
 
   (circle->cells [this circle]
     (->> circle
