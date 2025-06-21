@@ -18,7 +18,7 @@
     clojure.gdx.graphics.g2d.batch
     gdl.graphics.g2d.batch/Batch]
    [com.badlogic.gdx.utils.viewport.Viewport
-    gdx.utils.viewport
+    clojure.gdx.utils.viewport
     gdl.graphics.viewport/Viewport]
    [com.badlogic.gdx.graphics.Texture
     gdx.graphics.texture
