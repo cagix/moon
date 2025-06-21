@@ -1,4 +1,4 @@
-[[master.yoda/provide
+[[master.yoda.provide/do!
   [[com.badlogic.gdx.Application
     clojure.gdx.application
     gdl.application/Application]
