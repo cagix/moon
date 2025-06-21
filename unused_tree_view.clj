@@ -16,12 +16,6 @@
    (var? v) (str "[GOLD]" (:name (meta v)) "[] : " (->v-str @v))
    :else (str "[ORANGE]" (class->label-str v) "[]")))
 
-(defn- k->label-str [k]
-  (str "[LIGHT_GRAY]:"
-       (when-let [ns (namespace k)] (str ns "/"))
-       "[][WHITE]"
-       (name k)
-       "[]"))
 
 ; TODO truncate ...
 (defn- labelstr [k v]
@@ -93,38 +87,10 @@
 
          )))))
 
-(defn- scroll-pane-cell [rows]
-  (let [viewport (:ui-viewport ctx/graphics)
-        table (ui/table {:rows rows
-                         :cell-defaults {:pad 1}
-                         :pack? true})
-        scroll-pane (ui/scroll-pane table)]
-    {:actor scroll-pane
-     :width  800 ; (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
-     :height 800 ; (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
-     }))
-
 (defn- generate-tree [m]
   (doto (VisTree.)
     (add-map-nodes! (into (sorted-map) m)
                     0)))
-
-(defn- scroll-pane-window [title content]
-  (ui/window {:title title
-              :close-button? true
-              :close-on-escape? true
-              :center? true
-              :rows [[(scroll-pane-cell [[content]])]]
-              :pack? true}))
-
-(defn- generate-table [m]
-  (ui/table {:rows (for [[k v] (sort-by key m)]
-                     [(ui/label (k->label-str k))
-                      (ui/label (str (class v)))])}))
-
-(defn- show-table-view [title m]
-  {:pre [(map? m)]}
-  (stage/add-actor! ctx/stage (scroll-pane-window title (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}

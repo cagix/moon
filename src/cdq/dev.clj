@@ -111,6 +111,3 @@
 
 #_(defn- create-item! [_context item-id]
   (clojure.tx.spawn-item/do! (entity/position @ctx/player-eid) (db/build db item-id)))
-
-(defn- mouseover-grid-cell [{:keys [ctx/world] :as ctx}]
-  #_@(grid/cell (:world/grid world) (mapv int (c/world-mouse-position ctx))))
