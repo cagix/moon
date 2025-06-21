@@ -1,19 +1,14 @@
 (ns cdq.ctx.tx-handler
   (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.entity.timers :as timers]
             [cdq.inventory :as inventory]
-            [cdq.modifiers :as modifiers]
-            [cdq.rand :refer [rand-int-between]]
             [cdq.timer :as timer]
             [cdq.ui :as stage]
             [cdq.utils :as utils]
-            [cdq.w :as w]
-            [gdl.graphics :as g]
-            [gdl.math.vector2 :as v]))
+            [gdl.graphics :as g]))
 
 (defn- valid-tx? [transaction]
   (vector? transaction))
@@ -179,93 +174,3 @@
 
 #_(defn do! [ctx eid cell item]
   #_(tx/stack-item ctx eid cell item))
-
-(defmethod do! :tx/audiovisual [[_ position audiovisual] {:keys [ctx/db]}]
-  (let [{:keys [tx/sound
-                entity/animation]} (if (keyword? audiovisual)
-                                     (db/build db audiovisual)
-                                     audiovisual)]
-    [[:tx/sound sound]
-     [:tx/spawn-effect
-      position
-      {:entity/animation animation
-       :entity/delete-after-animation-stopped? true}]]))
-
-(defmethod do! :tx/spawn-alert [[_ position faction duration]
-                                {:keys [ctx/world]}]
-  [[:tx/spawn-effect
-    position
-    {:entity/alert-friendlies-after-duration
-     {:counter (timer/create (:world/elapsed-time world) duration)
-      :faction faction}}]])
-
-(defmethod do! :tx/spawn-line [[_ {:keys [start end duration color thick?]}] _ctx]
-  [[:tx/spawn-effect
-    start
-    {:entity/line-render {:thick? thick? :end end :color color}
-     :entity/delete-after-duration duration}]])
-
-(defmethod do! :tx/deal-damage [[_ source target damage] _ctx]
-  (let [source* @source
-        target* @target
-        hp (entity/hitpoints target*)]
-    (cond
-     (zero? (hp 0))
-     nil
-
-     (< (rand) (modifiers/effective-armor-save (:creature/stats source*)
-                                               (:creature/stats target*)))
-     [[:tx/add-text-effect target "[WHITE]ARMOR" 0.3]]
-
-     :else
-     (let [min-max (:damage/min-max (modifiers/damage (:creature/stats source*)
-                                                      (:creature/stats target*)
-                                                      damage))
-           dmg-amount (rand-int-between min-max)
-           new-hp-val (max (- (hp 0) dmg-amount)
-                           0)]
-       [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
-        [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
-        [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
-        [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]]))))
-
-(defmethod do! :tx/set-movement [[_ eid movement-vector] _ctx]
-  (swap! eid entity/set-movement movement-vector)
-  nil)
-
-(defmethod do! :tx/move-entity [[_ & opts] {:keys [ctx/world]}]
-  (apply w/move-entity! world opts)
-  nil)
-
-(defmethod do! :tx/spawn-projectile
-  [[_
-    {:keys [position direction faction]}
-    {:keys [entity/image
-            projectile/max-range
-            projectile/speed
-            entity-effects
-            projectile/size
-            projectile/piercing?] :as projectile}]
-   {:keys [ctx/world]}]
-  (w/spawn-entity! world
-                   {:entity/body {:position position
-                                  :width size
-                                  :height size
-                                  :z-order :z-order/flying
-                                  :rotation-angle (v/angle-from-vector direction)}
-                    :entity/movement {:direction direction
-                                      :speed speed}
-                    :entity/image image
-                    :entity/faction faction
-                    :entity/delete-after-duration (/ max-range speed)
-                    :entity/destroy-audiovisual :audiovisuals/hit-wall
-                    :entity/projectile-collision {:entity-effects entity-effects
-                                                  :piercing? piercing?}}))
-
-(defmethod do! :tx/spawn-effect
-  [[_ position components]
-   {:keys [ctx/config
-           ctx/world]}]
-  (w/spawn-entity! world
-                   (assoc components
-                          :entity/body (assoc (:effect-body-props config) :position position))))
