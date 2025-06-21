@@ -133,10 +133,8 @@
              component-rows))
     table))
 
-(def ^:private value-widget? (comp vector? actor/user-object))
-
 (defmethod widget/value :s/map [_  _attribute table schemas]
   (into {}
-        (for [widget (filter value-widget? (group/children table))
+        (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
           [k (widget/value (get schemas k) k widget schemas)])))
