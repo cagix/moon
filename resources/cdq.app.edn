@@ -101,6 +101,12 @@
                                    [cdq.tx.state-enter
                                     :tx/state-enter]
 
+
+                                   [cdq.tx.spawn-item
+                                    :tx/spawn-item]
+                                   [cdq.tx.spawn-creature
+                                    :tx/spawn-creature]
+
                                    ]]]
 
  [master.yoda/dispatch
