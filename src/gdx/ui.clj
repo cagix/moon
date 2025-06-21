@@ -1,7 +1,7 @@
 (ns gdx.ui
   (:require [gdx.graphics.color :as color]
-            [gdx.graphics.texture :as texture]
-            [gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
             [gdx.ui.table :as table])
