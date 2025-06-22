@@ -1,17 +1,14 @@
 (ns cdq.application
-  (:require [gdl.graphics :as graphics]
+  (:require [cdq.malli :as m]
+            [gdl.app]
+            [gdl.graphics :as graphics]
             [gdl.utils.disposable :as disp]))
 
 (def state (atom nil))
 
 (defn post-runnable! [runnable]
-  (swap! state update-in [:ctx/app :gdl.app/runnables] conj runnable)
+  (swap! state gdl.app/add-runnable runnable)
   nil)
-
-(defn run-runnables! [{:keys [ctx/app] :as ctx}]
-  (doseq [runnable (:gdl.app/runnables app)]
-    (runnable ctx))
-  (assoc-in ctx [:ctx/app :gdl.app/runnables] []))
 
 ; TODO call dispose! on all components
 (defn dispose! []

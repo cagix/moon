@@ -131,7 +131,18 @@
      {:state-atom cdq.application/state
       :initial-context cdq.application.context/create
       :create-fns
-      [[master.yoda/assoc* [:ctx/app [gdl.create.app/do!]]]
+      [[master.yoda/assoc*
+        [:ctx/app
+         [gdl.app/create {:schema [:map {:closed true}
+                                   [:ctx/app :some]
+                                   [:ctx/files :some]
+                                   [:ctx/config :some]
+                                   [:ctx/input :some]
+                                   [:ctx/db :some]
+                                   [:ctx/audio :some]
+                                   [:ctx/stage :some]
+                                   [:ctx/graphics :some]
+                                   [:ctx/world :some]]}]]]
        gdl.create.gdx/do!
        [master.yoda/assoc*
         [:ctx/config
@@ -309,14 +320,14 @@
        [cdq.create.extend-protocols/do! cdq.ctx]
        cdq.ctx/reset-game-state!
        cdq.create.player-movement-vector/do!
-       cdq.application.context/validate]}]
+       gdl.app/validate]}]
     :dispose! cdq.application/dispose!
     :render!
     [master.yoda/render-swap!
      {:state-atom cdq.application/state
       :render-fns
-      [cdq.application.context/validate
-       cdq.application/run-runnables!
+      [gdl.app/validate
+       gdl.app/run-runnables!
        cdq.render.assoc-active-entities/do!
        cdq.render.set-camera-on-player/do!
        cdq.render.clear-screen/do!
@@ -372,5 +383,5 @@
        [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
                                              :toggle-inventory   :i
                                              :toggle-entity-info :e}]
-       cdq.application.context/validate]}]
+       gdl.app/validate]}]
     :resize! cdq.application/resize!}]]]
