@@ -1,9 +1,9 @@
 (ns cdq.dev.data-view
-  (:require [cdq.grid :as grid]
+  (:require [cdq.application :as application]
+            [cdq.grid :as grid]
             [gdl.c]
             [gdl.ui.stage :as stage]
-            [gdx.ui :as ui])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdx.ui :as ui]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -48,14 +48,13 @@
                       height))
 
 (defn open-table-view-window! [{:keys [title width height get-data]}]
-  (.postRunnable Gdx/app
-                 (fn []
-                   (let [ctx @cdq.application/state]
-                     (stage/add! (:ctx/stage ctx)
-                                 (table-view-window title
-                                                    (get-data ctx)
-                                                    width
-                                                    height))))))
+  (application/post-runnable!
+   (fn [ctx]
+     (stage/add! (:ctx/stage ctx)
+                 (table-view-window title
+                                    (get-data ctx)
+                                    width
+                                    height)))))
 
 (comment
 

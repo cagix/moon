@@ -131,7 +131,8 @@
      {:state-atom cdq.application/state
       :initial-context cdq.application.context/create
       :create-fns
-      [gdl.create.gdx/do!
+      [[master.yoda/assoc* [:ctx/app [gdl.create.app/do!]]]
+       gdl.create.gdx/do!
        [master.yoda/assoc*
         [:ctx/config
          [master.yoda/const*
@@ -315,6 +316,7 @@
      {:state-atom cdq.application/state
       :render-fns
       [cdq.application.context/validate
+       cdq.application/run-runnables!
        cdq.render.assoc-active-entities/do!
        cdq.render.set-camera-on-player/do!
        cdq.render.clear-screen/do!

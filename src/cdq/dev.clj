@@ -4,11 +4,7 @@
             [cdq.dev.app-values]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [gdl.c :as c])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+            [gdl.c :as c]))
 
 (comment
 
@@ -82,14 +78,15 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable!
-  (ctx/handle-txs! ctx
-                   (cdq.world/spawn-creature! (:ctx/world @application/state)
-                                              {:position [35 73]
-                                               :creature-property (db/build (:ctx/db @application/state) :creatures/dragon-red)
-                                               :components {:entity/fsm {:fsm :fsms/npc
-                                                                         :initial-state :npc-sleeping}
-                                                            :entity/faction :evil}})))
+ (cdq.application/post-runnable!
+  (fn [ctx]
+    (ctx/handle-txs! ctx
+                     (cdq.w/spawn-creature! (:ctx/world ctx)
+                                            {:position [35 73]
+                                             :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
+                                             :components {:entity/fsm {:fsm :fsms/npc
+                                                                       :initial-state :npc-sleeping}
+                                                          :entity/faction :evil}}))))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
