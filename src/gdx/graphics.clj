@@ -33,8 +33,8 @@
     (.dispose pixmap)
     texture))
 
-(defn load-texture [^String path]
-  (Texture. path))
+(defn load-texture [file-handle]
+  (Texture. file-handle))
 
 (defn orthographic-camera
   ([]

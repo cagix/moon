@@ -277,8 +277,8 @@
        [master.yoda/assoc*
         [:ctx/graphics
          [gdl.create.graphics/do!
-          {:textures {:folder "resources/"
-                      :extensions #{"png" "bmp"}}
+          {:textures [gdl.assets/search {:folder "resources/"
+                                         :extensions #{"png" "bmp"}}]
            :tile-size 48
            :ui-viewport    {:width 1440 :height 900}
            :world-viewport {:width 1440 :height 900}
@@ -310,7 +310,7 @@
        [master.yoda/assoc*
         [:ctx/audio
          [gdl.create.audio/do!
-          {:sounds [cdq.assets/sounds {:folder "resources/"
+          {:sounds [gdl.assets/search {:folder "resources/"
                                        :extensions #{"wav"}}]}]]]
        [master.yoda/assoc*
         [:ctx/db

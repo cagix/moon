@@ -5,11 +5,12 @@
             [gdx.audio.sound :as sound]))
 
 (defn do!
-  [{:keys [ctx/audio] :as ctx}
+  [{:keys [ctx/audio
+           ctx/files]}
    {:keys [sounds]}]
   (let [sounds (into {}
                      (for [[path file-handle] (let [[f params] sounds]
-                                                (f ctx params))]
+                                                (f files params))]
                        [path (audio/new-sound audio file-handle)]))]
     (reify
       gdl.utils.disposable/Disposable
