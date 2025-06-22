@@ -299,8 +299,8 @@
        [master.yoda/assoc*
         [:ctx/audio
          [gdl.create.audio/do!
-          {:sounds {:folder "resources/"
-                    :extensions #{"wav"}}}]]]
+          {:sounds [cdq.assets/sounds {:folder "resources/"
+                                       :extensions #{"wav"}}]}]]]
        [master.yoda/assoc*
         [:ctx/db
          [cdq.create.db/do!
