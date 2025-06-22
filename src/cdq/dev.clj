@@ -4,12 +4,11 @@
             [cdq.dev.app-values]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [gdl.application :as app]
-            [gdl.c :as c]))
+            [gdl.c :as c])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable! [& exprs]
-  `(app/post-runnable! (:ctx/app @application/state)
-                       (fn [] ~@exprs)))
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (comment
 

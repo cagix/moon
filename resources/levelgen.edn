@@ -1,8 +1,5 @@
 [[master.yoda.provide/do!
-  [[com.badlogic.gdx.Application
-    clojure.gdx.application
-    gdl.application/Application]
-   [com.badlogic.gdx.Files
+  [[com.badlogic.gdx.Files
     clojure.gdx.files
     gdl.files/Files]
    [com.badlogic.gdx.files.FileHandle
