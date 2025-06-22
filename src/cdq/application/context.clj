@@ -2,8 +2,7 @@
   (:require [cdq.malli :as m]
             [qrecord.core :as q]))
 
-(q/defrecord Context [ctx/app
-                      ctx/files
+(q/defrecord Context [ctx/files
                       ctx/config
                       ctx/input
                       ctx/db
@@ -13,7 +12,6 @@
                       ctx/world])
 
 (def schema [:map {:closed true}
-             [:ctx/app :some]
              [:ctx/files :some]
              [:ctx/config :some]
              [:ctx/input :some]
