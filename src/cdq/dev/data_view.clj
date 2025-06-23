@@ -1,5 +1,6 @@
 (ns cdq.dev.data-view
-  (:require [gdx.ui :as ui]))
+  (:require [gdl.ui.stage :as stage]
+            [gdx.ui :as ui]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -8,13 +9,41 @@
        (name k)
        "[]"))
 
+(defn- v->text [v]
+  (cond
+   (or (keyword? v)
+       (number? v)
+       (boolean? v)
+       (string? v))
+   (str "[GOLD]" v "[]")
+
+   :else
+   (str (class v))))
+
+(declare table-view-window)
+
+; TODO isn't there a clojure data browser thingy library
+
+(defn- v->actor [v]
+  (if (map? v)
+    (ui/text-button "Map"
+                    (fn [_actor {:keys [ctx/stage]}]
+                      (stage/add! stage (table-view-window {:title "title"
+                                                            :data v
+                                                            :width 500
+                                                            :height 500
+                                                            }))
+                      )
+                    )
+    {:actor/type :actor.type/label
+     :label/text (v->text v)}))
+
 (defn table-view-window [{:keys [title data width height]}]
   {:pre [(map? data)]}
   (let [scroll-pane-table (ui/table {:rows (for [[k v] (sort-by key data)]
                                              [{:actor {:actor/type :actor.type/label
                                                        :label/text (k->label-str k)}}
-                                              {:actor {:actor/type :actor.type/label
-                                                       :label/text (str (class v))}}])})
+                                              {:actor (v->actor v)}])})
         scroll-pane-cell (let [;viewport (:ui-viewport ctx/graphics)
                                table (ui/table {:rows [[scroll-pane-table]]
                                                 :cell-defaults {:pad 1}
