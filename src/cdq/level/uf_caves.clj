@@ -8,8 +8,8 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
             [clojure.gdx.maps.tiled :as tiled]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.texture :as texture]))
+            [clojure.graphics.texture :as texture]
+            [gdl.graphics :as graphics]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid

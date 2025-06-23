@@ -5,7 +5,6 @@
             [cdq.dev.data-view :as data-view]
             [cdq.entity :as entity]
             [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]
             [clojure.string :as str]
             [gdl.ui.menu :as menu]
             [gdl.ui.stage :as stage]
@@ -43,7 +42,7 @@
 
 (defn zoom [icon]
   {:label "Zoom"
-   :update-fn (comp camera/zoom :viewport/camera :world-viewport :ctx/graphics)
+   :update-fn (comp :camera/zoom :viewport/camera :world-viewport :ctx/graphics)
    :icon icon})
 
 (defn fps [icon]

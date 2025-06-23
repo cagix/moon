@@ -1,8 +1,8 @@
 (ns cdq.application
-  (:require [cdq.malli :as m]
+  (:require [clojure.utils.disposable :as disp]
+            [cdq.malli :as m]
             [gdl.app]
-            [gdl.graphics :as graphics]
-            [gdl.utils.disposable :as disp]))
+            [gdl.graphics :as graphics]))
 
 (def state (atom nil))
 

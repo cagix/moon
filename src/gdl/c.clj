@@ -1,6 +1,6 @@
 (ns gdl.c
-  (:require [clojure.input :as input]
-            [gdl.graphics.viewport :as viewport]
+  (:require [clojure.graphics.viewport :as viewport]
+            [clojure.input :as input]
             [gdl.ui.stage :as stage])
   (:import (com.badlogic.gdx.utils.viewport Viewport)))
 

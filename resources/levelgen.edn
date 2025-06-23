@@ -13,19 +13,19 @@
     clojure.input/Input]
    [com.badlogic.gdx.utils.Disposable
     clojure.gdx.utils.disposable
-    gdl.utils.disposable/Disposable]
+    clojure.utils.disposable/Disposable]
    [com.badlogic.gdx.graphics.g2d.Batch
     clojure.gdx.graphics.g2d.batch
-    gdl.graphics.g2d.batch/Batch]
+    clojure.graphics.g2d.batch/Batch]
    [com.badlogic.gdx.utils.viewport.Viewport
     clojure.gdx.utils.viewport
-    gdl.graphics.viewport/Viewport]
+    clojure.graphics.viewport/Viewport]
    [com.badlogic.gdx.graphics.Texture
     clojure.gdx.graphics.texture
-    gdl.graphics.texture/Texture]
+    clojure.graphics.texture/Texture]
    [com.badlogic.gdx.graphics.g2d.TextureRegion
     clojure.gdx.graphics.g2d.texture-region
-    gdl.graphics.g2d.texture-region/TextureRegion]
+    clojure.graphics.g2d.texture-region/TextureRegion]
    [com.badlogic.gdx.graphics.OrthographicCamera
     gdx.graphics.camera
     gdl.graphics.camera/Camera]

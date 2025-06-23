@@ -1,7 +1,7 @@
 (ns gdl.create.graphics.handle-draws
-  (:require [gdl.graphics]
-            [gdl.graphics.g2d.batch :as batch]
-            [gdl.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.graphics.g2d.batch :as batch]
+            [clojure.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.shape-drawer :as sd]))
 

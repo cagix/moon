@@ -6,6 +6,7 @@
             [cdq.render.clear-screen]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.input :as input]
+            [clojure.utils.disposable :as disp]
             gdl.assets
             [gdl.create.gdx]
             gdl.create.graphics
@@ -13,7 +14,6 @@
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.ui.stage :as stage]
-            [gdl.utils.disposable :as disp]
             [gdx.ui :as ui]))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
@@ -120,7 +120,7 @@
                                           ctx/camera-movement-speed]}]
   (let [apply-position (fn [idx f]
                          (camera/set-position! camera
-                                               (update (camera/position camera)
+                                               (update (:camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
     (if (input/key-pressed? input :left)  (apply-position 0 -))

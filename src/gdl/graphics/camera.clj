@@ -1,19 +1,23 @@
-(ns gdl.graphics.camera)
+(ns gdl.graphics.camera
+  (:require [clojure.gdx.math.vector3 :as vector3]))
 
 (defprotocol Camera
-  (zoom [_])
-  (position [_] "Returns camera position as [x y] vector.")
-  (frustum [_] "Returns `[left-x right-x bottom-y top-y]`.")
   (set-position! [_ [x y]])
-  (set-zoom! [_ value] "Initial zoom is `1`.")
-  (viewport-width [_])
-  (viewport-height [_]))
+  (set-zoom! [_ value] "Initial zoom is `1`."))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))
 
 (defn inc-zoom! [cam by]
-  (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
+  (set-zoom! cam (max 0.1 (+ (:camera/zoom cam) by))))
+
+(defn frustum [camera]
+  (let [frustum-points (take 4 (map vector3/clojurize (.planePoints (:camera/frustum camera))))
+        left-x   (apply min (map first  frustum-points))
+        right-x  (apply max (map first  frustum-points))
+        bottom-y (apply min (map second frustum-points))
+        top-y    (apply max (map second frustum-points))]
+    [left-x right-x bottom-y top-y]))
 
 (defn visible-tiles [camera]
   (let [[left-x right-x bottom-y top-y] (frustum camera)]
@@ -24,9 +28,9 @@
 (defn calculate-zoom
   "calculates the zoom value for camera to see all the 4 points."
   [camera & {:keys [left top right bottom]}]
-  (let [viewport-width  (viewport-width  camera)
-        viewport-height (viewport-height camera)
-        [px py] (position camera)
+  (let [viewport-width  (:camera/viewport-width  camera)
+        viewport-height (:camera/viewport-height camera)
+        [px py] (:camera/position camera)
         px (float px)
         py (float py)
         leftx (float (left 0))

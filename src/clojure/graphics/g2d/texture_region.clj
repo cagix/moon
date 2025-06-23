@@ -1,4 +1,4 @@
-(ns gdl.graphics.g2d.texture-region)
+(ns clojure.graphics.g2d.texture-region)
 
 (defprotocol TextureRegion
   (dimensions [_])

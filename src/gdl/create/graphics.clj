@@ -6,11 +6,11 @@
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
+            [clojure.graphics.g2d.batch :as batch]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.viewport :as viewport]
+            [clojure.utils.disposable :refer [dispose!]]
             [gdl.graphics]
-            [gdl.graphics.g2d.batch :as batch]
-            [gdl.graphics.texture :as texture]
-            [gdl.graphics.viewport :as viewport]
-            [gdl.utils.disposable]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
   (:import (com.badlogic.gdx.files FileHandle)
@@ -33,14 +33,14 @@
                      unit-scale
                      world-unit-scale
                      world-viewport]
-  gdl.utils.disposable/Disposable
+  clojure.utils.disposable/Disposable
   (dispose! [_]
-    (gdl.utils.disposable/dispose! batch)
-    (gdl.utils.disposable/dispose! shape-drawer-texture)
-    (run! gdl.utils.disposable/dispose! (vals textures))
-    (run! gdl.utils.disposable/dispose! (vals cursors))
+    (dispose! batch)
+    (dispose! shape-drawer-texture)
+    (run! dispose! (vals textures))
+    (run! dispose! (vals cursors))
     (when default-font
-      (gdl.utils.disposable/dispose! default-font)))
+      (dispose! default-font)))
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]

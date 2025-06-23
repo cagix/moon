@@ -1,4 +1,4 @@
-(ns gdl.graphics.viewport)
+(ns clojure.graphics.viewport)
 
 (defprotocol Viewport
   (unproject [_ x y])
