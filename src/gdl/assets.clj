@@ -1,7 +1,7 @@
 (ns gdl.assets
   (:require [clojure.string :as str]
-            [gdl.files :as files]
-            [gdl.files.file-handle :as fh]))
+            [clojure.files :as files]
+            [clojure.files.file-handle :as fh]))
 
 (defn search [files {:keys [folder extensions]}]
   (map (fn [path]

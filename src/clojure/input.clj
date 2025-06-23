@@ -1,4 +1,4 @@
-(ns gdl.input)
+(ns clojure.input)
 
 (defprotocol Input
   (button-just-pressed? [_ button])

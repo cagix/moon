@@ -1,8 +1,8 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
+            [clojure.input :as input]
             [gdl.c :as c]
-            [gdl.input :as input]
             [gdl.math.vector2 :as v]
             [gdx.ui :as ui]))
 

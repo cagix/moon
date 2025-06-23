@@ -5,13 +5,13 @@
             [cdq.level.from-tmx]
             [cdq.render.clear-screen]
             [clojure.gdx.maps.tiled :as tiled]
+            [clojure.input :as input]
             gdl.assets
             [gdl.create.gdx]
             gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
-            [gdl.input :as input]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp]
             [gdx.ui :as ui]))

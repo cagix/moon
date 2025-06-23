@@ -1,16 +1,16 @@
 [[master.yoda.provide/do!
   [[com.badlogic.gdx.Files
     clojure.gdx.files
-    gdl.files/Files]
+    clojure.files/Files]
    [com.badlogic.gdx.files.FileHandle
     clojure.gdx.files.file-handle
-    gdl.files.file-handle/FileHandle]
+    clojure.files.file-handle/FileHandle]
    [com.badlogic.gdx.Graphics
     clojure.gdx.graphics
     clojure.graphics/Graphics]
    [com.badlogic.gdx.Input
     clojure.gdx.input
-    gdl.input/Input]
+    clojure.input/Input]
    [com.badlogic.gdx.utils.Disposable
     clojure.gdx.utils.disposable
     gdl.utils.disposable/Disposable]

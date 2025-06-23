@@ -1,8 +1,8 @@
 (ns cdq.render.debug-data-view
   (:require [cdq.dev.data-view :as data-view]
             [cdq.grid :as grid]
+            [clojure.input :as input]
             [gdl.c]
-            [gdl.input :as input]
             [gdl.ui.stage :as stage]))
 
 (defn do!

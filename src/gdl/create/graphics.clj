@@ -1,11 +1,11 @@
 (ns gdl.create.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.files :as files]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
-            [gdl.files :as files]
             [gdl.graphics]
             [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.texture :as texture]

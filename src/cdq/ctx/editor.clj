@@ -7,7 +7,7 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
-            [gdl.input :as input]
+            [clojure.input :as input]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]

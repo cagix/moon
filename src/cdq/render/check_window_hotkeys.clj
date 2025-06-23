@@ -1,5 +1,5 @@
 (ns cdq.render.check-window-hotkeys
-  (:require [gdl.input :as input]
+  (:require [clojure.input :as input]
             [cdq.ui :as stage]))
 
 (defn do! [{:keys [ctx/input

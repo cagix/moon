@@ -1,5 +1,5 @@
 (ns gdl.create.ui
-  (:require [gdl.input :as input]
+  (:require [clojure.input :as input]
             [gdx.ui :as ui]))
 
 (defn do! [{:keys [ctx/graphics
