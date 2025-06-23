@@ -94,8 +94,8 @@
                 :id id
                 :visible? visible?
                 :pack? true
-                :position [(:width (:ui-viewport graphics))
-                           (:height (:ui-viewport graphics))]
+                :position [(:viewport/width (:ui-viewport graphics))
+                           (:viewport/height (:ui-viewport graphics))]
                 :rows [[{:actor {:id ::table
                                  :actor/type :actor.type/table
                                  :rows (concat [[nil nil

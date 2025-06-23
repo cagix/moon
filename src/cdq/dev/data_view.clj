@@ -26,8 +26,8 @@
                          :pack? true})
         scroll-pane (ui/scroll-pane table)]
     {:actor scroll-pane
-     :width  width ; (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
-     :height height ; (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
+     :width  width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
+     :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
      }))
 
 (defn- scroll-pane-window [title content width height]

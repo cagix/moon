@@ -12,7 +12,7 @@
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [[x y-mana] [(/ (:width (:ui-viewport graphics)) 2)
+  (let [[x y-mana] [(/ (:viewport/width (:ui-viewport graphics)) 2)
                     y-mana]
         rahmen-tex-reg (g/image->texture-region graphics {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)

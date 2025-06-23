@@ -5,6 +5,6 @@
 (defn do! [{:keys [ctx/world
                    ctx/graphics]
             :as ctx}]
-  (camera/set-position! (:camera (:world-viewport graphics))
+  (camera/set-position! (:viewport/camera (:world-viewport graphics))
                         (entity/position @(:world/player-eid world)))
   ctx)

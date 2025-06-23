@@ -4,8 +4,8 @@
 
 (defn- draw-message [state viewport]
   (when-let [text (:text @state)]
-    [:draw/text {:x (/ (:width viewport) 2)
-                 :y (+ (/ (:height viewport) 2) 200)
+    [:draw/text {:x (/ (:viewport/width viewport) 2)
+                 :y (+ (/ (:viewport/height viewport) 2) 200)
                  :text text
                  :scale 2.5
                  :up? true}]))

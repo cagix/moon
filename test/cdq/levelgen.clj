@@ -95,7 +95,7 @@
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
-                   :ctx/camera (:camera (:world-viewport (:ctx/graphics ctx)))
+                   :ctx/camera (:viewport/camera (:world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)

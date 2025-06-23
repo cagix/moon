@@ -52,8 +52,8 @@
                                                     (on-click)))]]
                           :id ::modal
                           :modal? true
-                          :center-position [(/ (:width  ui-viewport) 2)
-                                            (* (:height ui-viewport) (/ 3 4))]
+                          :center-position [(/ (:viewport/width  ui-viewport) 2)
+                                            (* (:viewport/height ui-viewport) (/ 3 4))]
                           :pack? true})))
 
 (defn toggle-inventory-visible! [stage]

@@ -47,5 +47,5 @@
 
 (defn create [{:keys [ctx/graphics]}
               {:keys [y]}]
-  (create* [(:width (:ui-viewport graphics))
+  (create* [(:viewport/width (:ui-viewport graphics))
             y]))

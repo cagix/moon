@@ -47,7 +47,7 @@
                                            (swap! application/state update :ctx/db
                                                   db/delete!
                                                   (:property/id props))))]
-    (table/add-rows! window [[(scroll-pane/table-cell (:height (:ui-viewport graphics))
+    (table/add-rows! window [[(scroll-pane/table-cell (:viewport/height (:ui-viewport graphics))
                                                       [[{:actor widget :colspan 2}]
                                                        [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
                                                                                 (fn [_actor ctx]

@@ -34,9 +34,9 @@
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
       (case k
-        :width  (Viewport/.getWorldWidth  this)
-        :height (Viewport/.getWorldHeight this)
-        :camera (Viewport/.getCamera      this)))))
+        :viewport/width  (Viewport/.getWorldWidth  this)
+        :viewport/height (Viewport/.getWorldHeight this)
+        :viewport/camera (Viewport/.getCamera      this)))))
 
 (defn- create-cursor [graphics ^FileHandle file-handle [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. file-handle)
@@ -110,7 +110,7 @@
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
     (batch/set-color! batch (color/->obj :white))
-    (batch/set-projection-matrix! batch (.combined (:camera world-viewport)))
+    (batch/set-projection-matrix! batch (.combined (:viewport/camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (fn []
@@ -121,7 +121,7 @@
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
-          camera (:camera world-viewport)]
+          camera (:viewport/camera world-viewport)]
       (.setColorSetter renderer (reify ColorSetter
                                   (apply [_ color x y]
                                     (color/float-bits (color-setter color x y)))))

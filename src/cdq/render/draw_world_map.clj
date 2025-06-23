@@ -13,7 +13,7 @@
                       {:ray-blocked? (let [raycaster (:world/raycaster world)]
                                        (fn [start end] (raycaster/blocked? raycaster start end)))
                        :explored-tile-corners (:world/explored-tile-corners world)
-                       :light-position (camera/position (:camera (:world-viewport graphics)))
+                       :light-position (camera/position (:viewport/camera (:world-viewport graphics)))
                        :see-all-tiles? false
                        :explored-tile-color  [0.5 0.5 0.5 1]
                        :visible-tile-color   [1 1 1 1]

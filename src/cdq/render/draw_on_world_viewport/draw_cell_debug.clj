@@ -11,7 +11,7 @@
                                  ctx/graphics]}]
   (let [grid (:world/grid world)]
     (apply concat
-           (for [[x y] (camera-utils/visible-tiles (:camera (:world-viewport graphics)))
+           (for [[x y] (camera-utils/visible-tiles (:viewport/camera (:world-viewport graphics)))
                  :let [cell (grid/cell grid [x y])]
                  :when cell
                  :let [cell* @cell]]

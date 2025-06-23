@@ -41,7 +41,7 @@
 
 (defn zoom [icon]
   {:label "Zoom"
-   :update-fn (comp camera/zoom :camera :world-viewport :ctx/graphics)
+   :update-fn (comp camera/zoom :viewport/camera :world-viewport :ctx/graphics)
    :icon icon})
 
 (defn fps [icon]
