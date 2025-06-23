@@ -11,39 +11,17 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
             [gdl.utils.disposable]
-            [gdx.graphics.g2d :as g2d]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
   (:import (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defn- create-cursor [graphics ^FileHandle file-handle [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. file-handle)
-        cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
-    cursor))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor (color/->obj :white))
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
-
-(defn- create-cursors [graphics files cursors cursor-path-format]
-  (update-vals cursors
-               (fn [[file hotspot]]
-                 (create-cursor graphics
-                                (files/internal files (format cursor-path-format file))
-                                hotspot))))
-
-(defrecord Graphics [
-                     batch
+(defrecord Graphics [batch
                      cursors
                      default-font
                      graphics
@@ -54,8 +32,7 @@
                      ui-viewport
                      unit-scale
                      world-unit-scale
-                     world-viewport
-                     ]
+                     world-viewport]
   gdl.utils.disposable/Disposable
   (dispose! [_]
     (gdl.utils.disposable/dispose! batch)
@@ -139,26 +116,27 @@
            tile-size
            ui-viewport
            world-viewport]}]
-  (let [batch (g2d/sprite-batch)
-
-        shape-drawer-texture (white-pixel-texture)
-
+  (let [batch (SpriteBatch.)
+        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                            (.setColor (color/->obj :white))
+                                            (.drawPixel 0 0))
+                                   texture (Texture. pixmap)]
+                               (.dispose pixmap)
+                               texture)
         world-unit-scale (float (/ tile-size))
-
         ui-viewport (fit-viewport/create (:width  ui-viewport)
                                          (:height ui-viewport)
-                                         (orthographic-camera/create))
-
-        textures-to-load (let [[f params] textures]
-                           (f files params))
-        ;(println "load-textures (count textures): " (count textures))
-        textures (into {} (for [[path file-handle] textures-to-load]
-                            [path (Texture. file-handle)]))
-
-        cursors (create-cursors graphics files cursors cursor-path-format)]
+                                         (orthographic-camera/create))]
     (map->Graphics {:graphics graphics
-                    :textures textures
-                    :cursors cursors
+                    :textures (into {} (for [[path file-handle] (let [[f params] textures]
+                                                                  (f files params))]
+                                         [path (Texture. file-handle)]))
+                    :cursors (update-vals cursors
+                                          (fn [[file [hotspot-x hotspot-y]]]
+                                            (let [pixmap (Pixmap. ^FileHandle (files/internal files (format cursor-path-format file)))
+                                                  cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+                                              (.dispose pixmap)
+                                              cursor)))
                     :default-font (when default-font
                                     (freetype/generate-font (files/internal files (:file default-font))
                                                             (:params default-font)))
