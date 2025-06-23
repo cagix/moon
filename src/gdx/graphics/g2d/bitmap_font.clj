@@ -1,7 +1,7 @@
 (ns gdx.graphics.g2d.bitmap-font
   (:require [clojure.core-inject :refer [opts-get]]
-            [clojure.string :as str]
-            [gdx.utils.align :as align])
+            [clojure.gdx.utils.align :as align]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn configure! [^BitmapFont font {:keys [scale enable-markup? use-integer-positions?]}]

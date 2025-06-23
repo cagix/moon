@@ -1,4 +1,4 @@
-(ns gdx.graphics.color
+(ns clojure.gdx.graphics.color
   (:import (com.badlogic.gdx.graphics Color)))
 
 (let [mapping {:black       Color/BLACK

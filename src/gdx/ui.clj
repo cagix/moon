@@ -1,5 +1,5 @@
 (ns gdx.ui
-  (:require [gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdx.ui.actor :as actor]

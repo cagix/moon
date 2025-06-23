@@ -1,5 +1,5 @@
 (ns gdl.create.colors
-  (:require [gdx.graphics.colors :as colors]))
+  (:require [clojure.gdx.graphics.colors :as colors]))
 
 (defn do! [ctx colors]
   (colors/put! colors)

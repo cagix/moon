@@ -46,7 +46,7 @@
     gdl.graphics/DeclarativeDraws]
    ]]
 
- [master.yoda/dispatch [gdx.utils.shared-library-loader/operating-system {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}]]
+ [master.yoda/dispatch [clojure.gdx.utils.shared-library-loader/operating-system {:mac [[gdl.lwjgl/set-glfw-library-name! "glfw_async"]]}]]
  [gdx.backends.lwjgl.application/start!
   [{:title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}

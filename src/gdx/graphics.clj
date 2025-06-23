@@ -1,5 +1,5 @@
 (ns gdx.graphics
-  (:require [gdx.graphics.color :as color])
+  (:require [clojure.gdx.graphics.color :as color])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.files FileHandle)

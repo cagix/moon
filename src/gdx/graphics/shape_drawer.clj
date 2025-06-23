@@ -1,5 +1,5 @@
 (ns gdx.graphics.shape-drawer
-  (:require [gdx.graphics.color :as color])
+  (:require [clojure.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (def ^:private degrees-to-radians (float (/ Math/PI 180)))
