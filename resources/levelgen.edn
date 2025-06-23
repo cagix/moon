@@ -5,6 +5,9 @@
    [com.badlogic.gdx.files.FileHandle
     clojure.gdx.files.file-handle
     gdl.files.file-handle/FileHandle]
+   [com.badlogic.gdx.Graphics
+    clojure.gdx.graphics
+    clojure.graphics/Graphics]
    [com.badlogic.gdx.Input
     clojure.gdx.input
     gdl.input/Input]
