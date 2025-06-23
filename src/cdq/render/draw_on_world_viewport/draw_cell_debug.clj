@@ -1,7 +1,7 @@
 (ns cdq.render.draw-on-world-viewport.draw-cell-debug
   (:require [cdq.grid :as grid]
-            [cdq.utils.camera :as camera-utils]
-            [gdl.graphics :as graphics]))
+            [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
@@ -11,7 +11,7 @@
                                  ctx/graphics]}]
   (let [grid (:world/grid world)]
     (apply concat
-           (for [[x y] (camera-utils/visible-tiles (:viewport/camera (:world-viewport graphics)))
+           (for [[x y] (camera/visible-tiles (:viewport/camera (:world-viewport graphics)))
                  :let [cell (grid/cell grid [x y])]
                  :when cell
                  :let [cell* @cell]]

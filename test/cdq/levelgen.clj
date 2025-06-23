@@ -4,7 +4,6 @@
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
             [cdq.render.clear-screen]
-            [cdq.utils.camera :as camera-utils]
             [clojure.gdx.maps.tiled :as tiled]
             gdl.assets
             [gdl.create.gdx]
@@ -43,11 +42,11 @@
                         [(/ (:tiled-map/width  tiled-map) 2)
                          (/ (:tiled-map/height tiled-map) 2)])
   (camera/set-zoom! camera
-                    (camera-utils/calculate-zoom camera
-                                                 :left [0 0]
-                                                 :top [0 (:tiled-map/height tiled-map)]
-                                                 :right [(:tiled-map/width tiled-map) 0]
-                                                 :bottom [0 0])))
+                    (camera/calculate-zoom camera
+                                           :left [0 0]
+                                           :top [0 (:tiled-map/height tiled-map)]
+                                           :right [(:tiled-map/width tiled-map) 0]
+                                           :bottom [0 0])))
 
 (def tile-size 48)
 
