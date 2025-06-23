@@ -7,6 +7,10 @@
   (set-position! [_ [x y]])
   (set-zoom! [_ value] "Initial zoom is `1`.")
   (viewport-width [_])
-  (viewport-height [_])
-  (reset-zoom! [_]  "Sets the zoom value to 1.")
-  (inc-zoom! [_ amount] "Applies the amount to the current zoom, not lower than `0.1`."))
+  (viewport-height [_]))
+
+(defn reset-zoom! [cam]
+  (set-zoom! cam 1))
+
+(defn inc-zoom! [cam by]
+  (set-zoom! cam (max 0.1 (+ (zoom cam) by))))

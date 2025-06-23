@@ -8,10 +8,6 @@
 ; Camera/.position - vector3
 ; Camera/.frustum - 'Frustum'
 (defn position [^OrthographicCamera this]
-  ; custom gdx/field :position ?
-  ; dataify ?
-  ; bean ?
-  ; vector3/clojurize (.position this) ?
   [(.x (.position this))
    (.y (.position this))])
 
@@ -23,7 +19,6 @@
         top-y    (apply max (map second frustum-points))]
     [left-x right-x bottom-y top-y]))
 
-; Camera position is vector3 ... ?
 (defn set-position! [^OrthographicCamera this [x y]]
   ; (set! (.position this) (Vector3. x y z))
   (set! (.x (.position this)) (float x))
@@ -39,11 +34,3 @@
 
 (defn viewport-height [^OrthographicCamera this]
   (.viewportHeight this))
-
-;;
-
-(defn reset-zoom! [cam]
-  (set-zoom! cam 1))
-
-(defn inc-zoom! [cam by]
-  (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
