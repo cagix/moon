@@ -1,8 +1,8 @@
 (ns gdl.create.audio
-  (:require [gdl.audio]
-            [gdl.utils.disposable :refer [dispose!]]
-            [gdx.audio :as audio]
-            [gdx.audio.sound :as sound]))
+  (:require [clojure.gdx.audio :as audio]
+            [clojure.gdx.audio.sound :as sound]
+            [gdl.audio]
+            [gdl.utils.disposable :refer [dispose!]]))
 
 (defn do!
   [{:keys [ctx/audio
