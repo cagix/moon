@@ -76,7 +76,10 @@
   {:label "Context"
    :items [{:label "Show data"
             :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                        (stage/add! stage (data-view/table-view-window "Context" ctx 500 500)))}]})
+                        (stage/add! stage (data-view/table-view-window {:title "Context"
+                                                                        :data ctx
+                                                                        :width 500
+                                                                        :height 500})))}]})
 
 (defn create
   [{:keys [

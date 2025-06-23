@@ -15,8 +15,8 @@
           data (or (and mouseover-eid @mouseover-eid)
                    @(grid/cell (:world/grid world)
                                (mapv int (gdl.c/world-mouse-position ctx))))]
-      (stage/add! stage (data-view/table-view-window "Data View"
-                                                     data
-                                                     500
-                                                     500))))
+      (stage/add! stage (data-view/table-view-window {:title "Data View"
+                                                      :data data
+                                                      :width 500
+                                                      :height 500}))))
   ctx)
