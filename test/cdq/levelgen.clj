@@ -5,6 +5,8 @@
             [cdq.level.from-tmx]
             [cdq.render.clear-screen]
             [cdq.utils.camera :as camera-utils]
+            [clojure.gdx.maps.tiled :as tiled]
+            gdl.assets
             [gdl.create.gdx]
             gdl.create.graphics
             gdl.create.ui
@@ -13,7 +15,6 @@
             [gdl.input :as input]
             [gdl.ui.stage :as stage]
             [gdl.utils.disposable :as disp]
-            [gdx.tiled :as tiled]
             [gdx.ui :as ui]))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
@@ -83,8 +84,8 @@
 (defn create! [_params]
   (let [ctx (gdl.create.gdx/do! (->Context))
         ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx
-                                                              {:textures {:folder "resources/"
-                                                                          :extensions #{"png" "bmp"}}
+                                                              {:textures [gdl.assets/search {:folder "resources/"
+                                                                                             :extensions #{"png" "bmp"}}]
                                                                :tile-size 48
                                                                :ui-viewport {:width 1440
                                                                              :height 900}
