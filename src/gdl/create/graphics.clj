@@ -1,5 +1,6 @@
 (ns gdl.create.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [gdl.files :as files]
@@ -8,19 +9,55 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]
             [gdl.utils.disposable]
-            [gdx.graphics :as graphics]
             [gdx.graphics.g2d :as g2d]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
-  (:import (gdl.graphics OrthogonalTiledMapRenderer
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics OrthographicCamera
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture)
+           (com.badlogic.gdx.utils.viewport FitViewport
+                                            Viewport)
+           (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
+
+(defn- orthographic-camera
+  ([]
+   (OrthographicCamera.))
+  ([& {:keys [y-down? world-width world-height]}]
+   (doto (OrthographicCamera.)
+     (.setToOrtho y-down? world-width world-height))))
+
+(defn- fit-viewport [width height camera]
+  (proxy [FitViewport ILookup] [width height camera]
+    (valAt [k]
+      (case k
+        :width  (Viewport/.getWorldWidth  this)
+        :height (Viewport/.getWorldHeight this)
+        :camera (Viewport/.getCamera      this)))))
+
+(defn- create-cursor [graphics ^FileHandle file-handle [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. file-handle)
+        cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
+
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor (color/->obj :white))
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
 
 (defn- create-cursors [graphics files cursors cursor-path-format]
   (update-vals cursors
                (fn [[file hotspot]]
-                 (graphics/create-cursor graphics
-                                         (files/internal files (format cursor-path-format file))
-                                         hotspot))))
+                 (create-cursor graphics
+                                (files/internal files (format cursor-path-format file))
+                                hotspot))))
 
 (defrecord Graphics [
                      batch
@@ -121,19 +158,19 @@
            world-viewport]}]
   (let [batch (g2d/sprite-batch)
 
-        shape-drawer-texture (graphics/white-pixel-texture)
+        shape-drawer-texture (white-pixel-texture)
 
         world-unit-scale (float (/ tile-size))
 
-        ui-viewport (graphics/fit-viewport (:width  ui-viewport)
-                                           (:height ui-viewport)
-                                           (graphics/orthographic-camera))
+        ui-viewport (fit-viewport (:width  ui-viewport)
+                                  (:height ui-viewport)
+                                  (orthographic-camera))
 
         textures-to-load (let [[f params] textures]
                            (f files params))
         ;(println "load-textures (count textures): " (count textures))
         textures (into {} (for [[path file-handle] textures-to-load]
-                            [path (graphics/load-texture file-handle)]))
+                            [path (Texture. file-handle)]))
 
         cursors (create-cursors graphics files cursors cursor-path-format)]
     (map->Graphics {:graphics graphics
@@ -146,11 +183,11 @@
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                           world-height (* (:height world-viewport) world-unit-scale)]
-                                      (graphics/fit-viewport world-width
-                                                             world-height
-                                                             (graphics/orthographic-camera :y-down? false
-                                                                                           :world-width world-width
-                                                                                           :world-height world-height)))
+                                      (fit-viewport world-width
+                                                    world-height
+                                                    (orthographic-camera :y-down? false
+                                                                         :world-width world-width
+                                                                         :world-height world-height)))
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
