@@ -328,6 +328,7 @@
       :render-fns
       [gdl.app/validate
        gdl.app/run-runnables!
+       cdq.render.debug-data-view/do!
        cdq.render.assoc-active-entities/do!
        cdq.render.set-camera-on-player/do!
        cdq.render.clear-screen/do!

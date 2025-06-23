@@ -1,9 +1,5 @@
 (ns cdq.dev.data-view
-  (:require [cdq.application :as application]
-            [cdq.grid :as grid]
-            [gdl.c]
-            [gdl.ui.stage :as stage]
-            [gdx.ui :as ui]))
+  (:require [gdx.ui :as ui]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -40,43 +36,9 @@
                                         height)]]
               :pack? true}))
 
-(defn- table-view-window [title m width height]
+(defn table-view-window [title m width height]
   {:pre [(map? m)]}
   (scroll-pane-window title
                       (generate-table m)
                       width
                       height))
-
-(defn open-table-view-window! [{:keys [title width height get-data]}]
-  (application/post-runnable!
-   (fn [ctx]
-     (stage/add! (:ctx/stage ctx)
-                 (table-view-window title
-                                    (get-data ctx)
-                                    width
-                                    height)))))
-
-(comment
-
- (open-table-view-window! {:title "Mouseover Grid Cell"
-                           :width 200
-                           :height 200
-                           :get-data (fn [{:keys [ctx/world] :as ctx}]
-                                       @(grid/cell (:world/grid world)
-                                                   (mapv int (gdl.c/world-mouse-position ctx))))})
-
- (open-table-view-window! {:title "Mouseover Entity"
-                           :width 600
-                           :height 600
-                           :get-data (fn [{:keys [ctx/world]}]
-                                       (if-let [mouseover-eid (:world/mouseover-eid world)]
-                                         @mouseover-eid
-                                         {:no-mouseover-eid nil}))})
-
- (open-table-view-window! {:title "Context Data"
-                           :width 500
-                           :height 500
-                           :get-data identity})
-
-
- )

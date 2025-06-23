@@ -1,0 +1,22 @@
+(ns cdq.render.debug-data-view
+  (:require [cdq.dev.data-view :as data-view]
+            [cdq.grid :as grid]
+            [gdl.c]
+            [gdl.input :as input]
+            [gdl.ui.stage :as stage]))
+
+(defn do!
+  [{:keys [ctx/input
+           ctx/stage
+           ctx/world]
+    :as ctx}]
+  (when (input/button-just-pressed? input :right)
+    (let [mouseover-eid (:world/mouseover-eid world)
+          data (or (and mouseover-eid @mouseover-eid)
+                   @(grid/cell (:world/grid world)
+                               (mapv int (gdl.c/world-mouse-position ctx))))]
+      (stage/add! stage (data-view/table-view-window "Data View"
+                                                     data
+                                                     500
+                                                     500))))
+  ctx)

@@ -2,11 +2,13 @@
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
+            [cdq.dev.data-view :as data-view]
             [cdq.entity :as entity]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [clojure.string :as str]
             [gdl.ui.menu :as menu]
+            [gdl.ui.stage :as stage]
             [gdl.c :as c]
             [gdl.graphics :as graphics]
             [cdq.utils :as utils]))
@@ -70,6 +72,12 @@
              :on-click (fn [_actor ctx]
                          (ctx/open-editor-overview-window! ctx property-type))})})
 
+(def context-data-view
+  {:label "Context"
+   :items [{:label "Show data"
+            :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
+                        (stage/add! stage (data-view/table-view-window "Context" ctx 500 500)))}]})
+
 (defn create
   [{:keys [
            ctx/graphics
@@ -83,6 +91,7 @@
             (select-world world-fns)
             (help info)
             (db-editor db)
+            context-data-view
             ]
     :update-labels [
                     (mouseover-entity-id (graphics/texture graphics "images/mouseover.png"))
