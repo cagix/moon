@@ -1,8 +1,10 @@
 (ns gdl.create.graphics
   (:require [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [gdl.files :as files]
             [gdl.graphics]
             [gdl.graphics.g2d.batch :as batch]
@@ -12,31 +14,12 @@
             [gdx.graphics.g2d :as g2d]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics OrthographicCamera
-                                      Pixmap
+  (:import (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.utils.viewport FitViewport
-                                            Viewport)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
-
-(defn- orthographic-camera
-  ([]
-   (OrthographicCamera.))
-  ([& {:keys [y-down? world-width world-height]}]
-   (doto (OrthographicCamera.)
-     (.setToOrtho y-down? world-width world-height))))
-
-(defn- fit-viewport [width height camera]
-  (proxy [FitViewport ILookup] [width height camera]
-    (valAt [k]
-      (case k
-        :viewport/width  (Viewport/.getWorldWidth  this)
-        :viewport/height (Viewport/.getWorldHeight this)
-        :viewport/camera (Viewport/.getCamera      this)))))
 
 (defn- create-cursor [graphics ^FileHandle file-handle [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. file-handle)
@@ -162,9 +145,9 @@
 
         world-unit-scale (float (/ tile-size))
 
-        ui-viewport (fit-viewport (:width  ui-viewport)
-                                  (:height ui-viewport)
-                                  (orthographic-camera))
+        ui-viewport (fit-viewport/create (:width  ui-viewport)
+                                         (:height ui-viewport)
+                                         (orthographic-camera/create))
 
         textures-to-load (let [[f params] textures]
                            (f files params))
@@ -183,11 +166,11 @@
                     :ui-viewport ui-viewport
                     :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                           world-height (* (:height world-viewport) world-unit-scale)]
-                                      (fit-viewport world-width
-                                                    world-height
-                                                    (orthographic-camera :y-down? false
-                                                                         :world-width world-width
-                                                                         :world-height world-height)))
+                                      (fit-viewport/create world-width
+                                                           world-height
+                                                           (orthographic-camera/create :y-down? false
+                                                                                       :world-width world-width
+                                                                                       :world-height world-height)))
                     :batch batch
                     :unit-scale (atom 1)
                     :shape-drawer-texture shape-drawer-texture
