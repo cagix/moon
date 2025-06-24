@@ -9,7 +9,7 @@
      (valAt [k]
        (case k
          :camera/zoom (.zoom this)
-         :camera/frustum (.frustum this)
+         :camera/frustum {:frustum/plane-points (mapv vector3/clojurize (.planePoints (.frustum this)))}
          :camera/position (vector3/clojurize (.position this))
          :camera/viewport-width  (.viewportWidth  this)
          :camera/viewport-height (.viewportHeight this)))))
