@@ -41,7 +41,7 @@
     {:image/file "images/uf_FX.png", :image/bounds [216 144 24 24]}),
    :animation/looping? false},
   :property/id :audiovisuals/creature-die,
-  :tx/sound "oryx_8-bit_sounds/abilities/special_a"}
+  :tx/sound "bfxr_defaultmonsterdeath"}
  {:entity/animation
   {:animation/frame-duration 0.05,
    :animation/frames
