@@ -146,7 +146,6 @@
                                    [:ctx/stage :some]
                                    [:ctx/graphics :some]
                                    [:ctx/world :some]]}]]]
-       gdl.create.gdx/do!
        [master.yoda/assoc*
         [:ctx/config
          [master.yoda/const*

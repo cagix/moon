@@ -1,20 +1,15 @@
 (ns gdx.backends.lwjgl.application
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start! [[config {:keys [create! dispose! render! resize!]}]]
-  (lwjgl/application config
-                     (proxy [ApplicationAdapter] []
-                       (create []
-                         (let [[f params] create!]
-                           (f params)))
-
-                       (dispose []
-                         (dispose!))
-
-                       (render []
-                         (let [[f params] render!]
-                           (f params)))
-
-                       (resize [width height]
-                         (resize! width height)))))
+  (lwjgl/start-application! config
+                            {:create! (fn [context]
+                                        (let [[f params] create!]
+                                          (f context params)))
+                             :dispose! dispose!
+                             :render! (fn []
+                                        (let [[f params] render!]
+                                          (f params)))
+                             :resize! resize!
+                             :resume! (fn [])
+                             :pause! (fn [])}))

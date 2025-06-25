@@ -40,9 +40,9 @@
     (let [f render-element]
       (f ctx))))
 
-(defn create!-reset! [{:keys [state-atom initial-context create-fns]}]
+(defn create!-reset! [context {:keys [state-atom initial-context create-fns]}]
   (reset! @state-atom (reduce render*
-                              (initial-context)
+                              (initial-context context)
                               create-fns)))
 
 (defn const* [_ctx params]

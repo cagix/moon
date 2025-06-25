@@ -8,7 +8,6 @@
             [clojure.input :as input]
             [clojure.utils.disposable :as disp]
             gdl.assets
-            [gdl.create.gdx]
             gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
@@ -80,8 +79,10 @@
 
 (defrecord Context [])
 
-(defn create! [_params]
-  (let [ctx (gdl.create.gdx/do! (->Context))
+(defn create! [{:keys [audio files graphics input]} _params]
+  (let [ctx (map->Context {:ctx/files    files
+                           :ctx/graphics graphics
+                           :ctx/input    input})
         ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx
                                                               {:textures [gdl.assets/search {:folder "resources/"
                                                                                              :extensions #{"png" "bmp"}}]

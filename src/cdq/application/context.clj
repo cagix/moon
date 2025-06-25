@@ -11,5 +11,8 @@
                       ctx/graphics
                       ctx/world])
 
-(defn create []
-  (map->Context {}))
+(defn create [{:keys [audio files graphics input]}]
+  (map->Context {:audio    audio
+                 :files    files
+                 :graphics graphics
+                 :input    input}))
