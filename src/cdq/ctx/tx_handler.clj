@@ -13,25 +13,31 @@
 (defn- valid-tx? [transaction]
   (vector? transaction))
 
-(def txs (atom []))
-
-(def record-txs? false)
-
 (defmulti do! (fn [[k & _params] _ctx]
                 k))
 
+(defn- handle-tx! [tx ctx]
+  (assert (valid-tx? tx) (pr-str tx))
+  (try
+   (do! tx ctx)
+   (catch Throwable t
+     (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
+
 (defn handle-txs!
-  [ctx
-   transactions]
-  (doseq [transaction transactions
-          :when transaction]
-    (do
-     (assert (valid-tx? transaction) (pr-str transaction))
-     (when record-txs?
-       (swap! txs conj transaction))
-     (try (handle-txs! ctx (do! transaction ctx))
-          (catch Throwable t
-            (throw (ex-info "" {:transaction transaction} t)))))))
+  "Handles transactions and returns a flat list of all transactions handled, including nested."
+  [ctx transactions]
+  (loop [ctx ctx
+         txs transactions
+         handled []]
+    (if (seq txs)
+      (let [tx (first txs)]
+        (if tx
+          (let [new-txs (handle-tx! tx ctx)]
+              (recur ctx
+                     (concat (or new-txs []) (rest txs))
+                     (conj handled tx)))
+          (recur ctx (rest txs) handled)))
+      handled)))
 
 (defn- add-skill!
   [{:keys [ctx/graphics
