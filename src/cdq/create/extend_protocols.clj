@@ -1,5 +1,5 @@
 (ns cdq.create.extend-protocols
-  (:require [cdq.utils :as utils]))
+  (:require [gdl.string :as str]))
 
 (defn- create-method-map [protocol namespace]
   (let [{:keys [sigs
@@ -7,7 +7,7 @@
     (into {}
           (for [[k signature] sigs]
             [k (requiring-resolve (symbol (str (str namespace ".")
-                                               (utils/pascal->kebab (name (symbol var)))
+                                               (str/pascal->kebab (name (symbol var)))
                                                "/"
                                                (:name signature))))]))))
 
