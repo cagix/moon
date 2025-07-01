@@ -176,6 +176,7 @@
       (str/replace #"([A-Z]+)([A-Z][a-z])" "$1-$2")
       (str/lower-case)))
 
+; => app settings
 (defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24))) ; hardcoded values

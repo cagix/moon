@@ -1,4 +1,4 @@
-(ns cdq.malli
+(ns gdl.malli
   (:require [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
@@ -14,9 +14,9 @@
 
 (defn validate-humanize [schema value]
   (when-not (validate schema value)
-      (throw (ex-info (str (me/humanize (m/explain schema value)))
-                      {:value value
-                       :schema (m/form schema)}))))
+    (throw (ex-info (str (me/humanize (m/explain schema value)))
+                    {:value value
+                     :schema (m/form schema)}))))
 
 (defn form->validate [form value]
   (let [schema (schema form)]

@@ -2,12 +2,12 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.db :as db]
-            [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [cdq.val-max :as val-max]))
+            [cdq.val-max :as val-max]
+            [gdl.malli :as m]))
 
 (defmulti fetch* (fn [schema _v _db]
                    (schema/type schema)))
