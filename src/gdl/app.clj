@@ -1,7 +1,7 @@
 (ns gdl.app
   (:require [cdq.malli :as m]))
 
-(defn create [ctx {:keys [schema]}]
+(defn create [_ctx {:keys [schema]}]
   {:gdl.app/runnables []
    :gdl.app/schema (m/schema schema)})
 
