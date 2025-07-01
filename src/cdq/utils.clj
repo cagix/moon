@@ -4,8 +4,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :as pprint])
-  (:import (clojure.lang ILookup
-                         PersistentVector)))
+  (:import (clojure.lang PersistentVector)))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
