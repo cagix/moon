@@ -25,7 +25,9 @@
                                    [:ctx/audio :some]
                                    [:ctx/stage :some]
                                    [:ctx/graphics :some]
-                                   [:ctx/world :some]]}]]]
+                                   [:ctx/world :some]]
+                          :stacktraces {:print-level 3
+                                        :print-depth 24}}]]]
        [master.yoda/assoc*
         [:ctx/config
          [master.yoda/const*

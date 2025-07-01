@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.ui.error-window :as error-window]
-            [cdq.utils :as utils]
+            [gdl.app :as app]
             [gdl.ui.stage :as stage]))
 
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid entity->tick]
@@ -17,15 +17,16 @@
                            t))))))
 
 (defn do!
-  [{:keys [ctx/world
-           ctx/stage]
+  [{:keys [ctx/app
+           ctx/stage
+           ctx/world]
     :as ctx}
    entity->tick]
   (try
    (doseq [eid (:world/active-entities world)]
      (tick-entity! ctx eid entity->tick))
    (catch Throwable t
-     (utils/pretty-pst t)
+     (app/pretty-pst app t)
      (stage/add! stage (error-window/create t))
      #_(bind-root ::error t)))
   ctx)

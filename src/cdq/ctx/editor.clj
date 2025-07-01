@@ -6,8 +6,8 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
-            [cdq.utils :as utils]
             [clojure.input :as input]
+            [gdl.app :as app]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
@@ -15,11 +15,11 @@
             [gdx.ui :as ui]))
 
 (defn- apply-context-fn [window f]
-  (fn [{:keys [ctx/stage] :as ctx}]
+  (fn [{:keys [ctx/app ctx/stage] :as ctx}]
     (try (f ctx)
          (actor/remove! window)
          (catch Throwable t
-           (utils/pretty-pst t)
+           (app/pretty-pst app t)
            (stage/add! stage (error-window/create t))))))
 
 ; We are working with raw property data without fetching relationships and build

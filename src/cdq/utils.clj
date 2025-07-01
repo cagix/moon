@@ -1,6 +1,5 @@
 (ns cdq.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :as pprint])
@@ -174,8 +173,3 @@
       (str/replace #"([a-z])([A-Z])" "$1-$2")
       (str/replace #"([A-Z]+)([A-Z][a-z])" "$1-$2")
       (str/lower-case)))
-
-; => app settings
-(defn pretty-pst [t]
-  (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24))) ; hardcoded values
