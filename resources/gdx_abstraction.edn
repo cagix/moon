@@ -1,5 +1,4 @@
-[[clojure.core/println "Load gdx-abstraction"]
- [master.yoda.provide/do!
+[[master.yoda.provide/do!
   [[com.badlogic.gdx.Files
     clojure.gdx.files
     clojure.files/Files]
