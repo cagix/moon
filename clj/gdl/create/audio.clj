@@ -1,6 +1,9 @@
 (ns gdl.create.audio
-  (:require [clojure.gdx.audio :as audio]
+  (:require [clojure.edn :as edn]
+            [clojure.files :as files]
+            [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]
+            [clojure.java.io :as io]
             [clojure.utils.disposable :refer [dispose!]]
             [gdl.audio]))
 
@@ -9,9 +12,8 @@
            ctx/files]}
    {:keys [sounds]}]
   (let [sounds (into {}
-                     (for [[path file-handle] (let [[f params] sounds]
-                                                (f files params))]
-                       [path (audio/new-sound audio file-handle)]))]
+                     (for [path (->> sounds io/resource slurp edn/read-string)]
+                       [path (audio/new-sound audio (files/internal files path))]))]
     (reify
       clojure.utils.disposable/Disposable
       (dispose! [_]

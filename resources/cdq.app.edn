@@ -131,6 +131,7 @@
                                :height 0.5
                                :z-order :z-order/effect}
 
+           ; TODO unused
            :sound-path-format "sounds/%s.wav"
 
            :controls {:zoom-in :minus
@@ -194,8 +195,7 @@
        [master.yoda/assoc*
         [:ctx/audio
          [gdl.create.audio/do!
-          {:sounds [gdl.assets/search {:folder "resources/"
-                                       :extensions #{"wav"}}]}]]]
+          {:sounds "sounds.edn"}]]]
        [master.yoda/assoc*
         [:ctx/db
          [cdq.create.db/do!

@@ -4,16 +4,16 @@
   (:import (java.io File)))
 
 (defn list-files [folder extension]
-  (let [url (io/resource folder)]
-    (if (nil? url)
-      (throw (ex-info "sounds/ directory not found on classpath" {}))
-      (let [^File file (io/file url)]
-        (->> (.listFiles file)
-             (filter File/.isFile)
-             (filter #(str/ends-with? (File/.getName %) extension))
-             (map File/.getName))))))
+  (let [^File file (io/file folder)]
+    (->> (.listFiles file)
+         (filter File/.isFile)
+         (filter #(str/ends-with? (File/.getName %) extension))
+         (map File/.getName))))
 
 (comment
- (list-files "sounds/" ".wav")
+
+ (spit "edn/sounds.edn"
+       (vec (list-files "wav/" ".wav")))
+
 
  )
