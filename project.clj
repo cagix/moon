@@ -19,6 +19,7 @@
   :java-source-paths ["java"]
 
   :resource-paths ["edn"
+                   "png"
                    "resources"
                    "ttf"
                    "wav"]
