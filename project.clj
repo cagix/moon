@@ -14,10 +14,15 @@
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]]
+
+  :source-paths ["clj"]
   :java-source-paths ["java"]
+
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
+
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
+
   :jvm-opts ["-Xms256m"
              "-Xmx256m"
              "-Dvisualvm.display.name=CDQ"
@@ -28,19 +33,25 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
+
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}
           ;:namespaces [#"^gdl\."]
           }
+
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
+
   :global-vars {*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 ;*print-level* 3
                 }
+
   :profiles {:uberjar {:aot [~main-namespace]}}
+
   :uberjar-name "cdq.jar"
+
   :main ~main-namespace)
 
 ; * Notes
