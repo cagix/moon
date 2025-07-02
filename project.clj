@@ -14,7 +14,7 @@
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]]
-  :java-source-paths ["src"]
+  :java-source-paths ["java"]
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
