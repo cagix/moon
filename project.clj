@@ -18,12 +18,9 @@
   :source-paths ["clj"]
   :java-source-paths ["java"]
 
-  ; TODO somebody said resources should be in a sub-folder
-  ; cdq/wav ?
-  ; cdq/clj
-  ; cdq/java ?
   :resource-paths ["edn"
                    "resources"
+                   "ttf"
                    "wav"]
 
   :plugins [[lein-hiera "2.0.0"]
