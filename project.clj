@@ -24,6 +24,12 @@
                    "ttf"
                    "wav"]
 
+  :aliases {
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.start/-main) \"cdq.app.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.start/-main) \"levelgen.edn\")"]
+            "ns"       ["hiera" ":layout" ":horizontal"]
+            }
+
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
 
