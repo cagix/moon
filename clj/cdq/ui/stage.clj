@@ -7,6 +7,11 @@
             [gdl.ui.stage :as stage]
             [gdx.ui :as ui]))
 
+(defn action-bar-selected-skill [stage]
+  (-> stage
+      :action-bar
+      action-bar/selected-skill))
+
 (defn add-action-bar-skill! [stage item-opts]
   (-> stage
       :action-bar

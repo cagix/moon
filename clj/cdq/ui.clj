@@ -1,6 +1,7 @@
 (ns cdq.ui)
 
 (defprotocol Stage
+  (action-bar-selected-skill [_])
   (add-action-bar-skill! [_ item-opts])
   (remove-action-bar-skill! [_ id])
   (set-inventory-item! [_ inventory-cell item-opts])

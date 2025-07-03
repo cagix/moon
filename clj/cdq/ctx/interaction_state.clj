@@ -1,14 +1,11 @@
 (ns cdq.ctx.interaction-state
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [cdq.ui.action-bar :as action-bar]
+            [cdq.ui :as ui]
             [cdq.ui.windows.inventory :as inventory-window]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]
             [gdl.ui.actor :as actor]))
-
-(defn selected-skill [stage]
-  (action-bar/selected-skill (:action-bar stage)))
 
 (defn distance [a b]
   (v/distance (entity/position a)
@@ -35,7 +32,7 @@
        :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
 
      :else
-     (if-let [skill-id (selected-skill stage)]
+     (if-let [skill-id (ui/action-bar-selected-skill stage)]
        (let [entity @player-eid
              skill (skill-id (:entity/skills entity))
              effect-ctx (ctx/player-effect-ctx ctx player-eid)
