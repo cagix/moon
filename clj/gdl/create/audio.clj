@@ -1,8 +1,8 @@
 (ns gdl.create.audio
-  (:require [clojure.edn :as edn]
+  (:require [clojure.audio :as audio]
+            [clojure.audio.sound :as sound]
+            [clojure.edn :as edn]
             [clojure.files :as files]
-            [clojure.gdx.audio :as audio]
-            [clojure.gdx.audio.sound :as sound]
             [clojure.java.io :as io]
             [clojure.utils.disposable :refer [dispose!]]
             [gdl.audio]))

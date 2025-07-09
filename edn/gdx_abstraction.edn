@@ -1,5 +1,13 @@
 [[master.yoda.provide/do!
-  [[com.badlogic.gdx.Files
+  [[com.badlogic.gdx.Audio
+    clojure.gdx.audio
+    clojure.audio/Audio]
+
+   [com.badlogic.gdx.audio.Sound
+    clojure.gdx.audio.sound
+    clojure.audio.sound/Sound]
+
+   [com.badlogic.gdx.Files
     clojure.gdx.files
     clojure.files/Files]
 
