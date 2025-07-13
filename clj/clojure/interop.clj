@@ -21,7 +21,20 @@
            [(keyword (->clojure-symbol field))
             (symbol class-str (str (:name field)))])))
 
- (= (create-mapping "Input$Buttons" 'int)
+ (= (create-mapping "com.badlogic.gdx.Input$Buttons" 'int)
+    {:forward Input$Buttons/FORWARD,
+     :left Input$Buttons/LEFT,
+     :back Input$Buttons/BACK,
+     :right Input$Buttons/RIGHT,
+     :middle Input$Buttons/MIDDLE}
+    )
+
+ (spit "edn/clojure/gdx/fields.edn"
+       {'com.badlogic.gdx.Input$Buttons (update-vals (create-mapping "com.badlogic.gdx.Input$Buttons" 'int)
+                                                    eval)})
+
+ (= (update-vals (create-mapping "com.badlogic.gdx.Input$Buttons" 'int)
+                 eval)
     {:forward Input$Buttons/FORWARD,
      :left Input$Buttons/LEFT,
      :back Input$Buttons/BACK,
