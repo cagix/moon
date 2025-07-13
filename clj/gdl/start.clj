@@ -6,7 +6,7 @@
   (:gen-class))
 
 (defn slurpquire
-  ([_context path]
+  ([_context path] ; unused
    (slurpquire path))
   ([path]
    (->> path
