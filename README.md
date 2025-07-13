@@ -1,10 +1,15 @@
-# 'Clojure' - a language for writing 'clojure'
 
+Realtime desktop action RPG engine
 
 # TODO
 
-* namespace graph
-* lein hiera
+* lein deps :tree
+* lein hiera :layout :horizontal :cluster-depth 1
+    => cluster.png
+* lein hiera :layout :horizontal
+    => namespacs.png
+
+* Liste dependencies with javadoc io & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
 
 # Moon Engine
 
