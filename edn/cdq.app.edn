@@ -1,9 +1,9 @@
-[[gdl.start/-main "gdx_abstraction.edn"]
- [master.yoda.provide/do! [[gdl.ui.CtxStage
+[[master.yoda.provide/do! [[gdl.ui.CtxStage
                             cdq.ui.stage
                             cdq.ui/Stage]]]
  [gdl.start/-main "effects_impl.edn"]
  [gdl.start/-main "txs_impl.edn"]
+ [gdl.start/-main "gdx_abstraction.edn"]
  [gdl.start/-main "os_settings.edn"]
  [gdx.backends.lwjgl.application/start!
   [{:title "Cyber Dungeon Quest"
