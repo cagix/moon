@@ -11,6 +11,13 @@ Realtime desktop action RPG engine
 
 * Liste dependencies with javadoc io & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
 
+* greppable click where used searching right files/folders ?
+
+* show also import dependencies in dependency graph & assets/edn files
+
+* count locs
+ find clj/ -name '*.clj' | xargs wc -l | sort -n
+
 # Moon Engine
 
 ![moon 2](https://github.com/user-attachments/assets/b1c666de-2aad-427f-b06a-c838048958bb)
