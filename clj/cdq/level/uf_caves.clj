@@ -114,10 +114,11 @@
 
 (require '[cdq.level.caves :as caves])
 
-(defn initial-grid-creation [level
-                             {:keys [size
-                                     cave-style
-                                     random]}]
+(defn- initial-grid-creation
+  [level
+   {:keys [size
+           cave-style
+           random]}]
   (let [{:keys [start grid]} (caves/create random size size cave-style)]
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level
@@ -126,8 +127,9 @@
 
 (require '[cdq.level.nads :as nads])
 
-(defn fix-nads [{:keys [level/grid]
-                 :as level}]
+(defn- fix-nads
+  [{:keys [level/grid]
+    :as level}]
   (assert (= #{:wall :ground} (set (g2d/cells grid))))
   (let [grid (nads/fix-nads grid)]
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
