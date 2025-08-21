@@ -1,15 +1,45 @@
+There is no documentation. There is only code.
 
-Realtime desktop action RPG engine
+Remove all TODO's, comments, dead code. grep ;\|#_\|comment, see unused namespaced, run linter.
+See unused stuff.
+
+Test everything, pass values, no 'def's .. ?!
+but where is a 'def' used ? ?
+
+No private also ?
+
+Sharing your 'self' which is absolutely unique if you do not try to be like or compare.
+
+This is your experience of life and it is how it is.
+
+Everything what appears is god.
+
+Nothing makes sense.
 
 # TODO
 
-* lein deps :tree
-* lein hiera :layout :horizontal :cluster-depth 1
-    => cluster.png
-* lein hiera :layout :horizontal
-    => namespacs.png
+* Are the tests green?
 
-* Liste dependencies with javadoc io & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
+* Manual tests -> Take on video?? e.g. potential field
+
+* youtube video with my voice (face?) => 'sharing'
+-> showing my screen, explaining the project, tests. etc., grepping, shortcuts,...
+
+* lein deps :tree
+
+* lein hiera :layout :horizontal :cluster-depth 1
+     cluster.png
+
+* lein hiera :layout :horizontal
+     namespacs.png
+
+* Liste dependencies with __javadoc io__ (!!!) & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
+    => hidden in my browser.
+    => my bookmarks.
+
+        -> lwjgl javadoc not needed as we use libgdx
+        -> libgdx javadoc not needed as we use 'core' ?
+        -> ... ?
 
 * greppable click where used searching right files/folders ?
 
