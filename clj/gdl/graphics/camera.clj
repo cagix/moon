@@ -1,8 +1,14 @@
-(ns gdl.graphics.camera)
+(ns gdl.graphics.camera
+  (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
-(defprotocol Camera
-  (set-position! [_ [x y]])
-  (set-zoom! [_ value] "Initial zoom is `1`."))
+(defn set-position! [^OrthographicCamera this [x y]]
+  (set! (.x (.position this)) (float x))
+  (set! (.y (.position this)) (float y))
+  (.update this))
+
+(defn set-zoom! [^OrthographicCamera this amount]
+  (set! (.zoom this) amount)
+  (.update this))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))
