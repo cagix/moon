@@ -1,5 +1,5 @@
 (ns gdl.ui.menu
-  (:require [gdl.ui.group :as group]
+  (:require [gdx.ui.group :as group]
             [gdx.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)

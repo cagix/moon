@@ -3,7 +3,7 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ui.message]
             [gdx.ui.actor :as actor]
-            [gdl.ui.group :as group]
+            [gdx.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdx.ui :as ui]))
 

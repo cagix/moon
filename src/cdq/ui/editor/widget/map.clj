@@ -6,7 +6,7 @@
             [cdq.utils :as utils]
             [clojure.set :as set]
             [gdx.ui.actor :as actor]
-            [gdl.ui.group :as group]
+            [gdx.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]
             [gdx.ui :as ui]

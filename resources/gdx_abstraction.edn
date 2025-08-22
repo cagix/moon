@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.scenes.scene2d.Group
-    gdx.ui.group
-    gdl.ui.group/Group]
-
    [com.badlogic.gdx.scenes.scene2d.ui.Table
     gdx.ui.table
     gdl.ui.table/Table]

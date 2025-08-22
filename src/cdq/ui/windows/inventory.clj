@@ -6,7 +6,7 @@
             [gdl.c :as c]
             [gdl.graphics :as g]
             [gdx.ui.actor :as actor]
-            [gdl.ui.group :as group]
+            [gdx.ui.group :as group]
             [gdx.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
