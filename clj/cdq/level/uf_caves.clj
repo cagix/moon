@@ -8,8 +8,8 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
             [clojure.gdx.maps.tiled :as tiled]
-            [clojure.graphics.texture :as texture]
-            [gdl.graphics :as graphics]))
+            [gdl.graphics :as graphics])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
@@ -152,7 +152,7 @@
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
-                                   (tiled/static-tiled-map-tile (texture/region texture
+                                   (tiled/static-tiled-map-tile (TextureRegion. texture
                                                                                 (* (sprite-idx 0) tile-size)
                                                                                 (* (sprite-idx 1) tile-size)
                                                                                 tile-size

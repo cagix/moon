@@ -1,6 +1,5 @@
 (ns gdx.ui
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
@@ -167,7 +166,7 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (texture/region texture)))
+  (VisImage. (TextureRegion. texture)))
 
 (defmethod image* TextureRegion [texture-region]
   (VisImage. texture-region))

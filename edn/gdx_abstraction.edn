@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.graphics.Texture
-    clojure.gdx.graphics.texture
-    clojure.graphics.texture/Texture]
-
    [com.badlogic.gdx.graphics.OrthographicCamera
     gdx.graphics.camera
     gdl.graphics.camera/Camera]

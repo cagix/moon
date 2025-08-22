@@ -4,7 +4,6 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics.texture :as texture]
             [gdl.graphics]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
@@ -14,7 +13,8 @@
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport)
            (gdl.graphics OrthogonalTiledMapRenderer
@@ -101,10 +101,15 @@
   (image->texture-region [graphics {:keys [image/file
                                            image/bounds]}]
     (assert file)
-    (let [texture (gdl.graphics/texture graphics file)]
+    (let [texture (gdl.graphics/texture graphics file)
+          [x y w h] bounds]
       (if bounds
-        (apply texture/region texture bounds)
-        (texture/region texture)))))
+        (TextureRegion. texture
+                        (int x)
+                        (int y)
+                        (int w)
+                        (int h))
+        (TextureRegion. texture)))))
 
 (defn do!
   [{:keys [ctx/files
@@ -153,7 +158,7 @@
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
+      :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                   (float world-unit-scale)
