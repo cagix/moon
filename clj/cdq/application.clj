@@ -1,8 +1,8 @@
 (ns cdq.application
-  (:require [clojure.utils.disposable :as disp]
-            [gdl.app]
+  (:require [gdl.app]
             [gdl.graphics :as graphics]
-            [gdl.malli :as m]))
+            [gdl.malli :as m])
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (def state (atom nil))
 
@@ -15,9 +15,9 @@
   (let [{:keys [ctx/audio
                 ctx/graphics
                 ctx/world]} @state]
-    (disp/dispose! audio)
-    (disp/dispose! graphics)
-    (disp/dispose! (:world/tiled-map world))
+    (Disposable/.dispose audio)
+    (Disposable/.dispose graphics)
+    (Disposable/.dispose (:world/tiled-map world))
     ; TODO vis-ui dispose
     ; TODO what else disposable?
     ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.

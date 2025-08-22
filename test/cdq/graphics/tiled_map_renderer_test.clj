@@ -1,6 +1,5 @@
 #_(ns gdl.graphics.tiled-map-renderer-test
-  (:require [clojure.utils.disposable]
-            [clojure.gdx.maps.tiled :as tiled]
+  (:require [clojure.gdx.maps.tiled :as tiled]
             [gdl.graphics.camera :as camera])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)
@@ -35,8 +34,8 @@
        (def renderer (tiled/renderer tiled-map world-unit-scale batch)))
 
      (dispose []
-       (disposable/dispose! tiled-map)
-       (disposable/dispose! batch))
+       (Disposable/.dispose tiled-map)
+       (Disposable/.dispose batch))
 
      (render []
        (tiled/draw! renderer tiled-map color-setter camera))

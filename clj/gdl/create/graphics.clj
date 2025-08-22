@@ -7,7 +7,6 @@
             [clojure.graphics.g2d.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport :as viewport]
-            [clojure.utils.disposable :refer [dispose!]]
             [gdl.graphics]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
@@ -18,6 +17,7 @@
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils Disposable)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -34,14 +34,14 @@
    unit-scale
    world-unit-scale
    world-viewport]
-  clojure.utils.disposable/Disposable
-  (dispose! [_]
-    (dispose! batch)
-    (dispose! shape-drawer-texture)
-    (run! dispose! (vals textures))
-    (run! dispose! (vals cursors))
+  Disposable
+  (dispose [_]
+    (Disposable/.dispose batch)
+    (Disposable/.dispose shape-drawer-texture)
+    (run! Disposable/.dispose (vals textures))
+    (run! Disposable/.dispose (vals cursors))
     (when default-font
-      (dispose! default-font)))
+      (Disposable/.dispose default-font)))
 
   gdl.graphics/Graphics
   (clear-screen! [_ color]

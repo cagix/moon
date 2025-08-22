@@ -6,14 +6,14 @@
             [cdq.render.clear-screen]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.input :as input]
-            [clojure.utils.disposable :as disp]
             gdl.assets
             gdl.create.graphics
             gdl.create.ui
             [gdl.graphics.camera :as camera]
             [gdl.graphics :as graphics]
             [gdl.ui.stage :as stage]
-            [gdx.ui :as ui]))
+            [gdx.ui :as ui])
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
                                                   :texture "maps/uf_terrain.png"
@@ -57,7 +57,7 @@
 
 (defn- generate-level [{:keys [ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
-    (disp/dispose! tiled-map))
+    (Disposable/.dispose tiled-map))
   (let [level (let [[f params] level-fn]
                 (f ctx params))
         tiled-map (:tiled-map level)
@@ -108,8 +108,8 @@
   ; batch, cursors, default-font, shape-drawer-texture, etc.
   (let [{:keys [ctx/graphics
                 ctx/tiled-map]} @state]
-    (disp/dispose! graphics)
-    (disp/dispose! tiled-map)))
+    (Disposable/.dispose graphics)
+    (Disposable/.dispose tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
