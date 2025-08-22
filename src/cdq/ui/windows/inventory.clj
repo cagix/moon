@@ -7,8 +7,8 @@
             [gdl.graphics :as g]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.ui.image :as image]
-            [gdx.ui :as ui]))
+            [gdx.ui :as ui])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn create
   [{:keys [ctx/graphics]}
@@ -127,13 +127,13 @@
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (gdx.ui/drawable texture-region :width cell-size :height cell-size)]
-    (image/set-drawable! image-widget drawable)
+    (Image/.setDrawable image-widget drawable)
     (actor/add-tooltip! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")]
-    (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
+    (Image/.setDrawable image-widget (:background-drawable (actor/user-object image-widget)))
     (actor/remove-tooltip! cell-widget)))
 
 (defn cell-with-item?
