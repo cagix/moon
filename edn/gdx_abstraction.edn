@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.graphics.g2d.Batch
-    clojure.gdx.graphics.g2d.batch
-    clojure.graphics.g2d.batch/Batch]
-
    [com.badlogic.gdx.utils.viewport.Viewport
     clojure.gdx.utils.viewport
     clojure.graphics.viewport/Viewport]

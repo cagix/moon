@@ -1,9 +1,9 @@
 (ns gdl.create.graphics.handle-draws
-  (:require [clojure.graphics.g2d.batch :as batch]
-            [clojure.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [gdx.graphics.shape-drawer :as sd]))
+            [gdx.graphics.shape-drawer :as sd])
+  (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defmulti draw!
   (fn [[k] _graphics]
@@ -24,18 +24,18 @@
       (mapv (comp float (partial * world-unit-scale))
             dimensions))))
 
-(defn- batch-draw! [batch texture-region [x y] [w h] rotation]
-  (batch/draw! batch
-               texture-region
-               {:x x
-                :y y
-                :origin-x (/ (float w) 2)
-                :origin-y (/ (float h) 2)
-                :w w
-                :h h
-                :scale-x 1
-                :scale-y 1
-                :rotation rotation}))
+(defn- batch-draw! [^Batch batch texture-region [x y] [w h] rotation]
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; origin-x
+         (/ (float h) 2) ; origin-y
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation))
 
 (defmethod draw! :draw/texture-region [[_ texture-region [x y]]
                                        {:keys [batch]}]

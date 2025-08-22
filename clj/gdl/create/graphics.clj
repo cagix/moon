@@ -4,7 +4,6 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics.g2d.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport :as viewport]
             [gdl.graphics]
@@ -22,7 +21,7 @@
                          ColorSetter)))
 
 (defrecord RGraphics
-  [batch
+  [^SpriteBatch batch
    cursors
    default-font
    ^Graphics graphics
@@ -70,15 +69,15 @@
   (draw-on-world-viewport! [_ f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch (color/->obj :white))
-    (batch/set-projection-matrix! batch (.combined (:viewport/camera world-viewport)))
-    (batch/begin! batch)
+    (.setColor batch (color/->obj :white))
+    (.setProjectionMatrix batch (.combined (:viewport/camera world-viewport)))
+    (.begin batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (fn []
         (reset! unit-scale world-unit-scale)
         (f)
         (reset! unit-scale 1)))
-    (batch/end! batch))
+    (.end batch))
 
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
