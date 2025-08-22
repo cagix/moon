@@ -19,8 +19,4 @@
    [com.badlogic.gdx.scenes.scene2d.ui.Image
     gdx.ui.image
     gdl.ui.image/Image]
-
-   [gdl.create.graphics.RGraphics
-    gdl.create.graphics.handle-draws
-    gdl.graphics/DeclarativeDraws]
    ]]]
