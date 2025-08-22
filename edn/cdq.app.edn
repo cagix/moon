@@ -1,6 +1,4 @@
-[[master.yoda.provide/do! [[gdl.ui.CtxStage
-                            cdq.ui.stage
-                            cdq.ui/Stage]]]
+[
  [gdl.start/-main "effects_impl.edn"]
  [gdl.start/-main "txs_impl.edn"]
  [gdl.start/-main "gdx_abstraction.edn"]
