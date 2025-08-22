@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.scenes.scene2d.Actor
-    gdx.ui.actor
-    gdl.ui.actor/Actor]
-
    [com.badlogic.gdx.scenes.scene2d.Group
     gdx.ui.group
     gdl.ui.group/Group]

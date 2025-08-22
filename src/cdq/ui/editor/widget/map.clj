@@ -5,12 +5,11 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :as utils]
             [clojure.set :as set]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]
             [gdx.ui :as ui]
-            [gdx.ui.actor]
             [gdx.ui.separator :as separator]))
 
 (def ^:private property-k-sort-order

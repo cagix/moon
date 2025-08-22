@@ -5,7 +5,7 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [gdl.c :as c]
             [gdl.math.vector2 :as v]
-            [gdl.ui.actor :as actor]))
+            [gdx.ui.actor :as actor]))
 
 (defn distance [a b]
   (v/distance (entity/position a)

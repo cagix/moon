@@ -2,7 +2,7 @@
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [gdl.audio :as audio]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]

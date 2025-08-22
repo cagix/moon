@@ -5,7 +5,7 @@
             [cdq.utils :as utils]
             [gdl.c :as c]
             [gdl.graphics :as g]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdx.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))

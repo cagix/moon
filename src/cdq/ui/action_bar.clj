@@ -1,5 +1,5 @@
 (ns cdq.ui.action-bar
-  (:require [gdl.ui.actor :as actor]
+  (:require [gdx.ui.actor :as actor]
             [gdl.ui.button-group :as button-group]
             [gdl.ui.group :as group]
             [gdx.ui :as ui]))

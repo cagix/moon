@@ -5,7 +5,7 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.graphics :as graphics]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]

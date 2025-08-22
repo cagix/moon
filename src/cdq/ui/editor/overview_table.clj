@@ -3,7 +3,7 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [gdl.graphics :as graphics]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdx.ui :as ui]))
 
 ; FIXME not refreshed after changes in properties

@@ -57,7 +57,9 @@
   (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
     (.hit actor (.x v) (.y v) true)))
 
-(defn add-tooltip! [actor tooltip-text]
+(defn add-tooltip!
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.  Returns the actor."
+  [actor tooltip-text]
   (let [text? (string? tooltip-text)
         label (VisLabel. (if text? tooltip-text ""))
         tooltip (proxy [Tooltip] []
@@ -130,13 +132,17 @@
 (defn- button-class? [actor]
   (some #(= Button %) (supers (class actor))))
 
-(defn button? [^Actor actor]
+(defn button?
+  "Returns true if the actor or its parent is a button."
+  [^Actor actor]
   (or (button-class? actor)
       (and (parent actor)
            (button-class? (parent actor)))))
 
 ; TODO buggy FIXME
-(defn window-title-bar? [^Actor actor]
+(defn window-title-bar?
+  "Returns true if the actor is a window title bar."
+  [^Actor actor]
   (when (instance? Label actor)
     (when-let [p (parent actor)]
       (when-let [p (parent p)]
@@ -177,3 +183,6 @@
     (draw [_batch _parent-alpha]
       (when-let [f (:draw opts)]
         (try-draw this f)))))
+
+(defn toggle-visible! [actor]
+  (set-visible! actor (not (visible? actor))))

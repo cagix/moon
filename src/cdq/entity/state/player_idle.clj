@@ -3,7 +3,7 @@
             [cdq.ctx :as ctx]
             [cdq.inventory :as inventory]
             [clojure.input :as input]
-            [gdl.ui.actor :as actor]))
+            [gdx.ui.actor :as actor]))
 
 (defn inventory-window-visible? [stage]
   (-> stage :windows :inventory-window actor/visible?))

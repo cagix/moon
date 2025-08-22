@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.default
   (:require [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [truncate ->edn-str]]
-            [gdl.ui.actor :as actor]))
+            [gdx.ui.actor :as actor]))
 
 (defmethod widget/create :default [_ _attribute v _ctx]
   {:actor/type :actor.type/label

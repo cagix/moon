@@ -8,7 +8,7 @@
             [cdq.ui.error-window :as error-window]
             [clojure.input :as input]
             [gdl.app :as app]
-            [gdl.ui.actor :as actor]
+            [gdx.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.ui.stage :as stage]
             [gdl.ui.table :as table]
