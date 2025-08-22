@@ -1,12 +1,27 @@
 (ns gdl.assets
-  (:require [clojure.string :as str]
-            [clojure.files.file-handle :as fh])
-  (:import (com.badlogic.gdx Files)))
+  (:require [clojure.string :as str])
+  (:import (com.badlogic.gdx Files)
+           (com.badlogic.gdx.files FileHandle)))
+
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
 
 (defn search [files {:keys [folder extensions]}]
   (map (fn [path]
          [(str/replace-first path folder "") (Files/.internal files path)])
-       (fh/recursively-search (Files/.internal files folder) extensions)))
+       (recursively-search (Files/.internal files folder) extensions)))
 
 (comment
 
