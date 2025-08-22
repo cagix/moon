@@ -11,8 +11,4 @@
    [com.badlogic.gdx.scenes.scene2d.ui.Table
     gdx.ui.table
     gdl.ui.table/Table]
-
-   [gdl.ui.CtxStage
-    gdx.ui.stage
-    gdl.ui.stage/Stage]
    ]]]
