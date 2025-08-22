@@ -1,10 +1,10 @@
 (ns gdl.create.audio
   (:require [clojure.edn :as edn]
-            [clojure.files :as files]
             [clojure.java.io :as io]
             [clojure.utils.disposable :refer [dispose!]]
             [gdl.audio])
-  (:import (com.badlogic.gdx Audio)
+  (:import (com.badlogic.gdx Audio
+                             Files)
            (com.badlogic.gdx.audio Sound)))
 
 (defn do!
@@ -13,7 +13,7 @@
    {:keys [sounds]}]
   (let [sounds (into {}
                      (for [path (->> sounds io/resource slurp edn/read-string)]
-                       [path (Audio/.newSound audio (files/internal files path))]))]
+                       [path (Audio/.newSound audio (Files/.internal files path))]))]
     (reify
       clojure.utils.disposable/Disposable
       (dispose! [_]

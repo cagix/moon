@@ -1,12 +1,12 @@
 (ns gdl.assets
   (:require [clojure.string :as str]
-            [clojure.files :as files]
-            [clojure.files.file-handle :as fh]))
+            [clojure.files.file-handle :as fh])
+  (:import (com.badlogic.gdx Files)))
 
 (defn search [files {:keys [folder extensions]}]
   (map (fn [path]
-         [(str/replace-first path folder "") (files/internal files path)])
-       (fh/recursively-search (files/internal files folder) extensions)))
+         [(str/replace-first path folder "") (Files/.internal files path)])
+       (fh/recursively-search (Files/.internal files folder) extensions)))
 
 (comment
 
@@ -21,6 +21,6 @@
 
  (defn get-paths2 [{:keys [ctx/files]} _params]
    (map (fn [path]
-          [path (files/internal files path)])
+          [path (Files/.internal files path)])
         sound-paths))
  )

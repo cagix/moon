@@ -1,6 +1,5 @@
 (ns gdl.create.graphics
-  (:require [clojure.files :as files]
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
@@ -13,7 +12,8 @@
             [gdl.graphics]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
-  (:import (com.badlogic.gdx.files FileHandle)
+  (:import (com.badlogic.gdx Files)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture)
@@ -133,12 +133,12 @@
                                          [path (Texture. file-handle)]))
                     :cursors (update-vals cursors
                                           (fn [[file [hotspot-x hotspot-y]]]
-                                            (let [pixmap (Pixmap. ^FileHandle (files/internal files (format cursor-path-format file)))
+                                            (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
                                                   cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                                               (.dispose pixmap)
                                               cursor)))
                     :default-font (when default-font
-                                    (freetype/generate-font (files/internal files (:file default-font))
+                                    (freetype/generate-font (Files/.internal files (:file default-font))
                                                             (:params default-font)))
                     :world-unit-scale world-unit-scale
                     :ui-viewport ui-viewport
