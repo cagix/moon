@@ -1,7 +1,6 @@
 [
  [gdl.start/-main "effects_impl.edn"]
  [gdl.start/-main "txs_impl.edn"]
- [gdl.start/-main "gdx_abstraction.edn"]
  [gdl.start/-main "os_settings.edn"]
  [gdx.backends.lwjgl.application/start!
   [{:title "Cyber Dungeon Quest"
