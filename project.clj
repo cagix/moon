@@ -18,10 +18,7 @@
 
   :java-source-paths ["java-src"]
 
-  :resource-paths ["edn"
-                   "png"
-                   "resources"
-                   "ttf"
+  :resource-paths ["resources"
                    "wav"]
 
   :aliases {
