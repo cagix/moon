@@ -8,10 +8,6 @@
     clojure.gdx.graphics.texture
     clojure.graphics.texture/Texture]
 
-   [com.badlogic.gdx.graphics.g2d.TextureRegion
-    clojure.gdx.graphics.g2d.texture-region
-    clojure.graphics.g2d.texture-region/TextureRegion]
-
    [com.badlogic.gdx.graphics.OrthographicCamera
     gdx.graphics.camera
     gdl.graphics.camera/Camera]

@@ -1,5 +1,5 @@
 (ns gdl.create.graphics.handle-draws
-  (:require [clojure.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.shape-drawer :as sd])
