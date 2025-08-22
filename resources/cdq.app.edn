@@ -201,7 +201,6 @@
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
        cdq.ctx/reset-game-state!
-       cdq.create.player-movement-vector/do!
        gdl.app/validate]}]
     :dispose! cdq.application/dispose!
     :render!
