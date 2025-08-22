@@ -1,3 +1,22 @@
+# Features
+
+-> from player perspective ->
+
+* inventory -> switch/put/modifiers
+* dev menu
+* movement AI pot field
+* skillbar
+* infotooltips
+* editor
+
+->> not dependencies important (libgdx can be seen @ input ns for example, impl. detail )
+->> not even clojure important ...
+
+->> arreat summit ... ?
+
+
+# ETC
+
 There is no documentation. There is only code.
 
 Remove all TODO's, comments, dead code. grep ;\|#_\|comment, see unused namespaced, run linter.
