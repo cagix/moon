@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.Graphics
-    clojure.gdx.graphics
-    clojure.graphics/Graphics]
-
    [com.badlogic.gdx.Input
     clojure.gdx.input
     clojure.input/Input]
@@ -52,7 +48,7 @@
     gdx.ui.image
     gdl.ui.image/Image]
 
-   [gdl.create.graphics.Graphics
+   [gdl.create.graphics.RGraphics
     gdl.create.graphics.handle-draws
     gdl.graphics/DeclarativeDraws]
    ]]]

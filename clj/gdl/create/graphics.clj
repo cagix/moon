@@ -4,7 +4,6 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics :as graphics]
             [clojure.graphics.g2d.batch :as batch]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport :as viewport]
@@ -12,7 +11,8 @@
             [gdl.graphics]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
-  (:import (com.badlogic.gdx Files)
+  (:import (com.badlogic.gdx Files
+                             Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
@@ -21,18 +21,19 @@
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
-(defrecord Graphics [batch
-                     cursors
-                     default-font
-                     graphics
-                     shape-drawer-texture
-                     shape-drawer
-                     textures
-                     tiled-map-renderer
-                     ui-viewport
-                     unit-scale
-                     world-unit-scale
-                     world-viewport]
+(defrecord RGraphics
+  [batch
+   cursors
+   default-font
+   ^Graphics graphics
+   shape-drawer-texture
+   shape-drawer
+   textures
+   tiled-map-renderer
+   ui-viewport
+   unit-scale
+   world-unit-scale
+   world-viewport]
   clojure.utils.disposable/Disposable
   (dispose! [_]
     (dispose! batch)
@@ -51,14 +52,14 @@
     (viewport/update! world-viewport width height false))
 
   (delta-time [_]
-    (graphics/delta-time graphics))
+    (.getDeltaTime graphics))
 
   (frames-per-second [_]
-    (graphics/frames-per-second graphics))
+    (.getFramesPerSecond graphics))
 
   (set-cursor! [_ cursor-key]
     (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! graphics (get cursors cursor-key)))
+    (.setCursor graphics (get cursors cursor-key)))
 
   ; TODO probably not needed I only work with texture-regions
   (texture [_ path]
@@ -127,33 +128,34 @@
         ui-viewport (fit-viewport/create (:width  ui-viewport)
                                          (:height ui-viewport)
                                          (orthographic-camera/create))]
-    (map->Graphics {:graphics graphics
-                    :textures (into {} (for [[path file-handle] (let [[f params] textures]
-                                                                  (f files params))]
-                                         [path (Texture. file-handle)]))
-                    :cursors (update-vals cursors
-                                          (fn [[file [hotspot-x hotspot-y]]]
-                                            (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
-                                                  cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-                                              (.dispose pixmap)
-                                              cursor)))
-                    :default-font (when default-font
-                                    (freetype/generate-font (Files/.internal files (:file default-font))
-                                                            (:params default-font)))
-                    :world-unit-scale world-unit-scale
-                    :ui-viewport ui-viewport
-                    :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
-                                          world-height (* (:height world-viewport) world-unit-scale)]
-                                      (fit-viewport/create world-width
-                                                           world-height
-                                                           (orthographic-camera/create :y-down? false
-                                                                                       :world-width world-width
-                                                                                       :world-height world-height)))
-                    :batch batch
-                    :unit-scale (atom 1)
-                    :shape-drawer-texture shape-drawer-texture
-                    :shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
-                    :tiled-map-renderer (memoize (fn [tiled-map]
-                                                   (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                                (float world-unit-scale)
-                                                                                batch)))})))
+    (map->RGraphics
+     {:graphics graphics
+      :textures (into {} (for [[path file-handle] (let [[f params] textures]
+                                                    (f files params))]
+                           [path (Texture. file-handle)]))
+      :cursors (update-vals cursors
+                            (fn [[file [hotspot-x hotspot-y]]]
+                              (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
+                                    cursor (Graphics/.newCursor graphics pixmap hotspot-x hotspot-y)]
+                                (.dispose pixmap)
+                                cursor)))
+      :default-font (when default-font
+                      (freetype/generate-font (Files/.internal files (:file default-font))
+                                              (:params default-font)))
+      :world-unit-scale world-unit-scale
+      :ui-viewport ui-viewport
+      :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                            world-height (* (:height world-viewport) world-unit-scale)]
+                        (fit-viewport/create world-width
+                                             world-height
+                                             (orthographic-camera/create :y-down? false
+                                                                         :world-width world-width
+                                                                         :world-height world-height)))
+      :batch batch
+      :unit-scale (atom 1)
+      :shape-drawer-texture shape-drawer-texture
+      :shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
+      :tiled-map-renderer (memoize (fn [tiled-map]
+                                     (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
+                                                                  (float world-unit-scale)
+                                                                  batch)))})))
