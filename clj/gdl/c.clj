@@ -1,8 +1,8 @@
 (ns gdl.c
-  (:require [clojure.graphics.viewport :as viewport]
-            [clojure.input :as input]
+  (:require [clojure.input :as input]
             [gdl.ui.stage :as stage])
-  (:import (com.badlogic.gdx.utils.viewport Viewport)))
+  (:import (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn- clamp [value min max]
   (cond
@@ -21,7 +21,9 @@
         y (clamp y
                  (.getTopGutterHeight viewport)
                  (.getTopGutterY      viewport))]
-    (viewport/unproject viewport x y)))
+    (let [vector2 (.unproject viewport (Vector2. x y))]
+      [(.x vector2)
+       (.y vector2)])))
 
 (defn world-mouse-position [{:keys [ctx/input
                                     ctx/graphics]}]

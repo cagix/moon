@@ -5,7 +5,6 @@
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics.texture :as texture]
-            [clojure.graphics.viewport :as viewport]
             [gdl.graphics]
             [gdx.graphics.g2d.freetype :as freetype]
             [gdx.graphics.shape-drawer :as sd])
@@ -17,6 +16,7 @@
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (gdl.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
 
@@ -29,10 +29,10 @@
    shape-drawer
    textures
    tiled-map-renderer
-   ui-viewport
+   ^Viewport ui-viewport
    unit-scale
    world-unit-scale
-   world-viewport]
+   ^Viewport world-viewport]
   Disposable
   (dispose [_]
     (Disposable/.dispose batch)
@@ -47,8 +47,8 @@
     (screen-utils/clear! color))
 
   (resize-viewports! [_ width height]
-    (viewport/update! ui-viewport    width height true)
-    (viewport/update! world-viewport width height false))
+    (.update ui-viewport    width height true)
+    (.update world-viewport width height false))
 
   (delta-time [_]
     (.getDeltaTime graphics))
