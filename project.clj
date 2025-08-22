@@ -16,8 +16,7 @@
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]]
 
-  :source-paths ["clj"]
-  :java-source-paths ["java"]
+  :java-source-paths ["java-src"]
 
   :resource-paths ["edn"
                    "png"
