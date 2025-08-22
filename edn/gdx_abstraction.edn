@@ -1,9 +1,5 @@
 [[master.yoda.provide/do!
   [
-   [com.badlogic.gdx.Input
-    clojure.gdx.input
-    clojure.input/Input]
-
    [com.badlogic.gdx.utils.Disposable
     clojure.gdx.utils.disposable
     clojure.utils.disposable/Disposable]
