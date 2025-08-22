@@ -5,7 +5,7 @@
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
             [gdl.ui.stage :as stage]
-            [gdl.ui.table :as table]
+            [gdx.ui.table :as table]
             [gdx.ui :as ui]))
 
 (defn- play-button [sound-name]
