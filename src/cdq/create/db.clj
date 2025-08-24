@@ -7,7 +7,7 @@
             [cdq.property :as property]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [gdl.malli :as m]))
+            [cdq.malli :as m]))
 
 (defmulti fetch* (fn [schema _v _db]
                    (schema/type schema)))

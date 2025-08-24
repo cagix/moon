@@ -12,8 +12,8 @@
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.w :as w]
-            [gdl.malli :as m]
-            [gdl.math.vector2 :as v]
+            [cdq.malli :as m]
+            [cdq.math.vector2 :as v]
             [qrecord.core :as q]
             [master.yoda :as yoda]))
 

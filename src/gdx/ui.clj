@@ -34,7 +34,7 @@
                                       VisTextButton
                                       VisTextField
                                       VisWindow)
-           (gdl.ui CtxStage)))
+           (cdq.ui CtxStage)))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.

@@ -1,5 +1,5 @@
 (ns cdq.render.set-cursor
-  (:require [gdl.graphics :as g]))
+  (:require [cdq.graphics :as g]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/world]

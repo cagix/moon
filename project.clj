@@ -1,6 +1,6 @@
 (def libgdx-version "1.13.5")
 
-(def main-namespace 'gdl.start)
+(def main-namespace 'cdq.start)
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
@@ -22,8 +22,8 @@
                    "wav"]
 
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.start/-main) \"cdq.app.edn\")"]
-            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.start/-main) \"levelgen.edn\")"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main) \"cdq.app.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main) \"levelgen.edn\")"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
 

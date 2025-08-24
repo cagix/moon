@@ -4,13 +4,13 @@
             [cdq.dev.app-values]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
-            [gdl.c :as c]))
+            [cdq.c :as c]))
 
 (comment
 
  ; fsm missing
  (cdq.dev.app-values/print-app-values-tree "app-values-tree.clj"
-                                           #{"gdl" "gdx" "cdq"})
+                                           #{"cdq" "gdx"})
 
  (cdq.dev.app-values/ns-value-vars 'cdq.entity.fsm)
 

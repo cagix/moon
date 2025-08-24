@@ -1,6 +1,6 @@
 (ns cdq.render.update-time
   (:require [cdq.w :as w]
-            [gdl.graphics :as g]))
+            [cdq.graphics :as g]))
 
 (defn do! [{:keys [ctx/graphics
                    ctx/world]

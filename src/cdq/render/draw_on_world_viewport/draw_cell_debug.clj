@@ -1,7 +1,7 @@
 (ns cdq.render.draw-on-world-viewport.draw-cell-debug
   (:require [cdq.grid :as grid]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]))
+            [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)

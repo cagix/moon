@@ -1,13 +1,13 @@
 (ns cdq.application
-  (:require [gdl.app]
-            [gdl.graphics :as graphics]
-            [gdl.malli :as m])
+  (:require [cdq.app]
+            [cdq.graphics :as graphics]
+            [cdq.malli :as m])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def state (atom nil))
 
 (defn post-runnable! [runnable]
-  (swap! state gdl.app/add-runnable runnable)
+  (swap! state cdq.app/add-runnable runnable)
   nil)
 
 ; TODO call dispose! on all components

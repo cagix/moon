@@ -95,7 +95,7 @@
               :pack? true}))
 
 (defn render [_]
-  #_(gdl.graphics/draw-on-world-view @state render-on-map)
+  #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? input :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (input/key-just-pressed? input :m)

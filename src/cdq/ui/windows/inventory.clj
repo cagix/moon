@@ -3,8 +3,8 @@
             [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
-            [gdl.c :as c]
-            [gdl.graphics :as g]
+            [cdq.c :as c]
+            [cdq.graphics :as g]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
             [gdx.ui :as ui])

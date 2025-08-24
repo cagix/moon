@@ -11,7 +11,7 @@
            (com.kotcrab.vis.ui.widget Tooltip
                                       VisLabel
                                       VisWindow)
-           (gdl.ui CtxStage)))
+           (cdq.ui CtxStage)))
 
 (defn- click-listener [f]
   (proxy [ClickListener] []

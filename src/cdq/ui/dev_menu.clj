@@ -4,12 +4,12 @@
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.entity :as entity]
-            [gdl.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [clojure.string :as str]
-            [gdl.ui.menu :as menu]
-            [gdl.ui.stage :as stage]
-            [gdl.c :as c]
-            [gdl.graphics :as graphics]
+            [cdq.ui.menu :as menu]
+            [cdq.ui.stage :as stage]
+            [cdq.c :as c]
+            [cdq.graphics :as graphics]
             [cdq.utils :as utils]))
 
 (defn mouseover-entity-id [icon]

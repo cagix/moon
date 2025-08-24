@@ -2,8 +2,8 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [clojure.input :as input]
-            [gdl.c :as c]
-            [gdl.math.vector2 :as v]
+            [cdq.c :as c]
+            [cdq.math.vector2 :as v]
             [gdx.ui :as ui]))
 
 (defn clicked-cell [eid cell]

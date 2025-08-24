@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-viewport.geom-test
   (:require [cdq.grid :as grid]
             [cdq.math.geom :as geom]
-            [gdl.c :as c]
-            [gdl.graphics :as graphics]))
+            [cdq.c :as c]
+            [cdq.graphics :as graphics]))
 
 (defn- geom-test* [{:keys [ctx/world] :as ctx}]
   (let [grid (:world/grid world)

@@ -7,7 +7,7 @@
             [clojure.set :as set]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
-            [gdl.ui.stage :as stage]
+            [cdq.ui.stage :as stage]
             [gdx.ui.table :as table]
             [gdx.ui :as ui]
             [gdx.ui.separator :as separator]))

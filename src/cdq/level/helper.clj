@@ -6,7 +6,7 @@
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.gdx.maps.tiled :as tiled]
-            [gdl.graphics :as graphics]))
+            [cdq.graphics :as graphics]))
 
 (defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]

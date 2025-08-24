@@ -2,7 +2,7 @@
   (:require [cdq.grid :as grid]
             [cdq.utils :as utils]
             [cdq.w :as w]
-            [gdl.c :as c]))
+            [cdq.c :as c]))
 
 (defn do! [{:keys [ctx/world]
             :as ctx}]

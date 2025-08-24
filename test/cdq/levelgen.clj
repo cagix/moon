@@ -6,12 +6,12 @@
             [cdq.render.clear-screen]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.input :as input]
-            gdl.assets
-            gdl.create.graphics
-            gdl.create.ui
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics :as graphics]
-            [gdl.ui.stage :as stage]
+            cdq.assets
+            cdq.create.graphics
+            cdq.create.ui
+            [cdq.graphics.camera :as camera]
+            [cdq.graphics :as graphics]
+            [cdq.ui.stage :as stage]
             [gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -83,15 +83,15 @@
   (let [ctx (map->Context {:ctx/files    files
                            :ctx/graphics graphics
                            :ctx/input    input})
-        ctx (assoc ctx :ctx/graphics (gdl.create.graphics/do! ctx
-                                                              {:textures [gdl.assets/search {:folder "resources/"
+        ctx (assoc ctx :ctx/graphics (cdq.create.graphics/do! ctx
+                                                              {:textures [cdq.assets/search {:folder "resources/"
                                                                                              :extensions #{"png" "bmp"}}]
                                                                :tile-size 48
                                                                :ui-viewport {:width 1440
                                                                              :height 900}
                                                                :world-viewport {:width 1440
                                                                                 :height 900}}))
-        ctx (assoc ctx :ctx/stage (gdl.create.ui/do! ctx {:skin-scale :x1}))
+        ctx (assoc ctx :ctx/stage (cdq.create.ui/do! ctx {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
@@ -104,7 +104,7 @@
     (reset! state ctx)))
 
 (defn dispose! []
-  ; TODO ? disposing properly everything gdl.start stuff??
+  ; TODO ? disposing properly everything cdq.start stuff??
   ; batch, cursors, default-font, shape-drawer-texture, etc.
   (let [{:keys [ctx/graphics
                 ctx/tiled-map]} @state]

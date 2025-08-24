@@ -1,7 +1,7 @@
 [
- [gdl.start/-main "effects_impl.edn"]
- [gdl.start/-main "txs_impl.edn"]
- [gdl.start/-main "os_settings.edn"]
+ [cdq.start/-main "effects_impl.edn"]
+ [cdq.start/-main "txs_impl.edn"]
+ [cdq.start/-main "os_settings.edn"]
  [gdx.backends.lwjgl.application/start!
   [{:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
@@ -13,7 +13,7 @@
       :create-fns
       [[master.yoda/assoc*
         [:ctx/app
-         [gdl.app/create {:schema [:map {:closed true}
+         [cdq.app/create {:schema [:map {:closed true}
                                    [:ctx/app :some]
                                    [:ctx/files :some]
                                    [:ctx/config :some]
@@ -155,11 +155,11 @@
                       ]
            }
           ]]]
-       [gdl.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
+       [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
        [master.yoda/assoc*
         [:ctx/graphics
-         [gdl.create.graphics/do!
-          {:textures [gdl.assets/search {:folder "resources/"
+         [cdq.create.graphics/do!
+          {:textures [cdq.assets/search {:folder "resources/"
                                          :extensions #{"png" "bmp"}}]
            :tile-size 48
            :ui-viewport    {:width 1440 :height 900}
@@ -187,11 +187,11 @@
                                    :use-integer-positions? false}}}]]]
        [master.yoda/assoc*
         [:ctx/stage
-         [gdl.create.ui/do!
+         [cdq.create.ui/do!
           {:skin-scale :x1}]]]
        [master.yoda/assoc*
         [:ctx/audio
-         [gdl.create.audio/do!
+         [cdq.create.audio/do!
           {:sounds "sounds.edn"}]]]
        [master.yoda/assoc*
         [:ctx/db
@@ -200,14 +200,14 @@
            :properties "properties.edn"}]]]
        [cdq.create.extend-protocols/do! cdq.ctx]
        cdq.ctx/reset-game-state!
-       gdl.app/validate]}]
+       cdq.app/validate]}]
     :dispose! cdq.application/dispose!
     :render!
     [master.yoda/render-swap!
      {:state-atom cdq.application/state
       :render-fns
-      [gdl.app/validate
-       gdl.app/run-runnables!
+      [cdq.app/validate
+       cdq.app/run-runnables!
        cdq.render.debug-data-view/do!
        cdq.render.assoc-active-entities/do!
        cdq.render.set-camera-on-player/do!
@@ -264,5 +264,5 @@
        [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
                                              :toggle-inventory   :i
                                              :toggle-entity-info :e}]
-       gdl.app/validate]}]
+       cdq.app/validate]}]
     :resize! cdq.application/resize!}]]]

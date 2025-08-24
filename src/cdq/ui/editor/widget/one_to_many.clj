@@ -4,10 +4,10 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [gdl.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
-            [gdl.ui.stage :as stage]
+            [cdq.ui.stage :as stage]
             [gdx.ui.table :as table]
             [gdx.ui :as ui]))
 

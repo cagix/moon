@@ -1,6 +1,6 @@
 (ns cdq.controls
   (:require [clojure.input :as input]
-            [gdl.math.vector2 :as v]))
+            [cdq.math.vector2 :as v]))
 
 (defn- WASD-movement-vector [{:keys [ctx/input]}]
   (let [r (when (input/key-pressed? input :d) [1  0])

@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.utils :as utils]
-            [gdl.math.vector2 :as v]))
+            [cdq.math.vector2 :as v]))
 
 (let [order (grid/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

@@ -1,5 +1,5 @@
 (ns cdq.create.extend-protocols
-  (:require [gdl.string :as str]))
+  (:require [cdq.string :as str]))
 
 (defn- create-method-map [protocol namespace]
   (let [{:keys [sigs

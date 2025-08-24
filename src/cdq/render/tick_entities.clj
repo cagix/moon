@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.ui.error-window :as error-window]
-            [gdl.app :as app]
-            [gdl.ui.stage :as stage]))
+            [cdq.app :as app]
+            [cdq.ui.stage :as stage]))
 
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid entity->tick]
   (doseq [k (keys @eid)]

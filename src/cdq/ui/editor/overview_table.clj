@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [gdl.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [gdx.ui.actor :as actor]
             [gdx.ui :as ui]))
 

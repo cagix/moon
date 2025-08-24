@@ -7,8 +7,8 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [cdq.w :as w]
-            [gdl.app :as app]
-            [gdl.graphics :as graphics]))
+            [cdq.app :as app]
+            [cdq.graphics :as graphics]))
 
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48

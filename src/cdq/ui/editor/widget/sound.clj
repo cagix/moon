@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [gdl.audio :as audio]
+            [cdq.audio :as audio]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
-            [gdl.ui.stage :as stage]
+            [cdq.ui.stage :as stage]
             [gdx.ui.table :as table]
             [gdx.ui :as ui]))
 

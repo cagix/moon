@@ -4,7 +4,7 @@
             [cdq.ui.message]
             [gdx.ui.actor :as actor]
             [gdx.ui.group :as group]
-            [gdl.ui.stage :as stage]
+            [cdq.ui.stage :as stage]
             [gdx.ui :as ui]))
 
 (defn action-bar-selected-skill [stage]

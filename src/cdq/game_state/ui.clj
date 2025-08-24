@@ -1,5 +1,5 @@
 (ns cdq.game-state.ui
-  (:require [gdl.ui.stage :as stage]))
+  (:require [cdq.ui.stage :as stage]))
 
 (defn reset-stage! [{:keys [ctx/config
                             ctx/stage]

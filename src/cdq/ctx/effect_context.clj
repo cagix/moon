@@ -1,7 +1,7 @@
 (ns cdq.ctx.effect-context
   (:require [cdq.entity :as entity]
-            [gdl.c :as c]
-            [gdl.math.vector2 :as v]))
+            [cdq.c :as c]
+            [cdq.math.vector2 :as v]))
 
 (defn player-effect-ctx [{:keys [ctx/world]
                           :as ctx}

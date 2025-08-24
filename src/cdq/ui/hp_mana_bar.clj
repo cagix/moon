@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.val-max :as val-max]
             [cdq.utils :as utils]
-            [gdl.graphics :as g]))
+            [cdq.graphics :as g]))
 
 (defn create
   [{:keys [ctx/graphics]}

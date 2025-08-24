@@ -2,8 +2,8 @@
   (:require [cdq.dev.data-view :as data-view]
             [cdq.grid :as grid]
             [clojure.input :as input]
-            [gdl.c]
-            [gdl.ui.stage :as stage]))
+            [cdq.c]
+            [cdq.ui.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/input
@@ -14,7 +14,7 @@
     (let [mouseover-eid (:world/mouseover-eid world)
           data (or (and mouseover-eid @mouseover-eid)
                    @(grid/cell (:world/grid world)
-                               (mapv int (gdl.c/world-mouse-position ctx))))]
+                               (mapv int (cdq.c/world-mouse-position ctx))))]
       (stage/add! stage (data-view/table-view-window {:title "Data View"
                                                       :data data
                                                       :width 500

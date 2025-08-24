@@ -3,8 +3,8 @@
             [cdq.entity :as entity]
             [cdq.ui :as ui]
             [cdq.ui.windows.inventory :as inventory-window]
-            [gdl.c :as c]
-            [gdl.math.vector2 :as v]
+            [cdq.c :as c]
+            [cdq.math.vector2 :as v]
             [gdx.ui.actor :as actor]))
 
 (defn distance [a b]

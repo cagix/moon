@@ -1,6 +1,6 @@
 (ns cdq.render.draw-on-world-viewport.draw-tile-grid
-  (:require [gdl.graphics :as graphics]
-            [gdl.graphics.camera :as camera]))
+  (:require [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-tile-grid? false)
 

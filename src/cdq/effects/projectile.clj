@@ -1,7 +1,7 @@
 (ns cdq.effects.projectile
   (:require [cdq.entity :as entity]
             [cdq.w :as w]
-            [gdl.math.vector2 :as v]))
+            [cdq.math.vector2 :as v]))
 
 (defn- start-point [entity direction size]
   (v/add (entity/position entity)

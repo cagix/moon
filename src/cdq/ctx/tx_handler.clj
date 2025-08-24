@@ -8,7 +8,7 @@
             [cdq.timer :as timer]
             [cdq.ui :as stage]
             [cdq.utils :as utils]
-            [gdl.graphics :as g]))
+            [cdq.graphics :as g]))
 
 (defn- valid-tx? [transaction]
   (vector? transaction))

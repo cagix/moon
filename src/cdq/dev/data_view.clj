@@ -1,5 +1,5 @@
 (ns cdq.dev.data-view
-  (:require [gdl.ui.stage :as stage]
+  (:require [cdq.ui.stage :as stage]
             [gdx.ui :as ui]))
 
 (defn- k->label-str [k]
