@@ -2,8 +2,8 @@
   (:require [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ui.message]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [gdx.ui :as ui]))
 

@@ -8,10 +8,10 @@
             [cdq.ui.error-window :as error-window]
             [clojure.input :as input]
             [cdq.app :as app]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [gdx.ui.table :as table]
+            [cdq.ui.table :as table]
             [gdx.ui :as ui]))
 
 (defn- apply-context-fn [window f]

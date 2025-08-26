@@ -1,6 +1,6 @@
 (ns cdq.ui.message
   (:require [cdq.graphics :as graphics]
-            [gdx.ui.actor :as actor]))
+            [cdq.ui.actor :as actor]))
 
 (defn- draw-message [state viewport]
   (when-let [text (:text @state)]

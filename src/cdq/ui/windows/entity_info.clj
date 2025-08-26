@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx :as ctx]
-            [gdx.ui.group :as group]
+            [cdq.ui.group :as group]
             [gdx.ui :as ui]))
 
 (comment

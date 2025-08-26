@@ -1,4 +1,4 @@
-(ns gdx.ui.separator
+(ns cdq.ui.separator
   (:import (com.kotcrab.vis.ui.widget Separator)))
 
 (defn horizontal [colspan]

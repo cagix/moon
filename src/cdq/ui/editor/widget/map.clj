@@ -5,12 +5,12 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.utils :as utils]
             [clojure.set :as set]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [gdx.ui.table :as table]
+            [cdq.ui.table :as table]
             [gdx.ui :as ui]
-            [gdx.ui.separator :as separator]))
+            [cdq.ui.separator :as separator]))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -66,7 +66,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (gdx.ui.actor/construct? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (cdq.ui.actor/construct? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])

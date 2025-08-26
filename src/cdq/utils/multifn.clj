@@ -51,11 +51,11 @@
 
 ; @ cdq.ui.editor.widget.map
 ; L140  (comp vector? actor/user-object)
-;java.lang.IllegalArgumentException: No implementation of method: :user-object of protocol: #'gdx.ui.actor/Actor found for class: gdx.ui.proxy$com.kotcrab.vis.ui.widget.VisTable$ILookup$a65747ce
+;java.lang.IllegalArgumentException: No implementation of method: :user-object of protocol: #'cdq.ui.actor/Actor found for class: cdq.ui.proxy$com.kotcrab.vis.ui.widget.VisTable$ILookup$a65747ce
 ; weird bug
 (comment
 
- (gdx.ui.actor/user-object (gdx.ui/table {:user-object [:foo :bar]}))
+ (cdq.ui.actor/user-object (gdx.ui/table {:user-object [:foo :bar]}))
  ; this works
 
  (let [ctx @cdq.application/state

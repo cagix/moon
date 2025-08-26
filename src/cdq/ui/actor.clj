@@ -1,4 +1,4 @@
-(ns gdx.ui.actor
+(ns cdq.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button

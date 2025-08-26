@@ -1,7 +1,7 @@
 (ns cdq.ui.action-bar
-  (:require [gdx.ui.actor :as actor]
+  (:require [cdq.ui.actor :as actor]
             [cdq.ui.button-group :as button-group]
-            [gdx.ui.group :as group]
+            [cdq.ui.group :as group]
             [gdx.ui :as ui]))
 
 (defn create [_ctx {:keys [id]}]

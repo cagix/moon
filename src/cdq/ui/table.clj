@@ -1,5 +1,5 @@
-(ns gdx.ui.table
-  (:require [gdx.ui.actor :as actor])
+(ns cdq.ui.table
+  (:require [cdq.ui.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
                                                Table)))
 

@@ -1,9 +1,9 @@
 (ns gdx.ui
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
-            [gdx.ui.table :as table])
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
+            [cdq.ui.table :as table])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -111,17 +111,17 @@
   actor)
 
 (defmethod actor/construct :actor.type/horizontal-group [{:keys [space pad] :as opts}]
-  (let [group (gdx.ui.group/proxy-ILookup HorizontalGroup [])]
+  (let [group (cdq.ui.group/proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     (set-opts! group opts)))
 
 (defn table ^Table [opts]
-  (-> (gdx.ui.group/proxy-ILookup VisTable [])
+  (-> (cdq.ui.group/proxy-ILookup VisTable [])
       (set-opts! opts)))
 
 (defmethod actor/construct :actor.type/stack [opts]
-  (doto (gdx.ui.group/proxy-ILookup Stack [])
+  (doto (cdq.ui.group/proxy-ILookup Stack [])
     (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
 (defn label ^VisLabel [{:keys [label/text] :as opts}]
@@ -133,11 +133,11 @@
       (set-opts! opts)))
 
 (defmethod actor/construct :actor.type/group [opts]
-  (doto (gdx.ui.group/proxy-ILookup Group [])
+  (doto (cdq.ui.group/proxy-ILookup Group [])
     (set-opts! opts)))
 
 #_(defn- -vertical-group [actors]
-    (let [group (gdx.ui.group/proxy-ILookup VerticalGroup [])]
+    (let [group (cdq.ui.group/proxy-ILookup VerticalGroup [])]
       (run! #(group/add! group %) actors) ; redundant if we use map based
       group))
 
@@ -150,7 +150,7 @@
 (def get-selected VisSelectBox/.getSelected)
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (gdx.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+  (-> (let [window (doto (cdq.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
         (when close-button?    (.addCloseButton window))
         (when center?          (.centerWindow   window))

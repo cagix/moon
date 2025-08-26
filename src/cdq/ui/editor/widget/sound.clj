@@ -2,10 +2,10 @@
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [cdq.audio :as audio]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [gdx.ui.table :as table]
+            [cdq.ui.table :as table]
             [gdx.ui :as ui]))
 
 (defn- play-button [sound-name]

@@ -5,10 +5,10 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [cdq.graphics :as graphics]
-            [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [gdx.ui.table :as table]
+            [cdq.ui.table :as table]
             [gdx.ui :as ui]))
 
 (defn- add-one-to-many-rows

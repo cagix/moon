@@ -1,6 +1,6 @@
 (ns cdq.ui.stage
-  (:require [gdx.ui.actor :as actor]
-            [gdx.ui.group :as group])
+  (:require [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group])
   (:import (cdq.ui CtxStage)))
 
 ; FIXME outdated `.ctx` in the click/etc. listeners as they are processed outside `.act`
