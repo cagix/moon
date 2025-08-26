@@ -1,4 +1,4 @@
-[[master.yoda/dispatch
+[[cdq.core/dispatch
   [clojure.gdx.utils.shared-library-loader/operating-system
    {:mac [[cdq.lwjgl/set-glfw-library-name! "glfw_async"]]}]]
  [gdx.backends.lwjgl.application/start!

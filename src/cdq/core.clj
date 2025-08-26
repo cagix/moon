@@ -1,4 +1,4 @@
-(ns master.yoda
+(ns cdq.core
   (:require [clojure.string :as str]))
 
 (defn execute! [[f params]]

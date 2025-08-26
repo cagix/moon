@@ -15,7 +15,7 @@
             [cdq.malli :as m]
             [cdq.math.vector2 :as v]
             [qrecord.core :as q]
-            [master.yoda :as yoda]))
+            [cdq.core :as core]))
 
 (defn- context-entity-add! [{:keys [world/entity-ids
                                     world/content-grid
@@ -341,7 +341,7 @@
   (let [level (let [[f params] (:config/starting-world config)]
                 (f ctx params))]
     (assoc ctx :ctx/world
-           (reduce yoda/render*
+           (reduce core/render*
                    (merge (:cdq.ctx.game/world config)
                           level)
                    pipeline))))

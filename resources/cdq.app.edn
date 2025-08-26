@@ -7,11 +7,11 @@
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
    {:create!
-    [master.yoda/create!-reset!
+    [cdq.core/create!-reset!
      {:state-atom cdq.application/state
       :initial-context cdq.application.context/create
       :create-fns
-      [[master.yoda/assoc*
+      [[cdq.core/assoc*
         [:ctx/app
          [cdq.app/create {:schema [:map {:closed true}
                                    [:ctx/app :some]
@@ -25,9 +25,9 @@
                                    [:ctx/world :some]]
                           :stacktraces {:print-level 3
                                         :print-depth 24}}]]]
-       [master.yoda/assoc*
+       [cdq.core/assoc*
         [:ctx/config
-         [master.yoda/const*
+         [cdq.core/const*
           {:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                                               :start-position [32 71]}]
            :config/game-state-pipeline [cdq.game-state.ui/reset-stage!
@@ -156,7 +156,7 @@
            }
           ]]]
        [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
-       [master.yoda/assoc*
+       [cdq.core/assoc*
         [:ctx/graphics
          [cdq.create.graphics/do!
           {:textures [cdq.assets/search {:folder "resources/"
@@ -185,15 +185,15 @@
                                    :enable-markup? true
                                    ; false, otherwise scaling to world-units not visible
                                    :use-integer-positions? false}}}]]]
-       [master.yoda/assoc*
+       [cdq.core/assoc*
         [:ctx/stage
          [cdq.create.ui/do!
           {:skin-scale :x1}]]]
-       [master.yoda/assoc*
+       [cdq.core/assoc*
         [:ctx/audio
          [cdq.create.audio/do!
           {:sounds "sounds.edn"}]]]
-       [master.yoda/assoc*
+       [cdq.core/assoc*
         [:ctx/db
          [cdq.create.db/do!
           {:schemas "schema.edn"
@@ -203,7 +203,7 @@
        cdq.app/validate]}]
     :dispose! cdq.application/dispose!
     :render!
-    [master.yoda/render-swap!
+    [cdq.core/render-swap!
      {:state-atom cdq.application/state
       :render-fns
       [cdq.app/validate
@@ -240,7 +240,7 @@
                               :player-idle true
                               :player-dead true
                               :active-skill false}}]
-       [master.yoda/render-when-not
+       [cdq.core/render-when-not
         [[:ctx/world :world/paused?]
          [cdq.render.update-time/do!
           cdq.render.update-potential-fields/do!
