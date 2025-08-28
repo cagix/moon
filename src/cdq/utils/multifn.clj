@@ -5,13 +5,14 @@
   (doseq [system-var (map requiring-resolve system-vars)
 
           :let [_ (assert (var? system-var))
-                method-var (resolve (symbol (str ns-sym "/" (:name (meta system-var)))))]
+                method-sym (symbol (str ns-sym "/" (:name (meta system-var))))
+                method-var (resolve method-sym)]
 
 
           ]
 
     (assert (or optional? method-var)
-            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
+            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym " - method-sym: " method-sym))
 
     (when method-var
 
@@ -42,6 +43,7 @@
 
 (defn add-methods! [[multis components]]
   (doseq [[ns-sym k] components]
+    (require ns-sym)
     (install-methods multis ns-sym k)))
 
 
