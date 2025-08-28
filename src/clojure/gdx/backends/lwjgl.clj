@@ -234,7 +234,9 @@
     (render [_]
       (render!))
     (resize [_ width height]
-      (resize! width height))))
+      (resize! width height))
+    (pause [_])
+    (resume [_])))
 
 (let [mapping {Os/Android :android
                Os/IOS     :ios
