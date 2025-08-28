@@ -21,7 +21,7 @@
        {:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                                            :start-position [32 71]}]
         :config/game-state-pipeline [cdq.game-state.ui/reset-stage!
-                                     [cdq.game-state.create-world/do! [cdq.game-state.create-world/create-world]]
+                                     cdq.game-state.create-world/do!
                                      cdq.game-state.spawn-player/do!
                                      cdq.game-state.spawn-enemies/do!]
         :cdq.ctx.game/ui-actors

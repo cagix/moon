@@ -336,12 +336,11 @@
 
 (defn do!
   [{:keys [ctx/config]
-    :as ctx}
-   pipeline]
+    :as ctx}]
   (let [level (let [[f params] (:config/starting-world config)]
                 (f ctx params))]
     (assoc ctx :ctx/world
            (reduce core/render*
                    (merge (:cdq.ctx.game/world config)
                           level)
-                   pipeline))))
+                   [create-world]))))
