@@ -82,16 +82,17 @@
 (defn create! [{:keys [audio files graphics input]}]
   (let [ctx (map->Context {:ctx/files    files
                            :ctx/input    input})
-        ctx (assoc ctx :ctx/graphics (graphics/create graphics files
-                                                      {:textures (cdq.assets/search files
-                                                                                    {:folder "resources/"
-                                                                                     :extensions #{"png" "bmp"}})
-                                                       :tile-size 48
-                                                       :ui-viewport {:width 1440
-                                                                     :height 900}
-                                                       :world-viewport {:width 1440
-                                                                        :height 900}}))
-        ctx (assoc ctx :ctx/stage (cdq.create.ui/do! ctx {:skin-scale :x1}))
+        graphics (graphics/create graphics files
+                                  {:textures (cdq.assets/search files
+                                                                {:folder "resources/"
+                                                                 :extensions #{"png" "bmp"}})
+                                   :tile-size 48
+                                   :ui-viewport {:width 1440
+                                                 :height 900}
+                                   :world-viewport {:width 1440
+                                                    :height 900}})
+        ctx (assoc ctx :ctx/graphics graphics)
+        ctx (assoc ctx :ctx/stage (cdq.create.ui/do! graphics input {:skin-scale :x1}))
         ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
                                                            :properties "properties.edn"}))
         ctx (assoc ctx
