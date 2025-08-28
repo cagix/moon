@@ -4,7 +4,7 @@
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
             [cdq.render.clear-screen]
-            [clojure.gdx.maps.tiled :as tiled]
+            [cdq.tiled :as tiled]
             [clojure.input :as input]
             cdq.assets
             cdq.create.ui

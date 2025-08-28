@@ -9,7 +9,7 @@
                                       grid->tiled-map
                                       transition-idx-value]]
             [cdq.utils.tiled :as utils.tiled]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [cdq.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
 (def modules-width  32) ; usd @ test

@@ -2,7 +2,7 @@
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.maps.tiled :as tiled]
+            [cdq.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
