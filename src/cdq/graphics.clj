@@ -1,6 +1,5 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [cdq.tiled :as tiled]
