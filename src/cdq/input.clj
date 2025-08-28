@@ -1,5 +1,4 @@
 (ns cdq.input
-  (:require [clojure.core-inject :refer [opts-get]])
   (:import (com.badlogic.gdx Input
                              Input$Buttons
                              Input$Keys)))
@@ -196,13 +195,16 @@
    :z                   Input$Keys/Z})
 
 (defn button-just-pressed? [^Input this button]
-  (.isButtonJustPressed this (opts-get k->Input$Buttons button)))
+  {:pre [(contains? k->Input$Buttons button)]}
+  (.isButtonJustPressed this (get k->Input$Buttons button)))
 
 (defn key-pressed? [^Input this key]
-  (.isKeyPressed this (opts-get k->Input$Keys key)))
+  {:pre [(contains? k->Input$Keys key)]}
+  (.isKeyPressed this (get k->Input$Keys key)))
 
 (defn key-just-pressed? [^Input this key]
-  (.isKeyJustPressed this (opts-get k->Input$Keys key)))
+  {:pre [(contains? k->Input$Keys key)]}
+  (.isKeyJustPressed this (get k->Input$Keys key)))
 
 (defn mouse-position [^Input this]
   [(.getX this)
