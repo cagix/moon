@@ -14,6 +14,124 @@
   (swap! state cdq.app/add-runnable runnable)
   nil)
 
+(defn- req-form [form]
+  (clojure.walk/postwalk
+   (fn [form]
+     (if (symbol? form)
+       (if (namespace form)
+         (requiring-resolve form)
+         (do
+          (require form)
+          form)) ; otherwise clojure namespace
+       form))
+   form))
+
+(def ^:private app-config
+  (req-form
+   '{:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
+                                                        :start-position [32 71]}]
+     :cdq.ctx.game/ui-actors
+     [[cdq.ui.dev-menu/create {:world-fns [[cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                       :start-position [32 71]}]
+                                           [cdq.level.uf-caves/create {:tile-size 48
+                                                                       :texture "maps/uf_terrain.png"
+                                                                       :spawn-rate 0.02
+                                                                       :scaling 3
+                                                                       :cave-size 200
+                                                                       :cave-style :wide}]
+                                           [cdq.level.modules/create {:world/map-size 5,
+                                                                      :world/max-area-level 3,
+                                                                      :world/spawn-rate 0.05}]]
+                               ;icons, etc. , components ....
+                               :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]
+      [cdq.ui.action-bar/create {:id :action-bar}] ; padding.... !, etc.
+      [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                  :rahmenw 150
+                                  :rahmenh 26
+                                  :hpcontent-file "images/hp.png"
+                                  :manacontent-file "images/mana.png"
+                                  :y-mana 80}] ; action-bar-icon-size
+
+      [cdq.ui.windows/create
+       {:id :windows
+        :actors
+        [[cdq.ui.windows.entity-info/create {:y 0}]
+         [cdq.ui.windows.inventory/create
+          {:title "Inventory"
+           :id :inventory-window
+           :visible? false
+           :state->clicked-inventory-cell
+           {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
+            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}}]]}]
+      [cdq.ui.player-state-draw/create
+       {:state->draw-gui-view
+        {:player-item-on-cursor
+         cdq.entity.state.player-item-on-cursor/draw-gui-view}}]
+      [cdq.ui.message/create {:duration-seconds 0.5
+                              :name "player-message"}]]
+     :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                  :initial-state :npc-sleeping}
+                                     :entity/faction :evil}
+     :cdq.ctx.game/player-props {:creature-id :creatures/vampire
+                                 :components {:entity/fsm {:fsm :fsms/player
+                                                           :initial-state :player-idle}
+                                              :entity/faction :good
+                                              :entity/player? true
+                                              :entity/free-skill-points 3
+                                              :entity/clickable {:type :clickable/player}
+                                              :entity/click-distance-tiles 1.5}}
+     :cdq.ctx.game/world {:content-grid-cell-size 16
+                          :potential-field-factions-iterations {:good 15
+                                                                :evil 5}
+                          :entity-components {:entity/animation
+                                              {:create cdq.entity.animation/create
+                                               :create! cdq.entity.animation/create!}
+                                              :entity/body
+                                              {:create cdq.entity.body/create}
+                                              :entity/delete-after-animation-stopped?
+                                              {:create! cdq.entity.delete-after-animation-stopped/create!}
+                                              :entity/delete-after-duration
+                                              {:create cdq.entity.delete-after-duration/create}
+                                              :entity/projectile-collision
+                                              {:create cdq.entity.projectile-collision/create}
+                                              :creature/stats
+                                              {:create cdq.entity.stats/create}
+                                              :entity/fsm
+                                              {:create! cdq.entity.fsm/create!}
+                                              :entity/inventory
+                                              {:create! cdq.entity.inventory/create!}
+                                              :entity/skills
+                                              {:create! cdq.entity.skills/create!}
+                                              :entity/destroy-audiovisual
+                                              {:destroy! cdq.entity.destroy-audiovisual/destroy!}}
+                          :entity-states {:state->create {:active-skill cdq.entity.state.active-skill/create
+                                                          :npc-moving cdq.entity.state.npc-moving/create
+                                                          :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
+                                                          :player-moving cdq.entity.state.player-moving/create
+                                                          :stunned cdq.entity.state.stunned/create}
+                                          :state->enter {:npc-dead cdq.entity.state.npc-dead/enter
+                                                         :npc-moving cdq.entity.state.npc-moving/enter
+                                                         :player-dead cdq.entity.state.player-dead/enter
+                                                         :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
+                                                         :player-moving cdq.entity.state.player-moving/enter
+                                                         :active-skill cdq.entity.state.active-skill/enter}
+                                          :state->exit {:npc-moving cdq.entity.state.npc-moving/exit
+                                                        :npc-sleeping cdq.entity.state.npc-sleeping/exit
+                                                        :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
+                                                        :player-moving cdq.entity.state.player-moving/exit}}
+                          }
+     :effect-body-props {:width 0.5
+                         :height 0.5
+                         :z-order :z-order/effect}
+
+     ; TODO unused
+     :sound-path-format "sounds/%s.wav"
+
+     :controls {:zoom-in :minus
+                :zoom-out :equals
+                :unpause-once :p
+                :unpause-continously :space}}))
+
 (q/defrecord Context [ctx/app
                       ctx/files
                       ctx/config
@@ -26,22 +144,8 @@
 
 (defn- create! [{:keys [audio files graphics input]}]
   (reset! state (reduce cdq.core/render*
-                        (map->Context {:audio    audio
-                                       :files    files
-                                       :graphics graphics
-                                       :input    input})
-                        (clojure.walk/postwalk
-                         (fn [form]
-                           (if (symbol? form)
-                             (if (namespace form)
-                               (requiring-resolve form)
-                               (do
-                                (require form)
-                                form)) ; otherwise clojure namespace
-                             form))
-                         '[[cdq.core/assoc*
-                            [:ctx/app
-                             [cdq.app/create {:schema [:map {:closed true}
+                        (map->Context {:app (cdq.app/create
+                                             {:schema [:map {:closed true}
                                                        [:ctx/app :some]
                                                        [:ctx/files :some]
                                                        [:ctx/config :some]
@@ -52,113 +156,14 @@
                                                        [:ctx/graphics :some]
                                                        [:ctx/world :some]]
                                               :stacktraces {:print-level 3
-                                                            :print-depth 24}}]]]
-                           [cdq.core/assoc*
-                            [:ctx/config
-                             [cdq.core/const*
-                              {:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                                  :start-position [32 71]}]
-                               :cdq.ctx.game/ui-actors
-                               [[cdq.ui.dev-menu/create {:world-fns [[cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                                                 :start-position [32 71]}]
-                                                                     [cdq.level.uf-caves/create {:tile-size 48
-                                                                                                 :texture "maps/uf_terrain.png"
-                                                                                                 :spawn-rate 0.02
-                                                                                                 :scaling 3
-                                                                                                 :cave-size 200
-                                                                                                 :cave-style :wide}]
-                                                                     [cdq.level.modules/create {:world/map-size 5,
-                                                                                                :world/max-area-level 3,
-                                                                                                :world/spawn-rate 0.05}]]
-                                                         ;icons, etc. , components ....
-                                                         :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]
-                                [cdq.ui.action-bar/create {:id :action-bar}] ; padding.... !, etc.
-                                [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                                            :rahmenw 150
-                                                            :rahmenh 26
-                                                            :hpcontent-file "images/hp.png"
-                                                            :manacontent-file "images/mana.png"
-                                                            :y-mana 80}] ; action-bar-icon-size
-
-                                [cdq.ui.windows/create
-                                 {:id :windows
-                                  :actors
-                                  [[cdq.ui.windows.entity-info/create {:y 0}]
-                                   [cdq.ui.windows.inventory/create
-                                    {:title "Inventory"
-                                     :id :inventory-window
-                                     :visible? false
-                                     :state->clicked-inventory-cell
-                                     {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-                                      :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}}]]}]
-                                [cdq.ui.player-state-draw/create
-                                 {:state->draw-gui-view
-                                  {:player-item-on-cursor
-                                   cdq.entity.state.player-item-on-cursor/draw-gui-view}}]
-                                [cdq.ui.message/create {:duration-seconds 0.5
-                                                        :name "player-message"}]]
-                               :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                                            :initial-state :npc-sleeping}
-                                                               :entity/faction :evil}
-                               :cdq.ctx.game/player-props {:creature-id :creatures/vampire
-                                                           :components {:entity/fsm {:fsm :fsms/player
-                                                                                     :initial-state :player-idle}
-                                                                        :entity/faction :good
-                                                                        :entity/player? true
-                                                                        :entity/free-skill-points 3
-                                                                        :entity/clickable {:type :clickable/player}
-                                                                        :entity/click-distance-tiles 1.5}}
-                               :cdq.ctx.game/world {:content-grid-cell-size 16
-                                                    :potential-field-factions-iterations {:good 15
-                                                                                          :evil 5}
-                                                    :entity-components {:entity/animation
-                                                                        {:create cdq.entity.animation/create
-                                                                         :create! cdq.entity.animation/create!}
-                                                                        :entity/body
-                                                                        {:create cdq.entity.body/create}
-                                                                        :entity/delete-after-animation-stopped?
-                                                                        {:create! cdq.entity.delete-after-animation-stopped/create!}
-                                                                        :entity/delete-after-duration
-                                                                        {:create cdq.entity.delete-after-duration/create}
-                                                                        :entity/projectile-collision
-                                                                        {:create cdq.entity.projectile-collision/create}
-                                                                        :creature/stats
-                                                                        {:create cdq.entity.stats/create}
-                                                                        :entity/fsm
-                                                                        {:create! cdq.entity.fsm/create!}
-                                                                        :entity/inventory
-                                                                        {:create! cdq.entity.inventory/create!}
-                                                                        :entity/skills
-                                                                        {:create! cdq.entity.skills/create!}
-                                                                        :entity/destroy-audiovisual
-                                                                        {:destroy! cdq.entity.destroy-audiovisual/destroy!}}
-                                                    :entity-states {:state->create {:active-skill cdq.entity.state.active-skill/create
-                                                                                    :npc-moving cdq.entity.state.npc-moving/create
-                                                                                    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
-                                                                                    :player-moving cdq.entity.state.player-moving/create
-                                                                                    :stunned cdq.entity.state.stunned/create}
-                                                                    :state->enter {:npc-dead cdq.entity.state.npc-dead/enter
-                                                                                   :npc-moving cdq.entity.state.npc-moving/enter
-                                                                                   :player-dead cdq.entity.state.player-dead/enter
-                                                                                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
-                                                                                   :player-moving cdq.entity.state.player-moving/enter
-                                                                                   :active-skill cdq.entity.state.active-skill/enter}
-                                                                    :state->exit {:npc-moving cdq.entity.state.npc-moving/exit
-                                                                                  :npc-sleeping cdq.entity.state.npc-sleeping/exit
-                                                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-                                                                                  :player-moving cdq.entity.state.player-moving/exit}}
-                                                    }
-                               :effect-body-props {:width 0.5
-                                                   :height 0.5
-                                                   :z-order :z-order/effect}
-
-                               ; TODO unused
-                               :sound-path-format "sounds/%s.wav"
-
-                               :controls {:zoom-in :minus
-                                          :zoom-out :equals
-                                          :unpause-once :p
-                                          :unpause-continously :space}}]]]
+                                                            :print-depth 24}})
+                                       :audio    audio
+                                       :config app-config
+                                       :files    files
+                                       :graphics graphics
+                                       :input    input})
+                        (req-form
+                         '[
                            [cdq.core/assoc*
                             [:ctx/graphics
                              [cdq.graphics/create

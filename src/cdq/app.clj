@@ -2,7 +2,7 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [cdq.malli :as m]))
 
-(defn create [_ctx {:keys [schema stacktraces]}]
+(defn create [{:keys [schema stacktraces]}]
   {:cdq.app/runnables []
    :cdq.app/schema (m/schema schema)
    :cdq.app/stacktraces stacktraces})
