@@ -4,7 +4,7 @@
   (handle-txs! [_ txs]))
 
 (defprotocol Game
-  (reset-game-state! [_]))
+  (reset-game-state! [_ world-fn]))
 
 (defprotocol EffectContext
   (player-effect-ctx [_ eid]))

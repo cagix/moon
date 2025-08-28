@@ -55,10 +55,7 @@
    :items (for [world-fn world-fns]
             {:label (str "Start " (first world-fn))
              :on-click (fn [_actor _ctx]
-                         (swap! application/state (fn [ctx]
-                                                    (-> ctx
-                                                        (assoc-in [:ctx/config :config/starting-world] world-fn)
-                                                        ctx/reset-game-state!))))})})
+                         (swap! application/state ctx/reset-game-state! world-fn))})})
 
 (defn help [infotext]
   {:label "Help"

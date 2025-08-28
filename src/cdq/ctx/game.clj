@@ -348,11 +348,11 @@
 
 (defn- add-ctx-world
   [{:keys [ctx/config]
-    :as ctx}]
-  (let [level (let [[f params] (:config/starting-world config)]
-                (f ctx params))]
-    (assoc ctx :ctx/world (create-world (merge (:cdq.ctx.game/world config)
-                                               level)))))
+    :as ctx}
+   world-fn]
+  (assoc ctx :ctx/world (create-world (merge (:cdq.ctx.game/world config)
+                                             (let [[f params] world-fn]
+                                               (f ctx params))))))
 
 (defn- spawn-player!
   [{:keys [ctx/config
@@ -385,10 +385,9 @@
          (ctx/handle-txs! ctx)))
   ctx)
 
-(defn reset-game-state! [{:keys [ctx/config]
-                          :as ctx}]
+(defn reset-game-state! [ctx world-fn]
   (-> ctx
       reset-stage!
-      add-ctx-world
+      (add-ctx-world world-fn)
       spawn-player!
       spawn-enemies!))

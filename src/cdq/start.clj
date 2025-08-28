@@ -110,8 +110,7 @@
 
 (def ^:private app-config
   (req-form
-   '{:config/starting-world [cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
-                                                        :start-position [32 71]}]
+   '{
      :cdq.ctx.game/ui-actors
      [[cdq.ui.dev-menu/create {:world-fns [[cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                                                        :start-position [32 71]}]
@@ -278,7 +277,9 @@
                                                          :input    input
                                                          :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})})]
                                   (-> ctx
-                                      cdq.ctx/reset-game-state!
+                                      (cdq.ctx/reset-game-state! [(requiring-resolve 'cdq.level.from-tmx/create)
+                                                                  {:tmx-file "maps/vampire.tmx"
+                                                                   :start-position [32 71]}])
                                       cdq.app/validate))))
 
 ; TODO call dispose! on all components
