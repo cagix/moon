@@ -199,12 +199,7 @@
     cdq.render.set-camera-on-player/do!
     cdq.render.clear-screen/do!
     cdq.render.draw-world-map/do!
-    [cdq.render.draw-on-world-viewport/do!
-     [cdq.render.draw-on-world-viewport.draw-tile-grid/do!
-      cdq.render.draw-on-world-viewport.draw-cell-debug/do!
-      cdq.render.draw-on-world-viewport.render-entities/do!
-      ; cdq.render.draw-on-world-viewport.geom-test/do!
-      cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
+    cdq.render.draw-on-world-viewport/do!
     cdq.render.stage/do!
     [cdq.render.set-cursor/do!
      {:state->cursor {:active-skill :cursors/sandclock
