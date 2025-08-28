@@ -1,8 +1,9 @@
 (ns cdq.ui.action-bar
   (:require [cdq.ui.actor :as actor]
-            [cdq.ui.button-group :as button-group]
             [cdq.ui.group :as group]
-            [gdx.ui :as ui]))
+            [gdx.ui :as ui])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button
+                                               ButtonGroup)))
 
 (defn create [_ctx {:keys [id]}]
   {:actor/type :actor.type/table
@@ -12,8 +13,9 @@
                     :user-object :horizontal-group
                     :actors [{:actor/type :actor.type/actor
                               :name "button-group-container"
-                              :user-object (button-group/create {:max-check-count 1
-                                                                 :min-check-count 0})}]}
+                              :user-object (doto (ButtonGroup.)
+                                             (.setMaxCheckCount 1)
+                                             (.setMinCheckCount 0))}]}
             :expand? true
             :bottom? true}]]
    :id id
@@ -26,7 +28,7 @@
      :button-group (actor/user-object (group/find-actor group "button-group-container"))}))
 
 (defn selected-skill [action-bar]
-  (when-let [skill-button (button-group/checked (:button-group (get-data action-bar)))]
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-data action-bar)))]
     (actor/user-object skill-button)))
 
 (defn add-skill!
@@ -40,12 +42,12 @@
     (actor/set-user-object! button skill-id)
     (actor/add-tooltip!     button tooltip-text)
     (group/add!        horizontal-group button)
-    (button-group/add! button-group     button)
+    (ButtonGroup/.add  button-group     button)
     nil))
 
 (defn remove-skill! [action-bar skill-id]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
         button (get horizontal-group skill-id)]
-    (actor/remove!                     button)
-    (button-group/remove! button-group button)
+    (actor/remove!                            button)
+    (ButtonGroup/.remove button-group ^Button button)
     nil))
