@@ -5,7 +5,7 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 
-(defn create [_ctx {:keys [id]}]
+(defn create [{:keys [id]}]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2

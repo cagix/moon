@@ -10,8 +10,8 @@
                  :scale 2.5
                  :up? true}]))
 
-(defn create [_ctx {:keys [duration-seconds
-                           name]}]
+(defn create [{:keys [duration-seconds
+                      name]}]
   {:actor/type :actor.type/actor
    :draw (fn [this {:keys [ctx/graphics] :as ctx}]
            (graphics/handle-draws! graphics

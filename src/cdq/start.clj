@@ -111,45 +111,6 @@
 (def ^:private app-config
   (req-form
    '{
-     :cdq.ctx.game/ui-actors
-     [[cdq.ui.dev-menu/create {:world-fns [[cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                       :start-position [32 71]}]
-                                           [cdq.level.uf-caves/create {:tile-size 48
-                                                                       :texture "maps/uf_terrain.png"
-                                                                       :spawn-rate 0.02
-                                                                       :scaling 3
-                                                                       :cave-size 200
-                                                                       :cave-style :wide}]
-                                           [cdq.level.modules/create {:world/map-size 5,
-                                                                      :world/max-area-level 3,
-                                                                      :world/spawn-rate 0.05}]]
-                               ;icons, etc. , components ....
-                               :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]
-      [cdq.ui.action-bar/create {:id :action-bar}] ; padding.... !, etc.
-      [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                  :rahmenw 150
-                                  :rahmenh 26
-                                  :hpcontent-file "images/hp.png"
-                                  :manacontent-file "images/mana.png"
-                                  :y-mana 80}] ; action-bar-icon-size
-
-      [cdq.ui.windows/create
-       {:id :windows
-        :actors
-        [[cdq.ui.windows.entity-info/create {:y 0}]
-         [cdq.ui.windows.inventory/create
-          {:title "Inventory"
-           :id :inventory-window
-           :visible? false
-           :state->clicked-inventory-cell
-           {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}}]]}]
-      [cdq.ui.player-state-draw/create
-       {:state->draw-gui-view
-        {:player-item-on-cursor
-         cdq.entity.state.player-item-on-cursor/draw-gui-view}}]
-      [cdq.ui.message/create {:duration-seconds 0.5
-                              :name "player-message"}]]
      :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                   :initial-state :npc-sleeping}
                                      :entity/faction :evil}

@@ -1,7 +1,7 @@
 (ns cdq.ui.player-state-draw
   (:require [cdq.graphics :as graphics]))
 
-(defn create [_ctx {:keys [state->draw-gui-view]}]
+(defn create [{:keys [state->draw-gui-view]}]
   {:actor/type :actor.type/actor
    :draw (fn [_this {:keys [ctx/graphics
                             ctx/world] :as ctx}]
