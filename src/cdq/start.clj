@@ -3,7 +3,7 @@
             cdq.utils.multifn))
 
 (defn- install-effects! []
-  (cdq.utils.multifn/add-methods! `[{:required [cdq.effect/applicable?
+  (cdq.utils.multifn/add-methods! '[{:required [cdq.effect/applicable?
                                                 cdq.effect/handle]
                                      :optional [cdq.effect/useful?
                                                 cdq.effect/render]}
@@ -35,7 +35,7 @@
                                       :effects.target/stun]]]))
 
 (defn- install-txs! []
-  (cdq.utils.multifn/add-methods! `[{:required [cdq.ctx.tx-handler/do!]}
+  (cdq.utils.multifn/add-methods! '[{:required [cdq.ctx.tx-handler/do!]}
                                     [[cdq.tx.toggle-inventory-visible
                                       :tx/toggle-inventory-visible]
                                      [cdq.tx.show-message
@@ -69,7 +69,21 @@
                                      [cdq.tx.spawn-creature
                                       :tx/spawn-creature]]]))
 
+(defn- install-editor-widgets! []
+  (run! require '[cdq.ui.editor.widget.default
+                  cdq.ui.editor.widget.edn
+                  cdq.ui.editor.widget.string
+                  cdq.ui.editor.widget.boolean
+                  cdq.ui.editor.widget.enum
+                  cdq.ui.editor.widget.sound
+                  cdq.ui.editor.widget.one-to-one
+                  cdq.ui.editor.widget.one-to-many
+                  cdq.ui.editor.widget.image
+                  cdq.ui.editor.widget.animation
+                  cdq.ui.editor.widget.map]))
+
 (defn -main []
   (install-effects!)
   (install-txs!)
+  (install-editor-widgets!)
   (cdq.core/load! "cdq.app.edn"))
