@@ -11,6 +11,7 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -78,7 +79,7 @@
 
 (defrecord Context [])
 
-(defn create! [{:keys [audio files graphics input]} _params]
+(defn create! [{:keys [audio files graphics input]}]
   (let [ctx (map->Context {:ctx/files    files
                            :ctx/graphics graphics
                            :ctx/input    input})
@@ -138,7 +139,7 @@
                        :as ctx}]
   (stage/render! stage ctx))
 
-(defn render! [_]
+(defn render! []
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
@@ -148,3 +149,14 @@
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
+
+(defn -main []
+  (lwjgl/start-application! {:title "Levelgen test"
+                             :windowed-mode {:width 1440 :height 900}
+                             :foreground-fps 60}
+                            {:create! create!
+                             :dispose! dispose!
+                             :render! render!
+                             :resize! resize!
+                             :resume! (fn [])
+                             :pause! (fn [])}))

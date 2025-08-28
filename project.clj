@@ -24,7 +24,7 @@
 
   :aliases {
             "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.core/load!) \"cdq.app.edn\")"]
-            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.core/load!) \"levelgen.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
 

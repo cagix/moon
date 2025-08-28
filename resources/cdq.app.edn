@@ -1,6 +1,7 @@
 ; so at the end its a map ?
 ; renders/creates/etc. is hardcoded only what really changes
 ; only what you want to change ?
+; only what I _actually_ change move here ?
 [
  [cdq.core/load! "effects_impl.edn"]
  [cdq.core/load! "txs_impl.edn"]
