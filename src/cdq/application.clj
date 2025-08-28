@@ -1,10 +1,10 @@
 (ns cdq.application
   (:require [cdq.app]
-            [cdq.application.context]
             [cdq.core]
             [cdq.graphics :as graphics]
             [cdq.malli :as m]
-            [clojure.gdx.backends.lwjgl :as lwjgl])
+            [clojure.gdx.backends.lwjgl :as lwjgl]
+            [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def state (atom nil))
@@ -13,9 +13,22 @@
   (swap! state cdq.app/add-runnable runnable)
   nil)
 
-(defn- create! [context create-fns]
+(q/defrecord Context [ctx/app
+                      ctx/files
+                      ctx/config
+                      ctx/input
+                      ctx/db
+                      ctx/audio
+                      ctx/stage
+                      ctx/graphics
+                      ctx/world])
+
+(defn- create! [{:keys [audio files graphics input]} create-fns]
   (reset! state (reduce cdq.core/render*
-                        (cdq.application.context/create context)
+                        (map->Context {:audio    audio
+                                       :files    files
+                                       :graphics graphics
+                                       :input    input})
                         create-fns)))
 
 ; TODO call dispose! on all components
