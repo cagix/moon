@@ -202,10 +202,7 @@
     cdq.render.draw-on-world-viewport/do!
     cdq.render.stage/do!
     cdq.render.set-cursor/do!
-    [cdq.render.player-state-handle-input/do!
-     {:state->handle-input {:player-idle cdq.entity.state.player-idle/handle-input
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-                            :player-moving cdq.entity.state.player-moving/handle-input}}]
+    cdq.render.player-state-handle-input/do!
     cdq.render.update-mouseover-entity/do!
     [cdq.render.assoc-paused/do!
      {:pausing? true
