@@ -201,13 +201,7 @@
     cdq.render.draw-world-map/do!
     cdq.render.draw-on-world-viewport/do!
     cdq.render.stage/do!
-    [cdq.render.set-cursor/do!
-     {:state->cursor {:active-skill :cursors/sandclock
-                      :player-dead :cursors/black-x
-                      :player-idle cdq.ctx.interaction-state/->cursor
-                      :player-item-on-cursor :cursors/hand-grab
-                      :player-moving :cursors/walking
-                      :stunned :cursors/denied}}]
+    cdq.render.set-cursor/do!
     [cdq.render.player-state-handle-input/do!
      {:state->handle-input {:player-idle cdq.entity.state.player-idle/handle-input
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
