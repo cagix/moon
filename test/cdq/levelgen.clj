@@ -81,11 +81,11 @@
 
 (defn create! [{:keys [audio files graphics input]}]
   (let [ctx (map->Context {:ctx/files    files
-                           :ctx/graphics graphics
                            :ctx/input    input})
-        ctx (assoc ctx :ctx/graphics (graphics/create ctx
-                                                      {:textures [cdq.assets/search {:folder "resources/"
-                                                                                     :extensions #{"png" "bmp"}}]
+        ctx (assoc ctx :ctx/graphics (graphics/create graphics files
+                                                      {:textures (cdq.assets/search files
+                                                                                    {:folder "resources/"
+                                                                                     :extensions #{"png" "bmp"}})
                                                        :tile-size 48
                                                        :ui-viewport {:width 1440
                                                                      :height 900}

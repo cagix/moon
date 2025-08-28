@@ -258,8 +258,7 @@
         (TextureRegion. texture)))))
 
 (defn create
-  [{:keys [ctx/files
-           ctx/graphics]}
+  [graphics files
    {:keys [colors
            textures
            cursors ; optional
@@ -283,8 +282,7 @@
                                          (orthographic-camera/create))]
     (map->RGraphics
      {:graphics graphics
-      :textures (into {} (for [[path file-handle] (let [[f params] textures]
-                                                    (f files params))]
+      :textures (into {} (for [[path file-handle] textures]
                            [path (Texture. file-handle)]))
       :cursors (update-vals cursors
                             (fn [[file [hotspot-x hotspot-y]]]
