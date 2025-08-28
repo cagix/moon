@@ -157,6 +157,4 @@
                             {:create! create!
                              :dispose! dispose!
                              :render! render!
-                             :resize! resize!
-                             :resume! (fn [])
-                             :pause! (fn [])}))
+                             :resize! resize!}))

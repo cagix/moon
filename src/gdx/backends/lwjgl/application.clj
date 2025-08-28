@@ -10,6 +10,4 @@
                              :render! (fn []
                                         (let [[f params] render!]
                                           (f params)))
-                             :resize! resize!
-                             :resume! (fn [])
-                             :pause! (fn [])}))
+                             :resize! resize!}))

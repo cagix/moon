@@ -214,10 +214,8 @@
 (defn- proxy-listener [{:keys [create!
                                dispose!
                                render!
-                               resize!
-                               resume!
-                               pause!]}]
-  {:pre [create! dispose! render! resize! resume! pause!]}
+                               resize!]}]
+  {:pre [create! dispose! render! resize!]}
   (reify ApplicationListener
     (create [_]
       (create! {:app      Gdx/app
@@ -236,11 +234,7 @@
     (render [_]
       (render!))
     (resize [_ width height]
-      (resize! width height))
-    (resume [_]
-      (resume!))
-    (pause [_]
-      (pause!))))
+      (resize! width height))))
 
 (let [mapping {Os/Android :android
                Os/IOS     :ios
@@ -258,9 +252,7 @@
     {:create!  (fn [context])
      :dispose! (fn [])
      :render!  (fn [])
-     :resize!  (fn [width height])
-     :resume!  (fn [])
-     :pause!   (fn [])}
+     :resize!  (fn [width height])}
   ```
 
   `context` is a map with the global static fields of `com.badlogic.gdx.Gdx`:
