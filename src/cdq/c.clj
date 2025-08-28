@@ -1,5 +1,5 @@
 (ns cdq.c
-  (:require [clojure.input :as input]
+  (:require [cdq.input :as input]
             [cdq.ui.stage :as stage])
   (:import (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport Viewport)))

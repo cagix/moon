@@ -2,7 +2,7 @@
   (:require [cdq.controls :as controls]
             [cdq.ctx :as ctx]
             [cdq.inventory :as inventory]
-            [clojure.input :as input]
+            [cdq.input :as input]
             [cdq.ui.actor :as actor]))
 
 (defn inventory-window-visible? [stage]

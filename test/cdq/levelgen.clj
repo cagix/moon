@@ -5,7 +5,7 @@
             [cdq.level.from-tmx]
             [cdq.render.clear-screen]
             [cdq.tiled :as tiled]
-            [clojure.input :as input]
+            [cdq.input :as input]
             cdq.assets
             cdq.create.ui
             [cdq.graphics.camera :as camera]

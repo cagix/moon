@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-paused
-  (:require [clojure.input :as input]))
+  (:require [cdq.input :as input]))
 
 (defn do! [{:keys [ctx/input
                    ctx/world

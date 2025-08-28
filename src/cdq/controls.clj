@@ -1,5 +1,5 @@
 (ns cdq.controls
-  (:require [clojure.input :as input]
+  (:require [cdq.input :as input]
             [cdq.math.vector2 :as v]))
 
 (defn- WASD-movement-vector [{:keys [ctx/input]}]

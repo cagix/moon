@@ -1,5 +1,5 @@
 (ns cdq.create.ui
-  (:require [clojure.input :as input]
+  (:require [cdq.input :as input]
             [gdx.ui :as ui]))
 
 (defn do! [{:keys [ctx/graphics

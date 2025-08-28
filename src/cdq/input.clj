@@ -1,4 +1,4 @@
-(ns clojure.input
+(ns cdq.input
   (:require [clojure.core-inject :refer [opts-get]]
             [clojure.gdx.input.buttons :as input.buttons]
             [clojure.gdx.input.keys    :as input.keys])
