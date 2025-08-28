@@ -166,9 +166,6 @@
                          :height 0.5
                          :z-order :z-order/effect}
 
-     ; TODO unused
-     :sound-path-format "sounds/%s.wav"
-
      :controls {:zoom-in :minus
                 :zoom-out :equals
                 :unpause-once :p
