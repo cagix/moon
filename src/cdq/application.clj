@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.app]
+            [cdq.core]
             [cdq.graphics :as graphics]
             [cdq.malli :as m])
   (:import (com.badlogic.gdx.utils Disposable)))
@@ -27,3 +28,7 @@
 (defn resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
+
+(defn render! [render-fns]
+  (swap! state (fn [ctx]
+                 (reduce cdq.core/render* ctx render-fns))))

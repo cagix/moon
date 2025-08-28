@@ -65,10 +65,6 @@
     {:initial-context :foobar, :ctx/graphics ":GRAPHICS-:GDX", :ctx/audio ":AUDIO-OpenAL"})
  )
 
-(defn render-swap! [{:keys [state-atom render-fns]}]
-  (swap! @state-atom (fn [ctx]
-                       (reduce render* ctx render-fns))))
-
 (defn load! [path]
   (->> path
        clojure.java.io/resource
