@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.app]
+            [cdq.audio]
             [cdq.assets]
             [cdq.core]
             [cdq.graphics :as graphics]
@@ -177,36 +178,29 @@
                                                                  ; false, otherwise scaling to world-units not visible
                                                                  :use-integer-positions? false}}})]
                           (map->Context {:app (cdq.app/create
-                                             {:schema [:map {:closed true}
-                                                       [:ctx/app :some]
-                                                       [:ctx/files :some]
-                                                       [:ctx/config :some]
-                                                       [:ctx/input :some]
-                                                       [:ctx/db :some]
-                                                       [:ctx/audio :some]
-                                                       [:ctx/stage :some]
-                                                       [:ctx/graphics :some]
-                                                       [:ctx/world :some]]
-                                              :stacktraces {:print-level 3
-                                                            :print-depth 24}})
-                                       :audio    audio
-                                       :config app-config
-                                       :files    files
-                                       :graphics graphics
-                                       :input    input
-                                       :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})
-                                       }))
+                                               {:schema [:map {:closed true}
+                                                         [:ctx/app :some]
+                                                         [:ctx/files :some]
+                                                         [:ctx/config :some]
+                                                         [:ctx/input :some]
+                                                         [:ctx/db :some]
+                                                         [:ctx/audio :some]
+                                                         [:ctx/stage :some]
+                                                         [:ctx/graphics :some]
+                                                         [:ctx/world :some]]
+                                                :stacktraces {:print-level 3
+                                                              :print-depth 24}})
+                                         :audio  (cdq.audio/create audio files {:sounds "sounds.edn"})
+                                         :config app-config
+                                         :db (cdq.create.db/do! {:schemas "schema.edn"
+                                                                 :properties "properties.edn"})
+                                         :files    files
+                                         :graphics graphics
+                                         :input    input
+                                         :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})
+                                         }))
                         (req-form
                          '[
-                           [cdq.core/assoc*
-                            [:ctx/audio
-                             [cdq.audio/create
-                              {:sounds "sounds.edn"}]]]
-                           [cdq.core/assoc*
-                            [:ctx/db
-                             [cdq.create.db/do!
-                              {:schemas "schema.edn"
-                               :properties "properties.edn"}]]]
                            [cdq.create.extend-protocols/do! cdq.ctx]
                            cdq.ctx/reset-game-state!
                            cdq.app/validate]))))

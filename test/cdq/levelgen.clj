@@ -79,7 +79,7 @@
 
 (defrecord Context [])
 
-(defn create! [{:keys [audio files graphics input]}]
+(defn create! [{:keys [files graphics input]}]
   (let [ctx (map->Context {:ctx/files    files
                            :ctx/input    input})
         graphics (graphics/create graphics files
@@ -93,8 +93,8 @@
                                                     :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
         ctx (assoc ctx :ctx/stage (cdq.create.ui/do! graphics input {:skin-scale :x1}))
-        ctx (assoc ctx :ctx/db (cdq.create.db/do!     ctx {:schemas "schema.edn"
-                                                           :properties "properties.edn"}))
+        ctx (assoc ctx :ctx/db (cdq.create.db/do! {:schemas "schema.edn"
+                                                   :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:viewport/camera (:world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])

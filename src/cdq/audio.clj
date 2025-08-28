@@ -11,8 +11,7 @@
   (play-sound! [_ path]))
 
 (defn create
-  [{:keys [ctx/audio
-           ctx/files]}
+  [audio files
    {:keys [sounds]}]
   (let [sounds (into {}
                      (for [path (->> sounds io/resource slurp edn/read-string)]

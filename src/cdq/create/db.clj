@@ -147,8 +147,7 @@
                          {:size 3})))))
 
 (defn do!
-  [_context
-   {:keys [schemas
+  [{:keys [schemas
            properties]}]
   (let [schemas (->Schemas (utils/io-slurp-edn schemas))
         properties-file (io/resource properties)
