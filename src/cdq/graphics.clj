@@ -1,7 +1,6 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [cdq.tiled :as tiled]
             [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
@@ -50,8 +49,9 @@
 (defn- texture-region-drawing-dimensions
   [{:keys [unit-scale
            world-unit-scale]}
-   texture-region]
-  (let [dimensions (texture-region/dimensions texture-region)]
+   ^TextureRegion texture-region]
+  (let [dimensions [(.getRegionWidth  texture-region)
+                    (.getRegionHeight texture-region)]]
     (if (= @unit-scale 1)
       dimensions
       (mapv (comp float (partial * world-unit-scale))
@@ -70,12 +70,13 @@
          1 ; scale-y
          rotation))
 
-(defmethod draw! :draw/texture-region [[_ texture-region [x y]]
+(defmethod draw! :draw/texture-region [[_ ^TextureRegion texture-region [x y]]
                                        {:keys [batch]}]
   (batch-draw! batch
                texture-region
                [x y]
-               (texture-region/dimensions texture-region)
+               [(.getRegionWidth  texture-region)
+                (.getRegionHeight texture-region)]
                0))
 
 (defmethod draw! :draw/image [[_ image position]

@@ -1,6 +1,5 @@
 (ns gdx.ui
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table])
@@ -194,9 +193,10 @@
   (doto (VisTextButton. (str text))
     (.addListener (change-listener on-clicked))))
 
-(defn image-button [{:keys [texture-region on-clicked scale]}]
+(defn image-button [{:keys [^TextureRegion texture-region on-clicked scale]}]
   (let [scale (or scale 1)
-        [w h] (texture-region/dimensions texture-region)
+        [w h] [(.getRegionWidth  texture-region)
+               (.getRegionHeight texture-region)]
         drawable (drawable texture-region
                            :width  (* scale w)
                            :height (* scale h))
