@@ -39,6 +39,7 @@
   | `:initial-background-color` | Sets the initial background color. Defaults to black.  | `` |
   | `:vsync?`                   | Sets whether to use vsync. This setting can be changed anytime at runtime via {@link Graphics#setVSync(boolean)}. For multi-window applications, only one (the main) window should enable vsync. Otherwise, every window will wait for the vertical blank on swap individually, effectively cutting the frame rate to (refreshRate / numberOfWindows). | `` |
   "
+  (:require [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -47,7 +48,12 @@
                                              Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3Graphics$Lwjgl3DisplayMode
                                              Lwjgl3Graphics$Lwjgl3Monitor
-                                             Lwjgl3WindowConfiguration)))
+                                             Lwjgl3WindowConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader
+                                   Os)
+           (java.awt Taskbar
+                     Toolkit)
+           (org.lwjgl.system Configuration)))
 
 (defn- display-mode->map [^Lwjgl3Graphics$Lwjgl3DisplayMode display-mode]
   {:width          (.width        display-mode)
@@ -236,6 +242,14 @@
     (pause [_]
       (pause!))))
 
+(let [mapping {Os/Android :android
+               Os/IOS     :ios
+               Os/Linux   :linux
+               Os/MacOsX  :mac
+               Os/Windows :windows}]
+  (defn- operating-system []
+    (get mapping SharedLibraryLoader/os)))
+
 (defn start-application!
   "Starts a `com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application` with the given listener and config.
 
@@ -267,6 +281,11 @@
 
   `config` can contain both application and window configuration options as mentioned in the namespace docs."
   [config listener]
+  (when (= (operating-system) :mac)
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource "icon.png"))))
   (Lwjgl3Application. (proxy-listener listener)
                       (let [obj (Lwjgl3ApplicationConfiguration.)]
                         (doseq [[k v] config]

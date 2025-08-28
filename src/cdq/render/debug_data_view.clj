@@ -1,3 +1,5 @@
+; only used onece ...
+; so it should be in 'game' just a privat4e fn ?
 (ns cdq.render.debug-data-view
   (:require [cdq.dev.data-view :as data-view]
             [cdq.grid :as grid]

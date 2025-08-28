@@ -8,11 +8,6 @@
 (defn execute! [[f params]]
   (f params))
 
-(defn dispatch [[to-eval mapping]]
-  (->> (to-eval)
-       (get mapping)
-       (run! execute!)))
-
 (defn- java-class-symbol? [s]
   (let [last-segment (last (str/split s #"\."))]
     (Character/isUpperCase ^Character (first last-segment))))

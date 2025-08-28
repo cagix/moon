@@ -1,7 +1,9 @@
+; so at the end its a map ?
+; renders/creates/etc. is hardcoded only what really changes
+; only what you want to change ?
 [
- [cdq.start/-main "effects_impl.edn"]
- [cdq.start/-main "txs_impl.edn"]
- [cdq.start/-main "os_settings.edn"]
+ [cdq.core/load! "effects_impl.edn"]
+ [cdq.core/load! "txs_impl.edn"]
  [gdx.backends.lwjgl.application/start!
   [{:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}

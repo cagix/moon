@@ -49,6 +49,9 @@
           ;:namespaces [#"^gdl\."]
           }
 
+  ; lein hiera :layout :horizontal :ignore "#{cdq.render}"
+  ; unfortunately cannot exclude only 'cdq.render.*' , would like to do for entity/effect...
+
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
 
