@@ -1,6 +1,6 @@
 (def libgdx-version "1.13.5")
 
-(def main-namespace 'cdq.core)
+(def main-namespace 'cdq.start)
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]

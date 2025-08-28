@@ -1,6 +1,8 @@
 (ns cdq.start
-  (:require cdq.core
-            cdq.utils.multifn))
+  (:require cdq.application
+            cdq.core
+            cdq.utils.multifn)
+  (:gen-class))
 
 (defn- install-effects! []
   (cdq.utils.multifn/add-methods! '[{:required [cdq.effect/applicable?
@@ -86,4 +88,4 @@
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
-  (cdq.core/load! "cdq.app.edn"))
+  (cdq.application/start!))
