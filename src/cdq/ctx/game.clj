@@ -387,8 +387,8 @@
 
 (defn reset-game-state! [{:keys [ctx/config]
                           :as ctx}]
-  (reduce (fn [ctx f] (f ctx)) ctx
-          [reset-stage!
-           add-ctx-world
-           spawn-player!
-           spawn-enemies!]))
+  (-> ctx
+      reset-stage!
+      add-ctx-world
+      spawn-player!
+      spawn-enemies!))

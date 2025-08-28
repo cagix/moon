@@ -88,8 +88,7 @@
 (defn do! [ctx]
   (if (get-in ctx [:ctx/world :world/paused?])
     ctx
-    (reduce (fn [ctx f] (f ctx))
-            ctx
-            [update-time
-             update-potential-fields!
-             tick-entities!])))
+    (-> ctx
+        update-time
+        update-potential-fields!
+        tick-entities!)))

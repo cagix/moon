@@ -147,39 +147,38 @@
                       ctx/world])
 
 (defn- create! [{:keys [audio files graphics input]}]
-  (reset! state (reduce (fn [ctx f] (f ctx))
-                        (let [graphics (graphics/create
-                                        graphics
-                                        files
-                                        {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
-                                         :textures (cdq.assets/search files
-                                                                      {:folder "resources/"
-                                                                       :extensions #{"png" "bmp"}})
-                                         :tile-size 48
-                                         :ui-viewport    {:width 1440 :height 900}
-                                         :world-viewport {:width 1440 :height 900}
-                                         :cursor-path-format "cursors/%s.png"
-                                         :cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                                   :cursors/black-x               ["black_x"      [0   0]]
-                                                   :cursors/default               ["default"      [0   0]]
-                                                   :cursors/denied                ["denied"       [16 16]]
-                                                   :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                   :cursors/hand-grab             ["hand003"      [4  16]]
-                                                   :cursors/move-window           ["move002"      [16 16]]
-                                                   :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                   :cursors/over-button           ["hand002"      [0   0]]
-                                                   :cursors/sandclock             ["sandclock"    [16 16]]
-                                                   :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                   :cursors/use-skill             ["pointer004"   [0   0]]
-                                                   :cursors/walking               ["walking"      [16 16]]}
-                                         :default-font {:file "exocet/films.EXL_____.ttf"
-                                                        :params {:size 16
-                                                                 :quality-scaling 2
-                                                                 :enable-markup? true
-                                                                 ; false, otherwise scaling to world-units not visible
-                                                                 :use-integer-positions? false}}})]
-                          (map->Context {:app (cdq.app/create
+  (reset! state (let [graphics (graphics/create
+                                graphics
+                                files
+                                {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
+                                 :textures (cdq.assets/search files
+                                                              {:folder "resources/"
+                                                               :extensions #{"png" "bmp"}})
+                                 :tile-size 48
+                                 :ui-viewport    {:width 1440 :height 900}
+                                 :world-viewport {:width 1440 :height 900}
+                                 :cursor-path-format "cursors/%s.png"
+                                 :cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                           :cursors/black-x               ["black_x"      [0   0]]
+                                           :cursors/default               ["default"      [0   0]]
+                                           :cursors/denied                ["denied"       [16 16]]
+                                           :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                           :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                           :cursors/hand-grab             ["hand003"      [4  16]]
+                                           :cursors/move-window           ["move002"      [16 16]]
+                                           :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                           :cursors/over-button           ["hand002"      [0   0]]
+                                           :cursors/sandclock             ["sandclock"    [16 16]]
+                                           :cursors/skill-not-usable      ["x007"         [0   0]]
+                                           :cursors/use-skill             ["pointer004"   [0   0]]
+                                           :cursors/walking               ["walking"      [16 16]]}
+                                 :default-font {:file "exocet/films.EXL_____.ttf"
+                                                :params {:size 16
+                                                         :quality-scaling 2
+                                                         :enable-markup? true
+                                                         ; false, otherwise scaling to world-units not visible
+                                                         :use-integer-positions? false}}})
+                      ctx (map->Context {:app (cdq.app/create
                                                {:schema [:map {:closed true}
                                                          [:ctx/app :some]
                                                          [:ctx/files :some]
@@ -199,9 +198,10 @@
                                          :files    files
                                          :graphics graphics
                                          :input    input
-                                         :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})}))
-                        [cdq.ctx/reset-game-state!
-                         cdq.app/validate])))
+                                         :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})})]
+                  (-> ctx
+                      cdq.ctx/reset-game-state!
+                      cdq.app/validate))))
 
 ; TODO call dispose! on all components
 (defn- dispose! []
@@ -223,6 +223,7 @@
 
 (defn- render! []
   (swap! state (fn [ctx]
+                 ; just -> pipeline operator ...
                  (reduce (fn [ctx f] (f ctx))
                          ctx
                          (map requiring-resolve
