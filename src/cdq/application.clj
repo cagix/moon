@@ -3,7 +3,8 @@
             [cdq.application.context]
             [cdq.core]
             [cdq.graphics :as graphics]
-            [cdq.malli :as m])
+            [cdq.malli :as m]
+            [clojure.gdx.backends.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def state (atom nil))
@@ -12,13 +13,13 @@
   (swap! state cdq.app/add-runnable runnable)
   nil)
 
-(defn create! [context create-fns]
+(defn- create! [context create-fns]
   (reset! state (reduce cdq.core/render*
                         (cdq.application.context/create context)
                         create-fns)))
 
 ; TODO call dispose! on all components
-(defn dispose! []
+(defn- dispose! []
   (let [{:keys [ctx/audio
                 ctx/graphics
                 ctx/world]} @state]
@@ -31,10 +32,21 @@
     ))
 
 ; TODO call resize! on all components
-(defn resize! [width height]
+(defn- resize! [width height]
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
 
-(defn render! [render-fns]
+(defn- render! [render-fns]
   (swap! state (fn [ctx]
                  (reduce cdq.core/render* ctx render-fns))))
+
+(defn start! [{:keys [create-fns render-fns]}]
+  (lwjgl/start-application! {:title "Cyber Dungeon Quest"
+                             :windowed-mode {:width 1440 :height 900}
+                             :foreground-fps 60}
+                            {:create! (fn [context]
+                                        (create! context create-fns))
+                             :dispose! dispose!
+                             :render! (fn []
+                                        (render! render-fns))
+                             :resize! resize!}))
