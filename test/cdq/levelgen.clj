@@ -80,8 +80,7 @@
 (defrecord Context [])
 
 (defn create! [{:keys [files graphics input]}]
-  (let [ctx (map->Context {:ctx/files    files
-                           :ctx/input    input})
+  (let [ctx (map->Context {:ctx/input    input})
         graphics (graphics/create graphics files
                                   {:textures (cdq.assets/search files
                                                                 {:folder "resources/"
