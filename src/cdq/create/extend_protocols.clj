@@ -12,7 +12,7 @@
                                                (:name signature))))]))))
 
 ; TODO do out of 'create'
-(defn do! [ctx namespace]
+(defn do! [clazz namespace]
   (let [protocols (map (comp deref second)
                        (filter #(:sigs @(% 1)) (ns-publics namespace)))]
     (doseq [protocol protocols]
@@ -20,7 +20,6 @@
       ;(println "Extending protocol: " (:on protocol))
       ;(println "With method map: ")
       ;(clojure.pprint/pprint (create-method-map protocol namespace))
-      (extend (class ctx)
+      (extend clazz
         protocol
-        (create-method-map protocol namespace))))
-  ctx)
+        (create-method-map protocol namespace)))))

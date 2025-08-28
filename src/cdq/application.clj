@@ -3,6 +3,8 @@
             [cdq.audio]
             [cdq.assets]
             [cdq.core]
+            [cdq.create.db]
+            [cdq.create.ui]
             [cdq.graphics :as graphics]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -201,7 +203,6 @@
                                          }))
                         (req-form
                          '[
-                           [cdq.create.extend-protocols/do! cdq.ctx]
                            cdq.ctx/reset-game-state!
                            cdq.app/validate]))))
 

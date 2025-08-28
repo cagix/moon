@@ -1,5 +1,6 @@
 (ns cdq.start
   (:require cdq.application
+            cdq.create.extend-protocols
             cdq.core
             cdq.utils.multifn)
   (:gen-class))
@@ -88,4 +89,5 @@
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
+  (cdq.create.extend-protocols/do! cdq.application.Context 'cdq.ctx)
   (cdq.application/start!))
