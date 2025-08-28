@@ -191,7 +191,7 @@
           {:skin-scale :x1}]]]
        [cdq.core/assoc*
         [:ctx/audio
-         [cdq.create.audio/do!
+         [cdq.audio/create
           {:sounds "sounds.edn"}]]]
        [cdq.core/assoc*
         [:ctx/db
