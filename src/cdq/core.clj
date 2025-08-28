@@ -1,5 +1,9 @@
 (ns cdq.core
-  (:require [clojure.string :as str]))
+  (:require clojure.edn
+            clojure.java.io
+            [clojure.string :as str]
+            clojure.walk)
+  (:gen-class))
 
 (defn execute! [[f params]]
   (f params))
@@ -69,3 +73,14 @@
 (defn render-swap! [{:keys [state-atom render-fns]}]
   (swap! @state-atom (fn [ctx]
                        (reduce render* ctx render-fns))))
+
+(defn load! [path]
+  (->> path
+       clojure.java.io/resource
+       slurp
+       clojure.edn/read-string
+       (clojure.walk/postwalk req)
+       (run! execute!)))
+
+(defn -main [path]
+  (load! path))
