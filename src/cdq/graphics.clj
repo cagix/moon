@@ -12,7 +12,8 @@
   (:import (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap
+           (com.badlogic.gdx.graphics Colors
+                                      Pixmap
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
@@ -267,7 +268,8 @@
            tile-size
            ui-viewport
            world-viewport]}]
-  (colors/put! colors)
+  (doseq [[name color-params] colors]
+    (Colors/put name (color/->obj color-params)))
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor (color/->obj :white))
