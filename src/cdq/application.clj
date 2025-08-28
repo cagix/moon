@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.app]
+            [cdq.application.context]
             [cdq.core]
             [cdq.graphics :as graphics]
             [cdq.malli :as m])
@@ -10,6 +11,11 @@
 (defn post-runnable! [runnable]
   (swap! state cdq.app/add-runnable runnable)
   nil)
+
+(defn create! [context create-fns]
+  (reset! @state (reduce cdq.core/render*
+                         (cdq.application.context/create context)
+                         create-fns)))
 
 ; TODO call dispose! on all components
 (defn dispose! []
