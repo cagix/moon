@@ -2,9 +2,10 @@
   (:import (clojure.lang MultiFn)))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
-  (doseq [system-var system-vars
+  (doseq [system-var (map requiring-resolve system-vars)
 
-          :let [method-var (resolve (symbol (str ns-sym "/" (:name (meta system-var)))))]
+          :let [_ (assert (var? system-var))
+                method-var (resolve (symbol (str ns-sym "/" (:name (meta system-var)))))]
 
 
           ]
