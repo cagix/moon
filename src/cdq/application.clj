@@ -13,9 +13,9 @@
   nil)
 
 (defn create! [context create-fns]
-  (reset! @state (reduce cdq.core/render*
-                         (cdq.application.context/create context)
-                         create-fns)))
+  (reset! state (reduce cdq.core/render*
+                        (cdq.application.context/create context)
+                        create-fns)))
 
 ; TODO call dispose! on all components
 (defn dispose! []
