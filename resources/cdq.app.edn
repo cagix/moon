@@ -167,22 +167,4 @@
     [cdq.create.extend-protocols/do! cdq.ctx]
     cdq.ctx/reset-game-state!
     cdq.app/validate]
-   :render-fns
-   [cdq.app/validate
-    cdq.app/run-runnables!
-    cdq.render.debug-data-view/do!
-    cdq.render.assoc-active-entities/do!
-    cdq.render.set-camera-on-player/do!
-    cdq.render.clear-screen/do!
-    cdq.render.draw-world-map/do!
-    cdq.render.draw-on-world-viewport/do!
-    cdq.render.stage/do!
-    cdq.render.set-cursor/do!
-    cdq.render.player-state-handle-input/do!
-    cdq.render.update-mouseover-entity/do!
-    cdq.render.assoc-paused/do!
-    cdq.render.tick-world/do!
-    cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-    cdq.render.camera-controls/do!
-    cdq.render.check-window-hotkeys/do!
-    cdq.app/validate]}]]
+   }]]

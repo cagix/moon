@@ -49,17 +49,36 @@
   (let [{:keys [ctx/graphics]} @state]
     (graphics/resize-viewports! graphics width height)))
 
-(defn- render! [render-fns]
+(defn- render! []
   (swap! state (fn [ctx]
-                 (reduce cdq.core/render* ctx render-fns))))
+                 (reduce cdq.core/render*
+                         ctx
+                         (map requiring-resolve
+                              '[cdq.app/validate
+                                cdq.app/run-runnables!
+                                cdq.render.debug-data-view/do!
+                                cdq.render.assoc-active-entities/do!
+                                cdq.render.set-camera-on-player/do!
+                                cdq.render.clear-screen/do!
+                                cdq.render.draw-world-map/do!
+                                cdq.render.draw-on-world-viewport/do!
+                                cdq.render.stage/do!
+                                cdq.render.set-cursor/do!
+                                cdq.render.player-state-handle-input/do!
+                                cdq.render.update-mouseover-entity/do!
+                                cdq.render.assoc-paused/do!
+                                cdq.render.tick-world/do!
+                                cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                                cdq.render.camera-controls/do!
+                                cdq.render.check-window-hotkeys/do!
+                                cdq.app/validate])))))
 
-(defn start! [{:keys [create-fns render-fns]}]
+(defn start! [{:keys [create-fns]}]
   (lwjgl/start-application! {:title "Cyber Dungeon Quest"
                              :windowed-mode {:width 1440 :height 900}
                              :foreground-fps 60}
                             {:create! (fn [context]
                                         (create! context create-fns))
                              :dispose! dispose!
-                             :render! (fn []
-                                        (render! render-fns))
+                             :render! render!
                              :resize! resize!}))
