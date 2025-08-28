@@ -302,13 +302,12 @@
 (defn- render! []
   (swap! cdq.application/state
          (fn [ctx]
-           ; just -> pipeline operator ...
            (reduce (fn [ctx f] (f ctx))
-                   ctx
+                   (-> ctx
+                       cdq.app/validate
+                       cdq.app/run-runnables!)
                    (map requiring-resolve
-                        '[cdq.app/validate
-                          cdq.app/run-runnables!
-                          cdq.render.debug-data-view/do!
+                        '[cdq.render.debug-data-view/do!
                           cdq.render.assoc-active-entities/do!
                           cdq.render.set-camera-on-player/do!
                           cdq.render.clear-screen/do!
