@@ -1,6 +1,5 @@
 (ns cdq.ctx.game
-  (:require [cdq.core :as core]
-            [cdq.content-grid :as content-grid]
+  (:require [cdq.content-grid :as content-grid]
             [cdq.cell :as cell]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
@@ -352,11 +351,8 @@
     :as ctx}]
   (let [level (let [[f params] (:config/starting-world config)]
                 (f ctx params))]
-    (assoc ctx :ctx/world
-           (reduce core/render*
-                   (merge (:cdq.ctx.game/world config)
-                          level)
-                   [create-world]))))
+    (assoc ctx :ctx/world (create-world (merge (:cdq.ctx.game/world config)
+                                               level)))))
 
 (defn- spawn-player!
   [{:keys [ctx/config
@@ -391,7 +387,7 @@
 
 (defn reset-game-state! [{:keys [ctx/config]
                           :as ctx}]
-  (reduce core/render* ctx
+  (reduce (fn [ctx f] (f ctx)) ctx
           [reset-stage!
            add-ctx-world
            spawn-player!

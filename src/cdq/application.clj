@@ -2,9 +2,9 @@
   (:require [cdq.app]
             [cdq.audio]
             [cdq.assets]
-            [cdq.core]
             [cdq.create.db]
             [cdq.create.ui]
+            [cdq.ctx]
             [cdq.graphics :as graphics]
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -147,7 +147,7 @@
                       ctx/world])
 
 (defn- create! [{:keys [audio files graphics input]}]
-  (reset! state (reduce cdq.core/render*
+  (reset! state (reduce (fn [ctx f] (f ctx))
                         (let [graphics (graphics/create
                                         graphics
                                         files
@@ -199,12 +199,9 @@
                                          :files    files
                                          :graphics graphics
                                          :input    input
-                                         :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})
-                                         }))
-                        (req-form
-                         '[
-                           cdq.ctx/reset-game-state!
-                           cdq.app/validate]))))
+                                         :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})}))
+                        [cdq.ctx/reset-game-state!
+                         cdq.app/validate])))
 
 ; TODO call dispose! on all components
 (defn- dispose! []
@@ -226,7 +223,7 @@
 
 (defn- render! []
   (swap! state (fn [ctx]
-                 (reduce cdq.core/render*
+                 (reduce (fn [ctx f] (f ctx))
                          ctx
                          (map requiring-resolve
                               '[cdq.app/validate

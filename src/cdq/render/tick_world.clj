@@ -1,6 +1,5 @@
 (ns cdq.render.tick-world
   (:require [cdq.app :as app]
-            cdq.core
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.graphics :as g]
@@ -89,6 +88,8 @@
 (defn do! [ctx]
   (if (get-in ctx [:ctx/world :world/paused?])
     ctx
-    (reduce cdq.core/render* ctx [update-time
-                                  update-potential-fields!
-                                  tick-entities!])))
+    (reduce (fn [ctx f] (f ctx))
+            ctx
+            [update-time
+             update-potential-fields!
+             tick-entities!])))

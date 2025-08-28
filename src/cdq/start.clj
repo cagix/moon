@@ -1,7 +1,6 @@
 (ns cdq.start
   (:require cdq.application
             cdq.create.extend-protocols
-            cdq.core
             cdq.utils.multifn)
   (:gen-class))
 
