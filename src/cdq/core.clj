@@ -45,11 +45,6 @@
 (defn assoc* [ctx [k [f params]]]
   (assoc ctx k (f ctx params)))
 
-(defn render-when-not [ctx [ks render-fns]]
-  (if (get-in ctx ks)
-    ctx
-    (reduce render* ctx render-fns)))
-
 (comment
  (= (let [->graphics (fn [ctx params] (str :GRAPHICS "-" params))
           ->audio    (fn [ctx params] (str :AUDIO "-" params))]

@@ -204,36 +204,26 @@
     cdq.render.set-cursor/do!
     cdq.render.player-state-handle-input/do!
     cdq.render.update-mouseover-entity/do!
-    [cdq.render.assoc-paused/do!
-     {:pausing? true
-      :state->pause-game? {:stunned false
-                           :player-moving false
-                           :player-item-on-cursor true
-                           :player-idle true
-                           :player-dead true
-                           :active-skill false}}]
-    [cdq.core/render-when-not
-     [[:ctx/world :world/paused?]
-      [cdq.render.update-time/do!
-       cdq.render.update-potential-fields/do!
-       [cdq.render.tick-entities/do!
-        {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
-         :entity/animation cdq.entity.animation/tick!
-         :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
-         :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
-         :entity/movement cdq.entity.movement/tick!
-         :entity/projectile-collision cdq.entity.projectile-collision/tick!
-         :entity/skills cdq.entity.skills/tick!
-         :active-skill cdq.entity.state.active-skill/tick!
-         :npc-idle cdq.entity.state.npc-idle/tick!
-         :npc-moving cdq.entity.state.npc-moving/tick!
-         :npc-sleeping cdq.entity.state.npc-sleeping/tick!
-         :stunned cdq.entity.state.stunned/tick!
-         :entity/string-effect cdq.entity.string-effect/tick!
-         :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]]]
+    cdq.render.assoc-paused/do!
+    [cdq.render.tick-world/do!
+     [cdq.render.update-time/do!
+      cdq.render.update-potential-fields/do!
+      [cdq.render.tick-entities/do!
+       {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+        :entity/animation cdq.entity.animation/tick!
+        :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
+        :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
+        :entity/movement cdq.entity.movement/tick!
+        :entity/projectile-collision cdq.entity.projectile-collision/tick!
+        :entity/skills cdq.entity.skills/tick!
+        :active-skill cdq.entity.state.active-skill/tick!
+        :npc-idle cdq.entity.state.npc-idle/tick!
+        :npc-moving cdq.entity.state.npc-moving/tick!
+        :npc-sleeping cdq.entity.state.npc-sleeping/tick!
+        :stunned cdq.entity.state.stunned/tick!
+        :entity/string-effect cdq.entity.string-effect/tick!
+        :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]]
     cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-    [cdq.render.camera-controls/do! {:zoom-speed 0.025}]
-    [cdq.render.check-window-hotkeys/do! {:close-windows-key  :escape
-                                          :toggle-inventory   :i
-                                          :toggle-entity-info :e}]
+    cdq.render.camera-controls/do!
+    cdq.render.check-window-hotkeys/do!
     cdq.app/validate]}]]
