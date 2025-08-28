@@ -1,5 +1,6 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [cdq.tiled :as tiled]
@@ -258,13 +259,15 @@
 (defn create
   [{:keys [ctx/files
            ctx/graphics]}
-   {:keys [textures
+   {:keys [colors
+           textures
            cursors ; optional
            cursor-path-format ; optional
            default-font ; optional, could use gdx included (BitmapFont.)
            tile-size
            ui-viewport
            world-viewport]}]
+  (colors/put! colors)
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor (color/->obj :white))

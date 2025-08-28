@@ -155,11 +155,11 @@
                       ]
            }
           ]]]
-       [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
        [cdq.core/assoc*
         [:ctx/graphics
          [cdq.graphics/create
-          {:textures [cdq.assets/search {:folder "resources/"
+          {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
+           :textures [cdq.assets/search {:folder "resources/"
                                          :extensions #{"png" "bmp"}}]
            :tile-size 48
            :ui-viewport    {:width 1440 :height 900}
