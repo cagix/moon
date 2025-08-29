@@ -43,22 +43,6 @@
 
 (declare entity-components)
 
-(defn- create-component-value
-  [world k v]
-  (if-let [create (:create (k entity-components))]
-    (create v world)
-    v))
-
-(defn- create!-component-value
-  [world [k v] eid]
-  (when-let [create! (:create! (k entity-components))]
-    (create! v eid world)))
-
-(defn- component-destroy!
-  [world [k v] eid]
-  (when-let [destroy! (:destroy! (k entity-components))]
-    (destroy! v eid world)))
-
 (defn- context-entity-add! [{:keys [world/entity-ids
                                     world/content-grid
                                     world/grid]}
@@ -143,15 +127,23 @@
   (assert (and (not (contains? components :entity/id))))
   (let [eid (atom (merge (map->Entity {})
                          (reduce (fn [m [k v]]
-                                   (assoc m k (create-component-value world k v)))
+                                   (assoc m k (if-let [create (:create (k entity-components))]
+                                                (create v world)
+                                                v)))
                                  {}
                                  (assoc components :entity/id (swap! id-counter inc)))))]
     (context-entity-add! world eid)
-    (mapcat #(create!-component-value world % eid) @eid)))
+    (mapcat (fn [[k v]]
+              (when-let [create! (:create! (k entity-components))]
+                (create! v eid world)))
+            @eid)))
 
 (defn remove-entity! [world eid]
   (context-entity-remove! world eid)
-  (mapcat #(component-destroy! world % eid) @eid))
+  (mapcat (fn [[k v]]
+            (when-let [destroy! (:destroy! (k entity-components))]
+              (destroy! v eid world)))
+          @eid))
 
 (defn move-entity! [world eid body direction rotate-in-movement-direction?]
   (context-entity-moved! world eid)
