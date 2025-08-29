@@ -1,4 +1,4 @@
-(ns cdq.potential-fields.movement
+(ns cdq.world.potential-fields.movement
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]

@@ -1,4 +1,4 @@
-(ns cdq.potential-fields.update
+(ns cdq.world.potential-fields.update
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
             [cdq.grid :as grid]))

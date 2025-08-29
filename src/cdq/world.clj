@@ -1,12 +1,5 @@
 (ns cdq.world
-  ; cdq.world.grid.cell
-  ; cdq.world.content-grid
-  ; cdq.world.entity
-  ; cdq.world.grid
-  ; cdq.world.raycaster
-  ; cdq.world.potential-fields.movement
   (:require [cdq.cell :as cell]
-            [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
@@ -14,9 +7,10 @@
             [cdq.raycaster :as raycaster]
             [cdq.malli :as m]
             [cdq.math.vector2 :as v]
-            [cdq.potential-fields.movement :as potential-fields.movement]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.utils :as utils]
+            [cdq.world.content-grid :as content-grid]
+            [cdq.world.potential-fields.movement :as potential-fields.movement]
+            [cdq.world.potential-fields.update :as potential-fields.update]
             [qrecord.core :as q]))
 
 (def ^:private components-schema
