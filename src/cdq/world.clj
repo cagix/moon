@@ -59,12 +59,6 @@
   (when-let [destroy! (:destroy! (k entity-components))]
     (destroy! v eid world)))
 
-(defn- create-vs [components world]
-  (reduce (fn [m [k v]]
-            (assoc m k (create-component-value world k v)))
-          {}
-          components))
-
 (defn- context-entity-add! [{:keys [world/entity-ids
                                     world/content-grid
                                     world/grid]}
@@ -148,9 +142,10 @@
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
   (let [eid (atom (merge (map->Entity {})
-                         (-> components
-                             (assoc :entity/id (swap! id-counter inc))
-                             (create-vs world))))]
+                         (reduce (fn [m [k v]]
+                                   (assoc m k (create-component-value world k v)))
+                                 {}
+                                 (assoc components :entity/id (swap! id-counter inc)))))]
     (context-entity-add! world eid)
     (mapcat #(create!-component-value world % eid) @eid)))
 
