@@ -17,9 +17,7 @@
      (if (symbol? form)
        (if (namespace form)
          (requiring-resolve form)
-         (do
-          (require form)
-          form)) ; otherwise clojure namespace
+         form)
        form))
    form))
 
