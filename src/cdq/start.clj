@@ -1,6 +1,12 @@
 (ns cdq.start
-  (:require cdq.application
-            cdq.create.extend-protocols
+  (:require cdq.application ; ok ... only used in UI ! or dev ! and cdq.start ! otherwise use post-runnable!
+            ; == documentation !?
+
+            cdq.create.extend-protocols ; start here ... at the top
+            ; -> cdq.ctx -> should be in cdq.game ?!
+            ; -> start with render which uses mostly ctx ...
+
+
             cdq.game
             cdq.utils.multifn
             clojure.gdx.backends.lwjgl
@@ -64,7 +70,7 @@
                                       :effects.target/stun]]]))
 
 (defn- install-txs! []
-  (cdq.utils.multifn/add-methods! '[{:required [cdq.ctx.tx-handler/do!]}
+  (cdq.utils.multifn/add-methods! '[{:required [cdq.game/do!]}
                                     [[cdq.tx.toggle-inventory-visible
                                       :tx/toggle-inventory-visible]
                                      [cdq.tx.show-message

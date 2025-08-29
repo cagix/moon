@@ -1,17 +1,14 @@
 (ns cdq.ctx)
 
-(defprotocol TxHandler
-  (handle-txs! [_ txs]))
-
 (defprotocol EffectContext
   (player-effect-ctx [_ eid]))
 
-(defprotocol InfoText
+(defprotocol InfoText ; OK !?
   (info-text [_ object]))
 
-(defprotocol Editor
+(defprotocol Editor ; # WTF # 2
   (open-property-editor-window! [_ property])
   (open-editor-overview-window! [_ property-type]))
 
 (defprotocol InteractionState
-  (interaction-state [_ player-eid]))
+  (interaction-state [_ player-eid])) ; WTF # 1
