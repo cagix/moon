@@ -1143,7 +1143,7 @@
   ctx)
 
 (defn create! [{:keys [audio files input] :as gdx} config]
-  (let [graphics (graphics/create! gdx (:cdq.graphics config))
+  (let [graphics (graphics/create! gdx (::graphics config))
         stage (ui/create! (:ui-viewport graphics)
                           (:batch       graphics)
                           (:cdq.ui config))]
