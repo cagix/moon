@@ -1,5 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.create.db]
+  (:require [cdq.db :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
@@ -91,8 +91,8 @@
                                                     :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
         ctx (assoc ctx :ctx/stage (cdq.create.ui/do! graphics input {:skin-scale :x1}))
-        ctx (assoc ctx :ctx/db (cdq.create.db/do! {:schemas "schema.edn"
-                                                   :properties "properties.edn"}))
+        ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
+                                           :properties "properties.edn"}))
         ctx (assoc ctx
                    :ctx/camera (:viewport/camera (:world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])

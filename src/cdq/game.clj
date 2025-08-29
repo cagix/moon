@@ -4,12 +4,12 @@
 ; 4. _only_ this namespace knows about 'ctx/..' - the game data structure !
 ; -> see namespaces using it and move here (defmethods ?)
 ; 5. low hanging fruits - remove defprotocols
+; (audio, graphics, db, schemas, ?) -> :cdq.db/data, :db/files, ....
 (ns cdq.game
   (:require [cdq.animation :as animation]
             [cdq.audio :as audio]
             [cdq.assets]
             [cdq.c :as c]
-            [cdq.create.db]
             [cdq.create.ui]
             cdq.ctx.interaction-state
             [cdq.db :as db]
@@ -679,8 +679,8 @@
                                                :zoom-out :equals
                                                :unpause-once :p
                                                :unpause-continously :space}}
-                           :db (cdq.create.db/do! {:schemas "schema.edn"
-                                                   :properties "properties.edn"})
+                           :db (db/create {:schemas "schema.edn"
+                                           :properties "properties.edn"})
                            :graphics graphics
                            :input input
                            :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})})]

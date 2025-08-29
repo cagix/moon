@@ -1,5 +1,5 @@
 (ns cdq.db.migrations.creature-stats
-  (:require [cdq.create.db :as db]
+  (:require [cdq.db :as db]
             [cdq.utils :as utils]
             [clojure.java.io :as io]))
 
