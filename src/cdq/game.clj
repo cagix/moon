@@ -15,6 +15,8 @@
             [cdq.grid :as grid]
             [cdq.input :as input]
             [cdq.malli :as m]
+            [cdq.raycaster :as raycaster]
+            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.ui.stage :as stage]
             cdq.ui.dev-menu
             cdq.ui.action-bar
@@ -268,6 +270,23 @@
   (graphics/clear-screen! graphics :black)
   ctx)
 
+(defn- draw-world-map!
+  [{:keys [ctx/graphics
+           ctx/world]
+    :as ctx}]
+  (graphics/draw-tiled-map! graphics
+                            (:world/tiled-map world)
+                            (tile-color-setter/create
+                             {:ray-blocked? (let [raycaster (:world/raycaster world)]
+                                              (fn [start end] (raycaster/blocked? raycaster start end)))
+                              :explored-tile-corners (:world/explored-tile-corners world)
+                              :light-position (:camera/position (:viewport/camera (:world-viewport graphics)))
+                              :see-all-tiles? false
+                              :explored-tile-color  [0.5 0.5 0.5 1]
+                              :visible-tile-color   [1 1 1 1]
+                              :invisible-tile-color [0 0 0 1]}))
+  ctx)
+
 (defn render! [ctx]
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
@@ -276,10 +295,10 @@
               assoc-active-entities
               set-camera-on-player!
               clear-screen!
+              draw-world-map!
               )
           (map requiring-resolve
                '[
-                 cdq.render.draw-world-map/do!
                  cdq.render.draw-on-world-viewport/do!
                  cdq.render.stage/do!
                  cdq.render.set-cursor/do!
