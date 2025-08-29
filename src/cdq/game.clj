@@ -2,11 +2,16 @@
   (:require [cdq.app]
             [cdq.audio]
             [cdq.assets]
+            [cdq.c]
             [cdq.create.db]
             [cdq.create.ui]
             [cdq.ctx]
+            [cdq.dev.data-view :as data-view]
             [cdq.graphics :as graphics]
+            [cdq.grid :as grid]
+            [cdq.input :as input]
             [cdq.malli :as m]
+            [cdq.ui.stage :as stage]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -113,13 +118,31 @@
 (defn resize! [{:keys [ctx/graphics]} width height]
   (graphics/resize-viewports! graphics width height))
 
+(defn- check-open-debug-data-view!
+  [{:keys [ctx/input
+           ctx/stage
+           ctx/world]
+    :as ctx}]
+  (when (input/button-just-pressed? input :right)
+    (let [mouseover-eid (:world/mouseover-eid world)
+          data (or (and mouseover-eid @mouseover-eid)
+                   @(grid/cell (:world/grid world)
+                               (mapv int (cdq.c/world-mouse-position ctx))))]
+      (stage/add! stage (data-view/table-view-window {:title "Data View"
+                                                      :data data
+                                                      :width 500
+                                                      :height 500}))))
+  ctx)
+
 (defn render! [ctx]
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
               cdq.app/validate
-              cdq.app/run-runnables!)
+              cdq.app/run-runnables!
+              check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+              )
           (map requiring-resolve
-               '[cdq.render.debug-data-view/do!
+               '[
                  cdq.render.assoc-active-entities/do!
                  cdq.render.set-camera-on-player/do!
                  cdq.render.clear-screen/do!
