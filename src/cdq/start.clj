@@ -3,8 +3,33 @@
             cdq.create.extend-protocols
             cdq.game
             cdq.utils.multifn
-            clojure.gdx.backends.lwjgl)
+            clojure.gdx.backends.lwjgl
+
+            cdq.entity.animation
+            cdq.entity.body
+            cdq.entity.delete-after-animation-stopped
+            cdq.entity.delete-after-duration
+            cdq.entity.destroy-audiovisual
+            cdq.entity.fsm
+            cdq.entity.inventory
+            cdq.entity.projectile-collision
+            cdq.entity.skills
+            cdq.entity.stats
+            )
   (:gen-class))
+
+(defn- install-entity-components! []
+  (.bindRoot #'cdq.world/entity-components
+             {:entity/animation                       {:create   cdq.entity.animation/create}
+              :entity/body                            {:create   cdq.entity.body/create}
+              :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
+              :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
+              :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
+              :creature/stats                         {:create   cdq.entity.stats/create}
+              :entity/fsm                             {:create!  cdq.entity.fsm/create!}
+              :entity/inventory                       {:create!  cdq.entity.inventory/create!}
+              :entity/skills                          {:create!  cdq.entity.skills/create!}
+              :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}))
 
 (defn- install-effects! []
   (cdq.utils.multifn/add-methods! '[{:required [cdq.effect/applicable?
@@ -87,6 +112,7 @@
                   cdq.ui.editor.widget.map]))
 
 (defn -main []
+  (install-entity-components!)
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
