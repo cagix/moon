@@ -1,6 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.ctx :as ctx]
+            [cdq.ctx.editor]
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.entity :as entity]
@@ -66,7 +66,7 @@
    :items (for [property-type (sort (db/property-types db))]
             {:label (str/capitalize (name property-type))
              :on-click (fn [_actor ctx]
-                         (ctx/open-editor-overview-window! ctx property-type))})})
+                         (cdq.ctx.editor/open-editor-overview-window! ctx property-type))})})
 
 (def context-data-view
   {:label "Context"
