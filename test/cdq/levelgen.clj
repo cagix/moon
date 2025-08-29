@@ -6,7 +6,6 @@
             [cdq.tiled :as tiled]
             [cdq.input :as input]
             cdq.assets
-            cdq.create.ui
             [cdq.graphics.camera :as camera]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
@@ -79,6 +78,7 @@
 (defrecord Context [])
 
 (defn create! [{:keys [files graphics input]}]
+  (ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input    input})
         graphics (graphics/create graphics files
                                   {:textures (cdq.assets/search files
@@ -90,7 +90,10 @@
                                    :world-viewport {:width 1440
                                                     :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
-        ctx (assoc ctx :ctx/stage (cdq.create.ui/do! graphics input {:skin-scale :x1}))
+        stage (ui/stage (:ui-viewport graphics)
+                        (:batch       graphics))
+        _  (input/set-processor! input stage)
+        ctx (assoc ctx :ctx/stage stage)
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
         ctx (assoc ctx

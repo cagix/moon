@@ -10,7 +10,6 @@
             [cdq.audio :as audio]
             [cdq.assets]
             [cdq.c :as c]
-            [cdq.create.ui]
             cdq.ctx.interaction-state
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
@@ -619,6 +618,7 @@
       spawn-enemies!))
 
 (defn create! [{:keys [audio files graphics input]}]
+  (gdx.ui/load! {:skin-scale :x1})
   (let [graphics (graphics/create
                   graphics
                   files
@@ -656,6 +656,9 @@
                                            :enable-markup? true
                                            ; false, otherwise scaling to world-units not visible
                                            :use-integer-positions? false}}})
+        stage (gdx.ui/stage (:ui-viewport graphics)
+                            (:batch       graphics))
+        _ (input/set-processor! input stage)
         ctx (map->Context {:audio (audio/create audio files {:sounds "sounds.edn"})
                            :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                                  :initial-state :npc-sleeping}
@@ -683,7 +686,7 @@
                                            :properties "properties.edn"})
                            :graphics graphics
                            :input input
-                           :stage (cdq.create.ui/do! graphics input {:skin-scale :x1})})]
+                           :stage stage})]
     (-> ctx
         (reset-game-state! [(requiring-resolve 'cdq.level.from-tmx/create)
                             {:tmx-file "maps/vampire.tmx"
