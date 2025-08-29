@@ -358,7 +358,7 @@
           (assoc :world/delta-time delta-ms)
           (update :world/elapsed-time + delta-ms)))))
 
-(defn create-world
+(defn- create-world
   [{:keys [tiled-map
            start-position]
     :as config}]
