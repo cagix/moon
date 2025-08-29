@@ -1,15 +1,9 @@
 (ns cdq.app
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [cdq.malli :as m]))
+  (:require [clj-commons.pretty.repl :as pretty-repl]))
 
-(defn create [{:keys [schema stacktraces]}]
+(defn create [{:keys [stacktraces]}]
   {:cdq.app/runnables []
-   :cdq.app/schema (m/schema schema)
    :cdq.app/stacktraces stacktraces})
-
-(defn validate [{:keys [ctx/app] :as ctx}]
-  (m/validate-humanize (:cdq.app/schema app) ctx)
-  ctx)
 
 (defn add-runnable [ctx runnable]
   (update-in ctx [:ctx/app :cdq.app/runnables] conj runnable))

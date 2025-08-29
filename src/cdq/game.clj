@@ -25,6 +25,21 @@
                       ctx/graphics
                       ctx/world])
 
+(def ^:private schema
+  (m/schema [:map {:closed true}
+             [:ctx/app :some]
+             [:ctx/config :some]
+             [:ctx/input :some]
+             [:ctx/db :some]
+             [:ctx/audio :some]
+             [:ctx/stage :some]
+             [:ctx/graphics :some]
+             [:ctx/world :some]]))
+
+(defn- validate [ctx]
+  (m/validate-humanize schema ctx)
+  ctx)
+
 (defn create! [{:keys [audio files graphics input]}]
   (let [graphics (graphics/create
                   graphics
@@ -58,16 +73,7 @@
                                            ; false, otherwise scaling to world-units not visible
                                            :use-integer-positions? false}}})
         ctx (map->Context {:app (cdq.app/create
-                                 {:schema [:map {:closed true}
-                                           [:ctx/app :some]
-                                           [:ctx/config :some]
-                                           [:ctx/input :some]
-                                           [:ctx/db :some]
-                                           [:ctx/audio :some]
-                                           [:ctx/stage :some]
-                                           [:ctx/graphics :some]
-                                           [:ctx/world :some]]
-                                  :stacktraces {:print-level 3
+                                 {:stacktraces {:print-level 3
                                                 :print-depth 24}})
                            :audio (cdq.audio/create audio files {:sounds "sounds.edn"})
                            :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
@@ -101,7 +107,7 @@
         (cdq.ctx/reset-game-state! [(requiring-resolve 'cdq.level.from-tmx/create)
                                     {:tmx-file "maps/vampire.tmx"
                                      :start-position [32 71]}])
-        cdq.app/validate)))
+        validate)))
 
 ; TODO call dispose! on all components
 (defn dispose! [{:keys [ctx/audio
@@ -141,7 +147,7 @@
 (defn render! [ctx]
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
-              cdq.app/validate
+              validate
               cdq.app/run-runnables!
               check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
               assoc-active-entities
@@ -161,4 +167,4 @@
                  cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                  cdq.render.camera-controls/do!
                  cdq.render.check-window-hotkeys/do!
-                 cdq.app/validate])))
+                 cdq.game/validate])))
