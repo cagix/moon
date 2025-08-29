@@ -1,3 +1,8 @@
+; 1. only depend on world,graphics,ui,audio, ..
+; 2. they have only the dependencies from here - e.g. world otherwise internal API also ...
+; 3. disposable call directly -> low hanging fruits first
+; 4. _only_ this namespace knows about 'ctx/..' - the game data structure !
+; -> see namespaces using it and move here (defmethods ?)
 (ns cdq.game
   (:require [cdq.animation :as animation]
             [cdq.audio]
@@ -61,6 +66,9 @@
             [clojure.string :as str]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
+
+; TODO this namespace should only depend on each 'ctx/' abstraction
+; not anything below that !
 
 (q/defrecord Context [ctx/config
                       ctx/input
@@ -556,6 +564,7 @@
 (defn- reset-stage!
   [{:keys [ctx/stage]
     :as ctx}]
+  ; TODO work here with cdq.ui as stage ctx/stage not libgdx scene2d stage ....
   (stage/clear! stage)
   (doseq [actor (create-ui-actors ctx)]
     (stage/add! stage actor))
@@ -611,7 +620,13 @@
   (let [graphics (graphics/create
                   graphics
                   files
+                  ; FIXME PASS CONFIGURATION OPTIONS!
                   {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
+                   ; why do I search all assets?
+                   ; only because of editor ?
+                   ; editor separate ? javafx ?
+                   ; then no vis-ui dependency ? but tooltips ?
+                   ; or just assets search into graphics
                    :textures (cdq.assets/search files
                                                 {:folder "resources/"
                                                  :extensions #{"png" "bmp"}})
