@@ -1,4 +1,4 @@
-(ns cdq.ui
+(ns cdq.stage
   (:require [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.ui.message]

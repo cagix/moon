@@ -1,5 +1,5 @@
 (ns cdq.tx.show-message
-  (:require [cdq.ui :as stage]))
+  (:require [cdq.stage :as stage]))
 
 (defn do! [[_ message] ctx]
   (-> ctx

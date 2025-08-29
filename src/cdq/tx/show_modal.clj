@@ -1,5 +1,5 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.ui :as stage]))
+  (:require [cdq.stage :as stage]))
 
 (defn do! [[_ opts] {:keys [ctx/graphics
                             ctx/stage]}]

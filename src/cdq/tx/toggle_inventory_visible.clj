@@ -1,5 +1,5 @@
 (ns cdq.tx.toggle-inventory-visible
-  (:require [cdq.ui :as stage]))
+  (:require [cdq.stage :as stage]))
 
 (defn do! [_ ctx]
   (-> ctx

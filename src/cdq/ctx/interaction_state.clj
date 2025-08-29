@@ -1,6 +1,6 @@
 (ns cdq.ctx.interaction-state
   (:require [cdq.entity :as entity]
-            [cdq.ui :as ui]
+            [cdq.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.c :as c]
             [cdq.math.vector2 :as v]
@@ -43,7 +43,7 @@
        :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
 
      :else
-     (if-let [skill-id (ui/action-bar-selected-skill stage)]
+     (if-let [skill-id (stage/action-bar-selected-skill stage)]
        (let [entity @player-eid
              skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx ctx player-eid)
