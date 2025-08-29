@@ -1,6 +1,5 @@
 (ns cdq.ctx.interaction-state
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.ui :as ui]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.c :as c]

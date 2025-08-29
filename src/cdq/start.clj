@@ -2,11 +2,6 @@
   (:require cdq.application ; ok ... only used in UI ! or dev ! and cdq.start ! otherwise use post-runnable!
             ; == documentation !?
 
-            cdq.create.extend-protocols ; start here ... at the top
-            ; -> cdq.ctx -> should be in cdq.game ?!
-            ; -> start with render which uses mostly ctx ...
-
-
             cdq.game
             cdq.utils.multifn
             clojure.gdx.backends.lwjgl
@@ -122,7 +117,6 @@
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
-  (cdq.create.extend-protocols/do! cdq.game.Context 'cdq.ctx)
   (clojure.gdx.backends.lwjgl/start-application!
    {:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
