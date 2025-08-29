@@ -615,33 +615,6 @@
       spawn-player!
       spawn-enemies!))
 
-(defn create! [{:keys [audio files graphics input]} config]
-  (let [graphics (graphics/create! graphics files (:cdq.graphics config))
-        stage (ui/create! (:ui-viewport graphics)
-                          (:batch       graphics)
-                          (:cdq.ui config))
-        _ (input/set-processor! input stage)
-        ctx (map->Context {:audio (audio/create audio files (:cdq.audio config))
-                           :config (:cdq.config config)
-                           :db (db/create (:cdq.db config))
-                           :graphics graphics
-                           :input input
-                           :stage stage})]
-    (-> ctx
-        (reset-game-state! (:starting-level config))
-        validate)))
-
-(defn dispose! [{:keys [ctx/audio
-                        ctx/graphics
-                        ctx/world]}]
-  (audio/dispose! audio)
-  (graphics/dispose! graphics)
-  (world/dispose! world)
-  (ui/dispose!))
-
-(defn resize! [{:keys [ctx/graphics]} width height]
-  (graphics/resize-viewports! graphics width height))
-
 (defn- check-open-debug-data-view!
   [{:keys [ctx/input
            ctx/stage
@@ -1169,6 +1142,30 @@
   (when (input/key-just-pressed? input toggle-entity-info) (ui/toggle-entity-info-window! stage))
   ctx)
 
+(defn create! [{:keys [audio files graphics input]} config]
+  (let [graphics (graphics/create! graphics files (:cdq.graphics config))
+        stage (ui/create! (:ui-viewport graphics)
+                          (:batch       graphics)
+                          (:cdq.ui config))
+        _ (input/set-processor! input stage)
+        ctx (map->Context {:audio (audio/create audio files (:cdq.audio config))
+                           :config (:cdq.config config)
+                           :db (db/create (:cdq.db config))
+                           :graphics graphics
+                           :input input
+                           :stage stage})]
+    (-> ctx
+        (reset-game-state! (:starting-level config))
+        validate)))
+
+(defn dispose! [{:keys [ctx/audio
+                        ctx/graphics
+                        ctx/world]}]
+  (audio/dispose! audio)
+  (graphics/dispose! graphics)
+  (world/dispose! world)
+  (ui/dispose!))
+
 (defn render! [ctx]
   (-> ctx
       validate
@@ -1188,3 +1185,6 @@
       check-camera-controls!
       check-window-hotkeys!
       validate))
+
+(defn resize! [{:keys [ctx/graphics]} width height]
+  (graphics/resize-viewports! graphics width height))
