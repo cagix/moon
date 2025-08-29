@@ -1,9 +1,9 @@
 (ns cdq.start
   (:require cdq.application
-            cdq.game
-            clojure.gdx.backends.lwjgl
             cdq.create.extend-protocols
-            cdq.utils.multifn)
+            cdq.game
+            cdq.utils.multifn
+            clojure.gdx.backends.lwjgl)
   (:gen-class))
 
 (defn- install-effects! []
