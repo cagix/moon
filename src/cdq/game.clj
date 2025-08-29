@@ -258,6 +258,30 @@
   {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell})
 
+(comment
+
+ ; items then have 2x pretty-name
+ #_(.setText (.getTitleLabel window)
+             (ctx/info-text [:property/pretty-name (:property/pretty-name entity)])
+             "Entity Info")
+ )
+
+(def disallowed-keys [:entity/skills
+                      #_:entity/fsm
+                      :entity/faction
+                      :active-skill])
+
+; TODO details how the text looks move to info
+; only for :
+; * skill
+; * entity -> all sub-types
+; * item
+; => can test separately !?
+
+(defn- ->label-text [entity ctx]
+  ; don't use select-keys as it loses Entity record type
+  (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
+
 (defn- create-ui-actors [ctx]
   [(cdq.ui.dev-menu/create ctx ;graphics db
                            {:reset-game-state-fn reset-game-state!
@@ -290,7 +314,9 @@
 
     {:actor/type :actor.type/group
      :id :windows
-     :actors [(cdq.ui.windows.entity-info/create ctx {:y 0}) ; graphics only
+     :actors [(cdq.ui.windows.entity-info/create ctx {:y 0
+                                                      :->label-text ->label-text
+                                                      }) ; graphics only
               (cdq.ui.windows.inventory/create ctx ; graphics only
                {:title "Inventory"
                 :id :inventory-window
