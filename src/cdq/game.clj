@@ -7,61 +7,8 @@
             [cdq.ctx]
             [cdq.graphics :as graphics]
             [cdq.malli :as m]
-            clojure.walk
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
-
-(defn- req-form [form]
-  (clojure.walk/postwalk
-   (fn [form]
-     (if (symbol? form)
-       (if (namespace form)
-         (requiring-resolve form)
-         form)
-       form))
-   form))
-
-(def ^:private app-config
-  (req-form
-   '{
-     :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                  :initial-state :npc-sleeping}
-                                     :entity/faction :evil}
-     :cdq.ctx.game/player-props {:creature-id :creatures/vampire
-                                 :components {:entity/fsm {:fsm :fsms/player
-                                                           :initial-state :player-idle}
-                                              :entity/faction :good
-                                              :entity/player? true
-                                              :entity/free-skill-points 3
-                                              :entity/clickable {:type :clickable/player}
-                                              :entity/click-distance-tiles 1.5}}
-     :cdq.ctx.game/world {:content-grid-cell-size 16
-                          :potential-field-factions-iterations {:good 15
-                                                                :evil 5}
-                          :entity-states {:state->create {:active-skill cdq.entity.state.active-skill/create
-                                                          :npc-moving cdq.entity.state.npc-moving/create
-                                                          :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
-                                                          :player-moving cdq.entity.state.player-moving/create
-                                                          :stunned cdq.entity.state.stunned/create}
-                                          :state->enter {:npc-dead cdq.entity.state.npc-dead/enter
-                                                         :npc-moving cdq.entity.state.npc-moving/enter
-                                                         :player-dead cdq.entity.state.player-dead/enter
-                                                         :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
-                                                         :player-moving cdq.entity.state.player-moving/enter
-                                                         :active-skill cdq.entity.state.active-skill/enter}
-                                          :state->exit {:npc-moving cdq.entity.state.npc-moving/exit
-                                                        :npc-sleeping cdq.entity.state.npc-sleeping/exit
-                                                        :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-                                                        :player-moving cdq.entity.state.player-moving/exit}}
-                          }
-     :effect-body-props {:width 0.5
-                         :height 0.5
-                         :z-order :z-order/effect}
-
-     :controls {:zoom-in :minus
-                :zoom-out :equals
-                :unpause-once :p
-                :unpause-continously :space}}))
 
 (q/defrecord Context [ctx/app
                       ctx/config
@@ -117,7 +64,28 @@
                                   :stacktraces {:print-level 3
                                                 :print-depth 24}})
                            :audio (cdq.audio/create audio files {:sounds "sounds.edn"})
-                           :config app-config
+                           :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                                 :initial-state :npc-sleeping}
+                                                                    :entity/faction :evil}
+                                    :cdq.ctx.game/player-props {:creature-id :creatures/vampire
+                                                                :components {:entity/fsm {:fsm :fsms/player
+                                                                                          :initial-state :player-idle}
+                                                                             :entity/faction :good
+                                                                             :entity/player? true
+                                                                             :entity/free-skill-points 3
+                                                                             :entity/clickable {:type :clickable/player}
+                                                                             :entity/click-distance-tiles 1.5}}
+                                    :cdq.ctx.game/world {:content-grid-cell-size 16
+                                                         :potential-field-factions-iterations {:good 15
+                                                                                               :evil 5}}
+                                    :effect-body-props {:width 0.5
+                                                        :height 0.5
+                                                        :z-order :z-order/effect}
+
+                                    :controls {:zoom-in :minus
+                                               :zoom-out :equals
+                                               :unpause-once :p
+                                               :unpause-continously :space}}
                            :db (cdq.create.db/do! {:schemas "schema.edn"
                                                    :properties "properties.edn"})
                            :graphics graphics

@@ -1,5 +1,6 @@
 (ns cdq.entity.fsm
-  (:require [reduce-fsm :as fsm]))
+  (:require [cdq.entity.state :as state]
+            [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
   (fsm/fsm-inc
@@ -52,9 +53,8 @@
     [:player-dead]]))
 
 (defn create-state-v [world state-k eid params]
-  {:pre [(keyword? state-k)
-         (map? (:state->create (:world/entity-states world)))]}
-  (let [result (if-let [f (state-k (:state->create (:world/entity-states world)))]
+  {:pre [(keyword? state-k)]}
+  (let [result (if-let [f (state-k state/->create)]
                  (f eid params world)
                  (if params
                    params

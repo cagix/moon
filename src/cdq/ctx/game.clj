@@ -273,7 +273,6 @@
                     world/explored-tile-corners
                     world/content-grid
                     world/raycaster
-                    world/entity-states
                     world/potential-field-cache
                     world/factions-iterations
                     world/id-counter
@@ -406,7 +405,6 @@
                                                      (:tiled-map/height tiled-map)
                                                      (:content-grid-cell-size config))
             :world/raycaster (raycaster/create grid)
-            :world/entity-states (:entity-states config)
             :world/potential-field-cache (atom nil)
             :world/factions-iterations (:potential-field-factions-iterations config)
             :world/id-counter (atom 0)

@@ -1,6 +1,6 @@
-(ns cdq.tx.state-enter)
+(ns cdq.tx.state-enter
+  (:require [cdq.entity.state :as state]))
 
-(defn do! [[_ eid [state-k state-v]]
-           {:keys [ctx/world] :as ctx}]
-  (when-let [f (state-k (:state->enter (:world/entity-states world)))]
+(defn do! [[_ eid [state-k state-v]] _ctx]
+  (when-let [f (state-k state/->enter)]
     (f state-v eid)))
