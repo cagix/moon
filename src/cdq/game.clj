@@ -507,7 +507,7 @@
   (info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn- create-ui-actors [ctx]
-  [(cdq.ui.dev-menu/create ctx ;graphics db
+  [(cdq.ui.dev-menu/create ctx ; graphics db
                            {:reset-game-state-fn reset-game-state!
                             :world-fns [[(requiring-resolve 'cdq.level.from-tmx/create)
                                          {:tmx-file "maps/vampire.tmx"
@@ -559,10 +559,11 @@
     (cdq.ui.message/create {:duration-seconds 0.5
                             :name "player-message"})])
 
+; alternative: add actors at beginning
+; and call 'reset-state!' function on each actor
 (defn- reset-stage!
   [{:keys [ctx/stage]
     :as ctx}]
-  ; TODO work here with cdq.ui as stage ctx/stage not libgdx scene2d stage ....
   (stage/clear! stage)
   (doseq [actor (create-ui-actors ctx)]
     (stage/add! stage actor))
@@ -607,10 +608,10 @@
          (handle-txs! ctx)))
   ctx)
 
-; TODO dispose old tiled-map if already ctx/world present.
+; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'
 (defn- reset-game-state! [ctx world-fn]
   (-> ctx
-      reset-stage!
+      reset-stage!  ; TODO work here with cdq.ui as stage ctx/stage not libgdx scene2d stage ....
       (add-ctx-world world-fn)
       spawn-player!
       spawn-enemies!))
