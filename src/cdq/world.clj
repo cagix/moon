@@ -247,3 +247,8 @@
             :world/minimum-size minimum-size
             :world/z-orders z-orders
             :world/render-z-order (utils/define-order z-orders)})))
+
+(defn cache-active-entities [world]
+  (assoc world :world/active-entities
+         (content-grid/active-entities (:world/content-grid world)
+                                       @(:world/player-eid world))))

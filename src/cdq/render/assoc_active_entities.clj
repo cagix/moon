@@ -1,9 +1,5 @@
 (ns cdq.render.assoc-active-entities
-  (:require [cdq.content-grid :as content-grid]))
+  (:require [cdq.world :as world]))
 
-(defn do! [{:keys [ctx/world]
-            :as ctx}]
-  (assoc-in ctx
-            [:ctx/world :world/active-entities]
-            (content-grid/active-entities (:world/content-grid world)
-                                          @(:world/player-eid world))))
+(defn do! [ctx]
+  (update ctx :ctx/world world/cache-active-entities))
