@@ -1,4 +1,10 @@
 (ns cdq.world
+  ; cdq.world.grid.cell
+  ; cdq.world.content-grid
+  ; cdq.world.entity
+  ; cdq.world.grid
+  ; cdq.world.raycaster
+  ; cdq.world.potential-fields.movement
   (:require [cdq.cell :as cell]
             [cdq.content-grid :as content-grid]
             [cdq.entity :as entity]

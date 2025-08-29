@@ -5,6 +5,7 @@
 ; -> see namespaces using it and move here (defmethods ?)
 ; 5. low hanging fruits - remove defprotocols
 ; (audio, graphics, db, schemas, ?) -> :cdq.db/data, :db/files, ....
+; 6. am besten so wenig tiefe wie moeglich ctx durchgeben
 (ns cdq.game
   (:require [cdq.animation :as animation]
             [cdq.audio :as audio]
@@ -975,6 +976,7 @@
            ctx/world]
     :as ctx}]
   (let [player-eid (:world/player-eid world)]
+    ; world/player-state
     (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
                                      (if (keyword? ->cursor)
                                        ->cursor
