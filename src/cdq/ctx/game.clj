@@ -5,6 +5,16 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            cdq.entity.animation
+            cdq.entity.body
+            cdq.entity.delete-after-animation-stopped
+            cdq.entity.delete-after-duration
+            cdq.entity.destroy-audiovisual
+            cdq.entity.fsm
+            cdq.entity.inventory
+            cdq.entity.projectile-collision
+            cdq.entity.skills
+            cdq.entity.stats
             [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
@@ -202,20 +212,32 @@
   (pay-mana-cost [entity cost]
     (update entity :creature/stats modifiers/pay-mana-cost cost)))
 
+(def ^:private entity-components
+  {:entity/animation                       {:create   cdq.entity.animation/create}
+   :entity/body                            {:create   cdq.entity.body/create}
+   :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
+   :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
+   :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
+   :creature/stats                         {:create   cdq.entity.stats/create}
+   :entity/fsm                             {:create!  cdq.entity.fsm/create!}
+   :entity/inventory                       {:create!  cdq.entity.inventory/create!}
+   :entity/skills                          {:create!  cdq.entity.skills/create!}
+   :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}})
+
 (defn- create-component-value
   [world k v]
-  (if-let [create (:create (k (:world/entity-components world)))]
+  (if-let [create (:create (k entity-components))]
     (create v world)
     v))
 
 (defn- create!-component-value
   [world [k v] eid]
-  (when-let [create! (:create! (k (:world/entity-components world)))]
+  (when-let [create! (:create! (k entity-components))]
     (create! v eid world)))
 
 (defn- component-destroy!
   [world [k v] eid]
-  (when-let [destroy! (:destroy! (k (:world/entity-components world)))]
+  (when-let [destroy! (:destroy! (k entity-components))]
     (destroy! v eid world)))
 
 (defn- create-vs [components world]
@@ -251,7 +273,6 @@
                     world/explored-tile-corners
                     world/content-grid
                     world/raycaster
-                    world/entity-components
                     world/entity-states
                     world/potential-field-cache
                     world/factions-iterations
@@ -385,7 +406,6 @@
                                                      (:tiled-map/height tiled-map)
                                                      (:content-grid-cell-size config))
             :world/raycaster (raycaster/create grid)
-            :world/entity-components (:entity-components config)
             :world/entity-states (:entity-states config)
             :world/potential-field-cache (atom nil)
             :world/factions-iterations (:potential-field-factions-iterations config)

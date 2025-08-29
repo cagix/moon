@@ -38,27 +38,6 @@
      :cdq.ctx.game/world {:content-grid-cell-size 16
                           :potential-field-factions-iterations {:good 15
                                                                 :evil 5}
-                          :entity-components {:entity/animation
-                                              {:create cdq.entity.animation/create
-                                               :create! cdq.entity.animation/create!}
-                                              :entity/body
-                                              {:create cdq.entity.body/create}
-                                              :entity/delete-after-animation-stopped?
-                                              {:create! cdq.entity.delete-after-animation-stopped/create!}
-                                              :entity/delete-after-duration
-                                              {:create cdq.entity.delete-after-duration/create}
-                                              :entity/projectile-collision
-                                              {:create cdq.entity.projectile-collision/create}
-                                              :creature/stats
-                                              {:create cdq.entity.stats/create}
-                                              :entity/fsm
-                                              {:create! cdq.entity.fsm/create!}
-                                              :entity/inventory
-                                              {:create! cdq.entity.inventory/create!}
-                                              :entity/skills
-                                              {:create! cdq.entity.skills/create!}
-                                              :entity/destroy-audiovisual
-                                              {:destroy! cdq.entity.destroy-audiovisual/destroy!}}
                           :entity-states {:state->create {:active-skill cdq.entity.state.active-skill/create
                                                           :npc-moving cdq.entity.state.npc-moving/create
                                                           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
