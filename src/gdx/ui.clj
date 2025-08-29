@@ -54,6 +54,9 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
+(defn dispose! []
+  (VisUI/dispose))
+
 (defn stage [viewport batch]
   (proxy [CtxStage ILookup] [viewport batch (atom nil)]
     (valAt [id]

@@ -22,6 +22,7 @@
                          ColorSetter)))
 
 (defprotocol PGraphics
+  (dispose! [_])
   (clear-screen! [_ color])
   (delta-time [_])
   (frames-per-second [_])
@@ -179,8 +180,8 @@
    unit-scale
    world-unit-scale
    ^Viewport world-viewport]
-  Disposable
-  (dispose [_]
+  PGraphics
+  (dispose! [_]
     (Disposable/.dispose batch)
     (Disposable/.dispose shape-drawer-texture)
     (run! Disposable/.dispose (vals textures))
@@ -188,7 +189,6 @@
     (when default-font
       (Disposable/.dispose default-font)))
 
-  PGraphics
   (clear-screen! [_ color]
     (screen-utils/clear! color))
 

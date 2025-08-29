@@ -248,6 +248,9 @@
             :world/z-orders z-orders
             :world/render-z-order (utils/define-order z-orders)})))
 
+(defn dispose! [{:keys [world/tiled-map]}]
+  (com.badlogic.gdx.utils.Disposable/.dispose tiled-map)) ; TODO tiled/dispose! ?
+
 (defn cache-active-entities [world]
   (assoc world :world/active-entities
          (content-grid/active-entities (:world/content-grid world)

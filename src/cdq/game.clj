@@ -3,9 +3,10 @@
 ; 3. disposable call directly -> low hanging fruits first
 ; 4. _only_ this namespace knows about 'ctx/..' - the game data structure !
 ; -> see namespaces using it and move here (defmethods ?)
+; 5. low hanging fruits - remove defprotocols
 (ns cdq.game
   (:require [cdq.animation :as animation]
-            [cdq.audio]
+            [cdq.audio :as audio]
             [cdq.assets]
             [cdq.c :as c]
             [cdq.create.db]
@@ -64,8 +65,8 @@
             [cdq.world :as world]
             [clojure.math :as math]
             [clojure.string :as str]
-            [qrecord.core :as q])
-  (:import (com.badlogic.gdx.utils Disposable)))
+            [gdx.ui]
+            [qrecord.core :as q]))
 
 ; TODO this namespace should only depend on each 'ctx/' abstraction
 ; not anything below that !
@@ -609,6 +610,7 @@
          (handle-txs! ctx)))
   ctx)
 
+; TODO dispose old tiled-map if already ctx/world present.
 (defn- reset-game-state! [ctx world-fn]
   (-> ctx
       reset-stage!
@@ -654,7 +656,7 @@
                                            :enable-markup? true
                                            ; false, otherwise scaling to world-units not visible
                                            :use-integer-positions? false}}})
-        ctx (map->Context {:audio (cdq.audio/create audio files {:sounds "sounds.edn"})
+        ctx (map->Context {:audio (audio/create audio files {:sounds "sounds.edn"})
                            :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                                  :initial-state :npc-sleeping}
                                                                     :entity/faction :evil}
@@ -688,16 +690,14 @@
                              :start-position [32 71]}])
         validate)))
 
-; TODO call dispose! on all components
 (defn dispose! [{:keys [ctx/audio
                         ctx/graphics
                         ctx/world]}]
-  (Disposable/.dispose audio)
-  (Disposable/.dispose graphics)
-  (Disposable/.dispose (:world/tiled-map world))
-  ; TODO vis-ui dispose
-  ; TODO what else disposable?
-  ; => :ctx/tiled-map definitely and also dispose when re-creting gamestate.
+  (audio/dispose! audio)
+  (graphics/dispose! graphics)
+  (world/dispose! world)
+  ; this should be 'ctx/stage' or 'cdq.user-interface' ....
+  (gdx.ui/dispose!) ; not part of 'ctx' -> because we dont pass the skin .... global static VisUI
   )
 
 ; TODO call resize! on all components

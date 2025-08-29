@@ -8,7 +8,8 @@
 
 (defprotocol PAudio
   (all-sounds [_])
-  (play-sound! [_ path]))
+  (play-sound! [_ path])
+  (dispose! [_]))
 
 (defn create
   [audio files
@@ -17,11 +18,10 @@
                      (for [path (->> sounds io/resource slurp edn/read-string)]
                        [path (Audio/.newSound audio (Files/.internal files path))]))]
     (reify
-      Disposable
-      (dispose [_]
+      PAudio
+      (dispose! [_]
         (run! Disposable/.dispose (vals sounds)))
 
-      PAudio
       (all-sounds [_]
         (map first sounds))
 
