@@ -3,7 +3,6 @@
             [cdq.cell :as cell]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.effect :as effect]
             [cdq.entity :as entity]
             cdq.entity.animation
             cdq.entity.body
@@ -18,8 +17,6 @@
             [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
             [cdq.grid-impl :as grid-impl]
-            [cdq.math.geom :as geom]
-            [cdq.modifiers :as modifiers]
             [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
@@ -145,72 +142,7 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-(q/defrecord Entity [
-                     entity/body
-                     ]
-  entity/Entity
-  (position [_]
-    (:body/position body))
-
-  (rectangle [_]
-    (geom/body->gdx-rectangle body))
-
-  (overlaps? [this other-entity]
-    (geom/overlaps? (geom/body->gdx-rectangle (:entity/body this))
-                    (geom/body->gdx-rectangle (:entity/body other-entity))))
-
-  ; body-fn
-  (in-range? [entity target* maxrange]
-    (< (- (float (v/distance (entity/position entity)
-                             (entity/position target*)))
-          (float (/ (:body/width (:entity/body entity))  2))
-          (float (/ (:body/width (:entity/body target*)) 2)))
-       (float maxrange)))
-
-  (id [{:keys [entity/id]}]
-    id)
-
-  (faction [{:keys [entity/faction]}]
-    faction)
-
-  (enemy [this]
-    (case (entity/faction this)
-      :evil :good
-      :good :evil))
-
-  (skill-usable-state [entity
-                       {:keys [skill/cooling-down? skill/effects] :as skill}
-                       effect-ctx]
-    (cond
-     cooling-down?
-     :cooldown
-
-     (modifiers/not-enough-mana? (:creature/stats entity) skill)
-     :not-enough-mana
-
-     (not (effect/some-applicable? effect-ctx effects))
-     :invalid-params
-
-     :else
-     :usable))
-
-  (mod-add    [entity mods] (update entity :creature/stats modifiers/add    mods))
-  (mod-remove [entity mods] (update entity :creature/stats modifiers/remove mods))
-
-  (stat [this k]
-    (modifiers/get-stat-value (:creature/stats this) k))
-
-  (mana [entity]
-    (modifiers/get-mana (:creature/stats entity)))
-
-  (mana-val [entity]
-    (modifiers/mana-val (:creature/stats entity)))
-
-  (hitpoints [entity]
-    (modifiers/get-hitpoints (:creature/stats entity)))
-
-  (pay-mana-cost [entity cost]
-    (update entity :creature/stats modifiers/pay-mana-cost cost)))
+(q/defrecord Entity [entity/body])
 
 (def ^:private entity-components
   {:entity/animation                       {:create   cdq.entity.animation/create}
