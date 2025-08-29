@@ -1146,15 +1146,14 @@
   (let [graphics (graphics/create! graphics files (:cdq.graphics config))
         stage (ui/create! (:ui-viewport graphics)
                           (:batch       graphics)
-                          (:cdq.ui config))
-        _ (input/set-processor! input stage)
-        ctx (map->Context {:audio (audio/create audio files (:cdq.audio config))
-                           :config (:cdq.config config)
-                           :db (db/create (:cdq.db config))
-                           :graphics graphics
-                           :input input
-                           :stage stage})]
-    (-> ctx
+                          (:cdq.ui config))]
+    (input/set-processor! input stage)
+    (-> (map->Context {:audio (audio/create audio files (:cdq.audio config))
+                       :config (:cdq.config config)
+                       :db (db/create (:cdq.db config))
+                       :graphics graphics
+                       :input input
+                       :stage stage})
         (reset-game-state! (:starting-level config))
         validate)))
 
