@@ -1,6 +1,7 @@
 (ns cdq.ui.error-window
   (:require [cdq.utils :refer [with-err-str]]
-            [gdx.ui :as ui]))
+            [gdx.ui :as ui]
+            clojure.repl))
 
 (defn create [throwable]
   (ui/window {:title "Error"
