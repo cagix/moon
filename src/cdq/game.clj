@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require [cdq.app]
-            [cdq.audio]
+  (:require [cdq.audio]
             [cdq.assets]
             [cdq.c]
             [cdq.create.db]
@@ -16,8 +15,7 @@
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
-(q/defrecord Context [ctx/app
-                      ctx/config
+(q/defrecord Context [ctx/config
                       ctx/input
                       ctx/db
                       ctx/audio
@@ -27,7 +25,6 @@
 
 (def ^:private schema
   (m/schema [:map {:closed true}
-             [:ctx/app :some]
              [:ctx/config :some]
              [:ctx/input :some]
              [:ctx/db :some]
@@ -72,8 +69,7 @@
                                            :enable-markup? true
                                            ; false, otherwise scaling to world-units not visible
                                            :use-integer-positions? false}}})
-        ctx (map->Context {:app (cdq.app/create)
-                           :audio (cdq.audio/create audio files {:sounds "sounds.edn"})
+        ctx (map->Context {:audio (cdq.audio/create audio files {:sounds "sounds.edn"})
                            :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                                  :initial-state :npc-sleeping}
                                                                     :entity/faction :evil}
@@ -146,7 +142,6 @@
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
               validate
-              cdq.app/run-runnables!
               check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
               assoc-active-entities
               )

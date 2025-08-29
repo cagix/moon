@@ -6,6 +6,10 @@
             [cdq.entity :as entity]
             [cdq.c :as c]))
 
+(defn post-runnable! [f]
+  (.postRunnable com.badlogic.gdx.Gdx/app
+                 (fn [] (f @application/state))))
+
 (comment
 
  ; fsm missing
@@ -78,7 +82,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (cdq.application/post-runnable!
+ (post-runnable!
   (fn [ctx]
     (ctx/handle-txs! ctx
                      (cdq.world/spawn-creature! (:ctx/world ctx)
