@@ -162,9 +162,9 @@
                                                               :entity/free-skill-points 3
                                                               :entity/clickable {:type :clickable/player}
                                                               :entity/click-distance-tiles 1.5}}
-                     :cdq.ctx.game/world {:content-grid-cell-size 16
-                                          :potential-field-factions-iterations {:good 15
-                                                                                :evil 5}}
+                     :cdq.game/world {:content-grid-cell-size 16
+                                      :potential-field-factions-iterations {:good 15
+                                                                            :evil 5}}
                      :effect-body-props {:width 0.5
                                          :height 0.5
                                          :z-order :z-order/effect}

@@ -573,7 +573,7 @@
   [{:keys [ctx/config]
     :as ctx}
    world-fn]
-  (assoc ctx :ctx/world (world/create (merge (:cdq.ctx.game/world config)
+  (assoc ctx :ctx/world (world/create (merge (::world config)
                                              (let [[f params] world-fn]
                                                (f ctx params))))))
 
