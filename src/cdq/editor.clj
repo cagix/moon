@@ -1,4 +1,4 @@
-(ns cdq.ctx.editor
+(ns cdq.editor
   (:require [cdq.application :as application]
             [cdq.db :as db]
             [cdq.property :as property]
