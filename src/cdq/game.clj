@@ -47,7 +47,7 @@
             [cdq.timer :as timer]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.op :as op]
-            [cdq.ui]
+            [cdq.ui :as ui]
             [cdq.ui.stage :as stage]
             cdq.ui.dev-menu
             cdq.ui.action-bar
@@ -63,7 +63,6 @@
             [cdq.world :as world]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdx.ui]
             [qrecord.core :as q]))
 
 ; TODO this namespace should only depend on each 'ctx/' abstraction
@@ -339,15 +338,15 @@
   [{:keys [ctx/graphics
            ctx/stage]}
    skill]
-  (cdq.ui/add-action-bar-skill! stage
-                                {:skill-id (:property/id skill)
-                                 :texture-region (graphics/image->texture-region graphics (:entity/image skill))
-                                 ; (assoc ctx :effect/source (world/player)) FIXME
-                                 :tooltip-text #(info-text % skill)})
+  (ui/add-action-bar-skill! stage
+                            {:skill-id (:property/id skill)
+                             :texture-region (graphics/image->texture-region graphics (:entity/image skill))
+                             ; (assoc ctx :effect/source (world/player)) FIXME
+                             :tooltip-text #(info-text % skill)})
   nil)
 
 (defn- remove-skill! [{:keys [ctx/stage]} skill]
-  (cdq.ui/remove-action-bar-skill! stage (:property/id skill))
+  (ui/remove-action-bar-skill! stage (:property/id skill))
   nil)
 
 (defn- set-item!
@@ -355,13 +354,13 @@
            ctx/stage]
     :as ctx}
    inventory-cell item]
-  (cdq.ui/set-inventory-item! stage
-                              inventory-cell
-                              {:texture-region (graphics/image->texture-region graphics (:entity/image item))
-                               :tooltip-text (info-text ctx item)}))
+  (ui/set-inventory-item! stage
+                          inventory-cell
+                          {:texture-region (graphics/image->texture-region graphics (:entity/image item))
+                           :tooltip-text (info-text ctx item)}))
 
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
-  (cdq.ui/remove-inventory-item! stage inventory-cell))
+  (ui/remove-inventory-item! stage inventory-cell))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
@@ -617,10 +616,10 @@
       spawn-enemies!))
 
 (defn create! [{:keys [audio files graphics input]} config]
-  (gdx.ui/load! (:gdx.ui config))
-  (let [graphics (graphics/create graphics files (:cdq.graphics config))
-        stage (gdx.ui/stage (:ui-viewport graphics)
-                            (:batch       graphics))
+  (let [graphics (graphics/create! graphics files (:cdq.graphics config))
+        stage (ui/create! (:ui-viewport graphics)
+                          (:batch       graphics)
+                          (:cdq.ui config))
         _ (input/set-processor! input stage)
         ctx (map->Context {:audio (audio/create audio files (:cdq.audio config))
                            :config (:cdq.config config)
@@ -638,11 +637,8 @@
   (audio/dispose! audio)
   (graphics/dispose! graphics)
   (world/dispose! world)
-  ; this should be 'ctx/stage' or 'cdq.user-interface' ....
-  (gdx.ui/dispose!) ; not part of 'ctx' -> because we dont pass the skin .... global static VisUI
-  )
+  (ui/dispose!))
 
-; TODO call resize! on all components
 (defn resize! [{:keys [ctx/graphics]} width height]
   (graphics/resize-viewports! graphics width height))
 
@@ -1168,9 +1164,9 @@
   [{:keys [ctx/input
            ctx/stage]
     :as ctx}]
-  (when (input/key-just-pressed? input close-windows-key)  (cdq.ui/close-all-windows!         stage))
-  (when (input/key-just-pressed? input toggle-inventory )  (cdq.ui/toggle-inventory-visible!  stage))
-  (when (input/key-just-pressed? input toggle-entity-info) (cdq.ui/toggle-entity-info-window! stage))
+  (when (input/key-just-pressed? input close-windows-key)  (ui/close-all-windows!         stage))
+  (when (input/key-just-pressed? input toggle-inventory )  (ui/toggle-inventory-visible!  stage))
+  (when (input/key-just-pressed? input toggle-entity-info) (ui/toggle-entity-info-window! stage))
   ctx)
 
 (defn render! [ctx]

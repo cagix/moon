@@ -258,7 +258,7 @@
                         (int h))
         (TextureRegion. texture)))))
 
-(defn create
+(defn create!
   [graphics files
    {:keys [colors
            cursors ; optional

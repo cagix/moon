@@ -79,12 +79,12 @@
 (defn create! [{:keys [files graphics input]}]
   (ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input    input})
-        graphics (graphics/create graphics files
-                                  {:tile-size 48
-                                   :ui-viewport {:width 1440
-                                                 :height 900}
-                                   :world-viewport {:width 1440
-                                                    :height 900}})
+        graphics (graphics/create! graphics files
+                                   {:tile-size 48
+                                    :ui-viewport {:width 1440
+                                                  :height 900}
+                                    :world-viewport {:width 1440
+                                                     :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
         stage (ui/stage (:ui-viewport graphics)
                         (:batch       graphics))

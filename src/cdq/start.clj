@@ -118,7 +118,7 @@
                   cdq.ui.editor.widget.map]))
 
 (def config
-  {:gdx.ui {:skin-scale :x1}
+  {:cdq.ui {:skin-scale :x1}
    :cdq.audio {:sounds "sounds.edn"}
    :cdq.db {:schemas "schema.edn"
             :properties "properties.edn"}
