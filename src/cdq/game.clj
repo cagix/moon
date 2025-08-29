@@ -6,12 +6,28 @@
             [cdq.create.db]
             [cdq.create.ui]
             [cdq.ctx :as ctx]
+            cdq.ctx.interaction-state
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            cdq.entity.alert-friendlies-after-duration
+            cdq.entity.animation
+            cdq.entity.delete-after-animation-stopped
+            cdq.entity.delete-after-duration
+            cdq.entity.movement
+            cdq.entity.projectile-collision
+            cdq.entity.skills
+            cdq.entity.state.active-skill
+            cdq.entity.state.npc-idle
+            cdq.entity.state.npc-moving
+            cdq.entity.state.npc-sleeping
+            cdq.entity.state.stunned
+            cdq.entity.string-effect
+            cdq.entity.temp-modifier
             cdq.entity.state.player-idle
             cdq.entity.state.player-item-on-cursor
+            cdq.entity.state.player-moving
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera]
             [cdq.grid :as grid]
@@ -22,6 +38,8 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.timer :as timer]
+            [cdq.potential-fields.update :as potential-fields.update]
+            [cdq.ui]
             [cdq.ui.stage :as stage]
             cdq.ui.dev-menu
             cdq.ui.action-bar
@@ -30,6 +48,7 @@
             cdq.ui.windows.inventory
             cdq.ui.player-state-draw
             cdq.ui.message
+            [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.val-max :as val-max]
@@ -586,26 +605,207 @@
                                         (f ctx))))
   ctx)
 
+(defn- render-stage! [{:keys [ctx/stage] :as ctx}]
+  (stage/render! stage ctx))
+
+(def ^:private state->cursor
+  {:active-skill :cursors/sandclock
+   :player-dead :cursors/black-x
+   :player-idle cdq.ctx.interaction-state/->cursor
+   :player-item-on-cursor :cursors/hand-grab
+   :player-moving :cursors/walking
+   :stunned :cursors/denied})
+
+(defn- set-cursor!
+  [{:keys [ctx/graphics
+           ctx/world]
+    :as ctx}]
+  (let [player-eid (:world/player-eid world)]
+    (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
+                                     (if (keyword? ->cursor)
+                                       ->cursor
+                                       (->cursor player-eid ctx)))))
+  ctx)
+
+(def ^:private state->handle-input
+  {:player-idle           cdq.entity.state.player-idle/handle-input
+   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+   :player-moving         cdq.entity.state.player-moving/handle-input})
+
+(defn- player-state-handle-input!
+  [{:keys [ctx/world]
+    :as ctx}]
+  (let [player-eid (:world/player-eid world)
+        handle-input (state->handle-input (:state (:entity/fsm @player-eid)))
+        txs (if handle-input
+              (handle-input player-eid ctx)
+              nil)]
+    (ctx/handle-txs! ctx txs))
+  ctx)
+
+(defn- update-mouseover-entity!
+  [{:keys [ctx/world]
+    :as ctx}]
+  (let [new-eid (if (c/mouseover-actor ctx)
+                  nil
+                  (let [player @(:world/player-eid world)
+                        hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
+                                     (grid/point->entities (:world/grid world) (c/world-mouse-position ctx)))]
+                    (->> (:world/render-z-order world)
+                         (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
+                         reverse
+                         (filter #(world/line-of-sight? world player @%))
+                         first)))]
+    (when-let [eid (:world/mouseover-eid world)]
+      (swap! eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (assoc-in ctx [:ctx/world :world/mouseover-eid] new-eid)))
+
+(def ^:private pausing? true)
+
+(def ^:private state->pause-game?
+  {:stunned false
+   :player-moving false
+   :player-item-on-cursor true
+   :player-idle true
+   :player-dead true
+   :active-skill false})
+
+(defn- assoc-paused
+  [{:keys [ctx/input
+           ctx/world
+           ctx/config]
+    :as ctx}]
+  (assoc-in ctx [:ctx/world :world/paused?]
+            (let [controls (:controls config)]
+              (or #_error
+                  (and pausing?
+                       (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
+                       (not (or (input/key-just-pressed? input (:unpause-once controls))
+                                (input/key-pressed?      input (:unpause-continously controls)))))))))
+
+(defn- update-time [{:keys [ctx/graphics
+                            ctx/world]
+                     :as ctx}]
+  (update ctx :ctx/world world/update-time (graphics/delta-time graphics)))
+
+(defn- tick-potential-fields!
+  [{:keys [world/factions-iterations
+           world/potential-field-cache
+           world/grid
+           world/active-entities]}]
+  (doseq [[faction max-iterations] factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations)))
+
+(defn- update-potential-fields!
+  [{:keys [ctx/world]
+    :as ctx}]
+  (tick-potential-fields! world)
+  ctx)
+
+(def ^:private entity->tick
+  {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+   :entity/animation cdq.entity.animation/tick!
+   :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
+   :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
+   :entity/movement cdq.entity.movement/tick!
+   :entity/projectile-collision cdq.entity.projectile-collision/tick!
+   :entity/skills cdq.entity.skills/tick!
+   :active-skill cdq.entity.state.active-skill/tick!
+   :npc-idle cdq.entity.state.npc-idle/tick!
+   :npc-moving cdq.entity.state.npc-moving/tick!
+   :npc-sleeping cdq.entity.state.npc-sleeping/tick!
+   :stunned cdq.entity.state.stunned/tick!
+   :entity/string-effect cdq.entity.string-effect/tick!
+   :entity/temp-modifier cdq.entity.temp-modifier/tick!})
+
+(defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
+  (doseq [k (keys @eid)]
+    (try (when-let [v (k @eid)]
+           (ctx/handle-txs! ctx (when-let [f (entity->tick k)]
+                                  (f v eid world))))
+         (catch Throwable t
+           (throw (ex-info "entity-tick"
+                           {:k k
+                            :entity/id (entity/id @eid)}
+                           t))))))
+(defn- tick-entities!
+  [{:keys [ctx/stage
+           ctx/world]
+    :as ctx}]
+  (try
+   (doseq [eid (:world/active-entities world)]
+     (tick-entity! ctx eid))
+   (catch Throwable t
+     (stacktrace/pretty-print t)
+     (stage/add! stage (error-window/create t))
+     #_(bind-root ::error t)))
+  ctx)
+
+(defn- tick-world!
+  [ctx]
+  (if (get-in ctx [:ctx/world :world/paused?])
+    ctx
+    (-> ctx
+        update-time
+        update-potential-fields!
+        tick-entities!)))
+
+(defn- remove-destroyed-entities!
+  [{:keys [ctx/world]
+    :as ctx}]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (vals @(:world/entity-ids world)))]
+    (ctx/handle-txs! ctx (world/remove-entity! world eid)))
+  ctx)
+
+(def ^:private zoom-speed 0.025)
+
+(defn- check-camera-controls!
+  [{:keys [ctx/config
+                   ctx/input
+                   ctx/graphics]
+            :as ctx}]
+  (let [controls (:controls config)
+        camera (:viewport/camera (:world-viewport graphics))]
+    (when (input/key-pressed? input (:zoom-in controls))  (camera/inc-zoom! camera    zoom-speed))
+    (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed))))
+  ctx)
+
+(def ^:private close-windows-key  :escape)
+(def ^:private toggle-inventory   :i)
+(def ^:private toggle-entity-info :e)
+
+(defn- check-window-hotkeys!
+  [{:keys [ctx/input
+           ctx/stage]
+    :as ctx}]
+  (when (input/key-just-pressed? input close-windows-key)  (cdq.ui/close-all-windows!         stage))
+  (when (input/key-just-pressed? input toggle-inventory )  (cdq.ui/toggle-inventory-visible!  stage))
+  (when (input/key-just-pressed? input toggle-entity-info) (cdq.ui/toggle-entity-info-window! stage))
+  ctx)
+
 (defn render! [ctx]
-  (reduce (fn [ctx f] (f ctx))
-          (-> ctx
-              validate
-              check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-              assoc-active-entities
-              set-camera-on-player!
-              clear-screen!
-              draw-world-map!
-              draw-on-world-viewport!
-              )
-          (map requiring-resolve
-               '[
-                 cdq.render.stage/do!
-                 cdq.render.set-cursor/do!
-                 cdq.render.player-state-handle-input/do!
-                 cdq.render.update-mouseover-entity/do!
-                 cdq.render.assoc-paused/do!
-                 cdq.render.tick-world/do!
-                 cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                 cdq.render.camera-controls/do!
-                 cdq.render.check-window-hotkeys/do!
-                 cdq.game/validate])))
+  (-> ctx
+      validate
+      check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+      assoc-active-entities
+      set-camera-on-player!
+      clear-screen!
+      draw-world-map!
+      draw-on-world-viewport!
+      render-stage!
+      set-cursor!
+      player-state-handle-input!
+      update-mouseover-entity!
+      assoc-paused
+      tick-world!
+      remove-destroyed-entities! ; do not pause as pickup item should be destroyed
+      check-camera-controls!
+      check-window-hotkeys!
+      validate))

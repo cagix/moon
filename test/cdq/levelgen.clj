@@ -3,7 +3,6 @@
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
-            [cdq.render.clear-screen]
             [cdq.tiled :as tiled]
             [cdq.input :as input]
             cdq.assets
