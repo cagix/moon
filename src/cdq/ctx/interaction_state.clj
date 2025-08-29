@@ -15,6 +15,18 @@
   (< (distance player-entity clicked-entity)
      (:entity/click-distance-tiles player-entity)))
 
+(defn- player-effect-ctx [{:keys [ctx/world]
+                           :as ctx}
+                          eid]
+  (let [mouseover-eid (:world/mouseover-eid world)
+        target-position (or (and mouseover-eid
+                                 (entity/position @mouseover-eid))
+                            (c/world-mouse-position ctx))]
+    {:effect/source eid
+     :effect/target mouseover-eid
+     :effect/target-position target-position
+     :effect/target-direction (v/direction (entity/position @eid) target-position)}))
+
 (defn interaction-state
   [{:keys [ctx/stage
            ctx/world] :as ctx}
@@ -35,7 +47,7 @@
      (if-let [skill-id (ui/action-bar-selected-skill stage)]
        (let [entity @player-eid
              skill (skill-id (:entity/skills entity))
-             effect-ctx (ctx/player-effect-ctx ctx player-eid)
+             effect-ctx (player-effect-ctx ctx player-eid)
              state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            [:interaction-state.skill/usable [skill effect-ctx]]

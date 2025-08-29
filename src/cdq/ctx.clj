@@ -1,8 +1,5 @@
 (ns cdq.ctx)
 
-(defprotocol EffectContext
-  (player-effect-ctx [_ eid]))
-
 (defprotocol InfoText ; OK !?
   (info-text [_ object]))
 
