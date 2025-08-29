@@ -8,7 +8,6 @@
 (ns cdq.game
   (:require [cdq.animation :as animation]
             [cdq.audio :as audio]
-            [cdq.assets]
             [cdq.c :as c]
             cdq.ctx.interaction-state
             [cdq.db :as db]
@@ -617,80 +616,20 @@
       spawn-player!
       spawn-enemies!))
 
-(defn create! [{:keys [audio files graphics input]}]
-  (gdx.ui/load! {:skin-scale :x1})
-  (let [graphics (graphics/create
-                  graphics
-                  files
-                  ; FIXME PASS CONFIGURATION OPTIONS!
-                  {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
-                   ; why do I search all assets?
-                   ; only because of editor ?
-                   ; editor separate ? javafx ?
-                   ; then no vis-ui dependency ? but tooltips ?
-                   ; or just assets search into graphics
-                   :textures (cdq.assets/search files
-                                                {:folder "resources/"
-                                                 :extensions #{"png" "bmp"}})
-                   :tile-size 48
-                   :ui-viewport    {:width 1440 :height 900}
-                   :world-viewport {:width 1440 :height 900}
-                   :cursor-path-format "cursors/%s.png"
-                   :cursors {:cursors/bag                   ["bag001"       [0   0]]
-                             :cursors/black-x               ["black_x"      [0   0]]
-                             :cursors/default               ["default"      [0   0]]
-                             :cursors/denied                ["denied"       [16 16]]
-                             :cursors/hand-before-grab      ["hand004"      [4  16]]
-                             :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                             :cursors/hand-grab             ["hand003"      [4  16]]
-                             :cursors/move-window           ["move002"      [16 16]]
-                             :cursors/no-skill-selected     ["denied003"    [0   0]]
-                             :cursors/over-button           ["hand002"      [0   0]]
-                             :cursors/sandclock             ["sandclock"    [16 16]]
-                             :cursors/skill-not-usable      ["x007"         [0   0]]
-                             :cursors/use-skill             ["pointer004"   [0   0]]
-                             :cursors/walking               ["walking"      [16 16]]}
-                   :default-font {:file "exocet/films.EXL_____.ttf"
-                                  :params {:size 16
-                                           :quality-scaling 2
-                                           :enable-markup? true
-                                           ; false, otherwise scaling to world-units not visible
-                                           :use-integer-positions? false}}})
+(defn create! [{:keys [audio files graphics input]} config]
+  (gdx.ui/load! (:gdx.ui config))
+  (let [graphics (graphics/create graphics files (:cdq.graphics config))
         stage (gdx.ui/stage (:ui-viewport graphics)
                             (:batch       graphics))
         _ (input/set-processor! input stage)
-        ctx (map->Context {:audio (audio/create audio files {:sounds "sounds.edn"})
-                           :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                                                 :initial-state :npc-sleeping}
-                                                                    :entity/faction :evil}
-                                    :cdq.ctx.game/player-props {:creature-id :creatures/vampire
-                                                                :components {:entity/fsm {:fsm :fsms/player
-                                                                                          :initial-state :player-idle}
-                                                                             :entity/faction :good
-                                                                             :entity/player? true
-                                                                             :entity/free-skill-points 3
-                                                                             :entity/clickable {:type :clickable/player}
-                                                                             :entity/click-distance-tiles 1.5}}
-                                    :cdq.ctx.game/world {:content-grid-cell-size 16
-                                                         :potential-field-factions-iterations {:good 15
-                                                                                               :evil 5}}
-                                    :effect-body-props {:width 0.5
-                                                        :height 0.5
-                                                        :z-order :z-order/effect}
-
-                                    :controls {:zoom-in :minus
-                                               :zoom-out :equals
-                                               :unpause-once :p
-                                               :unpause-continously :space}}
-                           :db (db/create {:schemas "schema.edn"
-                                           :properties "properties.edn"})
+        ctx (map->Context {:audio (audio/create audio files (:cdq.audio config))
+                           :config (:cdq.config config)
+                           :db (db/create (:cdq.db config))
                            :graphics graphics
                            :input input
                            :stage stage})]
     (-> ctx
-        (reset-game-state! [(requiring-resolve 'cdq.level.from-tmx/create)
-                            {:tmx-file "maps/vampire.tmx"
-                             :start-position [32 71]}])
+        (reset-game-state! (:starting-level config))
         validate)))
 
 (defn dispose! [{:keys [ctx/audio

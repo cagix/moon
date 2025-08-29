@@ -5,7 +5,6 @@
             [cdq.level.from-tmx]
             [cdq.tiled :as tiled]
             [cdq.input :as input]
-            cdq.assets
             [cdq.graphics.camera :as camera]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
@@ -81,10 +80,7 @@
   (ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input    input})
         graphics (graphics/create graphics files
-                                  {:textures (cdq.assets/search files
-                                                                {:folder "resources/"
-                                                                 :extensions #{"png" "bmp"}})
-                                   :tile-size 48
+                                  {:tile-size 48
                                    :ui-viewport {:width 1440
                                                  :height 900}
                                    :world-viewport {:width 1440
