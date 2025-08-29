@@ -12,6 +12,7 @@
             [cdq.input :as input]
             [cdq.malli :as m]
             [cdq.ui.stage :as stage]
+            [cdq.world :as world]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -134,16 +135,19 @@
                                                       :height 500}))))
   ctx)
 
+(defn- assoc-active-entities [ctx]
+  (update ctx :ctx/world world/cache-active-entities))
+
 (defn render! [ctx]
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
               cdq.app/validate
               cdq.app/run-runnables!
               check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+              assoc-active-entities
               )
           (map requiring-resolve
                '[
-                 cdq.render.assoc-active-entities/do!
                  cdq.render.set-camera-on-player/do!
                  cdq.render.clear-screen/do!
                  cdq.render.draw-world-map/do!
