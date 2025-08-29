@@ -1,6 +1,5 @@
 (ns cdq.ui.windows.inventory
-  (:require [cdq.ctx :as ctx]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
             [cdq.c :as c]
@@ -15,7 +14,7 @@
    {:keys [title
            id
            visible?
-           state->clicked-inventory-cell]}]
+           clicked-cell-fn]}]
   (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
                                              :shield   1
                                              :rings    2
@@ -70,21 +69,13 @@
                                                               (actor/get-y actor)
                                                               (actor/hit actor (c/ui-mouse-position ctx))
                                                               (actor/user-object (actor/parent actor)))))})
-        cell-click-listener
-        (fn [cell]
-          (fn [{:keys [ctx/world] :as ctx}]
-            (ctx/handle-txs!
-             ctx
-             (let [player-eid (:world/player-eid world)]
-               (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
-                 (f player-eid cell))))))
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
                    {:actor {:actor/type :actor.type/stack
                             :name "inventory-cell"
                             :user-object cell
-                            :click-listener (cell-click-listener cell)
+                            :click-listener (clicked-cell-fn cell)
                             :actors [(draw-rect-actor)
                                      (ui/image-widget background-drawable
                                                       {:name "image-widget"

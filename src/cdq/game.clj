@@ -80,6 +80,10 @@
 
 (declare ^:private reset-game-state!)
 
+(def ^:private state->clicked-inventory-cell
+  {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
+   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell})
+
 (defn- create-ui-actors [ctx]
   [(cdq.ui.dev-menu/create ctx ;graphics db
                            {:reset-game-state-fn reset-game-state!
@@ -117,9 +121,13 @@
                {:title "Inventory"
                 :id :inventory-window
                 :visible? false
-                :state->clicked-inventory-cell
-                {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-                 :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}})]}
+                :clicked-cell-fn (fn [cell]
+                                   (fn [{:keys [ctx/world] :as ctx}]
+                                     (ctx/handle-txs!
+                                      ctx
+                                      (let [player-eid (:world/player-eid world)]
+                                        (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+                                          (f player-eid cell))))))})]}
     (cdq.ui.player-state-draw/create
      {:state->draw-gui-view
       {:player-item-on-cursor
