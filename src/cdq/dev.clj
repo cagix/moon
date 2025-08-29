@@ -81,12 +81,12 @@
  (cdq.application/post-runnable!
   (fn [ctx]
     (ctx/handle-txs! ctx
-                     (cdq.w/spawn-creature! (:ctx/world ctx)
-                                            {:position [35 73]
-                                             :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
-                                             :components {:entity/fsm {:fsm :fsms/npc
-                                                                       :initial-state :npc-sleeping}
-                                                          :entity/faction :evil}}))))
+                     (cdq.world/spawn-creature! (:ctx/world ctx)
+                                                {:position [35 73]
+                                                 :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
+                                                 :components {:entity/fsm {:fsm :fsms/npc
+                                                                           :initial-state :npc-sleeping}
+                                                              :entity/faction :evil}}))))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?

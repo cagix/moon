@@ -1,8 +1,8 @@
 (ns cdq.render.update-mouseover-entity
-  (:require [cdq.grid :as grid]
+  (:require [cdq.c :as c]
+            [cdq.grid :as grid]
             [cdq.utils :as utils]
-            [cdq.w :as w]
-            [cdq.c :as c]))
+            [cdq.world :as w]))
 
 (defn do! [{:keys [ctx/world]
             :as ctx}]

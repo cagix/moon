@@ -1,6 +1,6 @@
 (ns cdq.entity.state.npc-sleeping
   (:require [cdq.entity :as entity]
-            [cdq.w :as w]))
+            [cdq.world :as w]))
 
 (defn tick! [_ eid world]
   (let [entity @eid]

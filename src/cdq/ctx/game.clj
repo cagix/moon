@@ -24,7 +24,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
-            [cdq.w :as w]
+            [cdq.world :as w]
             [cdq.malli :as m]
             [cdq.math.vector2 :as v]
             cdq.ui.dev-menu

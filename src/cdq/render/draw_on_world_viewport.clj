@@ -12,7 +12,7 @@
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [cdq.w :as w]))
+            [cdq.world :as w]))
 
 (def ^:dbg-flag show-tile-grid? false)
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil

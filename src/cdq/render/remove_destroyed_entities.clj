@@ -1,6 +1,6 @@
 (ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
-            [cdq.w :as w]))
+            [cdq.world :as w]))
 
 (defn do! [{:keys [ctx/world]
             :as ctx}]

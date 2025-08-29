@@ -1,6 +1,6 @@
 (ns cdq.effects.target-all
   (:require [cdq.entity :as entity]
-            [cdq.w :as w]))
+            [cdq.world :as w]))
 
 ; TODO targets projectiles with -50% hp !!
 (defn applicable? [_ _]

@@ -6,7 +6,7 @@
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.stage :as stage]
-            [cdq.w :as w]
+            [cdq.world :as w]
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
             cdq.entity.delete-after-animation-stopped

@@ -1,4 +1,4 @@
-(ns cdq.w)
+(ns cdq.world)
 
 (defprotocol World
   (line-of-sight? [_ source target])
