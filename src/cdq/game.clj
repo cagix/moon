@@ -1142,8 +1142,8 @@
   (when (input/key-just-pressed? input toggle-entity-info) (ui/toggle-entity-info-window! stage))
   ctx)
 
-(defn create! [{:keys [audio files graphics input]} config]
-  (let [graphics (graphics/create! graphics files (:cdq.graphics config))
+(defn create! [{:keys [audio files input] :as gdx} config]
+  (let [graphics (graphics/create! gdx (:cdq.graphics config))
         stage (ui/create! (:ui-viewport graphics)
                           (:batch       graphics)
                           (:cdq.ui config))]

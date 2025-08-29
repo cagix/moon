@@ -189,8 +189,8 @@
    {:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
-   {:create! (fn [context]
-               (reset! cdq.application/state (cdq.game/create! context config)))
+   {:create! (fn [gdx]
+               (reset! cdq.application/state (cdq.game/create! gdx config)))
     :dispose! (fn []
                 (cdq.game/dispose! @cdq.application/state))
     :render! (fn []

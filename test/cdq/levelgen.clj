@@ -76,10 +76,11 @@
 
 (defrecord Context [])
 
-(defn create! [{:keys [files graphics input]}]
+(defn create! [gdx]
   (ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/input    input})
-        graphics (graphics/create! graphics files
+  (let [input (:input gdx)
+        ctx (map->Context {:ctx/input input})
+        graphics (graphics/create! gdx
                                    {:tile-size 48
                                     :ui-viewport {:width 1440
                                                   :height 900}

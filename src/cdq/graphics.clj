@@ -259,7 +259,7 @@
         (TextureRegion. texture)))))
 
 (defn create!
-  [graphics files
+  [{:keys [graphics files]}
    {:keys [colors
            cursors ; optional
            cursor-path-format ; optional
