@@ -12,7 +12,7 @@
   (dispose! [_]))
 
 (defn create
-  [audio files
+  [{:keys [audio files]}
    {:keys [sounds]}]
   (let [sounds (into {}
                      (for [path (->> sounds io/resource slurp edn/read-string)]

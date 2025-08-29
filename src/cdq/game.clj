@@ -1142,19 +1142,18 @@
   (when (input/key-just-pressed? input toggle-entity-info) (ui/toggle-entity-info-window! stage))
   ctx)
 
-(defn create! [{:keys [audio files input] :as gdx} config]
-  (let [graphics (graphics/create! gdx (::graphics config))
-        stage (ui/create! (:ui-viewport graphics)
-                          (:batch       graphics)
-                          (:cdq.ui config))]
+(defn create! [gdx config]
+  (let [input (:input gdx)
+        graphics (graphics/create! gdx (::graphics config))
+        stage (ui/create! graphics (::ui config))]
     (input/set-processor! input stage)
-    (-> (map->Context {:audio (audio/create audio files (:cdq.audio config))
-                       :config (:cdq.config config)
-                       :db (db/create (:cdq.db config))
+    (-> (map->Context {:audio (audio/create gdx (::audio config))
+                       :config (::config config)
+                       :db (db/create (::db config))
                        :graphics graphics
                        :input input
                        :stage stage})
-        (reset-game-state! (:starting-level config))
+        (reset-game-state! (::starting-level config))
         validate)))
 
 (defn dispose! [{:keys [ctx/audio

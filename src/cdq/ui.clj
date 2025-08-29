@@ -7,9 +7,10 @@
             [cdq.ui.stage :as stage]
             [gdx.ui :as ui]))
 
-(defn create! [viewport batch config]
+(defn create! [graphics config]
   (ui/load! config)
-  (ui/stage viewport batch))
+  (ui/stage (:ui-viewport graphics)
+            (:batch       graphics)))
 
 (defn dispose! []
   (ui/dispose!))

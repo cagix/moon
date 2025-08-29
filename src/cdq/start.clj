@@ -118,13 +118,13 @@
                   cdq.ui.editor.widget.map]))
 
 (def config
-  {:cdq.ui {:skin-scale :x1}
-   :cdq.audio {:sounds "sounds.edn"}
-   :cdq.db {:schemas "schema.edn"
-            :properties "properties.edn"}
-   :starting-level [(requiring-resolve 'cdq.level.from-tmx/create)
-                    {:tmx-file "maps/vampire.tmx"
-                     :start-position [32 71]}]
+  {:cdq.game/ui {:skin-scale :x1}
+   :cdq.game/audio {:sounds "sounds.edn"}
+   :cdq.game/db {:schemas "schema.edn"
+                 :properties "properties.edn"}
+   :cdq.game/starting-level [(requiring-resolve 'cdq.level.from-tmx/create)
+                             {:tmx-file "maps/vampire.tmx"
+                              :start-position [32 71]}]
    :cdq.game/graphics
    {:colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]
     :tile-size 48
@@ -151,30 +151,28 @@
                             :enable-markup? true
                             ; false, otherwise scaling to world-units not visible
                             :use-integer-positions? false}}}
-   :cdq.config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                             :initial-state :npc-sleeping}
-                                                :entity/faction :evil}
-                :cdq.ctx.game/player-props {:creature-id :creatures/vampire
-                                            :components {:entity/fsm {:fsm :fsms/player
-                                                                      :initial-state :player-idle}
-                                                         :entity/faction :good
-                                                         :entity/player? true
-                                                         :entity/free-skill-points 3
-                                                         :entity/clickable {:type :clickable/player}
-                                                         :entity/click-distance-tiles 1.5}}
-                :cdq.ctx.game/world {:content-grid-cell-size 16
-                                     :potential-field-factions-iterations {:good 15
-                                                                           :evil 5}}
-                :effect-body-props {:width 0.5
-                                    :height 0.5
-                                    :z-order :z-order/effect}
+   :cdq.game/config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                  :initial-state :npc-sleeping}
+                                                     :entity/faction :evil}
+                     :cdq.ctx.game/player-props {:creature-id :creatures/vampire
+                                                 :components {:entity/fsm {:fsm :fsms/player
+                                                                           :initial-state :player-idle}
+                                                              :entity/faction :good
+                                                              :entity/player? true
+                                                              :entity/free-skill-points 3
+                                                              :entity/clickable {:type :clickable/player}
+                                                              :entity/click-distance-tiles 1.5}}
+                     :cdq.ctx.game/world {:content-grid-cell-size 16
+                                          :potential-field-factions-iterations {:good 15
+                                                                                :evil 5}}
+                     :effect-body-props {:width 0.5
+                                         :height 0.5
+                                         :z-order :z-order/effect}
 
-                :controls {:zoom-in :minus
-                           :zoom-out :equals
-                           :unpause-once :p
-                           :unpause-continously :space}}
-   }
-  )
+                     :controls {:zoom-in :minus
+                                :zoom-out :equals
+                                :unpause-once :p
+                                :unpause-continously :space}}})
 
 (defn -main []
   (install-entity-components!)
