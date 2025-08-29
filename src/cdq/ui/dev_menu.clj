@@ -50,12 +50,12 @@
    :update-fn (comp graphics/frames-per-second :ctx/graphics)
    :icon icon})
 
-(defn select-world [world-fns]
+(defn select-world [reset-game-state-fn world-fns]
   {:label "World"
    :items (for [world-fn world-fns]
             {:label (str "Start " (first world-fn))
              :on-click (fn [_actor _ctx]
-                         (swap! application/state ctx/reset-game-state! world-fn))})})
+                         (swap! application/state reset-game-state-fn world-fn))})})
 
 (defn help [infotext]
   {:label "Help"
@@ -82,12 +82,13 @@
            ctx/graphics
            ctx/db
            ]}
-   {:keys [world-fns
+   {:keys [reset-game-state-fn
+           world-fns
            info]}
    ]
   (menu/create
    {:menus [
-            (select-world world-fns)
+            (select-world reset-game-state-fn world-fns)
             (help info)
             (db-editor db)
             context-data-view
