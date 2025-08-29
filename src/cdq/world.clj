@@ -15,6 +15,7 @@
             [cdq.malli :as m]
             [cdq.math.vector2 :as v]
             [cdq.potential-fields.movement :as potential-fields.movement]
+            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.utils :as utils]
             [qrecord.core :as q]))
 
@@ -261,3 +262,14 @@
   (assoc world :world/active-entities
          (content-grid/active-entities (:world/content-grid world)
                                        @(:world/player-eid world))))
+(defn tick-potential-fields!
+  [{:keys [world/factions-iterations
+           world/potential-field-cache
+           world/grid
+           world/active-entities]}]
+  (doseq [[faction max-iterations] factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations)))

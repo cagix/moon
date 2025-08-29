@@ -46,7 +46,6 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.timer :as timer]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.op :as op]
             [cdq.stage :as stage]
             [cdq.ui.stage]
@@ -1046,22 +1045,10 @@
                      :as ctx}]
   (update ctx :ctx/world world/update-time (graphics/delta-time graphics)))
 
-(defn- tick-potential-fields!
-  [{:keys [world/factions-iterations
-           world/potential-field-cache
-           world/grid
-           world/active-entities]}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (potential-fields.update/tick! potential-field-cache
-                                   grid
-                                   faction
-                                   active-entities
-                                   max-iterations)))
-
 (defn- update-potential-fields!
   [{:keys [ctx/world]
     :as ctx}]
-  (tick-potential-fields! world)
+  (world/tick-potential-fields! world)
   ctx)
 
 (def ^:private entity->tick
