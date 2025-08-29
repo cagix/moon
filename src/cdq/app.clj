@@ -1,9 +1,7 @@
-(ns cdq.app
-  (:require [clj-commons.pretty.repl :as pretty-repl]))
+(ns cdq.app)
 
-(defn create [{:keys [stacktraces]}]
-  {:cdq.app/runnables []
-   :cdq.app/stacktraces stacktraces})
+(defn create []
+  {:cdq.app/runnables []})
 
 (defn add-runnable [ctx runnable]
   (update-in ctx [:ctx/app :cdq.app/runnables] conj runnable))
@@ -12,9 +10,3 @@
   (doseq [runnable (:cdq.app/runnables app)]
     (runnable ctx))
   (assoc-in ctx [:ctx/app :cdq.app/runnables] []))
-
-(defn pretty-pst [{:keys [cdq.app/stacktraces]} t]
-  (let [{:keys [print-level
-                print-depth]} stacktraces]
-    (binding [*print-level* print-level]
-      (pretty-repl/pretty-pst t print-depth))))

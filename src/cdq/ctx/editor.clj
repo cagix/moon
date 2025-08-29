@@ -7,7 +7,7 @@
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
             [cdq.input :as input]
-            [cdq.app :as app]
+            [cdq.stacktrace :as stacktrace]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
@@ -15,11 +15,11 @@
             [gdx.ui :as ui]))
 
 (defn- apply-context-fn [window f]
-  (fn [{:keys [ctx/app ctx/stage] :as ctx}]
+  (fn [{:keys [ctx/stage] :as ctx}]
     (try (f ctx)
          (actor/remove! window)
          (catch Throwable t
-           (app/pretty-pst app t)
+           (stacktrace/pretty-print t)
            (stage/add! stage (error-window/create t))))))
 
 ; We are working with raw property data without fetching relationships and build

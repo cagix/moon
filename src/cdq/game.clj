@@ -72,9 +72,7 @@
                                            :enable-markup? true
                                            ; false, otherwise scaling to world-units not visible
                                            :use-integer-positions? false}}})
-        ctx (map->Context {:app (cdq.app/create
-                                 {:stacktraces {:print-level 3
-                                                :print-depth 24}})
+        ctx (map->Context {:app (cdq.app/create)
                            :audio (cdq.audio/create audio files {:sounds "sounds.edn"})
                            :config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                                  :initial-state :npc-sleeping}

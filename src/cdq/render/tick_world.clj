@@ -1,9 +1,9 @@
 (ns cdq.render.tick-world
-  (:require [cdq.app :as app]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.graphics :as g]
             [cdq.potential-fields.update :as potential-fields.update]
+            [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.stage :as stage]
             [cdq.world :as w]
@@ -72,15 +72,14 @@
                             :entity/id (entity/id @eid)}
                            t))))))
 (defn- tick-entities!
-  [{:keys [ctx/app
-           ctx/stage
+  [{:keys [ctx/stage
            ctx/world]
     :as ctx}]
   (try
    (doseq [eid (:world/active-entities world)]
      (tick-entity! ctx eid))
    (catch Throwable t
-     (app/pretty-pst app t)
+     (stacktrace/pretty-print t)
      (stage/add! stage (error-window/create t))
      #_(bind-root ::error t)))
   ctx)

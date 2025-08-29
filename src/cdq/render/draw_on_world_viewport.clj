@@ -1,6 +1,5 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [cdq.app :as app]
-            [cdq.animation :as animation]
+  (:require [cdq.animation :as animation]
             [cdq.c :as c]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -9,6 +8,7 @@
             [cdq.graphics.camera :as camera]
             [cdq.grid :as grid]
             [cdq.math.geom :as geom]
+            [cdq.stacktrace :as stacktrace]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
@@ -237,7 +237,7 @@
 
 (def ^:dbg-flag show-body-bounds? false)
 
-(defn- draw-entity [{:keys [ctx/app ctx/graphics] :as ctx} entity render-layer]
+(defn- draw-entity [{:keys [ctx/graphics] :as ctx} entity render-layer]
   (try
    (when show-body-bounds?
      (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) (if (:body/collides? (:entity/body entity)) :white :gray))))
@@ -247,7 +247,7 @@
      (graphics/handle-draws! graphics (draw-fn v entity ctx)))
    (catch Throwable t
      (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) :red))
-     (app/pretty-pst app t))))
+     (stacktrace/pretty-print t))))
 
 (defn- render-entities
   [{:keys [ctx/world]
