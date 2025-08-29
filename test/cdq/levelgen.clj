@@ -140,7 +140,7 @@
   (stage/render! stage ctx))
 
 (defn render! []
-  (cdq.render.clear-screen/do! @state)
+  (graphics/clear-screen! (:ctx/graphics @state) :black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)

@@ -6,7 +6,9 @@
             [cdq.create.ui]
             [cdq.ctx]
             [cdq.dev.data-view :as data-view]
+            [cdq.entity :as entity]
             [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.grid :as grid]
             [cdq.input :as input]
             [cdq.malli :as m]
@@ -138,17 +140,30 @@
 (defn- assoc-active-entities [ctx]
   (update ctx :ctx/world world/cache-active-entities))
 
+(defn- set-camera-on-player!
+  [{:keys [ctx/world
+           ctx/graphics]
+    :as ctx}]
+  (camera/set-position! (:viewport/camera (:world-viewport graphics))
+                        (entity/position @(:world/player-eid world)))
+  ctx)
+
+(defn- clear-screen!
+  [{:keys [ctx/graphics] :as ctx}]
+  (graphics/clear-screen! graphics :black)
+  ctx)
+
 (defn render! [ctx]
   (reduce (fn [ctx f] (f ctx))
           (-> ctx
               validate
               check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
               assoc-active-entities
+              set-camera-on-player!
+              clear-screen!
               )
           (map requiring-resolve
                '[
-                 cdq.render.set-camera-on-player/do!
-                 cdq.render.clear-screen/do!
                  cdq.render.draw-world-map/do!
                  cdq.render.draw-on-world-viewport/do!
                  cdq.render.stage/do!
