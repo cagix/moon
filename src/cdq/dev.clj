@@ -1,4 +1,4 @@
-(ns cdq.dev
+(ns cdq.dev ; debug also in here ?
   (:require [cdq.application :as application]
             [cdq.db :as db]
             [cdq.dev.app-values]

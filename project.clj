@@ -17,7 +17,7 @@
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]]
 
-  :java-source-paths ["java-src"]
+  :java-source-paths ["src"]
 
   :resource-paths ["resources"
                    "wav"]

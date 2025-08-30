@@ -3,7 +3,6 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [cdq.tiled :as tiled]
-            [clojure.gdx.utils.screen :as screen-utils]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.g2d.freetype :as freetype]
@@ -17,7 +16,8 @@
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils Disposable
+                                   ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)
            (cdq.graphics OrthogonalTiledMapRenderer
                          ColorSetter)))
@@ -191,7 +191,7 @@
       (Disposable/.dispose default-font)))
 
   (clear-screen! [_ color]
-    (screen-utils/clear! color))
+    (ScreenUtils/clear (color/->obj color)))
 
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)
