@@ -10,7 +10,7 @@
 
             cdq.utils.multifn
             cdq.gdx.backends.lwjgl
-
+            cdq.java.awt
             cdq.entity.animation
             cdq.entity.body
             cdq.entity.delete-after-animation-stopped
@@ -21,7 +21,7 @@
             cdq.entity.projectile-collision
             cdq.entity.skills
             cdq.entity.stats
-            )
+            [clojure.java.io :as io])
   (:gen-class))
 
 (defn- install-entity-components! []
@@ -179,6 +179,7 @@
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
+  (cdq.java.awt/set-taskbar-icon! (io/resource "icon.png"))
   (cdq.gdx.backends.lwjgl/start-application!
    {:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
