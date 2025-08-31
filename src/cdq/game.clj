@@ -1111,9 +1111,9 @@
 
 (defn- check-camera-controls!
   [{:keys [ctx/config
-                   ctx/input
-                   ctx/graphics]
-            :as ctx}]
+           ctx/input
+           ctx/graphics]
+    :as ctx}]
   (let [controls (:controls config)
         camera (:viewport/camera (:world-viewport graphics))]
     (when (input/key-pressed? input (:zoom-in controls))  (camera/inc-zoom! camera    zoom-speed))
