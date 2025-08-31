@@ -1,16 +1,11 @@
 (ns cdq.gdx.graphics.shape-drawer
-  (:require [cdq.math :refer [degree->radians]]
-            [cdq.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
-(defn- set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (color/->obj color)))
-
 (defn ellipse! [shape-drawer [x y] radius-x radius-y color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.ellipse shape-drawer
                         (float x)
                         (float y)
@@ -18,7 +13,7 @@
                         (float radius-y)))
 
 (defn filled-ellipse! [shape-drawer [x y] radius-x radius-y color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.filledEllipse shape-drawer
                               (float x)
                               (float y)
@@ -26,21 +21,21 @@
                               (float radius-y)))
 
 (defn circle! [shape-drawer [x y] radius color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.circle shape-drawer
                        (float x)
                        (float y)
                        (float radius)))
 
 (defn filled-circle! [shape-drawer [x y] radius color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.filledCircle shape-drawer
                              (float x)
                              (float y)
                              (float radius)))
 
 (defn rectangle! [shape-drawer x y w h color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.rectangle shape-drawer
                           (float x)
                           (float y)
@@ -48,7 +43,7 @@
                           (float h)))
 
 (defn filled-rectangle! [shape-drawer x y w h color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.filledRectangle shape-drawer
                                 (float x)
                                 (float y)
@@ -56,25 +51,25 @@
                                 (float h)))
 
 (defn arc! [shape-drawer [center-x center-y] radius start-angle degree color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.arc shape-drawer
                     (float center-x)
                     (float center-y)
                     (float radius)
-                    (float (degree->radians start-angle))
-                    (float (degree->radians degree))))
+                    (float start-angle)
+                    (float degree)))
 
 (defn sector! [shape-drawer [center-x center-y] radius start-angle degree color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.sector shape-drawer
                        (float center-x)
                        (float center-y)
                        (float radius)
-                       (float (degree->radians start-angle))
-                       (float (degree->radians degree))))
+                       (float start-angle)
+                       (float degree)))
 
 (defn line! [shape-drawer [sx sy] [ex ey] color]
-  (set-color! shape-drawer color)
+  (ShapeDrawer/.setColor shape-drawer color)
   (ShapeDrawer/.line shape-drawer
                      (float sx)
                      (float sy)

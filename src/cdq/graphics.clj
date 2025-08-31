@@ -7,7 +7,8 @@
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [cdq.gdx.graphics.g2d.freetype :as freetype]
-            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
+            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [cdq.math :refer [degree->radians]])
   (:import (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
@@ -125,43 +126,53 @@
 
 (defmethod draw! :draw/ellipse [[_ position radius-x radius-y color]
                                 {:keys [shape-drawer]}]
-  (sd/ellipse! shape-drawer position radius-x radius-y color))
+  (sd/ellipse! shape-drawer position radius-x radius-y (color/->obj color)))
 
 (defmethod draw! :draw/filled-ellipse [[_ position radius-x radius-y color]
                                        {:keys [shape-drawer]}]
-  (sd/filled-ellipse! shape-drawer position radius-x radius-y color))
+  (sd/filled-ellipse! shape-drawer position radius-x radius-y (color/->obj color)))
 
 (defmethod draw! :draw/circle [[_ position radius color]
                                {:keys [shape-drawer]}]
-  (sd/circle! shape-drawer position radius color))
+  (sd/circle! shape-drawer position radius (color/->obj color)))
 
 (defmethod draw! :draw/filled-circle [[_ position radius color]
                                       {:keys [shape-drawer]}]
-  (sd/filled-circle! shape-drawer position radius color))
+  (sd/filled-circle! shape-drawer position radius (color/->obj color)))
 
 (defmethod draw! :draw/rectangle [[_ x y w h color]
                                   {:keys [shape-drawer]}]
-  (sd/rectangle! shape-drawer x y w h color))
+  (sd/rectangle! shape-drawer x y w h (color/->obj color)))
 
 (defmethod draw! :draw/filled-rectangle [[_ x y w h color]
                                          {:keys [shape-drawer]}]
-  (sd/filled-rectangle! shape-drawer x y w h color))
+  (sd/filled-rectangle! shape-drawer x y w h (color/->obj color)))
 
 (defmethod draw! :draw/arc [[_ center-position radius start-angle degree color]
                             {:keys [shape-drawer]}]
-  (sd/arc! shape-drawer center-position radius start-angle degree color))
+  (sd/arc! shape-drawer
+           center-position
+           radius
+           (degree->radians start-angle)
+           (degree->radians degree)
+           (color/->obj color)))
 
 (defmethod draw! :draw/sector [[_ center-position radius start-angle degree color]
                                {:keys [shape-drawer]}]
-  (sd/sector! shape-drawer center-position radius start-angle degree color))
+  (sd/sector! shape-drawer
+              center-position
+              radius
+              (degree->radians start-angle)
+              (degree->radians degree)
+              (color/->obj color)))
 
 (defmethod draw! :draw/line [[_ start end color]
                              {:keys [shape-drawer]}]
-  (sd/line! shape-drawer start end color))
+  (sd/line! shape-drawer start end (color/->obj color)))
 
 (defmethod draw! :draw/grid [[_ leftx bottomy gridw gridh cellw cellh color]
                              {:keys [shape-drawer]}]
-  (sd/grid! shape-drawer leftx bottomy gridw gridh cellw cellh color))
+  (sd/grid! shape-drawer leftx bottomy gridw gridh cellw cellh (color/->obj color)))
 
 (defmethod draw! :draw/with-line-width [[_ width draws]
                                         {:keys [shape-drawer] :as this}]
