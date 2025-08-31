@@ -1,12 +1,12 @@
 (ns cdq.graphics
-  (:require [cdq.assets]
-            [cdq.graphics.camera :as camera]
-            [cdq.tiled :as tiled]
+  (:require [cdq.gdx.files]
+            [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [cdq.gdx.graphics.g2d.freetype :as freetype]
+            [cdq.gdx.tiled :as tiled]
             [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [cdq.math :refer [degree->radians]])
   (:import (com.badlogic.gdx Files
@@ -21,8 +21,8 @@
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)
-           (cdq.graphics OrthogonalTiledMapRenderer
-                         ColorSetter)))
+           (cdq.gdx.graphics OrthogonalTiledMapRenderer
+                             ColorSetter)))
 
 (defprotocol PGraphics
   (dispose! [_])
@@ -281,9 +281,9 @@
            world-viewport]}]
   (doseq [[name color-params] colors]
     (Colors/put name (color/->obj color-params)))
-  (let [textures (cdq.assets/search files
-                                    {:folder "resources/"
-                                     :extensions #{"png" "bmp"}})
+  (let [textures (cdq.gdx.files/search files
+                                       {:folder "resources/"
+                                        :extensions #{"png" "bmp"}})
         batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor (color/->obj :white))

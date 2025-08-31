@@ -5,7 +5,7 @@
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
-            [cdq.tiled :as tiled]
+            [cdq.gdx.tiled :as tiled]
             [cdq.graphics :as graphics]))
 
 (defn prepare-creature-properties [{:keys [ctx/graphics

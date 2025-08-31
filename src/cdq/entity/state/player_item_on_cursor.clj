@@ -1,9 +1,9 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.input :as input]
+            [cdq.gdx.input :as input]
             [cdq.c :as c]
-            [cdq.math.vector2 :as v]
+            [cdq.gdx.math.vector2 :as v]
             [cdq.gdx.ui :as ui]))
 
 (defn clicked-cell [eid cell]

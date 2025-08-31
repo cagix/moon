@@ -7,7 +7,7 @@
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
-            [cdq.tiled :as tiled]
+            [cdq.gdx.tiled :as tiled]
             [cdq.graphics :as graphics])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 

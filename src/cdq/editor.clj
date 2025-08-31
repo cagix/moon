@@ -6,7 +6,7 @@
             [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
             [cdq.ui.error-window :as error-window]
-            [cdq.input :as input]
+            [cdq.gdx.input :as input]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]

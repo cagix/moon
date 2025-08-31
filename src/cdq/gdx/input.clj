@@ -1,4 +1,4 @@
-(ns cdq.input
+(ns cdq.gdx.input
   (:import (com.badlogic.gdx Input
                              Input$Buttons
                              Input$Keys)))

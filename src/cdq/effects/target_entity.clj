@@ -1,7 +1,7 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.math.vector2 :as v]))
+            [cdq.gdx.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]

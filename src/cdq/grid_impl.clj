@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
-            [cdq.math.geom :as geom]
+            [cdq.gdx.math.geom :as geom]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
 

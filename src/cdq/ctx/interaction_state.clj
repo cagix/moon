@@ -3,7 +3,7 @@
             [cdq.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.c :as c]
-            [cdq.math.vector2 :as v]
+            [cdq.gdx.math.vector2 :as v]
             [cdq.ui.actor :as actor]))
 
 (defn distance [a b]

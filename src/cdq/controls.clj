@@ -1,6 +1,6 @@
 (ns cdq.controls
-  (:require [cdq.input :as input]
-            [cdq.math.vector2 :as v]))
+  (:require [cdq.gdx.input :as input]
+            [cdq.gdx.math.vector2 :as v]))
 
 (defn- WASD-movement-vector [input]
   (let [r (when (input/key-pressed? input :d) [1  0])

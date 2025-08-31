@@ -6,7 +6,7 @@
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
             [cdq.malli :as m]
-            [cdq.math.vector2 :as v]
+            [cdq.gdx.math.vector2 :as v]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.potential-fields.movement :as potential-fields.movement]

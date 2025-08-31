@@ -1,6 +1,6 @@
 (ns cdq.entity.movement
   (:require [cdq.grid :as grid]
-            [cdq.math.vector2 :as v]))
+            [cdq.gdx.math.vector2 :as v]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

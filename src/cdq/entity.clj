@@ -1,7 +1,7 @@
 (ns cdq.entity
   (:require [cdq.effect :as effect]
-            [cdq.math.geom :as geom]
-            [cdq.math.vector2 :as v]
+            [cdq.gdx.math.geom :as geom]
+            [cdq.gdx.math.vector2 :as v]
             [cdq.modifiers :as modifiers]))
 
 (defn position [{:keys [entity/body]}]

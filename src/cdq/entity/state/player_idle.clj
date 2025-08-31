@@ -2,7 +2,7 @@
   (:require [cdq.controls :as controls]
             [cdq.ctx.interaction-state]
             [cdq.inventory :as inventory]
-            [cdq.input :as input]
+            [cdq.gdx.input :as input]
             [cdq.ui.actor :as actor]))
 
 (defn inventory-window-visible? [stage]

@@ -1,4 +1,4 @@
-(ns cdq.math.geom
+(ns cdq.gdx.math.geom
   (:refer-clojure :exclude [contains?])
   (:import (com.badlogic.gdx.math Circle
                                   Intersector

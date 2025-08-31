@@ -1,4 +1,4 @@
-(ns cdq.graphics.camera
+(ns cdq.gdx.graphics.camera
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
 (defn set-position! [^OrthographicCamera this [x y]]

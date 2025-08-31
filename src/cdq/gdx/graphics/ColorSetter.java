@@ -1,4 +1,4 @@
-package cdq.graphics;
+package cdq.gdx.graphics;
 
 import com.badlogic.gdx.graphics.Color;
 

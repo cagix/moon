@@ -35,12 +35,12 @@
             cdq.entity.state.player-item-on-cursor
             cdq.entity.state.player-moving
             [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]
+            [cdq.gdx.graphics.camera :as camera]
             [cdq.grid :as grid]
-            [cdq.input :as input]
+            [cdq.gdx.input :as input]
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
-            [cdq.math.geom :as geom]
+            [cdq.gdx.math.geom :as geom]
             [cdq.modifiers :as modifiers]
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]

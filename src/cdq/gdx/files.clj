@@ -1,4 +1,4 @@
-(ns cdq.assets
+(ns cdq.gdx.files
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Files)
            (com.badlogic.gdx.files FileHandle)))
