@@ -1,5 +1,5 @@
 (ns cdq.damage-test
-  (:require [cdq.modifiers :as modifiers]
+  (:require [cdq.world.entity.stats :as modifiers]
             [clojure.test :refer :all]))
 
 (def get-damage modifiers/damage)

@@ -41,7 +41,7 @@
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.gdx.math.geom :as geom]
-            [cdq.modifiers :as modifiers]
+            [cdq.world.entity.stats :as modifiers]
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
             [cdq.tile-color-setter :as tile-color-setter]

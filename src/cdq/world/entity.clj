@@ -1,8 +1,8 @@
 (ns cdq.world.entity
   (:require [cdq.gdx.math.geom :as geom]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.modifiers :as modifiers]
-            [cdq.world.effect :as effect]))
+            [cdq.world.effect :as effect]
+            [cdq.world.entity.stats :as modifiers]))
 
 (defn position [{:keys [entity/body]}]
   (:body/position body))

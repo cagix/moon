@@ -1,4 +1,4 @@
-(ns cdq.modifiers
+(ns cdq.world.entity.stats
   (:refer-clojure :exclude [remove])
   (:require [cdq.op :as op]
             [cdq.val-max :as val-max]
