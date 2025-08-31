@@ -8,8 +8,8 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
-            [gdx.ui :as ui])
+            [cdq.gdx.backends.lwjgl :as lwjgl]
+            [cdq.gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48

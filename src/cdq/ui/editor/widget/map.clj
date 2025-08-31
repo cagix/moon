@@ -9,7 +9,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [gdx.ui :as ui]
+            [cdq.gdx.ui :as ui]
             [cdq.ui.separator :as separator]))
 
 (def ^:private property-k-sort-order

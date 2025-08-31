@@ -2,12 +2,12 @@
   (:require [cdq.assets]
             [cdq.graphics.camera :as camera]
             [cdq.tiled :as tiled]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [gdx.graphics.g2d.freetype :as freetype]
-            [gdx.graphics.shape-drawer :as sd])
+            [cdq.gdx.graphics.color :as color]
+            [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [cdq.gdx.graphics.g2d.freetype :as freetype]
+            [cdq.gdx.graphics.shape-drawer :as sd])
   (:import (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)

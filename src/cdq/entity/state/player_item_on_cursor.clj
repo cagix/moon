@@ -4,7 +4,7 @@
             [cdq.input :as input]
             [cdq.c :as c]
             [cdq.math.vector2 :as v]
-            [gdx.ui :as ui]))
+            [cdq.gdx.ui :as ui]))
 
 (defn clicked-cell [eid cell]
   (let [entity @eid

@@ -5,7 +5,7 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [gdx.ui :as ui]))
+            [cdq.gdx.ui :as ui]))
 
 (defn create! [graphics config]
   (ui/load! config)

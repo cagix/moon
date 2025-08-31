@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.boolean
   (:require [cdq.ui.editor.widget :as widget]
-            [gdx.ui :as ui]))
+            [cdq.gdx.ui :as ui]))
 
 (defmethod widget/create :boolean [_ _attribute checked? _ctx]
   (assert (boolean? checked?))

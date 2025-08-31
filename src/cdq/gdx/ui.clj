@@ -1,5 +1,5 @@
-(ns gdx.ui
-  (:require [clojure.gdx.graphics.color :as color]
+(ns cdq.gdx.ui
+  (:require [cdq.gdx.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table])

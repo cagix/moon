@@ -1,6 +1,6 @@
-(ns gdx.graphics.g2d.freetype
-  (:require [gdx.graphics.texture.filter :as texture-filter]
-            [gdx.graphics.g2d.bitmap-font :as bitmap-font])
+(ns cdq.gdx.graphics.g2d.freetype
+  (:require [cdq.gdx.graphics.texture.filter :as texture-filter]
+            [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font])
   (:import (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
 (defn- create-font-params [{:keys [size

@@ -9,7 +9,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [gdx.ui :as ui]))
+            [cdq.gdx.ui :as ui]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db

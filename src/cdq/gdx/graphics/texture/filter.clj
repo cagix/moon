@@ -1,4 +1,4 @@
-(ns gdx.graphics.texture.filter
+(ns cdq.gdx.graphics.texture.filter
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)))
 
 (comment

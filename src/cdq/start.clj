@@ -9,7 +9,7 @@
             ; - create,dispose,render,resize - 'ctx' == 'game' - all ctx usage here ?
 
             cdq.utils.multifn
-            clojure.gdx.backends.lwjgl
+            cdq.gdx.backends.lwjgl
 
             cdq.entity.animation
             cdq.entity.body
@@ -179,7 +179,7 @@
   (install-effects!)
   (install-txs!)
   (install-editor-widgets!)
-  (clojure.gdx.backends.lwjgl/start-application!
+  (cdq.gdx.backends.lwjgl/start-application!
    {:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}

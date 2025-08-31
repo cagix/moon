@@ -2,7 +2,7 @@
   (:require [cdq.ui.editor.widget :as widget]
             [cdq.utils :refer [->edn-str]]
             [clojure.edn :as edn]
-            [gdx.ui :as ui]))
+            [cdq.gdx.ui :as ui]))
 
 (defmethod widget/create :enum [schema _attribute v _ctx]
   {:actor/type :actor.type/select-box

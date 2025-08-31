@@ -1,4 +1,4 @@
-(ns clojure.interop)
+(ns cdq.gdx.interop)
 
 (comment
  (require '[clojure.string :as str]

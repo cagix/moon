@@ -1,4 +1,4 @@
-(ns clojure.gdx.backends.lwjgl
+(ns cdq.gdx.backends.lwjgl
   "Clojure API for `com.badlogic.gdx.backends.lwjgl3`.
 
   * Application Options

@@ -1,6 +1,6 @@
-(ns gdx.graphics.shape-drawer
+(ns cdq.gdx.graphics.shape-drawer
   (:require [cdq.math :refer [degree->radians]]
-            [clojure.gdx.graphics.color :as color])
+            [cdq.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
