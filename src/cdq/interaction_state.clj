@@ -1,4 +1,4 @@
-(ns cdq.ctx.interaction-state
+(ns cdq.interaction-state
   (:require [cdq.world.entity :as entity]
             [cdq.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]

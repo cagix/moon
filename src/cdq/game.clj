@@ -10,7 +10,7 @@
   (:require [cdq.animation :as animation]
             [cdq.audio :as audio]
             [cdq.c :as c]
-            cdq.ctx.interaction-state
+            cdq.interaction-state
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.world.effect :as effect]
@@ -965,7 +965,7 @@
 (def ^:private state->cursor
   {:active-skill :cursors/sandclock
    :player-dead :cursors/black-x
-   :player-idle cdq.ctx.interaction-state/->cursor
+   :player-idle cdq.interaction-state/->cursor
    :player-item-on-cursor :cursors/hand-grab
    :player-moving :cursors/walking
    :stunned :cursors/denied})
