@@ -1,11 +1,7 @@
 (ns gdx.graphics.shape-drawer
-  (:require [clojure.gdx.graphics.color :as color])
+  (:require [cdq.math :refer [degree->radians]]
+            [clojure.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(def ^:private degrees-to-radians (float (/ Math/PI 180)))
-
-(defn- degree->radians [degree]
-  (* degrees-to-radians (float degree)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
