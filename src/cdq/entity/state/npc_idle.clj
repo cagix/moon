@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-idle
-  (:require [cdq.effect :as effect]
+  (:require [cdq.world.effect :as effect]
             [cdq.entity :as entity]
             [cdq.world :as w]))
 

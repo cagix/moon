@@ -1,5 +1,5 @@
 (ns cdq.effects.target.melee-damage
-  (:require [cdq.effect :as effect]
+  (:require [cdq.world.effect :as effect]
             [cdq.entity :as entity]))
 
 (defn- entity->melee-damage [entity]

@@ -2,7 +2,7 @@
 
   (defn debug-applicable-check [effects effect-ctx]
     (map (fn [[k v]]
-           [k (cdq.effect/applicable? [k v] effect-ctx)])
+           [k (cdq.world.effect/applicable? [k v] effect-ctx)])
          effects))
 
  (let [ctx @cdq.application/state
@@ -19,7 +19,7 @@
      :usable-state usable-state
      :effects (:skill/effects skill)
      :effects-applicable (map (fn [[k v]]
-                                [k (cdq.effect/applicable? [k v] effect-ctx)])
+                                [k (cdq.world.effect/applicable? [k v] effect-ctx)])
                               (:skill/effects skill))
      })
    )

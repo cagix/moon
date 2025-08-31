@@ -1,5 +1,5 @@
 (ns cdq.effects.target-entity
-  (:require [cdq.effect :as effect]
+  (:require [cdq.world.effect :as effect]
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]))
 

@@ -1,5 +1,5 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.effect :as effect]
+  (:require [cdq.world.effect :as effect]
             [cdq.entity :as entity]
             [cdq.timer :as timer]
             [cdq.world :as w]))

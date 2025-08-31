@@ -1,4 +1,4 @@
-(ns cdq.effect)
+(ns cdq.world.effect)
 
 (defmulti applicable? (fn [[k] effect-ctx]
                         k))
@@ -11,6 +11,8 @@
 (defmethod useful? :default [_ _effect-ctx world]
   true)
 
+; ->> render is one step above world !!
+; ->> not part of world ! so should not be here ! ?
 (defmulti render (fn [[k] _effect-ctx ctx]
                    k))
 (defmethod render :default [_ _effect-ctx ctx])

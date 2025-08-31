@@ -13,7 +13,7 @@
             cdq.ctx.interaction-state
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
-            [cdq.effect :as effect]
+            [cdq.world.effect :as effect]
             [cdq.entity :as entity]
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation

@@ -38,10 +38,10 @@
               :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}))
 
 (defn- install-effects! []
-  (cdq.utils.multifn/add-methods! '[{:required [cdq.effect/applicable?
-                                                cdq.effect/handle]
-                                     :optional [cdq.effect/useful?
-                                                cdq.effect/render]}
+  (cdq.utils.multifn/add-methods! '[{:required [cdq.world.effect/applicable?
+                                                cdq.world.effect/handle]
+                                     :optional [cdq.world.effect/useful?
+                                                cdq.world.effect/render]}
                                     [[cdq.effects.audiovisual
                                       :effects/audiovisual]
                                      [cdq.effects.projectile
