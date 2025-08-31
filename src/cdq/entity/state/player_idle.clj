@@ -60,7 +60,7 @@
        [:tx/show-message "No selected skill"]])))
 
 (defn handle-input [player-eid {:keys [ctx/input] :as ctx}]
-  (if-let [movement-vector (controls/player-movement-vector ctx)]
+  (if-let [movement-vector (controls/player-movement-vector input)]
     [[:tx/event player-eid :movement-input movement-vector]]
     (when (input/button-just-pressed? input :left)
       (interaction-state->txs ctx player-eid))))

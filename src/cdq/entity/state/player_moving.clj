@@ -1,8 +1,8 @@
 (ns cdq.entity.state.player-moving
   (:require [cdq.controls :as controls]))
 
-(defn handle-input [eid ctx]
-  (if-let [movement-vector (controls/player-movement-vector ctx)]
+(defn handle-input [eid {:keys [ctx/input]}]
+  (if-let [movement-vector (controls/player-movement-vector input)]
     [[:tx/set-movement eid movement-vector]]
     [[:tx/event eid :no-movement-input]]))
 
