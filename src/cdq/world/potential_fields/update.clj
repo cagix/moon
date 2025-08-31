@@ -1,5 +1,5 @@
 (ns cdq.world.potential-fields.update
-  (:require [cdq.cell :as cell]
+  (:require [cdq.world.grid.cell :as cell]
             [cdq.entity :as entity]
             [cdq.world.grid :as grid]))
 

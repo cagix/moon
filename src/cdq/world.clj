@@ -1,7 +1,5 @@
 (ns cdq.world
-  (:require [cdq.cell :as cell]
-            [cdq.entity :as entity]
-            [cdq.world.grid :as grid]
+  (:require [cdq.entity :as entity]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
@@ -9,6 +7,8 @@
             [cdq.gdx.math.vector2 :as v]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
+            [cdq.world.grid :as grid]
+            [cdq.world.grid.cell :as cell]
             [cdq.world.potential-fields.movement :as potential-fields.movement]
             [cdq.world.potential-fields.update :as potential-fields.update]
             [qrecord.core :as q]))

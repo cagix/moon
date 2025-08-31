@@ -1,7 +1,7 @@
 (ns cdq.grid-impl
-  (:require [cdq.cell :as cell]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.world.grid :as grid]
+            [cdq.world.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.geom :as geom]
             [cdq.utils :as utils]
