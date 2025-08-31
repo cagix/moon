@@ -1,8 +1,9 @@
 (ns cdq.graphics
   (:require [cdq.assets]
+            [cdq.graphics.camera :as camera]
+            [cdq.tiled :as tiled]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [cdq.tiled :as tiled]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [gdx.graphics.g2d.freetype :as freetype]
@@ -313,3 +314,9 @@
                                      (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                   (float world-unit-scale)
                                                                   batch)))})))
+
+(defn zoom-in! [{:keys [world-viewport]} amount]
+  (camera/inc-zoom! (:viewport/camera world-viewport) amount))
+
+(defn zoom-out! [graphics amount]
+  (zoom-in! graphics (- amount)))
