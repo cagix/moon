@@ -1,5 +1,5 @@
 (ns cdq.ui.message
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.ui.actor :as actor]))
 
 (defn- draw-message [state viewport]

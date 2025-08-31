@@ -2,7 +2,7 @@
   (:require [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
             [cdq.timer :as timer]
-            [cdq.world :as w]))
+            [cdq.ctx.world :as w]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx

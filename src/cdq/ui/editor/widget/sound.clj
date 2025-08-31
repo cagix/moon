@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
             [cdq.ui.editor.widget :as widget]
-            [cdq.audio :as audio]
+            [cdq.ctx.audio :as audio]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]

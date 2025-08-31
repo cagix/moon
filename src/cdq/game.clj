@@ -8,10 +8,10 @@
 ; 6. am besten so wenig tiefe wie moeglich ctx durchgeben
 (ns cdq.game
   (:require [cdq.animation :as animation]
-            [cdq.audio :as audio]
+            [cdq.ctx.audio :as audio]
             [cdq.c :as c]
             cdq.interaction-state
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
@@ -34,10 +34,10 @@
             cdq.entity.state.player-idle
             cdq.entity.state.player-item-on-cursor
             cdq.entity.state.player-moving
-            [cdq.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.world.grid :as grid]
-            [cdq.gdx.input :as input]
+            [cdq.ctx.input :as input]
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.gdx.math.geom :as geom]
@@ -47,7 +47,7 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.timer :as timer]
             [cdq.op :as op]
-            [cdq.stage :as stage]
+            [cdq.ctx.stage :as stage]
             [cdq.ui.stage]
             cdq.ui.dev-menu
             cdq.ui.action-bar
@@ -60,7 +60,7 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.val-max :as val-max]
-            [cdq.world :as world]
+            [cdq.ctx.world :as world]
             [clojure.math :as math]
             [clojure.string :as str]
             [qrecord.core :as q]))

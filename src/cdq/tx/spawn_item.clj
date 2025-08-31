@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-item
-  (:require [cdq.world :as w]))
+  (:require [cdq.ctx.world :as w]))
 
 (defn do! [[_ position item]
            {:keys [ctx/world]}]

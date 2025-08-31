@@ -1,4 +1,4 @@
-(ns cdq.world
+(ns cdq.ctx.world
   (:require [cdq.grid-impl :as grid-impl]
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid2d :as g2d]

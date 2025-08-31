@@ -1,12 +1,12 @@
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx.db :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
             [cdq.gdx.tiled :as tiled]
-            [cdq.gdx.input :as input]
+            [cdq.ctx.input :as input]
             [cdq.gdx.graphics.camera :as camera]
-            [cdq.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.ui.stage :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])

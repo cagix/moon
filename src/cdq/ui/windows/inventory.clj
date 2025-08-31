@@ -3,7 +3,7 @@
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
             [cdq.c :as c]
-            [cdq.graphics :as g]
+            [cdq.ctx.graphics :as g]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.gdx.ui :as ui])

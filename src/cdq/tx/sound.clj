@@ -1,5 +1,5 @@
 (ns cdq.tx.sound
-  (:require [cdq.audio :as audio]))
+  (:require [cdq.ctx.audio :as audio]))
 
 (defn do! [[_ sound-name] {:keys [ctx/audio]}]
   (->> sound-name

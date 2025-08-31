@@ -1,15 +1,14 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
             [cdq.editor]
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.world.entity :as entity]
-            [cdq.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [clojure.string :as str]
             [cdq.ui.menu :as menu]
             [cdq.ui.stage :as stage]
             [cdq.c :as c]
-            [cdq.graphics :as graphics]
             [cdq.utils :as utils]))
 
 (defn mouseover-entity-id [icon]

@@ -25,7 +25,7 @@
    )
 
  (clojure.pprint/pprint
-  (:skill/effects (cdq.db/get-raw (:ctx/db @cdq.application/state)
+  (:skill/effects (cdq.ctx.db/get-raw (:ctx/db @cdq.application/state)
                                   :skills/melee-attack
                                   )))
  )

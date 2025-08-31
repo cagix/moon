@@ -25,7 +25,7 @@
   (:gen-class))
 
 (defn- install-entity-components! []
-  (.bindRoot #'cdq.world/entity-components
+  (.bindRoot #'cdq.ctx.world/entity-components
              {:entity/animation                       {:create   cdq.entity.animation/create}
               :entity/body                            {:create   cdq.entity.body/create}
               :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}

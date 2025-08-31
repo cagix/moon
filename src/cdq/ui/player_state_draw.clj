@@ -1,5 +1,5 @@
 (ns cdq.ui.player-state-draw
-  (:require [cdq.graphics :as graphics]))
+  (:require [cdq.ctx.graphics :as graphics]))
 
 (defn create [{:keys [state->draw-gui-view]}]
   {:actor/type :actor.type/actor

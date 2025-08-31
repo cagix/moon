@@ -1,7 +1,7 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
-            [cdq.world :as w]))
+            [cdq.ctx.world :as w]))
 
 (defn- npc-choose-skill [world entity effect-ctx]
   (->> entity

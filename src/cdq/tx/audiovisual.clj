@@ -1,5 +1,5 @@
 (ns cdq.tx.audiovisual
-  (:require [cdq.db :as db]))
+  (:require [cdq.ctx.db :as db]))
 
 (defn do!
   [[_ position audiovisual]

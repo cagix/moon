@@ -16,14 +16,14 @@
 (defn- empty-test []
   (lwjgl/start-application! {} empty-listener))
 
-(defn- full-screen-test []
+#_(defn- full-screen-test []
   (let [display-mode (lwjgl/display-mode!)]
     (println "display-mode: " display-mode)
     (println "primary monitor: " (lwjgl/primary-monitor!))
     (lwjgl/start-application! {:fullscreen-mode display-mode}
                               empty-listener)))
 
-(defn- window-config-keys []
+#_(defn- window-config-keys []
   (lwjgl/start-application! {:initial-visible? true
                              :windowed-mode {:width 100
                                              :height 100}
@@ -42,7 +42,7 @@
                              }
                             empty-listener))
 
-(defn -main []
+#_(defn -main []
   (when (= SharedLibraryLoader/os Os/MacOsX)
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (empty-test)

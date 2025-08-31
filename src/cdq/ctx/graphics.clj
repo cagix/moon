@@ -1,4 +1,4 @@
-(ns cdq.graphics
+(ns cdq.ctx.graphics
   (:require [cdq.gdx.files]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]

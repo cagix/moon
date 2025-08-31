@@ -1,6 +1,6 @@
 (ns cdq.tx.spawn-projectile
   (:require [cdq.gdx.math.vector2 :as v]
-            [cdq.world :as w]))
+            [cdq.ctx.world :as w]))
 
 (defn do!
   [[_

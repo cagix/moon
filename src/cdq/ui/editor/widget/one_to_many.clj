@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.one-to-many
   (:require [cdq.ui.editor.overview-table]
             [cdq.ui.editor.widget :as widget]
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]

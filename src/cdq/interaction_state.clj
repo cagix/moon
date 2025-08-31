@@ -1,6 +1,6 @@
 (ns cdq.interaction-state
   (:require [cdq.world.entity :as entity]
-            [cdq.stage :as stage]
+            [cdq.ctx.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.c :as c]
             [cdq.gdx.math.vector2 :as v]

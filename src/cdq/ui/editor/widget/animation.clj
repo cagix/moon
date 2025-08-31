@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.animation
   (:require [cdq.ui.editor.widget :as widget]
-            [cdq.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.gdx.ui :as ui]))
 
 (defmethod widget/create :widget/animation [_ _attribute animation {:keys [ctx/graphics]}]
