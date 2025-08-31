@@ -1,7 +1,7 @@
 (ns cdq.world.potential-fields.movement
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.utils :as utils]
             [cdq.gdx.math.vector2 :as v]))
 

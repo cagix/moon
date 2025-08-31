@@ -1,7 +1,7 @@
 (ns cdq.world
   (:require [cdq.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]

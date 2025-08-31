@@ -36,7 +36,7 @@
             cdq.entity.state.player-moving
             [cdq.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.gdx.input :as input]
             [cdq.inventory :as inventory]
             [cdq.malli :as m]

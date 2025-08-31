@@ -1,4 +1,4 @@
-(ns cdq.grid)
+(ns cdq.world.grid)
 
 (defprotocol Grid
   (cell [_ int-position])
