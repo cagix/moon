@@ -1,4 +1,4 @@
-(ns cdq.entity
+(ns cdq.world.entity
   (:require [cdq.gdx.math.geom :as geom]
             [cdq.gdx.math.vector2 :as v]
             [cdq.modifiers :as modifiers]

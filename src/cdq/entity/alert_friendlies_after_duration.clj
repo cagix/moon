@@ -1,5 +1,5 @@
 (ns cdq.entity.alert-friendlies-after-duration
-  (:require [cdq.entity :as entity]
+  (:require [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
             [cdq.timer :as timer]))
 

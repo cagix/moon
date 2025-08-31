@@ -1,5 +1,5 @@
 (ns cdq.effects.target.audiovisual
-  (:require [cdq.entity :as entity]))
+  (:require [cdq.world.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)

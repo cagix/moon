@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-moving
-  (:require [cdq.entity :as entity]
+  (:require [cdq.world.entity :as entity]
             [cdq.timer :as timer]))
 
 (defn tick! [{:keys [counter]} eid {:keys [world/elapsed-time]}]

@@ -1,5 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.entity :as entity]
+  (:require [cdq.world.entity :as entity]
             [cdq.val-max :as val-max]
             [cdq.utils :as utils]
             [cdq.graphics :as g]))

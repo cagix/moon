@@ -2,7 +2,7 @@
   (:require [cdq.application :as application]
             [cdq.db :as db]
             [cdq.dev.app-values]
-            [cdq.entity :as entity]
+            [cdq.world.entity :as entity]
             [cdq.c :as c]
             [cdq.game :as game]))
 

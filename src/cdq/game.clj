@@ -14,7 +14,7 @@
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.world.effect :as effect]
-            [cdq.entity :as entity]
+            [cdq.world.entity :as entity]
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
             cdq.entity.delete-after-animation-stopped

@@ -3,7 +3,7 @@
             [cdq.editor]
             [cdq.db :as db]
             [cdq.dev.data-view :as data-view]
-            [cdq.entity :as entity]
+            [cdq.world.entity :as entity]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
             [cdq.ui.menu :as menu]

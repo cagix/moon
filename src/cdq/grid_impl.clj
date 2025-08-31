@@ -1,5 +1,5 @@
 (ns cdq.grid-impl
-  (:require [cdq.entity :as entity]
+  (:require [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.grid2d :as g2d]
