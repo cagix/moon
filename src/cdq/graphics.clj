@@ -4,10 +4,10 @@
             [cdq.tiled :as tiled]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [cdq.gdx.graphics.g2d.freetype :as freetype]
-            [cdq.gdx.graphics.shape-drawer :as sd])
+            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
