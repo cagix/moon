@@ -1,11 +1,11 @@
-[[cdq.start.bind-root/do! [cdq.game.reset-game-state/state->clicked-inventory-cell
+[[cdq.start.bind-root/do! [cdq.game.create-ui-actors/state->clicked-inventory-cell
                            {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]]
  [cdq.start.bind-root/do! [cdq.game.render/state->handle-input
                            {:player-idle           cdq.entity.state.player-idle/handle-input
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                             :player-moving         cdq.entity.state.player-moving/handle-input}]]
- [cdq.start.bind-root/do! [cdq.game.reset-game-state/state->draw-gui-view
+ [cdq.start.bind-root/do! [cdq.game.create-ui-actors/state->draw-gui-view
                            {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]]
  [cdq.start.bind-root/do! [cdq.game.render/render-layers
                            [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
@@ -78,6 +78,7 @@
                                     :cdq.game.create/db {:schemas "schema.edn"
                                                          :properties "properties.edn"}
                                     :reset-game-state! cdq.game.reset-game-state/do!
+                                    :create-ui-actors cdq.game.create-ui-actors/do!
                                     :cdq.game.create/starting-level [cdq.level.from-tmx/create
                                                                      {:tmx-file "maps/vampire.tmx"
                                                                       :start-position [32 71]}]
