@@ -65,7 +65,11 @@
                                         cdq.ui.editor.widget.one-to-many
                                         cdq.ui.editor.widget.image
                                         cdq.ui.editor.widget.animation
-                                        cdq.ui.editor.widget.map]]
+                                        cdq.ui.editor.widget.map
+
+                                        cdq.info-impl
+                                        cdq.tx-impl
+                                        ]]
  [cdq.start.set-icon/do! "icon.png"]
  [cdq.start.gdx-app/do! {:lwjgl-app-config {:title "Cyber Dungeon Quest"
                                             :windowed-mode {:width 1440 :height 900}
