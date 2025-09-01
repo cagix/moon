@@ -3,7 +3,6 @@
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
             [cdq.ctx.graphics :as g]
-            [cdq.ctx.input :as input]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.gdx.ui :as ui])
@@ -62,13 +61,13 @@
                           {:actor/type :actor.type/widget
                            :draw
                            (fn [actor {:keys [ctx/graphics
-                                              ctx/input
+                                              ctx/ui-mouse-position
                                               ctx/world]}]
                              (g/handle-draws! graphics
                                               (draw-cell-rect @(:world/player-eid world)
                                                               (actor/get-x actor)
                                                               (actor/get-y actor)
-                                                              (actor/hit actor (g/unproject-ui graphics (input/mouse-position input)))
+                                                              (actor/hit actor ui-mouse-position)
                                                               (actor/user-object (actor/parent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]

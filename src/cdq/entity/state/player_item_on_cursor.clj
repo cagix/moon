@@ -2,7 +2,6 @@
   (:require [cdq.world.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.ctx.input :as input]
-            [cdq.c :as c]
             [cdq.gdx.math.vector2 :as v]
             [cdq.gdx.ui :as ui]))
 
@@ -40,8 +39,8 @@
       [:tx/event eid :dropped-item]
       [:tx/event eid :pickup-item item-in-cell]])))
 
-(defn world-item? [ctx]
-  (not (c/mouseover-actor ctx)))
+(defn world-item? [mouseover-actor]
+  (not mouseover-actor))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -52,16 +51,16 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [ctx entity]
+(defn item-place-position [world-mouse-position entity]
   (placement-point (entity/position entity)
-                   (c/world-mouse-position ctx)
+                   world-mouse-position
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defn enter [{:keys [item]} eid]
   [[:tx/assoc eid :entity/item-on-cursor item]])
 
-(defn exit [_ eid ctx]
+(defn exit [_ eid {:keys [ctx/world-mouse-position]}]
   ; at clicked-cell when we put it into a inventory-cell
   ; we do not want to drop it on the ground too additonally,
   ; so we dissoc it there manually. Otherwise it creates another item
@@ -70,19 +69,26 @@
     (when (:entity/item-on-cursor entity)
       [[:tx/sound "bfxr_itemputground"]
        [:tx/dissoc eid :entity/item-on-cursor]
-       [:tx/spawn-item (item-place-position ctx entity) (:entity/item-on-cursor entity)]])))
+       [:tx/spawn-item
+        (item-place-position world-mouse-position entity)
+        (:entity/item-on-cursor entity)]])))
 
 (defn create [_eid item _world]
   {:item item})
 
-(defn draw-gui-view [eid ctx]
-  (when (not (world-item? ctx))
+(defn draw-gui-view
+  [eid
+   {:keys [ctx/mouseover-actor
+           ctx/ui-mouse-position]}]
+  (when (not (world-item? mouseover-actor))
     [[:draw/centered
       (:entity/image (:entity/item-on-cursor @eid))
-      (c/ui-mouse-position ctx)]]))
+      ui-mouse-position]]))
 
-(defn handle-input [eid {:keys [ctx/input]
-                         :as ctx}]
+(defn handle-input
+  [eid
+   {:keys [ctx/input
+           ctx/mouseover-actor]}]
   (when (and (input/button-just-pressed? input :left)
-             (world-item? ctx))
+             (world-item? mouseover-actor))
     [[:tx/event eid :drop-item]]))

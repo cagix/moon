@@ -1,6 +1,5 @@
 (ns cdq.game
   (:require [cdq.ctx.audio :as audio]
-            [cdq.c :as c]
             cdq.interaction-state
             [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
@@ -592,13 +591,14 @@
 (defn- check-open-debug-data-view!
   [{:keys [ctx/input
            ctx/stage
-           ctx/world]
+           ctx/world
+           ctx/world-mouse-position]
     :as ctx}]
   (when (input/button-just-pressed? input :right)
     (let [mouseover-eid (:world/mouseover-eid world)
           data (or (and mouseover-eid @mouseover-eid)
                    @(grid/cell (:world/grid world)
-                               (mapv int (cdq.c/world-mouse-position ctx))))]
+                               (mapv int world-mouse-position)))]
       (cdq.ui.stage/add! stage
                          (data-view/table-view-window {:title "Data View"
                                                        :data data
@@ -717,9 +717,11 @@
             :when (should-draw? entity z-order)]
       (draw-entity ctx entity render-layer))))
 
-(defn- geom-test* [{:keys [ctx/world] :as ctx}]
+(defn- geom-test*
+  [{:keys [ctx/world
+           ctx/world-mouse-position]}]
   (let [grid (:world/grid world)
-        position (c/world-mouse-position ctx)
+        position world-mouse-position
         radius 0.8
         circle {:position position
                 :radius radius}]
@@ -734,9 +736,10 @@
 
 (defn- highlight-mouseover-tile
   [{:keys [ctx/graphics
-           ctx/world] :as ctx}]
+           ctx/world
+           ctx/world-mouse-position]}]
   (graphics/handle-draws! graphics
-                          (let [[x y] (mapv int (c/world-mouse-position ctx))
+                          (let [[x y] (mapv int world-mouse-position)
                                 cell (grid/cell (:world/grid world) [x y])]
                             (when (and cell (#{:air :none} (:movement @cell)))
                               [[:draw/rectangle x y 1 1
@@ -796,13 +799,15 @@
   ctx)
 
 (defn- update-mouseover-entity!
-  [{:keys [ctx/world]
+  [{:keys [ctx/mouseover-actor
+           ctx/world
+           ctx/world-mouse-position]
     :as ctx}]
-  (let [new-eid (if (c/mouseover-actor ctx)
+  (let [new-eid (if mouseover-actor
                   nil
                   (let [player @(:world/player-eid world)
                         hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
-                                     (grid/point->entities (:world/grid world) (c/world-mouse-position ctx)))]
+                                     (grid/point->entities (:world/grid world) world-mouse-position))]
                     (->> (:world/render-z-order world)
                          (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
                          reverse
@@ -937,9 +942,30 @@
   (world/dispose! world)
   (stage/dispose!))
 
+(defn- assoc-mouseover-keys
+  [{:keys [ctx/graphics
+           ctx/input
+           ctx/stage]
+    :as ctx}]
+  (let [mouse-position (input/mouse-position input)
+        ui-mouse-position    (graphics/unproject-ui    graphics mouse-position)
+        world-mouse-position (graphics/unproject-world graphics mouse-position)]
+    (assoc ctx
+           :ctx/mouseover-actor      (stage/hit stage ui-mouse-position)
+           :ctx/ui-mouse-position    ui-mouse-position
+           :ctx/world-mouse-position world-mouse-position)))
+
+(defn- dissoc-mouseover-keys
+  [ctx]
+  (dissoc ctx
+          :ctx/mouseover-actor
+          :ctx/ui-mouse-position
+          :ctx/world-mouse-position))
+
 (defn render! [ctx]
   (-> ctx
       validate
+      assoc-mouseover-keys
       check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
       assoc-active-entities
       set-camera-on-player!
@@ -955,6 +981,7 @@
       remove-destroyed-entities! ; do not pause as pickup item should be destroyed
       check-camera-controls!
       check-window-hotkeys!
+      dissoc-mouseover-keys
       validate))
 
 (defn resize! [{:keys [ctx/graphics]} width height]

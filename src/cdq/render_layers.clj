@@ -21,11 +21,17 @@
 (def ^:private stunned-circle-width 0.5)
 (def ^:private stunned-circle-color [1 1 1 0.6])
 
-(defn draw-item-on-cursor-state [{:keys [item]} entity ctx]
-  (when (cdq.entity.state.player-item-on-cursor/world-item? ctx)
+(defn draw-item-on-cursor-state
+  [{:keys [item]}
+   entity
+   {:keys [ctx/mouseover-actor
+           ctx/world-mouse-position]}]
+  (when (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor)
     [[:draw/centered
       (:entity/image item)
-      (cdq.entity.state.player-item-on-cursor/item-place-position ctx entity)]]))
+      (cdq.entity.state.player-item-on-cursor/item-place-position
+       world-mouse-position
+       entity)]]))
 
 (defn draw-mouseover-highlighting [_ entity {:keys [ctx/world]}]
   (let [player @(:world/player-eid world)

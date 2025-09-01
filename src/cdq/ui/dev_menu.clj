@@ -1,15 +1,14 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.editor]
             [cdq.ctx.db :as db]
-            [cdq.dev.data-view :as data-view]
-            [cdq.world.entity :as entity]
             [cdq.ctx.graphics :as graphics]
-            [clojure.string :as str]
+            [cdq.dev.data-view :as data-view]
+            [cdq.editor]
             [cdq.ui.menu :as menu]
             [cdq.ui.stage :as stage]
-            [cdq.c :as c]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [cdq.world.entity :as entity]
+            [clojure.string :as str]))
 
 (defn mouseover-entity-id [icon]
   {:label "Mouseover-entity id"
@@ -31,13 +30,13 @@
 
 (def ui-mouse-position
   {:label "GUI"
-   :update-fn (fn [ctx]
-                (mapv int (c/ui-mouse-position ctx)))})
+   :update-fn (fn [{:keys [ctx/ui-mouse-position]}]
+                (mapv int ui-mouse-position))})
 
 (def world-mouse-position
   {:label "World"
-   :update-fn (fn [ctx]
-                (mapv int (c/world-mouse-position ctx)))})
+   :update-fn (fn [{:keys [ctx/world-mouse-position]}]
+                (mapv int world-mouse-position))})
 
 (defn zoom [icon]
   {:label "Zoom"

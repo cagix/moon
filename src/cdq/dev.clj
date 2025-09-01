@@ -3,7 +3,6 @@
             [cdq.ctx.db :as db]
             [cdq.dev.app-values]
             [cdq.world.entity :as entity]
-            [cdq.c :as c]
             [cdq.game :as game]))
 
 (defn post-runnable! [f]

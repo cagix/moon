@@ -1,10 +1,9 @@
 (ns cdq.interaction-state
-  (:require [cdq.world.entity :as entity]
-            [cdq.ctx.stage :as stage]
-            [cdq.ui.windows.inventory :as inventory-window]
-            [cdq.c :as c]
+  (:require [cdq.ctx.stage :as stage]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.ui.actor :as actor]))
+            [cdq.ui.actor :as actor]
+            [cdq.ui.windows.inventory :as inventory-window]
+            [cdq.world.entity :as entity]))
 
 (defn distance [a b]
   (v/distance (entity/position a)
@@ -14,24 +13,22 @@
   (< (distance player-entity clicked-entity)
      (:entity/click-distance-tiles player-entity)))
 
-(defn- player-effect-ctx [{:keys [ctx/world]
-                           :as ctx}
-                          eid]
-  (let [mouseover-eid (:world/mouseover-eid world)
-        target-position (or (and mouseover-eid
+(defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
+  (let [target-position (or (and mouseover-eid
                                  (entity/position @mouseover-eid))
-                            (c/world-mouse-position ctx))]
-    {:effect/source eid
+                            world-mouse-position)]
+    {:effect/source player-eid
      :effect/target mouseover-eid
      :effect/target-position target-position
-     :effect/target-direction (v/direction (entity/position @eid) target-position)}))
+     :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
 (defn interaction-state
-  [{:keys [ctx/stage
-           ctx/world] :as ctx}
+  [{:keys [ctx/mouseover-actor
+           ctx/stage
+           ctx/world
+           ctx/world-mouse-position]}
    player-eid]
-  (let [mouseover-eid (:world/mouseover-eid world)
-        mouseover-actor (c/mouseover-actor ctx)]
+  (let [mouseover-eid (:world/mouseover-eid world)]
     (cond
      mouseover-actor
      [:interaction-state/mouseover-actor mouseover-actor]
@@ -46,7 +43,7 @@
      (if-let [skill-id (stage/action-bar-selected-skill stage)]
        (let [entity @player-eid
              skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx ctx player-eid)
+             effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
              state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            [:interaction-state.skill/usable [skill effect-ctx]]
