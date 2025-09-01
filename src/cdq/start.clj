@@ -1,13 +1,6 @@
 (ns cdq.start
   (:require cdq.application
-            ; ok ... only used in UI ! or dev ! and cdq.start ! otherwise use post-runnable!
-            ; == documentation !?
-            ; thing about passing ctx, inputlistener and then not getting relevant ctx thats why 'state' usages
-            ; ...
-
             cdq.game
-            ; - create,dispose,render,resize - 'ctx' == 'game' - all ctx usage here ?
-
             cdq.multifn
             cdq.gdx.backends.lwjgl
             cdq.java.awt
