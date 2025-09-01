@@ -705,8 +705,7 @@
      (stacktrace/pretty-print t))))
 
 (defn- render-entities
-  [{:keys [ctx/config
-           ctx/player-eid
+  [{:keys [ctx/player-eid
            ctx/world]
     :as ctx}]
   (let [entities (map deref (:world/active-entities world))
@@ -717,7 +716,7 @@
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
-            render-layer (::render-layers config)
+            render-layer cdq.entity-api/render-layers
             entity entities
             :when (should-draw? entity z-order)]
       (draw-entity ctx entity render-layer))))

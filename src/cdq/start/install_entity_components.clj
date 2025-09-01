@@ -1,5 +1,6 @@
 (ns cdq.start.install-entity-components
   (:require cdq.entity-api
+            cdq.render-layers
             cdq.ctx.world
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
@@ -22,6 +23,19 @@
             cdq.entity.temp-modifier))
 
 (defn do! [_]
+  (.bindRoot #'cdq.entity-api/render-layers
+             [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
+               :stunned cdq.render-layers/draw-stunned-state
+               :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
+              {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
+               :entity/animation cdq.render-layers/call-render-image
+               :entity/image cdq.render-layers/draw-centered-rotated-image
+               :entity/line-render cdq.render-layers/draw-line-entity}
+              {:npc-sleeping cdq.render-layers/draw-sleeping-state
+               :entity/temp-modifier cdq.render-layers/draw-temp-modifiers
+               :entity/string-effect cdq.render-layers/draw-text-over-entity}
+              {:creature/stats cdq.render-layers/draw-stats
+               :active-skill cdq.render-layers/draw-active-skill}])
   (.bindRoot #'cdq.ctx.world/entity-components
              {:entity/animation                       {:create   cdq.entity.animation/create}
               :entity/body                            {:create   cdq.entity.body/create}

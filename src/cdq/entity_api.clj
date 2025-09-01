@@ -1,3 +1,4 @@
 (ns cdq.entity-api)
 
-(declare entity->tick)
+(declare entity->tick
+         render-layers)

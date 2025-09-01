@@ -1,8 +1,7 @@
 (ns cdq.start.gdx-app
   (:require cdq.application
             cdq.game
-            cdq.gdx.backends.lwjgl
-            cdq.render-layers))
+            cdq.gdx.backends.lwjgl))
 
 (def config
   {:cdq.game/stage {:skin-scale :x1}
@@ -60,19 +59,7 @@
                      :controls {:zoom-in :minus
                                 :zoom-out :equals
                                 :unpause-once :p
-                                :unpause-continously :space}
-                     :cdq.game/render-layers [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
-                                               :stunned cdq.render-layers/draw-stunned-state
-                                               :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
-                                              {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
-                                               :entity/animation cdq.render-layers/call-render-image
-                                               :entity/image cdq.render-layers/draw-centered-rotated-image
-                                               :entity/line-render cdq.render-layers/draw-line-entity}
-                                              {:npc-sleeping cdq.render-layers/draw-sleeping-state
-                                               :entity/temp-modifier cdq.render-layers/draw-temp-modifiers
-                                               :entity/string-effect cdq.render-layers/draw-text-over-entity}
-                                              {:creature/stats cdq.render-layers/draw-stats
-                                               :active-skill cdq.render-layers/draw-active-skill}]}})
+                                :unpause-continously :space}}})
 
 (defn do! [{:keys [lwjgl-app-config]}]
   (cdq.gdx.backends.lwjgl/start-application!
