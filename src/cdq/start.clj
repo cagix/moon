@@ -206,12 +206,10 @@
                                               {:creature/stats cdq.render-layers/draw-stats
                                                :active-skill cdq.render-layers/draw-active-skill}]}})
 
-(defn -main []
-  (install-entity-components!)
-  (install-effects!)
-  (install-txs!)
-  (install-editor-widgets!)
-  (cdq.java.awt/set-taskbar-icon! (io/resource "icon.png"))
+(defn set-icon! []
+  (cdq.java.awt/set-taskbar-icon! (io/resource "icon.png")))
+
+(defn start-gdx-app! []
   (cdq.gdx.backends.lwjgl/start-application!
    {:title "Cyber Dungeon Quest"
     :windowed-mode {:width 1440 :height 900}
@@ -224,3 +222,11 @@
                (swap! cdq.application/state cdq.game/render!))
     :resize! (fn [width height]
                (cdq.game/resize! @cdq.application/state width height))}))
+
+(defn -main []
+  (install-entity-components!)
+  (install-effects!)
+  (install-txs!)
+  (install-editor-widgets!)
+  (set-icon!)
+  (start-gdx-app!))
