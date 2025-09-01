@@ -8,7 +8,7 @@
             [cdq.gdx.graphics.g2d.freetype :as freetype]
             [cdq.gdx.tiled :as tiled]
             [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [cdq.math :refer [degree->radians]])
+            [cdq.math :as math :refer [degree->radians]])
   (:import (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
@@ -18,6 +18,7 @@
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -331,3 +332,24 @@
 
 (defn zoom-out! [graphics amount]
   (zoom-in! graphics (- amount)))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+; TODO clamping only works for gui-viewport ?
+; TODO ? "Can be negative coordinates, undefined cells."
+(defn- unproject-clamp [^Viewport viewport [x y]]
+  (let [x (math/clamp x
+                      (.getLeftGutterWidth viewport)
+                      (.getRightGutterX    viewport))
+        y (math/clamp y
+                      (.getTopGutterHeight viewport)
+                      (.getTopGutterY      viewport))]
+    (let [vector2 (.unproject viewport (Vector2. x y))]
+      [(.x vector2)
+       (.y vector2)])))
+
+(defn unproject-world [{:keys [world-viewport]} position]
+  (unproject-clamp world-viewport position))
+
+(defn unproject-ui [{:keys [ui-viewport]} position]
+  (unproject-clamp ui-viewport position))
