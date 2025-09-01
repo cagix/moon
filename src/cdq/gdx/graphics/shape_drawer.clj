@@ -51,25 +51,23 @@
                                 (float w)
                                 (float h)))
 
-; TODO now radians
-(defn arc! [shape-drawer [center-x center-y] radius start-angle degree color]
+(defn arc! [shape-drawer [center-x center-y] radius start-angle radians color]
   (ShapeDrawer/.setColor shape-drawer ^Color color)
   (ShapeDrawer/.arc shape-drawer
                     (float center-x)
                     (float center-y)
                     (float radius)
                     (float start-angle)
-                    (float degree)))
+                    (float radians)))
 
-; TODO now radians
-(defn sector! [shape-drawer [center-x center-y] radius start-angle degree color]
+(defn sector! [shape-drawer [center-x center-y] radius start-angle radians color]
   (ShapeDrawer/.setColor shape-drawer ^Color color)
   (ShapeDrawer/.sector shape-drawer
                        (float center-x)
                        (float center-y)
                        (float radius)
                        (float start-angle)
-                       (float degree)))
+                       (float radians)))
 
 (defn line! [shape-drawer [sx sy] [ex ey] color]
   (ShapeDrawer/.setColor shape-drawer ^Color color)
