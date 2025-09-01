@@ -24,31 +24,30 @@
 
 (defn interaction-state
   [{:keys [ctx/mouseover-actor
+           ctx/mouseover-eid
            ctx/stage
-           ctx/world
            ctx/world-mouse-position]}
    player-eid]
-  (let [mouseover-eid (:world/mouseover-eid world)]
-    (cond
-     mouseover-actor
-     [:interaction-state/mouseover-actor mouseover-actor]
+  (cond
+   mouseover-actor
+   [:interaction-state/mouseover-actor mouseover-actor]
 
-     (and mouseover-eid
-          (:entity/clickable @mouseover-eid))
-     [:interaction-state/clickable-mouseover-eid
-      {:clicked-eid mouseover-eid
-       :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
+   (and mouseover-eid
+        (:entity/clickable @mouseover-eid))
+   [:interaction-state/clickable-mouseover-eid
+    {:clicked-eid mouseover-eid
+     :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
 
-     :else
-     (if-let [skill-id (stage/action-bar-selected-skill stage)]
-       (let [entity @player-eid
-             skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
-             state (entity/skill-usable-state entity skill effect-ctx)]
-         (if (= state :usable)
-           [:interaction-state.skill/usable [skill effect-ctx]]
-           [:interaction-state.skill/not-usable state]))
-       [:interaction-state/no-skill-selected]))))
+   :else
+   (if-let [skill-id (stage/action-bar-selected-skill stage)]
+     (let [entity @player-eid
+           skill (skill-id (:entity/skills entity))
+           effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
+           state (entity/skill-usable-state entity skill effect-ctx)]
+       (if (= state :usable)
+         [:interaction-state.skill/usable [skill effect-ctx]]
+         [:interaction-state.skill/not-usable state]))
+     [:interaction-state/no-skill-selected])))
 
 (defn ->cursor [player-eid ctx]
   (let [[k params] (interaction-state ctx player-eid)]

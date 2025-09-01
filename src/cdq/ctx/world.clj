@@ -208,7 +208,6 @@
                     world/delta-time
                     world/paused?
                     world/active-entities
-                    world/mouseover-eid
                     world/player-eid])
 
 (defn create

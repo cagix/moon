@@ -12,10 +12,9 @@
 
 (defn mouseover-entity-id [icon]
   {:label "Mouseover-entity id"
-   :update-fn (fn [{:keys [ctx/world]}]
-                (let [mouseover-eid (:world/mouseover-eid world)]
-                  (when-let [entity (and mouseover-eid @mouseover-eid)]
-                    (entity/id entity))))
+   :update-fn (fn [{:keys [ctx/mouseover-eid]}]
+                (when-let [entity (and mouseover-eid @mouseover-eid)]
+                  (entity/id entity)))
    :icon icon})
 
 (defn elapsed-time [icon]

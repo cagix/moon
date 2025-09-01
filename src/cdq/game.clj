@@ -45,6 +45,7 @@
                       ctx/db
                       ctx/audio
                       ctx/stage
+                      ctx/mouseover-eid
                       ctx/graphics
                       ctx/world])
 
@@ -55,6 +56,7 @@
              [:ctx/db :some]
              [:ctx/audio :some]
              [:ctx/stage :some]
+             [:ctx/mouseover-eid :any]
              [:ctx/graphics :some]
              [:ctx/world :some]]))
 
@@ -591,12 +593,12 @@
 (defn- check-open-debug-data-view!
   [{:keys [ctx/input
            ctx/stage
+           ctx/mouseover-eid
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
   (when (input/button-just-pressed? input :right)
-    (let [mouseover-eid (:world/mouseover-eid world)
-          data (or (and mouseover-eid @mouseover-eid)
+    (let [data (or (and mouseover-eid @mouseover-eid)
                    @(grid/cell (:world/grid world)
                                (mapv int world-mouse-position)))]
       (cdq.ui.stage/add! stage
@@ -800,6 +802,7 @@
 
 (defn- update-mouseover-entity!
   [{:keys [ctx/mouseover-actor
+           ctx/mouseover-eid
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
@@ -813,11 +816,11 @@
                          reverse
                          (filter #(world/line-of-sight? world player @%))
                          first)))]
-    (when-let [eid (:world/mouseover-eid world)]
-      (swap! eid dissoc :entity/mouseover?))
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc-in ctx [:ctx/world :world/mouseover-eid] new-eid)))
+    (assoc ctx :ctx/mouseover-eid new-eid)))
 
 (def ^:private pausing? true)
 
@@ -932,6 +935,7 @@
                        :input input
                        :stage stage})
         (reset-game-state! (::starting-level config))
+        (assoc :ctx/mouseover-eid nil)
         validate)))
 
 (defn dispose! [{:keys [ctx/audio
@@ -966,6 +970,7 @@
   (-> ctx
       validate
       assoc-mouseover-keys
+      update-mouseover-entity!
       check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
       assoc-active-entities
       set-camera-on-player!
@@ -975,7 +980,6 @@
       render-stage!
       set-cursor!
       player-state-handle-input!
-      update-mouseover-entity!
       assoc-paused
       tick-world!
       remove-destroyed-entities! ; do not pause as pickup item should be destroyed

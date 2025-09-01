@@ -16,9 +16,9 @@
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
     (group/add! window {:actor/type :actor.type/actor
-                        :act (fn [_this _delta {:keys [ctx/world]
+                        :act (fn [_this _delta {:keys [ctx/mouseover-eid]
                                                 :as ctx}]
-                               (.setText label (str (if-let [eid (:world/mouseover-eid world)]
+                               (.setText label (str (if-let [eid mouseover-eid]
                                                       (->label-text @eid ctx)
                                                       "")))
                                (.pack window))})
