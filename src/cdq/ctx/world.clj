@@ -211,8 +211,7 @@
                     ; added later
                     world/delta-time
                     world/paused?
-                    world/active-entities
-                    world/player-eid])
+                    world/active-entities])
 
 (defn create
   [{:keys [tiled-map
@@ -255,10 +254,10 @@
 (defn dispose! [{:keys [world/tiled-map]}]
   (com.badlogic.gdx.utils.Disposable/.dispose tiled-map)) ; TODO tiled/dispose! ?
 
-(defn cache-active-entities [world]
+(defn cache-active-entities [world entity]
   (assoc world :world/active-entities
          (content-grid/active-entities (:world/content-grid world)
-                                       @(:world/player-eid world))))
+                                       entity)))
 (defn tick-potential-fields!
   [{:keys [world/factions-iterations
            world/potential-field-cache

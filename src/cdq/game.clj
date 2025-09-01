@@ -46,6 +46,7 @@
                       ctx/audio
                       ctx/stage
                       ctx/mouseover-eid
+                      ctx/player-eid
                       ctx/graphics
                       ctx/world])
 
@@ -57,6 +58,7 @@
              [:ctx/audio :some]
              [:ctx/stage :some]
              [:ctx/mouseover-eid :any]
+             [:ctx/player-eid :some]
              [:ctx/graphics :some]
              [:ctx/world :some]]))
 
@@ -520,12 +522,11 @@
                 :id :inventory-window
                 :visible? false
                 :clicked-cell-fn (fn [cell]
-                                   (fn [{:keys [ctx/world] :as ctx}]
+                                   (fn [{:keys [ctx/player-eid] :as ctx}]
                                      (handle-txs!
                                       ctx
-                                      (let [player-eid (:world/player-eid world)]
-                                        (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
-                                          (f player-eid cell))))))})]}
+                                      (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+                                        (f player-eid cell)))))})]}
     (cdq.ui.player-state-draw/create
      {:state->draw-gui-view
       {:player-item-on-cursor
@@ -565,7 +566,7 @@
        (handle-txs! ctx))
   (let [player-eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @player-eid))
-    (assoc-in ctx [:ctx/world :world/player-eid] player-eid)))
+    (assoc ctx :ctx/player-eid player-eid)))
 
 (defn- spawn-enemies!
   [{:keys [ctx/config
@@ -609,14 +610,14 @@
   ctx)
 
 (defn- assoc-active-entities [ctx]
-  (update ctx :ctx/world world/cache-active-entities))
+  (update ctx :ctx/world world/cache-active-entities @(:ctx/player-eid ctx)))
 
 (defn- set-camera-on-player!
-  [{:keys [ctx/world
-           ctx/graphics]
+  [{:keys [ctx/graphics
+           ctx/player-eid]
     :as ctx}]
   (camera/set-position! (:viewport/camera (:world-viewport graphics))
-                        (entity/position @(:world/player-eid world)))
+                        (entity/position @player-eid))
   ctx)
 
 (defn- clear-screen!
@@ -704,10 +705,11 @@
 
 (defn- render-entities
   [{:keys [ctx/config
+           ctx/player-eid
            ctx/world]
     :as ctx}]
   (let [entities (map deref (:world/active-entities world))
-        player @(:world/player-eid world)
+        player @player-eid
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (world/line-of-sight? world player entity)))]
@@ -774,14 +776,13 @@
 
 (defn- set-cursor!
   [{:keys [ctx/graphics
-           ctx/world]
+           ctx/player-eid]
     :as ctx}]
-  (let [player-eid (:world/player-eid world)]
-    ; world/player-state
-    (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
-                                     (if (keyword? ->cursor)
-                                       ->cursor
-                                       (->cursor player-eid ctx)))))
+  ; world/player-state
+  (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
+                                   (if (keyword? ->cursor)
+                                     ->cursor
+                                     (->cursor player-eid ctx))))
   ctx)
 
 (def ^:private state->handle-input
@@ -790,10 +791,9 @@
    :player-moving         cdq.entity.state.player-moving/handle-input})
 
 (defn- player-state-handle-input!
-  [{:keys [ctx/world]
+  [{:keys [ctx/player-eid]
     :as ctx}]
-  (let [player-eid (:world/player-eid world)
-        handle-input (state->handle-input (:state (:entity/fsm @player-eid)))
+  (let [handle-input (state->handle-input (:state (:entity/fsm @player-eid)))
         txs (if handle-input
               (handle-input player-eid ctx)
               nil)]
@@ -803,12 +803,13 @@
 (defn- update-mouseover-entity!
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
+           ctx/player-eid
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
   (let [new-eid (if mouseover-actor
                   nil
-                  (let [player @(:world/player-eid world)
+                  (let [player @player-eid
                         hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
                                      (grid/point->entities (:world/grid world) world-mouse-position))]
                     (->> (:world/render-z-order world)
@@ -834,14 +835,14 @@
 
 (defn- assoc-paused
   [{:keys [ctx/input
-           ctx/world
+           ctx/player-eid
            ctx/config]
     :as ctx}]
   (assoc-in ctx [:ctx/world :world/paused?]
             (let [controls (:controls config)]
               (or #_error
                   (and pausing?
-                       (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
+                       (state->pause-game? (:state (:entity/fsm @player-eid)))
                        (not (or (input/key-just-pressed? input (:unpause-once controls))
                                 (input/key-pressed?      input (:unpause-continously controls)))))))))
 

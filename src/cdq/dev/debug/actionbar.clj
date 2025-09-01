@@ -1,7 +1,7 @@
 (ns cdq.dev.debug.actionbar)
 
 (comment
- (keys (:entity/skills @(:world/player-eid (:ctx/world @cdq.application/state))))
+ (keys (:entity/skills @(:ctx/player-eid @cdq.application/state)))
 
  (remove-skill! (:action-bar (:ctx/stage @cdq.application/state))
                 :skills/meditation))

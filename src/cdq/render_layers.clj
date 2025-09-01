@@ -33,8 +33,8 @@
        world-mouse-position
        entity)]]))
 
-(defn draw-mouseover-highlighting [_ entity {:keys [ctx/world]}]
-  (let [player @(:world/player-eid world)
+(defn draw-mouseover-highlighting [_ entity {:keys [ctx/player-eid]}]
+  (let [player @player-eid
         faction (entity/faction entity)]
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse

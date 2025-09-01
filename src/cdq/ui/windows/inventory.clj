@@ -62,9 +62,9 @@
                            :draw
                            (fn [actor {:keys [ctx/graphics
                                               ctx/ui-mouse-position
-                                              ctx/world]}]
+                                              ctx/player-eid]}]
                              (g/handle-draws! graphics
-                                              (draw-cell-rect @(:world/player-eid world)
+                                              (draw-cell-rect @player-eid
                                                               (actor/get-x actor)
                                                               (actor/get-y actor)
                                                               (actor/hit actor ui-mouse-position)
