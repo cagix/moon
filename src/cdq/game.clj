@@ -1,11 +1,3 @@
-; 1. only depend on world,graphics,ui,audio, ..
-; 2. they have only the dependencies from here - e.g. world otherwise internal API also ...
-; 3. disposable call directly -> low hanging fruits first
-; 4. _only_ this namespace knows about 'ctx/..' - the game data structure !
-; -> see namespaces using it and move here (defmethods ?)
-; 5. low hanging fruits - remove defprotocols
-; (audio, graphics, db, schemas, ?) -> :cdq.db/data, :db/files, ....
-; 6. am besten so wenig tiefe wie moeglich ctx durchgeben
 (ns cdq.game
   (:require [cdq.animation :as animation]
             [cdq.ctx.audio :as audio]
@@ -64,9 +56,6 @@
             [clojure.math :as math]
             [clojure.string :as str]
             [qrecord.core :as q]))
-
-; TODO this namespace should only depend on each 'ctx/' abstraction
-; not anything below that !
 
 (q/defrecord Context [ctx/config
                       ctx/input
