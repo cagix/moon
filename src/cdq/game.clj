@@ -860,21 +860,19 @@
                   (:entity/body entity)
                   ratio))))
 
-(def ^:private render-below {:entity/mouseover? draw-mouseover-highlighting
-                             :stunned draw-stunned-state
-                             :player-item-on-cursor draw-item-on-cursor-state})
-
-(def ^:private render-default {:entity/clickable draw-clickable-mouseover-text
-                               :entity/animation call-render-image
-                               :entity/image draw-centered-rotated-image
-                               :entity/line-render draw-line-entity})
-
-(def ^:private render-above {:npc-sleeping draw-sleeping-state
-                             :entity/temp-modifier draw-temp-modifiers
-                             :entity/string-effect draw-text-over-entity})
-
-(def ^:private render-info {:creature/stats draw-stats
-                            :active-skill draw-active-skill})
+(def ^:private render-layers
+  [{:entity/mouseover? draw-mouseover-highlighting
+    :stunned draw-stunned-state
+    :player-item-on-cursor draw-item-on-cursor-state}
+   {:entity/clickable draw-clickable-mouseover-text
+    :entity/animation call-render-image
+    :entity/image draw-centered-rotated-image
+    :entity/line-render draw-line-entity}
+   {:npc-sleeping draw-sleeping-state
+    :entity/temp-modifier draw-temp-modifiers
+    :entity/string-effect draw-text-over-entity}
+   {:creature/stats draw-stats
+    :active-skill draw-active-skill}])
 
 (def ^:dbg-flag show-body-bounds? false)
 
@@ -901,10 +899,7 @@
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
-            render-layer [render-below
-                          render-default
-                          render-above
-                          render-info]
+            render-layer render-layers
             entity entities
             :when (should-draw? entity z-order)]
       (draw-entity ctx entity render-layer))))
