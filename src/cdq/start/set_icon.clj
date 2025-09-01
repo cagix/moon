@@ -2,5 +2,5 @@
   (:require cdq.java.awt
             [clojure.java.io :as io]))
 
-(defn do! []
-  (cdq.java.awt/set-taskbar-icon! (io/resource "icon.png")))
+(defn do! [path]
+  (cdq.java.awt/set-taskbar-icon! (io/resource path)))

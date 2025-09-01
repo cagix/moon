@@ -1,7 +1,7 @@
 (ns cdq.start.install-effects
   (:require cdq.multifn))
 
-(defn do! []
+(defn do! [_]
   (cdq.multifn/add-methods! '[{:required [cdq.world.effect/applicable?
                                           cdq.world.effect/handle]
                                :optional [cdq.world.effect/useful?

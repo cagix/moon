@@ -1,7 +1,7 @@
 (ns cdq.start.install-txs
   (:require cdq.multifn))
 
-(defn do! []
+(defn do! [_]
   (cdq.multifn/add-methods! '[{:required [cdq.game/do!]}
                               [[cdq.tx.toggle-inventory-visible
                                 :tx/toggle-inventory-visible]

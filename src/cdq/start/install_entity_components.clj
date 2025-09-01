@@ -21,7 +21,7 @@
             cdq.entity.string-effect
             cdq.entity.temp-modifier))
 
-(defn do! []
+(defn do! [_]
   (.bindRoot #'cdq.ctx.world/entity-components
              {:entity/animation                       {:create   cdq.entity.animation/create}
               :entity/body                            {:create   cdq.entity.body/create}

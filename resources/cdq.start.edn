@@ -1,6 +1,18 @@
-[cdq.start.install-entity-components/do!
- cdq.start.install-effects/do!
- cdq.start.install-txs/do!
- cdq.start.install-editor-widgets/do!
- cdq.start.set-icon/do!
- cdq.start.gdx-app/do!]
+[[cdq.start.install-entity-components/do!]
+ [cdq.start.install-effects/do!]
+ [cdq.start.install-txs/do!]
+ [cdq.start.install-editor-widgets/do! [cdq.ui.editor.widget.default
+                                        cdq.ui.editor.widget.edn
+                                        cdq.ui.editor.widget.string
+                                        cdq.ui.editor.widget.boolean
+                                        cdq.ui.editor.widget.enum
+                                        cdq.ui.editor.widget.sound
+                                        cdq.ui.editor.widget.one-to-one
+                                        cdq.ui.editor.widget.one-to-many
+                                        cdq.ui.editor.widget.image
+                                        cdq.ui.editor.widget.animation
+                                        cdq.ui.editor.widget.map]]
+ [cdq.start.set-icon/do! "icon.png"]
+ [cdq.start.gdx-app/do! {:lwjgl-app-config {:title "Cyber Dungeon Quest"
+                                            :windowed-mode {:width 1440 :height 900}
+                                            :foreground-fps 60}}]]

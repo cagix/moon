@@ -74,11 +74,9 @@
                                               {:creature/stats cdq.render-layers/draw-stats
                                                :active-skill cdq.render-layers/draw-active-skill}]}})
 
-(defn do! []
+(defn do! [{:keys [lwjgl-app-config]}]
   (cdq.gdx.backends.lwjgl/start-application!
-   {:title "Cyber Dungeon Quest"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}
+   lwjgl-app-config
    {:create! (fn [gdx]
                (reset! cdq.application/state (cdq.game/create! gdx config)))
     :dispose! (fn []
