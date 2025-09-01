@@ -1,6 +1,5 @@
 (ns cdq.graphics-impl
   (:require [cdq.ctx.graphics]
-            [cdq.gdx.files]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -8,9 +7,9 @@
             [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [cdq.gdx.graphics.g2d.freetype :as freetype]
             [cdq.gdx.tiled :as tiled]
-            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [cdq.math :as math :refer [degree->radians]])
-  (:import (com.badlogic.gdx Files
+            [clojure.string :as str])
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Files
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Colors
@@ -22,21 +21,61 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils.viewport FitViewport
+                                            Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
+
+(defn- fit-viewport [width height camera]
+  (proxy [FitViewport ILookup] [width height camera]
+    (valAt [k]
+      (case k
+        :viewport/width  (Viewport/.getWorldWidth  this)
+        :viewport/height (Viewport/.getWorldHeight this)
+        :viewport/camera (Viewport/.getCamera      this)))))
+
+(def ^:private degrees-to-radians (float (/ Math/PI 180)))
+
+(defn- degree->radians [degree]
+  (* degrees-to-radians (float degree)))
+
+(defn- clamp [value min max]
+  (cond
+   (< value min) min
+   (> value max) max
+   :else value))
+
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- search-files [files {:keys [folder extensions]}]
+  (map (fn [path]
+         [(str/replace-first path folder "") (Files/.internal files path)])
+       (recursively-search (Files/.internal files folder) extensions)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 ; TODO clamping only works for gui-viewport ?
 ; TODO ? "Can be negative coordinates, undefined cells."
 (defn- unproject-clamp [^Viewport viewport [x y]]
-  (let [x (math/clamp x
-                      (.getLeftGutterWidth viewport)
-                      (.getRightGutterX    viewport))
-        y (math/clamp y
-                      (.getTopGutterHeight viewport)
-                      (.getTopGutterY      viewport))]
+  (let [x (clamp x
+                 (.getLeftGutterWidth viewport)
+                 (.getRightGutterX    viewport))
+        y (clamp y
+                 (.getTopGutterHeight viewport)
+                 (.getTopGutterY      viewport))]
     (let [vector2 (.unproject viewport (Vector2. x y))]
       [(.x vector2)
        (.y vector2)])))
@@ -294,9 +333,9 @@
            world-viewport]}]
   (doseq [[name color-params] colors]
     (Colors/put name (color/->obj color-params)))
-  (let [textures (cdq.gdx.files/search files
-                                       {:folder "resources/"
-                                        :extensions #{"png" "bmp"}})
+  (let [textures (search-files files
+                               {:folder "resources/"
+                                :extensions #{"png" "bmp"}})
         batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor (color/->obj :white))
@@ -305,9 +344,9 @@
                                (.dispose pixmap)
                                texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (fit-viewport/create (:width  ui-viewport)
-                                         (:height ui-viewport)
-                                         (orthographic-camera/create))]
+        ui-viewport (fit-viewport (:width  ui-viewport)
+                                  (:height ui-viewport)
+                                  (orthographic-camera/create))]
     (map->RGraphics
      {:graphics graphics
       :textures (into {} (for [[path file-handle] textures]
@@ -325,11 +364,11 @@
       :ui-viewport ui-viewport
       :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                             world-height (* (:height world-viewport) world-unit-scale)]
-                        (fit-viewport/create world-width
-                                             world-height
-                                             (orthographic-camera/create :y-down? false
-                                                                         :world-width world-width
-                                                                         :world-height world-height)))
+                        (fit-viewport world-width
+                                      world-height
+                                      (orthographic-camera/create :y-down? false
+                                                                  :world-width world-width
+                                                                  :world-height world-height)))
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
