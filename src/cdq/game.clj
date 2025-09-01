@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require cdq.entity-api
-            [cdq.ctx :as ctx :refer [do!]]
+  (:require [cdq.ctx :as ctx :refer [do!]]
             [cdq.ctx.audio :as audio]
             cdq.interaction-state
             [cdq.ctx.db :as db]
@@ -663,6 +662,9 @@
                (- (position 1) (/ height 2))]]
     [[:draw/rectangle x y width height color]]))
 
+(declare entity->tick
+         render-layers)
+
 (defn- draw-entity [{:keys [ctx/graphics] :as ctx} entity render-layer]
   (try
    (when show-body-bounds?
@@ -671,7 +673,7 @@
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
-     (graphics/handle-draws! graphics (draw-fn v entity ctx)))
+     (graphics/handle-draws! graphics ((requiring-resolve draw-fn) v entity ctx)))
    (catch Throwable t
      (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) :red))
      (stacktrace/pretty-print t))))
@@ -688,7 +690,7 @@
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
-            render-layer cdq.entity-api/render-layers
+            render-layer render-layers
             entity entities
             :when (should-draw? entity z-order)]
       (draw-entity ctx entity render-layer))))
@@ -829,11 +831,18 @@
   (world/tick-potential-fields! world)
   ctx)
 
+; (defmulti tick! (fn [[k] _v _eid _world]
+;                   k))
+; (defmethod tick! :default [_ _v _eid _world])
+
+(defn- tick-component! [k v eid world]
+  (when-let [f (entity->tick k)]
+    ((requiring-resolve f) v eid world)))
+
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
-           (ctx/handle-txs! ctx (when-let [f (cdq.entity-api/entity->tick k)]
-                                  (f v eid world))))
+           (ctx/handle-txs! ctx (tick-component! k v eid world)))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k

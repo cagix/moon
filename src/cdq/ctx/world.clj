@@ -133,7 +133,7 @@
   (let [eid (atom (merge (map->Entity {})
                          (reduce (fn [m [k v]]
                                    (assoc m k (if-let [create (:create (k entity-components))]
-                                                (create v world)
+                                                ((requiring-resolve create) v world)
                                                 v)))
                                  {}
                                  (assoc components :entity/id (swap! id-counter inc)))))]
@@ -142,14 +142,14 @@
     (context-entity-add! world eid)
     (mapcat (fn [[k v]]
               (when-let [create! (:create! (k entity-components))]
-                (create! v eid world)))
+                ((requiring-resolve create!) v eid world)))
             @eid)))
 
 (defn remove-entity! [world eid]
   (context-entity-remove! world eid)
   (mapcat (fn [[k v]]
             (when-let [destroy! (:destroy! (k entity-components))]
-              (destroy! v eid world)))
+              ((requiring-resolve destroy!) v eid world)))
           @eid))
 
 (defn move-entity! [world eid body direction rotate-in-movement-direction?]
