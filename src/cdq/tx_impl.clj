@@ -1,15 +1,11 @@
 (ns cdq.tx-impl
   (:require [cdq.ctx :refer [do!]]
-            [cdq.ctx.stage :as stage]
             [cdq.timer :as timer]
             [cdq.inventory :as inventory]
             [cdq.entity.fsm :as fsm]
             [cdq.entity.timers :as timers]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]))
-
-(defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
-  (stage/remove-inventory-item! stage inventory-cell))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
@@ -66,16 +62,7 @@
        #_(tx/stack-item ctx eid cell item))
       (do! [:tx/set-item eid cell item] ctx))))
 
-(defmethod do! :tx/remove-item [[_ eid cell] ctx]
-  (let [entity @eid
-        item (get-in (:entity/inventory entity) cell)]
-    (assert item)
-    (swap! eid assoc-in (cons :entity/inventory cell) nil)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-remove (:entity/modifiers item)))
-    (when (:entity/player? entity)
-      (remove-item! ctx cell))
-    nil))
+
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

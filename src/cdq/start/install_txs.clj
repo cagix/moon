@@ -7,6 +7,8 @@
                                 :tx/add-skill]
                                [cdq.tx.set-item
                                 :tx/set-item]
+                               [cdq.tx.remove-item
+                                :tx/remove-item]
                                [cdq.tx.toggle-inventory-visible
                                 :tx/toggle-inventory-visible]
                                [cdq.tx.show-message

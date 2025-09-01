@@ -1,0 +1,18 @@
+(ns cdq.tx.remove-item
+  (:require [cdq.ctx.stage :as stage]
+            [cdq.inventory :as inventory]
+            [cdq.world.entity :as entity]))
+
+(defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
+  (stage/remove-inventory-item! stage inventory-cell))
+
+(defn do! [[_ eid cell] ctx]
+  (let [entity @eid
+        item (get-in (:entity/inventory entity) cell)]
+    (assert item)
+    (swap! eid assoc-in (cons :entity/inventory cell) nil)
+    (when (inventory/applies-modifiers? cell)
+      (swap! eid entity/mod-remove (:entity/modifiers item)))
+    (when (:entity/player? entity)
+      (remove-item! ctx cell))
+    nil))
