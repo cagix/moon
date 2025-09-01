@@ -1,11 +1,11 @@
-[[cdq.start.bind-root/do! [cdq.game.create/state->clicked-inventory-cell
+[[cdq.start.bind-root/do! [cdq.game.reset-game-state/state->clicked-inventory-cell
                            {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]]
  [cdq.start.bind-root/do! [cdq.game.render/state->handle-input
                            {:player-idle           cdq.entity.state.player-idle/handle-input
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                             :player-moving         cdq.entity.state.player-moving/handle-input}]]
- [cdq.start.bind-root/do! [cdq.game.create/state->draw-gui-view
+ [cdq.start.bind-root/do! [cdq.game.reset-game-state/state->draw-gui-view
                            {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]]
  [cdq.start.bind-root/do! [cdq.game.render/render-layers
                            [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
@@ -77,6 +77,7 @@
                                                             :path-format "sounds/%s.wav"}
                                     :cdq.game.create/db {:schemas "schema.edn"
                                                          :properties "properties.edn"}
+                                    :reset-game-state! cdq.game.reset-game-state/do!
                                     :cdq.game.create/starting-level [cdq.level.from-tmx/create
                                                                      {:tmx-file "maps/vampire.tmx"
                                                                       :start-position [32 71]}]
@@ -106,28 +107,28 @@
                                                              :enable-markup? true
                                                              ; false, otherwise scaling to world-units not visible
                                                              :use-integer-positions? false}}}
-                                    :cdq.game.create/config {:cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                                                                          :initial-state :npc-sleeping}
-                                                                                             :entity/faction :evil}
-                                                             :cdq.ctx.game/player-props {:creature-id :creatures/vampire
-                                                                                         :components {:entity/fsm {:fsm :fsms/player
-                                                                                                                   :initial-state :player-idle}
-                                                                                                      :entity/faction :good
-                                                                                                      :entity/player? true
-                                                                                                      :entity/free-skill-points 3
-                                                                                                      :entity/clickable {:type :clickable/player}
-                                                                                                      :entity/click-distance-tiles 1.5}}
-                                                             :cdq.game.create/world {:content-grid-cell-size 16
-                                                                                     :potential-field-factions-iterations {:good 15
-                                                                                                                           :evil 5}}
-                                                             :effect-body-props {:width 0.5
-                                                                                 :height 0.5
-                                                                                 :z-order :z-order/effect}
+                                    :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                                 :initial-state :npc-sleeping}
+                                                                    :entity/faction :evil}
+                                    :cdq.ctx.game/player-props {:creature-id :creatures/vampire
+                                                                :components {:entity/fsm {:fsm :fsms/player
+                                                                                          :initial-state :player-idle}
+                                                                             :entity/faction :good
+                                                                             :entity/player? true
+                                                                             :entity/free-skill-points 3
+                                                                             :entity/clickable {:type :clickable/player}
+                                                                             :entity/click-distance-tiles 1.5}}
+                                    :cdq.game.reset-game-state/world {:content-grid-cell-size 16
+                                                                      :potential-field-factions-iterations {:good 15
+                                                                                                            :evil 5}}
+                                    :effect-body-props {:width 0.5
+                                                        :height 0.5
+                                                        :z-order :z-order/effect}
 
-                                                             :controls {:zoom-in :minus
-                                                                        :zoom-out :equals
-                                                                        :unpause-once :p
-                                                                        :unpause-continously :space}}}]
+                                    :controls {:zoom-in :minus
+                                               :zoom-out :equals
+                                               :unpause-once :p
+                                               :unpause-continously :space}}]
 
                          :dispose! cdq.game.dispose/do!
                          :render! cdq.game.render/do!
