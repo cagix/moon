@@ -4,6 +4,7 @@
             cdq.multifn
             cdq.gdx.backends.lwjgl
             cdq.java.awt
+            cdq.render-layers
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
             cdq.entity.body
@@ -191,7 +192,19 @@
                      :controls {:zoom-in :minus
                                 :zoom-out :equals
                                 :unpause-once :p
-                                :unpause-continously :space}}})
+                                :unpause-continously :space}
+                     :cdq.game/render-layers [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
+                                               :stunned cdq.render-layers/draw-stunned-state
+                                               :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
+                                              {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
+                                               :entity/animation cdq.render-layers/call-render-image
+                                               :entity/image cdq.render-layers/draw-centered-rotated-image
+                                               :entity/line-render cdq.render-layers/draw-line-entity}
+                                              {:npc-sleeping cdq.render-layers/draw-sleeping-state
+                                               :entity/temp-modifier cdq.render-layers/draw-temp-modifiers
+                                               :entity/string-effect cdq.render-layers/draw-text-over-entity}
+                                              {:creature/stats cdq.render-layers/draw-stats
+                                               :active-skill cdq.render-layers/draw-active-skill}]}})
 
 (defn -main []
   (install-entity-components!)
