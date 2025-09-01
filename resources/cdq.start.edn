@@ -67,7 +67,7 @@
  [cdq.start.bind-root/do! [cdq.game.render/state->cursor
                            {:active-skill :cursors/sandclock
                             :player-dead :cursors/black-x
-                            :player-idle cdq.interaction-state/->cursor
+                            :player-idle cdq.entity.state.player-idle/->cursor
                             :player-item-on-cursor :cursors/hand-grab
                             :player-moving :cursors/walking
                             :stunned :cursors/denied}]]
