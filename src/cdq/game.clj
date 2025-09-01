@@ -1,5 +1,6 @@
 (ns cdq.game
-  (:require [cdq.ctx :as ctx :refer [do!]]
+  (:require cdq.graphics-impl
+            [cdq.ctx :as ctx :refer [do!]]
             [cdq.ctx.audio :as audio]
             [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
@@ -898,7 +899,7 @@
 
 (defn create! [gdx config]
   (let [input (:input gdx)
-        graphics (graphics/create! gdx (::graphics config))
+        graphics (cdq.graphics-impl/create! gdx (::graphics config))
         stage (stage/create! graphics (::stage config))]
     (input/set-processor! input stage)
     (-> (map->Context {:audio (audio/create gdx (::audio config))

@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.graphics-impl]
+            [cdq.ctx.db :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
@@ -80,12 +81,12 @@
   (ui/load! {:skin-scale :x1})
   (let [input (:input gdx)
         ctx (map->Context {:ctx/input input})
-        graphics (graphics/create! gdx
-                                   {:tile-size 48
-                                    :ui-viewport {:width 1440
-                                                  :height 900}
-                                    :world-viewport {:width 1440
-                                                     :height 900}})
+        graphics (cdq.graphics-impl/create! gdx
+                                            {:tile-size 48
+                                             :ui-viewport {:width 1440
+                                                           :height 900}
+                                             :world-viewport {:width 1440
+                                                              :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
         stage (ui/stage (:ui-viewport graphics)
                         (:batch       graphics))
