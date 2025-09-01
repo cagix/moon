@@ -28,3 +28,6 @@
                      (conj handled tx)))
           (recur ctx (rest txs) handled)))
       handled)))
+
+(defprotocol Schema
+  (validate [_]))

@@ -9,4 +9,5 @@
                 slurp
                 edn/read-string)]
     (doseq [[f config] fns]
+      (println [f config])
       ((requiring-resolve f) config))))
