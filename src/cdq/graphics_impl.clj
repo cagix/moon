@@ -2,7 +2,6 @@
   (:require [cdq.ctx.graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
             [clojure.string :as str])
@@ -11,6 +10,7 @@
                              Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Colors
+                                      OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
                                       Texture
@@ -20,7 +20,8 @@
                                           TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.math Vector2
+                                  Vector3)
            (com.badlogic.gdx.utils Align
                                    Disposable
                                    ScreenUtils)
@@ -28,6 +29,27 @@
                                             Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
+
+(defn- vector3-clojurize [^Vector3 v3]
+  [(.x v3)
+   (.y v3)
+   (.z v3)])
+
+(defn- orthographic-camera
+  ([]
+   (proxy [OrthographicCamera ILookup] []
+     (valAt [k]
+       (let [^OrthographicCamera this this]
+         (case k
+           :camera/combined (.combined this)
+           :camera/zoom (.zoom this)
+           :camera/frustum {:frustum/plane-points (mapv vector3-clojurize (.planePoints (.frustum this)))}
+           :camera/position (vector3-clojurize (.position this))
+           :camera/viewport-width  (.viewportWidth  this)
+           :camera/viewport-height (.viewportHeight this))))))
+  ([& {:keys [y-down? world-width world-height]}]
+   (doto (orthographic-camera)
+     (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
 
 (comment
  Nearest ; Fetch the nearest texel that best maps to the pixel on screen.
@@ -433,7 +455,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         world-unit-scale (float (/ tile-size))
         ui-viewport (fit-viewport (:width  ui-viewport)
                                   (:height ui-viewport)
-                                  (orthographic-camera/create))]
+                                  (orthographic-camera))]
     (map->RGraphics
      {:graphics graphics
       :textures (into {} (for [[path file-handle] textures]
@@ -453,9 +475,9 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                             world-height (* (:height world-viewport) world-unit-scale)]
                         (fit-viewport world-width
                                       world-height
-                                      (orthographic-camera/create :y-down? false
-                                                                  :world-width world-width
-                                                                  :world-height world-height)))
+                                      (orthographic-camera :y-down? false
+                                                           :world-width world-width
+                                                           :world-height world-height)))
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
