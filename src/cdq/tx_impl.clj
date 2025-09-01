@@ -1,6 +1,5 @@
 (ns cdq.tx-impl
-  (:require [cdq.ctx :refer [do!] :as ctx]
-            [cdq.ctx.graphics :as graphics]
+  (:require [cdq.ctx :refer [do!]]
             [cdq.ctx.stage :as stage]
             [cdq.timer :as timer]
             [cdq.inventory :as inventory]
@@ -8,31 +7,6 @@
             [cdq.entity.timers :as timers]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]))
-
-(defn- add-skill!
-  [{:keys [ctx/graphics
-           ctx/stage]}
-   skill]
-  (stage/add-action-bar-skill! stage
-                               {:skill-id (:property/id skill)
-                                :texture-region (graphics/image->texture-region graphics (:entity/image skill))
-                                ; (assoc ctx :effect/source (world/player)) FIXME
-                                :tooltip-text #(ctx/info-text % skill)})
-  nil)
-
-(defn- remove-skill! [{:keys [ctx/stage]} skill]
-  (stage/remove-action-bar-skill! stage (:property/id skill))
-  nil)
-
-(defn- set-item!
-  [{:keys [ctx/graphics
-           ctx/stage]
-    :as ctx}
-   inventory-cell item]
-  (stage/set-inventory-item! stage
-                             inventory-cell
-                             {:texture-region (graphics/image->texture-region graphics (:entity/image item))
-                              :tooltip-text (ctx/info-text ctx item)}))
 
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
   (stage/remove-inventory-item! stage inventory-cell))
@@ -68,18 +42,6 @@
 (defmethod do! :tx/event [[_ eid event params] {:keys [ctx/world]}]
   (fsm/event->txs world eid event params))
 
-(defmethod do! :tx/add-skill [[_ eid skill] ctx]
-  (swap! eid entity/add-skill skill)
-  (when (:entity/player? @eid)
-    (add-skill! ctx skill))
-  nil)
-
-#_(defn remove-skill [eid {:keys [property/id] :as skill}]
-    {:pre [(contains? (:entity/skills @eid) id)]}
-    (swap! eid update :entity/skills dissoc id)
-    (when (:entity/player? @eid)
-      (remove-skill! ctx skill)))
-
 (defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/world]}]
   (swap! eid assoc-in
          [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -93,18 +55,6 @@
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
   (swap! eid entity/pay-mana-cost cost)
   nil)
-
-(defmethod do! :tx/set-item [[_ eid cell item] ctx]
-  (let [entity @eid
-        inventory (:entity/inventory entity)]
-    (assert (and (nil? (get-in inventory cell))
-                 (inventory/valid-slot? cell item)))
-    (swap! eid assoc-in (cons :entity/inventory cell) item)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-add (:entity/modifiers item)))
-    (when (:entity/player? entity)
-      (set-item! ctx cell item))
-    nil))
 
 (defmethod do! :tx/pickup-item [[_ eid item] ctx]
   (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]

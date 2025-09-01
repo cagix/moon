@@ -3,7 +3,11 @@
 
 (defn do! [_]
   (cdq.multifn/add-methods! '[{:required [cdq.ctx/do!]}
-                              [[cdq.tx.toggle-inventory-visible
+                              [[cdq.tx.add-skill
+                                :tx/add-skill]
+                               [cdq.tx.set-item
+                                :tx/set-item]
+                               [cdq.tx.toggle-inventory-visible
                                 :tx/toggle-inventory-visible]
                                [cdq.tx.show-message
                                 :tx/show-message]
