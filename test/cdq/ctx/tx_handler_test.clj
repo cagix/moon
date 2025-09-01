@@ -1,5 +1,5 @@
 (ns cdq.ctx.tx-handler-test
-  (:require [cdq.game :refer [do! handle-txs!]]
+  (:require [cdq.ctx :refer [do! handle-txs!]]
             [clojure.test :refer :all]))
 
 (defmethod do! ::foobar [_ ctx]

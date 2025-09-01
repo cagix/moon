@@ -2,7 +2,7 @@
   (:require cdq.multifn))
 
 (defn do! [_]
-  (cdq.multifn/add-methods! '[{:required [cdq.game/do!]}
+  (cdq.multifn/add-methods! '[{:required [cdq.ctx/do!]}
                               [[cdq.tx.toggle-inventory-visible
                                 :tx/toggle-inventory-visible]
                                [cdq.tx.show-message

@@ -1,5 +1,6 @@
 (ns cdq.game
   (:require cdq.entity-api
+            [cdq.ctx :as ctx :refer [do!]]
             [cdq.ctx.audio :as audio]
             cdq.interaction-state
             [cdq.ctx.db :as db]
@@ -66,35 +67,6 @@
 (defn- validate [ctx]
   (m/validate-humanize schema ctx)
   ctx)
-
-(defn- valid-tx? [transaction]
-  (vector? transaction))
-
-(defmulti do! (fn [[k & _params] _ctx]
-                k))
-
-(defn- handle-tx! [tx ctx]
-  (assert (valid-tx? tx) (pr-str tx))
-  (try
-   (do! tx ctx)
-   (catch Throwable t
-     (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
-
-(defn handle-txs!
-  "Handles transactions and returns a flat list of all transactions handled, including nested."
-  [ctx transactions]
-  (loop [ctx ctx
-         txs transactions
-         handled []]
-    (if (seq txs)
-      (let [tx (first txs)]
-        (if tx
-          (let [new-txs (handle-tx! tx ctx)]
-              (recur ctx
-                     (concat (or new-txs []) (rest txs))
-                     (conj handled tx)))
-          (recur ctx (rest txs) handled)))
-      handled)))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
@@ -524,7 +496,7 @@
                 :visible? false
                 :clicked-cell-fn (fn [cell]
                                    (fn [{:keys [ctx/player-eid] :as ctx}]
-                                     (handle-txs!
+                                     (ctx/handle-txs!
                                       ctx
                                       (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
                                         (f player-eid cell)))))})]}
@@ -564,7 +536,7 @@
           :creature-property (db/build db creature-id)
           :components components})
        (world/spawn-creature! world)
-       (handle-txs! ctx))
+       (ctx/handle-txs! ctx))
   (let [player-eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @player-eid))
     (assoc ctx :ctx/player-eid player-eid)))
@@ -581,7 +553,7 @@
           :creature-property (db/build db (keyword creature-id))
           :components (:cdq.ctx.game/enemy-components config)}
          (world/spawn-creature! world)
-         (handle-txs! ctx)))
+         (ctx/handle-txs! ctx)))
   ctx)
 
 ; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'
@@ -797,7 +769,7 @@
         txs (if handle-input
               (handle-input player-eid ctx)
               nil)]
-    (handle-txs! ctx txs))
+    (ctx/handle-txs! ctx txs))
   ctx)
 
 (defn- update-mouseover-entity!
@@ -860,8 +832,8 @@
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
-           (handle-txs! ctx (when-let [f (cdq.entity-api/entity->tick k)]
-                              (f v eid world))))
+           (ctx/handle-txs! ctx (when-let [f (cdq.entity-api/entity->tick k)]
+                                  (f v eid world))))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k
@@ -894,7 +866,7 @@
     :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @(:world/entity-ids world)))]
-    (handle-txs! ctx (world/remove-entity! world eid)))
+    (ctx/handle-txs! ctx (world/remove-entity! world eid)))
   ctx)
 
 (def ^:private zoom-speed 0.025)
