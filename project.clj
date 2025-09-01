@@ -19,9 +19,6 @@
 
   :java-source-paths ["src"]
 
-  :resource-paths ["resources"
-                   "wav"]
-
   :aliases {
             "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]

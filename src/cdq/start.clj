@@ -119,7 +119,8 @@
 
 (def config
   {:cdq.game/stage {:skin-scale :x1}
-   :cdq.game/audio {:sounds "sounds.edn"}
+   :cdq.game/audio {:sounds "sounds.edn"
+                    :path-format "sounds/%s.wav"}
    :cdq.game/db {:schemas "schema.edn"
                  :properties "properties.edn"}
    :cdq.game/starting-level [(requiring-resolve 'cdq.level.from-tmx/create)

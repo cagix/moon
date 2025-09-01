@@ -3,28 +3,23 @@
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx Audio
                              Files)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.utils Disposable)))
-
-(defprotocol PAudio
-  (all-sounds [_])
-  (play-sound! [_ path])
-  (dispose! [_]))
+           (com.badlogic.gdx.audio Sound)))
 
 (defn create
   [{:keys [audio files]}
-   {:keys [sounds]}]
-  (let [sounds (into {}
-                     (for [path (->> sounds io/resource slurp edn/read-string)]
-                       [path (Audio/.newSound audio (Files/.internal files path))]))]
-    (reify
-      PAudio
-      (dispose! [_]
-        (run! Disposable/.dispose (vals sounds)))
+   {:keys [sounds path-format]}]
+  (into {}
+        (for [sound-name (->> sounds io/resource slurp edn/read-string)
+              :let [path (format path-format sound-name)]]
+          [sound-name
+           (Audio/.newSound audio (Files/.internal files path))])))
 
-      (all-sounds [_]
-        (map first sounds))
+(defn dispose! [sounds]
+  (run! Sound/.dispose (vals sounds)))
 
-      (play-sound! [_ path]
-        (assert (contains? sounds path) (str path))
-        #_(Sound/.play (get sounds path))))))
+(defn all-sounds [sounds]
+  (map first sounds))
+
+(defn play-sound! [sounds sound-name]
+  (assert (contains? sounds sound-name) (str sound-name))
+  (Sound/.play (get sounds sound-name)))
