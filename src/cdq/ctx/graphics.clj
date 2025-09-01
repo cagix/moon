@@ -229,7 +229,7 @@
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
     (.setColor batch (color/->obj :white))
-    (.setProjectionMatrix batch (.combined (:viewport/camera world-viewport)))
+    (.setProjectionMatrix batch (:camera/combined (:viewport/camera world-viewport)))
     (.begin batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (fn []
@@ -260,7 +260,7 @@
   (image->texture-region [graphics {:keys [image/file
                                            image/bounds]}]
     (assert file)
-    (let [texture (texture graphics file)
+    (let [^Texture texture (texture graphics file)
           [x y w h] bounds]
       (if bounds
         (TextureRegion. texture
@@ -298,7 +298,7 @@
     (map->RGraphics
      {:graphics graphics
       :textures (into {} (for [[path file-handle] textures]
-                           [path (Texture. file-handle)]))
+                           [path (Texture. ^FileHandle file-handle)]))
       :cursors (update-vals cursors
                             (fn [[file [hotspot-x hotspot-y]]]
                               (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))

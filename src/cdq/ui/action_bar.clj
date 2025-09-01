@@ -42,7 +42,7 @@
     (actor/set-user-object! button skill-id)
     (actor/add-tooltip!     button tooltip-text)
     (group/add!        horizontal-group button)
-    (ButtonGroup/.add  button-group     button)
+    (ButtonGroup/.add  button-group     ^Button button)
     nil))
 
 (defn remove-skill! [action-bar skill-id]

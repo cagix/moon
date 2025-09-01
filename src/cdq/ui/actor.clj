@@ -1,5 +1,6 @@
 (ns cdq.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            InputEvent
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
@@ -16,7 +17,7 @@
 (defn- click-listener [f]
   (proxy [ClickListener] []
     (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (.getStage event))))))
+      (f @(.ctx ^CtxStage (InputEvent/.getStage event))))))
 
 (defn- get-stage-ctx [^Actor actor]
   (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet

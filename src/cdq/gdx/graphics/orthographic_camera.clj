@@ -7,12 +7,14 @@
   ([]
    (proxy [OrthographicCamera ILookup] []
      (valAt [k]
-       (case k
-         :camera/zoom (.zoom this)
-         :camera/frustum {:frustum/plane-points (mapv vector3/clojurize (.planePoints (.frustum this)))}
-         :camera/position (vector3/clojurize (.position this))
-         :camera/viewport-width  (.viewportWidth  this)
-         :camera/viewport-height (.viewportHeight this)))))
+       (let [^OrthographicCamera this this]
+         (case k
+           :camera/combined (.combined this)
+           :camera/zoom (.zoom this)
+           :camera/frustum {:frustum/plane-points (mapv vector3/clojurize (.planePoints (.frustum this)))}
+           :camera/position (vector3/clojurize (.position this))
+           :camera/viewport-width  (.viewportWidth  this)
+           :camera/viewport-height (.viewportHeight this))))))
   ([& {:keys [y-down? world-width world-height]}]
    (doto (create)
-     (.setToOrtho y-down? world-width world-height))))
+     (OrthographicCamera/.setToOrtho y-down? world-width world-height))))

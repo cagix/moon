@@ -6,7 +6,8 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Group)
+           (com.badlogic.gdx.scenes.scene2d InputEvent
+                                            Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                HorizontalGroup
                                                Image
@@ -65,7 +66,7 @@
 (defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
-      (on-clicked actor @(.ctx ^CtxStage (.getStage event))))))
+      (on-clicked actor @(.ctx ^CtxStage (InputEvent/.getStage event))))))
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -95,7 +96,7 @@
     (.setSelected selected)))
 
 (defn drawable [texture-region & {:keys [width height tint-color]}]
-  (let [drawable (TextureRegionDrawable. texture-region)]
+  (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)]
     (when (and width height)
       (BaseDrawable/.setMinSize drawable (float width) (float height)))
     (if tint-color
@@ -168,10 +169,10 @@
   (VisImage. drawable))
 
 (defmethod image* Texture [texture]
-  (VisImage. (TextureRegion. texture)))
+  (VisImage. (TextureRegion. ^Texture texture)))
 
 (defmethod image* TextureRegion [texture-region]
-  (VisImage. texture-region))
+  (VisImage. ^TextureRegion texture-region))
 
 (defn image-widget ; TODO widget also make, for fill parent
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
