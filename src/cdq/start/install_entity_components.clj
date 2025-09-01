@@ -1,5 +1,5 @@
 (ns cdq.start.install-entity-components
-  (:require cdq.game
+  (:require cdq.entity-api
             cdq.ctx.world
             cdq.entity.alert-friendlies-after-duration
             cdq.entity.animation
@@ -34,7 +34,7 @@
               :entity/skills                          {:create!  cdq.entity.skills/create!}
               :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}})
 
-  (.bindRoot #'cdq.game/entity->tick
+  (.bindRoot #'cdq.entity-api/entity->tick
              {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
               :entity/animation cdq.entity.animation/tick!
               :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!

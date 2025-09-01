@@ -1,5 +1,6 @@
 (ns cdq.game
-  (:require [cdq.ctx.audio :as audio]
+  (:require cdq.entity-api
+            [cdq.ctx.audio :as audio]
             cdq.interaction-state
             [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
@@ -857,12 +858,10 @@
   (world/tick-potential-fields! world)
   ctx)
 
-(declare entity->tick)
-
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
-           (handle-txs! ctx (when-let [f (entity->tick k)]
+           (handle-txs! ctx (when-let [f (cdq.entity-api/entity->tick k)]
                               (f v eid world))))
          (catch Throwable t
            (throw (ex-info "entity-tick"
