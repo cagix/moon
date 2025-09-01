@@ -1,6 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.graphics-impl]
-            [cdq.ctx.db :as db]
+            [cdq.db-impl :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
