@@ -486,17 +486,17 @@
 (defn- create-ui-actors [ctx]
   [(cdq.ui.dev-menu/create ctx ; graphics db
                            {:reset-game-state-fn reset-game-state!
-                            :world-fns [[(requiring-resolve 'cdq.level.from-tmx/create)
+                            :world-fns [['cdq.level.from-tmx/create
                                          {:tmx-file "maps/vampire.tmx"
                                           :start-position [32 71]}]
-                                        [(requiring-resolve 'cdq.level.uf-caves/create)
+                                        ['cdq.level.uf-caves/create
                                          {:tile-size 48
                                           :texture "maps/uf_terrain.png"
                                           :spawn-rate 0.02
                                           :scaling 3
                                           :cave-size 200
                                           :cave-style :wide}]
-                                        [(requiring-resolve 'cdq.level.modules/create)
+                                        ['cdq.level.modules/create
                                          {:world/map-size 5,
                                           :world/max-area-level 3,
                                           :world/spawn-rate 0.05}]]
@@ -551,7 +551,7 @@
    world-fn]
   (assoc ctx :ctx/world (world/create (merge (::world config)
                                              (let [[f params] world-fn]
-                                               (f ctx params))))))
+                                               ((requiring-resolve f) ctx params))))))
 
 (defn- spawn-player!
   [{:keys [ctx/config
