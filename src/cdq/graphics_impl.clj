@@ -4,8 +4,6 @@
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.orthographic-camera :as orthographic-camera]
             [cdq.gdx.graphics.shape-drawer :as sd]
-            [cdq.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [cdq.gdx.graphics.g2d.freetype :as freetype]
             [cdq.gdx.tiled :as tiled]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
@@ -15,16 +13,105 @@
            (com.badlogic.gdx.graphics Colors
                                       Pixmap
                                       Pixmap$Format
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                      Texture
+                                      Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          SpriteBatch
                                           TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils Disposable
+           (com.badlogic.gdx.utils Align
+                                   Disposable
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
+
+(comment
+ Nearest ; Fetch the nearest texel that best maps to the pixel on screen.
+Linear ; Fetch four nearest texels that best maps to the pixel on screen.
+MipMap ; @see TextureFilter#MipMapLinearLinear
+MipMapNearestNearest ; Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a nearest filter.
+MipMapLinearNearest ; Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a linear filter.
+MipMapNearestLinear ; Fetch the two best fitting images from the mip map chain and then sample the nearest texel from each of the two images, combining them to the final output pixel.
+MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain and then sample the four nearest texels from each of the two images, combining them to the final output pixel.
+ )
+
+(let [mapping {:linear Texture$TextureFilter/Linear}]
+  (defn texture-filter-k->value [k]
+    (when-not (contains? mapping k)
+      (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
+    (k mapping)))
+
+(def ^:private align-k->value
+  {:bottom       Align/bottom
+   :bottom-left  Align/bottomLeft
+   :bottom-right Align/bottomRight
+   :center       Align/center
+   :left         Align/left
+   :right        Align/right
+   :top          Align/top
+   :top-left     Align/topLeft
+   :top-right    Align/topRight})
+
+(defn- bitmap-font-configure! [^BitmapFont font {:keys [scale enable-markup? use-integer-positions?]}]
+  (.setScale (.getData font) scale)
+  (set! (.markupEnabled (.getData font)) enable-markup?)
+  (.setUseIntegerPositions font use-integer-positions?)
+  font)
+
+(defn- create-font-params [{:keys [size
+                                   min-filter
+                                   mag-filter]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    (set! (.minFilter params) min-filter)
+    (set! (.magFilter params) mag-filter)
+    params))
+
+(defn- generate-font [file-handle {:keys [size
+                                          quality-scaling
+                                          enable-markup?
+                                          use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        font (.generateFont generator
+                            (create-font-params {:size (* size quality-scaling)
+                                                 ; :texture-filter/linear because scaling to world-units
+                                                 :min-filter (texture-filter-k->value :linear)
+                                                 :mag-filter (texture-filter-k->value :linear)}))]
+    (bitmap-font-configure! font {:scale (/ quality-scaling)
+                                  :enable-markup? enable-markup?
+                                  :use-integer-positions? use-integer-positions?})))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn- bitmap-font-draw!
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
+  [^BitmapFont font
+   batch
+   {:keys [scale text x y up? h-align target-width wrap?]}]
+  {:pre [(or (nil? h-align)
+             (contains? align-k->value h-align))]}
+  (let [old-scale (.scaleX (.getData font))]
+    (.setScale (.getData font) (float (* old-scale scale)))
+    (.draw font
+           batch
+           text
+           (float x)
+           (float (+ y (if up? (text-height font text) 0)))
+           (float target-width)
+           (get align-k->value (or h-align :center))
+           wrap?)
+    (.setScale (.getData font) (float old-scale))))
 
 (defn- fit-viewport [width height camera]
   (proxy [FitViewport ILookup] [width height camera]
@@ -147,7 +234,7 @@
                              {:keys [batch
                                      unit-scale
                                      default-font]}]
-  (bitmap-font/draw! (or font default-font)
+  (bitmap-font-draw! (or font default-font)
                      batch
                      {:scale (* (float @unit-scale)
                                 (float (or scale 1)))
@@ -358,8 +445,8 @@
                                 (.dispose pixmap)
                                 cursor)))
       :default-font (when default-font
-                      (freetype/generate-font (Files/.internal files (:file default-font))
-                                              (:params default-font)))
+                      (generate-font (Files/.internal files (:file default-font))
+                                     (:params default-font)))
       :world-unit-scale world-unit-scale
       :ui-viewport ui-viewport
       :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
