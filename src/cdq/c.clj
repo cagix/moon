@@ -1,7 +1,7 @@
 (ns cdq.c
   (:require [cdq.ctx.graphics :as graphics]
             [cdq.ctx.input :as input]
-            [cdq.ui.stage :as stage]))
+            [cdq.ctx.stage :as stage]))
 
 (defn world-mouse-position [{:keys [ctx/input
                                     ctx/graphics]}]

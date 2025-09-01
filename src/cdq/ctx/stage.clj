@@ -77,3 +77,6 @@
 
 (defn close-all-windows! [stage]
   (run! #(actor/set-visible! % false) (group/children (:windows stage))))
+
+(defn hit [stage position]
+  (stage/hit stage position))
