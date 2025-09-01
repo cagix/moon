@@ -13,7 +13,7 @@
 (defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} world]
   (let [source* @source]
     (apply concat
-           (for [target (w/creatures-in-los-of-player world)]
+           (for [target (w/creatures-in-los-of world source*)]
              [[:tx/spawn-line {:start (entity/position source*) #_(start-point source* target*)
                                :end (entity/position @target)
                                :duration 0.05
@@ -29,7 +29,7 @@
 
 (defn render [_ {:keys [effect/source]} {:keys [ctx/world]}]
   (let [source* @source]
-    (for [target* (map deref (w/creatures-in-los-of-player world))]
+    (for [target* (map deref (w/creatures-in-los-of world source*))]
       [:draw/line
        (entity/position source*) #_(start-point source* target*)
        (entity/position target*)

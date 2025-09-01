@@ -108,13 +108,13 @@
                                 (v/direction (entity/position entity)
                                              (entity/position @target)))}))
 
-(defn creatures-in-los-of-player
-  [{:keys [world/active-entities
-           world/player-eid]
-    :as world}]
+(defn creatures-in-los-of
+  [{:keys [world/active-entities]
+    :as world}
+   entity]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(line-of-sight? world @player-eid @%))
+       (filter #(line-of-sight? world entity @%))
        (remove #(:entity/player? @%))))
 
 (defn potential-field-find-direction [{:keys [world/grid]} eid]
