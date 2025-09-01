@@ -2,7 +2,6 @@
   (:require [cdq.ctx :refer [do!]]
             [cdq.timer :as timer]
             [cdq.inventory :as inventory]
-            [cdq.entity.fsm :as fsm]
             [cdq.entity.timers :as timers]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]))
@@ -34,9 +33,6 @@
 (defmethod do! :tx/effect [[_ effect-ctx effects] {:keys [ctx/world]}]
   (mapcat #(effect/handle % effect-ctx world)
           (effect/filter-applicable? effect-ctx effects)))
-
-(defmethod do! :tx/event [[_ eid event params] {:keys [ctx/world]}]
-  (fsm/event->txs world eid event params))
 
 (defmethod do! :tx/set-cooldown [[_ eid skill] {:keys [ctx/world]}]
   (swap! eid assoc-in
