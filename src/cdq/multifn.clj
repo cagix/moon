@@ -1,4 +1,4 @@
-(ns cdq.utils.multifn
+(ns cdq.multifn
   (:import (clojure.lang MultiFn)))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
