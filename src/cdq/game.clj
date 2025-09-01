@@ -673,7 +673,7 @@
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
-     (graphics/handle-draws! graphics ((requiring-resolve draw-fn) v entity ctx)))
+     (graphics/handle-draws! graphics (draw-fn v entity ctx)))
    (catch Throwable t
      (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) :red))
      (stacktrace/pretty-print t))))
@@ -750,7 +750,7 @@
   (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
                                    (if (keyword? ->cursor)
                                      ->cursor
-                                     ((requiring-resolve ->cursor) player-eid ctx))))
+                                     (->cursor player-eid ctx))))
   ctx)
 
 (def ^:private state->handle-input
@@ -831,7 +831,7 @@
 
 (defn- tick-component! [k v eid world]
   (when-let [f (entity->tick k)]
-    ((requiring-resolve f) v eid world)))
+    (f v eid world)))
 
 (defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
   (doseq [k (keys @eid)]
