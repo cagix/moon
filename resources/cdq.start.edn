@@ -1,4 +1,13 @@
-[[cdq.start.bind-root/do! [cdq.game/render-layers
+[[cdq.start.bind-root/do! [cdq.game/state->clicked-inventory-cell
+                           {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
+                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]]
+ [cdq.start.bind-root/do! [cdq.game/state->handle-input
+                           {:player-idle           cdq.entity.state.player-idle/handle-input
+                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+                            :player-moving         cdq.entity.state.player-moving/handle-input}]]
+ [cdq.start.bind-root/do! [cdq.game/state->draw-gui-view
+                           {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]]
+ [cdq.start.bind-root/do! [cdq.game/render-layers
                            [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
                              :stunned cdq.render-layers/draw-stunned-state
                              :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}

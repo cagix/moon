@@ -8,9 +8,6 @@
             [cdq.world.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.entity.timers :as timers]
-            cdq.entity.state.player-idle
-            cdq.entity.state.player-item-on-cursor
-            cdq.entity.state.player-moving
             [cdq.ctx.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.world.grid :as grid]
@@ -426,9 +423,7 @@
 
 (declare ^:private reset-game-state!)
 
-(def ^:private state->clicked-inventory-cell
-  {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell})
+(def state->clicked-inventory-cell)
 
 (comment
 
@@ -453,6 +448,8 @@
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
   (info-text ctx (apply dissoc entity disallowed-keys)))
+
+(def state->draw-gui-view)
 
 (defn- create-ui-actors [ctx]
   [(cdq.ui.dev-menu/create ctx ; graphics db
@@ -499,10 +496,7 @@
                                       ctx
                                       (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
                                         (f player-eid cell)))))})]}
-    (cdq.ui.player-state-draw/create
-     {:state->draw-gui-view
-      {:player-item-on-cursor
-       cdq.entity.state.player-item-on-cursor/draw-gui-view}})
+    (cdq.ui.player-state-draw/create state->draw-gui-view)
     (cdq.ui.message/create {:duration-seconds 0.5
                             :name "player-message"})])
 
@@ -753,10 +747,7 @@
                                      (->cursor player-eid ctx))))
   ctx)
 
-(def ^:private state->handle-input
-  {:player-idle           cdq.entity.state.player-idle/handle-input
-   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-   :player-moving         cdq.entity.state.player-moving/handle-input})
+(def state->handle-input)
 
 (defn- player-state-handle-input!
   [{:keys [ctx/player-eid]
