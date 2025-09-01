@@ -224,9 +224,10 @@
                (cdq.game/resize! @cdq.application/state width height))}))
 
 (defn -main []
-  (install-entity-components!)
-  (install-effects!)
-  (install-txs!)
-  (install-editor-widgets!)
-  (set-icon!)
-  (start-gdx-app!))
+  (doseq [f [install-entity-components!
+             install-effects!
+             install-txs!
+             install-editor-widgets!
+             set-icon!
+             start-gdx-app!]]
+    (f)))
