@@ -1,7 +1,6 @@
 (ns cdq.game
   (:require [cdq.ctx :as ctx :refer [do!]]
             [cdq.ctx.audio :as audio]
-            cdq.interaction-state
             [cdq.ctx.db :as db]
             [cdq.dev.data-view :as data-view]
             [cdq.world.effect :as effect]
@@ -740,13 +739,7 @@
 (defn- render-stage! [{:keys [ctx/stage] :as ctx}]
   (cdq.ui.stage/render! stage ctx))
 
-(def ^:private state->cursor
-  {:active-skill :cursors/sandclock
-   :player-dead :cursors/black-x
-   :player-idle cdq.interaction-state/->cursor
-   :player-item-on-cursor :cursors/hand-grab
-   :player-moving :cursors/walking
-   :stunned :cursors/denied})
+(declare state->cursor)
 
 (defn- set-cursor!
   [{:keys [ctx/graphics
@@ -756,7 +749,7 @@
   (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
                                    (if (keyword? ->cursor)
                                      ->cursor
-                                     (->cursor player-eid ctx))))
+                                     ((requiring-resolve ->cursor) player-eid ctx))))
   ctx)
 
 (def ^:private state->handle-input
