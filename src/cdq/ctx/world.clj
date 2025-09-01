@@ -44,6 +44,8 @@
 
 (declare entity-components)
 
+; entity/id has create! and destroy! ??
+
 (defn- context-entity-add! [{:keys [world/entity-ids
                                     world/content-grid
                                     world/grid]}
@@ -120,6 +122,8 @@
 (defn potential-field-find-direction [{:keys [world/grid]} eid]
   (potential-fields.movement/find-direction grid eid))
 
+; they have to have body because of grid/content-grid ...
+; or grid/content-grid is create! and destroy! of component body ?
 (defn spawn-entity!
   [{:keys [world/id-counter]
     :as world}
