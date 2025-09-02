@@ -13,11 +13,6 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]))
 
-(defn clear-screen!
-  [{:keys [ctx/graphics] :as ctx}]
-  (graphics/clear-screen! graphics :black)
-  ctx)
-
 (def ^:dbg-flag show-tile-grid? false)
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)

@@ -20,8 +20,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
@@ -164,9 +163,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
     (run! Disposable/.dispose (vals cursors))
     (when default-font
       (Disposable/.dispose default-font)))
-
-  (clear-screen! [_ color]
-    (ScreenUtils/clear (color/->obj color)))
 
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)

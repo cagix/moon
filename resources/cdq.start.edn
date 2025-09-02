@@ -239,7 +239,7 @@
                                    cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
                                    cdq.game.assoc-active-entities/do!
                                    cdq.game.set-camera-on-player/do!
-                                   cdq.game.render/clear-screen!
+                                   cdq.game.clear-screen/do!
                                    cdq.game.draw-world-map/do!
                                    cdq.game.render/draw-on-world-viewport!
                                    cdq.game.render/render-stage!

@@ -1,5 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.graphics-impl]
+            [cdq.game.clear-screen]
             [cdq.db-impl :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
@@ -140,7 +141,7 @@
   (stage/render! stage ctx))
 
 (defn render! []
-  (graphics/clear-screen! (:ctx/graphics @state) :black)
+  (cdq.game.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
