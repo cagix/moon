@@ -6,8 +6,6 @@
             [cdq.utils.tiled :as tiled]
             [cdq.ctx.world :as world]))
 
-; alternative: add actors at beginning
-; and call 'reset-state!' function on each actor
 (defn- reset-stage!
   [{:keys [ctx/config
            ctx/stage]
