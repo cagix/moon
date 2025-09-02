@@ -1,21 +1,10 @@
 (ns cdq.game.reset-game-state
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
-            [cdq.ui.stage]
+            [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
-            [cdq.world-impl]
-            [cdq.ctx.world :as world]))
-
-(defn- reset-stage!
-  [{:keys [ctx/config
-           ctx/stage]
-    :as ctx}]
-  (cdq.ui.stage/clear! stage)
-  (doseq [actor (map #((requiring-resolve %) ctx)
-                     (:create-ui-actors config))]
-    (cdq.ui.stage/add! stage actor))
-  ctx)
+            [cdq.world-impl]))
 
 (defn- add-ctx-world
   [{:keys [ctx/config]
@@ -55,7 +44,15 @@
   ctx)
 
 ; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'
-(defn do! [ctx world-fn]
+(defn do!
+  [{:keys [ctx/config
+           ctx/stage]
+    :as ctx}
+   world-fn]
+  (stage/clear! stage)
+  (doseq [actor (map #((requiring-resolve %) ctx)
+                     (:create-ui-actors config))]
+    (stage/add! stage actor))
   (-> ctx
       reset-stage!
       (add-ctx-world world-fn)
