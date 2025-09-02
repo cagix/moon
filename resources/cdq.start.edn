@@ -167,7 +167,7 @@
                                    cdq.game.render/assoc-active-entities
                                    cdq.game.render/set-camera-on-player!
                                    cdq.game.render/clear-screen!
-                                   cdq.game.render/draw-world-map!
+                                   cdq.game.draw-world-map/do!
                                    cdq.game.render/draw-on-world-viewport!
                                    cdq.game.render/render-stage!
                                    cdq.game.render/set-cursor!

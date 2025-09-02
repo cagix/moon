@@ -7,9 +7,7 @@
             [cdq.dev.data-view :as data-view]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.math.geom :as geom]
-            [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
-            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
             [cdq.ui.stage]
@@ -47,23 +45,6 @@
 (defn clear-screen!
   [{:keys [ctx/graphics] :as ctx}]
   (graphics/clear-screen! graphics :black)
-  ctx)
-
-(defn draw-world-map!
-  [{:keys [ctx/graphics
-           ctx/world]
-    :as ctx}]
-  (graphics/draw-tiled-map! graphics
-                            (:world/tiled-map world)
-                            (tile-color-setter/create
-                             {:ray-blocked? (let [raycaster (:world/raycaster world)]
-                                              (fn [start end] (raycaster/blocked? raycaster start end)))
-                              :explored-tile-corners (:world/explored-tile-corners world)
-                              :light-position (:camera/position (:viewport/camera (:world-viewport graphics)))
-                              :see-all-tiles? false
-                              :explored-tile-color  [0.5 0.5 0.5 1]
-                              :visible-tile-color   [1 1 1 1]
-                              :invisible-tile-color [0 0 0 1]}))
   ctx)
 
 (def ^:dbg-flag show-tile-grid? false)
