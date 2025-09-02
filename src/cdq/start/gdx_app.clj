@@ -16,6 +16,10 @@
     :dispose! (fn []
                 ((requiring-resolve dispose!) @cdq.application/state))
     :render! (fn []
-               (swap! cdq.application/state (requiring-resolve render!)))
+               (swap! cdq.application/state (fn [ctx]
+                                              (reduce (fn [ctx f]
+                                                        (f ctx))
+                                                      ctx
+                                                      (map requiring-resolve render!)))))
     :resize! (fn [width height]
                ((requiring-resolve resize!) @cdq.application/state width height))}))

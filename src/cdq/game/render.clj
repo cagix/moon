@@ -16,7 +16,7 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]))
 
-(defn- check-open-debug-data-view!
+(defn check-open-debug-data-view!
   [{:keys [ctx/input
            ctx/stage
            ctx/mouseover-eid
@@ -34,22 +34,22 @@
                                                        :height 500}))))
   ctx)
 
-(defn- assoc-active-entities [ctx]
+(defn assoc-active-entities [ctx]
   (update ctx :ctx/world world/cache-active-entities @(:ctx/player-eid ctx)))
 
-(defn- set-camera-on-player!
+(defn set-camera-on-player!
   [{:keys [ctx/graphics
            ctx/player-eid]
     :as ctx}]
   (graphics/set-camera-position! graphics (entity/position @player-eid))
   ctx)
 
-(defn- clear-screen!
+(defn clear-screen!
   [{:keys [ctx/graphics] :as ctx}]
   (graphics/clear-screen! graphics :black)
   ctx)
 
-(defn- draw-world-map!
+(defn draw-world-map!
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
@@ -177,7 +177,7 @@
                                   :air  [1 1 0 0.5]
                                   :none [1 0 0 0.5])]]))))
 
-(defn- draw-on-world-viewport!
+(defn draw-on-world-viewport!
   [{:keys [ctx/graphics] :as ctx}]
   (graphics/draw-on-world-viewport! graphics
                                     (fn []
@@ -189,12 +189,12 @@
                                         (f ctx))))
   ctx)
 
-(defn- render-stage! [{:keys [ctx/stage] :as ctx}]
+(defn render-stage! [{:keys [ctx/stage] :as ctx}]
   (cdq.ui.stage/render! stage ctx))
 
 (declare state->cursor)
 
-(defn- set-cursor!
+(defn set-cursor!
   [{:keys [ctx/graphics
            ctx/player-eid]
     :as ctx}]
@@ -207,7 +207,7 @@
 
 (def state->handle-input)
 
-(defn- player-state-handle-input!
+(defn player-state-handle-input!
   [{:keys [ctx/player-eid]
     :as ctx}]
   (let [handle-input (state->handle-input (:state (:entity/fsm @player-eid)))
@@ -217,7 +217,7 @@
     (ctx/handle-txs! ctx txs))
   ctx)
 
-(defn- update-mouseover-entity!
+(defn update-mouseover-entity!
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
            ctx/player-eid
@@ -250,7 +250,7 @@
    :player-dead true
    :active-skill false})
 
-(defn- assoc-paused
+(defn assoc-paused
   [{:keys [ctx/input
            ctx/player-eid
            ctx/config]
@@ -304,7 +304,7 @@
      #_(bind-root ::error t)))
   ctx)
 
-(defn- tick-world!
+(defn tick-world!
   [ctx]
   (if (get-in ctx [:ctx/world :world/paused?])
     ctx
@@ -318,7 +318,7 @@
 (def ^:private toggle-entity-info :e)
 (def ^:private zoom-speed 0.025)
 
-(defn- assoc-mouseover-keys
+(defn assoc-mouseover-keys
   [{:keys [ctx/graphics
            ctx/input
            ctx/stage]
@@ -331,14 +331,14 @@
            :ctx/ui-mouse-position    ui-mouse-position
            :ctx/world-mouse-position world-mouse-position)))
 
-(defn- dissoc-mouseover-keys
+(defn dissoc-mouseover-keys
   [ctx]
   (dissoc ctx
           :ctx/mouseover-actor
           :ctx/ui-mouse-position
           :ctx/world-mouse-position))
 
-(defn- check-window-hotkeys!
+(defn check-window-hotkeys!
   [{:keys [ctx/input
            ctx/stage]
     :as ctx}]
@@ -347,7 +347,7 @@
   (when (input/key-just-pressed? input toggle-entity-info) (stage/toggle-entity-info-window! stage))
   ctx)
 
-(defn- check-camera-controls!
+(defn check-camera-controls!
   [{:keys [ctx/config
            ctx/input
            ctx/graphics]
@@ -357,34 +357,10 @@
     (when (input/key-pressed? input (:zoom-out controls)) (graphics/zoom-out! graphics zoom-speed)))
   ctx)
 
-(defn- remove-destroyed-entities!
+(defn remove-destroyed-entities!
   [{:keys [ctx/world]
     :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @(:world/entity-ids world)))]
     (ctx/handle-txs! ctx (world/remove-entity! world eid)))
   ctx)
-
-(defn do! [ctx]
-  (-> ctx
-      ;validate
-      assoc-mouseover-keys
-      update-mouseover-entity!
-      check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-      assoc-active-entities
-      set-camera-on-player!
-      clear-screen!
-      draw-world-map!
-      draw-on-world-viewport!
-      render-stage!
-      set-cursor!
-      player-state-handle-input!
-      assoc-paused
-      tick-world!
-      remove-destroyed-entities! ; do not pause as pickup item should be destroyed
-      check-camera-controls!
-      check-window-hotkeys!
-      dissoc-mouseover-keys
-      ;validate
-
-      ))

@@ -159,5 +159,25 @@
                                                :unpause-continously :space}}]
 
                          :dispose! cdq.game.dispose/do!
-                         :render! cdq.game.render/do!
+                         :render! [
+                                   ;validate
+                                   cdq.game.render/assoc-mouseover-keys
+                                   cdq.game.render/update-mouseover-entity!
+                                   cdq.game.render/check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+                                   cdq.game.render/assoc-active-entities
+                                   cdq.game.render/set-camera-on-player!
+                                   cdq.game.render/clear-screen!
+                                   cdq.game.render/draw-world-map!
+                                   cdq.game.render/draw-on-world-viewport!
+                                   cdq.game.render/render-stage!
+                                   cdq.game.render/set-cursor!
+                                   cdq.game.render/player-state-handle-input!
+                                   cdq.game.render/assoc-paused
+                                   cdq.game.render/tick-world!
+                                   cdq.game.render/remove-destroyed-entities! ; do not pause as pickup item should be destroyed
+                                   cdq.game.render/check-camera-controls!
+                                   cdq.game.render/check-window-hotkeys!
+                                   cdq.game.render/dissoc-mouseover-keys
+                                   ;validate
+                                   ]
                          :resize! cdq.game.resize/do!}]]
