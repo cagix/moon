@@ -1,7 +1,6 @@
 (ns cdq.ctx.graphics)
 
 (defprotocol Graphics
-  (dispose! [_])
   (delta-time [_])
   (frames-per-second [_])
   (set-cursor! [_ cursor-key])
@@ -16,3 +15,12 @@
 
                          Loads the texture and creates a texture-region out of it, in case of sub-image bounds applies the proper bounds.")
   (handle-draws! [_ draws]))
+
+(defmulti draw!
+  (fn [[k] _graphics]
+    k))
+
+(defn handle-draws! [graphics draws]
+  (doseq [component draws
+          :when component]
+    (draw! component graphics)))

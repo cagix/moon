@@ -19,7 +19,6 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
@@ -120,10 +119,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
          [(str/replace-first path folder "") (Files/.internal files path)])
        (recursively-search (Files/.internal files folder) extensions)))
 
-(defmulti draw!
-  (fn [[k] _graphics]
-    k))
-
 (defn sd-with-line-width [^ShapeDrawer this width draw-fn]
   (let [old-line-width (.getDefaultLineWidth this)]
     (.setDefaultLineWidth this (float (* width old-line-width)))
@@ -144,19 +139,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    world-unit-scale
    ^Viewport world-viewport]
   cdq.ctx.graphics/Graphics
-  (handle-draws! [graphics draws]
-    (doseq [component draws
-            :when component]
-      (draw! component graphics)))
-
-  (dispose! [_]
-    (Disposable/.dispose batch)
-    (Disposable/.dispose shape-drawer-texture)
-    (run! Disposable/.dispose (vals textures))
-    (run! Disposable/.dispose (vals cursors))
-    (when default-font
-      (Disposable/.dispose default-font)))
-
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)
     (.update world-viewport width height false))

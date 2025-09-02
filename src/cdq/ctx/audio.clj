@@ -14,9 +14,6 @@
           [sound-name
            (Audio/.newSound audio (Files/.internal files path))])))
 
-(defn dispose! [sounds]
-  (run! Sound/.dispose (vals sounds)))
-
 (defn all-sounds [sounds]
   (map first sounds))
 

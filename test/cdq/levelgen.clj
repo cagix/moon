@@ -107,9 +107,10 @@
 (defn dispose! []
   ; TODO ? disposing properly everything cdq.start stuff??
   ; batch, cursors, default-font, shape-drawer-texture, etc.
+  (ui/dispose!)
   (let [{:keys [ctx/graphics
                 ctx/tiled-map]} @state]
-    (Disposable/.dispose graphics)
+    (Disposable/.dispose graphics) ; TODO that wont work anymore -> and one more fn so have to move it together?
     (Disposable/.dispose tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/graphics
