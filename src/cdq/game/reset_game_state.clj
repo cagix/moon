@@ -11,7 +11,8 @@
            ctx/stage]
     :as ctx}]
   (cdq.ui.stage/clear! stage)
-  (doseq [actor ((requiring-resolve (:create-ui-actors config)) ctx)]
+  (doseq [actor (map #((requiring-resolve %) ctx)
+                     (:create-ui-actors config))]
     (cdq.ui.stage/add! stage actor))
   ctx)
 

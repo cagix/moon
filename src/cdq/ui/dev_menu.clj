@@ -74,7 +74,7 @@
                                                                         :width 500
                                                                         :height 500})))}]})
 
-(defn create
+(defn- create*
   [{:keys [
            ctx/graphics
            ctx/db
@@ -99,3 +99,23 @@
                     (zoom (graphics/texture graphics "images/zoom.png"))
                     (fps (graphics/texture graphics "images/fps.png"))
                     ]}))
+
+(defn create [ctx]
+  (create* ctx
+           {:reset-game-state-fn (requiring-resolve (:reset-game-state! (:ctx/config ctx)))
+            :world-fns [['cdq.level.from-tmx/create
+                         {:tmx-file "maps/vampire.tmx"
+                          :start-position [32 71]}]
+                        ['cdq.level.uf-caves/create
+                         {:tile-size 48
+                          :texture "maps/uf_terrain.png"
+                          :spawn-rate 0.02
+                          :scaling 3
+                          :cave-size 200
+                          :cave-style :wide}]
+                        ['cdq.level.modules/create
+                         {:world/map-size 5,
+                          :world/max-area-level 3,
+                          :world/spawn-rate 0.05}]]
+            ;icons, etc. , components ....
+            :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}))

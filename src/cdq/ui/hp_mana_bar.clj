@@ -4,7 +4,7 @@
             [cdq.utils :as utils]
             [cdq.ctx.graphics :as g]))
 
-(defn create
+(defn- create*
   [{:keys [ctx/graphics]}
    {:keys [rahmen-file
            rahmenw
@@ -41,3 +41,12 @@
     {:actor/type :actor.type/actor
      :draw (fn [_this {:keys [ctx/graphics] :as ctx}]
              (g/handle-draws! graphics (create-draws ctx)))}))
+
+(defn create [ctx]
+  (create* ctx
+           {:rahmen-file "images/rahmen.png"
+            :rahmenw 150
+            :rahmenh 26
+            :hpcontent-file "images/hp.png"
+            :manacontent-file "images/mana.png"
+            :y-mana 80}))  ; action-bar-icon-size
