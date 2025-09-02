@@ -49,7 +49,7 @@
                             :entity/inventory                       {:create!  cdq.entity.inventory/create!}
                             :entity/skills                          {:create!  cdq.entity.skills/create!}
                             :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]]
- [cdq.start.bind-root/do! [cdq.game.render/entity->tick
+ [cdq.start.bind-root/do! [cdq.game.tick-world/entity->tick
                            {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
                             :entity/animation cdq.entity.animation/tick!
                             :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
@@ -246,7 +246,7 @@
                                    cdq.game.render/set-cursor!
                                    cdq.game.render/player-state-handle-input!
                                    cdq.game.render/assoc-paused
-                                   cdq.game.render/tick-world!
+                                   cdq.game.tick-world/do!
                                    cdq.game.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                                    cdq.game.render/check-camera-controls!
                                    cdq.game.render/check-window-hotkeys!
