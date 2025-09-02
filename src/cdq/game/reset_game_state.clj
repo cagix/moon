@@ -4,6 +4,7 @@
             [cdq.ui.stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
+            [cdq.world-impl]
             [cdq.ctx.world :as world]))
 
 (defn- reset-stage!
@@ -20,9 +21,9 @@
   [{:keys [ctx/config]
     :as ctx}
    world-fn]
-  (assoc ctx :ctx/world (world/create (merge (::world config)
-                                             (let [[f params] world-fn]
-                                               ((requiring-resolve f) ctx params))))))
+  (assoc ctx :ctx/world (cdq.world-impl/create (merge (::world config)
+                                                      (let [[f params] world-fn]
+                                                        ((requiring-resolve f) ctx params))))))
 
 (defn- spawn-player!
   [{:keys [ctx/config
