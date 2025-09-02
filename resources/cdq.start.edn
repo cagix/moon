@@ -25,7 +25,7 @@
                             :player-moving         cdq.entity.state.player-moving/handle-input}]]
  [cdq.start.bind-root/do! [cdq.ui.player-state-draw/state->draw-gui-view
                            {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]]
- [cdq.start.bind-root/do! [cdq.game.render/render-layers
+ [cdq.start.bind-root/do! [cdq.game.draw-on-world-viewport/render-layers
                            [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
                              :stunned cdq.render-layers/draw-stunned-state
                              :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
@@ -241,7 +241,7 @@
                                    cdq.game.set-camera-on-player/do!
                                    cdq.game.clear-screen/do!
                                    cdq.game.draw-world-map/do!
-                                   cdq.game.render/draw-on-world-viewport!
+                                   cdq.game.draw-on-world-viewport/do!
                                    cdq.game.render/render-stage!
                                    cdq.game.render/set-cursor!
                                    cdq.game.render/player-state-handle-input!
