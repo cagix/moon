@@ -28,7 +28,7 @@
              [:ctx/graphics :some]
              [:ctx/world :some]]))
 
-(defn- validate [ctx]
+(defn validate [ctx]
   (m/validate-humanize schema ctx)
   ctx)
 

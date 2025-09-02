@@ -233,11 +233,11 @@
 
                          :dispose! cdq.game.dispose/do!
                          :render! [
-                                   ;validate
+                                   cdq.game.create/validate
                                    cdq.game.render/assoc-mouseover-keys
-                                   cdq.game.render/update-mouseover-entity!
+                                   cdq.game.update-mouseover-eid/do!
                                    cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-                                   cdq.game.render/assoc-active-entities
+                                   cdq.game.assoc-active-entities/do!
                                    cdq.game.render/set-camera-on-player!
                                    cdq.game.render/clear-screen!
                                    cdq.game.draw-world-map/do!
@@ -251,6 +251,6 @@
                                    cdq.game.render/check-camera-controls!
                                    cdq.game.render/check-window-hotkeys!
                                    cdq.game.render/dissoc-mouseover-keys
-                                   ;validate
+                                   cdq.game.create/validate
                                    ]
                          :resize! cdq.game.resize/do!}]]

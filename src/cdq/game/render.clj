@@ -13,9 +13,6 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]))
 
-(defn assoc-active-entities [ctx]
-  (update ctx :ctx/world world/cache-active-entities @(:ctx/player-eid ctx)))
-
 (defn set-camera-on-player!
   [{:keys [ctx/graphics
            ctx/player-eid]
@@ -178,29 +175,6 @@
               nil)]
     (ctx/handle-txs! ctx txs))
   ctx)
-
-(defn update-mouseover-entity!
-  [{:keys [ctx/mouseover-actor
-           ctx/mouseover-eid
-           ctx/player-eid
-           ctx/world
-           ctx/world-mouse-position]
-    :as ctx}]
-  (let [new-eid (if mouseover-actor
-                  nil
-                  (let [player @player-eid
-                        hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
-                                     (grid/point->entities (:world/grid world) world-mouse-position))]
-                    (->> (:world/render-z-order world)
-                         (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
-                         reverse
-                         (filter #(world/line-of-sight? world player @%))
-                         first)))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
-    (when new-eid
-      (swap! new-eid assoc :entity/mouseover? true))
-    (assoc ctx :ctx/mouseover-eid new-eid)))
 
 (def ^:private pausing? true)
 
