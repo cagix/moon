@@ -19,7 +19,7 @@
  [cdq.start.bind-root/do! [cdq.ui.windows/state->clicked-inventory-cell
                            {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]]
- [cdq.start.bind-root/do! [cdq.game.render/state->handle-input
+ [cdq.start.bind-root/do! [cdq.game.player-state-handle-input/state->handle-input
                            {:player-idle           cdq.entity.state.player-idle/handle-input
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                             :player-moving         cdq.entity.state.player-moving/handle-input}]]
@@ -64,7 +64,7 @@
                             :stunned cdq.entity.state.stunned/tick!
                             :entity/string-effect cdq.entity.string-effect/tick!
                             :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]
- [cdq.start.bind-root/do! [cdq.game.render/state->cursor
+ [cdq.start.bind-root/do! [cdq.game.set-cursor/state->cursor
                            {:active-skill :cursors/sandclock
                             :player-dead :cursors/black-x
                             :player-idle cdq.entity.state.player-idle/->cursor
@@ -242,14 +242,13 @@
                                    cdq.game.clear-screen/do!
                                    cdq.game.draw-world-map/do!
                                    cdq.game.draw-on-world-viewport/do!
-                                   cdq.game.render/render-stage!
-                                   cdq.game.render/set-cursor!
-                                   cdq.game.render/player-state-handle-input!
-                                   cdq.game.render/assoc-paused
+                                   cdq.game.render-stage/do!
+                                   cdq.game.set-cursor/do!
+                                   cdq.game.player-state-handle-input/do!
+                                   cdq.game.assoc-paused/do!
                                    cdq.game.tick-world/do!
                                    cdq.game.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                                   cdq.game.render/check-camera-controls!
-                                   cdq.game.render/check-window-hotkeys!
+                                   cdq.game.handle-key-input/do!
                                    cdq.game.dissoc-mouseover-keys/do!
                                    cdq.game.create/validate
                                    ]
