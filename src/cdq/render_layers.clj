@@ -5,6 +5,7 @@
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
             [cdq.world.entity.stats :as modifiers]
+            [cdq.world.entity.faction :as faction]
             cdq.entity.state.player-item-on-cursor))
 
 (def ^:private skill-image-radius-world-units
@@ -42,7 +43,7 @@
         (entity/position entity)
         (/ (:body/width  (:entity/body entity)) 2)
         (/ (:body/height (:entity/body entity)) 2)
-        (cond (= faction (entity/enemy player))
+        (cond (= faction (faction/enemy (:entity/faction player)))
               enemy-color
               (= faction (:entity/faction player))
               friendly-color

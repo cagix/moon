@@ -21,11 +21,6 @@
         (float (/ (:body/width (:entity/body target*)) 2)))
      (float maxrange)))
 
-(defn enemy [entity]
-  (case (faction entity)
-    :evil :good
-    :good :evil))
-
 (defn skill-usable-state [entity
                           {:keys [skill/cooling-down? skill/effects] :as skill}
                           effect-ctx]

@@ -1,6 +1,7 @@
 (ns cdq.world.potential-fields.movement
   (:require [cdq.world.grid.cell :as cell]
             [cdq.world.entity :as entity]
+            [cdq.world.entity.faction :as faction]
             [cdq.world.grid :as grid]
             [cdq.utils :as utils]
             [cdq.gdx.math.vector2 :as v]))
@@ -51,7 +52,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [grid eid own-cell]
-  (let [faction (entity/enemy @eid)
+  (let [faction (faction/enemy (:entity/faction @eid))
         distance-to    #(cell/nearest-entity-distance @% faction)
         nearest-entity #(cell/nearest-entity          @% faction)
         own-dist (distance-to own-cell)
