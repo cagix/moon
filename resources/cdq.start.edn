@@ -1,76 +1,66 @@
-[[cdq.start.bind-root/do! [cdq.entity.state/->exit
-                           {:npc-moving            cdq.entity.state.npc-moving/exit
-                            :npc-sleeping          cdq.entity.state.npc-sleeping/exit
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-                            :player-moving         cdq.entity.state.player-moving/exit}]]
- [cdq.start.bind-root/do! [cdq.entity.state/->enter
-                           {:npc-dead              cdq.entity.state.npc-dead/enter
-                            :npc-moving            cdq.entity.state.npc-moving/enter
-                            :player-dead           cdq.entity.state.player-dead/enter
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
-                            :player-moving         cdq.entity.state.player-moving/enter
-                            :active-skill          cdq.entity.state.active-skill/enter}]]
- [cdq.start.bind-root/do! [cdq.entity.state/->create
-                           {:active-skill          cdq.entity.state.active-skill/create
-                            :npc-moving            cdq.entity.state.npc-moving/create
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
-                            :player-moving         cdq.entity.state.player-moving/create
-                            :stunned               cdq.entity.state.stunned/create}]]
- [cdq.start.bind-root/do! [cdq.ui.windows/state->clicked-inventory-cell
-                           {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]]
- [cdq.start.bind-root/do! [cdq.game.player-state-handle-input/state->handle-input
-                           {:player-idle           cdq.entity.state.player-idle/handle-input
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-                            :player-moving         cdq.entity.state.player-moving/handle-input}]]
- [cdq.start.bind-root/do! [cdq.ui.player-state-draw/state->draw-gui-view
-                           {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]]
- [cdq.start.bind-root/do! [cdq.game.draw-on-world-viewport/render-layers
-                           [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
-                             :stunned cdq.render-layers/draw-stunned-state
-                             :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
-                            {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
-                             :entity/animation cdq.render-layers/call-render-image
-                             :entity/image cdq.render-layers/draw-centered-rotated-image
-                             :entity/line-render cdq.render-layers/draw-line-entity}
-                            {:npc-sleeping cdq.render-layers/draw-sleeping-state
-                             :entity/temp-modifier cdq.render-layers/draw-temp-modifiers
-                             :entity/string-effect cdq.render-layers/draw-text-over-entity}
-                            {:creature/stats cdq.render-layers/draw-stats
-                             :active-skill cdq.render-layers/draw-active-skill}]]]
- [cdq.start.bind-root/do! [cdq.ctx.world/entity-components
-                           {:entity/animation                       {:create   cdq.entity.animation/create}
-                            :entity/body                            {:create   cdq.entity.body/create}
-                            :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
-                            :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
-                            :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
-                            :creature/stats                         {:create   cdq.entity.stats/create}
-                            :entity/fsm                             {:create!  cdq.entity.fsm/create!}
-                            :entity/inventory                       {:create!  cdq.entity.inventory/create!}
-                            :entity/skills                          {:create!  cdq.entity.skills/create!}
-                            :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]]
- [cdq.start.bind-root/do! [cdq.game.tick-world/entity->tick
-                           {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
-                            :entity/animation cdq.entity.animation/tick!
-                            :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
-                            :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
-                            :entity/movement cdq.entity.movement/tick!
-                            :entity/projectile-collision cdq.entity.projectile-collision/tick!
-                            :entity/skills cdq.entity.skills/tick!
-                            :active-skill cdq.entity.state.active-skill/tick!
-                            :npc-idle cdq.entity.state.npc-idle/tick!
-                            :npc-moving cdq.entity.state.npc-moving/tick!
-                            :npc-sleeping cdq.entity.state.npc-sleeping/tick!
-                            :stunned cdq.entity.state.stunned/tick!
-                            :entity/string-effect cdq.entity.string-effect/tick!
-                            :entity/temp-modifier cdq.entity.temp-modifier/tick!}]]
- [cdq.start.bind-root/do! [cdq.game.set-cursor/state->cursor
-                           {:active-skill :cursors/sandclock
-                            :player-dead :cursors/black-x
-                            :player-idle cdq.entity.state.player-idle/->cursor
-                            :player-item-on-cursor :cursors/hand-grab
-                            :player-moving :cursors/walking
-                            :stunned :cursors/denied}]]
+[[cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
+                                                 :npc-sleeping          cdq.entity.state.npc-sleeping/exit
+                                                 :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
+                                                 :player-moving         cdq.entity.state.player-moving/exit}]
+                       [cdq.entity.state/->enter {:npc-dead              cdq.entity.state.npc-dead/enter
+                                                  :npc-moving            cdq.entity.state.npc-moving/enter
+                                                  :player-dead           cdq.entity.state.player-dead/enter
+                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
+                                                  :player-moving         cdq.entity.state.player-moving/enter
+                                                  :active-skill          cdq.entity.state.active-skill/enter}]
+                       [cdq.entity.state/->create {:active-skill          cdq.entity.state.active-skill/create
+                                                   :npc-moving            cdq.entity.state.npc-moving/create
+                                                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
+                                                   :player-moving         cdq.entity.state.player-moving/create
+                                                   :stunned               cdq.entity.state.stunned/create}]
+                       [cdq.ui.windows/state->clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
+                                                                      :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]
+                       [cdq.game.player-state-handle-input/state->handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
+                                                                                :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+                                                                                :player-moving         cdq.entity.state.player-moving/handle-input}]
+                       [cdq.ui.player-state-draw/state->draw-gui-view {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]
+                       [cdq.game.draw-on-world-viewport/render-layers [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
+                                                                        :stunned cdq.render-layers/draw-stunned-state
+                                                                        :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
+                                                                       {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
+                                                                        :entity/animation cdq.render-layers/call-render-image
+                                                                        :entity/image cdq.render-layers/draw-centered-rotated-image
+                                                                        :entity/line-render cdq.render-layers/draw-line-entity}
+                                                                       {:npc-sleeping cdq.render-layers/draw-sleeping-state
+                                                                        :entity/temp-modifier cdq.render-layers/draw-temp-modifiers
+                                                                        :entity/string-effect cdq.render-layers/draw-text-over-entity}
+                                                                       {:creature/stats cdq.render-layers/draw-stats
+                                                                        :active-skill cdq.render-layers/draw-active-skill}]]
+                       [cdq.ctx.world/entity-components {:entity/animation                       {:create   cdq.entity.animation/create}
+                                                         :entity/body                            {:create   cdq.entity.body/create}
+                                                         :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
+                                                         :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
+                                                         :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
+                                                         :creature/stats                         {:create   cdq.entity.stats/create}
+                                                         :entity/fsm                             {:create!  cdq.entity.fsm/create!}
+                                                         :entity/inventory                       {:create!  cdq.entity.inventory/create!}
+                                                         :entity/skills                          {:create!  cdq.entity.skills/create!}
+                                                         :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]
+                       [cdq.game.tick-world/entity->tick {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+                                                          :entity/animation cdq.entity.animation/tick!
+                                                          :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
+                                                          :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
+                                                          :entity/movement cdq.entity.movement/tick!
+                                                          :entity/projectile-collision cdq.entity.projectile-collision/tick!
+                                                          :entity/skills cdq.entity.skills/tick!
+                                                          :active-skill cdq.entity.state.active-skill/tick!
+                                                          :npc-idle cdq.entity.state.npc-idle/tick!
+                                                          :npc-moving cdq.entity.state.npc-moving/tick!
+                                                          :npc-sleeping cdq.entity.state.npc-sleeping/tick!
+                                                          :stunned cdq.entity.state.stunned/tick!
+                                                          :entity/string-effect cdq.entity.string-effect/tick!
+                                                          :entity/temp-modifier cdq.entity.temp-modifier/tick!}]
+                       [cdq.game.set-cursor/state->cursor {:active-skill :cursors/sandclock
+                                                           :player-dead :cursors/black-x
+                                                           :player-idle cdq.entity.state.player-idle/->cursor
+                                                           :player-item-on-cursor :cursors/hand-grab
+                                                           :player-moving :cursors/walking
+                                                           :stunned :cursors/denied}]]]
  [cdq.multifn/add-methods! [{:required [cdq.world.effect/applicable?
                                         cdq.world.effect/handle]
                              :optional [cdq.world.effect/useful?
