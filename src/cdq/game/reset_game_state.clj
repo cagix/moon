@@ -30,13 +30,12 @@
            ctx/db
            ctx/world]
     :as ctx}]
-  (->> (let [{:keys [creature-id
-                     components]} (:cdq.ctx.game/player-props config)]
-         {:position (utils/tile->middle (:world/start-position world))
-          :creature-property (db/build db creature-id)
-          :components components})
-       (world/spawn-creature! world)
-       (ctx/handle-txs! ctx))
+  (ctx/handle-txs! ctx
+                   [[:tx/spawn-creature (let [{:keys [creature-id
+                                                      components]} (:cdq.ctx.game/player-props config)]
+                                          {:position (utils/tile->middle (:world/start-position world))
+                                           :creature-property (db/build db creature-id)
+                                           :components components})]])
   (let [player-eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @player-eid))
     (assoc ctx :ctx/player-eid player-eid)))
@@ -49,11 +48,10 @@
   (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world)
                                                                 "creatures"
                                                                 "id")]
-    (->> {:position (utils/tile->middle position)
-          :creature-property (db/build db (keyword creature-id))
-          :components (:cdq.ctx.game/enemy-components config)}
-         (world/spawn-creature! world)
-         (ctx/handle-txs! ctx)))
+    (ctx/handle-txs! ctx
+                     [[:tx/spawn-creature {:position (utils/tile->middle position)
+                                           :creature-property (db/build db (keyword creature-id))
+                                           :components (:cdq.ctx.game/enemy-components config)}]]))
   ctx)
 
 ; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'

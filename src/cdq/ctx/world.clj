@@ -2,7 +2,6 @@
   (:require [cdq.gdx.math.vector2 :as v]
             [cdq.malli :as m]
             [cdq.raycaster :as raycaster]
-            [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
@@ -156,33 +155,6 @@
   (when rotate-in-movement-direction?
     (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
   nil)
-
-; # :z-order/flying has no effect for now
-; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-; because using potential-field for z-order/ground
-; -> would have to add one more potential-field for each faction for z-order/flying
-; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-; * they could also go over ground units and not collide with them
-; ( a test showed then flying OVER player entity )
-; -> so no flying units for now
-(defn- create-creature-body [position {:keys [body/width body/height #_body/flying?]}]
-  {:position position
-   :width  width
-   :height height
-   :collides? true
-   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
-
-(defn spawn-creature! [world
-                       {:keys [position
-                               creature-property
-                               components]}]
-  (assert creature-property)
-  (spawn-entity! world
-                 (-> creature-property
-                     (assoc :entity/body (create-creature-body position
-                                                               (:entity/body creature-property)))
-                     (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                     (utils/safe-merge components))))
 
 (defn dispose! [{:keys [world/tiled-map]}]
   (com.badlogic.gdx.utils.Disposable/.dispose tiled-map)) ; TODO tiled/dispose! ?
