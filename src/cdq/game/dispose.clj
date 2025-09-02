@@ -1,8 +1,8 @@
 (ns cdq.game.dispose
-  (:require [cdq.ctx.audio :as audio] ; ctx namespaces make in protocols
+  (:require [cdq.ctx.audio :as audio]
             [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.stage :as stage]
-            [cdq.ctx.world :as world]))
+            [cdq.ctx.world :as world]
+            [cdq.gdx.ui :as ui]))
 
 (defn do! [{:keys [ctx/audio
                    ctx/graphics
@@ -10,4 +10,4 @@
   (audio/dispose! audio)
   (graphics/dispose! graphics)
   (world/dispose! world)
-  (stage/dispose!))
+  (ui/dispose!))

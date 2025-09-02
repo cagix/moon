@@ -7,14 +7,6 @@
             [cdq.ui.stage :as stage]
             [cdq.gdx.ui :as ui]))
 
-(defn create! [graphics config]
-  (ui/load! config)
-  (ui/stage (:ui-viewport graphics)
-            (:batch       graphics)))
-
-(defn dispose! []
-  (ui/dispose!))
-
 (defn action-bar-selected-skill [stage]
   (-> stage
       :action-bar

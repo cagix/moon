@@ -1,8 +1,8 @@
 (ns cdq.game.create
   (:require [cdq.ctx.audio :as audio]
-            [cdq.db-impl :as db]
             [cdq.ctx.input :as input]
-            [cdq.ctx.stage :as stage]
+            [cdq.db-impl :as db]
+            [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q]))
 
@@ -33,9 +33,11 @@
   ctx)
 
 (defn do!! [gdx config]
+  (ui/load! (::stage config))
   (let [input (:input gdx)
         graphics ((requiring-resolve (:graphics-impl config)) gdx (::graphics config))
-        stage (stage/create! graphics (::stage config))]
+        stage (ui/stage (:ui-viewport graphics)
+                        (:batch       graphics))]
     (input/set-processor! input stage)
     (-> (map->Context {:audio (audio/create gdx (::audio config))
                        :config config
