@@ -1,6 +1,9 @@
 (ns cdq.start.set-icon
-  (:require cdq.java.awt
-            [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io])
+  (:import (java.awt Taskbar
+                     Toolkit)))
 
 (defn do! [path]
-  (cdq.java.awt/set-taskbar-icon! (io/resource path)))
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource path))))
