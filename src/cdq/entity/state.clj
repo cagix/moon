@@ -1,5 +1,19 @@
 (ns cdq.entity.state)
 
 (def ->create)
+
+(defn create [world state-k eid params]
+  {:pre [(keyword? state-k)]}
+  (let [result (if-let [f (state-k ->create)]
+                 (f eid params world)
+                 (if params
+                   params
+                   :something ; nil components are not tick'ed1
+                   ))]
+    #_(binding [*print-level* 2]
+        (println "result of create-state-v " state-k)
+        (clojure.pprint/pprint result))
+    result))
+
 (def ->enter)
 (def ->exit)
