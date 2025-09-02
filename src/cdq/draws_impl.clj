@@ -1,5 +1,6 @@
 (ns cdq.draws-impl
-  (:require [cdq.gdx.graphics.color :as color]
+  (:require cdq.graphics-impl
+            [cdq.gdx.graphics.color :as color]
             [cdq.ctx.graphics :refer [draw!]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont
