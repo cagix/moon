@@ -12,5 +12,5 @@
           (for [friendly-eid (->> {:position (entity/position @eid)
                                    :radius 4}
                                   (grid/circle->entities grid)
-                                  (filter #(= (entity/faction @%) faction)))]
+                                  (filter #(= (:entity/faction @%) faction)))]
             [:tx/event friendly-eid :alert]))))

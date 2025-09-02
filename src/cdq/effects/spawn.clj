@@ -1,8 +1,7 @@
-(ns cdq.effects.spawn
-  (:require [cdq.world.entity :as entity]))
+(ns cdq.effects.spawn)
 
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]
-  (and (entity/faction @source)
+  (and (:entity/faction @source)
        target-position))
 
 (defn handle [[_ {:keys [property/id] :as property}]
@@ -12,7 +11,7 @@
                         :creature-property property
                         :components {:entity/fsm {:fsm :fsms/npc
                                                   :initial-state :npc-idle}
-                                     :entity/faction (entity/faction @source)}}]])
+                                     :entity/faction (:entity/faction @source)}}]])
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check

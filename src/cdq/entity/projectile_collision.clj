@@ -14,8 +14,8 @@
   (let [entity @eid
         cells* (map deref (grid/body->cells grid (:entity/body entity))) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
-                                     (not= (entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
-                                           (entity/faction @%))
+                                     (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
+                                           (:entity/faction @%))
                                      (:body/collides? (:entity/body @%))
                                      (entity/overlaps? entity @%))
                                (grid/cells->entities grid cells*))

@@ -36,7 +36,7 @@
 
 (defn draw-mouseover-highlighting [_ entity {:keys [ctx/player-eid]}]
   (let [player @player-eid
-        faction (entity/faction entity)]
+        faction (:entity/faction entity)]
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse
         (entity/position entity)
@@ -44,7 +44,7 @@
         (/ (:body/height (:entity/body entity)) 2)
         (cond (= faction (entity/enemy player))
               enemy-color
-              (= faction (entity/faction player))
+              (= faction (:entity/faction player))
               friendly-color
               :else
               neutral-color)]]]]))

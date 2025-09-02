@@ -10,5 +10,5 @@
         [[:tx/event eid :alert]]))))
 
 (defn exit [_ eid _ctx]
-  [[:tx/spawn-alert (entity/position @eid) (entity/faction @eid) 0.2]
+  [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]
    [:tx/add-text-effect eid "[WHITE]!" 1]])

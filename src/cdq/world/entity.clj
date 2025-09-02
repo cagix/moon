@@ -21,12 +21,6 @@
         (float (/ (:body/width (:entity/body target*)) 2)))
      (float maxrange)))
 
-(defn id [{:keys [entity/id]}]
-  id)
-
-(defn faction [{:keys [entity/faction]}]
-  faction)
-
 (defn enemy [entity]
   (case (faction entity)
     :evil :good

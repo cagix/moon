@@ -31,7 +31,7 @@
                             target-direction
                             (:projectile/size projectile))
      :direction target-direction
-     :faction (entity/faction @source)}
+     :faction (:entity/faction @source)}
     projectile]])
 
 (comment

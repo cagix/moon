@@ -7,14 +7,13 @@
             [cdq.ui.menu :as menu]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.world.entity :as entity]
             [clojure.string :as str]))
 
 (defn mouseover-entity-id [icon]
   {:label "Mouseover-entity id"
    :update-fn (fn [{:keys [ctx/mouseover-eid]}]
                 (when-let [entity (and mouseover-eid @mouseover-eid)]
-                  (entity/id entity)))
+                  (:entity/id entity)))
    :icon icon})
 
 (defn elapsed-time [icon]
