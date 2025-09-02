@@ -52,7 +52,7 @@
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
            effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
-           state (skill-usable/state entity skill effect-ctx)]
+           state (skill/usable-state entity skill effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
          [:interaction-state.skill/not-usable state]))
