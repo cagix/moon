@@ -1,8 +1,7 @@
 (ns cdq.tx.add-skill
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.graphics :as graphics]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.world.entity :as entity]))
+            [cdq.ui.action-bar :as action-bar]))
 
 (defn- add-skill!
   [{:keys [ctx/graphics
@@ -22,8 +21,12 @@
         (action-bar/remove-skill! (:property/id skill)))
     nil)
 
+(defn- add-skill [entity {:keys [property/id] :as skill}]
+  {:pre [(not (contains? (:entity/skills entity) id))]}
+  (assoc-in entity [:entity/skills id] skill))
+
 (defn do! [[_ eid skill] ctx]
-  (swap! eid entity/add-skill skill)
+  (swap! eid add-skill skill)
   (when (:entity/player? @eid)
     (add-skill! ctx skill))
   nil)

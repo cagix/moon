@@ -4,7 +4,8 @@
             [cdq.inventory :as inventory]
             [cdq.entity.timers :as timers]
             [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]))
+            [cdq.world.entity :as entity]
+            [cdq.world.entity.stats :as modifiers]))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
   (swap! eid assoc k value)
@@ -44,8 +45,11 @@
   (swap! eid timers/add-text-effect text duration (:world/elapsed-time world))
   nil)
 
+(defn- pay-mana-cost [entity cost]
+  (update entity :creature/stats modifiers/pay-mana-cost cost))
+
 (defmethod do! :tx/pay-mana-cost [[_ eid cost] _ctx]
-  (swap! eid entity/pay-mana-cost cost)
+  (swap! eid pay-mana-cost cost)
   nil)
 
 (defmethod do! :tx/pickup-item [[_ eid item] ctx]

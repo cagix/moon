@@ -62,14 +62,3 @@
 
 (defn hitpoints [entity]
   (modifiers/get-hitpoints (:creature/stats entity)))
-
-(defn pay-mana-cost [entity cost]
-  (update entity :creature/stats modifiers/pay-mana-cost cost))
-
-(defn set-movement [entity movement-vector]
-  (assoc entity :entity/movement {:direction movement-vector
-                                  :speed (or (stat entity :entity/movement-speed) 0)}))
-
-(defn add-skill [entity {:keys [property/id] :as skill}]
-  {:pre [(not (contains? (:entity/skills entity) id))]}
-  (assoc-in entity [:entity/skills id] skill))
