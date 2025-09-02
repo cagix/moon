@@ -1,10 +1,8 @@
-(ns cdq.tx.spawn-effect
-  (:require [cdq.ctx.world :as w]))
+(ns cdq.tx.spawn-effect)
 
 (defn do!
   [[_ position components]
-   {:keys [ctx/config
-           ctx/world]}]
-  (w/spawn-entity! world
-                   (assoc components
-                          :entity/body (assoc (:effect-body-props config) :position position))))
+   {:keys [ctx/config]}]
+  [[:tx/spawn-entity
+    (assoc components
+           :entity/body (assoc (:effect-body-props config) :position position))]])

@@ -1,52 +1,20 @@
 (ns cdq.ctx.world
   (:require [cdq.gdx.math.vector2 :as v]
-            [cdq.malli :as m]
             [cdq.raycaster :as raycaster]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.world.potential-fields.movement :as potential-fields.movement]
-            [cdq.world.potential-fields.update :as potential-fields.update]
-            [qrecord.core :as q]))
-
-(def ^:private components-schema
-  (m/schema [:map {:closed true}
-             [:entity/body :some]
-             [:entity/image {:optional true} :some]
-             [:entity/animation {:optional true} :some]
-             [:entity/delete-after-animation-stopped? {:optional true} :some]
-             [:entity/alert-friendlies-after-duration {:optional true} :some]
-             [:entity/line-render {:optional true} :some]
-             [:entity/delete-after-duration {:optional true} :some]
-             [:entity/destroy-audiovisual {:optional true} :some]
-             [:entity/fsm {:optional true} :some]
-             [:entity/player? {:optional true} :some]
-             [:entity/free-skill-points {:optional true} :some]
-             [:entity/click-distance-tiles {:optional true} :some]
-             [:entity/clickable {:optional true} :some]
-             [:property/id {:optional true} :some]
-             [:property/pretty-name {:optional true} :some]
-             [:creature/level {:optional true} :some]
-             [:entity/faction {:optional true} :some]
-             [:entity/species {:optional true} :some]
-             [:entity/movement {:optional true} :some]
-             [:entity/skills {:optional true} :some]
-             [:creature/stats {:optional true} :some]
-             [:entity/inventory    {:optional true} :some]
-             [:entity/item {:optional true} :some]
-             [:entity/projectile-collision {:optional true} :some]]))
-
-(q/defrecord Entity [entity/body])
+            [cdq.world.potential-fields.update :as potential-fields.update]))
 
 (declare entity-components)
 
-; entity/id has create! and destroy! ??
-
-(defn- context-entity-add! [{:keys [world/entity-ids
-                                    world/content-grid
-                                    world/grid]}
-                            eid]
+(defn context-entity-add!
+  [{:keys [world/entity-ids
+           world/content-grid
+           world/grid]}
+   eid]
   (let [id (entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
@@ -118,29 +86,6 @@
 
 (defn potential-field-find-direction [{:keys [world/grid]} eid]
   (potential-fields.movement/find-direction grid eid))
-
-; they have to have body because of grid/content-grid ...
-; or grid/content-grid is create! and destroy! of component body ?
-(defn spawn-entity!
-  [{:keys [world/id-counter]
-    :as world}
-   components]
-  (m/validate-humanize components-schema components) ; check allowed components at constructor (later more added?)
-  (assert (and (not (contains? components :entity/id))))
-  (let [eid (atom (merge (map->Entity {})
-                         (reduce (fn [m [k v]]
-                                   (assoc m k (if-let [create (:create (k entity-components))]
-                                                (create v world)
-                                                v)))
-                                 {}
-                                 (assoc components :entity/id (swap! id-counter inc)))))]
-    ; this is a 'create!' of entity/id & entity/body ?
-    ; then also 'moved!' ...
-    (context-entity-add! world eid)
-    (mapcat (fn [[k v]]
-              (when-let [create! (:create! (k entity-components))]
-                (create! v eid world)))
-            @eid)))
 
 (defn remove-entity! [world eid]
   (context-entity-remove! world eid)

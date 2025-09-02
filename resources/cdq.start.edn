@@ -141,7 +141,10 @@
                              [cdq.tx.spawn-item
                               :tx/spawn-item]
                              [cdq.tx.spawn-creature
-                              :tx/spawn-creature]]]]
+                              :tx/spawn-creature]
+                             [cdq.tx.spawn-entity
+                              :tx/spawn-entity]
+                             ]]]
  [cdq.start.install-editor-widgets/do! [cdq.ui.editor.widget.default
                                         cdq.ui.editor.widget.edn
                                         cdq.ui.editor.widget.string
