@@ -7,7 +7,7 @@
   [[_ source target damage] _ctx]
   (let [source* @source
         target* @target
-        hp (entity/hitpoints target*)]
+        hp (modifiers/get-hitpoints (:creature/stats target*))]
     (cond
      (zero? (hp 0))
      nil

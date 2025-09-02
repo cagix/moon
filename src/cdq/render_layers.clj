@@ -4,6 +4,7 @@
             [cdq.val-max :as val-max]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
+            [cdq.world.entity.stats :as modifiers]
             cdq.entity.state.player-item-on-cursor))
 
 (def ^:private skill-image-radius-world-units
@@ -165,7 +166,7 @@
         (hpbar-color ratio)]])))
 
 (defn draw-stats [_ entity {:keys [ctx/graphics]}]
-  (let [ratio (val-max/ratio (entity/hitpoints entity))]
+  (let [ratio (val-max/ratio (modifiers/get-hitpoints (:creature/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar (:world-unit-scale graphics)
                   (:entity/body entity)

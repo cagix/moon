@@ -1,5 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.world.entity :as entity]
+  (:require [cdq.world.entity.stats :as modifiers]
             [cdq.val-max :as val-max]
             [cdq.utils :as utils]
             [cdq.ctx.graphics :as g]))
@@ -33,11 +33,11 @@
                                           :up? true}]])
         create-draws (fn [{:keys [ctx/graphics
                                   ctx/player-eid]}]
-                       (let [player-entity @player-eid
+                       (let [stats (:creature/stats @player-eid)
                              x (- x (/ rahmenw 2))]
                          (concat
-                          (render-hpmana-bar graphics x y-hp   hpcontent-file   (entity/hitpoints player-entity) "HP")
-                          (render-hpmana-bar graphics x y-mana manacontent-file (entity/mana      player-entity) "MP"))))]
+                          (render-hpmana-bar graphics x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")
+                          (render-hpmana-bar graphics x y-mana manacontent-file (modifiers/get-mana      stats) "MP"))))]
     {:actor/type :actor.type/actor
      :draw (fn [_this {:keys [ctx/graphics] :as ctx}]
              (g/handle-draws! graphics (create-draws ctx)))}))

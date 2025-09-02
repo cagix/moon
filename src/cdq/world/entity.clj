@@ -53,12 +53,3 @@
 
 (defn stat [entity k]
   (modifiers/get-stat-value (:creature/stats entity) k))
-
-(defn mana [entity]
-  (modifiers/get-mana (:creature/stats entity)))
-
-(defn mana-val [entity]
-  (modifiers/mana-val (:creature/stats entity)))
-
-(defn hitpoints [entity]
-  (modifiers/get-hitpoints (:creature/stats entity)))
