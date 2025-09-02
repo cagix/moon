@@ -256,9 +256,10 @@
            ctx/input
            ctx/graphics]
     :as ctx}]
-  (let [controls (:controls config)]
-    (when (input/key-pressed? input (:zoom-in  controls)) (graphics/zoom-in!  graphics zoom-speed))
-    (when (input/key-pressed? input (:zoom-out controls)) (graphics/zoom-out! graphics zoom-speed)))
+  (let [controls (:controls config)
+        camera (:viewport/camera (:world-viewport graphics))]
+    (when (input/key-pressed? input (:zoom-in  controls)) (camera/inc-zoom! camera zoom-speed))
+    (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed))))
   ctx)
 
 (defn remove-destroyed-entities!

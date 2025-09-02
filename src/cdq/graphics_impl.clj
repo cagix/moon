@@ -1,6 +1,5 @@
 (ns cdq.graphics-impl
   (:require [cdq.ctx.graphics]
-            [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.tiled :as tiled]
             [clojure.string :as str])
@@ -145,12 +144,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    world-unit-scale
    ^Viewport world-viewport]
   cdq.ctx.graphics/Graphics
-  (zoom-in! [_ amount]
-    (camera/inc-zoom! (:viewport/camera world-viewport) amount))
-
-  (zoom-out! [this amount]
-    (cdq.ctx.graphics/zoom-in! this (- amount)))
-
   (handle-draws! [graphics draws]
     (doseq [component draws
             :when component]

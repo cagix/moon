@@ -15,6 +15,4 @@
                          "image is `:image/file` (string) & `:image/bounds` `[x y w h]` (optional).
 
                          Loads the texture and creates a texture-region out of it, in case of sub-image bounds applies the proper bounds.")
-  (handle-draws! [_ draws])
-  (zoom-in! [_ amount])
-  (zoom-out! [_ amount]))
+  (handle-draws! [_ draws]))
