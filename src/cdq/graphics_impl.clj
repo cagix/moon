@@ -19,8 +19,7 @@
                                           TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector2
-                                  Vector3)
+           (com.badlogic.gdx.math Vector3)
            (com.badlogic.gdx.utils Disposable
                                    ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport
@@ -103,12 +102,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         :viewport/height (Viewport/.getWorldHeight this)
         :viewport/camera (Viewport/.getCamera      this)))))
 
-(defn- clamp [value min max]
-  (cond
-   (< value min) min
-   (> value max) max
-   :else value))
-
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
          result []]
@@ -128,21 +121,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   (map (fn [path]
          [(str/replace-first path folder "") (Files/.internal files path)])
        (recursively-search (Files/.internal files folder) extensions)))
-
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-; TODO clamping only works for gui-viewport ?
-; TODO ? "Can be negative coordinates, undefined cells."
-(defn- unproject-clamp [^Viewport viewport [x y]]
-  (let [x (clamp x
-                 (.getLeftGutterWidth viewport)
-                 (.getRightGutterX    viewport))
-        y (clamp y
-                 (.getTopGutterHeight viewport)
-                 (.getTopGutterY      viewport))]
-    (let [vector2 (.unproject viewport (Vector2. x y))]
-      [(.x vector2)
-       (.y vector2)])))
 
 (defmulti draw!
   (fn [[k] _graphics]
@@ -173,12 +151,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 
   (zoom-out! [this amount]
     (cdq.ctx.graphics/zoom-in! this (- amount)))
-
-  (unproject-world [_ position]
-    (unproject-clamp world-viewport position))
-
-  (unproject-ui [_ position]
-    (unproject-clamp ui-viewport position))
 
   (handle-draws! [graphics draws]
     (doseq [component draws

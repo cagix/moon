@@ -234,7 +234,7 @@
                          :dispose! cdq.game.dispose/do!
                          :render! [
                                    cdq.game.create/validate
-                                   cdq.game.render/assoc-mouseover-keys
+                                   cdq.game.assoc-mouseover-keys/do!
                                    cdq.game.update-mouseover-eid/do!
                                    cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
                                    cdq.game.assoc-active-entities/do!
@@ -250,7 +250,7 @@
                                    cdq.game.render/remove-destroyed-entities! ; do not pause as pickup item should be destroyed
                                    cdq.game.render/check-camera-controls!
                                    cdq.game.render/check-window-hotkeys!
-                                   cdq.game.render/dissoc-mouseover-keys
+                                   cdq.game.dissoc-mouseover-keys/do!
                                    cdq.game.create/validate
                                    ]
                          :resize! cdq.game.resize/do!}]]

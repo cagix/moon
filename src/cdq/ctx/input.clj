@@ -206,9 +206,5 @@
   {:pre [(contains? k->Input$Keys key)]}
   (.isKeyJustPressed this (get k->Input$Keys key)))
 
-(defn mouse-position [^Input this]
-  [(.getX this)
-   (.getY this)])
-
 (defn set-processor! [^Input this input-processor]
   (.setInputProcessor this input-processor))

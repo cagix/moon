@@ -16,9 +16,6 @@
 (defn clear! [^CtxStage stage]
   (.clear stage))
 
-(defn hit [^CtxStage stage [x y]]
-  (.hit stage x y true))
-
 (defn find-actor [^CtxStage stage actor-name]
   (-> stage
       .getRoot

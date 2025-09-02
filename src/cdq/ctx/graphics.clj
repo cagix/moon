@@ -19,6 +19,4 @@
   (handle-draws! [_ draws])
   (zoom-in! [_ amount])
   (zoom-out! [_ amount])
-  (unproject-world [_ position])
-  (unproject-ui [_ position])
   (set-camera-position! [_ position]))

@@ -254,26 +254,6 @@
 (def ^:private toggle-entity-info :e)
 (def ^:private zoom-speed 0.025)
 
-(defn assoc-mouseover-keys
-  [{:keys [ctx/graphics
-           ctx/input
-           ctx/stage]
-    :as ctx}]
-  (let [mouse-position (input/mouse-position input)
-        ui-mouse-position    (graphics/unproject-ui    graphics mouse-position)
-        world-mouse-position (graphics/unproject-world graphics mouse-position)]
-    (assoc ctx
-           :ctx/mouseover-actor      (stage/hit stage ui-mouse-position)
-           :ctx/ui-mouse-position    ui-mouse-position
-           :ctx/world-mouse-position world-mouse-position)))
-
-(defn dissoc-mouseover-keys
-  [ctx]
-  (dissoc ctx
-          :ctx/mouseover-actor
-          :ctx/ui-mouse-position
-          :ctx/world-mouse-position))
-
 (defn check-window-hotkeys!
   [{:keys [ctx/input
            ctx/stage]
