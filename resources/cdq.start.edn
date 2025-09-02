@@ -238,7 +238,7 @@
                                    cdq.game.update-mouseover-eid/do!
                                    cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
                                    cdq.game.assoc-active-entities/do!
-                                   cdq.game.render/set-camera-on-player!
+                                   cdq.game.set-camera-on-player/do!
                                    cdq.game.render/clear-screen!
                                    cdq.game.draw-world-map/do!
                                    cdq.game.render/draw-on-world-viewport!

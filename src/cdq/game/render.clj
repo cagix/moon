@@ -13,13 +13,6 @@
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]))
 
-(defn set-camera-on-player!
-  [{:keys [ctx/graphics
-           ctx/player-eid]
-    :as ctx}]
-  (graphics/set-camera-position! graphics (entity/position @player-eid))
-  ctx)
-
 (defn clear-screen!
   [{:keys [ctx/graphics] :as ctx}]
   (graphics/clear-screen! graphics :black)
