@@ -247,7 +247,7 @@
                                    cdq.game.render/player-state-handle-input!
                                    cdq.game.render/assoc-paused
                                    cdq.game.render/tick-world!
-                                   cdq.game.render/remove-destroyed-entities! ; do not pause as pickup item should be destroyed
+                                   cdq.game.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                                    cdq.game.render/check-camera-controls!
                                    cdq.game.render/check-window-hotkeys!
                                    cdq.game.dissoc-mouseover-keys/do!

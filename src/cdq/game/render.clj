@@ -261,11 +261,3 @@
     (when (input/key-pressed? input (:zoom-in  controls)) (camera/inc-zoom! camera zoom-speed))
     (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed))))
   ctx)
-
-(defn remove-destroyed-entities!
-  [{:keys [ctx/world]
-    :as ctx}]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @(:world/entity-ids world)))]
-    (ctx/handle-txs! ctx (world/remove-entity! world eid)))
-  ctx)

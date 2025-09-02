@@ -22,9 +22,10 @@
   ;(assert (valid-position? grid @eid))
   (grid/add-entity! grid eid))
 
-(defn- context-entity-remove! [{:keys [world/entity-ids
-                                       world/grid]}
-                               eid]
+(defn context-entity-remove!
+  [{:keys [world/entity-ids
+           world/grid]}
+   eid]
   (let [id (entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -74,13 +75,6 @@
 
 (defn potential-field-find-direction [{:keys [world/grid]} eid]
   (potential-fields.movement/find-direction grid eid))
-
-(defn remove-entity! [world eid]
-  (context-entity-remove! world eid)
-  (mapcat (fn [[k v]]
-            (when-let [destroy! (:destroy! (k entity-components))]
-              (destroy! v eid world)))
-          @eid))
 
 (defn cache-active-entities [world entity]
   (assoc world :world/active-entities
