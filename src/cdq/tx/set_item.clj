@@ -3,7 +3,7 @@
             [cdq.ctx.graphics :as graphics]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
-            [cdq.world.entity :as entity]))
+            [cdq.world.entity.stats :as modifiers]))
 
 (defn- set-item!
   [{:keys [ctx/graphics
@@ -24,7 +24,7 @@
                  (inventory/valid-slot? cell item)))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-add (:entity/modifiers item)))
+      (swap! eid update :creature/stats modifiers/add (:entity/modifiers item)))
     (when (:entity/player? entity)
       (set-item! ctx cell item))
     nil))

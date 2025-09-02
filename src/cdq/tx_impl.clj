@@ -4,7 +4,6 @@
             [cdq.inventory :as inventory]
             [cdq.entity.timers :as timers]
             [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]
             [cdq.world.entity.stats :as modifiers]))
 
 (defmethod do! :tx/assoc [[_ eid k value] _ctx]
@@ -24,11 +23,11 @@
   nil)
 
 (defmethod do! :tx/mod-add [[_ eid modifiers] _ctx]
-  (swap! eid entity/mod-add modifiers)
+  (swap! eid update :creature/stats modifiers/add modifiers)
   nil)
 
 (defmethod do! :tx/mod-remove [[_ eid modifiers] _ctx]
-  (swap! eid entity/mod-remove modifiers)
+  (swap! eid update :creature/stats modifiers/remove modifiers)
   nil)
 
 (defmethod do! :tx/effect [[_ effect-ctx effects] {:keys [ctx/world]}]

@@ -36,6 +36,3 @@
 
    :else
    :usable))
-
-(defn mod-add    [entity mods] (update entity :creature/stats modifiers/add    mods))
-(defn mod-remove [entity mods] (update entity :creature/stats modifiers/remove mods))
