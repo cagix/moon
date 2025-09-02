@@ -1,6 +1,5 @@
 (ns cdq.grid-impl
-  (:require [cdq.world.entity :as entity]
-            [cdq.world.grid :as grid]
+  (:require [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.geom :as geom]
@@ -88,7 +87,7 @@
          (grid/cells->entities this)
          (filter #(geom/overlaps?
                    (geom/circle (position 0) (position 1) radius)
-                   (entity/rectangle @%)))))
+                   (geom/body->gdx-rectangle (:entity/body @%))))))
 
   (cells->entities [_ cells]
     (into #{} (mapcat :entities) cells))
@@ -105,7 +104,7 @@
 
   (point->entities [this position]
     (when-let [cell (grid/cell this (mapv int position))]
-      (filter #(geom/contains? (entity/rectangle @%) position)
+      (filter #(geom/contains? (geom/body->gdx-rectangle (:entity/body @%)) position)
               (:entities @cell))))
 
   (add-entity! [this eid]
@@ -135,7 +134,7 @@
                             (let [other-entity @other-entity]
                               (and (not= (:entity/id other-entity) entity-id)
                                    (:body/collides? (:entity/body other-entity))
-                                   (geom/overlaps? (entity/rectangle other-entity)
+                                   (geom/overlaps? (geom/body->gdx-rectangle (:entity/body other-entity))
                                                    (geom/body->gdx-rectangle body)))))))))))
 
 (defrecord RCell [position

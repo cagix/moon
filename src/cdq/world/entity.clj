@@ -1,8 +1,4 @@
-(ns cdq.world.entity
-  (:require [cdq.gdx.math.geom :as geom]))
+(ns cdq.world.entity)
 
 (defn position [{:keys [entity/body]}]
   (:body/position body))
-
-(defn rectangle [{:keys [entity/body]}]
-  (geom/body->gdx-rectangle body))
