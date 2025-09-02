@@ -4,7 +4,6 @@
             [cdq.ctx.input :as input]
             [cdq.ctx.stage :as stage]
             [cdq.ctx.world :as world]
-            [cdq.dev.data-view :as data-view]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.math.geom :as geom]
             [cdq.stacktrace :as stacktrace]
@@ -13,24 +12,6 @@
             [cdq.ui.stage]
             [cdq.ui.error-window :as error-window]
             [cdq.utils :as utils]))
-
-(defn check-open-debug-data-view!
-  [{:keys [ctx/input
-           ctx/stage
-           ctx/mouseover-eid
-           ctx/world
-           ctx/world-mouse-position]
-    :as ctx}]
-  (when (input/button-just-pressed? input :right)
-    (let [data (or (and mouseover-eid @mouseover-eid)
-                   @(grid/cell (:world/grid world)
-                               (mapv int world-mouse-position)))]
-      (cdq.ui.stage/add! stage
-                         (data-view/table-view-window {:title "Data View"
-                                                       :data data
-                                                       :width 500
-                                                       :height 500}))))
-  ctx)
 
 (defn assoc-active-entities [ctx]
   (update ctx :ctx/world world/cache-active-entities @(:ctx/player-eid ctx)))

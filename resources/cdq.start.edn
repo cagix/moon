@@ -236,7 +236,7 @@
                                    ;validate
                                    cdq.game.render/assoc-mouseover-keys
                                    cdq.game.render/update-mouseover-entity!
-                                   cdq.game.render/check-open-debug-data-view! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+                                   cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
                                    cdq.game.render/assoc-active-entities
                                    cdq.game.render/set-camera-on-player!
                                    cdq.game.render/clear-screen!

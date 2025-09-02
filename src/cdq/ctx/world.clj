@@ -1,6 +1,5 @@
 (ns cdq.ctx.world
-  (:require [cdq.gdx.math.vector2 :as v]
-            [cdq.raycaster :as raycaster]
+  (:require [cdq.raycaster :as raycaster]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.entity :as entity]
             [cdq.world.grid :as grid]
@@ -32,9 +31,10 @@
   (content-grid/remove-entity! eid)
   (grid/remove-entity! grid eid))
 
-(defn- context-entity-moved! [{:keys [world/content-grid
-                                      world/grid]}
-                              eid]
+(defn context-entity-moved!
+  [{:keys [world/content-grid
+           world/grid]}
+   eid]
   (content-grid/position-changed! content-grid eid)
   (grid/position-changed! grid eid))
 
@@ -63,18 +63,6 @@
                            (entity/position source)
                            (entity/position target))))
 
-(defn npc-effect-ctx [world eid]
-  (let [entity @eid
-        target (nearest-enemy world entity)
-        target (when (and target
-                          (line-of-sight? world entity @target))
-                 target)]
-    {:effect/source eid
-     :effect/target target
-     :effect/target-direction (when target
-                                (v/direction (entity/position entity)
-                                             (entity/position @target)))}))
-
 (defn creatures-in-los-of
   [{:keys [world/active-entities]
     :as world}
@@ -93,13 +81,6 @@
             (when-let [destroy! (:destroy! (k entity-components))]
               (destroy! v eid world)))
           @eid))
-
-(defn move-entity! [world eid body direction rotate-in-movement-direction?]
-  (context-entity-moved! world eid)
-  (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
-  (when rotate-in-movement-direction?
-    (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
-  nil)
 
 (defn dispose! [{:keys [world/tiled-map]}]
   (com.badlogic.gdx.utils.Disposable/.dispose tiled-map)) ; TODO tiled/dispose! ?
