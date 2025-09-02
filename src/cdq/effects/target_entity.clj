@@ -16,19 +16,26 @@
                                (entity/position target*))
                   maxrange)))
 
+(defn- in-range? [entity target* maxrange]
+  (< (- (float (v/distance (entity/position entity)
+                           (entity/position target*)))
+        (float (/ (:body/width (:entity/body entity))  2))
+        (float (/ (:body/width (:entity/body target*)) 2)))
+     (float maxrange)))
+
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
   (and target
        (seq (effect/filter-applicable? effect-ctx entity-effects))))
 
 (defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _world]
-  (entity/in-range? @source @target maxrange))
+  (in-range? @source @target maxrange))
 
 (defn handle [[_ {:keys [maxrange entity-effects]}]
               {:keys [effect/source effect/target] :as effect-ctx}
               _world]
   (let [source* @source
         target* @target]
-    (if (entity/in-range? source* target* maxrange)
+    (if (in-range? source* target* maxrange)
       [[:tx/spawn-line {:start (start-point source* target*)
                         :end (entity/position target*)
                         :duration 0.05
@@ -48,6 +55,6 @@
       [[:draw/line
         (start-point source* target*)
         (end-point source* target* maxrange)
-        (if (entity/in-range? source* target* maxrange)
+        (if (in-range? source* target* maxrange)
           [1 0 0 0.5]
           [1 1 0 0.5])]])))
