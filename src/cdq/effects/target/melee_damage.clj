@@ -1,9 +1,9 @@
 (ns cdq.effects.target.melee-damage
   (:require [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]))
+            [cdq.world.entity.stats :as modifiers]))
 
-(defn- entity->melee-damage [entity]
-  (let [strength (or (entity/stat entity :entity/strength) 0)]
+(defn- entity->melee-damage [{:keys [creature/stats]}]
+  (let [strength (or (modifiers/get-stat-value stats :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- melee-damage-effect [entity]

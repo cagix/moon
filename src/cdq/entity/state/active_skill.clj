@@ -1,6 +1,6 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]
+            [cdq.world.entity.stats :as modifiers]
             [cdq.timer :as timer]
             [cdq.raycaster :as raycaster]))
 
@@ -14,9 +14,9 @@
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
-(defn- apply-action-speed-modifier [entity skill action-time]
+(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
   (/ action-time
-     (or (entity/stat entity (:skill/action-time-modifier-key skill))
+     (or (modifiers/get-stat-value stats (:skill/action-time-modifier-key skill))
          1)))
 
 (defn tick! [{:keys [skill effect-ctx counter]}
