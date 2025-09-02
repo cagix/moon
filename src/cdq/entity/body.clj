@@ -1,5 +1,6 @@
 (ns cdq.entity.body
-  (:require [qrecord.core :as q]))
+  (:require [cdq.gdx.math.geom :as geom]
+            [qrecord.core :as q]))
 
 (q/defrecord Body [body/position
                    body/width
@@ -33,3 +34,7 @@
     :collides? collides?
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
+
+(defn overlaps? [body other-body]
+  (geom/overlaps? (geom/body->gdx-rectangle body)
+                  (geom/body->gdx-rectangle other-body)))

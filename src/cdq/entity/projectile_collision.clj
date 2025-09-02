@@ -1,5 +1,5 @@
 (ns cdq.entity.projectile-collision
-  (:require [cdq.world.entity :as entity]
+  (:require [cdq.entity.body :as body]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.utils :refer [find-first]]))
@@ -17,7 +17,8 @@
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:body/collides? (:entity/body @%))
-                                     (entity/overlaps? entity @%))
+                                     (body/overlaps? (:entity/body entity)
+                                                     (:entity/body @%)))
                                (grid/cells->entities grid cells*))
         destroy? (or (and hit-entity (not piercing?))
                      (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]

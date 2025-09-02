@@ -6,7 +6,3 @@
 
 (defn rectangle [{:keys [entity/body]}]
   (geom/body->gdx-rectangle body))
-
-(defn overlaps? [entity other-entity]
-  (geom/overlaps? (geom/body->gdx-rectangle (:entity/body entity))
-                  (geom/body->gdx-rectangle (:entity/body other-entity))))
