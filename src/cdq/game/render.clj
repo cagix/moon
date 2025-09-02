@@ -41,8 +41,7 @@
   [{:keys [ctx/graphics
            ctx/player-eid]
     :as ctx}]
-  (camera/set-position! (:viewport/camera (:world-viewport graphics))
-                        (entity/position @player-eid))
+  (graphics/set-camera-position! graphics (entity/position @player-eid))
   ctx)
 
 (defn- clear-screen!

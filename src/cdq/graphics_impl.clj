@@ -482,7 +482,11 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                         (int y)
                         (int w)
                         (int h))
-        (TextureRegion. texture)))))
+        (TextureRegion. texture))))
+
+  (set-camera-position! [_ position]
+    (camera/set-position! (:viewport/camera world-viewport)
+                          position)))
 
 (defn create!
   [{:keys [graphics files]}
