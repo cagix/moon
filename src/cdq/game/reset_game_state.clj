@@ -54,9 +54,6 @@
                      (:create-ui-actors config))]
     (stage/add! stage actor))
   (-> ctx
-      reset-stage!
       (add-ctx-world world-fn)
       spawn-player!
       spawn-enemies!))
-
-(def ^:private reset-game-state! do!)
