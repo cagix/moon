@@ -1,23 +1,26 @@
 (ns cdq.tx.add-skill
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.stage :as stage]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.world.entity :as entity]))
 
 (defn- add-skill!
   [{:keys [ctx/graphics
            ctx/stage]}
    skill]
-  (stage/add-action-bar-skill! stage
-                               {:skill-id (:property/id skill)
-                                :texture-region (graphics/image->texture-region graphics (:entity/image skill))
-                                ; (assoc ctx :effect/source (world/player)) FIXME
-                                :tooltip-text #(ctx/info-text % skill)})
+  (-> stage
+      :action-bar
+      (action-bar/add-skill! {:skill-id (:property/id skill)
+                              :texture-region (graphics/image->texture-region graphics (:entity/image skill))
+                              ; (assoc ctx :effect/source (world/player)) FIXME
+                              :tooltip-text #(ctx/info-text % skill)}))
   nil)
 
 #_(defn- remove-skill! [{:keys [ctx/stage]} skill]
-  (stage/remove-action-bar-skill! stage (:property/id skill))
-  nil)
+    (-> stage
+        :action-bar
+        (action-bar/remove-skill! (:property/id skill)))
+    nil)
 
 (defn do! [[_ eid skill] ctx]
   (swap! eid entity/add-skill skill)

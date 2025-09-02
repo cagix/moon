@@ -1,12 +1,17 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.ctx.input :as input]
-            [cdq.ctx.stage :as stage]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]
             [cdq.inventory :as inventory]
             [cdq.ui.actor :as actor]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.world.entity :as entity]))
+
+(defn- action-bar-selected-skill [stage]
+  (-> stage
+      :action-bar
+      action-bar/selected-skill))
 
 (defn distance [a b]
   (v/distance (entity/position a)
@@ -42,7 +47,7 @@
      :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
 
    :else
-   (if-let [skill-id (stage/action-bar-selected-skill stage)]
+   (if-let [skill-id (action-bar-selected-skill stage)]
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
            effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)

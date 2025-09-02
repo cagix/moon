@@ -1,10 +1,13 @@
 (ns cdq.tx.remove-item
-  (:require [cdq.ctx.stage :as stage]
+  (:require [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
             [cdq.world.entity :as entity]))
 
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
-  (stage/remove-inventory-item! stage inventory-cell))
+  (-> stage
+      :windows
+      :inventory-window
+      (inventory-window/remove-item! inventory-cell)))
 
 (defn do! [[_ eid cell] ctx]
   (let [entity @eid

@@ -1,7 +1,7 @@
 (ns cdq.tx.set-item
   (:require [cdq.ctx :refer [do!] :as ctx]
             [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.stage :as stage]
+            [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
             [cdq.world.entity :as entity]))
 
@@ -10,10 +10,12 @@
            ctx/stage]
     :as ctx}
    inventory-cell item]
-  (stage/set-inventory-item! stage
-                             inventory-cell
-                             {:texture-region (graphics/image->texture-region graphics (:entity/image item))
-                              :tooltip-text (ctx/info-text ctx item)}))
+  (-> stage
+      :windows
+      :inventory-window
+      (inventory-window/set-item! inventory-cell
+                                  {:texture-region (graphics/image->texture-region graphics (:entity/image item))
+                                   :tooltip-text (ctx/info-text ctx item)})))
 
 (defn do! [[_ eid cell item] ctx]
   (let [entity @eid

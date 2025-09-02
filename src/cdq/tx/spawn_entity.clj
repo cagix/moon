@@ -35,7 +35,7 @@
 (defn do!
   [[_ components]
    {:keys [ctx/world]}]
-  (m/validate-humanize components-schema components) ; check allowed components at constructor (later more added?)
+  (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
   (let [{:keys [world/id-counter]} world]
     (let [eid (atom (merge (map->Entity {})
@@ -45,8 +45,6 @@
                                                   v)))
                                    {}
                                    (assoc components :entity/id (swap! id-counter inc)))))]
-      ; this is a 'create!' of entity/id & entity/body ?
-      ; then also 'moved!' ...
       (world/context-entity-add! world eid)
       (mapcat (fn [[k v]]
                 (when-let [create! (:create! (k world/entity-components))]
