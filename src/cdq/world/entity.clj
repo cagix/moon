@@ -1,8 +1,6 @@
 (ns cdq.world.entity
   (:require [cdq.gdx.math.geom :as geom]
-            [cdq.gdx.math.vector2 :as v]
-            [cdq.world.effect :as effect]
-            [cdq.world.entity.stats :as modifiers]))
+            [cdq.gdx.math.vector2 :as v]))
 
 (defn position [{:keys [entity/body]}]
   (:body/position body))
@@ -20,19 +18,3 @@
         (float (/ (:body/width (:entity/body entity))  2))
         (float (/ (:body/width (:entity/body target*)) 2)))
      (float maxrange)))
-
-(defn skill-usable-state [entity
-                          {:keys [skill/cooling-down? skill/effects] :as skill}
-                          effect-ctx]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (modifiers/not-enough-mana? (:creature/stats entity) skill)
-   :not-enough-mana
-
-   (not (effect/some-applicable? effect-ctx effects))
-   :invalid-params
-
-   :else
-   :usable))

@@ -6,6 +6,7 @@
             [cdq.inventory :as inventory]
             [cdq.ui.actor :as actor]
             [cdq.ui.windows.inventory :as inventory-window]
+            [cdq.world.entity.skill :as skill]
             [cdq.world.entity :as entity]))
 
 (defn- action-bar-selected-skill [stage]
@@ -51,7 +52,7 @@
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
            effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
-           state (entity/skill-usable-state entity skill effect-ctx)]
+           state (skill-usable/state entity skill effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
          [:interaction-state.skill/not-usable state]))

@@ -4,6 +4,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.world.effect :as effect]
             [cdq.world.entity :as entity]
+            [cdq.world.entity.skill :as skill]
             [cdq.world.potential-fields.movement :as potential-fields.movement]))
 
 (defn- npc-effect-ctx
@@ -27,7 +28,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (entity/skill-usable-state entity % effect-ctx))
+       (filter #(and (= :usable (skill/usable-state entity % effect-ctx))
                      (effect/applicable-and-useful? world effect-ctx (:skill/effects %))))
        first))
 
