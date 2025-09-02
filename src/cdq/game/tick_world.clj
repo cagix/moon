@@ -1,23 +1,37 @@
 (ns cdq.game.tick-world
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.world :as world]
             [cdq.stacktrace :as stacktrace]
-            [cdq.world.entity :as entity]
+            [cdq.world.potential-fields.update :as potential-fields.update]
             [cdq.ui.stage :as stage]
             [cdq.ui.error-window :as error-window]))
 
 (declare entity->tick)
 
+(defn- update-time* [{:keys [world/max-delta] :as world} delta-ms]
+  (let [delta-ms (min delta-ms max-delta)]
+    (-> world
+        (assoc :world/delta-time delta-ms)
+        (update :world/elapsed-time + delta-ms))))
+
 (defn- update-time [{:keys [ctx/graphics
                             ctx/world]
                      :as ctx}]
-  (update ctx :ctx/world world/update-time (graphics/delta-time graphics)))
+  (update ctx :ctx/world update-time* (graphics/delta-time graphics)))
 
 (defn- update-potential-fields!
   [{:keys [ctx/world]
     :as ctx}]
-  (world/tick-potential-fields! world)
+  (let [{:keys [world/factions-iterations
+                world/potential-field-cache
+                world/grid
+                world/active-entities]} world]
+    (doseq [[faction max-iterations] factions-iterations]
+      (potential-fields.update/tick! potential-field-cache
+                                     grid
+                                     faction
+                                     active-entities
+                                     max-iterations)))
   ctx)
 
 ; (defmulti tick! (fn [[k] _v _eid _world]
@@ -35,7 +49,7 @@
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k
-                            :entity/id (entity/id @eid)}
+                            :entity/id (:entity/id @eid)}
                            t))))))
 
 (defn- tick-entities!

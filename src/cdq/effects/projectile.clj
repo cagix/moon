@@ -1,6 +1,6 @@
 (ns cdq.effects.projectile
   (:require [cdq.world.entity :as entity]
-            [cdq.ctx.world :as w]
+            [cdq.raycaster :as raycaster]
             [cdq.gdx.math.vector2 :as v]))
 
 (defn- start-point [entity direction size]
@@ -19,7 +19,7 @@
   (let [source-p (entity/position @source)
         target-p (entity/position @target)]
     ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-    (and (not (w/path-blocked? world source-p target-p (:projectile/size projectile)))
+    (and (not (raycaster/path-blocked? (:world/raycaster world) source-p target-p (:projectile/size projectile)))
          ; TODO not taking into account body sizes
          (< (v/distance source-p ; entity/distance function protocol EntityPosition
                         target-p)

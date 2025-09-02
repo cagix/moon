@@ -2,7 +2,7 @@
   (:require [cdq.ctx.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.world.grid :as grid]
-            [cdq.ctx.world :as world]
+            [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
             [cdq.gdx.math.geom :as geom]
             [cdq.utils :as utils]))
@@ -75,10 +75,11 @@
            ctx/world]
     :as ctx}]
   (let [entities (map deref (:world/active-entities world))
+        raycaster (:world/raycaster world)
         player @player-eid
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
-                           (world/line-of-sight? world player entity)))]
+                           (raycaster/line-of-sight? raycaster player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))

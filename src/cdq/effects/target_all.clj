@@ -1,6 +1,15 @@
 (ns cdq.effects.target-all
   (:require [cdq.world.entity :as entity]
-            [cdq.ctx.world :as w]))
+            [cdq.raycaster :as raycaster]))
+
+(defn- creatures-in-los-of
+  [{:keys [world/active-entities
+           world/raycaster]}
+   entity]
+  (->> active-entities
+       (filter #(:entity/species @%))
+       (filter #(raycaster/line-of-sight? raycaster entity @%))
+       (remove #(:entity/player? @%))))
 
 ; TODO targets projectiles with -50% hp !!
 (defn applicable? [_ _]
@@ -13,7 +22,7 @@
 (defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} world]
   (let [source* @source]
     (apply concat
-           (for [target (w/creatures-in-los-of world source*)]
+           (for [target (creatures-in-los-of world source*)]
              [[:tx/spawn-line {:start (entity/position source*) #_(start-point source* target*)
                                :end (entity/position @target)
                                :duration 0.05
@@ -29,7 +38,7 @@
 
 (defn render [_ {:keys [effect/source]} {:keys [ctx/world]}]
   (let [source* @source]
-    (for [target* (map deref (w/creatures-in-los-of world source*))]
+    (for [target* (map deref (creatures-in-los-of world source*))]
       [:draw/line
        (entity/position source*) #_(start-point source* target*)
        (entity/position target*)

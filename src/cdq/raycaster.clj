@@ -138,3 +138,10 @@
     (or
      (blocked? raycaster start1 target1)
      (blocked? raycaster start2 target2))))
+
+(defn line-of-sight?
+  [raycaster source target]
+  (assert raycaster)
+  (not (blocked? raycaster
+                 (:body/position (:entity/body source))
+                 (:body/position (:entity/body target)))))

@@ -1,14 +1,19 @@
 (ns cdq.entity.state.npc-idle
-  (:require [cdq.ctx.world :as w]
-            [cdq.gdx.math.vector2 :as v]
+  (:require [cdq.gdx.math.vector2 :as v]
+            [cdq.world.grid :as grid]
+            [cdq.raycaster :as raycaster]
             [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]))
+            [cdq.world.entity :as entity]
+            [cdq.world.potential-fields.movement :as potential-fields.movement]))
 
-(defn- npc-effect-ctx [world eid]
+(defn- npc-effect-ctx
+  [{:keys [world/raycaster
+           world/grid]}
+   eid]
   (let [entity @eid
-        target (w/nearest-enemy world entity)
+        target (grid/nearest-enemy grid entity)
         target (when (and target
-                          (w/line-of-sight? world entity @target))
+                          (raycaster/line-of-sight? raycaster entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -27,8 +32,9 @@
        first))
 
 (defn tick! [_ eid world]
-  (let [effect-ctx (npc-effect-ctx world eid)]
+  (let [effect-ctx (npc-effect-ctx world eid)
+        grid (:world/grid world)]
     (if-let [skill (npc-choose-skill world @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
-      [[:tx/event eid :movement-direction (or (w/potential-field-find-direction world eid)
+      [[:tx/event eid :movement-direction (or (potential-fields.movement/find-direction grid eid)
                                               [0 0])]])))

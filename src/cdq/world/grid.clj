@@ -1,4 +1,6 @@
-(ns cdq.world.grid)
+(ns cdq.world.grid
+  (:require [cdq.world.grid.cell :as cell]
+            [cdq.world.entity :as entity]))
 
 (defprotocol Grid
   (cell [_ int-position])
@@ -24,3 +26,11 @@
             [tx ty])
           (range (dec x) (+ x 2))
           (range (dec y) (+ y 2))))
+
+(defn nearest-enemy-distance [grid entity]
+  (cell/nearest-entity-distance @(cell grid (mapv int (entity/position entity)))
+                                (entity/enemy entity)))
+
+(defn nearest-enemy [grid entity]
+  (cell/nearest-entity @(cell grid (mapv int (entity/position entity)))
+                       (entity/enemy entity)))

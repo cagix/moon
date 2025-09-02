@@ -1,5 +1,5 @@
 (ns cdq.game.update-mouseover-eid
-  (:require [cdq.ctx.world :as world]
+  (:require [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.world.grid :as grid]))
 
@@ -13,12 +13,13 @@
   (let [new-eid (if mouseover-actor
                   nil
                   (let [player @player-eid
+                        raycaster (:world/raycaster world)
                         hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
                                      (grid/point->entities (:world/grid world) world-mouse-position))]
                     (->> (:world/render-z-order world)
                          (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
                          reverse
-                         (filter #(world/line-of-sight? world player @%))
+                         (filter #(raycaster/line-of-sight? raycaster player @%))
                          first)))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))
