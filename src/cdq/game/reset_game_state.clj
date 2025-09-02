@@ -3,16 +3,16 @@
             [cdq.ctx.db :as db]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.utils.tiled :as tiled]
-            [cdq.world-impl]))
+            [cdq.utils.tiled :as tiled]))
 
 (defn- add-ctx-world
   [{:keys [ctx/config]
     :as ctx}
    world-fn]
-  (assoc ctx :ctx/world (cdq.world-impl/create (merge (::world config)
-                                                      (let [[f params] world-fn]
-                                                        ((requiring-resolve f) ctx params))))))
+  (assoc ctx :ctx/world ((requiring-resolve (:world-impl config))
+                         (merge (::world config)
+                                (let [[f params] world-fn]
+                                  ((requiring-resolve f) ctx params))))))
 
 (defn- spawn-player!
   [{:keys [ctx/config
