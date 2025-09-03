@@ -1,6 +1,7 @@
 (ns cdq.game.reset-game-state
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
+            [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
@@ -50,9 +51,9 @@
     :as ctx}
    world-fn]
   (stage/clear! stage)
-  (doseq [actor (map #((requiring-resolve %) ctx)
-                     (:create-ui-actors config))]
-    (stage/add! stage actor))
+  (doseq [actor-decl (map #((requiring-resolve %) ctx)
+                          (:create-ui-actors config))]
+    (stage/add! stage (actor/construct actor-decl)))
   (-> ctx
       (add-ctx-world world-fn)
       spawn-player!
