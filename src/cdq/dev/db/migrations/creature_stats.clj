@@ -6,7 +6,7 @@
 (def file "properties.edn")
 
 (defn read-properties []
-  (->> path io/resource slurp edn/read-string))
+  (-> file io/resource slurp edn/read-string))
 
 (def stat-keys
   [:entity/modifiers
