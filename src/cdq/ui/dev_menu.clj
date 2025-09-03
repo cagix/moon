@@ -43,7 +43,7 @@
 
 (defn fps [icon]
   {:label "FPS"
-   :update-fn (comp graphics/frames-per-second :graphics :ctx/graphics)
+   :update-fn (comp graphics/frames-per-second :ctx/gdx-graphics)
    :icon icon})
 
 (defn select-world [reset-game-state-fn world-fns]

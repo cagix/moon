@@ -14,10 +14,10 @@
         (assoc :world/delta-time delta-ms)
         (update :world/elapsed-time + delta-ms))))
 
-(defn- update-time [{:keys [ctx/graphics
+(defn- update-time [{:keys [ctx/gdx-graphics
                             ctx/world]
                      :as ctx}]
-  (update ctx :ctx/world update-time* (graphics/delta-time (:graphics graphics))))
+  (update ctx :ctx/world update-time* (graphics/delta-time gdx-graphics)))
 
 (defn- update-potential-fields!
   [{:keys [ctx/world]

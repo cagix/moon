@@ -120,7 +120,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   [batch
    cursors
    default-font
-   graphics
    shape-drawer-texture
    shape-drawer
    textures
@@ -156,8 +155,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                   (:height ui-viewport)
                                   (orthographic-camera))]
     (map->Graphics
-     {:graphics graphics
-      :textures (into {} (for [[path file-handle] textures]
+     {:textures (into {} (for [[path file-handle] textures]
                            [path (Texture. ^FileHandle file-handle)]))
       :cursors (update-vals cursors
                             (fn [[file [hotspot-x hotspot-y]]]

@@ -15,6 +15,7 @@
                       ctx/mouseover-eid
                       ctx/player-eid
                       ctx/graphics
+                      ctx/gdx-graphics
                       ctx/world])
 
 (defn do! [gdx config]
@@ -34,7 +35,9 @@
                                           [:ctx/mouseover-eid :any]
                                           [:ctx/player-eid :some]
                                           [:ctx/graphics :some]
+                                          [:ctx/gdx-graphics :some]
                                           [:ctx/world :some]])
+                       :gdx-graphics (:graphics gdx)
                        :audio (audio/create gdx (::audio config))
                        :config config
                        :db (db/create (::db config))
