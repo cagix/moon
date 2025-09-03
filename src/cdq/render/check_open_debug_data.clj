@@ -1,9 +1,29 @@
 (ns cdq.render.check-open-debug-data
-  (:require [cdq.input :as input]))
+  (:require [cdq.dev.data-view :as data-view]
+            [cdq.input :as input]
+            [cdq.ui.stage :as stage]
+            [cdq.world.grid :as grid]))
+
+; TODO also items/skills/mouseover-actors
+; -> can separate function get-mouseover-item-for-debug (@ ctx)
+
+(defn- open-debug-data-window!
+  [{:keys [ctx/stage
+           ctx/mouseover-eid
+           ctx/world
+           ctx/world-mouse-position]}]
+  (let [data (or (and mouseover-eid @mouseover-eid)
+                 @(grid/cell (:world/grid world)
+                             (mapv int world-mouse-position)))]
+    (stage/add! stage
+                (data-view/table-view-window {:title "Data View"
+                                              :data data
+                                              :width 500
+                                              :height 500}))))
 
 (defn do!
   [{:keys [ctx/input]
     :as ctx}]
   (when (input/button-just-pressed? input :right)
-    ((requiring-resolve 'cdq.game.open-debug-data-window/do!) ctx))
+    (open-debug-data-window! ctx))
   ctx)
