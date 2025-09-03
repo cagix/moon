@@ -9,7 +9,7 @@
             [cdq.input :as input]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.graphics :as graphics]
-            [cdq.ui.stage :as stage]
+            [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
