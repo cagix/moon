@@ -1,5 +1,7 @@
 (ns cdq.grid-impl
-  (:require [cdq.world.grid :as grid]
+  (:require [cdq.world.entity :as entity]
+            [cdq.world.entity.faction :as faction]
+            [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.geom :as geom]
@@ -135,7 +137,15 @@
                               (and (not= (:entity/id other-entity) entity-id)
                                    (:body/collides? (:entity/body other-entity))
                                    (geom/overlaps? (geom/body->gdx-rectangle (:entity/body other-entity))
-                                                   (geom/body->gdx-rectangle body)))))))))))
+                                                   (geom/body->gdx-rectangle body))))))))))
+
+  (nearest-enemy-distance [grid entity]
+    (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
+                                  (faction/enemy (:entity/faction entity))))
+
+  (nearest-enemy [grid entity]
+    (cell/nearest-entity @(grid/cell grid (mapv int (entity/position entity)))
+                         (faction/enemy (:entity/faction entity)))))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.

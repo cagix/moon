@@ -1,7 +1,4 @@
-(ns cdq.world.grid
-  (:require [cdq.world.grid.cell :as cell]
-            [cdq.world.entity :as entity]
-            [cdq.world.entity.faction :as faction]))
+(ns cdq.world.grid)
 
 (defprotocol Grid
   (cell [_ int-position])
@@ -15,7 +12,9 @@
   (add-entity! [_ eid])
   (remove-entity! [_ eid])
   (position-changed! [_ eid])
-  (valid-position? [_ new-body entity-id]))
+  (valid-position? [_ new-body entity-id])
+  (nearest-enemy-distance [_ entity])
+  (nearest-enemy [_ entity]))
 
 ; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
 (let [offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]]
@@ -28,10 +27,3 @@
           (range (dec x) (+ x 2))
           (range (dec y) (+ y 2))))
 
-(defn nearest-enemy-distance [grid entity]
-  (cell/nearest-entity-distance @(cell grid (mapv int (entity/position entity)))
-                                (faction/enemy (:entity/faction entity))))
-
-(defn nearest-enemy [grid entity]
-  (cell/nearest-entity @(cell grid (mapv int (entity/position entity)))
-                       (faction/enemy (:entity/faction entity))))
