@@ -1,5 +1,7 @@
 (ns cdq.tx.spawn-entity
   (:require [cdq.world :as world]
+            [cdq.world.content-grid :as content-grid]
+            [cdq.world.grid :as grid]
             [cdq.malli :as m]
             [qrecord.core :as q]))
 
@@ -37,7 +39,10 @@
    {:keys [ctx/world]}]
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
-  (let [{:keys [world/id-counter]} world]
+  (let [{:keys [world/id-counter
+                world/entity-ids
+                world/content-grid
+                world/grid]} world]
     (let [eid (atom (merge (map->Entity {})
                            (reduce (fn [m [k v]]
                                      (assoc m k (if-let [create (:create (k world/entity-components))]
@@ -45,7 +50,13 @@
                                                   v)))
                                    {}
                                    (assoc components :entity/id (swap! id-counter inc)))))]
-      (world/context-entity-add! world eid)
+      (let [id (:entity/id @eid)]
+        (assert (number? id))
+        (swap! entity-ids assoc id eid))
+      (content-grid/add-entity! content-grid eid)
+      ; https://github.com/damn/core/issues/58
+      ;(assert (valid-position? grid @eid))
+      (grid/add-entity! grid eid)
       (mapcat (fn [[k v]]
                 (when-let [create! (:create! (k world/entity-components))]
                   (create! v eid world)))
