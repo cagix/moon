@@ -1,4 +1,4 @@
-(ns cdq.game.assoc-mouseover-keys
+(ns cdq.render.assoc-mouseover-keys
   (:require [cdq.math :as math])
   (:import (com.badlogic.gdx Input)
            (com.badlogic.gdx.math Vector2)

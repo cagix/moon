@@ -1,4 +1,4 @@
-(ns cdq.game.draw-on-world-viewport
+(ns cdq.render.draw-on-world-viewport
   (:require [cdq.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.world.grid :as grid]

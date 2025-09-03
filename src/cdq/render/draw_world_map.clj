@@ -1,4 +1,4 @@
-(ns cdq.game.draw-world-map
+(ns cdq.render.draw-world-map
   (:require [cdq.graphics :as graphics]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.raycaster :as raycaster]))

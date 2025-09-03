@@ -1,4 +1,4 @@
-(ns cdq.game.remove-destroyed-entities
+(ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
             [cdq.world :as world]))
 

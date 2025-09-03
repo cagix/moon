@@ -1,4 +1,4 @@
-(ns cdq.game.assoc-active-entities
+(ns cdq.render.assoc-active-entities
   (:require [cdq.world.content-grid :as content-grid]))
 
 (defn- cache-active-entities [world entity]

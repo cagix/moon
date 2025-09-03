@@ -6,7 +6,8 @@
             [cdq.malli :as m]
             [qrecord.core :as q]))
 
-(q/defrecord Context [ctx/config
+(q/defrecord Context [ctx/schema
+                      ctx/config
                       ctx/input
                       ctx/db
                       ctx/audio
@@ -16,22 +17,6 @@
                       ctx/graphics
                       ctx/world])
 
-(def ^:private schema
-  (m/schema [:map {:closed true}
-             [:ctx/config :some]
-             [:ctx/input :some]
-             [:ctx/db :some]
-             [:ctx/audio :some]
-             [:ctx/stage :some]
-             [:ctx/mouseover-eid :any]
-             [:ctx/player-eid :some]
-             [:ctx/graphics :some]
-             [:ctx/world :some]]))
-
-(defn validate [ctx]
-  (m/validate-humanize schema ctx)
-  ctx)
-
 (defn do! [gdx config]
   (ui/load! (::stage config))
   (let [input (:input gdx)
@@ -39,12 +24,22 @@
         stage (ui/stage (:ui-viewport graphics)
                         (:batch       graphics))]
     (input/set-processor! input stage)
-    (-> (map->Context {:audio (audio/create gdx (::audio config))
+    (-> (map->Context {:schema (m/schema [:map {:closed true}
+                                          [:ctx/schema :some]
+                                          [:ctx/config :some]
+                                          [:ctx/input :some]
+                                          [:ctx/db :some]
+                                          [:ctx/audio :some]
+                                          [:ctx/stage :some]
+                                          [:ctx/mouseover-eid :any]
+                                          [:ctx/player-eid :some]
+                                          [:ctx/graphics :some]
+                                          [:ctx/world :some]])
+                       :audio (audio/create gdx (::audio config))
                        :config config
                        :db (db/create (::db config))
                        :graphics graphics
                        :input input
                        :stage stage})
         ((requiring-resolve (:reset-game-state! config)) (::starting-level config))
-        (assoc :ctx/mouseover-eid nil)
-        validate)))
+        (assoc :ctx/mouseover-eid nil))))

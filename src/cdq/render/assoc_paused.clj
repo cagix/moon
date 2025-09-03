@@ -1,4 +1,4 @@
-(ns cdq.game.assoc-paused
+(ns cdq.render.assoc-paused
   (:require [cdq.input :as input]))
 
 (def ^:private pausing? true)

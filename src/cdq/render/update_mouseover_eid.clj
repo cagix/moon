@@ -1,4 +1,4 @@
-(ns cdq.game.update-mouseover-eid
+(ns cdq.render.update-mouseover-eid
   (:require [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.world.grid :as grid]))

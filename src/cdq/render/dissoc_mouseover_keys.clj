@@ -1,4 +1,4 @@
-(ns cdq.game.dissoc-mouseover-keys)
+(ns cdq.render.dissoc-mouseover-keys)
 
 (defn do!
   [ctx]

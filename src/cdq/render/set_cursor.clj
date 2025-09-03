@@ -1,4 +1,4 @@
-(ns cdq.game.set-cursor
+(ns cdq.render.set-cursor
   (:require [cdq.graphics :as graphics]))
 
 (declare state->cursor)

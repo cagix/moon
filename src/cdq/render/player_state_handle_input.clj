@@ -1,4 +1,4 @@
-(ns cdq.game.player-state-handle-input
+(ns cdq.render.player-state-handle-input
   (:require [cdq.ctx :as ctx]))
 
 (def state->handle-input)

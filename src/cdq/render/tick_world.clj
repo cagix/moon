@@ -1,4 +1,4 @@
-(ns cdq.game.tick-world
+(ns cdq.render.tick-world
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]

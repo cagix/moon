@@ -1,4 +1,4 @@
-(ns cdq.game.set-camera-on-player
+(ns cdq.render.set-camera-on-player
   (:require [cdq.gdx.graphics.camera :as camera]))
 
 (defn do!

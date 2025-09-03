@@ -1,4 +1,4 @@
-(ns cdq.game.clear-screen
+(ns cdq.render.clear-screen
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils ScreenUtils)))
 

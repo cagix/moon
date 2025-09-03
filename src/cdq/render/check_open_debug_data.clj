@@ -1,4 +1,4 @@
-(ns cdq.game.check-open-debug-data
+(ns cdq.render.check-open-debug-data
   (:require [cdq.input :as input]))
 
 (defn do!

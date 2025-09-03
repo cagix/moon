@@ -19,11 +19,11 @@
                                                    :stunned               cdq.entity.state.stunned/create}]
                        [cdq.ui.windows/state->clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                                                                       :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-cell}]
-                       [cdq.game.player-state-handle-input/state->handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
+                       [cdq.render.player-state-handle-input/state->handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
                                                                                 :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                                                                                 :player-moving         cdq.entity.state.player-moving/handle-input}]
                        [cdq.ui.player-state-draw/state->draw-gui-view {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}]
-                       [cdq.game.draw-on-world-viewport/render-layers [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
+                       [cdq.render.draw-on-world-viewport/render-layers [{:entity/mouseover? cdq.render-layers/draw-mouseover-highlighting
                                                                         :stunned cdq.render-layers/draw-stunned-state
                                                                         :player-item-on-cursor cdq.render-layers/draw-item-on-cursor-state}
                                                                        {:entity/clickable cdq.render-layers/draw-clickable-mouseover-text
@@ -45,7 +45,7 @@
                                                          :entity/inventory                       {:create!  cdq.entity.inventory/create!}
                                                          :entity/skills                          {:create!  cdq.entity.skills/create!}
                                                          :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]
-                       [cdq.game.tick-world/entity->tick {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+                       [cdq.render.tick-world/entity->tick {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
                                                           :entity/animation cdq.entity.animation/tick!
                                                           :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
                                                           :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
@@ -59,7 +59,7 @@
                                                           :stunned cdq.entity.state.stunned/tick!
                                                           :entity/string-effect cdq.entity.string-effect/tick!
                                                           :entity/temp-modifier cdq.entity.temp-modifier/tick!}]
-                       [cdq.game.set-cursor/state->cursor {:active-skill :cursors/sandclock
+                       [cdq.render.set-cursor/state->cursor {:active-skill :cursors/sandclock
                                                            :player-dead :cursors/black-x
                                                            :player-idle cdq.entity.state.player-idle/->cursor
                                                            :player-item-on-cursor :cursors/hand-grab
@@ -317,23 +317,23 @@
 
                          :dispose! cdq.game.dispose/do!
                          :render! [
-                                   cdq.game.create/validate
-                                   cdq.game.assoc-mouseover-keys/do!
-                                   cdq.game.update-mouseover-eid/do!
-                                   cdq.game.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-                                   cdq.game.assoc-active-entities/do!
-                                   cdq.game.set-camera-on-player/do!
-                                   cdq.game.clear-screen/do!
-                                   cdq.game.draw-world-map/do!
-                                   cdq.game.draw-on-world-viewport/do!
-                                   cdq.game.render-stage/do!
-                                   cdq.game.set-cursor/do!
-                                   cdq.game.player-state-handle-input/do!
-                                   cdq.game.assoc-paused/do!
-                                   cdq.game.tick-world/do!
-                                   cdq.game.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                                   cdq.game.handle-key-input/do!
-                                   cdq.game.dissoc-mouseover-keys/do!
-                                   cdq.game.create/validate
+                                   cdq.render.validate/do!
+                                   cdq.render.assoc-mouseover-keys/do!
+                                   cdq.render.update-mouseover-eid/do!
+                                   cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+                                   cdq.render.assoc-active-entities/do!
+                                   cdq.render.set-camera-on-player/do!
+                                   cdq.render.clear-screen/do!
+                                   cdq.render.draw-world-map/do!
+                                   cdq.render.draw-on-world-viewport/do!
+                                   cdq.render.render-stage/do!
+                                   cdq.render.set-cursor/do!
+                                   cdq.render.player-state-handle-input/do!
+                                   cdq.render.assoc-paused/do!
+                                   cdq.render.tick-world/do!
+                                   cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                                   cdq.render.handle-key-input/do!
+                                   cdq.render.dissoc-mouseover-keys/do!
+                                   cdq.render.validate/do!
                                    ]
                          :resize! cdq.game.resize/do!}]]

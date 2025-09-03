@@ -1,5 +1,5 @@
 (ns cdq.tx.toggle-inventory-visible
-  (:require [cdq.game.handle-key-input :refer [toggle-inventory-visible!]]))
+  (:require [cdq.render.handle-key-input :refer [toggle-inventory-visible!]]))
 
 (defn do! [_ ctx]
   (-> ctx
