@@ -1,8 +1,8 @@
 (ns cdq.game.check-open-debug-data
   (:require [cdq.ctx.input :as input]
-            [cdq.world.grid :as grid]
-            [cdq.ui.stage]
-            [cdq.dev.data-view :as data-view]))
+            [cdq.dev.data-view :as data-view]
+            [cdq.ui.stage :as stage]
+            [cdq.world.grid :as grid]))
 
 (defn do!
   [{:keys [ctx/input
@@ -15,9 +15,9 @@
     (let [data (or (and mouseover-eid @mouseover-eid)
                    @(grid/cell (:world/grid world)
                                (mapv int world-mouse-position)))]
-      (cdq.ui.stage/add! stage
-                         (data-view/table-view-window {:title "Data View"
-                                                       :data data
-                                                       :width 500
-                                                       :height 500}))))
+      (stage/add! stage
+                  (data-view/table-view-window {:title "Data View"
+                                                :data data
+                                                :width 500
+                                                :height 500}))))
   ctx)
