@@ -2,13 +2,9 @@
   (:require [cdq.graphics :as graphics]))
 
 (defn do!
-  [{:keys [ctx/graphics] :as ctx}]
+  [{:keys [ctx/graphics] :as ctx} draw-fns]
   (graphics/draw-on-world-viewport! graphics
                                     (fn []
-                                      (doseq [f '[cdq.draw-on-world-viewport.tile-grid/do!
-                                                  cdq.draw-on-world-viewport.cell-debug/do!
-                                                  cdq.draw-on-world-viewport.entities/do!
-                                                  ;cdq.draw-on-world-viewport.geom-test/do!
-                                                  cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]]
+                                      (doseq [f draw-fns]
                                         ((requiring-resolve f) ctx))))
   ctx)

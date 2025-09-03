@@ -18,8 +18,11 @@
     :render! (fn []
                (swap! cdq.application/state (fn [ctx]
                                               (reduce (fn [ctx f]
-                                                        (f ctx))
+                                                        (if (vector? f)
+                                                          (let [[f params] f]
+                                                            ((requiring-resolve f) ctx params))
+                                                          ((requiring-resolve f) ctx)))
                                                       ctx
-                                                      (map requiring-resolve render!)))))
+                                                      render!))))
     :resize! (fn [width height]
                ((requiring-resolve resize!) @cdq.application/state width height))}))
