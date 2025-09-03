@@ -1,9 +1,8 @@
 (ns cdq.graphics-impl
-  (:require [cdq.graphics]
-            [cdq.gdx.graphics :as graphics]
+  (:require [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
-            [cdq.gdx.tiled :as tiled]
+            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files)
@@ -20,9 +19,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (cdq.gdx.graphics OrthogonalTiledMapRenderer
-                             ColorSetter)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- vector3-clojurize [^Vector3 v3]
   [(.x v3)
@@ -131,24 +128,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    ui-viewport
    unit-scale
    world-unit-scale
-   world-viewport]
-  cdq.graphics/Graphics
-  (draw-tiled-map! [_ tiled-map color-setter]
-    (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
-          camera (:viewport/camera world-viewport)]
-      (.setColorSetter renderer (reify ColorSetter
-                                  (apply [_ color x y]
-                                    (color/float-bits (color-setter color x y)))))
-      (.setView renderer camera)
-      ; there is also:
-      ; OrthogonalTiledMapRenderer/.renderTileLayer (TiledMapTileLayer layer)
-      ; but right order / visible only ?
-      (->> tiled-map
-           tiled/layers
-           (filter tiled/visible?)
-           (map (partial tiled/layer-index tiled-map))
-           int-array
-           (.render renderer)))))
+   world-viewport])
 
 (defn create!
   [{:keys [graphics files]}
@@ -201,7 +181,4 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
       :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
-      :tiled-map-renderer (memoize (fn [tiled-map]
-                                     (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
-                                                                  (float world-unit-scale)
-                                                                  batch)))})))
+      :tiled-map-renderer (tm-renderer/create world-unit-scale batch)})))

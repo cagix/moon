@@ -1,6 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.graphics-impl]
             [cdq.render.clear-screen]
+            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.game.resize]
             [cdq.db-impl :as db]
             [cdq.level.modules]
@@ -9,7 +10,6 @@
             [cdq.gdx.tiled :as tiled]
             [cdq.input :as input]
             [cdq.gdx.graphics.camera :as camera]
-            [cdq.graphics :as graphics]
             [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])
@@ -117,7 +117,10 @@
 (defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
                                 ctx/color-setter]}]
-  (graphics/draw-tiled-map! graphics tiled-map color-setter))
+  (tm-renderer/draw! (:tiled-map-renderer graphics)
+                     (:world-viewport graphics)
+                     tiled-map
+                     color-setter))
 
 (defn- camera-movement-controls! [{:keys [ctx/input
                                           ctx/camera
@@ -150,7 +153,7 @@
   (render-stage! @state))
 
 (defn resize! [width height]
-  (cdq.game.resize/do! @state))
+  (cdq.game.resize/do! @state width height))
 
 (defn -main []
   (lwjgl/start-application! {:title "Levelgen test"
