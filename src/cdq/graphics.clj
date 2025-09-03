@@ -6,7 +6,6 @@
   (set-cursor! [_ cursor-key])
   (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])
-  (resize-viewports! [_ width height])
   (ui-viewport-height [_])
   (image->texture-region [_ image]
                          "image is `:image/file` (string) & `:image/bounds` `[x y w h]` (optional).

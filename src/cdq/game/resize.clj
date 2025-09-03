@@ -1,5 +1,6 @@
 (ns cdq.game.resize
-  (:require [cdq.graphics :as graphics]))
+  (:import (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn do! [{:keys [ctx/graphics]} width height]
-  (graphics/resize-viewports! graphics width height))
+  (Viewport/.update (:ui-viewport    graphics) width height true)
+  (Viewport/.update (:world-viewport graphics) width height false))

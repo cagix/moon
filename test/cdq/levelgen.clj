@@ -1,6 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.graphics-impl]
             [cdq.render.clear-screen]
+            [cdq.game.resize]
             [cdq.db-impl :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
@@ -149,8 +150,7 @@
   (render-stage! @state))
 
 (defn resize! [width height]
-  (let [{:keys [ctx/graphics]} @state]
-    (graphics/resize-viewports! graphics width height)))
+  (cdq.game.resize/do! @state))
 
 (defn -main []
   (lwjgl/start-application! {:title "Levelgen test"

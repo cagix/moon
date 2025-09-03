@@ -21,8 +21,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils.viewport FitViewport
-                                            Viewport)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
 
@@ -96,9 +95,9 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
       (case k
-        :viewport/width  (Viewport/.getWorldWidth  this)
-        :viewport/height (Viewport/.getWorldHeight this)
-        :viewport/camera (Viewport/.getCamera      this)))))
+        :viewport/width  (FitViewport/.getWorldWidth  this)
+        :viewport/height (FitViewport/.getWorldHeight this)
+        :viewport/camera (FitViewport/.getCamera      this)))))
 
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
@@ -130,15 +129,11 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    shape-drawer
    textures
    tiled-map-renderer
-   ^Viewport ui-viewport
+   ui-viewport
    unit-scale
    world-unit-scale
-   ^Viewport world-viewport]
+   world-viewport]
   cdq.graphics/Graphics
-  (resize-viewports! [_ width height]
-    (.update ui-viewport    width height true)
-    (.update world-viewport width height false))
-
   (delta-time [_]
     (.getDeltaTime graphics))
 
