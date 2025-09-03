@@ -1,12 +1,41 @@
 (ns cdq.draw.texture-region
-  (:require [cdq.draws-impl :refer [batch-draw!
-                                    texture-region-drawing-dimensions]]))
+  (:import (com.badlogic.gdx.graphics.g2d Batch
+                                          TextureRegion)))
+
+(defn- draw!* [^Batch batch texture-region x y [w h] rotation]
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; origin-x
+         (/ (float h) 2) ; origin-y
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation))
 
 (defn draw!
-  [[_ texture-region position]
-   {:keys [batch]}]
-  (batch-draw! batch
-               texture-region
-               position
-               (texture-region-drawing-dimensions graphics texture-region)
-               0))
+  [[_ ^TextureRegion texture-region [x y] {:keys [center? rotation]}]
+   {:keys [batch
+           unit-scale
+           world-unit-scale]}]
+  (let [[w h] (let [dimensions [(.getRegionWidth  texture-region)
+                                (.getRegionHeight texture-region)]]
+                (if (= @unit-scale 1)
+                  dimensions
+                  (mapv (comp float (partial * world-unit-scale))
+                        dimensions)))]
+    (if center?
+      (draw!* batch
+              texture-region
+              (- (float x) (/ (float w) 2))
+              (- (float y) (/ (float h) 2))
+              [w h]
+              (or rotation 0))
+      (draw!* batch
+              texture-region
+              x
+              y
+              [w h]
+              0))))

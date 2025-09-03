@@ -27,14 +27,15 @@
 (defn draw-item-on-cursor-state
   [{:keys [item]}
    entity
-   {:keys [ctx/mouseover-actor
+   {:keys [ctx/graphics
+           ctx/mouseover-actor
            ctx/world-mouse-position]}]
   (when (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor)
-    [[:draw/centered
-      (:entity/image item)
-      (cdq.entity.state.player-item-on-cursor/item-place-position
-       world-mouse-position
-       entity)]]))
+    [[:draw/texture-region
+      (textures/image->texture-region (:textures graphics)
+                                      (:entity/image item))
+      (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
+      {:center? true}]]))
 
 (defn draw-mouseover-highlighting [_ entity {:keys [ctx/player-eid]}]
   (let [player @player-eid
@@ -100,11 +101,16 @@
                                   ; - render does not need to update .. update inside active-skill
                                   effects))))
 
-(defn draw-centered-rotated-image [image entity _ctx]
-  [[:draw/rotated-centered
-    image
-    (or (:body/rotation-angle (:entity/body entity)) 0)
-    (entity/position entity)]])
+(defn draw-centered-rotated-image
+  [image
+   entity
+   {:keys [ctx/graphics]}]
+  [[:draw/texture-region
+    (textures/image->texture-region (:textures graphics) image)
+    (entity/position entity)
+    {:center? true
+     :rotation (or (:body/rotation-angle (:entity/body entity))
+                   0)}]])
 
 (defn call-render-image [animation entity ctx]
   (draw-centered-rotated-image (animation/current-frame animation)

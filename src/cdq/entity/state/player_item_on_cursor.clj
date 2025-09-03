@@ -1,6 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.world.entity :as entity]
             [cdq.inventory :as inventory]
+            [cdq.textures :as textures]
             [cdq.input :as input]
             [cdq.gdx.math.vector2 :as v]
             [cdq.gdx.ui :as ui]))
@@ -78,12 +79,15 @@
 
 (defn draw-gui-view
   [eid
-   {:keys [ctx/mouseover-actor
+   {:keys [ctx/graphics
+           ctx/mouseover-actor
            ctx/ui-mouse-position]}]
   (when (not (world-item? mouseover-actor))
-    [[:draw/centered
-      (:entity/image (:entity/item-on-cursor @eid))
-      ui-mouse-position]]))
+    [[:draw/texture-region
+      (textures/image->texture-region (:textures graphics)
+                                      (:entity/image (:entity/item-on-cursor @eid)))
+      ui-mouse-position
+      {:center? true}]]))
 
 (defn handle-input
   [eid
