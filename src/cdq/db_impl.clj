@@ -1,13 +1,13 @@
 (ns cdq.db-impl
   (:require [cdq.ctx.db :as db]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
+            [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [cdq.malli :as m]))
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]))
 
 (defmulti fetch* (fn [schema _v _db]
                    (schema/type schema)))
