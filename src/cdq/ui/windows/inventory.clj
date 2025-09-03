@@ -2,6 +2,7 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
+            [cdq.textures :as textures]
             [cdq.graphics :as g]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
@@ -34,9 +35,9 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (g/image->texture-region graphics
-                                                          {:image/file "images/items.png"
-                                                           :image/bounds bounds})))
+                                 (textures/image->texture-region (:textures graphics)
+                                                                 {:image/file "images/items.png"
+                                                                  :image/bounds bounds})))
         cell-size 48
         slot->drawable (fn [slot]
                          (ui/drawable (slot->texture-region slot)

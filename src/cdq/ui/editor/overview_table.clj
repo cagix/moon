@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.graphics :as graphics]
+            [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.gdx.ui :as ui]))
 
@@ -53,7 +53,7 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (ui/image-button {:texture-region (graphics/image->texture-region graphics image)
+                                   (ui/image-button {:texture-region (textures/image->texture-region (:textures graphics) image)
                                                      :on-clicked on-clicked
                                                      :scale scale})
                                    (ui/text-button (name id)

@@ -1,8 +1,9 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.world.entity.stats :as modifiers]
-            [cdq.val-max :as val-max]
+  (:require [cdq.graphics :as g]
+            [cdq.textures :as textures]
             [cdq.utils :as utils]
-            [cdq.graphics :as g]))
+            [cdq.val-max :as val-max]
+            [cdq.world.entity.stats :as modifiers]))
 
 (defn- create*
   [{:keys [ctx/graphics]}
@@ -12,16 +13,17 @@
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [[x y-mana] [(/ (:viewport/width (:ui-viewport graphics)) 2)
+  (let [textures (:textures graphics)
+        [x y-mana] [(/ (:viewport/width (:ui-viewport graphics)) 2)
                     y-mana]
-        rahmen-tex-reg (g/image->texture-region graphics {:image/file rahmen-file})
+        rahmen-tex-reg (textures/image->texture-region textures {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [graphics x y content-file minmaxval name]
                             [[:draw/texture-region rahmen-tex-reg [x y]]
                              [:draw/texture-region
-                              (g/image->texture-region graphics
-                                                       {:image/file content-file
-                                                        :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
+                              (textures/image->texture-region textures
+                                                              {:image/file content-file
+                                                               :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
                               [x y]]
                              [:draw/text {:text (str (utils/readable-number (minmaxval 0))
                                                      "/"

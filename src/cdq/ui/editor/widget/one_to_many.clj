@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.graphics :as graphics]
+            [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
@@ -37,7 +37,7 @@
                            (stage/add! stage window))))]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
-              texture-region (graphics/image->texture-region graphics (property/image property))
+              texture-region (textures/image->texture-region (:textures graphics) (property/image property))
               image-widget (ui/image-widget texture-region
                                             {:id property-id})]
           (actor/add-tooltip! image-widget (pprint-to-str property))))

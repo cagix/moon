@@ -4,7 +4,6 @@
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
-            [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files)
@@ -162,22 +161,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
            (filter tiled/visible?)
            (map (partial tiled/layer-index tiled-map))
            int-array
-           (.render renderer))))
-
-  ; FIXME this can be memoized
-  ; also good for tiled-map tiles they have to be memoized too
-  (image->texture-region
-    [_ {:keys [image/file image/bounds]}]
-    (assert file)
-    (let [^Texture texture (utils/safe-get textures file)
-          [x y w h] bounds]
-      (if bounds
-        (TextureRegion. texture
-                        (int x)
-                        (int y)
-                        (int w)
-                        (int h))
-        (TextureRegion. texture)))))
+           (.render renderer)))))
 
 (defn create!
   [{:keys [graphics files]}
