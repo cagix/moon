@@ -66,7 +66,7 @@
   :global-vars {*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
-                ;*print-level* 3
+                *print-level* 3
                 }
 
   :profiles {:uberjar {:aot [~main-namespace]}}
