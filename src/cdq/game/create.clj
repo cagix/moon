@@ -32,7 +32,7 @@
   (m/validate-humanize schema ctx)
   ctx)
 
-(defn do!! [gdx config]
+(defn do! [gdx config]
   (ui/load! (::stage config))
   (let [input (:input gdx)
         graphics ((requiring-resolve (:graphics-impl config)) gdx (::graphics config))

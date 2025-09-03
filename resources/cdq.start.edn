@@ -156,7 +156,7 @@
  [cdq.start.gdx-app/do! {:lwjgl-app-config {:title "Cyber Dungeon Quest"
                                             :windowed-mode {:width 1440 :height 900}
                                             :foreground-fps 60}
-                         :create! [cdq.game.create/do!!
+                         :create! [cdq.game.create/do!
                                    {:graphics-impl cdq.graphics-impl/create!
                                     :cdq.game.create/stage {:skin-scale :x1}
                                     :cdq.game.create/audio {:sounds "sounds.edn"
