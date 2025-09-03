@@ -5,9 +5,6 @@
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
-; Takes also floatbits
-; so can circumvent use of com.badlogic.gdx.graphics.Color
-; and circument use of libgdx by implementing float-bits myself.
 (defn set-color! [shape-drawer color]
   (ShapeDrawer/.setColor shape-drawer ^Color color))
 
