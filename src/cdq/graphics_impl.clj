@@ -1,13 +1,13 @@
 (ns cdq.graphics-impl
   (:require [cdq.graphics]
+            [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
             [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Files
-                             Graphics)
+           (com.badlogic.gdx Files)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Colors
                                       OrthographicCamera
@@ -120,11 +120,11 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
        (recursively-search (Files/.internal files folder) extensions)))
 
 ; TODO namespaced keywords :g/..
-(defrecord RGraphics
+(defrecord Graphics
   [^SpriteBatch batch
    cursors
    default-font
-   ^Graphics graphics
+   graphics
    shape-drawer-texture
    shape-drawer
    textures
@@ -134,16 +134,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    world-unit-scale
    world-viewport]
   cdq.graphics/Graphics
-  (delta-time [_]
-    (.getDeltaTime graphics))
-
-  (frames-per-second [_]
-    (.getFramesPerSecond graphics))
-
-  (set-cursor! [_ cursor-key]
-    (assert (contains? cursors cursor-key))
-    (.setCursor graphics (get cursors cursor-key)))
-
   (draw-on-world-viewport! [_ f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
@@ -214,14 +204,14 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         ui-viewport (fit-viewport (:width  ui-viewport)
                                   (:height ui-viewport)
                                   (orthographic-camera))]
-    (map->RGraphics
+    (map->Graphics
      {:graphics graphics
       :textures (into {} (for [[path file-handle] textures]
                            [path (Texture. ^FileHandle file-handle)]))
       :cursors (update-vals cursors
                             (fn [[file [hotspot-x hotspot-y]]]
                               (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
-                                    cursor (Graphics/.newCursor graphics pixmap hotspot-x hotspot-y)]
+                                    cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                 (.dispose pixmap)
                                 cursor)))
       :default-font (when default-font

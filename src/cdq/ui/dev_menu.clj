@@ -1,7 +1,7 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
             [cdq.db :as db]
-            [cdq.graphics :as graphics]
+            [cdq.gdx.graphics :as graphics]
             [cdq.dev.data-view :as data-view]
             [cdq.editor]
             [cdq.ui.menu :as menu]
@@ -43,7 +43,7 @@
 
 (defn fps [icon]
   {:label "FPS"
-   :update-fn (comp graphics/frames-per-second :ctx/graphics)
+   :update-fn (comp graphics/frames-per-second :graphics :ctx/graphics)
    :icon icon})
 
 (defn select-world [reset-game-state-fn world-fns]

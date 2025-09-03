@@ -1,5 +1,5 @@
 (ns cdq.render.set-cursor
-  (:require [cdq.graphics :as graphics]))
+  (:require [cdq.gdx.graphics :as graphics]))
 
 (declare state->cursor)
 
@@ -7,8 +7,11 @@
   [{:keys [ctx/graphics
            ctx/player-eid]
     :as ctx}]
-  (graphics/set-cursor! graphics (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
-                                   (if (keyword? ->cursor)
-                                     ->cursor
-                                     (->cursor player-eid ctx))))
+  (let [cursor-key (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
+                     (if (keyword? ->cursor)
+                       ->cursor
+                       (->cursor player-eid ctx)))
+        cursors (:cursors graphics)]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! (:graphics graphics) (get cursors cursor-key)))
   ctx)

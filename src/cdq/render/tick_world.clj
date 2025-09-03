@@ -1,6 +1,6 @@
 (ns cdq.render.tick-world
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics :as graphics]
+            [cdq.gdx.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]
             [cdq.world.potential-fields.update :as potential-fields.update]
             [cdq.ui.stage :as stage]
@@ -17,7 +17,7 @@
 (defn- update-time [{:keys [ctx/graphics
                             ctx/world]
                      :as ctx}]
-  (update ctx :ctx/world update-time* (graphics/delta-time graphics)))
+  (update ctx :ctx/world update-time* (graphics/delta-time (:graphics graphics))))
 
 (defn- update-potential-fields!
   [{:keys [ctx/world]
