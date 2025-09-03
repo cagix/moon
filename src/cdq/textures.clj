@@ -1,6 +1,5 @@
 (ns cdq.textures
-  (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+  (:require [cdq.gdx.graphics.texture :as texture]))
 
 ; FIXME this can be memoized
 ; also good for tiled-map tiles they have to be memoized too
@@ -8,12 +7,7 @@
   [textures {:keys [image/file image/bounds]}]
   (assert file)
   (assert (contains? textures file))
-  (let [^Texture texture (get textures file)
-        [x y w h] bounds]
+  (let [texture (get textures file)]
     (if bounds
-      (TextureRegion. texture
-                      (int x)
-                      (int y)
-                      (int w)
-                      (int h))
-      (TextureRegion. texture))))
+      (texture/region texture bounds)
+      (texture/region texture))))
