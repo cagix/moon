@@ -22,8 +22,6 @@
                                               :height 500}))))
 
 (defn do!
-  [{:keys [ctx/input]
-    :as ctx}]
+  [{:keys [ctx/input] :as ctx}]
   (when (input/button-just-pressed? input :right)
-    (open-debug-data-window! ctx))
-  ctx)
+    (open-debug-data-window! ctx)))

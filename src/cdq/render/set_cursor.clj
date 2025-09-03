@@ -14,5 +14,4 @@
                        (->cursor player-eid ctx)))
         cursors (:cursors graphics)]
     (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! gdx-graphics (get cursors cursor-key)))
-  ctx)
+    (graphics/set-cursor! gdx-graphics (get cursors cursor-key))))

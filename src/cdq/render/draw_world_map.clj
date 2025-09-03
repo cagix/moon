@@ -5,8 +5,7 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/world]
-    :as ctx}]
+           ctx/world]}]
   (tm-renderer/draw! (:tiled-map-renderer graphics)
                      (:world-viewport graphics)
                      (:world/tiled-map world)
@@ -18,5 +17,4 @@
                        :see-all-tiles? false
                        :explored-tile-color  [0.5 0.5 0.5 1]
                        :visible-tile-color   [1 1 1 1]
-                       :invisible-tile-color [0 0 0 1]}))
-  ctx)
+                       :invisible-tile-color [0 0 0 1]})))

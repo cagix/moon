@@ -11,4 +11,4 @@
               (handle-input player-eid ctx)
               nil)]
     (ctx/handle-txs! ctx txs))
-  ctx)
+  nil)

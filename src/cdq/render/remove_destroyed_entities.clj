@@ -11,5 +11,4 @@
     (ctx/handle-txs! ctx (mapcat (fn [[k v]]
                                    (when-let [destroy! (:destroy! (k world/entity-components))]
                                      (destroy! v eid world)))
-                                 @eid)))
-  ctx)
+                                 @eid))))

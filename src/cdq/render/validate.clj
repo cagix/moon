@@ -2,5 +2,4 @@
   (:require [cdq.malli :as m]))
 
 (defn do! [{:keys [ctx/schema] :as ctx}]
-  (m/validate-humanize schema ctx)
-  ctx)
+  (m/validate-humanize schema ctx))

@@ -5,8 +5,7 @@
 (defn render! [stage ctx]
   (reset! (.ctx ^CtxStage stage) ctx)
   (Stage/.act  stage)
-  (Stage/.draw stage)
-  ctx)
+  (Stage/.draw stage))
 
 (defn add! [^Stage stage actor]
   (.addActor stage actor))

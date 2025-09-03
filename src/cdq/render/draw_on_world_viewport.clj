@@ -21,5 +21,4 @@
         (doseq [f draw-fns]
           ((requiring-resolve f) ctx))
         (reset! unit-scale 1)))
-    (.end batch))
-  ctx)
+    (.end batch)))

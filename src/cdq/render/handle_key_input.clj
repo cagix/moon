@@ -22,13 +22,11 @@
   [{:keys [ctx/config
            ctx/input
            ctx/graphics
-           ctx/stage]
-    :as ctx}]
+           ctx/stage]}]
   (let [controls (:controls config)
         camera (:viewport/camera (:world-viewport graphics))]
     (when (input/key-pressed? input (:zoom-in  controls)) (camera/inc-zoom! camera zoom-speed))
     (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed)))
     (when (input/key-just-pressed? input close-windows-key)  (close-all-windows!         stage))
     (when (input/key-just-pressed? input toggle-inventory )  (toggle-inventory-visible!  stage))
-    (when (input/key-just-pressed? input toggle-entity-info) (toggle-entity-info-window! stage)))
-  ctx)
+    (when (input/key-just-pressed? input toggle-entity-info) (toggle-entity-info-window! stage))))

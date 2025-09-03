@@ -3,6 +3,5 @@
            (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn do!
-  [ctx]
-  (ScreenUtils/clear Color/BLACK)
-  ctx)
+  [_ctx]
+  (ScreenUtils/clear Color/BLACK))
