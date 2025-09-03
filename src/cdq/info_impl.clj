@@ -131,7 +131,6 @@
 (defmethod info-segment :entity/fsm [[_ fsm] _ctx]
   (str "State: " (name (:state fsm))))
 
-; still used by item .. o.o
 (defmethod info-segment :entity/modifiers [[_ mods] _ctx]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
@@ -143,8 +142,6 @@
 (defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] {:keys [ctx/world]}]
   (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))
 
-; recursively printing all effects ... thaths why deactivated ...
-; custom createure info foobaz?
 (defmethod info-segment :entity/skills [[_ skills] _ctx]
   ; => recursive info-text leads to endless text wall
   (when (seq skills)
