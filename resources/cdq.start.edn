@@ -1,7 +1,4 @@
 [
- [cdq.namespace/require-all! [
-                              cdq.info-impl
-                              ]]
  [cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
@@ -65,6 +62,32 @@
                                                            :player-item-on-cursor :cursors/hand-grab
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
+ [cdq.multifn/add-methods! [{:required [cdq.ctx/info-segment]}
+                            [[cdq.info.creature.level :creature/level]
+                             [cdq.info.creature.stats :creature/stats]
+                             [cdq.info.effects.target.convert :effects.target/convert]
+                             [cdq.info.effects.target.damage :effects.target/damage]
+                             [cdq.info.effects.target.kill :effects.target/kill]
+                             [cdq.info.effects.target.melee-damage :effects.target/melee-damage]
+                             [cdq.info.effects.target.spiderweb :effects.target/spiderweb]
+                             [cdq.info.effects.target.stun :effects.target/stun]
+                             [cdq.info.effects.spawn :effects/spawn]
+                             [cdq.info.effects.target-all :effects/target-all]
+                             [cdq.info.entity.delete-after-duration :entity/delete-after-duration]
+                             [cdq.info.entity.faction :entity/faction]
+                             [cdq.info.entity.fsm :entity/fsm]
+                             [cdq.info.entity.modifiers :entity/modifiers]
+                             [cdq.info.entity.skills :entity/skills]
+                             [cdq.info.entity.species :entity/species]
+                             [cdq.info.entity.temp-modifier :entity/temp-modifier]
+                             [cdq.info.projectile.piercing :projectile/piercing?]
+                             [cdq.info.property.pretty-name :property/pretty-name]
+                             [cdq.info.skill.action-time :skill/action-time]
+                             [cdq.info.skill.action-time-modifier-key :skill/action-time-modifier-key]
+                             [cdq.info.skill.cooldown :skill/cooldown]
+                             [cdq.info.skill.cost :skill/cost]
+                             [cdq.info.maxrange :maxrange]
+                             ]]]
  [cdq.multifn/add-methods! [{:required [cdq.ctx.graphics/draw!]}
                             [[cdq.draw.with-line-width
                               :draw/with-line-width]
