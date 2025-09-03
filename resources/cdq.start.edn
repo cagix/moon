@@ -1,16 +1,5 @@
 [
  [cdq.namespace/require-all! [
-                              cdq.ui.editor.widget.default
-                              cdq.ui.editor.widget.edn
-                              cdq.ui.editor.widget.string
-                              cdq.ui.editor.widget.boolean
-                              cdq.ui.editor.widget.enum
-                              cdq.ui.editor.widget.sound
-                              cdq.ui.editor.widget.one-to-one
-                              cdq.ui.editor.widget.one-to-many
-                              cdq.ui.editor.widget.image
-                              cdq.ui.editor.widget.animation
-                              cdq.ui.editor.widget.map
                               cdq.info-impl
                               cdq.tx-impl
                               cdq.draws-impl
@@ -78,6 +67,30 @@
                                                            :player-item-on-cursor :cursors/hand-grab
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
+ [cdq.multifn/add-methods! [{:optional [cdq.ui.editor.widget/create
+                                        cdq.ui.editor.widget/value]}
+                            [[cdq.ui.editor.widget.map
+                              :s/map]
+                             [cdq.ui.editor.widget.default
+                              :default]
+                             [cdq.ui.editor.widget.edn
+                              :widget/edn]
+                             [cdq.ui.editor.widget.string
+                              :string]
+                             [cdq.ui.editor.widget.boolean
+                              :boolean]
+                             [cdq.ui.editor.widget.enum
+                              :enum]
+                             [cdq.ui.editor.widget.sound
+                              :s/sound]
+                             [cdq.ui.editor.widget.one-to-one
+                              :s/one-to-one]
+                             [cdq.ui.editor.widget.one-to-many
+                              :s/one-to-many]
+                             [cdq.ui.editor.widget.image
+                              :widget/image]
+                             [cdq.ui.editor.widget.animation
+                              :widget/animation]]]]
  [cdq.multifn/add-methods! [{:required [cdq.world.effect/applicable?
                                         cdq.world.effect/handle]
                              :optional [cdq.world.effect/useful?

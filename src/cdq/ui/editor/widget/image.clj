@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.image
-  (:require [cdq.ui.editor.widget :as widget]
-            [cdq.ctx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.gdx.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?
@@ -11,7 +10,7 @@
       #_[(ui/text-button file
                          (fn [_actor _ctx]))]))
 
-(defmethod widget/create :widget/image [schema  _attribute image {:keys [ctx/graphics]}]
+(defn create [schema  _attribute image {:keys [ctx/graphics]}]
   (ui/image-button {:texture-region (graphics/image->texture-region graphics image)
                     :scale 2})
   #_(ui/image-button image

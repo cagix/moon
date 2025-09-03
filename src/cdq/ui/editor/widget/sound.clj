@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.sound
   (:require [cdq.ui.editor.scroll-pane :as scroll-pane]
-            [cdq.ui.editor.widget :as widget]
             [cdq.ctx.audio :as audio]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
@@ -38,7 +37,7 @@
                      (open-choose-sound-window! table ctx)))
    (play-button sound-name)])
 
-(defmethod widget/create :s/sound [_  _attribute sound-name _ctx]
+(defn create [_  _attribute sound-name _ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (columns table sound-name)

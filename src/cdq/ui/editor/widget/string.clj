@@ -1,11 +1,10 @@
 (ns cdq.ui.editor.widget.string
-  (:require [cdq.ui.editor.widget :as widget]
-            [cdq.gdx.ui :as ui]))
+  (:require [cdq.gdx.ui :as ui]))
 
-(defmethod widget/create :string [schema  _attribute v _ctx]
+(defn create [schema  _attribute v _ctx]
   {:actor/type :actor.type/text-field
    :text-field/text v
    :tooltip (str schema)})
 
-(defmethod widget/value :string [_  _attribute widget _schemas]
+(defn value [_  _attribute widget _schemas]
   (ui/get-text widget))

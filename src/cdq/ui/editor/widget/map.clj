@@ -104,7 +104,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod widget/create :s/map [schema  _attribute m {:keys [ctx/db] :as ctx}]
+(defn create [schema  _attribute m {:keys [ctx/db] :as ctx}]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -131,7 +131,7 @@
              component-rows))
     table))
 
-(defmethod widget/value :s/map [_  _attribute table schemas]
+(defn value [_  _attribute table schemas]
   (into {}
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]

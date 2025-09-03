@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.one-to-many
   (:require [cdq.ui.editor.overview-table]
-            [cdq.ui.editor.widget :as widget]
             [cdq.ctx.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
@@ -47,12 +46,12 @@
                         (fn [_actor ctx]
                           (redo-rows ctx (disj property-ids id)))))])))
 
-(defmethod widget/create :s/one-to-many [[_ property-type]  _attribute property-ids ctx]
+(defn create [[_ property-type]  _attribute property-ids ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
 
-(defmethod widget/value :s/one-to-many [_  _attribute widget _schemas]
+(defn value [_  _attribute widget _schemas]
   (->> (group/children widget)
        (keep actor/user-object)
        set))
