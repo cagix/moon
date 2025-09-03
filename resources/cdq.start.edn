@@ -1,4 +1,21 @@
-[[cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
+[
+ [cdq.namespace/require-all! [
+                              cdq.ui.editor.widget.default
+                              cdq.ui.editor.widget.edn
+                              cdq.ui.editor.widget.string
+                              cdq.ui.editor.widget.boolean
+                              cdq.ui.editor.widget.enum
+                              cdq.ui.editor.widget.sound
+                              cdq.ui.editor.widget.one-to-one
+                              cdq.ui.editor.widget.one-to-many
+                              cdq.ui.editor.widget.image
+                              cdq.ui.editor.widget.animation
+                              cdq.ui.editor.widget.map
+                              cdq.info-impl
+                              cdq.tx-impl
+                              cdq.draws-impl
+                              ]]
+ [cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
                                                  :player-moving         cdq.entity.state.player-moving/exit}]
@@ -135,22 +152,6 @@
                              [cdq.tx.spawn-entity
                               :tx/spawn-entity]
                              ]]]
- [cdq.start.install-editor-widgets/do! [cdq.ui.editor.widget.default
-                                        cdq.ui.editor.widget.edn
-                                        cdq.ui.editor.widget.string
-                                        cdq.ui.editor.widget.boolean
-                                        cdq.ui.editor.widget.enum
-                                        cdq.ui.editor.widget.sound
-                                        cdq.ui.editor.widget.one-to-one
-                                        cdq.ui.editor.widget.one-to-many
-                                        cdq.ui.editor.widget.image
-                                        cdq.ui.editor.widget.animation
-                                        cdq.ui.editor.widget.map
-
-                                        cdq.info-impl
-                                        cdq.tx-impl
-                                        cdq.draws-impl
-                                        ]]
  [cdq.start.set-icon/do! "icon.png"]
  [cdq.start.gdx-app/do! {:lwjgl-app-config {:title "Cyber Dungeon Quest"
                                             :windowed-mode {:width 1440 :height 900}
