@@ -15,7 +15,7 @@
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
-                                                  :texture "maps/uf_terrain.png"
+                                                  :texture-path "maps/uf_terrain.png"
                                                   :spawn-rate 0.02
                                                   :scaling 3
                                                   :cave-size 200
@@ -25,7 +25,7 @@
   [[#'cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
                                  :start-position [32 71]}]
    [#'cdq.level.uf-caves/create {:tile-size 48
-                                 :texture "maps/uf_terrain.png"
+                                 :texture-path "maps/uf_terrain.png"
                                  :spawn-rate 0.02
                                  :scaling 3
                                  :cave-size 200

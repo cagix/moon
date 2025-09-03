@@ -4,8 +4,6 @@
   (delta-time [_])
   (frames-per-second [_])
   (set-cursor! [_ cursor-key])
-  (texture [_ path]
-           "Returns the already loaded texture whit given file path.")
   (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])
   (resize-viewports! [_ width height])

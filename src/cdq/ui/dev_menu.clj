@@ -89,15 +89,16 @@
             (db-editor db)
             context-data-view
             ]
-    :update-labels [
-                    (mouseover-entity-id (graphics/texture graphics "images/mouseover.png"))
-                    (elapsed-time        (graphics/texture graphics "images/clock.png"))
-                    paused
-                    ui-mouse-position
-                    world-mouse-position
-                    (zoom (graphics/texture graphics "images/zoom.png"))
-                    (fps (graphics/texture graphics "images/fps.png"))
-                    ]}))
+    :update-labels (let [->texture (fn [path] (utils/safe-get (:textures graphics) path))]
+                     [
+                      (mouseover-entity-id (->texture "images/mouseover.png"))
+                      (elapsed-time        (->texture "images/clock.png"))
+                      paused
+                      ui-mouse-position
+                      world-mouse-position
+                      (zoom (->texture "images/zoom.png"))
+                      (fps (->texture "images/fps.png"))
+                      ])}))
 
 (defn create [ctx]
   (create* ctx
@@ -107,7 +108,7 @@
                           :start-position [32 71]}]
                         ['cdq.level.uf-caves/create
                          {:tile-size 48
-                          :texture "maps/uf_terrain.png"
+                          :texture-path "maps/uf_terrain.png"
                           :spawn-rate 0.02
                           :scaling 3
                           :cave-size 200

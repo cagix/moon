@@ -3,6 +3,7 @@
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
+            [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files
@@ -119,6 +120,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
          [(str/replace-first path folder "") (Files/.internal files path)])
        (recursively-search (Files/.internal files folder) extensions)))
 
+; TODO namespaced keywords :g/..
 (defrecord RGraphics
   [^SpriteBatch batch
    cursors
@@ -146,12 +148,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   (set-cursor! [_ cursor-key]
     (assert (contains? cursors cursor-key))
     (.setCursor graphics (get cursors cursor-key)))
-
-  ; TODO probably not needed I only work with texture-regions
-  (texture [_ path]
-    (assert (contains? textures path)
-            (str "Cannot find texture with path: " (pr-str path)))
-    (get textures path))
 
   (draw-on-world-viewport! [_ f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
@@ -185,10 +181,10 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 
   ; FIXME this can be memoized
   ; also good for tiled-map tiles they have to be memoized too
-  (image->texture-region [graphics {:keys [image/file
-                                           image/bounds]}]
+  (image->texture-region
+    [_ {:keys [image/file image/bounds]}]
     (assert file)
-    (let [^Texture texture (cdq.graphics/texture graphics file)
+    (let [^Texture texture (utils/safe-get textures file)
           [x y w h] bounds]
       (if bounds
         (TextureRegion. texture

@@ -6,9 +6,9 @@
                                       scalegrid
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
+            [cdq.utils :as utils]
             [cdq.utils.tiled :as utils.tiled]
-            [cdq.gdx.tiled :as tiled]
-            [cdq.graphics :as graphics])
+            [cdq.gdx.tiled :as tiled])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- assoc-transition-cells [grid]
@@ -138,7 +138,7 @@
 (defn create [{:keys [ctx/graphics]
                :as ctx}
               {:keys [tile-size
-                      texture
+                      texture-path
                       spawn-rate
                       scaling
                       cave-size
@@ -148,7 +148,7 @@
               (let [[f params] step] (f level params))
               (let [f step]          (f level))))
           {:level/tile-size tile-size
-           :level/create-tile (let [texture (graphics/texture graphics texture)]
+           :level/create-tile (let [texture (utils/safe-get (:textures graphics) texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
