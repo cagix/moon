@@ -1,4 +1,4 @@
-(ns cdq.ctx.world
+(ns cdq.world
   (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
 

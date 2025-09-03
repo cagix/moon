@@ -35,7 +35,7 @@
                                                                         :entity/string-effect cdq.render-layers/draw-text-over-entity}
                                                                        {:creature/stats cdq.render-layers/draw-stats
                                                                         :active-skill cdq.render-layers/draw-active-skill}]]
-                       [cdq.ctx.world/entity-components {:entity/animation                       {:create   cdq.entity.animation/create}
+                       [cdq.world/entity-components {:entity/animation                       {:create   cdq.entity.animation/create}
                                                          :entity/body                            {:create   cdq.entity.body/create}
                                                          :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
                                                          :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
@@ -91,7 +91,7 @@
                              [cdq.info.skill.cost :skill/cost]
                              [cdq.info.maxrange :maxrange]
                              ]]]
- [cdq.multifn/add-methods! [{:required [cdq.ctx.graphics/draw!]}
+ [cdq.multifn/add-methods! [{:required [cdq.graphics/draw!]}
                             [[cdq.draw.with-line-width
                               :draw/with-line-width]
                              [cdq.draw.grid
@@ -292,10 +292,10 @@
                                                              :enable-markup? true
                                                              ; false, otherwise scaling to world-units not visible
                                                              :use-integer-positions? false}}}
-                                    :cdq.ctx.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                    :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                                  :initial-state :npc-sleeping}
                                                                     :entity/faction :evil}
-                                    :cdq.ctx.game/player-props {:creature-id :creatures/vampire
+                                    :cdq.game/player-props {:creature-id :creatures/vampire
                                                                 :components {:entity/fsm {:fsm :fsms/player
                                                                                           :initial-state :player-idle}
                                                                              :entity/faction :good

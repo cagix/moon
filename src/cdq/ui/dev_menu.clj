@@ -1,7 +1,7 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.ctx.db :as db]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.db :as db]
+            [cdq.graphics :as graphics]
             [cdq.dev.data-view :as data-view]
             [cdq.editor]
             [cdq.ui.menu :as menu]

@@ -1,5 +1,5 @@
 (ns cdq.draw.centered
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn draw!
   [[_ image position]

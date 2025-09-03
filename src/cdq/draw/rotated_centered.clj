@@ -1,5 +1,5 @@
 (ns cdq.draw.rotated-centered
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.draws-impl :refer [batch-draw!
                                     texture-region-drawing-dimensions]]))
 

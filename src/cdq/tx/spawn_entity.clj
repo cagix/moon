@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.ctx.world :as world]
+  (:require [cdq.world :as world]
             [cdq.malli :as m]
             [qrecord.core :as q]))
 

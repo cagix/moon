@@ -1,7 +1,7 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.ctx.db :as db]
+            [cdq.db :as db]
             [cdq.dev.app-values]
             [cdq.world.entity :as entity]))
 

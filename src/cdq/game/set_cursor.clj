@@ -1,5 +1,5 @@
 (ns cdq.game.set-cursor
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (declare state->cursor)
 

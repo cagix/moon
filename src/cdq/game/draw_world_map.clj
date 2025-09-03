@@ -1,5 +1,5 @@
 (ns cdq.game.draw-world-map
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.raycaster :as raycaster]))
 

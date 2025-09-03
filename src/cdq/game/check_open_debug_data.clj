@@ -1,5 +1,5 @@
 (ns cdq.game.check-open-debug-data
-  (:require [cdq.ctx.input :as input]))
+  (:require [cdq.input :as input]))
 
 (defn do!
   [{:keys [ctx/input]

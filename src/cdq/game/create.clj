@@ -1,6 +1,6 @@
 (ns cdq.game.create
-  (:require [cdq.ctx.audio :as audio]
-            [cdq.ctx.input :as input]
+  (:require [cdq.audio :as audio]
+            [cdq.input :as input]
             [cdq.db-impl :as db]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]

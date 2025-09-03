@@ -1,4 +1,4 @@
-(ns cdq.ctx.audio
+(ns cdq.audio
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx Audio

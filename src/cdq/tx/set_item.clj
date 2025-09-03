@@ -1,6 +1,6 @@
 (ns cdq.tx.set-item
   (:require [cdq.ctx :refer [do!] :as ctx]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
             [cdq.world.entity.stats :as modifiers]))

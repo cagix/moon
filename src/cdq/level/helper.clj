@@ -1,12 +1,12 @@
 (ns cdq.level.helper
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [cdq.gdx.tiled :as tiled]
-            [cdq.ctx.graphics :as graphics]))
+            [cdq.graphics :as graphics]))
 
 (defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]

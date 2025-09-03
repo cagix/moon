@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.world.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.ctx.input :as input]
+            [cdq.input :as input]
             [cdq.gdx.math.vector2 :as v]
             [cdq.gdx.ui :as ui]))
 

@@ -1,5 +1,5 @@
 (ns cdq.draw.with-line-width
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.gdx.graphics.shape-drawer :as sd]))
 
 (defn draw! [[_ width draws]

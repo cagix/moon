@@ -1,5 +1,5 @@
 (ns cdq.game.handle-key-input
-  (:require [cdq.ctx.input :as input]
+  (:require [cdq.input :as input]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.gdx.graphics.camera :as camera]))

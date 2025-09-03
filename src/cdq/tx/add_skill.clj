@@ -1,6 +1,6 @@
 (ns cdq.tx.add-skill
   (:require [cdq.ctx :as ctx]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.ui.action-bar :as action-bar]))
 
 (defn- add-skill!

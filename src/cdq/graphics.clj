@@ -1,4 +1,4 @@
-(ns cdq.ctx.graphics)
+(ns cdq.graphics)
 
 (defprotocol Graphics
   (delta-time [_])

@@ -1,5 +1,5 @@
 (ns cdq.game.assoc-paused
-  (:require [cdq.ctx.input :as input]))
+  (:require [cdq.input :as input]))
 
 (def ^:private pausing? true)
 

@@ -1,9 +1,9 @@
 (ns cdq.ui.editor.widget.one-to-one
   (:require [cdq.ui.editor.overview-table]
-            [cdq.ctx.db :as db]
+            [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]

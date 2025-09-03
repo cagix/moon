@@ -1,6 +1,6 @@
 (ns cdq.game.reset-game-state
   (:require [cdq.ctx :as ctx]
-            [cdq.ctx.db :as db]
+            [cdq.db :as db]
             [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
@@ -22,7 +22,7 @@
     :as ctx}]
   (ctx/handle-txs! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
-                                                      components]} (:cdq.ctx.game/player-props config)]
+                                                      components]} (:cdq.game/player-props config)]
                                           {:position (utils/tile->middle (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
@@ -41,7 +41,7 @@
     (ctx/handle-txs! ctx
                      [[:tx/spawn-creature {:position (utils/tile->middle position)
                                            :creature-property (db/build db (keyword creature-id))
-                                           :components (:cdq.ctx.game/enemy-components config)}]]))
+                                           :components (:cdq.game/enemy-components config)}]]))
   ctx)
 
 ; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'

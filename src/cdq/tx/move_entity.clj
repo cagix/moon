@@ -1,5 +1,5 @@
 (ns cdq.tx.move-entity
-  (:require [cdq.ctx.world :as w]
+  (:require [cdq.world :as w]
             [cdq.gdx.math.vector2 :as v]))
 
 (defn do!

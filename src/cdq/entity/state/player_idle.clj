@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.ctx.input :as input]
+  (:require [cdq.input :as input]
             [cdq.ui.action-bar :as action-bar]
             [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]

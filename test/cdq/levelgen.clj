@@ -6,9 +6,9 @@
             [cdq.level.uf-caves]
             [cdq.level.from-tmx]
             [cdq.gdx.tiled :as tiled]
-            [cdq.ctx.input :as input]
+            [cdq.input :as input]
             [cdq.gdx.graphics.camera :as camera]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])

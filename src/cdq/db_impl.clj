@@ -1,5 +1,5 @@
 (ns cdq.db-impl
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.db :as db]
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]

@@ -1,8 +1,8 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.ui.actor :as actor]
             [cdq.gdx.ui :as ui]))
 

@@ -2,7 +2,7 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
-            [cdq.ctx.graphics :as g]
+            [cdq.graphics :as g]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.gdx.ui :as ui])

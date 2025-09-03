@@ -1,5 +1,5 @@
 (ns cdq.ui.player-state-draw
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (def state->draw-gui-view)
 

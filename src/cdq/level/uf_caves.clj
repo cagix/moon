@@ -8,7 +8,7 @@
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils.tiled :as utils.tiled]
             [cdq.gdx.tiled :as tiled]
-            [cdq.ctx.graphics :as graphics])
+            [cdq.graphics :as graphics])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- assoc-transition-cells [grid]

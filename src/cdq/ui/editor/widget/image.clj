@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.image
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.gdx.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?

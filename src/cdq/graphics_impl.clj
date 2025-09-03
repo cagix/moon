@@ -1,5 +1,5 @@
 (ns cdq.graphics-impl
-  (:require [cdq.ctx.graphics]
+  (:require [cdq.graphics]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
@@ -132,7 +132,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    unit-scale
    world-unit-scale
    ^Viewport world-viewport]
-  cdq.ctx.graphics/Graphics
+  cdq.graphics/Graphics
   (resize-viewports! [_ width height]
     (.update ui-viewport    width height true)
     (.update world-viewport width height false))
@@ -188,7 +188,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   (image->texture-region [graphics {:keys [image/file
                                            image/bounds]}]
     (assert file)
-    (let [^Texture texture (cdq.ctx.graphics/texture graphics file)
+    (let [^Texture texture (cdq.graphics/texture graphics file)
           [x y w h] bounds]
       (if bounds
         (TextureRegion. texture
