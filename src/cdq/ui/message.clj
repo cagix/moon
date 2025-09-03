@@ -1,6 +1,5 @@
 (ns cdq.ui.message
-  (:require [cdq.graphics :as graphics]
-            [cdq.ui.actor :as actor]))
+  (:require [cdq.ui.actor :as actor]))
 
 (defn- draw-message [state viewport]
   (when-let [text (:text @state)]
@@ -14,10 +13,9 @@
   [{:keys [duration-seconds
            name]}]
   {:actor/type :actor.type/actor
-   :draw (fn [this {:keys [ctx/graphics] :as ctx}]
-           (graphics/handle-draws! graphics
-                                   [(draw-message (actor/user-object this)
-                                                  (:ui-viewport graphics))]))
+   :draw (fn [this {:keys [ctx/graphics]}]
+           [(draw-message (actor/user-object this)
+                          (:ui-viewport graphics))])
    :act (fn [this delta _ctx]
           (let [state (actor/user-object this)]
             (when (:text @state)

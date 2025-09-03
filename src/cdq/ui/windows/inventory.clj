@@ -3,7 +3,6 @@
             [cdq.inventory :as inventory]
             [cdq.utils :as utils]
             [cdq.textures :as textures]
-            [cdq.graphics :as g]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.gdx.ui :as ui])
@@ -61,15 +60,13 @@
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
                            :draw
-                           (fn [actor {:keys [ctx/graphics
-                                              ctx/ui-mouse-position
+                           (fn [actor {:keys [ctx/ui-mouse-position
                                               ctx/player-eid]}]
-                             (g/handle-draws! graphics
-                                              (draw-cell-rect @player-eid
-                                                              (actor/get-x actor)
-                                                              (actor/get-y actor)
-                                                              (actor/hit actor ui-mouse-position)
-                                                              (actor/user-object (actor/parent actor)))))})
+                             (draw-cell-rect @player-eid
+                                             (actor/get-x actor)
+                                             (actor/get-y actor)
+                                             (actor/hit actor ui-mouse-position)
+                                             (actor/user-object (actor/parent actor))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]

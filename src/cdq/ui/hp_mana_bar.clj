@@ -1,6 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.graphics :as g]
-            [cdq.textures :as textures]
+  (:require [cdq.textures :as textures]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [cdq.world.entity.stats :as modifiers]))
@@ -41,8 +40,8 @@
                           (render-hpmana-bar graphics x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")
                           (render-hpmana-bar graphics x y-mana manacontent-file (modifiers/get-mana      stats) "MP"))))]
     {:actor/type :actor.type/actor
-     :draw (fn [_this {:keys [ctx/graphics] :as ctx}]
-             (g/handle-draws! graphics (create-draws ctx)))}))
+     :draw (fn [_this ctx]
+             (create-draws ctx))}))
 
 (defn create [ctx]
   (create* ctx
