@@ -117,6 +117,11 @@
 
 (defmulti construct :actor/type)
 
+; TODO usage ok
+; only group & table not
+; -> should be explicit ?
+; and not here
+
 (defn construct? ^Actor [actor-declaration]
   (try
    (cond

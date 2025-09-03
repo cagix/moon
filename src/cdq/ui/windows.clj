@@ -1,5 +1,6 @@
 (ns cdq.ui.windows
   (:require [cdq.ctx :as ctx]
+            [cdq.info :as info]
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory))
 
@@ -27,7 +28,7 @@
 
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
+  (info/info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn create [ctx]
   {:actor/type :actor.type/group

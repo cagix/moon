@@ -4,7 +4,7 @@
                                                Table)))
 
 (defn add! [^Table table actor-or-decl]
-  (.add table (actor/construct? actor-or-decl)))
+  (.add table (actor/construct? actor-or-decl))) ; & here add! used
 
 (defn cells [^Table table]
   (.getCells table))
