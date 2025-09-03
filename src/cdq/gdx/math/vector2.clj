@@ -1,5 +1,5 @@
 (ns cdq.gdx.math.vector2
-  (:require [cdq.math.utils :as math-utils])
+  (:require [cdq.math :as math])
   (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- m-v2
@@ -10,8 +10,8 @@
   [(.x v) (.y v)])
 
 (defn nearly-equal? [[x1 y1] [x2 y2]]
-  (and (math-utils/nearly-equal? x1 x2)
-       (math-utils/nearly-equal? y1 y2)))
+  (and (math/nearly-equal? x1 x2)
+       (math/nearly-equal? y1 y2)))
 
 (defn scale [[^double x ^double y] ^double scalar]
   [(* x scalar)
@@ -49,7 +49,7 @@
   (.dst (m-v2 v1) (m-v2 v2)))
 
 (defn nearly-normalised? [v]
-  (math-utils/nearly-equal? 1 (length v)))
+  (math/nearly-equal? 1 (length v)))
 
 (defn direction [[sx sy] [tx ty]]
   (normalise [(- (float tx) (float sx))
