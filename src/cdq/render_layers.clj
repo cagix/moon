@@ -1,5 +1,6 @@
 (ns cdq.render-layers
   (:require [cdq.animation :as animation]
+            [cdq.textures :as textures]
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
             [cdq.world.effect :as effect]
@@ -64,7 +65,7 @@
                     :y (+ y (/ (:body/height (:entity/body entity)) 2))
                     :up? true}]])))
 
-(defn draw-skill-image [image entity [x y] action-counter-ratio]
+(defn draw-skill-image [texture-region entity [x y] action-counter-ratio]
   (let [radius skill-image-radius-world-units
         y (+ (float y)
              (float (/ (:body/height (:entity/body entity)) 2))
@@ -77,16 +78,18 @@
       90 ; start-angle
       (* (float action-counter-ratio) 360) ; degree
       [1 1 1 0.5]]
-     [:draw/image image [(- (float x) radius) y]]]))
+     [:draw/texture-region texture-region [(- (float x) radius) y]]]))
 
 (defn render-active-effect [ctx effect-ctx effect]
   (mapcat #(effect/render % effect-ctx ctx) effect))
 
 (defn draw-active-skill [{:keys [skill effect-ctx counter]}
                          entity
-                         {:keys [ctx/world] :as ctx}]
+                         {:keys [ctx/graphics
+                                 ctx/world]
+                          :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image image
+    (concat (draw-skill-image (textures/image->texture-region (:textures graphics) image)
                               entity
                               (entity/position entity)
                               (timer/ratio (:world/elapsed-time world) counter))

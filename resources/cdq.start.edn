@@ -98,8 +98,6 @@
                               :draw/grid]
                              [cdq.draw.texture-region
                               :draw/texture-region]
-                             [cdq.draw.image
-                              :draw/image]
                              [cdq.draw.rotated-centered
                               :draw/rotated-centered]
                              [cdq.draw.centered
