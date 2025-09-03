@@ -1,10 +1,7 @@
 (ns cdq.graphics)
 
 (defprotocol Graphics
-  (draw-on-world-viewport! [_ f])
-  (draw-tiled-map! [_ tiled-map color-setter])
-  (ui-viewport-height [_])
-  (handle-draws! [_ draws]))
+  (draw-tiled-map! [_ tiled-map color-setter]))
 
 (defmulti draw!
   (fn [[k] _graphics]

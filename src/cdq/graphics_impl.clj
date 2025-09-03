@@ -120,7 +120,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 
 ; TODO namespaced keywords :g/..
 (defrecord Graphics
-  [^SpriteBatch batch
+  [batch
    cursors
    default-font
    graphics
@@ -133,19 +133,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
    world-unit-scale
    world-viewport]
   cdq.graphics/Graphics
-  (draw-on-world-viewport! [_ f]
-    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-    ; -> also Widgets, etc. ? check.
-    (.setColor batch (color/->obj :white))
-    (.setProjectionMatrix batch (:camera/combined (:viewport/camera world-viewport)))
-    (.begin batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (fn []
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
-    (.end batch))
-
   (draw-tiled-map! [_ tiled-map color-setter]
     (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)
           camera (:viewport/camera world-viewport)]
