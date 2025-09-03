@@ -100,9 +100,6 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod info-segment :effects.target/hp [[k ops] _ctx]
-  (op-info ops k))
-
 (defmethod info-segment :effects.target/kill [_ _ctx]
   "Kills target")
 
