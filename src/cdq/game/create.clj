@@ -21,7 +21,7 @@
                       ctx/world])
 
 (defn do! [gdx config]
-  (doseq [[name color-params] colors]
+  (doseq [[name color-params] (:colors (::graphics config))]
     (Colors/put name (color/->obj color-params)))
   (ui/load! (::stage config))
   (let [input (:input gdx)
