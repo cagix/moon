@@ -1,9 +1,10 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.world :as world]
-            [cdq.world.content-grid :as content-grid]
+  (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.malli :as m]
             [qrecord.core :as q]))
+
+(declare entity-components)
 
 (def ^:private components-schema
   (m/schema [:map {:closed true}
@@ -45,7 +46,7 @@
                 world/grid]} world]
     (let [eid (atom (merge (map->Entity {})
                            (reduce (fn [m [k v]]
-                                     (assoc m k (if-let [create (:create (k world/entity-components))]
+                                     (assoc m k (if-let [create (:create (k entity-components))]
                                                   (create v world)
                                                   v)))
                                    {}
@@ -58,6 +59,6 @@
       ;(assert (valid-position? grid @eid))
       (grid/add-entity! grid eid)
       (mapcat (fn [[k v]]
-                (when-let [create! (:create! (k world/entity-components))]
+                (when-let [create! (:create! (k entity-components))]
                   (create! v eid world)))
               @eid))))

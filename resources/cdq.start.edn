@@ -35,16 +35,18 @@
                                                                             :entity/string-effect cdq.render-layers/draw-text-over-entity}
                                                                            {:creature/stats cdq.render-layers/draw-stats
                                                                             :active-skill cdq.render-layers/draw-active-skill}]]
-                       [cdq.world/entity-components {:entity/animation                       {:create   cdq.entity.animation/create}
-                                                         :entity/body                            {:create   cdq.entity.body/create}
-                                                         :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
-                                                         :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
-                                                         :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
-                                                         :creature/stats                         {:create   cdq.entity.stats/create}
-                                                         :entity/fsm                             {:create!  cdq.entity.fsm/create!}
-                                                         :entity/inventory                       {:create!  cdq.entity.inventory/create!}
-                                                         :entity/skills                          {:create!  cdq.entity.skills/create!}
-                                                         :entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]
+                       [cdq.tx.spawn-entity/entity-components
+                        {:entity/animation                       {:create   cdq.entity.animation/create}
+                         :entity/body                            {:create   cdq.entity.body/create}
+                         :entity/delete-after-animation-stopped? {:create!  cdq.entity.delete-after-animation-stopped/create!}
+                         :entity/delete-after-duration           {:create   cdq.entity.delete-after-duration/create}
+                         :entity/projectile-collision            {:create   cdq.entity.projectile-collision/create}
+                         :creature/stats                         {:create   cdq.entity.stats/create}
+                         :entity/fsm                             {:create!  cdq.entity.fsm/create!}
+                         :entity/inventory                       {:create!  cdq.entity.inventory/create!}
+                         :entity/skills                          {:create!  cdq.entity.skills/create!}}]
+                       [cdq.render.remove-destroyed-entities/entity-components
+                        {:entity/destroy-audiovisual             {:destroy! cdq.entity.destroy-audiovisual/destroy!}}]
                        [cdq.render.tick-world/entity->tick {:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
                                                           :entity/animation cdq.entity.animation/tick!
                                                           :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!

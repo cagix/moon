@@ -1,8 +1,9 @@
 (ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
-            [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
+
+(declare entity-components)
 
 (defn do!
   [{:keys [ctx/world]
@@ -16,6 +17,6 @@
     (content-grid/remove-entity! eid)
     (grid/remove-entity! (:world/grid world) eid)
     (ctx/handle-txs! ctx (mapcat (fn [[k v]]
-                                   (when-let [destroy! (:destroy! (k world/entity-components))]
+                                   (when-let [destroy! (:destroy! (k entity-components))]
                                      (destroy! v eid world)))
                                  @eid))))
