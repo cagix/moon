@@ -1,7 +1,6 @@
 [
  [cdq.namespace/require-all! [
                               cdq.info-impl
-                              cdq.draws-impl
                               ]]
  [cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
@@ -66,6 +65,39 @@
                                                            :player-item-on-cursor :cursors/hand-grab
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
+ [cdq.multifn/add-methods! [{:required [cdq.ctx.graphics/draw!]}
+                            [[cdq.draw.with-line-width
+                              :draw/with-line-width]
+                             [cdq.draw.grid
+                              :draw/grid]
+                             [cdq.draw.texture-region
+                              :draw/texture-region]
+                             [cdq.draw.image
+                              :draw/image]
+                             [cdq.draw.rotated-centered
+                              :draw/rotated-centered]
+                             [cdq.draw.centered
+                              :draw/centered]
+                             [cdq.draw.text
+                              :draw/text]
+                             [cdq.draw.ellipse
+                              :draw/ellipse]
+                             [cdq.draw.filled-ellipse
+                              :draw/filled-ellipse]
+                             [cdq.draw.circle
+                              :draw/circle]
+                             [cdq.draw.filled-circle
+                              :draw/filled-circle]
+                             [cdq.draw.rectangle
+                              :draw/rectangle]
+                             [cdq.draw.filled-rectangle
+                              :draw/filled-rectangle]
+                             [cdq.draw.arc
+                              :draw/arc]
+                             [cdq.draw.sector
+                              :draw/sector]
+                             [cdq.draw.line
+                              :draw/line]]]]
  [cdq.multifn/add-methods! [{:optional [cdq.ui.editor.widget/create
                                         cdq.ui.editor.widget/value]}
                             [[cdq.ui.editor.widget.map

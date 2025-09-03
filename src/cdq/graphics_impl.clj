@@ -1,6 +1,7 @@
 (ns cdq.graphics-impl
   (:require [cdq.ctx.graphics]
             [cdq.gdx.graphics.color :as color]
+            [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.tiled :as tiled]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
@@ -22,8 +23,7 @@
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (cdq.gdx.graphics OrthogonalTiledMapRenderer
-                             ColorSetter)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+                             ColorSetter)))
 
 (defn- vector3-clojurize [^Vector3 v3]
   [(.x v3)
@@ -119,12 +119,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
          [(str/replace-first path folder "") (Files/.internal files path)])
        (recursively-search (Files/.internal files folder) extensions)))
 
-(defn sd-with-line-width [^ShapeDrawer this width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth this)]
-    (.setDefaultLineWidth this (float (* width old-line-width)))
-    (draw-fn)
-    (.setDefaultLineWidth this (float old-line-width))))
-
 (defrecord RGraphics
   [^SpriteBatch batch
    cursors
@@ -165,7 +159,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
     (.setColor batch (color/->obj :white))
     (.setProjectionMatrix batch (:camera/combined (:viewport/camera world-viewport)))
     (.begin batch)
-    (sd-with-line-width shape-drawer world-unit-scale
+    (sd/with-line-width shape-drawer world-unit-scale
       (fn []
         (reset! unit-scale world-unit-scale)
         (f)
@@ -254,7 +248,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))
+      :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
       :tiled-map-renderer (memoize (fn [tiled-map]
                                      (OrthogonalTiledMapRenderer. (:tiled-map/java-object tiled-map)
                                                                   (float world-unit-scale)
