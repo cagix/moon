@@ -151,6 +151,19 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                   (:height ui-viewport)
                                   (orthographic-camera))]
     (map->Graphics
+
+     ; can not find usage as no namespaced keys !!! omg
+
+     ; cursors out
+     ; ui-viewport out
+     ; world-viewport maybe also
+     ; shape-drawer-texture maybe too
+
+     ; textures used @ dispose
+     ; grep ctx/graphics
+     ; but also in draw
+     ; so all of handle draws out first ?
+     ; textures/image->texture-region
      {:textures (into {} (for [[path file-handle] textures]
                            [path (Texture. ^FileHandle file-handle)]))
       :cursors (update-vals cursors
