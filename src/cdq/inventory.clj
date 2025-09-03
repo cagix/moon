@@ -44,9 +44,12 @@
                     (nil? cell-item)))
               (cells-and-items inventory slot)))
 
-(defn can-pickup-item? [inventory item]
+(defn assert-valid-item? [item]
   (assert (:item/slot item)
-          (str "Item not valid: " (pr-str item)))
+          (str "Item not valid: " (pr-str item))))
+
+(defn can-pickup-item? [inventory item]
+  (assert-valid-item? item)
   (or
    (free-cell inventory (:item/slot item)   item)
    (free-cell inventory :inventory.slot/bag item)))

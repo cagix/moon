@@ -1,7 +1,6 @@
 [
  [cdq.namespace/require-all! [
                               cdq.info-impl
-                              cdq.tx-impl
                               cdq.draws-impl
                               ]]
  [cdq.var/bind-roots! [[cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
@@ -122,7 +121,29 @@
                              [cdq.effects.target.stun
                               :effects.target/stun]]]]
  [cdq.multifn/add-methods! [{:required [cdq.ctx/do!]}
-                            [[cdq.tx.add-skill
+                            [[cdq.tx.assoc
+                              :tx/assoc]
+                             [cdq.tx.assoc-in
+                              :tx/assoc-in]
+                             [cdq.tx.dissoc
+                              :tx/dissoc]
+                             [cdq.tx.effect
+                              :tx/effect]
+                             [cdq.tx.mark-destroyed
+                              :tx/mark-destroyed]
+                             [cdq.tx.mod-add
+                              :tx/mod-add]
+                             [cdq.tx.mod-remove
+                              :tx/mod-remove]
+                             [cdq.tx.pay-mana-cost
+                              :tx/pay-mana-cost]
+                             [cdq.tx.pickup-item
+                              :tx/pickup-item]
+                             [cdq.tx.set-cooldown
+                              :tx/set-cooldown]
+                             [cdq.tx.add-text-effect
+                              :tx/add-text-effect]
+                             [cdq.tx.add-skill
                               :tx/add-skill]
                              [cdq.tx.set-item
                               :tx/set-item]
