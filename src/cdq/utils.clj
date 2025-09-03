@@ -1,7 +1,5 @@
 (ns cdq.utils
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.pprint :as pprint])
+  (:require [clojure.pprint :as pprint])
   (:import (clojure.lang PersistentVector)))
 
 (defn safe-get [m k]
@@ -9,9 +7,6 @@
     (if (= result ::not-found)
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
-
-(defn io-slurp-edn [path]
-  (->> path io/resource slurp edn/read-string))
 
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))

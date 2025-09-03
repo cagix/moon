@@ -1,12 +1,12 @@
 (ns cdq.dev.db.migrations.creature-stats
   (:require [cdq.db-impl :as db]
-            [cdq.utils :as utils]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
 (def file "properties.edn")
 
 (defn read-properties []
-  (utils/io-slurp-edn file))
+  (->> path io/resource slurp edn/read-string))
 
 (def stat-keys
   [:entity/modifiers
