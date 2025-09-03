@@ -2,9 +2,11 @@
   (:require [cdq.audio :as audio]
             [cdq.input :as input]
             [cdq.db-impl :as db]
+            [cdq.gdx.graphics.color :as color]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
-            [qrecord.core :as q]))
+            [qrecord.core :as q])
+  (:import (com.badlogic.gdx.graphics Colors)))
 
 (q/defrecord Context [ctx/schema
                       ctx/config
@@ -19,6 +21,8 @@
                       ctx/world])
 
 (defn do! [gdx config]
+  (doseq [[name color-params] colors]
+    (Colors/put name (color/->obj color-params)))
   (ui/load! (::stage config))
   (let [input (:input gdx)
         graphics ((requiring-resolve (:graphics-impl config)) gdx (::graphics config))

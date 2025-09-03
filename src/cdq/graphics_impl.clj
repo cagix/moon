@@ -1,13 +1,12 @@
 (ns cdq.graphics-impl
   (:require [cdq.gdx.graphics :as graphics]
-            [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Colors
+           (com.badlogic.gdx.graphics Color
                                       OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
@@ -131,21 +130,18 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 
 (defn create!
   [{:keys [graphics files]}
-   {:keys [colors
-           cursors ; optional
-           cursor-path-format ; optional
-           default-font ; optional, could use gdx included (BitmapFont.)
+   {:keys [cursors
+           cursor-path-format
+           default-font
            tile-size
            ui-viewport
            world-viewport]}]
-  (doseq [[name color-params] colors]
-    (Colors/put name (color/->obj color-params)))
   (let [textures (search-files files
                                {:folder "resources/"
                                 :extensions #{"png" "bmp"}})
         batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                            (.setColor (color/->obj :white))
+                                            (.setColor Color/WHITE)
                                             (.drawPixel 0 0))
                                    texture (Texture. pixmap)]
                                (.dispose pixmap)
