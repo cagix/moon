@@ -4,10 +4,8 @@
   (:gen-class))
 
 (defn -main []
-  (let [fns (-> "cdq.start.edn"
-                io/resource
-                slurp
-                edn/read-string)]
-    (doseq [[f config] fns]
-      (println [f config])
-      ((requiring-resolve f) config))))
+  (doseq [[f config] (-> "cdq.start.edn"
+                         io/resource
+                         slurp
+                         edn/read-string)]
+    ((requiring-resolve f) config)))
