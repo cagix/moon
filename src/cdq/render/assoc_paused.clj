@@ -16,10 +16,10 @@
            ctx/player-eid
            ctx/config]
     :as ctx}]
-  (assoc-in ctx [:ctx/world :world/paused?]
-            (let [controls (:controls config)]
-              (or #_error
-                  (and pausing?
-                       (state->pause-game? (:state (:entity/fsm @player-eid)))
-                       (not (or (input/key-just-pressed? input (:unpause-once controls))
-                                (input/key-pressed?      input (:unpause-continously controls)))))))))
+  (assoc ctx :ctx/paused?
+         (let [controls (:controls config)]
+           (or #_error
+               (and pausing?
+                    (state->pause-game? (:state (:entity/fsm @player-eid)))
+                    (not (or (input/key-just-pressed? input (:unpause-once controls))
+                             (input/key-pressed?      input (:unpause-continously controls)))))))))

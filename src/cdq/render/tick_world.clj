@@ -67,7 +67,7 @@
 
 (defn do!
   [ctx]
-  (if (get-in ctx [:ctx/world :world/paused?])
+  (if (:ctx/paused? ctx)
     ctx
     (-> ctx
         update-time

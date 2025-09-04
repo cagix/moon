@@ -99,6 +99,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/default-font
                       ctx/shape-drawer-texture
                       ctx/shape-drawer
+                      ctx/paused?
                       ctx/unit-scale
                       ctx/world-unit-scale])
 
@@ -155,6 +156,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/world :some]
                                           [:ctx/world-viewport :some]
                                           [:ctx/batch :some]
+                                          [:ctx/paused? :any]
                                           [:ctx/default-font :some]
                                           [:ctx/shape-drawer-texture :some]
                                           [:ctx/shape-drawer :some]
@@ -183,4 +185,5 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        :shape-drawer-texture shape-drawer-texture
                        :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))})
         ((requiring-resolve (:reset-game-state! config)) (::starting-level config))
-        (assoc :ctx/mouseover-eid nil))))
+        (assoc :ctx/mouseover-eid nil
+               :ctx/paused? nil))))

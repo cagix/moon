@@ -23,7 +23,6 @@
 
                     ; added later
                     world/delta-time
-                    world/paused?
                     world/active-entities])
 
 (defn- create-explored-tile-corners [tiled-map]
