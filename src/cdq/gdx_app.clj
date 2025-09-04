@@ -1,6 +1,6 @@
 (ns cdq.gdx-app
   (:require cdq.application
-            cdq.gdx.backends.lwjgl))
+            cdq.lwjgl))
 
 (defn start!
   [{:keys [lwjgl-app-config
@@ -8,7 +8,7 @@
            dispose!
            render!
            resize!]}]
-  (cdq.gdx.backends.lwjgl/start-application!
+  (cdq.lwjgl/start-application!
    lwjgl-app-config
    {:create! (fn [gdx]
                (reset! cdq.application/state

@@ -1,11 +1,11 @@
 (ns cdq.levelgen
   (:require [cdq.db-impl :as db]
-            [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx-app.resize]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.viewport :as viewport]
             [cdq.input :as input]
+            [cdq.lwjgl :as lwjgl]
             [cdq.render.clear-screen]
             [cdq.stage-impl :as stage]
             [cdq.textures-impl]

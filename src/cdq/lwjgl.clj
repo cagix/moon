@@ -1,4 +1,4 @@
-(ns cdq.gdx.backends.lwjgl
+(ns cdq.lwjgl
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
