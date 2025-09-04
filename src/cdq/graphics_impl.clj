@@ -1,6 +1,5 @@
 (ns cdq.graphics-impl
-  (:require [cdq.gdx.graphics :as graphics]
-            [cdq.gdx.graphics.shape-drawer :as sd]
+  (:require [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.string :as str]
             [qrecord.core :as q])
@@ -116,7 +115,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
        (recursively-search (Files/.internal files folder) extensions)))
 
 (q/defrecord Graphics [g/batch
-                       g/cursors
                        g/default-font
                        g/shape-drawer-texture
                        g/shape-drawer
@@ -128,10 +126,8 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        g/world-viewport])
 
 (defn create!
-  [{:keys [graphics files]}
-   {:keys [cursors
-           cursor-path-format
-           default-font
+  [{:keys [files]}
+   {:keys [default-font
            tile-size
            ui-viewport
            world-viewport]}]
@@ -152,12 +148,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
     (map->Graphics
      {:textures (into {} (for [[path file-handle] textures]
                            [path (Texture. ^FileHandle file-handle)]))
-      :cursors (update-vals cursors
-                            (fn [[file [hotspot-x hotspot-y]]]
-                              (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
-                                    cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
-                                (.dispose pixmap)
-                                cursor)))
       :default-font (when default-font
                       (generate-font (Files/.internal files (:file default-font))
                                      (:params default-font)))

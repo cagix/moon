@@ -2,14 +2,26 @@
   (:require [cdq.audio :as audio]
             [cdq.input :as input]
             [cdq.db-impl :as db]
+            [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx.graphics Colors)))
+  (:import (com.badlogic.gdx Files)
+           (com.badlogic.gdx.graphics Colors
+                                      Pixmap)))
+
+(defn- load-cursors [files graphics cursors cursor-path-format]
+  (update-vals cursors
+               (fn [[file [hotspot-x hotspot-y]]]
+                 (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
+                       cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
+                   (.dispose pixmap)
+                   cursor))))
 
 (q/defrecord Context [ctx/schema
                       ctx/config
+                      ctx/cursors
                       ctx/input
                       ctx/db
                       ctx/audio
@@ -32,6 +44,7 @@
     (-> (map->Context {:schema (m/schema [:map {:closed true}
                                           [:ctx/schema :some]
                                           [:ctx/config :some]
+                                          [:ctx/cursors :some]
                                           [:ctx/input :some]
                                           [:ctx/db :some]
                                           [:ctx/audio :some]
@@ -44,6 +57,11 @@
                        :gdx-graphics (:graphics gdx)
                        :audio (audio/create gdx (::audio config))
                        :config config
+                       :cursors (load-cursors
+                                 (:files gdx)
+                                 (:graphics gdx)
+                                 (:cursors (::graphics config))
+                                 (:cursor-path-format (::graphics config)))
                        :db (db/create (::db config))
                        :graphics graphics
                        :input input
