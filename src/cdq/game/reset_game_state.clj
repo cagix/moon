@@ -6,6 +6,11 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
 
+(defn- assoc-player-eid [{:keys [ctx/world] :as ctx}]
+  (let [eid (get @(:world/entity-ids world) 1)]
+    (assert (:entity/player? @eid))
+    (assoc ctx :ctx/player-eid eid)))
+
 (defn- spawn-player!
   [{:keys [ctx/config
            ctx/db
@@ -17,9 +22,7 @@
                                           {:position (utils/tile->middle (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
-  (let [player-eid (get @(:world/entity-ids world) 1)]
-    (assert (:entity/player? @player-eid))
-    (assoc ctx :ctx/player-eid player-eid)))
+  ctx)
 
 (defn- spawn-enemies!
   [{:keys [ctx/config
@@ -55,4 +58,5 @@
                                 (let [[f params] world-fn]
                                   ((requiring-resolve f) ctx params)))))
       spawn-player!
+      assoc-player-eid
       spawn-enemies!))
