@@ -1,17 +1,15 @@
 (ns cdq.level.helper
-  (:require [cdq.db :as db]
+  (:require [cdq.gdx.tiled :as tiled]
             [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.property :as property]
-            [cdq.utils :as utils]
-            [cdq.gdx.tiled :as tiled]
-            [cdq.textures :as textures]))
+            [cdq.textures :as textures]
+            [cdq.utils :as utils]))
 
-(defn prepare-creature-properties [{:keys [ctx/graphics
-                                           ctx/db]}]
-  (for [creature (db/all-raw db :properties/creatures)
-        :let [texture-region (textures/image->texture-region (:g/textures graphics) (property/image creature))]]
+(defn prepare-creature-properties [creature-properties textures]
+  (for [creature creature-properties
+        :let [texture-region (textures/image->texture-region textures (property/image creature))]]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
                        :tile/texture-region texture-region})))

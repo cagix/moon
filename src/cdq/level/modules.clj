@@ -1,5 +1,6 @@
 (ns cdq.level.modules
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.db :as db]
+            [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
                                       scale-grid
@@ -211,6 +212,10 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defn create [ctx params]
+(defn create
+  [{:keys [ctx/graphics
+           ctx/db]}
+   params]
   (generate-modules params
-                    (prepare-creature-properties ctx)))
+                    (prepare-creature-properties (db/all-raw db :properties/creatures)
+                                                 (:g/textures graphics))))

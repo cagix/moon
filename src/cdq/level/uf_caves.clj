@@ -1,5 +1,6 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.db :as db]
+            [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
                                       adjacent-wall-positions
@@ -135,8 +136,8 @@
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level :level/grid grid)))
 
-(defn create [{:keys [ctx/graphics]
-               :as ctx}
+(defn create [{:keys [ctx/db
+                      ctx/graphics]}
               {:keys [tile-size
                       texture-path
                       spawn-rate
@@ -160,7 +161,8 @@
                                                                 "movement" movement))))
            :level/spawn-rate spawn-rate
            :level/scaling scaling
-           :level/creature-properties (prepare-creature-properties ctx)}
+           :level/creature-properties (prepare-creature-properties (db/all-raw db :properties/creatures)
+                                                                   (:g/textures graphics))}
           [[initial-grid-creation {:size cave-size
                                    :cave-style cave-style
                                    :random (java.util.Random.)}]
