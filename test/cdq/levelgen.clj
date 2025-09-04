@@ -7,6 +7,7 @@
             [cdq.input :as input]
             [cdq.lwjgl :as lwjgl]
             [cdq.render.clear-screen]
+            [cdq.shared-library-loader :as shared-library-loader]
             [cdq.stage-impl :as stage]
             [cdq.textures-impl]
             [cdq.tiled :as tiled]
@@ -172,6 +173,8 @@
   (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
+  (when (= (shared-library-loader/operating-system) :mac)
+    (lwjgl/set-glfw-async!))
   (lwjgl/start-application! (reify ApplicationListener
                               (create [_]
                                 (create!))

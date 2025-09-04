@@ -1,6 +1,7 @@
 (ns cdq.gdx-app
   (:require [cdq.application :as application]
-            [cdq.lwjgl :as lwjgl])
+            [cdq.lwjgl :as lwjgl]
+            [cdq.shared-library-loader :as shared-library-loader])
   (:import (com.badlogic.gdx ApplicationListener)))
 
 (defn start!
@@ -9,6 +10,8 @@
            dispose!
            render!
            resize!]}]
+  (when (= (shared-library-loader/operating-system) :mac)
+    (lwjgl/set-glfw-async!))
   (lwjgl/start-application! (reify ApplicationListener
                               (create [_]
                                 (reset! application/state
