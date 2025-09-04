@@ -4,7 +4,9 @@
             [cdq.db-impl :as db]
             [cdq.textures-impl]
             [cdq.gdx.graphics :as graphics]
+            [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
+            [cdq.gdx.graphics.viewport :as viewport]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
@@ -32,18 +34,25 @@
                       ctx/textures
                       ctx/graphics
                       ctx/gdx-graphics
+                      ctx/ui-viewport
                       ctx/world])
 
 ; => this has to be pipelined
 ; and graphics/world abstractions are questionable
 ; and maybe ctx/gdx ?!
+; use at handle draws ctx and world tick etc
+; do select-keys so I know what is only used ?
+; but nopt even necessary
 (defn do! [gdx config]
   (doseq [[name color-params] (:colors (::graphics config))]
     (Colors/put name (color/->obj color-params)))
   (ui/load! (::stage config))
   (let [input (:input gdx)
         graphics ((requiring-resolve (:graphics-impl config)) gdx (::graphics config))
-        stage (ui/stage (:g/ui-viewport graphics)
+        ui-viewport (viewport/fit (:width  (:ui-viewport (::graphics config)))
+                                  (:height (:ui-viewport (::graphics config)))
+                                  (camera/orthographic))
+        stage (ui/stage ui-viewport
                         (:g/batch       graphics))]
     (input/set-processor! input stage)
     (-> (map->Context {:schema (m/schema [:map {:closed true}
@@ -59,6 +68,7 @@
                                           [:ctx/textures :some]
                                           [:ctx/graphics :some]
                                           [:ctx/gdx-graphics :some]
+                                          [:ctx/ui-viewport :some]
                                           [:ctx/world :some]])
                        :gdx-graphics (:graphics gdx)
                        :textures (cdq.textures-impl/create (:files gdx))
@@ -71,6 +81,7 @@
                                  (:cursor-path-format (::graphics config)))
                        :db (db/create (::db config))
                        :graphics graphics
+                       :ui-viewport ui-viewport
                        :input input
                        :stage stage})
         ((requiring-resolve (:reset-game-state! config)) (::starting-level config))

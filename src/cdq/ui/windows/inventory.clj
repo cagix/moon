@@ -8,7 +8,7 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn create
-  [{:keys [ctx/graphics
+  [{:keys [ctx/ui-viewport
            ctx/textures]}
    {:keys [title
            id
@@ -83,8 +83,8 @@
                 :id id
                 :visible? visible?
                 :pack? true
-                :position [(:viewport/width (:g/ui-viewport graphics))
-                           (:viewport/height (:g/ui-viewport graphics))]
+                :position [(:viewport/width ui-viewport)
+                           (:viewport/height ui-viewport)]
                 :rows [[{:actor {:id ::table
                                  :actor/type :actor.type/table
                                  :rows (concat [[nil nil

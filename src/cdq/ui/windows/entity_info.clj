@@ -2,10 +2,10 @@
   (:require [cdq.ui.group :as group]
             [cdq.gdx.ui :as ui]))
 
-(defn create [{:keys [ctx/graphics]}
+(defn create [{:keys [ctx/ui-viewport]}
               {:keys [y
                       ->label-text]}]
-  (let [position [(:viewport/width (:g/ui-viewport graphics))
+  (let [position [(:viewport/width ui-viewport)
                   y]
         label (ui/label {:label/text ""})
         window (ui/window {:title "Info"

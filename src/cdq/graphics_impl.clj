@@ -66,7 +66,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        g/shape-drawer-texture
                        g/shape-drawer
                        g/tiled-map-renderer
-                       g/ui-viewport
                        g/unit-scale
                        g/world-unit-scale
                        g/world-viewport])
@@ -75,7 +74,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   [{:keys [files]}
    {:keys [default-font
            tile-size
-           ui-viewport
            world-viewport]}]
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -84,16 +82,12 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                    texture (Texture. pixmap)]
                                (.dispose pixmap)
                                texture)
-        world-unit-scale (float (/ tile-size))
-        ui-viewport (viewport/fit (:width  ui-viewport)
-                                  (:height ui-viewport)
-                                  (camera/orthographic))]
+        world-unit-scale (float (/ tile-size))]
     (map->Graphics
      {:default-font (when default-font
                       (generate-font (Files/.internal files (:file default-font))
                                      (:params default-font)))
       :world-unit-scale world-unit-scale
-      :ui-viewport ui-viewport
       :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                             world-height (* (:height world-viewport) world-unit-scale)]
                         (viewport/fit world-width

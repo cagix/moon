@@ -11,6 +11,7 @@
             [cdq.gdx.tiled :as tiled]
             [cdq.input :as input]
             [cdq.gdx.graphics.camera :as camera]
+            [cdq.gdx.graphics.viewport :as viewport]
             [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])
@@ -91,7 +92,8 @@
                                              :world-viewport {:width 1440
                                                               :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
-        stage (ui/stage (:g/ui-viewport graphics)
+        ui-viewport (viewport/fit 1440 900 (camera/orthographic))
+        stage (ui/stage ui-viewport
                         (:g/batch       graphics))
         _  (input/set-processor! input stage)
         ctx (assoc ctx :ctx/stage stage)

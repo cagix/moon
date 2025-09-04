@@ -26,10 +26,11 @@
 (defn do!
   [{:keys [ctx/graphics
            ctx/input
-           ctx/stage]
+           ctx/stage
+           ctx/ui-viewport]
     :as ctx}]
   (let [mouse-position [(Input/.getX input) (Input/.getY input)]
-        ui-mouse-position    (unproject-clamp (:g/ui-viewport    graphics) mouse-position)
+        ui-mouse-position    (unproject-clamp ui-viewport mouse-position)
         world-mouse-position (unproject-clamp (:g/world-viewport graphics) mouse-position)]
     (assoc ctx
            :ctx/mouseover-actor      (stage-hit stage ui-mouse-position)

@@ -13,9 +13,9 @@
   [{:keys [duration-seconds
            name]}]
   {:actor/type :actor.type/actor
-   :draw (fn [this {:keys [ctx/graphics]}]
+   :draw (fn [this {:keys [ctx/ui-viewport]}]
            [(draw-message (actor/user-object this)
-                          (:g/ui-viewport graphics))])
+                          ui-viewport)])
    :act (fn [this delta _ctx]
           (let [state (actor/user-object this)]
             (when (:text @state)

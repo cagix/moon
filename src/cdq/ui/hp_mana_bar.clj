@@ -5,19 +5,19 @@
             [cdq.world.entity.stats :as modifiers]))
 
 (defn- create*
-  [{:keys [ctx/graphics
-           ctx/textures]}
+  [{:keys [ctx/textures
+           ctx/ui-viewport]}
    {:keys [rahmen-file
            rahmenw
            rahmenh
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [[x y-mana] [(/ (:viewport/width (:g/ui-viewport graphics)) 2)
+  (let [[x y-mana] [(/ (:viewport/width ui-viewport) 2)
                     y-mana]
         rahmen-tex-reg (textures/image->texture-region textures {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [graphics x y content-file minmaxval name]
+        render-hpmana-bar (fn [x y content-file minmaxval name]
                             [[:draw/texture-region rahmen-tex-reg [x y]]
                              [:draw/texture-region
                               (textures/image->texture-region textures
@@ -32,13 +32,12 @@
                                           :x (+ x 75)
                                           :y (+ y 2)
                                           :up? true}]])
-        create-draws (fn [{:keys [ctx/graphics
-                                  ctx/player-eid]}]
+        create-draws (fn [{:keys [ctx/player-eid]}]
                        (let [stats (:creature/stats @player-eid)
                              x (- x (/ rahmenw 2))]
                          (concat
-                          (render-hpmana-bar graphics x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")
-                          (render-hpmana-bar graphics x y-mana manacontent-file (modifiers/get-mana      stats) "MP"))))]
+                          (render-hpmana-bar x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")
+                          (render-hpmana-bar x y-mana manacontent-file (modifiers/get-mana      stats) "MP"))))]
     {:actor/type :actor.type/actor
      :draw (fn [_this ctx]
              (create-draws ctx))}))

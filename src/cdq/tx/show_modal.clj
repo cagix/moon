@@ -25,9 +25,9 @@
                                             (* (:viewport/height ui-viewport) (/ 3 4))]
                           :pack? true})))
 
-(defn do! [[_ opts] {:keys [ctx/graphics
-                            ctx/stage]}]
+(defn do! [[_ opts] {:keys [ctx/stage
+                            ctx/ui-viewport]}]
   (show-modal-window! stage
-                      (:g/ui-viewport graphics)
+                      ui-viewport
                       opts)
   nil)
