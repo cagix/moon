@@ -1,6 +1,5 @@
 (ns cdq.lwjgl
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+  (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3WindowConfiguration)
@@ -38,10 +37,7 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (create! {:graphics Gdx/graphics
-                                    :audio    Gdx/audio
-                                    :input    Gdx/input
-                                    :files    Gdx/files}))
+                          (create!))
                         (dispose [_]
                           (dispose!))
                         (render [_]

@@ -6,8 +6,7 @@
            (com.badlogic.gdx.audio Sound)))
 
 (defn create
-  [{:keys [audio files]}
-   {:keys [sounds path-format]}]
+  [audio files {:keys [sounds path-format]}]
   (into {}
         (for [sound-name (->> sounds io/resource slurp edn/read-string)
               :let [path (format path-format sound-name)]]

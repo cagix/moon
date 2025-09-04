@@ -14,7 +14,8 @@
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
@@ -84,9 +85,9 @@
 
 (defrecord Context [])
 
-(defn create! [gdx]
+(defn create! []
   (ui/load! {:skin-scale :x1})
-  (let [input (:input gdx)
+  (let [input Gdx/input
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (SpriteBatch.)
@@ -107,7 +108,7 @@
         ctx (assoc ctx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (cdq.textures-impl/create (:files gdx))
+                   :ctx/textures (cdq.textures-impl/create Gdx/files)
                    :ctx/camera (:viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1

@@ -10,10 +10,10 @@
            resize!]}]
   (cdq.lwjgl/start-application!
    lwjgl-app-config
-   {:create! (fn [gdx]
+   {:create! (fn []
                (reset! cdq.application/state
                        (let [[f config] create!]
-                         ((requiring-resolve f) gdx config))))
+                         ((requiring-resolve f) config))))
     :dispose! (fn []
                 ((requiring-resolve dispose!) @cdq.application/state))
     :render! (fn []

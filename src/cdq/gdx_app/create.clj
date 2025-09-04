@@ -12,7 +12,8 @@
             [cdq.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
-  (:import (com.badlogic.gdx Files)
+  (:import (com.badlogic.gdx Gdx
+                             Files)
            (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
@@ -118,11 +119,11 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/world-viewport
                       ctx/z-orders])
 
-(defn do! [gdx config]
+(defn do! [config]
   (doseq [[name color-params] (:colors config)]
     (Colors/put name (color/->obj color-params)))
   (ui/load! (:stage config))
-  (let [input (:input gdx)
+  (let [input Gdx/input
         world-unit-scale (float (/ (:tile-size config)))
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
@@ -182,13 +183,13 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/world-unit-scale :some]
                                           [:ctx/world-viewport :some]
                                           [:ctx/z-orders :some]])
-                       :graphics (:graphics gdx)
-                       :textures (cdq.textures-impl/create (:files gdx))
-                       :audio (audio/create gdx (:audio config))
+                       :graphics Gdx/graphics
+                       :textures (cdq.textures-impl/create Gdx/files)
+                       :audio (audio/create Gdx/audio Gdx/files (:audio config))
                        :config config
                        :cursors (load-cursors
-                                 (:files gdx)
-                                 (:graphics gdx)
+                                 Gdx/files
+                                 Gdx/graphics
                                  (:cursors config)
                                  (:cursor-path-format config))
                        :db (db/create (:db config))
@@ -197,7 +198,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        :stage stage
                        :tiled-map-renderer (tm-renderer/create world-unit-scale batch)
                        :world-viewport world-viewport
-                       :default-font (generate-font (Files/.internal (:files gdx) (:file (:default-font config)))
+                       :default-font (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
                                                     (:params (:default-font config)))
                        :world-unit-scale world-unit-scale
                        :batch batch
