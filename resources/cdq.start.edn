@@ -258,7 +258,7 @@
                                  cdq.ui.windows/create
                                  cdq.ui.player-state-draw/create
                                  cdq.ui.message/create]
-              :starting-level [cdq.level.from-tmx/create
+              :starting-level [cdq.world-fns.tmx/create
                                {:tmx-file "maps/vampire.tmx"
                                 :start-position [32 71]}]
               :colors [["PRETTY_NAME" [0.84 0.8 0.52 1]]]

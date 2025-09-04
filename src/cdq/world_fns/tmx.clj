@@ -1,4 +1,4 @@
-(ns cdq.level.from-tmx
+(ns cdq.world-fns.tmx
   (:require [cdq.gdx.tiled :as tiled]))
 
 (defn create [_ctx {:keys [tmx-file start-position]}]

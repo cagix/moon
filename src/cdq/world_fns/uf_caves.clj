@@ -1,4 +1,4 @@
-(ns cdq.level.uf-caves
+(ns cdq.world-fns.uf-caves
   (:require [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties

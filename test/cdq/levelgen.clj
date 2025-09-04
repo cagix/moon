@@ -4,9 +4,9 @@
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.gdx-app.resize]
             [cdq.db-impl :as db]
-            [cdq.level.modules]
-            [cdq.level.uf-caves]
-            [cdq.level.from-tmx]
+            [cdq.world-fns.modules]
+            [cdq.world-fns.uf-caves]
+            [cdq.world-fns.tmx]
             [cdq.gdx.tiled :as tiled]
             [cdq.input :as input]
             [cdq.gdx.graphics.camera :as camera]
@@ -17,25 +17,28 @@
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 
-(def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
-                                                  :texture-path "maps/uf_terrain.png"
-                                                  :spawn-rate 0.02
-                                                  :scaling 3
-                                                  :cave-size 200
-                                                  :cave-style :wide}])
+(def initial-level-fn [cdq.world-fns.uf-caves/create
+                       {:tile-size 48
+                        :texture-path "maps/uf_terrain.png"
+                        :spawn-rate 0.02
+                        :scaling 3
+                        :cave-size 200
+                        :cave-style :wide}])
 
 (def level-fns
-  [[#'cdq.level.from-tmx/create {:tmx-file "maps/vampire.tmx"
-                                 :start-position [32 71]}]
-   [#'cdq.level.uf-caves/create {:tile-size 48
-                                 :texture-path "maps/uf_terrain.png"
-                                 :spawn-rate 0.02
-                                 :scaling 3
-                                 :cave-size 200
-                                 :cave-style :wide}]
-   [#'cdq.level.modules/create {:world/map-size 5,
-                                :world/max-area-level 3,
-                                :world/spawn-rate 0.05}]])
+  [[#'cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                :start-position [32 71]}]
+   [#'cdq.world-fns.uf-caves/create
+    {:tile-size 48
+     :texture-path "maps/uf_terrain.png"
+     :spawn-rate 0.02
+     :scaling 3
+     :cave-size 200
+     :cave-style :wide}]
+   [#'cdq.world-fns.modules/create
+    {:world/map-size 5,
+     :world/max-area-level 3,
+     :world/spawn-rate 0.05}]])
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]

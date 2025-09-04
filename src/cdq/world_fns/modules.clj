@@ -1,4 +1,4 @@
-(ns cdq.level.modules
+(ns cdq.world-fns.modules
   (:require [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
