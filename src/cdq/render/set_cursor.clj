@@ -5,7 +5,7 @@
 
 (defn do!
   [{:keys [ctx/cursors
-           ctx/gdx-graphics
+           ctx/graphics
            ctx/player-eid]
     :as ctx}]
   (let [cursor-key (let [->cursor (state->cursor (:state (:entity/fsm @player-eid)))]
@@ -13,4 +13,4 @@
                        ->cursor
                        (->cursor player-eid ctx)))]
     (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! gdx-graphics (get cursors cursor-key))))
+    (graphics/set-cursor! graphics (get cursors cursor-key))))

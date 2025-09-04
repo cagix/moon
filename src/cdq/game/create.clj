@@ -96,7 +96,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/textures
                       ctx/tiled-map
                       ctx/tiled-map-renderer
-                      ctx/gdx-graphics
+                      ctx/graphics
                       ctx/ui-viewport
                       ctx/world-viewport
                       ctx/batch
@@ -127,9 +127,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 ; use at handle draws ctx and world tick etc
 ; do select-keys so I know what is only used ?
 ; but nopt even necessary
-
-; 1. gdx-graphics -> graphics
-; 2. handle-draws! -> cdq.ctx (similar to txs)
 
 (defn do! [gdx config]
   (doseq [[name color-params] (:colors config)]
@@ -174,7 +171,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/mouseover-eid :any]
                                           [:ctx/player-eid :some]
                                           [:ctx/textures :some]
-                                          [:ctx/gdx-graphics :some]
+                                          [:ctx/graphics :some]
                                           [:ctx/tiled-map :some]
                                           [:ctx/tiled-map-renderer :some]
                                           [:ctx/ui-viewport :some]
@@ -195,7 +192,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/z-orders :some]
                                           [:ctx/delta-time :some]
                                           [:ctx/active-entities :some]])
-                       :gdx-graphics (:graphics gdx)
+                       :graphics (:graphics gdx)
                        :textures (cdq.textures-impl/create (:files gdx))
                        :audio (audio/create gdx (::audio config))
                        :config config
