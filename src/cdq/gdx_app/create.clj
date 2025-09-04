@@ -79,46 +79,44 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                    (.dispose pixmap)
                    cursor))))
 
-; sort & count & together with schema
-(q/defrecord Context [
-                      ctx/explored-tile-corners
-                      ctx/schema
-                      ctx/config
-                      ctx/cursors
-                      ctx/content-grid
-                      ctx/input
-                      ctx/db
+(q/defrecord Context [ctx/active-entities
                       ctx/audio
-                      ctx/stage
-                      ctx/mouseover-eid
-                      ctx/player-eid
-                      ctx/textures
-                      ctx/tiled-map
-                      ctx/tiled-map-renderer
-                      ctx/graphics
-                      ctx/ui-viewport
-                      ctx/world-viewport
                       ctx/batch
-                      ctx/potential-field-cache
-                      ctx/factions-iterations
-                      ctx/id-counter
-                      ctx/entity-ids
-                      ctx/render-z-order
+                      ctx/config
+                      ctx/content-grid
+                      ctx/cursors
+                      ctx/db
                       ctx/default-font
-                      ctx/shape-drawer-texture
-                      ctx/shape-drawer
-                      ctx/paused?
-                      ctx/unit-scale
-                      ctx/world-unit-scale
-                      ctx/grid
-                      ctx/raycaster
+                      ctx/delta-time
                       ctx/elapsed-time
+                      ctx/entity-ids
+                      ctx/explored-tile-corners
+                      ctx/factions-iterations
+                      ctx/graphics
+                      ctx/grid
+                      ctx/id-counter
+                      ctx/input
                       ctx/max-delta
                       ctx/max-speed
                       ctx/minimum-size
-                      ctx/z-orders
-                      ctx/delta-time
-                      ctx/active-entities])
+                      ctx/mouseover-eid
+                      ctx/paused?
+                      ctx/player-eid
+                      ctx/potential-field-cache
+                      ctx/raycaster
+                      ctx/render-z-order
+                      ctx/schema
+                      ctx/shape-drawer
+                      ctx/shape-drawer-texture
+                      ctx/stage
+                      ctx/textures
+                      ctx/tiled-map
+                      ctx/tiled-map-renderer
+                      ctx/ui-viewport
+                      ctx/unit-scale
+                      ctx/world-unit-scale
+                      ctx/world-viewport
+                      ctx/z-orders])
 
 ; => this has to be pipelined
 ; and graphics/world abstractions are questionable
@@ -153,44 +151,44 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         stage (ui/stage ui-viewport batch)]
     (input/set-processor! input stage)
     (-> (map->Context {:schema (m/schema [:map {:closed true}
-                                          [:ctx/schema :some]
-                                          [:ctx/config :some]
-                                          [:ctx/cursors :some]
-                                          [:ctx/content-grid :some]
-                                          [:ctx/potential-field-cache :some]
-                                          [:ctx/factions-iterations :some]
-                                          [:ctx/id-counter :some]
-                                          [:ctx/entity-ids :some]
-                                          [:ctx/render-z-order :some]
-                                          [:ctx/input :some]
-                                          [:ctx/explored-tile-corners :some]
-                                          [:ctx/db :some]
+                                          [:ctx/active-entities :some]
                                           [:ctx/audio :some]
-                                          [:ctx/stage :some]
-                                          [:ctx/mouseover-eid :any]
-                                          [:ctx/player-eid :some]
-                                          [:ctx/textures :some]
-                                          [:ctx/graphics :some]
-                                          [:ctx/tiled-map :some]
-                                          [:ctx/tiled-map-renderer :some]
-                                          [:ctx/ui-viewport :some]
-                                          [:ctx/world-viewport :some]
                                           [:ctx/batch :some]
-                                          [:ctx/paused? :any]
+                                          [:ctx/config :some]
+                                          [:ctx/content-grid :some]
+                                          [:ctx/cursors :some]
+                                          [:ctx/db :some]
                                           [:ctx/default-font :some]
-                                          [:ctx/shape-drawer-texture :some]
-                                          [:ctx/shape-drawer :some]
-                                          [:ctx/unit-scale :some]
-                                          [:ctx/world-unit-scale :some]
-                                          [:ctx/grid :some]
-                                          [:ctx/raycaster :some]
+                                          [:ctx/delta-time :some]
                                           [:ctx/elapsed-time :some]
+                                          [:ctx/entity-ids :some]
+                                          [:ctx/explored-tile-corners :some]
+                                          [:ctx/factions-iterations :some]
+                                          [:ctx/graphics :some]
+                                          [:ctx/grid :some]
+                                          [:ctx/id-counter :some]
+                                          [:ctx/input :some]
                                           [:ctx/max-delta :some]
                                           [:ctx/max-speed :some]
                                           [:ctx/minimum-size :some]
-                                          [:ctx/z-orders :some]
-                                          [:ctx/delta-time :some]
-                                          [:ctx/active-entities :some]])
+                                          [:ctx/mouseover-eid :any]
+                                          [:ctx/paused? :any]
+                                          [:ctx/player-eid :some]
+                                          [:ctx/potential-field-cache :some]
+                                          [:ctx/raycaster :some]
+                                          [:ctx/render-z-order :some]
+                                          [:ctx/schema :some]
+                                          [:ctx/shape-drawer :some]
+                                          [:ctx/shape-drawer-texture :some]
+                                          [:ctx/stage :some]
+                                          [:ctx/textures :some]
+                                          [:ctx/tiled-map :some]
+                                          [:ctx/tiled-map-renderer :some]
+                                          [:ctx/ui-viewport :some]
+                                          [:ctx/unit-scale :some]
+                                          [:ctx/world-unit-scale :some]
+                                          [:ctx/world-viewport :some]
+                                          [:ctx/z-orders :some]])
                        :graphics (:graphics gdx)
                        :textures (cdq.textures-impl/create (:files gdx))
                        :audio (audio/create gdx (:audio config))
