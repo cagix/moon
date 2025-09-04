@@ -4,6 +4,6 @@
 
 (defn draw!
   [[_ [x y] radius color]
-   {:keys [shape-drawer]}]
+   {:keys [g/shape-drawer]}]
   (sd/set-color! shape-drawer (color/->obj color))
   (sd/filled-circle! shape-drawer x y radius))

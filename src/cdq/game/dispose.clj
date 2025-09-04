@@ -9,11 +9,11 @@
   (run! Disposable/.dispose (vals sounds)))
 
 (defn- dispose-graphics!
-  [{:keys [batch
-           shape-drawer-texture
-           textures
-           cursors
-           default-font]}]
+  [{:keys [g/batch
+           g/shape-drawer-texture
+           g/textures
+           g/cursors
+           g/default-font]}]
   (Disposable/.dispose batch)
   (Disposable/.dispose shape-drawer-texture)
   (run! Disposable/.dispose (vals textures))

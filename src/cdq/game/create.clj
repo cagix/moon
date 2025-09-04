@@ -26,8 +26,8 @@
   (ui/load! (::stage config))
   (let [input (:input gdx)
         graphics ((requiring-resolve (:graphics-impl config)) gdx (::graphics config))
-        stage (ui/stage (:ui-viewport graphics)
-                        (:batch       graphics))]
+        stage (ui/stage (:g/ui-viewport graphics)
+                        (:g/batch       graphics))]
     (input/set-processor! input stage)
     (-> (map->Context {:schema (m/schema [:map {:closed true}
                                           [:ctx/schema :some]

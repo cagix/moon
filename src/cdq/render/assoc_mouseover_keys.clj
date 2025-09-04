@@ -29,8 +29,8 @@
            ctx/stage]
     :as ctx}]
   (let [mouse-position [(Input/.getX input) (Input/.getY input)]
-        ui-mouse-position    (unproject-clamp (:ui-viewport    graphics) mouse-position)
-        world-mouse-position (unproject-clamp (:world-viewport graphics) mouse-position)]
+        ui-mouse-position    (unproject-clamp (:g/ui-viewport    graphics) mouse-position)
+        world-mouse-position (unproject-clamp (:g/world-viewport graphics) mouse-position)]
     (assoc ctx
            :ctx/mouseover-actor      (stage-hit stage ui-mouse-position)
            :ctx/ui-mouse-position    ui-mouse-position

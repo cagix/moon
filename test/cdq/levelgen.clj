@@ -90,14 +90,14 @@
                                              :world-viewport {:width 1440
                                                               :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
-        stage (ui/stage (:ui-viewport graphics)
-                        (:batch       graphics))
+        stage (ui/stage (:g/ui-viewport graphics)
+                        (:g/batch       graphics))
         _  (input/set-processor! input stage)
         ctx (assoc ctx :ctx/stage stage)
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
         ctx (assoc ctx
-                   :ctx/camera (:viewport/camera (:world-viewport (:ctx/graphics ctx)))
+                   :ctx/camera (:viewport/camera (:g/world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1)
@@ -117,8 +117,8 @@
 (defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
                                 ctx/color-setter]}]
-  (tm-renderer/draw! (:tiled-map-renderer graphics)
-                     (:world-viewport graphics)
+  (tm-renderer/draw! (:g/tiled-map-renderer graphics)
+                     (:g/world-viewport graphics)
                      tiled-map
                      color-setter))
 

@@ -12,8 +12,8 @@
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [textures (:textures graphics)
-        [x y-mana] [(/ (:viewport/width (:ui-viewport graphics)) 2)
+  (let [textures (:g/textures graphics)
+        [x y-mana] [(/ (:viewport/width (:g/ui-viewport graphics)) 2)
                     y-mana]
         rahmen-tex-reg (textures/image->texture-region textures {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)

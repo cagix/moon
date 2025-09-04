@@ -44,7 +44,7 @@
                                              [{:actor {:actor/type :actor.type/label
                                                        :label/text (k->label-str k)}}
                                               {:actor (v->actor v)}])})
-        scroll-pane-cell (let [;viewport (:ui-viewport ctx/graphics)
+        scroll-pane-cell (let [;viewport (:g/ui-viewport ctx/graphics)
                                table (ui/table {:rows [[scroll-pane-table]]
                                                 :cell-defaults {:pad 1}
                                                 :pack? true})

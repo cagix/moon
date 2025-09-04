@@ -17,9 +17,9 @@
 
 (defn draw!
   [[_ ^TextureRegion texture-region [x y] {:keys [center? rotation]}]
-   {:keys [batch
-           unit-scale
-           world-unit-scale]}]
+   {:keys [g/batch
+           g/unit-scale
+           g/world-unit-scale]}]
   (let [[w h] (let [dimensions [(.getRegionWidth  texture-region)
                                 (.getRegionHeight texture-region)]]
                 (if (= @unit-scale 1)

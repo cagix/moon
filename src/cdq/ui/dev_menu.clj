@@ -38,7 +38,7 @@
 
 (defn zoom [icon]
   {:label "Zoom"
-   :update-fn (comp :camera/zoom :viewport/camera :world-viewport :ctx/graphics)
+   :update-fn (comp :camera/zoom :viewport/camera :g/world-viewport :ctx/graphics)
    :icon icon})
 
 (defn fps [icon]
@@ -89,7 +89,7 @@
             (db-editor db)
             context-data-view
             ]
-    :update-labels (let [->texture (fn [path] (utils/safe-get (:textures graphics) path))]
+    :update-labels (let [->texture (fn [path] (utils/safe-get (:g/textures graphics) path))]
                      [
                       (mouseover-entity-id (->texture "images/mouseover.png"))
                       (elapsed-time        (->texture "images/clock.png"))

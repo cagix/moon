@@ -4,6 +4,6 @@
 
 (defn draw!
   [[_ [x y] radius-x radius-y color]
-   {:keys [shape-drawer]}]
+   {:keys [g/shape-drawer]}]
   (sd/set-color! shape-drawer (color/->obj color))
   (sd/filled-ellipse! shape-drawer x y radius-x radius-y))

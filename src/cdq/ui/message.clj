@@ -15,7 +15,7 @@
   {:actor/type :actor.type/actor
    :draw (fn [this {:keys [ctx/graphics]}]
            [(draw-message (actor/user-object this)
-                          (:ui-viewport graphics))])
+                          (:g/ui-viewport graphics))])
    :act (fn [this delta _ctx]
           (let [state (actor/user-object this)]
             (when (:text @state)

@@ -14,7 +14,7 @@
       :windows
       :inventory-window
       (inventory-window/set-item! inventory-cell
-                                  {:texture-region (textures/image->texture-region (:textures graphics) (:entity/image item))
+                                  {:texture-region (textures/image->texture-region (:g/textures graphics) (:entity/image item))
                                    :tooltip-text (info/info-text ctx item)})))
 
 (defn do! [[_ eid cell item] ctx]

@@ -32,7 +32,7 @@
            ctx/world-mouse-position]}]
   (when (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor)
     [[:draw/texture-region
-      (textures/image->texture-region (:textures graphics)
+      (textures/image->texture-region (:g/textures graphics)
                                       (:entity/image item))
       (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
       {:center? true}]]))
@@ -90,7 +90,7 @@
                                  ctx/world]
                           :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (textures/image->texture-region (:textures graphics) image)
+    (concat (draw-skill-image (textures/image->texture-region (:g/textures graphics) image)
                               entity
                               (entity/position entity)
                               (timer/ratio (:world/elapsed-time world) counter))
@@ -106,7 +106,7 @@
    entity
    {:keys [ctx/graphics]}]
   [[:draw/texture-region
-    (textures/image->texture-region (:textures graphics) image)
+    (textures/image->texture-region (:g/textures graphics) image)
     (entity/position entity)
     {:center? true
      :rotation (or (:body/rotation-angle (:entity/body entity))
@@ -140,7 +140,7 @@
                   :x x
                   :y (+ y
                         (/ (:body/height (:entity/body entity)) 2)
-                        (* 5 (:world-unit-scale graphics)))
+                        (* 5 (:g/world-unit-scale graphics)))
                   :scale 2
                   :up? true}]]))
 
@@ -178,6 +178,6 @@
 (defn draw-stats [_ entity {:keys [ctx/graphics]}]
   (let [ratio (val-max/ratio (modifiers/get-hitpoints (:creature/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar (:world-unit-scale graphics)
+      (draw-hpbar (:g/world-unit-scale graphics)
                   (:entity/body entity)
                   ratio))))

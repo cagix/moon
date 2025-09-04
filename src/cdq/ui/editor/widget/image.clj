@@ -11,7 +11,7 @@
                          (fn [_actor _ctx]))]))
 
 (defn create [schema  _attribute image {:keys [ctx/graphics]}]
-  (ui/image-button {:texture-region (textures/image->texture-region (:textures graphics) image)
+  (ui/image-button {:texture-region (textures/image->texture-region (:g/textures graphics) image)
                     :scale 2})
   #_(ui/image-button image
                      (fn [_actor ctx]

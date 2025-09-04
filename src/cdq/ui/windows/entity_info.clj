@@ -5,7 +5,7 @@
 (defn create [{:keys [ctx/graphics]}
               {:keys [y
                       ->label-text]}]
-  (let [position [(:viewport/width (:ui-viewport graphics))
+  (let [position [(:viewport/width (:g/ui-viewport graphics))
                   y]
         label (ui/label {:label/text ""})
         window (ui/window {:title "Info"

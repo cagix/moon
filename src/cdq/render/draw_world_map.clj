@@ -6,14 +6,14 @@
 (defn do!
   [{:keys [ctx/graphics
            ctx/world]}]
-  (tm-renderer/draw! (:tiled-map-renderer graphics)
-                     (:world-viewport graphics)
+  (tm-renderer/draw! (:g/tiled-map-renderer graphics)
+                     (:g/world-viewport graphics)
                      (:world/tiled-map world)
                      (tile-color-setter/create
                       {:ray-blocked? (let [raycaster (:world/raycaster world)]
                                        (fn [start end] (raycaster/blocked? raycaster start end)))
                        :explored-tile-corners (:world/explored-tile-corners world)
-                       :light-position (:camera/position (:viewport/camera (:world-viewport graphics)))
+                       :light-position (:camera/position (:viewport/camera (:g/world-viewport graphics)))
                        :see-all-tiles? false
                        :explored-tile-color  [0.5 0.5 0.5 1]
                        :visible-tile-color   [1 1 1 1]

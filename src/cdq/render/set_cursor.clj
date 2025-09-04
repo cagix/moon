@@ -12,6 +12,6 @@
                      (if (keyword? ->cursor)
                        ->cursor
                        (->cursor player-eid ctx)))
-        cursors (:cursors graphics)]
+        cursors (:g/cursors graphics)]
     (assert (contains? cursors cursor-key))
     (graphics/set-cursor! gdx-graphics (get cursors cursor-key))))

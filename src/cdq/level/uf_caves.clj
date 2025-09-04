@@ -148,7 +148,7 @@
               (let [[f params] step] (f level params))
               (let [f step]          (f level))))
           {:level/tile-size tile-size
-           :level/create-tile (let [texture (utils/safe-get (:textures graphics) texture-path)]
+           :level/create-tile (let [texture (utils/safe-get (:g/textures graphics) texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}

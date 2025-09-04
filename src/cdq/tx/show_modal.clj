@@ -28,6 +28,6 @@
 (defn do! [[_ opts] {:keys [ctx/graphics
                             ctx/stage]}]
   (show-modal-window! stage
-                      (:ui-viewport graphics)
+                      (:g/ui-viewport graphics)
                       opts)
   nil)

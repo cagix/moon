@@ -38,7 +38,7 @@
                              (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/get-raw db property-id)
-               texture-region (textures/image->texture-region (:textures graphics) (property/image property))
+               texture-region (textures/image->texture-region (:g/textures graphics) (property/image property))
                image-widget (ui/image-widget texture-region
                                              {:id property-id})]
            (actor/add-tooltip! image-widget (pprint-to-str property))

@@ -11,7 +11,7 @@
 (defn prepare-creature-properties [{:keys [ctx/graphics
                                            ctx/db]}]
   (for [creature (db/all-raw db :properties/creatures)
-        :let [texture-region (textures/image->texture-region (:textures graphics) (property/image creature))]]
+        :let [texture-region (textures/image->texture-region (:g/textures graphics) (property/image creature))]]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
                        :tile/texture-region texture-region})))

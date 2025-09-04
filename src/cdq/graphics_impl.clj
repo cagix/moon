@@ -2,7 +2,8 @@
   (:require [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [qrecord.core :as q])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files)
            (com.badlogic.gdx.files FileHandle)
@@ -114,18 +115,17 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
          [(str/replace-first path folder "") (Files/.internal files path)])
        (recursively-search (Files/.internal files folder) extensions)))
 
-(defrecord Graphics
-  [batch
-   cursors
-   default-font
-   shape-drawer-texture
-   shape-drawer
-   textures
-   tiled-map-renderer
-   ui-viewport
-   unit-scale
-   world-unit-scale
-   world-viewport])
+(q/defrecord Graphics [g/batch
+                       g/cursors
+                       g/default-font
+                       g/shape-drawer-texture
+                       g/shape-drawer
+                       g/textures
+                       g/tiled-map-renderer
+                       g/ui-viewport
+                       g/unit-scale
+                       g/world-unit-scale
+                       g/world-viewport])
 
 (defn create!
   [{:keys [graphics files]}

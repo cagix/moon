@@ -44,9 +44,9 @@
 
 (defn draw!
   [[_ {:keys [font scale x y text h-align up?]}]
-   {:keys [batch
-           unit-scale
-           default-font]}]
+   {:keys [g/batch
+           g/unit-scale
+           g/default-font]}]
   (bitmap-font-draw! (or font default-font)
                      batch
                      {:scale (* (float @unit-scale)

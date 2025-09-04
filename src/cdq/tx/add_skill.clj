@@ -10,7 +10,7 @@
   (-> stage
       :action-bar
       (action-bar/add-skill! {:skill-id (:property/id skill)
-                              :texture-region (textures/image->texture-region (:textures graphics) (:entity/image skill))
+                              :texture-region (textures/image->texture-region (:g/textures graphics) (:entity/image skill))
                               ; (assoc ctx :effect/source (world/player)) FIXME
                               :tooltip-text #(info/info-text % skill)}))
   nil)

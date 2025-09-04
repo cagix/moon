@@ -5,11 +5,11 @@
 
 (defn do!
   [{:keys [ctx/graphics] :as ctx} draw-fns]
-  (let [{:keys [^Batch batch
-                world-viewport
-                shape-drawer
-                world-unit-scale
-                unit-scale]} graphics]
+  (let [{:keys [^Batch g/batch
+                g/world-viewport
+                g/shape-drawer
+                g/world-unit-scale
+                g/unit-scale]} graphics]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
     (.setColor batch (color/->obj :white))

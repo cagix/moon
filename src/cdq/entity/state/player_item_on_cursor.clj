@@ -84,7 +84,7 @@
            ctx/ui-mouse-position]}]
   (when (not (world-item? mouseover-actor))
     [[:draw/texture-region
-      (textures/image->texture-region (:textures graphics)
+      (textures/image->texture-region (:g/textures graphics)
                                       (:entity/image (:entity/item-on-cursor @eid)))
       ui-mouse-position
       {:center? true}]]))

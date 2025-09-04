@@ -17,4 +17,4 @@
 
 (defn do! [{:keys [ctx/graphics] :as ctx}]
   (when show-tile-grid?
-    (graphics/handle-draws! graphics (draw-tile-grid* (:world-viewport graphics)))))
+    (graphics/handle-draws! graphics (draw-tile-grid* (:g/world-viewport graphics)))))

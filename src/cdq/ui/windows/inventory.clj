@@ -34,7 +34,7 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (textures/image->texture-region (:textures graphics)
+                                 (textures/image->texture-region (:g/textures graphics)
                                                                  {:image/file "images/items.png"
                                                                   :image/bounds bounds})))
         cell-size 48
@@ -83,8 +83,8 @@
                 :id id
                 :visible? visible?
                 :pack? true
-                :position [(:viewport/width (:ui-viewport graphics))
-                           (:viewport/height (:ui-viewport graphics))]
+                :position [(:viewport/width (:g/ui-viewport graphics))
+                           (:viewport/height (:g/ui-viewport graphics))]
                 :rows [[{:actor {:id ::table
                                  :actor/type :actor.type/table
                                  :rows (concat [[nil nil
