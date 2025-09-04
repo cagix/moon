@@ -1,13 +1,11 @@
 (ns cdq.world-impl
   (:require [cdq.grid-impl :as grid-impl]
-            [cdq.grid2d :as g2d]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [qrecord.core :as q]))
 
 (q/defrecord World [world/grid
-                    world/explored-tile-corners
                     world/content-grid
                     world/raycaster
                     world/potential-field-cache
@@ -24,11 +22,6 @@
                     ; added later
                     world/delta-time
                     world/active-entities])
-
-(defn- create-explored-tile-corners [tiled-map]
-  (atom (g2d/create-grid (:tiled-map/width  tiled-map)
-                         (:tiled-map/height tiled-map)
-                         (constantly false))))
 
 (defn create
   [{:keys [tiled-map] :as config}]
@@ -48,7 +41,6 @@
         max-speed (/ minimum-size max-delta)]
     (merge (map->World {})
            {:world/grid grid
-            :world/explored-tile-corners (create-explored-tile-corners tiled-map)
             :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                      (:tiled-map/height tiled-map)
                                                      (:content-grid-cell-size config))

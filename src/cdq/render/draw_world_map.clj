@@ -4,7 +4,8 @@
             [cdq.raycaster :as raycaster]))
 
 (defn do!
-  [{:keys [ctx/tiled-map
+  [{:keys [ctx/explored-tile-corners
+           ctx/tiled-map
            ctx/tiled-map-renderer
            ctx/world
            ctx/world-viewport]}]
@@ -14,7 +15,7 @@
                      (tile-color-setter/create
                       {:ray-blocked? (let [raycaster (:world/raycaster world)]
                                        (fn [start end] (raycaster/blocked? raycaster start end)))
-                       :explored-tile-corners (:world/explored-tile-corners world)
+                       :explored-tile-corners explored-tile-corners
                        :light-position (:camera/position (:viewport/camera world-viewport))
                        :see-all-tiles? false
                        :explored-tile-color  [0.5 0.5 0.5 1]

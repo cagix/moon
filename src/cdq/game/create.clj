@@ -79,7 +79,9 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                    (.dispose pixmap)
                    cursor))))
 
-(q/defrecord Context [ctx/schema
+(q/defrecord Context [
+                      ctx/explored-tile-corners
+                      ctx/schema
                       ctx/config
                       ctx/cursors
                       ctx/input
@@ -143,6 +145,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/config :some]
                                           [:ctx/cursors :some]
                                           [:ctx/input :some]
+                                          [:ctx/explored-tile-corners :some]
                                           [:ctx/db :some]
                                           [:ctx/audio :some]
                                           [:ctx/stage :some]
