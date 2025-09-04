@@ -6,15 +6,6 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]))
 
-(defn- add-ctx-world
-  [{:keys [ctx/config]
-    :as ctx}
-   world-fn]
-  (assoc ctx :ctx/world ((requiring-resolve (:world-impl config))
-                         (merge (::world config)
-                                (let [[f params] world-fn]
-                                  ((requiring-resolve f) ctx params))))))
-
 (defn- spawn-player!
   [{:keys [ctx/config
            ctx/db
@@ -45,6 +36,10 @@
   ctx)
 
 ; TODO dispose old tiled-map if already ctx/world present - or call 'dispose!'
+; TODO is this not a 'tx/' ???
+; can I just [:tx/reset-game-state] somewhere ?
+; tx.game/?
+; then even at cdq.start ? just [:tx.app/] ?
 (defn do!
   [{:keys [ctx/config
            ctx/stage]
@@ -55,6 +50,9 @@
                           (:create-ui-actors config))]
     (stage/add! stage (actor/construct actor-decl)))
   (-> ctx
-      (add-ctx-world world-fn)
+      (assoc :ctx/world ((requiring-resolve (:world-impl config))
+                         (merge (::world config)
+                                (let [[f params] world-fn]
+                                  ((requiring-resolve f) ctx params)))))
       spawn-player!
       spawn-enemies!))
