@@ -7,7 +7,6 @@
 (q/defrecord World [world/grid
 
                     world/raycaster
-                    world/potential-field-cache
                     world/factions-iterations
                     world/id-counter
                     world/entity-ids
@@ -40,9 +39,7 @@
         max-speed (/ minimum-size max-delta)]
     (merge (map->World {})
            {:world/grid grid
-
             :world/raycaster (raycaster/create grid)
-            :world/potential-field-cache (atom nil)
             :world/factions-iterations (:potential-field-factions-iterations config)
             :world/id-counter (atom 0)
             :world/entity-ids (atom {})

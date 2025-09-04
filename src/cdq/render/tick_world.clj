@@ -20,10 +20,10 @@
   (update ctx :ctx/world update-time* (graphics/delta-time gdx-graphics)))
 
 (defn- update-potential-fields!
-  [{:keys [ctx/world]
+  [{:keys [ctx/potential-field-cache
+           ctx/world]
     :as ctx}]
   (let [{:keys [world/factions-iterations
-                world/potential-field-cache
                 world/grid
                 world/active-entities]} world]
     (doseq [[faction max-iterations] factions-iterations]

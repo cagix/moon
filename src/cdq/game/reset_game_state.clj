@@ -69,6 +69,7 @@
                                                       (:tiled-map/height (:tiled-map world-config))
                                                       (:content-grid-cell-size world-config)))
         (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
+        (assoc :ctx/potential-field-cache (atom nil))
         (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))
