@@ -5,7 +5,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 (defn- play-button [sound-name]
   (ui/text-button "play!"

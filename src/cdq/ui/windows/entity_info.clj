@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ui.group :as group]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 (defn create [{:keys [ctx/ui-viewport]}
               {:keys [y

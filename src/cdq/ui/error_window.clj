@@ -1,6 +1,6 @@
 (ns cdq.ui.error-window
   (:require [cdq.utils :refer [with-err-str]]
-            [cdq.gdx.ui :as ui]
+            [cdq.ui :as ui]
             clojure.repl))
 
 (defn create [throwable]

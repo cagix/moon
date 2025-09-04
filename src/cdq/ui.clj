@@ -1,4 +1,4 @@
-(ns cdq.gdx.ui
+(ns cdq.ui
   (:require [cdq.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]

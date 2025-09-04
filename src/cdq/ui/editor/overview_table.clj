@@ -4,7 +4,7 @@
             [cdq.utils :refer [pprint-to-str]]
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 ; FIXME not refreshed after changes in properties
 

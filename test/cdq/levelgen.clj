@@ -7,13 +7,13 @@
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
-            [cdq.gdx.tiled :as tiled]
+            [cdq.tiled :as tiled]
             [cdq.input :as input]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.viewport :as viewport]
             [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
-            [cdq.gdx.ui :as ui])
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 

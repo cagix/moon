@@ -1,6 +1,6 @@
 (ns cdq.ui.menu
   (:require [cdq.ui.group :as group]
-            [cdq.gdx.ui :as ui])
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label

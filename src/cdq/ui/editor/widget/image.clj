@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.image
   (:require [cdq.textures :as textures]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...

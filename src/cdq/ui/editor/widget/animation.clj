@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.animation
   (:require [cdq.textures :as textures]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 (defn create [_ _attribute animation {:keys [ctx/textures]}]
   {:actor/type :actor.type/table

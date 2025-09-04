@@ -1,7 +1,7 @@
 (ns cdq.ui.action-bar
   (:require [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.gdx.ui :as ui])
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 

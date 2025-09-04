@@ -1,6 +1,6 @@
 (ns cdq.dev.data-view
   (:require [cdq.ui.stage :as stage]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"

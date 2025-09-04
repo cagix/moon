@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.string
-  (:require [cdq.gdx.ui :as ui]))
+  (:require [cdq.ui :as ui]))
 
 (defn create [schema  _attribute v _ctx]
   {:actor/type :actor.type/text-field

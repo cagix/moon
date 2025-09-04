@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.boolean
-  (:require [cdq.gdx.ui :as ui]))
+  (:require [cdq.ui :as ui]))
 
 (defn create [_ _attribute checked? _ctx]
   (assert (boolean? checked?))

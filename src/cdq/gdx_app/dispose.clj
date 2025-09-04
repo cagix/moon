@@ -1,5 +1,5 @@
 (ns cdq.gdx-app.dispose
-  (:require [cdq.gdx.ui :as ui])
+  (:require [cdq.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn- dispose-audio! [sounds]

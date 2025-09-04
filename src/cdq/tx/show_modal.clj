@@ -1,7 +1,7 @@
 (ns cdq.tx.show-modal
   (:require [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
-            [cdq.gdx.ui :as ui]))
+            [cdq.ui :as ui]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

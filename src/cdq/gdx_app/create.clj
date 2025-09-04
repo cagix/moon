@@ -9,7 +9,7 @@
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.gdx.ui :as ui]
+            [cdq.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Files)

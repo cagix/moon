@@ -4,7 +4,7 @@
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.gdx.ui :as ui])
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn create
