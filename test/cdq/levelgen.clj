@@ -1,6 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.graphics-impl]
-            [cdq.render.clear-screen]
+  (:require [cdq.render.clear-screen]
             [cdq.textures-impl]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.game.resize]
@@ -15,7 +14,8 @@
             [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])
-  (:import (com.badlogic.gdx.utils Disposable)))
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn [cdq.level.uf-caves/create {:tile-size 48
                                                   :texture-path "maps/uf_terrain.png"
@@ -85,17 +85,17 @@
   (ui/load! {:skin-scale :x1})
   (let [input (:input gdx)
         ctx (map->Context {:ctx/input input})
-        graphics (cdq.graphics-impl/create! gdx {:tile-size 48})
-        ctx (assoc ctx :ctx/graphics graphics)
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
-        stage (ui/stage ui-viewport
-                        (:g/batch       graphics))
+        sprite-batch (SpriteBatch.)
+        stage (ui/stage ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
+        tile-size 48
+        world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
-        world-viewport (let [world-width  (* 1440 (:g/world-unit-scale graphics))
-                             world-height (* 900  (:g/world-unit-scale graphics))]
+        world-viewport (let [world-width  (* 1440 world-unit-scale)
+                             world-height (* 900  world-unit-scale)]
                          (viewport/fit world-width
                                        world-height
                                        (camera/orthographic :y-down? false
@@ -109,8 +109,8 @@
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1
-                   :ctx/tiled-map-renderer (tm-renderer/create (:g/world-unit-scale graphics)
-                                                               (:g/batch graphics)))
+                   :ctx/sprite-batch sprite-batch
+                   :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale sprite-batch))
         ctx (generate-level ctx initial-level-fn)]
     (stage/add! (:ctx/stage ctx) (edit-window))
     (reset! state ctx)))
@@ -119,9 +119,9 @@
   ; TODO ? disposing properly everything cdq.start stuff??
   ; batch, cursors, default-font, shape-drawer-texture, etc.
   (ui/dispose!)
-  (let [{:keys [ctx/graphics
+  (let [{:keys [ctx/sprite-batch
                 ctx/tiled-map]} @state]
-    (Disposable/.dispose graphics) ; TODO that wont work anymore -> and one more fn so have to move it together?
+    (Disposable/.dispose sprite-batch) ; TODO that wont work anymore -> and one more fn so have to move it together?
     (Disposable/.dispose tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/color-setter
