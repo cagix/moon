@@ -37,7 +37,6 @@
     (merge (map->World {})
            {:world/grid grid
             :world/raycaster (raycaster/create grid)
-            :world/entity-ids (atom {})
             :world/elapsed-time 0
             :world/max-delta max-delta
             :world/max-speed max-speed
