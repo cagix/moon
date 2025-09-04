@@ -5,7 +5,8 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.utils.tiled :as tiled]))
+            [cdq.utils.tiled :as tiled]
+            [cdq.world.content-grid :as content-grid]))
 
 (defn- create-explored-tile-corners [tiled-map]
   (atom (g2d/create-grid (:tiled-map/width  tiled-map)
@@ -64,6 +65,9 @@
     (-> ctx
         (assoc :ctx/tiled-map (:tiled-map world-config))
         (assoc :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config)))
+        (assoc :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
+                                                      (:tiled-map/height (:tiled-map world-config))
+                                                      (:content-grid-cell-size world-config)))
         (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
         (spawn-player! (:start-position world-config))
         assoc-player-eid

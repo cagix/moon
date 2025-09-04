@@ -2,11 +2,10 @@
   (:require [cdq.grid-impl :as grid-impl]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
-            [cdq.world.content-grid :as content-grid]
             [qrecord.core :as q]))
 
 (q/defrecord World [world/grid
-                    world/content-grid
+
                     world/raycaster
                     world/potential-field-cache
                     world/factions-iterations
@@ -41,9 +40,7 @@
         max-speed (/ minimum-size max-delta)]
     (merge (map->World {})
            {:world/grid grid
-            :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                     (:tiled-map/height tiled-map)
-                                                     (:content-grid-cell-size config))
+
             :world/raycaster (raycaster/create grid)
             :world/potential-field-cache (atom nil)
             :world/factions-iterations (:potential-field-factions-iterations config)

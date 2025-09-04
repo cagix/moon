@@ -84,6 +84,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/schema
                       ctx/config
                       ctx/cursors
+                      ctx/content-grid
                       ctx/input
                       ctx/db
                       ctx/audio
@@ -144,6 +145,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/schema :some]
                                           [:ctx/config :some]
                                           [:ctx/cursors :some]
+                                          [:ctx/content-grid :some]
                                           [:ctx/input :some]
                                           [:ctx/explored-tile-corners :some]
                                           [:ctx/db :some]
