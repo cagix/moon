@@ -7,7 +7,6 @@
 (q/defrecord World [world/grid
 
                     world/raycaster
-                    world/factions-iterations
                     world/id-counter
                     world/entity-ids
                     world/elapsed-time
@@ -40,7 +39,6 @@
     (merge (map->World {})
            {:world/grid grid
             :world/raycaster (raycaster/create grid)
-            :world/factions-iterations (:potential-field-factions-iterations config)
             :world/id-counter (atom 0)
             :world/entity-ids (atom {})
             :world/elapsed-time 0

@@ -70,6 +70,7 @@
                                                       (:content-grid-cell-size world-config)))
         (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
         (assoc :ctx/potential-field-cache (atom nil))
+        (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
         (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))

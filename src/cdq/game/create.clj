@@ -100,6 +100,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/world-viewport
                       ctx/batch
                       ctx/potential-field-cache
+                      ctx/factions-iterations
                       ctx/default-font
                       ctx/shape-drawer-texture
                       ctx/shape-drawer
@@ -148,6 +149,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/cursors :some]
                                           [:ctx/content-grid :some]
                                           [:ctx/potential-field-cache :some]
+                                          [:ctx/factions-iterations :some]
                                           [:ctx/input :some]
                                           [:ctx/explored-tile-corners :some]
                                           [:ctx/db :some]
