@@ -1,19 +1,19 @@
 (ns cdq.levelgen
-  (:require [cdq.render.clear-screen]
-            [cdq.textures-impl]
-            [cdq.graphics.tiled-map-renderer :as tm-renderer]
+  (:require [cdq.db-impl :as db]
+            [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx-app.resize]
-            [cdq.db-impl :as db]
+            [cdq.graphics.camera :as camera]
+            [cdq.graphics.tiled-map-renderer :as tm-renderer]
+            [cdq.graphics.viewport :as viewport]
+            [cdq.input :as input]
+            [cdq.render.clear-screen]
+            [cdq.stage-impl :as stage]
+            [cdq.textures-impl]
+            [cdq.tiled :as tiled]
+            [cdq.ui :as ui]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
-            [cdq.world-fns.tmx]
-            [cdq.tiled :as tiled]
-            [cdq.input :as input]
-            [cdq.graphics.camera :as camera]
-            [cdq.graphics.viewport :as viewport]
-            [cdq.stage-impl :as stage]
-            [cdq.gdx.backends.lwjgl :as lwjgl]
-            [cdq.ui :as ui])
+            [cdq.world-fns.tmx])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 
