@@ -1,7 +1,7 @@
-(ns cdq.gdx.graphics.tiled-map-renderer
-  (:require [cdq.gdx.graphics.color :as color]
+(ns cdq.graphics.tiled-map-renderer
+  (:require [cdq.graphics.color :as color]
             [cdq.gdx.tiled :as tiled])
-  (:import (cdq.gdx.graphics OrthogonalTiledMapRenderer
+  (:import (cdq.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]

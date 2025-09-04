@@ -1,5 +1,5 @@
 (ns cdq.gdx.ui
-  (:require [cdq.gdx.graphics.color :as color]
+  (:require [cdq.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table])

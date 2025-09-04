@@ -3,12 +3,12 @@
             [cdq.input :as input]
             [cdq.db-impl :as db]
             [cdq.textures-impl]
-            [cdq.gdx.graphics :as graphics]
-            [cdq.gdx.graphics.camera :as camera]
-            [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.viewport :as viewport]
-            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.gdx.graphics.shape-drawer :as sd]
+            [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
+            [cdq.graphics.color :as color]
+            [cdq.graphics.viewport :as viewport]
+            [cdq.graphics.tiled-map-renderer :as tm-renderer]
+            [cdq.graphics.shape-drawer :as sd]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
@@ -117,13 +117,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/world-unit-scale
                       ctx/world-viewport
                       ctx/z-orders])
-
-; => this has to be pipelined
-; and graphics/world abstractions are questionable
-; and maybe ctx/gdx ?!
-; use at handle draws ctx and world tick etc
-; do select-keys so I know what is only used ?
-; but nopt even necessary
 
 (defn do! [gdx config]
   (doseq [[name color-params] (:colors config)]

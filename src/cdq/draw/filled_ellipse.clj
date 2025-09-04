@@ -1,6 +1,6 @@
 (ns cdq.draw.filled-ellipse
-  (:require [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.shape-drawer :as sd]))
+  (:require [cdq.graphics.color :as color]
+            [cdq.graphics.shape-drawer :as sd]))
 
 (defn draw!
   [[_ [x y] radius-x radius-y color]

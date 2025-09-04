@@ -2,7 +2,7 @@
   (:require [cdq.input :as input]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.gdx.graphics.camera :as camera]))
+            [cdq.graphics.camera :as camera]))
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)

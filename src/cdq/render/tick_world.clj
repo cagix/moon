@@ -1,6 +1,6 @@
 (ns cdq.render.tick-world
   (:require [cdq.ctx :as ctx]
-            [cdq.gdx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.stage :as stage]

@@ -1,4 +1,4 @@
-(ns cdq.gdx.graphics.shape-drawer
+(ns cdq.graphics.shape-drawer
   (:import (com.badlogic.gdx.graphics Color)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 

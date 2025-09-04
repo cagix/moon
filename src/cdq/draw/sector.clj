@@ -1,6 +1,6 @@
 (ns cdq.draw.sector
-  (:require [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.shape-drawer :as sd]
+  (:require [cdq.graphics.color :as color]
+            [cdq.graphics.shape-drawer :as sd]
             [cdq.math :as math]))
 
 (defn draw!

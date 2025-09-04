@@ -1,6 +1,6 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.shape-drawer :as sd])
+  (:require [cdq.graphics.color :as color]
+            [cdq.graphics.shape-drawer :as sd])
   (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defn do!

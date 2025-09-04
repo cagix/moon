@@ -1,6 +1,6 @@
 (ns cdq.draw.rectangle
-  (:require [cdq.gdx.graphics.color :as color]
-            [cdq.gdx.graphics.shape-drawer :as sd]))
+  (:require [cdq.graphics.color :as color]
+            [cdq.graphics.shape-drawer :as sd]))
 
 (defn draw!
   [[_ x y w h color]

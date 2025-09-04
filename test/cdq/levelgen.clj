@@ -1,7 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.render.clear-screen]
             [cdq.textures-impl]
-            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
+            [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.gdx-app.resize]
             [cdq.db-impl :as db]
             [cdq.world-fns.modules]
@@ -9,8 +9,8 @@
             [cdq.world-fns.tmx]
             [cdq.gdx.tiled :as tiled]
             [cdq.input :as input]
-            [cdq.gdx.graphics.camera :as camera]
-            [cdq.gdx.graphics.viewport :as viewport]
+            [cdq.graphics.camera :as camera]
+            [cdq.graphics.viewport :as viewport]
             [cdq.stage-impl :as stage]
             [cdq.gdx.backends.lwjgl :as lwjgl]
             [cdq.gdx.ui :as ui])

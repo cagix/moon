@@ -1,4 +1,4 @@
-(ns cdq.gdx.graphics.viewport
+(ns cdq.graphics.viewport
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 

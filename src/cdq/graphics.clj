@@ -1,4 +1,4 @@
-(ns cdq.gdx.graphics
+(ns cdq.graphics
   (:import (com.badlogic.gdx Graphics)))
 
 (defn delta-time [graphics]
