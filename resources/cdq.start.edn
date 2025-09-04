@@ -250,7 +250,7 @@
                                                             :path-format "sounds/%s.wav"}
                                     :cdq.game.create/db {:schemas "schema.edn"
                                                          :properties "properties.edn"}
-                                    :reset-game-state! cdq.game.reset-game-state/do!
+                                    :reset-game-state! cdq.reset-game-state/do!
                                     :create-ui-actors [cdq.ui.dev-menu/create
                                                        cdq.ui.action-bar/create
                                                        cdq.ui.hp-mana-bar/create
@@ -296,9 +296,9 @@
                                                                              :entity/free-skill-points 3
                                                                              :entity/clickable {:type :clickable/player}
                                                                              :entity/click-distance-tiles 1.5}}
-                                    :cdq.game.reset-game-state/world {:content-grid-cell-size 16
-                                                                      :potential-field-factions-iterations {:good 15
-                                                                                                            :evil 5}}
+                                    :cdq.reset-game-state/world {:content-grid-cell-size 16
+                                                                 :potential-field-factions-iterations {:good 15
+                                                                                                       :evil 5}}
                                     :effect-body-props {:width 0.5
                                                         :height 0.5
                                                         :z-order :z-order/effect}

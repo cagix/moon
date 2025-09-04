@@ -1,4 +1,4 @@
-(ns cdq.game.reset-game-state
+(ns cdq.reset-game-state
   (:require [cdq.grid-impl :as grid-impl]
             [cdq.raycaster :as raycaster]
             [cdq.ctx :as ctx]
