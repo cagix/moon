@@ -15,11 +15,12 @@
   [{:keys [ctx/config
            ctx/db
            ctx/world]
-    :as ctx}]
+    :as ctx}
+   start-position]
   (ctx/handle-txs! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
                                                       components]} (:cdq.game/player-props config)]
-                                          {:position (utils/tile->middle (:world/start-position world))
+                                          {:position (utils/tile->middle start-position)
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
   ctx)
@@ -57,6 +58,6 @@
     (-> ctx
         (assoc :ctx/tiled-map (:tiled-map world-config))
         (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
-        spawn-player!
+        (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))

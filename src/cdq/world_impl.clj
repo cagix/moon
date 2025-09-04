@@ -6,8 +6,7 @@
             [cdq.world.content-grid :as content-grid]
             [qrecord.core :as q]))
 
-(q/defrecord World [world/start-position
-                    world/grid
+(q/defrecord World [world/grid
                     world/explored-tile-corners
                     world/content-grid
                     world/raycaster
@@ -33,9 +32,7 @@
                          (constantly false))))
 
 (defn create
-  [{:keys [tiled-map
-           start-position]
-    :as config}]
+  [{:keys [tiled-map] :as config}]
   (let [grid (grid-impl/create tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
@@ -51,8 +48,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)]
     (merge (map->World {})
-           {:world/start-position start-position
-            :world/grid grid
+           {:world/grid grid
             :world/explored-tile-corners (create-explored-tile-corners tiled-map)
             :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                      (:tiled-map/height tiled-map)
