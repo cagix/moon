@@ -1,7 +1,6 @@
 (ns cdq.graphics-impl
   (:require [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.shape-drawer :as sd]
-            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.gdx.graphics.viewport :as viewport]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Files)
@@ -65,7 +64,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        g/default-font
                        g/shape-drawer-texture
                        g/shape-drawer
-                       g/tiled-map-renderer
                        g/unit-scale
                        g/world-unit-scale
                        g/world-viewport])
@@ -98,5 +96,4 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
-      :tiled-map-renderer (tm-renderer/create world-unit-scale batch)})))
+      :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))})))

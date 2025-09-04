@@ -7,6 +7,7 @@
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.graphics.viewport :as viewport]
+            [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.gdx.ui :as ui]
             [cdq.malli :as m]
             [qrecord.core :as q])
@@ -33,6 +34,7 @@
                       ctx/player-eid
                       ctx/textures
                       ctx/graphics
+                      ctx/tiled-map-renderer
                       ctx/gdx-graphics
                       ctx/ui-viewport
                       ctx/world])
@@ -68,6 +70,7 @@
                                           [:ctx/textures :some]
                                           [:ctx/graphics :some]
                                           [:ctx/gdx-graphics :some]
+                                          [:ctx/tiled-map-renderer :some]
                                           [:ctx/ui-viewport :some]
                                           [:ctx/world :some]])
                        :gdx-graphics (:graphics gdx)
@@ -83,6 +86,8 @@
                        :graphics graphics
                        :ui-viewport ui-viewport
                        :input input
-                       :stage stage})
+                       :stage stage
+                       :tiled-map-renderer (tm-renderer/create (:g/world-unit-scale graphics)
+                                                               (:g/batch graphics))})
         ((requiring-resolve (:reset-game-state! config)) (::starting-level config))
         (assoc :ctx/mouseover-eid nil))))

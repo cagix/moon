@@ -5,8 +5,9 @@
 
 (defn do!
   [{:keys [ctx/graphics
+           ctx/tiled-map-renderer
            ctx/world]}]
-  (tm-renderer/draw! (:g/tiled-map-renderer graphics)
+  (tm-renderer/draw! tiled-map-renderer
                      (:g/world-viewport graphics)
                      (:world/tiled-map world)
                      (tile-color-setter/create

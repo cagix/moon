@@ -87,8 +87,6 @@
         ctx (map->Context {:ctx/input input})
         graphics (cdq.graphics-impl/create! gdx
                                             {:tile-size 48
-                                             :ui-viewport {:width 1440
-                                                           :height 900}
                                              :world-viewport {:width 1440
                                                               :height 900}})
         ctx (assoc ctx :ctx/graphics graphics)
@@ -100,11 +98,14 @@
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
         ctx (assoc ctx
+                   :ctx/ui-viewport ui-viewport
                    :ctx/textures (cdq.textures-impl/create (:files gdx))
                    :ctx/camera (:viewport/camera (:g/world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
-                   :ctx/camera-movement-speed 1)
+                   :ctx/camera-movement-speed 1
+                   :ctx/tiled-map-renderer (tm-renderer/create (:g/world-unit-scale graphics)
+                                                               (:g/batch graphics)))
         ctx (generate-level ctx initial-level-fn)]
     (stage/add! (:ctx/stage ctx) (edit-window))
     (reset! state ctx)))
@@ -120,8 +121,9 @@
 
 (defn- draw-tiled-map! [{:keys [ctx/graphics
                                 ctx/tiled-map
+                                ctx/tiled-map-renderer
                                 ctx/color-setter]}]
-  (tm-renderer/draw! (:g/tiled-map-renderer graphics)
+  (tm-renderer/draw! tiled-map-renderer
                      (:g/world-viewport graphics)
                      tiled-map
                      color-setter))
