@@ -1,4 +1,4 @@
-(ns cdq.game.resize
+(ns cdq.gdx-app.resize
   (:import (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn do!

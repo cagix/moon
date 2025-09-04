@@ -1,4 +1,4 @@
-(ns cdq.game.create
+(ns cdq.gdx-app.create
   (:require [cdq.audio :as audio]
             [cdq.input :as input]
             [cdq.db-impl :as db]
@@ -81,6 +81,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                    (.dispose pixmap)
                    cursor))))
 
+; sort & count & together with schema
 (q/defrecord Context [
                       ctx/explored-tile-corners
                       ctx/schema
@@ -131,7 +132,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 (defn do! [gdx config]
   (doseq [[name color-params] (:colors config)]
     (Colors/put name (color/->obj color-params)))
-  (ui/load! (::stage config))
+  (ui/load! (:stage config))
   (let [input (:input gdx)
         world-unit-scale (float (/ (:tile-size config)))
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -194,14 +195,14 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/active-entities :some]])
                        :graphics (:graphics gdx)
                        :textures (cdq.textures-impl/create (:files gdx))
-                       :audio (audio/create gdx (::audio config))
+                       :audio (audio/create gdx (:audio config))
                        :config config
                        :cursors (load-cursors
                                  (:files gdx)
                                  (:graphics gdx)
                                  (:cursors config)
                                  (:cursor-path-format config))
-                       :db (db/create (::db config))
+                       :db (db/create (:db config))
                        :ui-viewport ui-viewport
                        :input input
                        :stage stage
@@ -214,7 +215,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        :unit-scale (atom 1)
                        :shape-drawer-texture shape-drawer-texture
                        :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))})
-        ((requiring-resolve (:reset-game-state! config)) (::starting-level config))
+        ((requiring-resolve (:reset-game-state! config)) (:starting-level config))
         (assoc :ctx/mouseover-eid nil
                :ctx/paused? nil
                :ctx/delta-time 2

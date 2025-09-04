@@ -1,4 +1,4 @@
-(ns cdq.game.dispose
+(ns cdq.gdx-app.dispose
   (:require [cdq.gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 

@@ -2,7 +2,7 @@
   (:require [cdq.render.clear-screen]
             [cdq.textures-impl]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.game.resize]
+            [cdq.gdx-app.resize]
             [cdq.db-impl :as db]
             [cdq.level.modules]
             [cdq.level.uf-caves]
@@ -164,7 +164,7 @@
   (render-stage! @state))
 
 (defn resize! [width height]
-  (cdq.game.resize/do! @state width height))
+  (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
   (lwjgl/start-application! {:title "Levelgen test"
