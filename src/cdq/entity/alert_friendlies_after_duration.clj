@@ -1,6 +1,6 @@
 (ns cdq.entity.alert-friendlies-after-duration
-  (:require [cdq.world.entity :as entity]
-            [cdq.world.grid :as grid]
+  (:require [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.timer :as timer]))
 
 (defn tick! [{:keys [counter faction]}

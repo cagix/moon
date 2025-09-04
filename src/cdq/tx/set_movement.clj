@@ -1,5 +1,5 @@
 (ns cdq.tx.set-movement
-  (:require [cdq.world.entity.stats :as modifiers]))
+  (:require [cdq.stats :as modifiers]))
 
 (defn- set-movement [entity movement-vector]
   (assoc entity :entity/movement {:direction movement-vector

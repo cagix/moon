@@ -1,7 +1,7 @@
 (ns cdq.entity.projectile-collision
   (:require [cdq.entity.body :as body]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]
+            [cdq.grid :as grid]
+            [cdq.grid.cell :as cell]
             [cdq.utils :refer [find-first]]))
 
 (defn tick! [{:keys [entity-effects already-hit-bodies piercing?]}

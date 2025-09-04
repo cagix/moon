@@ -1,11 +1,11 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.gdx.math.vector2 :as v]
-            [cdq.world.grid :as grid]
+            [cdq.grid :as grid]
             [cdq.raycaster :as raycaster]
-            [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]
-            [cdq.world.entity.skill :as skill]
-            [cdq.world.potential-fields.movement :as potential-fields.movement]))
+            [cdq.effect :as effect]
+            [cdq.entity :as entity]
+            [cdq.skill :as skill]
+            [cdq.potential-fields.movement :as potential-fields.movement]))
 
 (defn- npc-effect-ctx
   [{:keys [ctx/raycaster

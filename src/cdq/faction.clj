@@ -1,4 +1,4 @@
-(ns cdq.world.entity.faction)
+(ns cdq.faction)
 
 (defn enemy [faction]
   (case faction

@@ -3,10 +3,10 @@
             [cdq.textures :as textures]
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
-            [cdq.world.effect :as effect]
-            [cdq.world.entity :as entity]
-            [cdq.world.entity.stats :as modifiers]
-            [cdq.world.entity.faction :as faction]
+            [cdq.effect :as effect]
+            [cdq.entity :as entity]
+            [cdq.stats :as modifiers]
+            [cdq.faction :as faction]
             cdq.entity.state.player-item-on-cursor))
 
 (def ^:private skill-image-radius-world-units

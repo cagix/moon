@@ -1,8 +1,8 @@
 (ns cdq.grid-impl
-  (:require [cdq.world.entity :as entity]
-            [cdq.world.entity.faction :as faction]
-            [cdq.world.grid :as grid]
-            [cdq.world.grid.cell :as cell]
+  (:require [cdq.entity :as entity]
+            [cdq.faction :as faction]
+            [cdq.grid :as grid]
+            [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.geom :as geom]
             [cdq.utils :as utils]

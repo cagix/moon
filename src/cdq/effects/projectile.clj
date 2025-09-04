@@ -1,5 +1,5 @@
 (ns cdq.effects.projectile
-  (:require [cdq.world.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.raycaster :as raycaster]
             [cdq.gdx.math.vector2 :as v]))
 

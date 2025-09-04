@@ -1,6 +1,6 @@
 (ns cdq.tx.move-entity
-  (:require [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
+  (:require [cdq.content-grid :as content-grid]
+            [cdq.grid :as grid]
             [cdq.gdx.math.vector2 :as v]))
 
 (defn do!

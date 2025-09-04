@@ -1,5 +1,5 @@
-(ns cdq.world.content-grid
-  (:require [cdq.world.entity :as entity]
+(ns cdq.content-grid
+  (:require [cdq.entity :as entity]
             [cdq.grid2d :as g2d]))
 
 (defn create [width height cell-size]

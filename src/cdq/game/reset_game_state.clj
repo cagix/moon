@@ -8,7 +8,7 @@
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
-            [cdq.world.content-grid :as content-grid]))
+            [cdq.content-grid :as content-grid]))
 
 (defn- world-ctx
   [{:keys [tiled-map] :as config}]

@@ -1,6 +1,6 @@
-(ns cdq.world.entity.skill
-  (:require [cdq.world.effect :as effect]
-            [cdq.world.entity.stats :as modifiers]))
+(ns cdq.skill
+  (:require [cdq.effect :as effect]
+            [cdq.stats :as modifiers]))
 
 (defn usable-state [entity
                     {:keys [skill/cooling-down? skill/effects] :as skill}

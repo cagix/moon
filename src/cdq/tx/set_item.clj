@@ -3,7 +3,7 @@
             [cdq.textures :as textures]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
-            [cdq.world.entity.stats :as modifiers]))
+            [cdq.stats :as modifiers]))
 
 (defn- set-item!
   [{:keys [ctx/textures

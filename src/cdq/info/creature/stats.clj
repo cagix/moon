@@ -1,5 +1,5 @@
 (ns cdq.info.creature.stats
-  (:require [cdq.world.entity.stats :as modifiers]
+  (:require [cdq.stats :as modifiers]
             [clojure.string :as str]))
 
 (def ^:private non-val-max-stat-ks

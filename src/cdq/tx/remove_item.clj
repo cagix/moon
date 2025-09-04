@@ -1,7 +1,7 @@
 (ns cdq.tx.remove-item
   (:require [cdq.ui.windows.inventory :as inventory-window]
             [cdq.inventory :as inventory]
-            [cdq.world.entity.stats :as modifiers]))
+            [cdq.stats :as modifiers]))
 
 (defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
   (-> stage

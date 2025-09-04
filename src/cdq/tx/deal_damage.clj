@@ -1,6 +1,6 @@
 (ns cdq.tx.deal-damage
-  (:require [cdq.world.entity :as entity]
-            [cdq.world.entity.stats :as modifiers]
+  (:require [cdq.entity :as entity]
+            [cdq.stats :as modifiers]
             [cdq.rand :refer [rand-int-between]]))
 
 (defn do!

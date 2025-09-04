@@ -3,7 +3,7 @@
             [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.dev.app-values]
-            [cdq.world.entity :as entity]))
+            [cdq.entity :as entity]))
 
 (defn post-runnable! [f]
   (.postRunnable com.badlogic.gdx.Gdx/app

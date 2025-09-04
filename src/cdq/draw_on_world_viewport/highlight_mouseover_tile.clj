@@ -1,6 +1,6 @@
 (ns cdq.draw-on-world-viewport.highlight-mouseover-tile
   (:require [cdq.ctx :as ctx]
-            [cdq.world.grid :as grid]))
+            [cdq.grid :as grid]))
 
 (defn do!
   [{:keys [ctx/grid

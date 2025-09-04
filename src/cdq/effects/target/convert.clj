@@ -1,5 +1,5 @@
 (ns cdq.effects.target.convert
-  (:require [cdq.world.entity.faction :as faction]))
+  (:require [cdq.faction :as faction]))
 
 (defn applicable? [_ {:keys [effect/source effect/target]}]
   (and target

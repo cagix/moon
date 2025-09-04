@@ -6,8 +6,8 @@
             [cdq.inventory :as inventory]
             [cdq.ui.actor :as actor]
             [cdq.ui.windows.inventory :as inventory-window]
-            [cdq.world.entity.skill :as skill]
-            [cdq.world.entity :as entity]))
+            [cdq.skill :as skill]
+            [cdq.entity :as entity]))
 
 (defn- action-bar-selected-skill [stage]
   (-> stage

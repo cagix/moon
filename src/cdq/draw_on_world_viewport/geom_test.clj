@@ -1,7 +1,7 @@
 (ns cdq.draw-on-world-viewport.geom-test
   (:require [cdq.gdx.math.geom :as geom]
             [cdq.ctx :as ctx]
-            [cdq.world.grid :as grid]))
+            [cdq.grid :as grid]))
 
 (defn- geom-test*
   [{:keys [ctx/grid

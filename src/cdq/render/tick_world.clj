@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.gdx.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]
-            [cdq.world.potential-fields.update :as potential-fields.update]
+            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.stage :as stage]
             [cdq.ui.error-window :as error-window]))
 

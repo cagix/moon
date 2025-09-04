@@ -1,5 +1,5 @@
 (ns cdq.effects.target-all
-  (:require [cdq.world.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.raycaster :as raycaster]))
 
 (defn- creatures-in-los-of

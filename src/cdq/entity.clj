@@ -1,4 +1,4 @@
-(ns cdq.world.entity)
+(ns cdq.entity)
 
 (defn position [{:keys [entity/body]}]
   (:body/position body))

@@ -2,7 +2,7 @@
   (:require [cdq.textures :as textures]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [cdq.world.entity.stats :as modifiers]))
+            [cdq.stats :as modifiers]))
 
 (defn- create*
   [{:keys [ctx/textures

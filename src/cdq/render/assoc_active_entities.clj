@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-active-entities
-  (:require [cdq.world.content-grid :as content-grid]))
+  (:require [cdq.content-grid :as content-grid]))
 
 (defn do!
   [{:keys [ctx/content-grid

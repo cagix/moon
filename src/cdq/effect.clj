@@ -1,4 +1,4 @@
-(ns cdq.world.effect)
+(ns cdq.effect)
 
 (defmulti applicable? (fn [[k] effect-ctx]
                         k))

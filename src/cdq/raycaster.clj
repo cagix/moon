@@ -1,5 +1,5 @@
 (ns cdq.raycaster
-  (:require [cdq.world.grid.cell :as cell]
+  (:require [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.vector2 :as v])
   (:import (cdq.math RayCaster)))

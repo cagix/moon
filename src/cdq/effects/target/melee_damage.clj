@@ -1,6 +1,6 @@
 (ns cdq.effects.target.melee-damage
-  (:require [cdq.world.effect :as effect]
-            [cdq.world.entity.stats :as modifiers]))
+  (:require [cdq.effect :as effect]
+            [cdq.stats :as modifiers]))
 
 (defn- entity->melee-damage [{:keys [creature/stats]}]
   (let [strength (or (modifiers/get-stat-value stats :entity/strength) 0)]

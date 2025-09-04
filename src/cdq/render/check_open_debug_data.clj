@@ -2,7 +2,7 @@
   (:require [cdq.dev.data-view :as data-view]
             [cdq.input :as input]
             [cdq.ui.stage :as stage]
-            [cdq.world.grid :as grid]))
+            [cdq.grid :as grid]))
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)

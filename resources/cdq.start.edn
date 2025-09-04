@@ -144,10 +144,10 @@
                               :widget/image]
                              [cdq.ui.editor.widget.animation
                               :widget/animation]]]]
- [cdq.multifn/add-methods! [{:required [cdq.world.effect/applicable?
-                                        cdq.world.effect/handle]
-                             :optional [cdq.world.effect/useful?
-                                        cdq.world.effect/render]}
+ [cdq.multifn/add-methods! [{:required [cdq.effect/applicable?
+                                        cdq.effect/handle]
+                             :optional [cdq.effect/useful?
+                                        cdq.effect/render]}
                             [[cdq.effects.audiovisual
                               :effects/audiovisual]
                              [cdq.effects.projectile

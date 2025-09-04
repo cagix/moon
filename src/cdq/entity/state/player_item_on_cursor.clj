@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.world.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.textures :as textures]
             [cdq.input :as input]

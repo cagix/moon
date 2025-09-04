@@ -1,6 +1,6 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.world.effect :as effect]
-            [cdq.world.entity.stats :as modifiers]
+  (:require [cdq.effect :as effect]
+            [cdq.stats :as modifiers]
             [cdq.timer :as timer]
             [cdq.raycaster :as raycaster]))
 

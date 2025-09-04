@@ -1,8 +1,8 @@
-(ns cdq.world.potential-fields.movement
-  (:require [cdq.world.grid.cell :as cell]
-            [cdq.world.entity :as entity]
-            [cdq.world.entity.faction :as faction]
-            [cdq.world.grid :as grid]
+(ns cdq.potential-fields.movement
+  (:require [cdq.grid.cell :as cell]
+            [cdq.entity :as entity]
+            [cdq.faction :as faction]
+            [cdq.grid :as grid]
             [cdq.utils :as utils]
             [cdq.gdx.math.vector2 :as v]))
 
