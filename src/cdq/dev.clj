@@ -24,18 +24,6 @@
 
  (clojure.pprint/pprint
   (sort (keys @cdq.application/state)))
- (:ctx/app
-  :ctx/audio
-  :ctx/config
-  :ctx/db
-  :ctx/files
-  :ctx/graphics
-  :ctx/input
-  :ctx/stage
-  :ctx/world)
-
- (clojure.pprint/pprint
-  (sort (keys (:ctx/world @cdq.application/state))))
 
  (post-txs!
   [[:tx/show-modal {:title "hey title"
