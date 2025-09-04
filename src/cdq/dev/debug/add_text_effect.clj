@@ -1,7 +1,7 @@
 (comment
 
  (defn get-eid [id]
-   (get @(:world/entity-ids (:ctx/world @cdq.application/state))
+   (get @(:ctx/entity-ids @cdq.application/state)
         id))
 
  (let [eid (get-eid 152)]

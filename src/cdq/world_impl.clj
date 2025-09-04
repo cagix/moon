@@ -7,7 +7,6 @@
 (q/defrecord World [world/grid
 
                     world/raycaster
-                    world/entity-ids
                     world/elapsed-time
                     world/max-delta
                     world/max-speed

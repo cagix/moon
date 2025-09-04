@@ -13,8 +13,10 @@
                          (:tiled-map/height tiled-map)
                          (constantly false))))
 
-(defn- assoc-player-eid [{:keys [ctx/world] :as ctx}]
-  (let [eid (get @(:world/entity-ids world) 1)]
+(defn- assoc-player-eid
+  [{:keys [ctx/entity-ids]
+    :as ctx}]
+  (let [eid (get @entity-ids 1)]
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
@@ -72,6 +74,7 @@
         (assoc :ctx/potential-field-cache (atom nil))
         (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
         (assoc :ctx/id-counter (atom 0))
+        (assoc :ctx/entity-ids (atom {}))
         (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))

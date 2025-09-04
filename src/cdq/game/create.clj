@@ -102,6 +102,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/potential-field-cache
                       ctx/factions-iterations
                       ctx/id-counter
+                      ctx/entity-ids
                       ctx/default-font
                       ctx/shape-drawer-texture
                       ctx/shape-drawer
@@ -152,6 +153,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/potential-field-cache :some]
                                           [:ctx/factions-iterations :some]
                                           [:ctx/id-counter :some]
+                                          [:ctx/entity-ids :some]
                                           [:ctx/input :some]
                                           [:ctx/explored-tile-corners :some]
                                           [:ctx/db :some]

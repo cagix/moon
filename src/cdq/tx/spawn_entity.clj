@@ -38,13 +38,12 @@
 (defn do!
   [[_ components]
    {:keys [ctx/id-counter
+           ctx/entity-ids
            ctx/content-grid
            ctx/world]}]
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
-  (let [{:keys [
-                world/entity-ids
-                world/grid]} world]
+  (let [{:keys [world/grid]} world]
     (let [eid (atom (merge (map->Entity {})
                            (reduce (fn [m [k v]]
                                      (assoc m k (if-let [create (:create (k entity-components))]

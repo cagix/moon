@@ -6,12 +6,12 @@
 (declare entity-components)
 
 (defn do!
-  [{:keys [ctx/world]
+  [{:keys [ctx/entity-ids
+           ctx/world]
     :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @(:world/entity-ids world)))]
-    (let [entity-ids (:world/entity-ids world)
-          id (:entity/id @eid)]
+                      (vals @entity-ids))]
+    (let [id (:entity/id @eid)]
       (assert (contains? @entity-ids id))
       (swap! entity-ids dissoc id))
     (content-grid/remove-entity! eid)
