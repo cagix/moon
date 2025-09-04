@@ -213,9 +213,9 @@
      :area-level-grid scaled-area-level-grid}))
 
 (defn create
-  [{:keys [ctx/graphics
+  [{:keys [ctx/textures
            ctx/db]}
    params]
   (generate-modules params
                     (prepare-creature-properties (db/all-raw db :properties/creatures)
-                                                 (:g/textures graphics))))
+                                                 textures)))

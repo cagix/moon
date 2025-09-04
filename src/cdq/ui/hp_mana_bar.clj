@@ -5,15 +5,15 @@
             [cdq.world.entity.stats :as modifiers]))
 
 (defn- create*
-  [{:keys [ctx/graphics]}
+  [{:keys [ctx/graphics
+           ctx/textures]}
    {:keys [rahmen-file
            rahmenw
            rahmenh
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [textures (:g/textures graphics)
-        [x y-mana] [(/ (:viewport/width (:g/ui-viewport graphics)) 2)
+  (let [[x y-mana] [(/ (:viewport/width (:g/ui-viewport graphics)) 2)
                     y-mana]
         rahmen-tex-reg (textures/image->texture-region textures {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)

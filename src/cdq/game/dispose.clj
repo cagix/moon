@@ -14,20 +14,20 @@
 (defn- dispose-graphics!
   [{:keys [g/batch
            g/shape-drawer-texture
-           g/textures
            g/default-font]}]
   (Disposable/.dispose batch)
   (Disposable/.dispose shape-drawer-texture)
-  (run! Disposable/.dispose (vals textures))
   (when default-font
     (Disposable/.dispose default-font)))
 
 (defn do! [{:keys [ctx/audio
                    ctx/cursors
                    ctx/graphics
+                   ctx/textures
                    ctx/world]}]
   (dispose-audio! audio)
   (dispose-cursors! cursors)
+  (run! Disposable/.dispose (vals textures))
   (dispose-graphics! graphics)
   (dispose-world! world)
   (ui/dispose!))

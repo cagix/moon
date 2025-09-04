@@ -1,7 +1,6 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
-            [cdq.utils :as utils]
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
@@ -9,7 +8,8 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn create
-  [{:keys [ctx/graphics]}
+  [{:keys [ctx/graphics
+           ctx/textures]}
    {:keys [title
            id
            visible?
@@ -34,7 +34,7 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (textures/image->texture-region (:g/textures graphics)
+                                 (textures/image->texture-region textures
                                                                  {:image/file "images/items.png"
                                                                   :image/bounds bounds})))
         cell-size 48

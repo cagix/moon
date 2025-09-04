@@ -27,12 +27,12 @@
 (defn draw-item-on-cursor-state
   [{:keys [item]}
    entity
-   {:keys [ctx/graphics
+   {:keys [ctx/textures
            ctx/mouseover-actor
            ctx/world-mouse-position]}]
   (when (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor)
     [[:draw/texture-region
-      (textures/image->texture-region (:g/textures graphics)
+      (textures/image->texture-region textures
                                       (:entity/image item))
       (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
       {:center? true}]]))
@@ -86,11 +86,11 @@
 
 (defn draw-active-skill [{:keys [skill effect-ctx counter]}
                          entity
-                         {:keys [ctx/graphics
+                         {:keys [ctx/textures
                                  ctx/world]
                           :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (textures/image->texture-region (:g/textures graphics) image)
+    (concat (draw-skill-image (textures/image->texture-region textures image)
                               entity
                               (entity/position entity)
                               (timer/ratio (:world/elapsed-time world) counter))
@@ -104,9 +104,9 @@
 (defn draw-centered-rotated-image
   [image
    entity
-   {:keys [ctx/graphics]}]
+   {:keys [ctx/textures]}]
   [[:draw/texture-region
-    (textures/image->texture-region (:g/textures graphics) image)
+    (textures/image->texture-region textures image)
     (entity/position entity)
     {:center? true
      :rotation (or (:body/rotation-angle (:entity/body entity))

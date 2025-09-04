@@ -1,11 +1,9 @@
 (ns cdq.graphics-impl
   (:require [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [clojure.string :as str]
             [qrecord.core :as q])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Files)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       OrthographicCamera
                                       Pixmap
@@ -94,31 +92,10 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         :viewport/height (FitViewport/.getWorldHeight this)
         :viewport/camera (FitViewport/.getCamera      this)))))
 
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- search-files [files {:keys [folder extensions]}]
-  (map (fn [path]
-         [(str/replace-first path folder "") (Files/.internal files path)])
-       (recursively-search (Files/.internal files folder) extensions)))
-
 (q/defrecord Graphics [g/batch
                        g/default-font
                        g/shape-drawer-texture
                        g/shape-drawer
-                       g/textures
                        g/tiled-map-renderer
                        g/ui-viewport
                        g/unit-scale
@@ -131,10 +108,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
            tile-size
            ui-viewport
            world-viewport]}]
-  (let [textures (search-files files
-                               {:folder "resources/"
-                                :extensions #{"png" "bmp"}})
-        batch (SpriteBatch.)
+  (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
                                             (.drawPixel 0 0))
@@ -146,9 +120,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                   (:height ui-viewport)
                                   (orthographic-camera))]
     (map->Graphics
-     {:textures (into {} (for [[path file-handle] textures]
-                           [path (Texture. ^FileHandle file-handle)]))
-      :default-font (when default-font
+     {:default-font (when default-font
                       (generate-font (Files/.internal files (:file default-font))
                                      (:params default-font)))
       :world-unit-scale world-unit-scale

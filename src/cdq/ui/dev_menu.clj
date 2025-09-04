@@ -75,7 +75,7 @@
 
 (defn- create*
   [{:keys [
-           ctx/graphics
+           ctx/textures
            ctx/db
            ]}
    {:keys [reset-game-state-fn
@@ -89,7 +89,7 @@
             (db-editor db)
             context-data-view
             ]
-    :update-labels (let [->texture (fn [path] (utils/safe-get (:g/textures graphics) path))]
+    :update-labels (let [->texture (fn [path] (utils/safe-get textures path))]
                      [
                       (mouseover-entity-id (->texture "images/mouseover.png"))
                       (elapsed-time        (->texture "images/clock.png"))

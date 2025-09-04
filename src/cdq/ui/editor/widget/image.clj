@@ -10,8 +10,8 @@
       #_[(ui/text-button file
                          (fn [_actor _ctx]))]))
 
-(defn create [schema  _attribute image {:keys [ctx/graphics]}]
-  (ui/image-button {:texture-region (textures/image->texture-region (:g/textures graphics) image)
+(defn create [schema  _attribute image {:keys [ctx/textures]}]
+  (ui/image-button {:texture-region (textures/image->texture-region textures image)
                     :scale 2})
   #_(ui/image-button image
                      (fn [_actor ctx]

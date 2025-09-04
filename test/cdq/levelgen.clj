@@ -1,6 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.graphics-impl]
             [cdq.render.clear-screen]
+            [cdq.textures-impl]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.game.resize]
             [cdq.db-impl :as db]
@@ -97,6 +98,7 @@
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
         ctx (assoc ctx
+                   :ctx/textures (cdq.textures-impl/create (:files gdx))
                    :ctx/camera (:viewport/camera (:g/world-viewport (:ctx/graphics ctx)))
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1

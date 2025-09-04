@@ -43,6 +43,7 @@
 ; can I just [:tx/reset-game-state] somewhere ?
 ; tx.game/?
 ; then even at cdq.start ? just [:tx.app/] ?
+; this is just a bunch of functions in the context of 'cdq.reset-game-state' ...
 (defn do!
   [{:keys [ctx/config
            ctx/stage]

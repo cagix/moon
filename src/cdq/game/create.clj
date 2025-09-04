@@ -2,6 +2,7 @@
   (:require [cdq.audio :as audio]
             [cdq.input :as input]
             [cdq.db-impl :as db]
+            [cdq.textures-impl]
             [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.color :as color]
             [cdq.gdx.ui :as ui]
@@ -28,10 +29,14 @@
                       ctx/stage
                       ctx/mouseover-eid
                       ctx/player-eid
+                      ctx/textures
                       ctx/graphics
                       ctx/gdx-graphics
                       ctx/world])
 
+; => this has to be pipelined
+; and graphics/world abstractions are questionable
+; and maybe ctx/gdx ?!
 (defn do! [gdx config]
   (doseq [[name color-params] (:colors (::graphics config))]
     (Colors/put name (color/->obj color-params)))
@@ -51,10 +56,12 @@
                                           [:ctx/stage :some]
                                           [:ctx/mouseover-eid :any]
                                           [:ctx/player-eid :some]
+                                          [:ctx/textures :some]
                                           [:ctx/graphics :some]
                                           [:ctx/gdx-graphics :some]
                                           [:ctx/world :some]])
                        :gdx-graphics (:graphics gdx)
+                       :textures (cdq.textures-impl/create (:files gdx))
                        :audio (audio/create gdx (::audio config))
                        :config config
                        :cursors (load-cursors

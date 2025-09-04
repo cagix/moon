@@ -33,7 +33,7 @@
 
 (defn create
   [{:keys [ctx/db
-           ctx/graphics]}
+           ctx/textures]}
    property-type
    clicked-id-fn]
   (assert (contains? overview property-type)
@@ -53,7 +53,7 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (ui/image-button {:texture-region (textures/image->texture-region (:g/textures graphics) image)
+                                   (ui/image-button {:texture-region (textures/image->texture-region textures image)
                                                      :on-clicked on-clicked
                                                      :scale scale})
                                    (ui/text-button (name id)

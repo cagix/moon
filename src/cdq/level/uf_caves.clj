@@ -137,7 +137,7 @@
     (assoc level :level/grid grid)))
 
 (defn create [{:keys [ctx/db
-                      ctx/graphics]}
+                      ctx/textures]}
               {:keys [tile-size
                       texture-path
                       spawn-rate
@@ -149,7 +149,7 @@
               (let [[f params] step] (f level params))
               (let [f step]          (f level))))
           {:level/tile-size tile-size
-           :level/create-tile (let [texture (utils/safe-get (:g/textures graphics) texture-path)]
+           :level/create-tile (let [texture (utils/safe-get textures texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
@@ -162,7 +162,7 @@
            :level/spawn-rate spawn-rate
            :level/scaling scaling
            :level/creature-properties (prepare-creature-properties (db/all-raw db :properties/creatures)
-                                                                   (:g/textures graphics))}
+                                                                   textures)}
           [[initial-grid-creation {:size cave-size
                                    :cave-style cave-style
                                    :random (java.util.Random.)}]
