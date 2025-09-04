@@ -2,9 +2,6 @@
   (:require [cdq.gdx.ui :as ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
-(defn- dispose-world! [{:keys [world/tiled-map]}]
-  (Disposable/.dispose tiled-map))
-
 (defn- dispose-audio! [sounds]
   (run! Disposable/.dispose (vals sounds)))
 
@@ -17,6 +14,7 @@
            ctx/batch
            ctx/shape-drawer-texture
            ctx/default-font
+           ctx/tiled-map
            ctx/textures
            ctx/world]}]
   (dispose-audio! audio)
@@ -26,5 +24,5 @@
   (Disposable/.dispose shape-drawer-texture)
   (when default-font
     (Disposable/.dispose default-font))
-  (dispose-world! world)
+  (Disposable/.dispose tiled-map)
   (ui/dispose!))

@@ -6,8 +6,7 @@
             [cdq.world.content-grid :as content-grid]
             [qrecord.core :as q]))
 
-(q/defrecord World [world/tiled-map
-                    world/start-position
+(q/defrecord World [world/start-position
                     world/grid
                     world/explored-tile-corners
                     world/content-grid
@@ -52,8 +51,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)]
     (merge (map->World {})
-           {:world/tiled-map tiled-map
-            :world/start-position start-position
+           {:world/start-position start-position
             :world/grid grid
             :world/explored-tile-corners (create-explored-tile-corners tiled-map)
             :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)

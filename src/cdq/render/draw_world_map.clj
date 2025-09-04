@@ -4,12 +4,13 @@
             [cdq.raycaster :as raycaster]))
 
 (defn do!
-  [{:keys [ctx/tiled-map-renderer
+  [{:keys [ctx/tiled-map
+           ctx/tiled-map-renderer
            ctx/world
            ctx/world-viewport]}]
   (tm-renderer/draw! tiled-map-renderer
                      world-viewport
-                     (:world/tiled-map world)
+                     tiled-map
                      (tile-color-setter/create
                       {:ray-blocked? (let [raycaster (:world/raycaster world)]
                                        (fn [start end] (raycaster/blocked? raycaster start end)))

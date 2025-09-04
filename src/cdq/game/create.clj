@@ -89,6 +89,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/mouseover-eid
                       ctx/player-eid
                       ctx/textures
+                      ctx/tiled-map
                       ctx/tiled-map-renderer
                       ctx/gdx-graphics
                       ctx/ui-viewport
@@ -148,6 +149,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/player-eid :some]
                                           [:ctx/textures :some]
                                           [:ctx/gdx-graphics :some]
+                                          [:ctx/tiled-map :some]
                                           [:ctx/tiled-map-renderer :some]
                                           [:ctx/ui-viewport :some]
                                           [:ctx/world :some]

@@ -27,11 +27,9 @@
 (defn- spawn-enemies!
   [{:keys [ctx/config
            ctx/db
-           ctx/world]
+           ctx/tiled-map]
     :as ctx}]
-  (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world)
-                                                                "creatures"
-                                                                "id")]
+  (doseq [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
     (ctx/handle-txs! ctx
                      [[:tx/spawn-creature {:position (utils/tile->middle position)
                                            :creature-property (db/build db (keyword creature-id))
@@ -53,11 +51,12 @@
   (doseq [actor-decl (map #((requiring-resolve %) ctx)
                           (:create-ui-actors config))]
     (stage/add! stage (actor/construct actor-decl)))
-  (-> ctx
-      (assoc :ctx/world ((requiring-resolve (:world-impl config))
-                         (merge (::world config)
-                                (let [[f params] world-fn]
-                                  ((requiring-resolve f) ctx params)))))
-      spawn-player!
-      assoc-player-eid
-      spawn-enemies!))
+  (let [world-config (merge (::world config)
+                            (let [[f params] world-fn]
+                              ((requiring-resolve f) ctx params)))]
+    (-> ctx
+        (assoc :ctx/tiled-map (:tiled-map world-config))
+        (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
+        spawn-player!
+        assoc-player-eid
+        spawn-enemies!)))
