@@ -7,7 +7,6 @@
 (q/defrecord World [world/grid
 
                     world/raycaster
-                    world/id-counter
                     world/entity-ids
                     world/elapsed-time
                     world/max-delta
@@ -39,7 +38,6 @@
     (merge (map->World {})
            {:world/grid grid
             :world/raycaster (raycaster/create grid)
-            :world/id-counter (atom 0)
             :world/entity-ids (atom {})
             :world/elapsed-time 0
             :world/max-delta max-delta

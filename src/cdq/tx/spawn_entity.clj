@@ -37,11 +37,12 @@
 
 (defn do!
   [[_ components]
-   {:keys [ctx/content-grid
+   {:keys [ctx/id-counter
+           ctx/content-grid
            ctx/world]}]
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
-  (let [{:keys [world/id-counter
+  (let [{:keys [
                 world/entity-ids
                 world/grid]} world]
     (let [eid (atom (merge (map->Entity {})
