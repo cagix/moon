@@ -1,6 +1,5 @@
 (ns cdq.lwjgl
-  (:import (com.badlogic.gdx ApplicationListener)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3WindowConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader
@@ -28,24 +27,10 @@
     (get mapping SharedLibraryLoader/os)))
 
 (defn start-application!
-  [config
-   {:keys [create!
-           dispose!
-           render!
-           resize!]}]
+  [listener config]
   (when (= (operating-system) :mac)
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (Lwjgl3Application. (reify ApplicationListener
-                        (create [_]
-                          (create!))
-                        (dispose [_]
-                          (dispose!))
-                        (render [_]
-                          (render!))
-                        (resize [_ width height]
-                          (resize! width height))
-                        (pause [_])
-                        (resume [_]))
+  (Lwjgl3Application. listener
                       (let [obj (Lwjgl3ApplicationConfiguration.)]
                         (doseq [[k v] config]
                           (set-application-config-key! obj k v))
