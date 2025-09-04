@@ -28,3 +28,12 @@
                      (conj handled tx)))
           (recur ctx (rest txs) handled)))
       handled)))
+
+(defmulti draw!
+  (fn [[k] _ctx]
+    k))
+
+(defn handle-draws! [ctx draws]
+  (doseq [component draws
+          :when component]
+    (draw! component ctx)))

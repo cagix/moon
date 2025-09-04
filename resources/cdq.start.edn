@@ -93,7 +93,7 @@
                              [cdq.info.skill.cost :skill/cost]
                              [cdq.info.maxrange :maxrange]
                              ]]]
- [cdq.multifn/add-methods! [{:required [cdq.graphics/draw!]}
+ [cdq.multifn/add-methods! [{:required [cdq.ctx/draw!]}
                             [[cdq.draw.with-line-width
                               :draw/with-line-width]
                              [cdq.draw.grid

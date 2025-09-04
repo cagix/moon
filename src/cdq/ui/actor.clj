@@ -1,5 +1,5 @@
 (ns cdq.ui.actor
-  (:require [cdq.graphics :as graphics])
+  (:require [cdq.ctx :as ctx])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             InputEvent
                                             Touchable)
@@ -173,8 +173,7 @@
 
 (defn- try-draw [actor f]
   (when-let [ctx (get-stage-ctx actor)]
-    (graphics/handle-draws! ctx
-                            (f actor ctx))))
+    (ctx/handle-draws! ctx (f actor ctx))))
 
 (defmethod construct :actor.type/actor [opts]
   (doto (proxy [Actor] []

@@ -1,5 +1,5 @@
 (ns cdq.draw-on-world-viewport.cell-debug
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx :as ctx]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.world.grid :as grid]))
 
@@ -26,4 +26,4 @@
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn do! [ctx]
-  (graphics/handle-draws! ctx (draw-cell-debug* ctx)))
+  (ctx/handle-draws! ctx (draw-cell-debug* ctx)))
