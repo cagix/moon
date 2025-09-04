@@ -3,9 +3,9 @@
 
 (defn do!
   [[_ position faction duration]
-   {:keys [ctx/world]}]
+   {:keys [ctx/elapsed-time]}]
   [[:tx/spawn-effect
     position
     {:entity/alert-friendlies-after-duration
-     {:counter (timer/create (:world/elapsed-time world) duration)
+     {:counter (timer/create elapsed-time duration)
       :faction faction}}]])

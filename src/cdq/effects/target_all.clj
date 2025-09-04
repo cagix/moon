@@ -3,8 +3,8 @@
             [cdq.raycaster :as raycaster]))
 
 (defn- creatures-in-los-of
-  [{:keys [world/active-entities
-           world/raycaster]}
+  [{:keys [ctx/active-entities
+           ctx/raycaster]}
    entity]
   (->> active-entities
        (filter #(:entity/species @%))
@@ -15,14 +15,14 @@
 (defn applicable? [_ _]
   true)
 
-(defn useful? [_ _effect-ctx _world]
+(defn useful? [_ _effect-ctx _ctx]
   ; TODO
   false)
 
-(defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} world]
+(defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} ctx]
   (let [source* @source]
     (apply concat
-           (for [target (creatures-in-los-of world source*)]
+           (for [target (creatures-in-los-of ctx source*)]
              [[:tx/spawn-line {:start (entity/position source*) #_(start-point source* target*)
                                :end (entity/position @target)
                                :duration 0.05
@@ -36,9 +36,9 @@
               ; find a way to pass ctx / effect-ctx separate ?
               [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
-(defn render [_ {:keys [effect/source]} {:keys [ctx/world]}]
+(defn render [_ {:keys [effect/source]} ctx]
   (let [source* @source]
-    (for [target* (map deref (creatures-in-los-of world source*))]
+    (for [target* (map deref (creatures-in-los-of ctx source*))]
       [:draw/line
        (entity/position source*) #_(start-point source* target*)
        (entity/position target*)

@@ -27,12 +27,12 @@
   (and target
        (seq (effect/filter-applicable? effect-ctx entity-effects))))
 
-(defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _world]
+(defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _ctx]
   (in-range? @source @target maxrange))
 
 (defn handle [[_ {:keys [maxrange entity-effects]}]
               {:keys [effect/source effect/target] :as effect-ctx}
-              _world]
+              _ctx]
   (let [source* @source
         target* @target]
     (if (in-range? source* target* maxrange)

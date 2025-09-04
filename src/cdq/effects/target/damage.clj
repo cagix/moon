@@ -6,5 +6,5 @@
 
 (defn handle [[_ damage]
               {:keys [effect/source effect/target]}
-              _world]
+              _ctx]
   [[:tx/deal-damage source target damage]])

@@ -29,9 +29,9 @@
                      rotate-in-movement-direction?]
               :as movement}
              eid
-             {:keys [world/delta-time
-                     world/grid
-                     world/max-speed]}]
+             {:keys [ctx/delta-time
+                     ctx/grid
+                     ctx/max-speed]}]
   (assert (<= 0 speed max-speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))

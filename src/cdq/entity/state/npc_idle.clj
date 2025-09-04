@@ -8,8 +8,8 @@
             [cdq.world.potential-fields.movement :as potential-fields.movement]))
 
 (defn- npc-effect-ctx
-  [{:keys [world/raycaster
-           world/grid]}
+  [{:keys [ctx/raycaster
+           ctx/grid]}
    eid]
   (let [entity @eid
         target (grid/nearest-enemy grid entity)
@@ -22,20 +22,19 @@
                                 (v/direction (entity/position entity)
                                              (entity/position @target)))}))
 
-(defn- npc-choose-skill [world entity effect-ctx]
+(defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % effect-ctx))
-                     (effect/applicable-and-useful? world effect-ctx (:skill/effects %))))
+                     (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
        first))
 
-(defn tick! [_ eid world]
-  (let [effect-ctx (npc-effect-ctx world eid)
-        grid (:world/grid world)]
-    (if-let [skill (npc-choose-skill world @eid effect-ctx)]
+(defn tick! [_ eid {:keys [ctx/grid] :as ctx}]
+  (let [effect-ctx (npc-effect-ctx ctx eid)]
+    (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
       [[:tx/event eid :movement-direction (or (potential-fields.movement/find-direction grid eid)
                                               [0 0])]])))

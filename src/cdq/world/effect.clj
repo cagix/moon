@@ -3,16 +3,14 @@
 (defmulti applicable? (fn [[k] effect-ctx]
                         k))
 
-(defmulti handle (fn [[k] effect-ctx world]
+(defmulti handle (fn [[k] effect-ctx ctx]
                    k))
 
-(defmulti useful? (fn [[k] effect-ctx world]
+(defmulti useful? (fn [[k] effect-ctx ctx]
                     k))
-(defmethod useful? :default [_ _effect-ctx world]
+(defmethod useful? :default [_ _effect-ctx ctx]
   true)
 
-; ->> render is one step above world !!
-; ->> not part of world ! so should not be here ! ?
 (defmulti render (fn [[k] _effect-ctx ctx]
                    k))
 (defmethod render :default [_ _effect-ctx ctx])
@@ -23,7 +21,7 @@
 (defn some-applicable? [effect-ctx effect]
   (seq (filter-applicable? effect-ctx effect)))
 
-(defn applicable-and-useful? [world effect-ctx effect]
+(defn applicable-and-useful? [ctx effect-ctx effect]
   (->> effect
        (filter-applicable? effect-ctx)
-       (some #(useful? % effect-ctx world))))
+       (some #(useful? % effect-ctx ctx))))

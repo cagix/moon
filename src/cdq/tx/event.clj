@@ -2,7 +2,7 @@
   (:require [cdq.entity.state :as state]
             [reduce-fsm :as fsm]))
 
-(defn do! [[_ eid event params] {:keys [ctx/world]}]
+(defn do! [[_ eid event params] ctx]
   (let [fsm (:entity/fsm @eid)
         _ (assert fsm)
         old-state-k (:state fsm)
@@ -11,7 +11,7 @@
     (when-not (= old-state-k new-state-k)
       (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                             [k (k @eid)])
-            new-state-obj [new-state-k (state/create world new-state-k eid params)]]
+            new-state-obj [new-state-k (state/create ctx new-state-k eid params)]]
         [[:tx/assoc eid :entity/fsm new-fsm]
          [:tx/assoc eid new-state-k (new-state-obj 1)]
          [:tx/dissoc eid old-state-k]

@@ -15,17 +15,17 @@
 ; TODO valid params direction has to be  non-nil (entities not los player ) ?
 (defn useful? [[_ {:keys [projectile/max-range] :as projectile}]
                {:keys [effect/source effect/target]}
-               world]
+               ctx]
   (let [source-p (entity/position @source)
         target-p (entity/position @target)]
     ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-    (and (not (raycaster/path-blocked? (:world/raycaster world) source-p target-p (:projectile/size projectile)))
+    (and (not (raycaster/path-blocked? (:ctx/raycaster ctx) source-p target-p (:projectile/size projectile)))
          ; TODO not taking into account body sizes
          (< (v/distance source-p ; entity/distance function protocol EntityPosition
                         target-p)
             max-range))))
 
-(defn handle [[_ projectile] {:keys [effect/source effect/target-direction]} _world]
+(defn handle [[_ projectile] {:keys [effect/source effect/target-direction]} _ctx]
   [[:tx/spawn-projectile
     {:position (start-point @source
                             target-direction

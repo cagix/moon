@@ -21,8 +21,8 @@
 
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
-             {:keys [world/elapsed-time
-                     world/raycaster]}]
+             {:keys [ctx/elapsed-time
+                     ctx/raycaster]}]
   (cond
    (not (effect/some-applicable? (update-effect-ctx raycaster effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
@@ -34,7 +34,7 @@
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
-(defn create [eid [skill effect-ctx] {:keys [world/elapsed-time]}]
+(defn create [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
   {:skill skill
    :effect-ctx effect-ctx
    :counter (->> skill

@@ -251,7 +251,6 @@
                                     :cdq.game.create/db {:schemas "schema.edn"
                                                          :properties "properties.edn"}
                                     :reset-game-state! cdq.game.reset-game-state/do!
-                                    :world-impl cdq.world-impl/create
                                     :create-ui-actors [cdq.ui.dev-menu/create
                                                        cdq.ui.action-bar/create
                                                        cdq.ui.hp-mana-bar/create

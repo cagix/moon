@@ -8,44 +8,37 @@
 
 (declare entity->tick)
 
-(defn- update-time* [{:keys [world/max-delta] :as world} delta-ms]
-  (let [delta-ms (min delta-ms max-delta)]
-    (-> world
-        (assoc :world/delta-time delta-ms)
-        (update :world/elapsed-time + delta-ms))))
-
-(defn- update-time [{:keys [ctx/gdx-graphics
-                            ctx/world]
-                     :as ctx}]
-  (update ctx :ctx/world update-time* (graphics/delta-time gdx-graphics)))
+(defn- update-time
+  [{:keys [ctx/gdx-graphics
+           ctx/max-delta]
+    :as ctx}]
+  (let [delta-ms (min (graphics/delta-time gdx-graphics) max-delta)]
+    (-> ctx
+        (assoc :ctx/delta-time delta-ms)
+        (update :ctx/elapsed-time + delta-ms))))
 
 (defn- update-potential-fields!
   [{:keys [ctx/factions-iterations
            ctx/potential-field-cache
-           ctx/world]
+           ctx/grid
+           ctx/active-entities]
     :as ctx}]
-  (let [{:keys [world/grid
-                world/active-entities]} world]
-    (doseq [[faction max-iterations] factions-iterations]
-      (potential-fields.update/tick! potential-field-cache
-                                     grid
-                                     faction
-                                     active-entities
-                                     max-iterations)))
+  (doseq [[faction max-iterations] factions-iterations]
+    (potential-fields.update/tick! potential-field-cache
+                                   grid
+                                   faction
+                                   active-entities
+                                   max-iterations))
   ctx)
 
-; (defmulti tick! (fn [[k] _v _eid _world]
-;                   k))
-; (defmethod tick! :default [_ _v _eid _world])
-
-(defn- tick-component! [k v eid world]
+(defn- tick-component! [k v eid ctx]
   (when-let [f (entity->tick k)]
-    (f v eid world)))
+    (f v eid ctx)))
 
-(defn- tick-entity! [{:keys [ctx/world] :as ctx} eid]
+(defn- tick-entity! [ctx eid]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
-           (ctx/handle-txs! ctx (tick-component! k v eid world)))
+           (ctx/handle-txs! ctx (tick-component! k v eid ctx)))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k
@@ -54,10 +47,10 @@
 
 (defn- tick-entities!
   [{:keys [ctx/stage
-           ctx/world]
+           ctx/active-entities]
     :as ctx}]
   (try
-   (doseq [eid (:world/active-entities world)]
+   (doseq [eid active-entities]
      (tick-entity! ctx eid))
    (catch Throwable t
      (stacktrace/pretty-print t)

@@ -40,25 +40,25 @@
    {:keys [ctx/id-counter
            ctx/entity-ids
            ctx/content-grid
-           ctx/world]}]
+           ctx/grid]
+    :as ctx}]
   (m/validate-humanize components-schema components)
   (assert (and (not (contains? components :entity/id))))
-  (let [{:keys [world/grid]} world]
-    (let [eid (atom (merge (map->Entity {})
-                           (reduce (fn [m [k v]]
-                                     (assoc m k (if-let [create (:create (k entity-components))]
-                                                  (create v world)
-                                                  v)))
-                                   {}
-                                   (assoc components :entity/id (swap! id-counter inc)))))]
-      (let [id (:entity/id @eid)]
-        (assert (number? id))
-        (swap! entity-ids assoc id eid))
-      (content-grid/add-entity! content-grid eid)
-      ; https://github.com/damn/core/issues/58
-      ;(assert (valid-position? grid @eid))
-      (grid/add-entity! grid eid)
-      (mapcat (fn [[k v]]
-                (when-let [create! (:create! (k entity-components))]
-                  (create! v eid world)))
-              @eid))))
+  (let [eid (atom (merge (map->Entity {})
+                         (reduce (fn [m [k v]]
+                                   (assoc m k (if-let [create (:create (k entity-components))]
+                                                (create v ctx)
+                                                v)))
+                                 {}
+                                 (assoc components :entity/id (swap! id-counter inc)))))]
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (swap! entity-ids assoc id eid))
+    (content-grid/add-entity! content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid))
+    (grid/add-entity! grid eid)
+    (mapcat (fn [[k v]]
+              (when-let [create! (:create! (k entity-components))]
+                (create! v eid ctx)))
+            @eid)))

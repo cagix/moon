@@ -7,14 +7,13 @@
   [{:keys [ctx/explored-tile-corners
            ctx/tiled-map
            ctx/tiled-map-renderer
-           ctx/world
+           ctx/raycaster
            ctx/world-viewport]}]
   (tm-renderer/draw! tiled-map-renderer
                      world-viewport
                      tiled-map
                      (tile-color-setter/create
-                      {:ray-blocked? (let [raycaster (:world/raycaster world)]
-                                       (fn [start end] (raycaster/blocked? raycaster start end)))
+                      {:ray-blocked? (partial raycaster/blocked? raycaster)
                        :explored-tile-corners explored-tile-corners
                        :light-position (:camera/position (:viewport/camera world-viewport))
                        :see-all-tiles? false

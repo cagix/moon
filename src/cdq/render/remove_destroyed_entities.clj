@@ -7,7 +7,7 @@
 
 (defn do!
   [{:keys [ctx/entity-ids
-           ctx/world]
+           ctx/grid]
     :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
@@ -15,8 +15,8 @@
       (assert (contains? @entity-ids id))
       (swap! entity-ids dissoc id))
     (content-grid/remove-entity! eid)
-    (grid/remove-entity! (:world/grid world) eid)
+    (grid/remove-entity! grid eid)
     (ctx/handle-txs! ctx (mapcat (fn [[k v]]
                                    (when-let [destroy! (:destroy! (k entity-components))]
-                                     (destroy! v eid world)))
+                                     (destroy! v eid ctx)))
                                  @eid))))

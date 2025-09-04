@@ -3,6 +3,8 @@
             [cdq.input :as input]
             [cdq.db-impl :as db]
             [cdq.textures-impl]
+            [cdq.grid-impl :as grid-impl]
+            [cdq.raycaster :as raycaster]
             [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]
@@ -96,7 +98,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/tiled-map-renderer
                       ctx/gdx-graphics
                       ctx/ui-viewport
-                      ctx/world
                       ctx/world-viewport
                       ctx/batch
                       ctx/potential-field-cache
@@ -109,7 +110,16 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/shape-drawer
                       ctx/paused?
                       ctx/unit-scale
-                      ctx/world-unit-scale])
+                      ctx/world-unit-scale
+                      ctx/grid
+                      ctx/raycaster
+                      ctx/elapsed-time
+                      ctx/max-delta
+                      ctx/max-speed
+                      ctx/minimum-size
+                      ctx/z-orders
+                      ctx/delta-time
+                      ctx/active-entities])
 
 ; => this has to be pipelined
 ; and graphics/world abstractions are questionable
@@ -168,7 +178,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/tiled-map :some]
                                           [:ctx/tiled-map-renderer :some]
                                           [:ctx/ui-viewport :some]
-                                          [:ctx/world :some]
                                           [:ctx/world-viewport :some]
                                           [:ctx/batch :some]
                                           [:ctx/paused? :any]
@@ -176,7 +185,16 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/shape-drawer-texture :some]
                                           [:ctx/shape-drawer :some]
                                           [:ctx/unit-scale :some]
-                                          [:ctx/world-unit-scale :some]])
+                                          [:ctx/world-unit-scale :some]
+                                          [:ctx/grid :some]
+                                          [:ctx/raycaster :some]
+                                          [:ctx/elapsed-time :some]
+                                          [:ctx/max-delta :some]
+                                          [:ctx/max-speed :some]
+                                          [:ctx/minimum-size :some]
+                                          [:ctx/z-orders :some]
+                                          [:ctx/delta-time :some]
+                                          [:ctx/active-entities :some]])
                        :gdx-graphics (:graphics gdx)
                        :textures (cdq.textures-impl/create (:files gdx))
                        :audio (audio/create gdx (::audio config))
@@ -201,4 +219,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))})
         ((requiring-resolve (:reset-game-state! config)) (::starting-level config))
         (assoc :ctx/mouseover-eid nil
-               :ctx/paused? nil))))
+               :ctx/paused? nil
+               :ctx/delta-time 2
+               :ctx/active-entities 1))))

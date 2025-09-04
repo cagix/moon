@@ -6,9 +6,9 @@
 (defn do!
   [[_ eid body direction rotate-in-movement-direction?]
    {:keys [ctx/content-grid
-           ctx/world]}]
+           ctx/grid]}]
   (content-grid/position-changed! content-grid eid)
-  (grid/position-changed! (:world/grid world) eid)
+  (grid/position-changed! grid eid)
   (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
   (when rotate-in-movement-direction?
     (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))

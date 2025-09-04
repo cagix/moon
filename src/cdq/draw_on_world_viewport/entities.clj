@@ -29,10 +29,10 @@
 (defn do!
   [{:keys [ctx/player-eid
            ctx/render-z-order
-           ctx/world]
+           ctx/active-entities
+           ctx/raycaster]
     :as ctx}]
-  (let [entities (map deref (:world/active-entities world))
-        raycaster (:world/raycaster world)
+  (let [entities (map deref active-entities)
         player @player-eid
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)

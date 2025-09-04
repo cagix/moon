@@ -2,10 +2,10 @@
 
 (def ->create)
 
-(defn create [world state-k eid params]
+(defn create [ctx state-k eid params]
   {:pre [(keyword? state-k)]}
   (let [result (if-let [f (state-k ->create)]
-                 (f eid params world)
+                 (f eid params ctx)
                  (if params
                    params
                    :something ; nil components are not tick'ed1

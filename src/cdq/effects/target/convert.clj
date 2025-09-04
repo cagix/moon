@@ -6,5 +6,5 @@
        (= (:entity/faction @target)
           (faction/enemy (:entity/faction @source)))))
 
-(defn handle [_ {:keys [effect/source effect/target]} _world]
+(defn handle [_ {:keys [effect/source effect/target]} _ctx]
   [[:tx/assoc target :entity/faction (:entity/faction @source)]])

@@ -52,10 +52,10 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defn create! [{:keys [fsm initial-state]} eid world]
+(defn create! [{:keys [fsm initial-state]} eid ctx]
   ; fsm throws when initial-state is not part of states, so no need to assert initial-state
   ; initial state is nil, so associng it. make bug report at reduce-fsm?
   [[:tx/assoc eid :entity/fsm (assoc ((case fsm
                                         :fsms/player player-fsm
                                         :fsms/npc npc-fsm) initial-state nil) :state initial-state)]
-   [:tx/assoc eid initial-state (state/create world initial-state eid nil)]])
+   [:tx/assoc eid initial-state (state/create ctx initial-state eid nil)]])

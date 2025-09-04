@@ -6,7 +6,7 @@
 
 (defn tick! [{:keys [entity-effects already-hit-bodies piercing?]}
              eid
-             {:keys [world/grid]}]
+             {:keys [ctx/grid]}]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
@@ -30,5 +30,5 @@
      (when hit-entity
        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
 
-(defn create [v _world]
+(defn create [v _ctx]
   (assoc v :already-hit-bodies #{}))

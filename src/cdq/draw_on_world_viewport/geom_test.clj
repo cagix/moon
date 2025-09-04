@@ -4,10 +4,9 @@
             [cdq.world.grid :as grid]))
 
 (defn- geom-test*
-  [{:keys [ctx/world
+  [{:keys [ctx/grid
            ctx/world-mouse-position]}]
-  (let [grid (:world/grid world)
-        position world-mouse-position
+  (let [position world-mouse-position
         radius 0.8
         circle {:position position
                 :radius radius}]

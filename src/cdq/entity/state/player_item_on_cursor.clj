@@ -74,7 +74,7 @@
         (item-place-position world-mouse-position entity)
         (:entity/item-on-cursor entity)]])))
 
-(defn create [_eid item _world]
+(defn create [_eid item _ctx]
   {:item item})
 
 (defn draw-gui-view

@@ -15,8 +15,7 @@
            ctx/shape-drawer-texture
            ctx/default-font
            ctx/tiled-map
-           ctx/textures
-           ctx/world]}]
+           ctx/textures]}]
   (dispose-audio! audio)
   (dispose-cursors! cursors)
   (run! Disposable/.dispose (vals textures))

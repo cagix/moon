@@ -12,5 +12,5 @@
 (defn applicable? [_ {:keys [effect/source] :as effect-ctx}]
   (effect/applicable? (melee-damage-effect @source) effect-ctx))
 
-(defn handle [_ {:keys [effect/source] :as effect-ctx} world]
-  (effect/handle (melee-damage-effect @source) effect-ctx world))
+(defn handle [_ {:keys [effect/source] :as effect-ctx} ctx]
+  (effect/handle (melee-damage-effect @source) effect-ctx ctx))
