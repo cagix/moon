@@ -85,10 +85,7 @@
   (ui/load! {:skin-scale :x1})
   (let [input (:input gdx)
         ctx (map->Context {:ctx/input input})
-        graphics (cdq.graphics-impl/create! gdx
-                                            {:tile-size 48
-                                             :world-viewport {:width 1440
-                                                              :height 900}})
+        graphics (cdq.graphics-impl/create! gdx {:tile-size 48})
         ctx (assoc ctx :ctx/graphics graphics)
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         stage (ui/stage ui-viewport
@@ -97,10 +94,18 @@
         ctx (assoc ctx :ctx/stage stage)
         ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
                                            :properties "properties.edn"}))
+        world-viewport (let [world-width  (* 1440 (:g/world-unit-scale graphics))
+                             world-height (* 900  (:g/world-unit-scale graphics))]
+                         (viewport/fit world-width
+                                       world-height
+                                       (camera/orthographic :y-down? false
+                                                            :world-width world-width
+                                                            :world-height world-height)))
         ctx (assoc ctx
+                   :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
                    :ctx/textures (cdq.textures-impl/create (:files gdx))
-                   :ctx/camera (:viewport/camera (:g/world-viewport (:ctx/graphics ctx)))
+                   :ctx/camera (:viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1
@@ -119,12 +124,12 @@
     (Disposable/.dispose graphics) ; TODO that wont work anymore -> and one more fn so have to move it together?
     (Disposable/.dispose tiled-map)))
 
-(defn- draw-tiled-map! [{:keys [ctx/graphics
+(defn- draw-tiled-map! [{:keys [ctx/color-setter
                                 ctx/tiled-map
                                 ctx/tiled-map-renderer
-                                ctx/color-setter]}]
+                                ctx/world-viewport]}]
   (tm-renderer/draw! tiled-map-renderer
-                     (:g/world-viewport graphics)
+                     world-viewport
                      tiled-map
                      color-setter))
 

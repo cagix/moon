@@ -1,7 +1,5 @@
 (ns cdq.graphics-impl
-  (:require [cdq.gdx.graphics.camera :as camera]
-            [cdq.gdx.graphics.shape-drawer :as sd]
-            [cdq.gdx.graphics.viewport :as viewport]
+  (:require [cdq.gdx.graphics.shape-drawer :as sd]
             [qrecord.core :as q])
   (:import (com.badlogic.gdx Files)
            (com.badlogic.gdx.graphics Color
@@ -65,14 +63,12 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                        g/shape-drawer-texture
                        g/shape-drawer
                        g/unit-scale
-                       g/world-unit-scale
-                       g/world-viewport])
+                       g/world-unit-scale])
 
 (defn create!
   [{:keys [files]}
    {:keys [default-font
-           tile-size
-           world-viewport]}]
+           tile-size]}]
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
@@ -86,13 +82,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       (generate-font (Files/.internal files (:file default-font))
                                      (:params default-font)))
       :world-unit-scale world-unit-scale
-      :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
-                            world-height (* (:height world-viewport) world-unit-scale)]
-                        (viewport/fit world-width
-                                      world-height
-                                      (camera/orthographic :y-down? false
-                                                           :world-width world-width
-                                                           :world-height world-height)))
       :batch batch
       :unit-scale (atom 1)
       :shape-drawer-texture shape-drawer-texture

@@ -335,5 +335,8 @@
                                    cdq.render.handle-key-input/do!
                                    cdq.render.dissoc-mouseover-keys/do!
                                    cdq.render.validate/do!
+                                   ; :cdq.render/validate
+                                   ; -> render multifn / method map ?
+                                   ; tx just  method map ?
                                    ]
                          :resize! cdq.game.resize/do!}]]

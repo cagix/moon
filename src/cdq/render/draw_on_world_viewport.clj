@@ -4,9 +4,11 @@
   (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defn do!
-  [{:keys [ctx/graphics] :as ctx} draw-fns]
+  [{:keys [ctx/graphics
+           ctx/world-viewport]
+    :as ctx}
+   draw-fns]
   (let [{:keys [^Batch g/batch
-                g/world-viewport
                 g/shape-drawer
                 g/world-unit-scale
                 g/unit-scale]} graphics]

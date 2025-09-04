@@ -2,7 +2,7 @@
   (:require [cdq.gdx.graphics.camera :as camera]))
 
 (defn do!
-  [{:keys [ctx/graphics
-           ctx/player-eid]}]
-  (camera/set-position! (:viewport/camera (:g/world-viewport graphics))
+  [{:keys [ctx/player-eid
+           ctx/world-viewport]}]
+  (camera/set-position! (:viewport/camera world-viewport)
                         (:body/position (:entity/body @player-eid))))

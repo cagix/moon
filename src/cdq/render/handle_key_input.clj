@@ -21,10 +21,10 @@
 (defn do!
   [{:keys [ctx/config
            ctx/input
-           ctx/graphics
-           ctx/stage]}]
+           ctx/stage
+           ctx/world-viewport]}]
   (let [controls (:controls config)
-        camera (:viewport/camera (:g/world-viewport graphics))]
+        camera (:viewport/camera world-viewport)]
     (when (input/key-pressed? input (:zoom-in  controls)) (camera/inc-zoom! camera zoom-speed))
     (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed)))
     (when (input/key-just-pressed? input close-windows-key)  (close-all-windows!         stage))

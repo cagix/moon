@@ -8,10 +8,10 @@
 (def ^:dbg-flag show-cell-occupied? false)
 
 (defn- draw-cell-debug* [{:keys [ctx/world
-                                 ctx/graphics]}]
+                                 ctx/world-viewport]}]
   (let [grid (:world/grid world)]
     (apply concat
-           (for [[x y] (camera/visible-tiles (:viewport/camera (:g/world-viewport graphics)))
+           (for [[x y] (camera/visible-tiles (:viewport/camera world-viewport))
                  :let [cell (grid/cell grid [x y])]
                  :when cell
                  :let [cell* @cell]]
