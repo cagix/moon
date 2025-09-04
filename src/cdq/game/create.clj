@@ -103,6 +103,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/factions-iterations
                       ctx/id-counter
                       ctx/entity-ids
+                      ctx/render-z-order
                       ctx/default-font
                       ctx/shape-drawer-texture
                       ctx/shape-drawer
@@ -154,6 +155,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                           [:ctx/factions-iterations :some]
                                           [:ctx/id-counter :some]
                                           [:ctx/entity-ids :some]
+                                          [:ctx/render-z-order :some]
                                           [:ctx/input :some]
                                           [:ctx/explored-tile-corners :some]
                                           [:ctx/db :some]

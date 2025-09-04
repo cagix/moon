@@ -63,18 +63,20 @@
     (stage/add! stage (actor/construct actor-decl)))
   (let [world-config (merge (::world config)
                             (let [[f params] world-fn]
-                              ((requiring-resolve f) ctx params)))]
+                              ((requiring-resolve f) ctx params)))
+        world ((requiring-resolve (:world-impl config)) world-config)]
     (-> ctx
         (assoc :ctx/tiled-map (:tiled-map world-config))
         (assoc :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config)))
         (assoc :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
                                                       (:tiled-map/height (:tiled-map world-config))
                                                       (:content-grid-cell-size world-config)))
-        (assoc :ctx/world ((requiring-resolve (:world-impl config)) world-config))
+        (assoc :ctx/world world)
         (assoc :ctx/potential-field-cache (atom nil))
         (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
         (assoc :ctx/id-counter (atom 0))
         (assoc :ctx/entity-ids (atom {}))
+        (assoc :ctx/render-z-order (utils/define-order (:world/z-orders world)))
         (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))

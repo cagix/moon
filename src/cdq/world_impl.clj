@@ -1,20 +1,15 @@
 (ns cdq.world-impl
   (:require [cdq.grid-impl :as grid-impl]
             [cdq.raycaster :as raycaster]
-            [cdq.utils :as utils]
             [qrecord.core :as q]))
 
 (q/defrecord World [world/grid
-
                     world/raycaster
                     world/elapsed-time
                     world/max-delta
                     world/max-speed
                     world/minimum-size
                     world/z-orders
-                    world/render-z-order
-
-                    ; added later
                     world/delta-time
                     world/active-entities])
 
@@ -41,5 +36,4 @@
             :world/max-delta max-delta
             :world/max-speed max-speed
             :world/minimum-size minimum-size
-            :world/z-orders z-orders
-            :world/render-z-order (utils/define-order z-orders)})))
+            :world/z-orders z-orders})))
