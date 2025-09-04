@@ -1,11 +1,11 @@
 (ns cdq.graphics-impl
-  (:require [cdq.gdx.graphics.shape-drawer :as sd]
+  (:require [cdq.gdx.graphics.camera :as camera]
+            [cdq.gdx.graphics.shape-drawer :as sd]
             [cdq.gdx.graphics.tiled-map-renderer :as tm-renderer]
+            [cdq.gdx.graphics.viewport :as viewport]
             [qrecord.core :as q])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Files)
+  (:import (com.badlogic.gdx Files)
            (com.badlogic.gdx.graphics Color
-                                      OrthographicCamera
                                       Pixmap
                                       Pixmap$Format
                                       Texture
@@ -14,30 +14,7 @@
                                           SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector3)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
-
-(defn- vector3-clojurize [^Vector3 v3]
-  [(.x v3)
-   (.y v3)
-   (.z v3)])
-
-(defn- orthographic-camera
-  ([]
-   (proxy [OrthographicCamera ILookup] []
-     (valAt [k]
-       (let [^OrthographicCamera this this]
-         (case k
-           :camera/combined (.combined this)
-           :camera/zoom (.zoom this)
-           :camera/frustum {:frustum/plane-points (mapv vector3-clojurize (.planePoints (.frustum this)))}
-           :camera/position (vector3-clojurize (.position this))
-           :camera/viewport-width  (.viewportWidth  this)
-           :camera/viewport-height (.viewportHeight this))))))
-  ([& {:keys [y-down? world-width world-height]}]
-   (doto (orthographic-camera)
-     (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
 
 (comment
  Nearest ; Fetch the nearest texel that best maps to the pixel on screen.
@@ -84,14 +61,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                   :enable-markup? enable-markup?
                                   :use-integer-positions? use-integer-positions?})))
 
-(defn- fit-viewport [width height camera]
-  (proxy [FitViewport ILookup] [width height camera]
-    (valAt [k]
-      (case k
-        :viewport/width  (FitViewport/.getWorldWidth  this)
-        :viewport/height (FitViewport/.getWorldHeight this)
-        :viewport/camera (FitViewport/.getCamera      this)))))
-
 (q/defrecord Graphics [g/batch
                        g/default-font
                        g/shape-drawer-texture
@@ -116,9 +85,9 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                                (.dispose pixmap)
                                texture)
         world-unit-scale (float (/ tile-size))
-        ui-viewport (fit-viewport (:width  ui-viewport)
+        ui-viewport (viewport/fit (:width  ui-viewport)
                                   (:height ui-viewport)
-                                  (orthographic-camera))]
+                                  (camera/orthographic))]
     (map->Graphics
      {:default-font (when default-font
                       (generate-font (Files/.internal files (:file default-font))
@@ -127,9 +96,9 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
       :ui-viewport ui-viewport
       :world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                             world-height (* (:height world-viewport) world-unit-scale)]
-                        (fit-viewport world-width
+                        (viewport/fit world-width
                                       world-height
-                                      (orthographic-camera :y-down? false
+                                      (camera/orthographic :y-down? false
                                                            :world-width world-width
                                                            :world-height world-height)))
       :batch batch
