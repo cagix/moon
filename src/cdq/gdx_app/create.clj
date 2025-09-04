@@ -3,8 +3,6 @@
             [cdq.input :as input]
             [cdq.db-impl :as db]
             [cdq.textures-impl]
-            [cdq.grid-impl :as grid-impl]
-            [cdq.raycaster :as raycaster]
             [cdq.gdx.graphics :as graphics]
             [cdq.gdx.graphics.camera :as camera]
             [cdq.gdx.graphics.color :as color]

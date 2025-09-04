@@ -1,13 +1,7 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.application :as application]
-            [cdq.db :as db]
-            [cdq.gdx.graphics :as graphics]
-            [cdq.dev.data-view :as data-view]
-            [cdq.editor]
+  (:require [cdq.gdx.graphics :as graphics]
             [cdq.ui.menu :as menu]
-            [cdq.ui.stage :as stage]
-            [cdq.utils :as utils]
-            [clojure.string :as str]))
+            [cdq.utils :as utils]))
 
 (defn mouseover-entity-id [icon]
   {:label "Mouseover-entity id"
@@ -46,48 +40,19 @@
    :update-fn (comp graphics/frames-per-second :ctx/graphics)
    :icon icon})
 
-(defn select-world [reset-game-state-fn world-fns]
-  {:label "World"
-   :items (for [world-fn world-fns]
-            {:label (str "Start " (first world-fn))
-             :on-click (fn [_actor _ctx]
-                         (swap! application/state reset-game-state-fn world-fn))})})
-
-(defn help [infotext]
-  {:label "Help"
-   :items [{:label infotext}]})
-
-(defn db-editor [db]
-  {:label "Objects"
-   :items (for [property-type (sort (db/property-types db))]
-            {:label (str/capitalize (name property-type))
-             :on-click (fn [_actor ctx]
-                         (cdq.editor/open-editor-overview-window! ctx property-type))})})
-
-(def context-data-view
-  {:label "Context"
-   :items [{:label "Show data"
-            :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                        (stage/add! stage (data-view/table-view-window {:title "Context"
-                                                                        :data ctx
-                                                                        :width 500
-                                                                        :height 500})))}]})
-
 (defn- create*
   [{:keys [
            ctx/textures
            ctx/db
            ]}
-   {:keys [reset-game-state-fn
-           world-fns
-           info]}
+   {:keys [info]}
    ]
   (menu/create
    {:menus [
-            (select-world reset-game-state-fn world-fns)
-            (help info)
-            (db-editor db)
-            context-data-view
+            ((requiring-resolve 'cdq.ui.dev-menu.menus.select-world/create))
+            ((requiring-resolve 'cdq.ui.dev-menu.menus.help/create) info)
+            ((requiring-resolve 'cdq.ui.dev-menu.menus.db/create) db)
+            @(requiring-resolve 'cdq.ui.dev-menu.menus.ctx-data-view/item)
             ]
     :update-labels (let [->texture (fn [path] (utils/safe-get textures path))]
                      [
@@ -102,20 +67,4 @@
 
 (defn create [ctx]
   (create* ctx
-           {:reset-game-state-fn (requiring-resolve (:reset-game-state! (:ctx/config ctx)))
-            :world-fns [['cdq.level.from-tmx/create
-                         {:tmx-file "maps/vampire.tmx"
-                          :start-position [32 71]}]
-                        ['cdq.level.uf-caves/create
-                         {:tile-size 48
-                          :texture-path "maps/uf_terrain.png"
-                          :spawn-rate 0.02
-                          :scaling 3
-                          :cave-size 200
-                          :cave-style :wide}]
-                        ['cdq.level.modules/create
-                         {:world/map-size 5,
-                          :world/max-area-level 3,
-                          :world/spawn-rate 0.05}]]
-            ;icons, etc. , components ....
-            :info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}))
+           {:info "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}))
