@@ -17,5 +17,5 @@
           (let [{:keys [x y width height]} (geom/circle->outer-rectangle circle)]
             [:draw/rectangle x y width height [0 0 1 1]]))))
 
-(defn do! [{:keys [ctx/graphics] :as ctx}]
-  (graphics/handle-draws! graphics (geom-test* ctx)))
+(defn do! [ctx]
+  (graphics/handle-draws! ctx (geom-test* ctx)))

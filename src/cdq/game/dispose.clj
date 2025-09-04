@@ -11,23 +11,20 @@
 (defn- dispose-cursors! [cursors]
   (run! Disposable/.dispose (vals cursors)))
 
-(defn- dispose-graphics!
-  [{:keys [g/batch
-           g/shape-drawer-texture
-           g/default-font]}]
-  (Disposable/.dispose batch)
-  (Disposable/.dispose shape-drawer-texture)
-  (when default-font
-    (Disposable/.dispose default-font)))
-
-(defn do! [{:keys [ctx/audio
-                   ctx/cursors
-                   ctx/graphics
-                   ctx/textures
-                   ctx/world]}]
+(defn do!
+  [{:keys [ctx/audio
+           ctx/cursors
+           ctx/batch
+           ctx/shape-drawer-texture
+           ctx/default-font
+           ctx/textures
+           ctx/world]}]
   (dispose-audio! audio)
   (dispose-cursors! cursors)
   (run! Disposable/.dispose (vals textures))
-  (dispose-graphics! graphics)
+  (Disposable/.dispose batch)
+  (Disposable/.dispose shape-drawer-texture)
+  (when default-font
+    (Disposable/.dispose default-font))
   (dispose-world! world)
   (ui/dispose!))

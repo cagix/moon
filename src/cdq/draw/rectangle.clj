@@ -4,6 +4,6 @@
 
 (defn draw!
   [[_ x y w h color]
-   {:keys [g/shape-drawer]}]
+   {:keys [ctx/shape-drawer]}]
   (sd/set-color! shape-drawer (color/->obj color))
   (sd/rectangle! shape-drawer x y w h))

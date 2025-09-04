@@ -25,5 +25,5 @@
                     (let [ratio (/ distance ((:world/factions-iterations world) faction))]
                       [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))]))))
 
-(defn do! [{:keys [ctx/graphics] :as ctx}]
-  (graphics/handle-draws! graphics (draw-cell-debug* ctx)))
+(defn do! [ctx]
+  (graphics/handle-draws! ctx (draw-cell-debug* ctx)))

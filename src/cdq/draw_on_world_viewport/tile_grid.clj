@@ -16,7 +16,7 @@
 (def ^:dbg-flag show-tile-grid? false)
 
 (defn do!
-  [{:keys [ctx/graphics
-           ctx/world-viewport]}]
+  [{:keys [ctx/world-viewport]
+    :as ctx}]
   (when show-tile-grid?
-    (graphics/handle-draws! graphics (draw-tile-grid* world-viewport))))
+    (graphics/handle-draws! ctx (draw-tile-grid* world-viewport))))

@@ -3,10 +3,10 @@
             [cdq.world.grid :as grid]))
 
 (defn do!
-  [{:keys [ctx/graphics
-           ctx/world
-           ctx/world-mouse-position]}]
-  (graphics/handle-draws! graphics
+  [{:keys [ctx/world
+           ctx/world-mouse-position]
+    :as ctx}]
+  (graphics/handle-draws! ctx
                           (let [[x y] (mapv int world-mouse-position)
                                 cell (grid/cell (:world/grid world) [x y])]
                             (when (and cell (#{:air :none} (:movement @cell)))

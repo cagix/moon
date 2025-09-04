@@ -134,13 +134,13 @@
 (defn draw-temp-modifiers [_ entity _ctx]
   [[:draw/filled-circle (entity/position entity) 0.5 [0.5 0.5 0.5 0.4]]])
 
-(defn draw-text-over-entity [{:keys [text]} entity {:keys [ctx/graphics]}]
+(defn draw-text-over-entity [{:keys [text]} entity {:keys [ctx/world-unit-scale]}]
   (let [[x y] (entity/position entity)]
     [[:draw/text {:text text
                   :x x
                   :y (+ y
                         (/ (:body/height (:entity/body entity)) 2)
-                        (* 5 (:g/world-unit-scale graphics)))
+                        (* 5 world-unit-scale))
                   :scale 2
                   :up? true}]]))
 
@@ -175,9 +175,9 @@
         (- height          (* 2 border))
         (hpbar-color ratio)]])))
 
-(defn draw-stats [_ entity {:keys [ctx/graphics]}]
+(defn draw-stats [_ entity {:keys [ctx/world-unit-scale]}]
   (let [ratio (val-max/ratio (modifiers/get-hitpoints (:creature/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar (:g/world-unit-scale graphics)
+      (draw-hpbar world-unit-scale
                   (:entity/body entity)
                   ratio))))

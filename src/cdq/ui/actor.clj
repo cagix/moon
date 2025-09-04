@@ -173,7 +173,7 @@
 
 (defn- try-draw [actor f]
   (when-let [ctx (get-stage-ctx actor)]
-    (graphics/handle-draws! (:ctx/graphics ctx)
+    (graphics/handle-draws! ctx
                             (f actor ctx))))
 
 (defmethod construct :actor.type/actor [opts]

@@ -2,8 +2,9 @@
   (:require [cdq.graphics :as graphics]
             [cdq.gdx.graphics.shape-drawer :as sd]))
 
-(defn draw! [[_ width draws]
-             {:keys [g/shape-drawer] :as graphics}]
+(defn draw!
+  [[_ width draws]
+   {:keys [ctx/shape-drawer] :as graphics}]
   (sd/with-line-width shape-drawer width
     (fn []
       (graphics/handle-draws! graphics draws))))
