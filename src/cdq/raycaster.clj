@@ -1,20 +1,6 @@
 (ns cdq.raycaster
-  (:require [cdq.grid.cell :as cell]
-            [cdq.grid2d :as g2d]
-            [cdq.gdx.math.vector2 :as v])
+  (:require [cdq.gdx.math.vector2 :as v])
   (:import (cdq.math RayCaster)))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn create [grid]
-  (let [width  (g2d/width  (.g2d grid))
-        height (g2d/height (.g2d grid))
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells (.g2d grid))]
-      (set-arr arr @cell cell/blocks-vision?))
-    [arr width height]))
 
 ; boolean array used because 10x faster than access to clojure grid data structure
 
@@ -113,6 +99,8 @@
                 g/green)]
     (g/draw-line start1screenx start1screeny target1screenx target1screeny color)
     (g/draw-line start2screenx start2screeny target2screenx target2screeny color)))
+
+;; not belongs here ..
 
 ; TO math.... // not tested
 (defn- create-double-ray-endpositions

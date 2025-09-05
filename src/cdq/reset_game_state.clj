@@ -1,5 +1,6 @@
 (ns cdq.reset-game-state
-  (:require [cdq.grid-impl :as grid-impl]
+  (:require [cdq.grid.cell :as cell]
+            [cdq.grid-impl :as grid-impl]
             [cdq.raycaster :as raycaster]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
@@ -9,6 +10,18 @@
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.content-grid :as content-grid]))
+
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defn- create-raycaster [grid]
+  (let [width  (g2d/width  (.g2d grid))
+        height (g2d/height (.g2d grid))
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells (.g2d grid))]
+      (set-arr arr @cell cell/blocks-vision?))
+    [arr width height]))
 
 (defn- world-ctx
   [{:keys [tiled-map] :as config}]
@@ -27,7 +40,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)]
     {:ctx/grid grid
-     :ctx/raycaster (raycaster/create grid)
+     :ctx/raycaster (create-raycaster grid)
      :ctx/elapsed-time 0
      :ctx/max-delta max-delta
      :ctx/max-speed max-speed
