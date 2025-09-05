@@ -1,12 +1,14 @@
 (ns cdq.ui
-  (:require [cdq.graphics.color :as color]
+  (:require [cdq.ctx :as ctx]
+            [cdq.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d InputEvent
+           (com.badlogic.gdx.scenes.scene2d Actor
+                                            InputEvent
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                HorizontalGroup
@@ -14,6 +16,7 @@
                                                Table
                                                Stack
                                                VerticalGroup
+                                               Widget
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   Drawable
@@ -183,3 +186,28 @@
     (when on-clicked
       (.addListener image-button (change-listener on-clicked)))
     image-button))
+
+; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
+(defn- try-act [actor delta f]
+  (when-let [ctx (actor/get-stage-ctx actor)]
+    (f actor delta ctx)))
+
+(defn- try-draw [actor f]
+  (when-let [ctx (actor/get-stage-ctx actor)]
+    (ctx/handle-draws! ctx (f actor ctx))))
+
+(defmethod actor/construct :actor.type/actor [opts]
+  (doto (proxy [Actor] []
+          (act [delta]
+            (when-let [f (:act opts)]
+              (try-act this delta f)))
+          (draw [_batch _parent-alpha]
+            (when-let [f (:draw opts)]
+              (try-draw this f))))
+    (actor/set-opts! opts)))
+
+(defmethod actor/construct :actor.type/widget [opts]
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (when-let [f (:draw opts)]
+        (try-draw this f)))))
