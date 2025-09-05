@@ -3,7 +3,7 @@
                        cdq.stage-impl
                        cdq.ui.stage/Stage]]]
  [cdq.var/bind-roots! [
-                       [cdq.editor/application-state-atom cdq.application/state]
+                       [cdq.ui.editor.widget.map/application-state-atom cdq.application/state]
                        [cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
@@ -276,7 +276,7 @@
                                                                               {:label "Help"
                                                                                :items [cdq.ui.dev-menu/help-items]}
                                                                               {:label "Editor"
-                                                                               :items [cdq.ui.dev-menu.menus.db/create cdq.editor/open-editor-overview-window!]}
+                                                                               :items [cdq.ui.dev-menu.menus.db/create cdq.ui.editor.widget.map/open-editor-overview-window!]}
                                                                               {:label "Ctx Data"
                                                                                :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
                                              [cdq.ui.action-bar/create {:id :action-bar}]

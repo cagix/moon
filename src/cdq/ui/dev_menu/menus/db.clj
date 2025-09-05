@@ -7,4 +7,4 @@
     {:label (str/capitalize (name property-type))
      :on-click (fn [_actor ctx]
                  ; TODO stage/add can do here ???
-                 (open-editor-overview-window! ctx property-type))}))
+                 ((requiring-resolve open-editor-overview-window!) ctx property-type))}))

@@ -1,15 +1,78 @@
 (ns cdq.ui.editor.widget.map
-  (:require [cdq.editor]
+  (:require [cdq.db :as db]
+            [cdq.input :as input]
+            [cdq.property :as property]
             [cdq.schemas :as schemas]
-            [cdq.ui.editor.widget :as widget]
-            [cdq.utils :as utils]
-            [clojure.set :as set]
+            [cdq.stacktrace :as stacktrace]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [cdq.ui :as ui]
-            [cdq.ui.separator :as separator]))
+            [cdq.ui.editor.scroll-pane :as scroll-pane] ; to cdq.ui
+            [cdq.ui.editor.overview-table] ; ?
+            [cdq.ui.editor.widget :as widget]
+            [cdq.ui.error-window :as error-window] ; ?
+            [cdq.ui :as ui] ; ?
+            [cdq.ui.separator :as separator] ; table/separator cell ... should be data declarated possible
+            [cdq.utils :as utils]
+            [clojure.set :as set]))
+
+; We are working with raw property data without fetching relationships and build
+; otherwise at update! we would have to convert again back to edn
+; for example at images/relationships
+(defn- create-editor-window
+  [props
+   {:keys [ctx/db
+           ctx/ui-viewport]
+    :as ctx}
+   application-state-atom]
+  (let [schema (get (:schemas db) (property/type props))
+        window (ui/window {:title (str "[SKY]Property[]")
+                           :id :property-editor-window
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true
+                           :cell-defaults {:pad 5}})
+        widget (widget/create schema nil props ctx)
+        apply-context-fn (fn [window f]
+                           (fn [{:keys [ctx/stage] :as ctx}]
+                             (try (f ctx)
+                                  (actor/remove! window)
+                                  (catch Throwable t
+                                    (stacktrace/pretty-print t)
+                                    (stage/add! stage (error-window/create t))))))
+        save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
+                                           (swap! application-state-atom update :ctx/db
+                                                  db/update!
+                                                  (widget/value schema nil widget (:schemas db)))))
+        delete! (apply-context-fn window (fn [_ctx]
+                                           (swap! application-state-atom update :ctx/db
+                                                  db/delete!
+                                                  (:property/id props))))]
+    (table/add-rows! window [[(scroll-pane/table-cell (:viewport/height ui-viewport)
+                                                      [[{:actor widget :colspan 2}]
+                                                       [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
+                                                                                (fn [_actor ctx]
+                                                                                  (save! ctx)))
+                                                         :center? true}
+                                                        {:actor (ui/text-button "Delete"
+                                                                                (fn [_actor ctx]
+                                                                                  (delete! ctx)))
+                                                         :center? true}]])]])
+    (group/add! window {:actor/type :actor.type/actor
+                        :act (fn [_this _delta {:keys [ctx/input]}]
+                               (when (input/key-just-pressed? input :enter)
+                                 (save! ctx)))})
+    (.pack window)
+    window))
+
+(declare application-state-atom)
+
+(defn- open-property-editor-window! [{:keys [ctx/stage]
+                                     :as ctx}
+                                    property]
+  (stage/add! stage (create-editor-window property ctx application-state-atom)))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -41,7 +104,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (actor/remove! window)
-    (cdq.editor/open-property-editor-window! ctx prop-value)))
+    (open-property-editor-window! ctx prop-value)))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -136,3 +199,20 @@
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
           [k (widget/value (get schemas k) k widget schemas)])))
+
+(defn open-editor-overview-window!
+  [{:keys [ctx/stage]
+    :as ctx}
+   property-type]
+  (let [window (ui/window {:title "Edit"
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true})
+        on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
+                        (open-property-editor-window! ctx (db/get-raw db id)))]
+    (table/add! window (cdq.ui.editor.overview-table/create ctx
+                                                            property-type
+                                                            on-clicked-id))
+    (.pack window)
+    (stage/add! stage window)))
