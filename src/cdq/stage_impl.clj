@@ -15,3 +15,6 @@
 
 (defn root [^Stage stage]
   (.getRoot stage))
+
+(defn hit [stage [x y]]
+  (Stage/.hit stage x y true))

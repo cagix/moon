@@ -1,8 +1,8 @@
 (ns cdq.render.assoc-mouseover-keys
-  (:require [cdq.math :as math])
+  (:require [cdq.ui.stage :as stage]
+            [cdq.math :as math])
   (:import (com.badlogic.gdx Input)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
@@ -20,9 +20,6 @@
       [(.x vector2)
        (.y vector2)])))
 
-(defn- stage-hit [stage [x y]]
-  (Stage/.hit stage x y true))
-
 (defn do!
   [{:keys [ctx/input
            ctx/stage
@@ -33,6 +30,6 @@
         ui-mouse-position    (unproject-clamp ui-viewport mouse-position)
         world-mouse-position (unproject-clamp world-viewport mouse-position)]
     (assoc ctx
-           :ctx/mouseover-actor      (stage-hit stage ui-mouse-position)
+           :ctx/mouseover-actor      (stage/hit stage ui-mouse-position)
            :ctx/ui-mouse-position    ui-mouse-position
            :ctx/world-mouse-position world-mouse-position)))

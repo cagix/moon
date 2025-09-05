@@ -7,6 +7,7 @@
             [cdq.input :as input]
             [cdq.lwjgl :as lwjgl]
             [cdq.render.clear-screen]
+            [cdq.render.render-stage]
             [cdq.shared-library-loader :as shared-library-loader]
             [cdq.stage-impl :as stage]
             [cdq.textures-impl]
@@ -158,16 +159,12 @@
   (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
-(defn- render-stage! [{:keys [ctx/stage]
-                       :as ctx}]
-  (stage/render! stage ctx))
-
 (defn render! []
   (cdq.render.clear-screen/do! @state)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
-  (render-stage! @state))
+  (cdq.render.render-stage/do! @state))
 
 (defn resize! [width height]
   (cdq.gdx-app.resize/do! @state width height))
