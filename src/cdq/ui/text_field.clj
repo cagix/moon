@@ -1,9 +1,9 @@
 (ns cdq.ui.text-field
   (:require [cdq.ui :as ui]
-            [clojure.gdx.scenes.scene2d.actor :as actor])
+            cdq.construct)
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
-(defmethod actor/construct :actor.type/text-field [{:keys [text-field/text] :as opts}]
+(defmethod cdq.construct/construct :actor.type/text-field [{:keys [text-field/text] :as opts}]
   (-> (VisTextField. (str text))
       (ui/set-opts! opts)))
 

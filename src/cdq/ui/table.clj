@@ -1,10 +1,11 @@
 (ns cdq.ui.table
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [cdq.construct]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn add! [^Table table actor-or-decl]
-  (.add table (actor/construct? actor-or-decl))) ; & here add! used
+  (.add table (cdq.construct/construct? actor-or-decl))) ; & here add! used
 
 (defn cells [^Table table]
   (.getCells table))

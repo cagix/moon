@@ -1,10 +1,11 @@
 (ns cdq.ui.group
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor])
+  (:require [cdq.construct]
+            [clojure.gdx.scenes.scene2d.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn add! [^Group group actor-or-decl]
-  (.addActor group (actor/construct? actor-or-decl)))
+  (.addActor group (cdq.construct/construct? actor-or-decl)))
 
 (defn find-actor [^Group group name]
   (.findActor group name))

@@ -45,7 +45,7 @@
   (doto (VisLabel. ^CharSequence text)
     (set-opts! opts)))
 
-(defmethod actor/construct :actor.type/group [opts]
+(defmethod cdq.construct/construct :actor.type/group [opts]
   (doto (cdq.ui.group/proxy-ILookup Group [])
     (set-opts! opts)))
 
@@ -55,8 +55,8 @@
       group))
 
 (import 'clojure.lang.MultiFn)
-(MultiFn/.addMethod actor/construct :actor.type/label label)
-(MultiFn/.addMethod actor/construct :actor.type/table table)
+(MultiFn/.addMethod cdq.construct/construct :actor.type/label label)
+(MultiFn/.addMethod cdq.construct/construct :actor.type/table table)
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
   (-> (let [window (doto (cdq.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
@@ -84,7 +84,7 @@
                    (ctx-stage/get-ctx stage))]
     (ctx/handle-draws! ctx (f actor ctx))))
 
-(defmethod actor/construct :actor.type/actor [opts]
+(defmethod cdq.construct/construct :actor.type/actor [opts]
   (doto (proxy [Actor] []
           (act [delta]
             (when-let [f (:act opts)]
