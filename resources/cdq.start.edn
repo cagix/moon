@@ -1,4 +1,6 @@
 [
+ ; FIRST ORDER NAMESPACES
+ ; THEN NAME AFTER _LAYERS_ OR THINGS ?
  [cdq.extends/impls! [[cdq.ui.CtxStage
                        cdq.stage-impl
                        cdq.ui.stage/Stage]]]

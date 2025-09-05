@@ -31,6 +31,9 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
+; TODO complecting ui stuff with db stuff !!!
+; dumb ui containers
+; editor.ui/
 (defn create
   [{:keys [ctx/db
            ctx/textures]}
