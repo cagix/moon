@@ -1,12 +1,12 @@
 (ns cdq.gdx-app.dispose
-  (:require [clojure.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx.utils Disposable)))
+  (:require [clojure.gdx.utils.disposable :as disposable]
+            [clojure.vis-ui :as vis-ui]))
 
 (defn- dispose-audio! [sounds]
-  (run! Disposable/.dispose (vals sounds)))
+  (run! disposable/dispose! (vals sounds)))
 
 (defn- dispose-cursors! [cursors]
-  (run! Disposable/.dispose (vals cursors)))
+  (run! disposable/dispose! (vals cursors)))
 
 (defn do!
   [{:keys [ctx/audio
@@ -18,10 +18,10 @@
            ctx/textures]}]
   (dispose-audio! audio)
   (dispose-cursors! cursors)
-  (run! Disposable/.dispose (vals textures))
-  (Disposable/.dispose batch)
-  (Disposable/.dispose shape-drawer-texture)
+  (run! disposable/dispose! (vals textures))
+  (disposable/dispose! batch)
+  (disposable/dispose! shape-drawer-texture)
   (when default-font
-    (Disposable/.dispose default-font))
-  (Disposable/.dispose tiled-map)
+    (disposable/dispose! default-font))
+  (disposable/dispose! tiled-map)
   (vis-ui/dispose!))
