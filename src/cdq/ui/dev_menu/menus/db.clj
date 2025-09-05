@@ -1,10 +1,10 @@
 (ns cdq.ui.dev-menu.menus.db
   (:require [cdq.db :as db]
-            [cdq.editor]
             [clojure.string :as str]))
 
-(defn create [db]
+(defn create [{:keys [ctx/db]} open-editor-overview-window!]
   (for [property-type (sort (db/property-types db))]
     {:label (str/capitalize (name property-type))
      :on-click (fn [_actor ctx]
-                 (cdq.editor/open-editor-overview-window! ctx property-type))}))
+                 ; TODO stage/add can do here ???
+                 (open-editor-overview-window! ctx property-type))}))

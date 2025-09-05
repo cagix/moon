@@ -127,8 +127,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 (defn reset-stage-and-world-state!
   [{:keys [ctx/config]
     :as ctx}]
-  ((requiring-resolve (:reset-game-state! config)) ctx
-   (:starting-level config)))
+  ((requiring-resolve (:reset-game-state! config)) ctx (:starting-level config)))
 
 (defn- assoc-frame-keys-for-schema [ctx]
   (assoc ctx :ctx/mouseover-eid nil

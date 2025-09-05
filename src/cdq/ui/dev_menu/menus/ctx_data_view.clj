@@ -2,7 +2,7 @@
   (:require [cdq.ui.stage :as stage]
             [cdq.dev.data-view :as data-view]))
 
-(def item
+(defn items [_ctx _params]
   [{:label "Show data"
     :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
                 (stage/add! stage (data-view/table-view-window {:title "Context"
