@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.image
+(ns cdq.editor.widget.image
   (:require [cdq.textures :as textures]
             [cdq.ui :as ui]))
 

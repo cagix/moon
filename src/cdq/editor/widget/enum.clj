@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.enum
+(ns cdq.editor.widget.enum
   (:require [cdq.utils :refer [->edn-str]]
             [clojure.edn :as edn]
             [cdq.ui :as ui]))

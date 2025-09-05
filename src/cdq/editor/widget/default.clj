@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.default
+(ns cdq.editor.widget.default
   (:require [cdq.utils :refer [truncate ->edn-str]]
             [cdq.ui.actor :as actor]))
 

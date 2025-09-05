@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.string
+(ns cdq.editor.widget.string
   (:require [cdq.ui :as ui]))
 
 (defn create [schema  _attribute v _ctx]

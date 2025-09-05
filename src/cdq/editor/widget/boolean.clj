@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.boolean
+(ns cdq.editor.widget.boolean
   (:require [cdq.ui :as ui]))
 
 (defn create [_ _attribute checked? _ctx]

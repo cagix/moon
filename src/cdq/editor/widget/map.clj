@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.map
+(ns cdq.editor.widget.map
   (:require [cdq.db :as db]
             [cdq.input :as input]
             [cdq.property :as property]
@@ -8,9 +8,9 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [cdq.ui.editor.scroll-pane :as scroll-pane] ; to cdq.ui
-            [cdq.ui.editor.overview-table] ; ?
-            [cdq.ui.editor.widget :as widget]
+            [cdq.editor.scroll-pane :as scroll-pane] ; to cdq.ui
+            [cdq.editor.overview-table] ; ?
+            [cdq.editor.widget :as widget]
             [cdq.ui.error-window :as error-window] ; ?
             [cdq.ui :as ui] ; ?
             [cdq.ui.separator :as separator] ; table/separator cell ... should be data declarated possible
@@ -211,7 +211,7 @@
                            :close-on-escape? true})
         on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
                         (open-property-editor-window! ctx (db/get-raw db id)))]
-    (table/add! window (cdq.ui.editor.overview-table/create ctx
+    (table/add! window (cdq.editor.overview-table/create ctx
                                                             property-type
                                                             on-clicked-id))
     (.pack window)

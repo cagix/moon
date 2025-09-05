@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.overview-table
+(ns cdq.editor.overview-table
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]

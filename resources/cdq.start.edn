@@ -2,8 +2,12 @@
  [cdq.extends/impls! [[cdq.ui.CtxStage
                        cdq.stage-impl
                        cdq.ui.stage/Stage]]]
+ ; Input
+ ; cdq.ui.actor
+ ; cdq.ui.actor
+ ; cdq.ui.table
  [cdq.var/bind-roots! [
-                       [cdq.ui.editor.widget.map/application-state-atom cdq.application/state]
+                       [cdq.editor.widget.map/application-state-atom cdq.application/state]
                        [cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
@@ -122,29 +126,29 @@
                               :draw/sector]
                              [cdq.draw.line
                               :draw/line]]]]
- [cdq.multifn/add-methods! [{:optional [cdq.ui.editor.widget/create
-                                        cdq.ui.editor.widget/value]}
-                            [[cdq.ui.editor.widget.map
+ [cdq.multifn/add-methods! [{:optional [cdq.editor.widget/create
+                                        cdq.editor.widget/value]}
+                            [[cdq.editor.widget.map
                               :s/map]
-                             [cdq.ui.editor.widget.default
+                             [cdq.editor.widget.default
                               :default]
-                             [cdq.ui.editor.widget.edn
+                             [cdq.editor.widget.edn
                               :widget/edn]
-                             [cdq.ui.editor.widget.string
+                             [cdq.editor.widget.string
                               :string]
-                             [cdq.ui.editor.widget.boolean
+                             [cdq.editor.widget.boolean
                               :boolean]
-                             [cdq.ui.editor.widget.enum
+                             [cdq.editor.widget.enum
                               :enum]
-                             [cdq.ui.editor.widget.sound
+                             [cdq.editor.widget.sound
                               :s/sound]
-                             [cdq.ui.editor.widget.one-to-one
+                             [cdq.editor.widget.one-to-one
                               :s/one-to-one]
-                             [cdq.ui.editor.widget.one-to-many
+                             [cdq.editor.widget.one-to-many
                               :s/one-to-many]
-                             [cdq.ui.editor.widget.image
+                             [cdq.editor.widget.image
                               :widget/image]
-                             [cdq.ui.editor.widget.animation
+                             [cdq.editor.widget.animation
                               :widget/animation]]]]
  [cdq.multifn/add-methods! [{:required [cdq.effect/applicable?
                                         cdq.effect/handle]
@@ -276,7 +280,7 @@
                                                                               {:label "Help"
                                                                                :items [cdq.ui.dev-menu/help-items]}
                                                                               {:label "Editor"
-                                                                               :items [cdq.ui.dev-menu.menus.db/create cdq.ui.editor.widget.map/open-editor-overview-window!]}
+                                                                               :items [cdq.ui.dev-menu.menus.db/create cdq.editor.widget.map/open-editor-overview-window!]}
                                                                               {:label "Ctx Data"
                                                                                :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
                                              [cdq.ui.action-bar/create {:id :action-bar}]

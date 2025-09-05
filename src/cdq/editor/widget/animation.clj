@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget.animation
+(ns cdq.editor.widget.animation
   (:require [cdq.textures :as textures]
             [cdq.ui :as ui]))
 

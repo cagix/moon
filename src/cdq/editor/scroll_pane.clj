@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.scroll-pane
+(ns cdq.editor.scroll-pane
   (:require [cdq.ui :as ui]))
 
 (defn table-cell [viewport-height rows]

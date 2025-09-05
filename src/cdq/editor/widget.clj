@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.widget
+(ns cdq.editor.widget
   (:require [cdq.schema :as schema]))
 
 (defn- widget-type
