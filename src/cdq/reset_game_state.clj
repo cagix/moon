@@ -7,7 +7,7 @@
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid2d :as g2d]
             [cdq.math.raycaster :as raycaster]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]

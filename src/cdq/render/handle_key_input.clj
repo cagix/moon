@@ -1,6 +1,6 @@
 (ns cdq.render.handle-key-input
   (:require [clojure.gdx.input :as input]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [clojure.gdx.graphics.camera :as camera]))
 

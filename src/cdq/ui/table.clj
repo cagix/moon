@@ -1,5 +1,5 @@
 (ns cdq.ui.table
-  (:require [cdq.ui.actor :as actor]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
 

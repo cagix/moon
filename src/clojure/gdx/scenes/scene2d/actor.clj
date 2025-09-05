@@ -1,26 +1,14 @@
-(ns cdq.ui.actor
+(ns clojure.gdx.scenes.scene2d.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            InputEvent
                                             Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
                                                Window)
-           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils Align)
-           (com.kotcrab.vis.ui.widget Tooltip
-                                      VisLabel
-                                      VisWindow)
-           (cdq.ui CtxStage)))
+           (com.kotcrab.vis.ui.widget VisWindow)))
 
-(defn- click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f @(.ctx ^CtxStage (InputEvent/.getStage event))))))
-
-(defn get-stage-ctx [^Actor actor]
-  (when-let [stage (.getStage actor)] ; for tooltip when actors are initialized w/o stage yet
-    @(.ctx ^CtxStage stage)))
+(defn get-stage [^Actor actor]
+  (.getStage actor))
 
 (defn get-x [^Actor actor]
   (.getX actor))
@@ -57,32 +45,6 @@
   (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
     (.hit actor (.x v) (.y v) true)))
 
-(defn add-tooltip!
-  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.  Returns the actor."
-  [actor tooltip-text]
-  (let [text? (string? tooltip-text)
-        label (VisLabel. (if text? tooltip-text ""))
-        tooltip (proxy [Tooltip] []
-                  ; hooking into getWidth because at
-                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                  ; when tooltip position gets calculated we setText (which calls pack) before that
-                  ; so that the size is correct for the newly calculated text.
-                  (getWidth []
-                    (let [^Tooltip this this]
-                      (when-not text?
-                        (let [actor (.getTarget this)
-                              ctx (get-stage-ctx actor)]
-                          (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                            (.setText this (str (tooltip-text ctx))))))
-                      (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
-    (.setTarget  tooltip actor)
-    (.setContent tooltip label))
-  actor)
-
-(defn remove-tooltip! [actor]
-  (Tooltip/removeTooltip actor))
-
 (defn set-opts!
   [^Actor actor
    {:keys [id
@@ -105,10 +67,6 @@
                   (- y (/ (.getHeight actor) 2))))
   (when-let [[x y] position]
     (.setPosition actor x y))
-  (when-let [f (:click-listener opts)]
-    (.addListener actor (click-listener f)))
-  (when-let [tooltip (:tooltip opts)]
-    (add-tooltip! actor tooltip))
   (when-let [touchable (:actor/touchable opts)]
     (set-touchable! actor touchable))
   actor)

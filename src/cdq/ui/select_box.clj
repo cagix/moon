@@ -1,5 +1,5 @@
 (ns cdq.ui.select-box
-  (:require [cdq.ui.actor :as actor])
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor])
   (:import (com.kotcrab.vis.ui.widget VisSelectBox)))
 
 (defmethod actor/construct :actor.type/select-box [{:keys [items selected]}]

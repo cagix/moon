@@ -4,7 +4,7 @@
             [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]
             [cdq.inventory :as inventory]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.skill :as skill]
             [cdq.entity :as entity]))

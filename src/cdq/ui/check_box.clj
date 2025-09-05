@@ -1,5 +1,5 @@
 (ns cdq.ui.check-box
-  (:require [cdq.ui.actor :as actor])
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui.widget VisCheckBox)))

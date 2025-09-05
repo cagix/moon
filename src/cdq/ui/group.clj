@@ -1,5 +1,5 @@
 (ns cdq.ui.group
-  (:require [cdq.ui.actor :as actor])
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Group)))
 

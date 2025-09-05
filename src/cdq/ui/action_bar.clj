@@ -1,7 +1,8 @@
 (ns cdq.ui.action-bar
-  (:require [cdq.ui.actor :as actor]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.image-button :as image-button]
+            [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx {:keys [id]}]
@@ -38,7 +39,7 @@
         button (image-button/create {:texture-region texture-region
                                      :scale 2})]
     (actor/set-user-object! button skill-id)
-    (actor/add-tooltip!     button tooltip-text)
+    (tooltip/add!     button tooltip-text)
     (group/add!        horizontal-group button)
     (button-group/add! button-group     button)
     nil))

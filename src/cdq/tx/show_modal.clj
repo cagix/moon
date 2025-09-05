@@ -1,6 +1,6 @@
 (ns cdq.tx.show-modal
   (:require [cdq.ui :as ui]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.text-button :as text-button]))
 

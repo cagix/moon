@@ -1,6 +1,6 @@
 (ns cdq.ui.stack
   (:require [cdq.ui :as ui]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Stack)))
 

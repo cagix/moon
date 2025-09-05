@@ -2,9 +2,10 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.image :as image]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
+            [cdq.ui.tooltip :as tooltip]
             [cdq.ui :as ui]
             [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
@@ -119,13 +120,13 @@
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (utils/drawable texture-region :width cell-size :height cell-size)]
     (Image/.setDrawable image-widget drawable)
-    (actor/add-tooltip! cell-widget tooltip-text)))
+    (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")]
     (Image/.setDrawable image-widget (:background-drawable (actor/user-object image-widget)))
-    (actor/remove-tooltip! cell-widget)))
+    (tooltip/remove! cell-widget)))
 
 (defn cell-with-item?
   "If the actor is an inventory-cell, returns the inventory slot."

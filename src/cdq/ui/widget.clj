@@ -1,6 +1,6 @@
 (ns cdq.ui.widget
   (:require [cdq.ui :as ui]
-            [cdq.ui.actor :as actor])
+            [clojure.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
 (defmethod actor/construct :actor.type/widget [opts]

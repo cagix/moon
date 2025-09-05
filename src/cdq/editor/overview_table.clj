@@ -3,7 +3,8 @@
             [cdq.property :as property]
             [cdq.image :as image]
             [cdq.ui :as ui]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [cdq.ui.tooltip :as tooltip]
             [cdq.ui.image-button :as image-button]
             [cdq.ui.text-button :as text-button]
             [cdq.utils :refer [pprint-to-str]]))
@@ -69,7 +70,7 @@
                           stack {:actor/type :actor.type/stack
                                  :actors [button
                                           top-widget]}]
-                      (actor/add-tooltip! button (pprint-to-str property))
+                      (tooltip/add! button (pprint-to-str property))
                       (actor/set-touchable! top-widget :disabled)
                       {:actor stack})
                     (catch Throwable t

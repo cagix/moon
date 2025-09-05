@@ -4,7 +4,7 @@
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.stacktrace :as stacktrace]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.table :as table]
@@ -129,7 +129,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (cdq.ui.actor/construct? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (clojure.gdx.scenes.scene2d.actor/construct? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])

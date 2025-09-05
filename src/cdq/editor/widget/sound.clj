@@ -1,7 +1,7 @@
 (ns cdq.editor.widget.sound
   (:require [cdq.editor.scroll-pane :as scroll-pane]
             [cdq.audio :as audio]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.table :as table]

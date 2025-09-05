@@ -1,22 +1,34 @@
 (ns cdq.ui
   (:require [cdq.ctx :as ctx]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [cdq.ui.ctx-stage :as ctx-stage]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
+            [cdq.ui.tooltip :as tooltip]
             [cdq.ui.widget-group :as widget-group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+                                            Group
+                                            InputEvent)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Table
                                                VerticalGroup
                                                WidgetGroup)
+           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)
            (com.kotcrab.vis.ui.widget VisLabel
                                       VisScrollPane
                                       VisTable
                                       VisWindow)))
+(defn- click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f (ctx-stage/get-ctx (InputEvent/.getStage event))))))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
+  (when-let [tooltip (:tooltip opts)]
+    (tooltip/add! actor tooltip))
+  (when-let [f (:click-listener opts)]
+    (.addListener actor (click-listener f)))
   (when (instance? Table actor)
     (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
@@ -63,11 +75,13 @@
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]
-  (when-let [ctx (actor/get-stage-ctx actor)]
+  (when-let [ctx (when-let [stage (actor/get-stage actor)]
+                   (ctx-stage/get-ctx stage))]
     (f actor delta ctx)))
 
 (defn try-draw [actor f]
-  (when-let [ctx (actor/get-stage-ctx actor)]
+  (when-let [ctx (when-let [stage (actor/get-stage actor)]
+                   (ctx-stage/get-ctx stage))]
     (ctx/handle-draws! ctx (f actor ctx))))
 
 (defmethod actor/construct :actor.type/actor [opts]
@@ -78,4 +92,4 @@
           (draw [_batch _parent-alpha]
             (when-let [f (:draw opts)]
               (try-draw this f))))
-    (actor/set-opts! opts)))
+    (set-opts! opts)))

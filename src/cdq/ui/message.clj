@@ -1,5 +1,5 @@
 (ns cdq.ui.message
-  (:require [cdq.ui.actor :as actor]))
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 (defn- draw-message [state viewport]
   (when-let [text (:text @state)]
