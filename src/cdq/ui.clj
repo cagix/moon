@@ -5,31 +5,26 @@
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.ui.widget-group :as widget-group]
+            [cdq.ui.utils :as utils]
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             clojure.vis-ui.check-box)
   (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group
-                                            InputEvent)
+                                            Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Table
                                                VerticalGroup
                                                WidgetGroup)
-           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)
            (com.kotcrab.vis.ui.widget VisLabel
                                       VisScrollPane
                                       VisTable
                                       VisWindow)))
-(defn- click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f (ctx-stage/get-ctx (InputEvent/.getStage event))))))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
   (when-let [tooltip (:tooltip opts)]
     (tooltip/add! actor tooltip))
   (when-let [f (:click-listener opts)]
-    (.addListener actor (click-listener f)))
+    (.addListener actor (utils/click-listener f)))
   (when (instance? Table actor)
     (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)

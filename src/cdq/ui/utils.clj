@@ -5,7 +5,13 @@
            (com.badlogic.gdx.scenes.scene2d InputEvent)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   ChangeListener
+                                                  ClickListener
                                                   TextureRegionDrawable)))
+
+(defn click-listener [f]
+  (proxy [ClickListener] []
+    (clicked [event _x _y]
+      (f (ctx-stage/get-ctx (InputEvent/.getStage event))))))
 
 (defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
