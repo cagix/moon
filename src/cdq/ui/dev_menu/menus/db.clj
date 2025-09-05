@@ -4,8 +4,7 @@
             [clojure.string :as str]))
 
 (defn create [db]
-  {:label "Objects"
-   :items (for [property-type (sort (db/property-types db))]
-            {:label (str/capitalize (name property-type))
-             :on-click (fn [_actor ctx]
-                         (cdq.editor/open-editor-overview-window! ctx property-type))})})
+  (for [property-type (sort (db/property-types db))]
+    {:label (str/capitalize (name property-type))
+     :on-click (fn [_actor ctx]
+                 (cdq.editor/open-editor-overview-window! ctx property-type))}))

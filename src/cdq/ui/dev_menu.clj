@@ -5,10 +5,19 @@
   [{:keys [ctx/textures
            ctx/db]}]
   (menu/create
-   {:menus [((requiring-resolve 'cdq.ui.dev-menu.menus.select-world/create))
-            ((requiring-resolve 'cdq.ui.dev-menu.menus.help/create) "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
-            ((requiring-resolve 'cdq.ui.dev-menu.menus.db/create) db)
-            @(requiring-resolve 'cdq.ui.dev-menu.menus.ctx-data-view/item)]
+   {:menus [
+            {:label "World"
+             :items ((requiring-resolve 'cdq.ui.dev-menu.menus.select-world/create))}
+
+            {:label "Help"
+             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
+
+            {:label "Editor"
+             :items ((requiring-resolve 'cdq.ui.dev-menu.menus.db/create) db)}
+
+            {:label "Ctx Data"
+             :items @(requiring-resolve 'cdq.ui.dev-menu.menus.ctx-data-view/item)}
+            ]
     :update-labels (let [->texture (fn [path]
                                      (assert (contains? textures path))
                                      (get textures path))]
