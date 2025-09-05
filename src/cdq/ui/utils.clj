@@ -1,27 +1,16 @@
 (ns cdq.ui.utils
   (:require [cdq.ui.ctx-stage :as ctx-stage]
-            [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d InputEvent)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  ChangeListener
-                                                  ClickListener
-                                                  TextureRegionDrawable)))
+            [clojure.gdx.scenes.scene2d.input-event :as input-event]
+            [clojure.gdx.scenes.scene2d.utils :as utils]))
 
 (defn click-listener [f]
-  (proxy [ClickListener] []
-    (clicked [event _x _y]
-      (f (ctx-stage/get-ctx (InputEvent/.getStage event))))))
+  (utils/click-listener
+   (fn [event _x _y]
+     (f (ctx-stage/get-ctx (input-event/get-stage event))))))
 
-(defn change-listener ^ChangeListener [on-clicked]
-  (proxy [ChangeListener] []
-    (changed [event actor]
-      (on-clicked actor (ctx-stage/get-ctx (InputEvent/.getStage event))))))
+(defn change-listener [on-clicked]
+  (utils/change-listener
+   (fn [event actor]
+     (on-clicked actor (ctx-stage/get-ctx (input-event/get-stage event))))))
 
-(defn drawable [texture-region & {:keys [width height tint-color]}]
-  (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)]
-    (when (and width height)
-      (BaseDrawable/.setMinSize drawable (float width) (float height)))
-    (if tint-color
-      (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
-      drawable)))
+(def drawable utils/drawable)

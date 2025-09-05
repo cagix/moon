@@ -1,8 +1,8 @@
 (ns cdq.ui.action-bar
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.group :as group]
+  (:require [cdq.ui.group :as group]
             [cdq.ui.image-button :as image-button]
             [cdq.ui.tooltip :as tooltip]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx {:keys [id]}]

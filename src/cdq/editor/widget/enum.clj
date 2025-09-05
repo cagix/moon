@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.enum
-  (:require [cdq.ui.select-box :as select-box]
+  (:require [clojure.vis-ui.select-box :as select-box]
             [cdq.utils :refer [->edn-str]]
             [clojure.edn :as edn]))
 

@@ -2,13 +2,13 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.image :as image]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
             [cdq.ui :as ui]
-            [cdq.ui.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
+            [cdq.ui.utils :as utils]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.ui.image]))
 
 (defn create
   [{:keys [ctx/ui-viewport
@@ -119,13 +119,13 @@
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (utils/drawable texture-region :width cell-size :height cell-size)]
-    (Image/.setDrawable image-widget drawable)
+    (clojure.gdx.scenes.scene2d.ui.image/set-drawable! image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")]
-    (Image/.setDrawable image-widget (:background-drawable (actor/user-object image-widget)))
+    (clojure.gdx.scenes.scene2d.ui.image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))
 
 (defn cell-with-item?
