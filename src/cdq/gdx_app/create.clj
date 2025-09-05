@@ -79,13 +79,13 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                    (.dispose pixmap)
                    cursor))))
 
-(defn- add-graphics [ctx]
+(defn- assoc-graphics [ctx]
   (assoc ctx :ctx/graphics Gdx/graphics))
 
-(defn- add-textures [ctx]
+(defn- assoc-textures [ctx]
   (assoc ctx :ctx/textures (cdq.textures-impl/create Gdx/files)))
 
-(defn- add-audio
+(defn- assoc-audio
   [{:keys [ctx/config]
     :as ctx}]
   (assoc ctx :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config))))
@@ -94,61 +94,118 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   (doseq [[name color-params] colors]
     (Colors/put name (color/->obj color-params))))
 
-(defn- add-cursors
+(defn- assoc-cursors
   [{:keys [ctx/config]
     :as ctx}]
   (assoc ctx :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config))))
 
-(defn add-db
+(defn assoc-db
   [{:keys [ctx/config]
     :as ctx}]
   (assoc ctx :ctx/db (db/create (:db config))))
 
+(defn- assoc-sprite-batch [ctx]
+  (assoc ctx :ctx/batch (SpriteBatch.)))
+
+(defn assoc-world-unit-scale [ctx]
+  (assoc ctx :ctx/world-unit-scale (float (/ (:tile-size (:ctx/config ctx))))))
+
+(defn- assoc-shape-drawer-texture [ctx]
+  (assoc ctx :ctx/shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                                      (.setColor Color/WHITE)
+                                                      (.drawPixel 0 0))
+                                             texture (Texture. pixmap)]
+                                         (.dispose pixmap)
+                                         texture)))
+
+(defn assoc-shape-drawer
+  [{:keys [ctx/shape-drawer-texture
+           ctx/batch]
+    :as ctx}]
+  (assoc ctx :ctx/shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
+
+(defn reset-stage-and-world-state!
+  [{:keys [ctx/config]
+    :as ctx}]
+  ((requiring-resolve (:reset-game-state! config)) ctx
+   (:starting-level config)))
+
+(defn- assoc-frame-keys-for-schema [ctx]
+  (assoc ctx :ctx/mouseover-eid nil
+         :ctx/paused? nil
+         :ctx/delta-time 2
+         :ctx/active-entities 1))
+
+(defn- set-stage-as-input-processor!
+  [{:keys [ctx/input
+           ctx/stage]
+    :as ctx}]
+  (input/set-processor! input stage)
+  ctx)
+
+(defn assoc-stage
+  [{:keys [ctx/ui-viewport
+           ctx/batch]
+    :as ctx}]
+  (assoc ctx :ctx/stage (ui/stage ui-viewport batch)))
+
+(defn assoc-tiled-map-renderer
+  [{:keys [ctx/world-unit-scale
+           ctx/batch]
+    :as ctx}]
+  (assoc ctx :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
+
+(defn assoc-input [ctx]
+  (assoc ctx :ctx/input Gdx/input))
+
+(defn assoc-ui-viewport [{:keys [ctx/config] :as ctx}]
+  (assoc ctx :ctx/ui-viewport (viewport/fit (:width  (:ui-viewport config))
+                                            (:height (:ui-viewport config))
+                                            (camera/orthographic))))
+
+(defn assoc-world-viewport
+  [{:keys [ctx/config
+           ctx/world-unit-scale]
+    :as ctx}]
+  (assoc ctx :ctx/world-viewport (let [world-width  (* (:width  (:world-viewport config)) world-unit-scale)
+                                       world-height (* (:height (:world-viewport config)) world-unit-scale)]
+                                   (viewport/fit world-width
+                                                 world-height
+                                                 (camera/orthographic :y-down? false
+                                                                      :world-width world-width
+                                                                      :world-height world-height)))))
+
+(defn assoc-default-font
+  [{:keys [ctx/config]
+    :as ctx}]
+  (assoc ctx :ctx/default-font
+         (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
+                        (:params (:default-font config)))))
+
+(defn assoc-unit-scale [ctx]
+  (assoc ctx :ctx/unit-scale (atom 1)))
+
 (defn do! [config]
   (put-colors! (:colors config))
   (ui/load! (:stage config))
-  (let [input Gdx/input
-        world-unit-scale (float (/ (:tile-size config)))
-        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                            (.setColor Color/WHITE)
-                                            (.drawPixel 0 0))
-                                   texture (Texture. pixmap)]
-                               (.dispose pixmap)
-                               texture)
-        ui-viewport (viewport/fit (:width  (:ui-viewport config))
-                                  (:height (:ui-viewport config))
-                                  (camera/orthographic))
-        world-viewport (let [world-width  (* (:width  (:world-viewport config)) world-unit-scale)
-                             world-height (* (:height (:world-viewport config)) world-unit-scale)]
-                         (viewport/fit world-width
-                                       world-height
-                                       (camera/orthographic :y-down? false
-                                                            :world-width world-width
-                                                            :world-height world-height)))
-        batch (SpriteBatch.)
-        stage (ui/stage ui-viewport batch)]
-    (input/set-processor! input stage)
-    (-> (game-record/create-with-schema)
-        add-graphics
-        add-textures
-        (assoc :ctx/config config)
-        add-audio
-        add-cursors
-        add-db
-        (assoc :ctx/ui-viewport ui-viewport)
-        (assoc :ctx/input input)
-        (assoc :ctx/stage stage)
-        (assoc :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
-        (assoc :ctx/world-viewport world-viewport)
-        (assoc :ctx/default-font (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
-                                                (:params (:default-font config))))
-        (assoc :ctx/world-unit-scale world-unit-scale)
-        (assoc :ctx/batch batch)
-        (assoc :ctx/unit-scale (atom 1))
-        (assoc :ctx/shape-drawer-texture shape-drawer-texture)
-        (assoc :ctx/shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-        ((requiring-resolve (:reset-game-state! config)) (:starting-level config))
-        (assoc :ctx/mouseover-eid nil
-               :ctx/paused? nil
-               :ctx/delta-time 2
-               :ctx/active-entities 1))))
+  (-> (game-record/create-with-schema)
+      (assoc :ctx/config config)
+      assoc-sprite-batch
+      assoc-graphics
+      assoc-textures
+      assoc-audio
+      assoc-cursors
+      assoc-db
+      assoc-world-unit-scale
+      assoc-ui-viewport
+      assoc-input
+      assoc-stage
+      set-stage-as-input-processor!
+      assoc-tiled-map-renderer
+      assoc-world-viewport
+      assoc-default-font
+      assoc-unit-scale
+      assoc-shape-drawer-texture
+      assoc-shape-drawer
+      reset-stage-and-world-state! ; koennte man auch als assoc ausdruecken ...
+      assoc-frame-keys-for-schema))
