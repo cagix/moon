@@ -7,14 +7,11 @@
             [cdq.ui.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            clojure.vis-ui.check-box)
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Table
-                                               WidgetGroup)
-           (com.kotcrab.vis.ui.widget VisLabel
-                                      VisScrollPane
-                                      VisTable
-                                      VisWindow)))
+            clojure.vis-ui.check-box
+            [clojure.vis-ui.label :as label]
+            [clojure.vis-ui.scroll-pane :as scroll-pane]
+            [clojure.vis-ui.table]
+            [clojure.vis-ui.window :as window]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
@@ -22,24 +19,24 @@
     (tooltip/add! actor tooltip))
   (when-let [f (:click-listener opts)]
     (.addListener actor (utils/click-listener f)))
-  (when (instance? Table actor)
+  (when (instance? com.badlogic.gdx.scenes.scene2d.ui.Table actor)
     (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
-  (when (instance? WidgetGroup actor)
+  (when (instance? com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup actor)
     (widget-group/set-opts! actor opts))
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group actor)
     (run! #(group/add! actor %) (:actors opts)))
   actor)
 
-(defn table ^Table [opts]
-  (-> (clojure.gdx.scenes.scene2d.group/proxy-ILookup VisTable [])
+(defn table [opts]
+  (-> (clojure.vis-ui.table/create)
       (set-opts! opts)))
 
-(defn label ^VisLabel [{:keys [label/text] :as opts}]
-  (doto (VisLabel. ^CharSequence text)
+(defn label [{:keys [label/text] :as opts}]
+  (doto (label/create text)
     (set-opts! opts)))
 
 (defmethod cdq.construct/construct :actor.type/group [opts]
-  (doto (clojure.gdx.scenes.scene2d.group/proxy-ILookup Group [])
+  (doto (clojure.gdx.scenes.scene2d.group/create)
     (set-opts! opts)))
 
 (import 'clojure.lang.MultiFn)
@@ -47,20 +44,13 @@
 (MultiFn/.addMethod cdq.construct/construct :actor.type/table table)
 (MultiFn/.addMethod cdq.construct/construct :actor.type/check-box clojure.vis-ui.check-box/create)
 
-(defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (clojure.gdx.scenes.scene2d.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
-                     (.setModal (boolean modal?)))]
-        (when close-button?    (.addCloseButton window))
-        (when center?          (.centerWindow   window))
-        (when close-on-escape? (.closeOnEscape  window))
-        window)
+(defn window [opts]
+  (-> (window/create opts)
       (set-opts! opts)))
 
 (defn scroll-pane [actor]
-  (doto (VisScrollPane. actor)
-    (actor/set-user-object! :scroll-pane)
-    (.setFlickScroll false)
-    (.setFadeScrollBars false)))
+  (doto (scroll-pane/create actor)
+    (actor/set-user-object! :scroll-pane)))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]

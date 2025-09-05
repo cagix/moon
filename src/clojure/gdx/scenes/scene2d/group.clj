@@ -33,3 +33,6 @@
         (find-actor-with-id ~'this id#))
        ([id# not-found#]
         (or (find-actor-with-id ~'this id#) not-found#)))))
+
+(defn create []
+  (proxy-ILookup Group []))
