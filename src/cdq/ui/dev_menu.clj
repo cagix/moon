@@ -1,6 +1,5 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
-            [cdq.editor]
             [cdq.ui.menu :as menu]))
 
 (defn help-items [_ctx _params]
@@ -10,41 +9,11 @@
   (swap! application/state (requiring-resolve (:reset-game-state! config)) world-fn))
 
 (defn create
-  [{:keys [ctx/textures] :as ctx}]
+  [{:keys [ctx/textures] :as ctx} {:keys [menus]}]
   (menu/create
-   {:menus (map
-            (fn [menu]
-              (update menu :items (fn [[f params]]
-                                    ((requiring-resolve f) ctx params))))
-            [
-            {:label "World"
-             :items ['cdq.ui.dev-menu.menus.select-world/create
-                      {:world-fns [['cdq.world-fns.tmx/create
-                                    {:tmx-file "maps/vampire.tmx"
-                                     :start-position [32 71]}]
-                                   ['cdq.world-fns.uf-caves/create
-                                    {:tile-size 48
-                                     :texture-path "maps/uf_terrain.png"
-                                     :spawn-rate 0.02
-                                     :scaling 3
-                                     :cave-size 200
-                                     :cave-style :wide}]
-                                   ['cdq.world-fns.modules/create
-                                    {:world/map-size 5,
-                                     :world/max-area-level 3,
-                                     :world/spawn-rate 0.05}]]
-                       :reset-game-fn reset-game-fn}
-                      ]}
-
-            {:label "Help"
-             :items '[cdq.ui.dev-menu/help-items]}
-
-            {:label "Editor"
-             :items ['cdq.ui.dev-menu.menus.db/create cdq.editor/open-editor-overview-window!]}
-
-            {:label "Ctx Data"
-             :items ['cdq.ui.dev-menu.menus.ctx-data-view/items]}
-            ])
+   {:menus (for [menu menus]
+             (update menu :items (fn [[f params]]
+                                   ((requiring-resolve f) ctx params))))
     :update-labels (let [->texture (fn [path]
                                      (assert (contains? textures path))
                                      (get textures path))]

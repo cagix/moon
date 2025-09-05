@@ -83,7 +83,8 @@
     :as ctx}
    world-fn]
   (stage/clear! stage)
-  (doseq [actor-decl (map #((requiring-resolve %) ctx)
+  (doseq [actor-decl (map #(let [[f params] %]
+                             ((requiring-resolve f) ctx params))
                           (:create-ui-actors config))]
     (stage/add! stage (actor/construct actor-decl)))
   (let [world-config (merge (::world config)

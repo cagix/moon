@@ -30,7 +30,7 @@
   ; don't use select-keys as it loses Entity record type
   (info/info-text ctx (apply dissoc entity disallowed-keys)))
 
-(defn create [ctx]
+(defn create [ctx _]
   {:actor/type :actor.type/group
    :id :windows
    :actors [(cdq.ui.windows.entity-info/create ctx {:y 0

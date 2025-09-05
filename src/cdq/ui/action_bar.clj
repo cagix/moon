@@ -5,7 +5,7 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 
-(defn- create* [{:keys [id]}]
+(defn create [_ctx {:keys [id]}]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
@@ -51,6 +51,3 @@
     (actor/remove!                            button)
     (ButtonGroup/.remove button-group ^Button button)
     nil))
-
-(defn create [_ctx]
-  (create* {:id :action-bar}))

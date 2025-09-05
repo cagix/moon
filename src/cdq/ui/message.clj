@@ -9,8 +9,9 @@
                  :scale 2.5
                  :up? true}]))
 
-(defn- create*
-  [{:keys [duration-seconds
+(defn create
+  [_ctx
+   {:keys [duration-seconds
            name]}]
   {:actor/type :actor.type/actor
    :draw (fn [this {:keys [ctx/ui-viewport]}]
@@ -28,7 +29,3 @@
 (defn show! [message-actor text]
   (actor/set-user-object! message-actor (atom {:text text
                                                :counter 0})))
-
-(defn create [ctx]
-  (create* {:duration-seconds 0.5
-            :name "player-message"}))

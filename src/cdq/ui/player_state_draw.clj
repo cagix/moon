@@ -2,7 +2,7 @@
 
 (def state->draw-gui-view)
 
-(defn create [_ctx]
+(defn create [_ctx _params]
   {:actor/type :actor.type/actor
    :draw (fn [_this {:keys [ctx/player-eid]
                      :as ctx}]

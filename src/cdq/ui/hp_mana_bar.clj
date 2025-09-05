@@ -4,7 +4,7 @@
             [cdq.val-max :as val-max]
             [cdq.stats :as modifiers]))
 
-(defn- create*
+(defn create
   [{:keys [ctx/textures
            ctx/ui-viewport]}
    {:keys [rahmen-file
@@ -41,12 +41,3 @@
     {:actor/type :actor.type/actor
      :draw (fn [_this ctx]
              (create-draws ctx))}))
-
-(defn create [ctx]
-  (create* ctx
-           {:rahmen-file "images/rahmen.png"
-            :rahmenw 150
-            :rahmenh 26
-            :hpcontent-file "images/hp.png"
-            :manacontent-file "images/mana.png"
-            :y-mana 80}))  ; action-bar-icon-size
