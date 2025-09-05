@@ -9,5 +9,14 @@
 (defn create [pixmap]
   (Texture. pixmap))
 
-(defn region [texture x y w h]
-  (TextureRegion. texture x y w h))
+(defn region
+  ([^Texture texture]
+   (TextureRegion. texture))
+  ([^Texture texture [x y w h]]
+   (TextureRegion. texture
+                   (int x)
+                   (int y)
+                   (int w)
+                   (int h)))
+  ([texture x y w h]
+   (TextureRegion. texture x y w h)))

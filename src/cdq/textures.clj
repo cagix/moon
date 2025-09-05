@@ -1,5 +1,5 @@
 (ns cdq.textures
-  (:require [cdq.graphics.texture :as texture]))
+  (:require [clojure.gdx.graphics.texture :as texture]))
 
 ; FIXME this can be memoized
 ; also good for tiled-map tiles they have to be memoized too
