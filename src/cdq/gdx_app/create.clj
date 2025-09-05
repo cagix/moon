@@ -9,6 +9,7 @@
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.earlygrey.shape-drawer :as sd]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [cdq.ui.ctx-stage :as ctx-stage]
             [clojure.vis-ui :as vis-ui]
             [clojure.gdx.graphics.color :as color])
@@ -18,59 +19,9 @@
                                       Colors
                                       Pixmap
                                       Pixmap$Format
-                                      Texture
-                                      Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch
-                                          TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
-
-
-(comment
- Nearest ; Fetch the nearest texel that best maps to the pixel on screen.
-Linear ; Fetch four nearest texels that best maps to the pixel on screen.
-MipMap ; @see TextureFilter#MipMapLinearLinear
-MipMapNearestNearest ; Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a nearest filter.
-MipMapLinearNearest ; Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a linear filter.
-MipMapNearestLinear ; Fetch the two best fitting images from the mip map chain and then sample the nearest texel from each of the two images, combining them to the final output pixel.
-MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain and then sample the four nearest texels from each of the two images, combining them to the final output pixel.
- )
-
-(let [mapping {:linear Texture$TextureFilter/Linear}]
-  (defn texture-filter-k->value [k]
-    (when-not (contains? mapping k)
-      (throw (IllegalArgumentException. (str "Unknown Key: " k ". \nOptions are:\n" (sort (keys mapping))))))
-    (k mapping)))
-
-(defn- bitmap-font-configure! [^BitmapFont font {:keys [scale enable-markup? use-integer-positions?]}]
-  (.setScale (.getData font) scale)
-  (set! (.markupEnabled (.getData font)) enable-markup?)
-  (.setUseIntegerPositions font use-integer-positions?)
-  font)
-
-(defn- create-font-params [{:keys [size
-                                   min-filter
-                                   mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
-
-(defn- generate-font [file-handle {:keys [size
-                                          quality-scaling
-                                          enable-markup?
-                                          use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator
-                            (create-font-params {:size (* size quality-scaling)
-                                                 ; :texture-filter/linear because scaling to world-units
-                                                 :min-filter (texture-filter-k->value :linear)
-                                                 :mag-filter (texture-filter-k->value :linear)}))]
-    (bitmap-font-configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? enable-markup?
-                                  :use-integer-positions? use-integer-positions?})))
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)))
 
 (defn- load-cursors [files graphics cursors cursor-path-format]
   (update-vals cursors
@@ -179,8 +130,8 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   [{:keys [ctx/config]
     :as ctx}]
   (assoc ctx :ctx/default-font
-         (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
-                        (:params (:default-font config)))))
+         (freetype/generate-font (Files/.internal Gdx/files (:file (:default-font config)))
+                                 (:params (:default-font config)))))
 
 (defn assoc-unit-scale [ctx]
   (assoc ctx :ctx/unit-scale (atom 1)))

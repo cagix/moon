@@ -8,10 +8,10 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl]
             [cdq.render.clear-screen]
             [cdq.render.render-stage]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
+            [cdq.application.mac-os-config]
             [cdq.stage-impl :as stage]
             [cdq.textures-impl]
-            [cdq.tiled :as tiled]
+            [clojure.gdx.maps.tiled :as tiled]
             [cdq.ui :as ui]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.ctx-stage :as ctx-stage]
@@ -173,8 +173,7 @@
   (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
-  (when (= (shared-library-loader/operating-system) :mac)
-    (lwjgl/set-glfw-async!))
+  (cdq.application.mac-os-config/set-glfw-async!)
   (lwjgl/start-application! (reify ApplicationListener
                               (create [_]
                                 (create!))

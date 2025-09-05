@@ -1,5 +1,5 @@
 (ns cdq.level.helper
-  (:require [cdq.tiled :as tiled]
+  (:require [clojure.gdx.maps.tiled :as tiled]
             [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]

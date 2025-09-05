@@ -1,5 +1,5 @@
 (ns cdq.graphics.tiled-map-renderer
-  (:require [cdq.tiled :as tiled]
+  (:require [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.graphics.color :as color])
   (:import (cdq.graphics OrthogonalTiledMapRenderer
                              ColorSetter)))
