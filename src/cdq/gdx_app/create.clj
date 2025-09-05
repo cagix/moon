@@ -172,9 +172,22 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
     :as ctx}]
   (assoc ctx :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config))))
 
+(defn- put-colors! [colors]
+  (doseq [[name color-params] colors]
+    (Colors/put name (color/->obj color-params))))
+
+(defn- add-cursors
+  [{:keys [ctx/config]
+    :as ctx}]
+  (assoc ctx :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config))))
+
+(defn add-db
+  [{:keys [ctx/config]
+    :as ctx}]
+  (assoc ctx :ctx/db (db/create (:db config))))
+
 (defn do! [config]
-  (doseq [[name color-params] (:colors config)]
-    (Colors/put name (color/->obj color-params)))
+  (put-colors! (:colors config))
   (ui/load! (:stage config))
   (let [input Gdx/input
         world-unit-scale (float (/ (:tile-size config)))
@@ -202,8 +215,8 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         add-textures
         (assoc :ctx/config config)
         add-audio
-        (assoc :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config)))
-        (assoc :ctx/db (db/create (:db config)))
+        add-cursors
+        add-db
         (assoc :ctx/ui-viewport ui-viewport)
         (assoc :ctx/input input)
         (assoc :ctx/stage stage)
