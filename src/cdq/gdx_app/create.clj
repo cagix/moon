@@ -119,7 +119,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/world-viewport
                       ctx/z-orders])
 
-(defn- initial-context []
+(defn- create-qrecord-and-schema []
   (map->Context
    {:schema (m/schema [:map {:closed true}
                       [:ctx/active-entities :some]
@@ -161,6 +161,17 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       [:ctx/world-viewport :some]
                       [:ctx/z-orders :some]])}))
 
+(defn- add-graphics [ctx]
+  (assoc ctx :ctx/graphics Gdx/graphics))
+
+(defn- add-textures [ctx]
+  (assoc ctx :ctx/textures (cdq.textures-impl/create Gdx/files)))
+
+(defn- add-audio
+  [{:keys [ctx/config]
+    :as ctx}]
+  (assoc ctx :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config))))
+
 (defn do! [config]
   (doseq [[name color-params] (:colors config)]
     (Colors/put name (color/->obj color-params)))
@@ -186,11 +197,11 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         batch (SpriteBatch.)
         stage (ui/stage ui-viewport batch)]
     (input/set-processor! input stage)
-    (-> (initial-context)
-        (assoc :ctx/graphics Gdx/graphics)
-        (assoc :ctx/textures (cdq.textures-impl/create Gdx/files))
-        (assoc :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config)))
+    (-> (create-qrecord-and-schema)
+        add-graphics
+        add-textures
         (assoc :ctx/config config)
+        add-audio
         (assoc :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config)))
         (assoc :ctx/db (db/create (:db config)))
         (assoc :ctx/ui-viewport ui-viewport)
