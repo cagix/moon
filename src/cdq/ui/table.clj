@@ -1,32 +1,13 @@
 (ns cdq.ui.table
-  (:require [cdq.ui.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
-                                               Table)))
+  (:require [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d.ui.cell :as cell])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn add! [^Table table actor-or-decl]
   (.add table (actor/construct? actor-or-decl))) ; & here add! used
 
 (defn cells [^Table table]
   (.getCells table))
-
-(defn- set-cell-opts! [^Cell cell opts]
-  (doseq [[option arg] opts]
-    (case option
-      :fill-x?    (.fillX     cell)
-      :fill-y?    (.fillY     cell)
-      :expand?    (.expand    cell)
-      :expand-x?  (.expandX   cell)
-      :expand-y?  (.expandY   cell)
-      :bottom?    (.bottom    cell)
-      :colspan    (.colspan   cell (int   arg))
-      :pad        (.pad       cell (float arg))
-      :pad-top    (.padTop    cell (float arg))
-      :pad-bottom (.padBottom cell (float arg))
-      :width      (.width     cell (float arg))
-      :height     (.height    cell (float arg))
-      :center?    (.center    cell)
-      :right?     (.right     cell)
-      :left?      (.left      cell))))
 
 (defn add-rows!
   "rows is a seq of seqs of columns.
@@ -37,11 +18,11 @@
     (doseq [props-or-actor row]
       (cond
        (map? props-or-actor) (-> (add! table (:actor props-or-actor))
-                                 (set-cell-opts! (dissoc props-or-actor :actor)))
+                                 (cell/set-opts! (dissoc props-or-actor :actor)))
        :else (add! table props-or-actor)))
     (.row table))
   table)
 
 (defn set-opts! [^Table table {:keys [rows cell-defaults]}]
-  (set-cell-opts! (.defaults table) cell-defaults)
+  (cell/set-opts! (.defaults table) cell-defaults)
   (add-rows! table rows))

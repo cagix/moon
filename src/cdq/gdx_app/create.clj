@@ -6,12 +6,12 @@
             [cdq.game-record :as game-record]
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.color :as color]
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.ui.ctx-stage :as ctx-stage]
-            [cdq.vis-ui :as vis-ui])
+            [cdq.vis-ui :as vis-ui]
+            [clojure.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx Gdx
                              Files)
            (com.badlogic.gdx.graphics Color

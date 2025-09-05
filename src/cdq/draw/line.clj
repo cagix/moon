@@ -1,6 +1,6 @@
 (ns cdq.draw.line
-  (:require [cdq.graphics.color :as color]
-            [cdq.graphics.shape-drawer :as sd]))
+  (:require [cdq.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.color :as color]))
 
 (defn draw!
   [[_ [sx sy] [ex ey] color]

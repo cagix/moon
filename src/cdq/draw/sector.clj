@@ -1,7 +1,7 @@
 (ns cdq.draw.sector
-  (:require [cdq.graphics.color :as color]
-            [cdq.graphics.shape-drawer :as sd]
-            [cdq.math :as math]))
+  (:require [cdq.graphics.shape-drawer :as sd]
+            [cdq.math :as math]
+            [clojure.gdx.graphics.color :as color]))
 
 (defn draw!
   [[_ [center-x center-y] radius start-angle degree color]

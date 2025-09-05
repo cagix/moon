@@ -1,5 +1,5 @@
 (ns cdq.ui.utils
-  (:require [cdq.graphics.color :as color])
+  (:require [clojure.gdx.graphics.color :as color])
   (:import (cdq.ui CtxStage)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d InputEvent)

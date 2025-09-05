@@ -1,18 +1,7 @@
 (ns cdq.draw.text
-  (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.utils Align)))
-
-(def ^:private align-k->value
-  {:bottom       Align/bottom
-   :bottom-left  Align/bottomLeft
-   :bottom-right Align/bottomRight
-   :center       Align/center
-   :left         Align/left
-   :right        Align/right
-   :top          Align/top
-   :top-left     Align/topLeft
-   :top-right    Align/topRight})
+  (:require [clojure.gdx.utils.align :as align]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -29,7 +18,7 @@
    batch
    {:keys [scale text x y up? h-align target-width wrap?]}]
   {:pre [(or (nil? h-align)
-             (contains? align-k->value h-align))]}
+             (contains? align/k->value h-align))]}
   (let [old-scale (.scaleX (.getData font))]
     (.setScale (.getData font) (float (* old-scale scale)))
     (.draw font
@@ -38,7 +27,7 @@
            (float x)
            (float (+ y (if up? (text-height font text) 0)))
            (float target-width)
-           (get align-k->value (or h-align :center))
+           (get align/k->value (or h-align :center))
            wrap?)
     (.setScale (.getData font) (float old-scale))))
 

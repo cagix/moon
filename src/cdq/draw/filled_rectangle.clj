@@ -1,6 +1,6 @@
 (ns cdq.draw.filled-rectangle
-  (:require [cdq.graphics.color :as color]
-            [cdq.graphics.shape-drawer :as sd]))
+  (:require [cdq.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.color :as color]))
 
 (defn draw!
   [[_ x y w h color]
