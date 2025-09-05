@@ -5,7 +5,8 @@
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.ui.widget-group :as widget-group])
+            [cdq.ui.widget-group :as widget-group]
+            clojure.vis-ui.check-box)
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group
                                             InputEvent)
@@ -57,6 +58,7 @@
 (import 'clojure.lang.MultiFn)
 (MultiFn/.addMethod cdq.construct/construct :actor.type/label label)
 (MultiFn/.addMethod cdq.construct/construct :actor.type/table table)
+(MultiFn/.addMethod cdq.construct/construct :actor.type/check-box cdq.ui.check-box/create)
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
   (-> (let [window (doto (cdq.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder

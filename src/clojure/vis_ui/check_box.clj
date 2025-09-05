@@ -1,10 +1,9 @@
-(ns cdq.ui.check-box
-  (:require cdq.construct)
+(ns clojure.vis-ui.check-box
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui.widget VisCheckBox)))
 
-(defmethod cdq.construct/construct :actor.type/check-box -check-box
+(defn create
   [{:keys [text on-clicked checked?]}]
   (let [^Button button (VisCheckBox. (str text))]
     (.setChecked button checked?)

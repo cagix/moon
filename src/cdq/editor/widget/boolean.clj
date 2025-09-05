@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.boolean
-  (:require [cdq.ui.check-box :as check-box]))
+  (:require [clojure.vis-ui.check-box :as check-box]))
 
 (defn create [_ _attribute checked? _ctx]
   (assert (boolean? checked?))
