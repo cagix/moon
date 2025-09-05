@@ -1,4 +1,5 @@
 (ns clojure.gdx.backends.lwjgl3
+  (:require [clojure.gdx.application.listener :as listener])
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3WindowConfiguration)))
@@ -18,7 +19,7 @@
 
 (defn start-application!
   [listener config]
-  (Lwjgl3Application. listener
+  (Lwjgl3Application. (listener/create listener)
                       (let [obj (Lwjgl3ApplicationConfiguration.)]
                         (doseq [[k v] config]
                           (set-application-config-key! obj k v))

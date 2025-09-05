@@ -19,8 +19,7 @@
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)))
 
@@ -174,17 +173,12 @@
 
 (defn -main []
   (cdq.application.mac-os-config/set-glfw-async!)
-  (lwjgl/start-application! (reify ApplicationListener
-                              (create [_]
-                                (create!))
-                              (dispose [_]
-                                (dispose!))
-                              (render [_]
-                                (render!))
-                              (resize [_ width height]
-                                (resize! width height))
-                              (pause [_])
-                              (resume [_]))
+  (lwjgl/start-application! {:create! create!
+                             :dispose! dispose!
+                             :render! render!
+                             :resize resize!
+                             :resume! (fn [])
+                             :pause! (fn [])}
                             {:title "Levelgen test"
                              :windowed-mode {:width 1440 :height 900}
                              :foreground-fps 60}))
