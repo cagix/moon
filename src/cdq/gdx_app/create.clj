@@ -14,19 +14,16 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]
-            [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics Color
-                                      Colors
-                                      Pixmap
-                                      Pixmap$Format
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)))
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]))
 
 (defn- load-cursors [files graphics cursors cursor-path-format]
   (update-vals cursors
                (fn [[file [hotspot-x hotspot-y]]]
-                 (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
+                 (let [pixmap (pixmap/create (files/internal files (format cursor-path-format file)))
                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                    (.dispose pixmap)
                    cursor))))
@@ -42,10 +39,6 @@
     :as ctx}]
   (assoc ctx :ctx/audio (audio/create (gdx/audio) (gdx/files) (:audio config))))
 
-(defn- put-colors! [colors]
-  (doseq [[name color-params] colors]
-    (Colors/put name (color/->obj color-params))))
-
 (defn- assoc-cursors
   [{:keys [ctx/config]
     :as ctx}]
@@ -57,24 +50,24 @@
   (assoc ctx :ctx/db (db/create (:db config))))
 
 (defn- assoc-sprite-batch [ctx]
-  (assoc ctx :ctx/batch (SpriteBatch.)))
+  (assoc ctx :ctx/batch (sprite-batch/create)))
 
 (defn assoc-world-unit-scale [ctx]
   (assoc ctx :ctx/world-unit-scale (float (/ (:tile-size (:ctx/config ctx))))))
 
 (defn- assoc-shape-drawer-texture [ctx]
-  (assoc ctx :ctx/shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                                      (.setColor Color/WHITE)
-                                                      (.drawPixel 0 0))
-                                             texture (Texture. pixmap)]
-                                         (.dispose pixmap)
+  (assoc ctx :ctx/shape-drawer-texture (let [pixmap (doto (pixmap/create)
+                                                      (pixmap/set-color! color/white)
+                                                      (pixmap/draw-pixel! 0 0))
+                                             texture (texture/create pixmap)]
+                                         (pixmap/dispose! pixmap)
                                          texture)))
 
 (defn assoc-shape-drawer
   [{:keys [ctx/shape-drawer-texture
            ctx/batch]
     :as ctx}]
-  (assoc ctx :ctx/shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
+  (assoc ctx :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defn reset-stage-and-world-state!
   [{:keys [ctx/config]
@@ -137,7 +130,7 @@
   (assoc ctx :ctx/unit-scale (atom 1)))
 
 (defn do! [config]
-  (put-colors! (:colors config))
+  (colors/put! (:colors config))
   (vis-ui/load! (:stage config))
   (-> (game-record/create-with-schema)
       (assoc :ctx/config config)
