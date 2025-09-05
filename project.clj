@@ -4,25 +4,28 @@
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
-  :dependencies [
+  :dependencies [[org.clojure/clojure "1.12.0"]
 
-                 ; cdq.world !!!
-                 ; -> which does not depend on libgdx !!!
-
-                 [org.clojure/clojure "1.12.0"]
-                 ; cdq.gdx
+                 ; clojure.gdx
                  [com.badlogicgames.gdx/gdx                   ~libgdx-version]
+
+                 ; clojure.gdx.backends.lwjgl
                  [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
-                 ; cdq.gdx.backends.lwjgl
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
-                 ; cdq.gdx.graphics.freetype
+
+                 ; clojure.gdx.graphics.g2d.freetype
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
+
+                 ; & this here !?
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
-                 ; cdq.gdx.graphics.shape-drawer
+
+                 ; clojure.earlygrey.shape-drawer
                  [space.earlygrey/shapedrawer "2.5.0"]
-                 ; cdq.gdx.vis-ui or cdq.gdx.ui
+                 ;
+
+                 ; TODO
                  [com.kotcrab.vis/vis-ui "1.5.2"]
-                 ; cdq.gdx.malli
+                 ;
                  [metosin/malli "0.13.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]

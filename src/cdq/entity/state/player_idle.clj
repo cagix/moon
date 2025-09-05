@@ -1,13 +1,15 @@
 (ns cdq.entity.state.player-idle
-  (:require [clojure.gdx.input :as input]
-            [cdq.ui.action-bar :as action-bar]
+  (:require [cdq.ui.action-bar :as action-bar]
             [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]
             [cdq.inventory :as inventory]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.skill :as skill]
-            [cdq.entity :as entity]))
+            [cdq.entity :as entity]
+            [clojure.gdx.input :as input]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.ui.button :as button]
+            [clojure.vis-ui.window :as window]))
 
 (defn- action-bar-selected-skill [stage]
   (-> stage
@@ -67,8 +69,8 @@
           (cond
            (and inventory-slot
                 (get-in (:entity/inventory @player-eid) inventory-slot)) :cursors/hand-before-grab
-           (actor/window-title-bar? actor) :cursors/move-window
-           (actor/button?           actor) :cursors/over-button
+           (window/title-bar? actor) :cursors/move-window
+           (button/is?        actor) :cursors/over-button
            :else :cursors/default)))
 
       :interaction-state/clickable-mouseover-eid

@@ -9,6 +9,7 @@
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.scenes.scene2d.ui.window :as window]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [cdq.ui :as ui]))
@@ -22,7 +23,7 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (actor/pack-ancestor-window! table))]
+                    (window/pack-ancestors! table))]
     (table/add-rows!
      table
      [[(text-button/create "+"
