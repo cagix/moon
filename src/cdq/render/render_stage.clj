@@ -1,5 +1,8 @@
 (ns cdq.render.render-stage
-  (:require [cdq.ui.stage :as stage]))
+  (:require [clojure.gdx.scenes.scene2d.stage :as stage])
+  (:import (cdq.ui CtxStage)))
 
 (defn do! [{:keys [ctx/stage] :as ctx}]
-  (stage/render! stage ctx))
+  (reset! (.ctx ^CtxStage stage) ctx)
+  (stage/act!  stage)
+  (stage/draw! stage))

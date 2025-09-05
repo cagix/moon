@@ -1,5 +1,5 @@
 (ns cdq.dev.data-view
-  (:require [cdq.ui.stage :as stage]
+  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui :as ui]
             [cdq.ui.text-button :as text-button]))
 

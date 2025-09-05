@@ -1,10 +1,10 @@
-(ns cdq.stage-impl
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)
-           (cdq.ui CtxStage)))
+(ns clojure.gdx.scenes.scene2d.stage
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
-(defn render! [stage ctx]
-  (reset! (.ctx ^CtxStage stage) ctx)
-  (Stage/.act  stage)
+(defn act! [stage]
+  (Stage/.act stage))
+
+(defn draw! [stage]
   (Stage/.draw stage))
 
 (defn add! [^Stage stage actor]

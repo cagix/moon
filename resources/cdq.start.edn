@@ -1,14 +1,5 @@
 [
  [cdq.application.mac-os-config/set-glfw-async!]
- ; FIRST ORDER NAMESPACES
- ; THEN NAME AFTER _LAYERS_ OR THINGS ?
- [cdq.extends/impls! [[cdq.ui.CtxStage
-                       cdq.stage-impl
-                       cdq.ui.stage/Stage]]]
- ; Input
- ; cdq.ui.actor
- ; cdq.ui.actor
- ; cdq.ui.table
  [cdq.var/bind-roots! [
                        [cdq.editor.widget.map/application-state-atom cdq.application/state]
                        [cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit

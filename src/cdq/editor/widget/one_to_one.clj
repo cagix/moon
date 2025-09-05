@@ -7,7 +7,7 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.image :as image]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [cdq.ui :as ui]))

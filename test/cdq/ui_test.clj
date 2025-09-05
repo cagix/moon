@@ -2,7 +2,7 @@
   (:require [cdq.application :as application]
             #_[cdq.create.world-event-handlers :refer [show-modal-window!]]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.stage :as stage]))
+            [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (comment
  ; TODO use post-runnable! ?

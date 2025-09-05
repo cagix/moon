@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-mouseover-keys
-  (:require [cdq.ui.stage :as stage]
+  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.math :as math])
   (:import (com.badlogic.gdx Input)
            (com.badlogic.gdx.math Vector2)

@@ -1,7 +1,7 @@
 (ns cdq.tx.show-modal
   (:require [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.text-button :as text-button]))
 
 ; no window movable type cursor appears here like in player idle

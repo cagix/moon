@@ -8,7 +8,7 @@
             [cdq.grid2d :as g2d]
             [cdq.math.raycaster :as raycaster]
             [cdq.ui.actor :as actor]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.content-grid :as content-grid]))

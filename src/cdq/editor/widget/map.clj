@@ -6,7 +6,7 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [cdq.editor.scroll-pane :as scroll-pane] ; to cdq.ui

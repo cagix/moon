@@ -1,7 +1,7 @@
 (ns cdq.render.check-open-debug-data
   (:require [cdq.dev.data-view :as data-view]
             [cdq.input :as input]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.grid :as grid]))
 
 ; TODO also items/skills/mouseover-actors

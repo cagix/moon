@@ -9,7 +9,7 @@
             [cdq.render.clear-screen]
             [cdq.render.render-stage]
             [cdq.application.mac-os-config]
-            [cdq.stage-impl :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.textures-impl]
             [clojure.gdx.maps.tiled :as tiled]
             [cdq.ui :as ui]

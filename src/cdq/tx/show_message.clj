@@ -1,6 +1,6 @@
 (ns cdq.tx.show-message
   (:require [cdq.ui.group :as group]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.message]))
 
 (defn do!
