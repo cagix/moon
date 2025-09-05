@@ -13,14 +13,6 @@
             [cdq.ui.table :as table]
             [cdq.ui :as ui]))
 
-(defn- apply-context-fn [window f]
-  (fn [{:keys [ctx/stage] :as ctx}]
-    (try (f ctx)
-         (actor/remove! window)
-         (catch Throwable t
-           (stacktrace/pretty-print t)
-           (stage/add! stage (error-window/create t))))))
-
 ; We are working with raw property data without fetching relationships and build
 ; otherwise at update! we would have to convert again back to edn
 ; for example at images/relationships
@@ -39,6 +31,13 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (widget/create schema nil props ctx)
+        apply-context-fn (fn [window f]
+                           (fn [{:keys [ctx/stage] :as ctx}]
+                             (try (f ctx)
+                                  (actor/remove! window)
+                                  (catch Throwable t
+                                    (stacktrace/pretty-print t)
+                                    (stage/add! stage (error-window/create t))))))
         save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
                                            (swap! application-state-atom update :ctx/db
                                                   db/update!
