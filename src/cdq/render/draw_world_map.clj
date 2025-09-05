@@ -1,7 +1,7 @@
 (ns cdq.render.draw-world-map
   (:require [cdq.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.tile-color-setter :as tile-color-setter]
-            [cdq.raycaster :as raycaster]))
+            [cdq.math.raycaster :as raycaster]
+            [cdq.tile-color-setter :as tile-color-setter]))
 
 (defn do!
   [{:keys [ctx/explored-tile-corners
