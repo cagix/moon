@@ -1,4 +1,4 @@
-(ns cdq.dev.debug.actionbar)
+(ns cdq.dev.actionbar)
 
 (comment
  (keys (:entity/skills @(:ctx/player-eid @cdq.application/state)))

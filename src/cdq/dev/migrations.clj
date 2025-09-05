@@ -1,4 +1,4 @@
-(ns cdq.dev.db.migrations.creature-stats
+(ns cdq.dev.migrations
   (:require [cdq.db-impl :as db]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
