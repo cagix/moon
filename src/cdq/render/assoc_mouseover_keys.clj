@@ -1,24 +1,21 @@
 (ns cdq.render.assoc-mouseover-keys
-  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
-            [cdq.math :as math])
-  (:import (com.badlogic.gdx Input)
-           (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+  (:require [clojure.gdx.input :as input]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.utils.viewport :as viewport]
+            [cdq.math :as math]))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 ; TODO clamping only works for gui-viewport ?
 ; TODO ? "Can be negative coordinates, undefined cells."
-(defn- unproject-clamp [^Viewport viewport [x y]]
-  (let [x (math/clamp x
-                      (.getLeftGutterWidth viewport)
-                      (.getRightGutterX    viewport))
-        y (math/clamp y
-                      (.getTopGutterHeight viewport)
-                      (.getTopGutterY      viewport))]
-    (let [vector2 (.unproject viewport (Vector2. x y))]
-      [(.x vector2)
-       (.y vector2)])))
+(defn- unproject-clamp [viewport [x y]]
+  (viewport/unproject viewport
+                      (math/clamp x
+                                  (:viewport/left-gutter-width viewport)
+                                  (:viewport/right-gutter-x    viewport))
+                      (math/clamp y
+                                  (:viewport/top-gutter-height viewport)
+                                  (:viewport/top-gutter-y      viewport))))
 
 (defn do!
   [{:keys [ctx/input
@@ -26,7 +23,7 @@
            ctx/ui-viewport
            ctx/world-viewport]
     :as ctx}]
-  (let [mouse-position [(Input/.getX input) (Input/.getY input)]
+  (let [mouse-position (input/mouse-position input)
         ui-mouse-position    (unproject-clamp ui-viewport mouse-position)
         world-mouse-position (unproject-clamp world-viewport mouse-position)]
     (assoc ctx

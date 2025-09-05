@@ -17,3 +17,7 @@
 
 (defn set-processor! [^Input this input-processor]
   (.setInputProcessor this input-processor))
+
+(defn mouse-position [^Input this]
+  [(Input/.getX this)
+   (Input/.getY this)])

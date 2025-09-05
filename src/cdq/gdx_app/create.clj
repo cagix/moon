@@ -6,7 +6,7 @@
             [cdq.game-record :as game-record]
             [clojure.gdx.graphics :as graphics]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.viewport :as viewport]
+            [clojure.gdx.utils.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.freetype :as freetype]

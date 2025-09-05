@@ -3,7 +3,7 @@
             [cdq.gdx-app.resize]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.graphics.viewport :as viewport]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.input :as input]
             [clojure.gdx.backends.lwjgl3 :as lwjgl]
             [cdq.render.clear-screen]
