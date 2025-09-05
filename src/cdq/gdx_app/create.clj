@@ -3,15 +3,14 @@
             [cdq.input :as input]
             [cdq.db-impl :as db]
             [cdq.textures-impl]
+            [cdq.game-record :as game-record]
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.color :as color]
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.ui :as ui]
-            [cdq.malli :as m]
-            [qrecord.core :as q])
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx Gdx
                              Files)
            (com.badlogic.gdx.graphics Color
@@ -80,87 +79,6 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                    (.dispose pixmap)
                    cursor))))
 
-(q/defrecord Context [ctx/active-entities
-                      ctx/audio
-                      ctx/batch
-                      ctx/config
-                      ctx/content-grid
-                      ctx/cursors
-                      ctx/db
-                      ctx/default-font
-                      ctx/delta-time
-                      ctx/elapsed-time
-                      ctx/entity-ids
-                      ctx/explored-tile-corners
-                      ctx/factions-iterations
-                      ctx/graphics
-                      ctx/grid
-                      ctx/id-counter
-                      ctx/input
-                      ctx/max-delta
-                      ctx/max-speed
-                      ctx/minimum-size
-                      ctx/mouseover-eid
-                      ctx/paused?
-                      ctx/player-eid
-                      ctx/potential-field-cache
-                      ctx/raycaster
-                      ctx/render-z-order
-                      ctx/schema
-                      ctx/shape-drawer
-                      ctx/shape-drawer-texture
-                      ctx/stage
-                      ctx/textures
-                      ctx/tiled-map
-                      ctx/tiled-map-renderer
-                      ctx/ui-viewport
-                      ctx/unit-scale
-                      ctx/world-unit-scale
-                      ctx/world-viewport
-                      ctx/z-orders])
-
-(defn- create-qrecord-and-schema []
-  (map->Context
-   {:schema (m/schema [:map {:closed true}
-                      [:ctx/active-entities :some]
-                      [:ctx/audio :some]
-                      [:ctx/batch :some]
-                      [:ctx/config :some]
-                      [:ctx/content-grid :some]
-                      [:ctx/cursors :some]
-                      [:ctx/db :some]
-                      [:ctx/default-font :some]
-                      [:ctx/delta-time :some]
-                      [:ctx/elapsed-time :some]
-                      [:ctx/entity-ids :some]
-                      [:ctx/explored-tile-corners :some]
-                      [:ctx/factions-iterations :some]
-                      [:ctx/graphics :some]
-                      [:ctx/grid :some]
-                      [:ctx/id-counter :some]
-                      [:ctx/input :some]
-                      [:ctx/max-delta :some]
-                      [:ctx/max-speed :some]
-                      [:ctx/minimum-size :some]
-                      [:ctx/mouseover-eid :any]
-                      [:ctx/paused? :any]
-                      [:ctx/player-eid :some]
-                      [:ctx/potential-field-cache :some]
-                      [:ctx/raycaster :some]
-                      [:ctx/render-z-order :some]
-                      [:ctx/schema :some]
-                      [:ctx/shape-drawer :some]
-                      [:ctx/shape-drawer-texture :some]
-                      [:ctx/stage :some]
-                      [:ctx/textures :some]
-                      [:ctx/tiled-map :some]
-                      [:ctx/tiled-map-renderer :some]
-                      [:ctx/ui-viewport :some]
-                      [:ctx/unit-scale :some]
-                      [:ctx/world-unit-scale :some]
-                      [:ctx/world-viewport :some]
-                      [:ctx/z-orders :some]])}))
-
 (defn- add-graphics [ctx]
   (assoc ctx :ctx/graphics Gdx/graphics))
 
@@ -210,7 +128,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         batch (SpriteBatch.)
         stage (ui/stage ui-viewport batch)]
     (input/set-processor! input stage)
-    (-> (create-qrecord-and-schema)
+    (-> (game-record/create-with-schema)
         add-graphics
         add-textures
         (assoc :ctx/config config)
