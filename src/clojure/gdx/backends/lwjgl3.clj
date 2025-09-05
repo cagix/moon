@@ -1,11 +1,8 @@
-(ns cdq.lwjgl
+(ns clojure.gdx.backends.lwjgl3
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
-                                             Lwjgl3WindowConfiguration)
-           (org.lwjgl.system Configuration)))
+                                             Lwjgl3WindowConfiguration)))
 
-(defn set-glfw-async! []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
 
 (defn- set-window-config-key!
   [^Lwjgl3WindowConfiguration object k v]

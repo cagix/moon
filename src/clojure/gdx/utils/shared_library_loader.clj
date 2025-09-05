@@ -1,4 +1,4 @@
-(ns cdq.shared-library-loader
+(ns clojure.gdx.utils.shared-library-loader
   (:import (com.badlogic.gdx.utils SharedLibraryLoader
                                    Os)))
 

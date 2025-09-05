@@ -8,9 +8,9 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
-            [cdq.graphics.shape-drawer :as sd]
+            [clojure.earlygrey.shape-drawer :as sd]
             [cdq.ui.ctx-stage :as ctx-stage]
-            [cdq.vis-ui :as vis-ui]
+            [clojure.vis-ui :as vis-ui]
             [clojure.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx Gdx
                              Files)

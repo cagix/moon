@@ -1,5 +1,5 @@
 (ns cdq.draw.rectangle
-  (:require [cdq.graphics.shape-drawer :as sd]
+  (:require [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics.color :as color]))
 
 (defn draw!

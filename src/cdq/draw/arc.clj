@@ -1,5 +1,5 @@
 (ns cdq.draw.arc
-  (:require [cdq.graphics.shape-drawer :as sd]
+  (:require [clojure.earlygrey.shape-drawer :as sd]
             [cdq.math :as math]
             [clojure.gdx.graphics.color :as color]))
 

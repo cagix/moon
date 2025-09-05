@@ -1,5 +1,5 @@
 (ns clojure.gdx.lwjgl-test
-  (:require [cdq.lwjgl :as lwjgl])
+  (:require [clojure.gdx.backends.lwjgl3 :as lwjgl])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils SharedLibraryLoader
                                    Os)
