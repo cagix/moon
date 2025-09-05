@@ -119,6 +119,48 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
                       ctx/world-viewport
                       ctx/z-orders])
 
+(defn- initial-context []
+  (map->Context
+   {:schema (m/schema [:map {:closed true}
+                      [:ctx/active-entities :some]
+                      [:ctx/audio :some]
+                      [:ctx/batch :some]
+                      [:ctx/config :some]
+                      [:ctx/content-grid :some]
+                      [:ctx/cursors :some]
+                      [:ctx/db :some]
+                      [:ctx/default-font :some]
+                      [:ctx/delta-time :some]
+                      [:ctx/elapsed-time :some]
+                      [:ctx/entity-ids :some]
+                      [:ctx/explored-tile-corners :some]
+                      [:ctx/factions-iterations :some]
+                      [:ctx/graphics :some]
+                      [:ctx/grid :some]
+                      [:ctx/id-counter :some]
+                      [:ctx/input :some]
+                      [:ctx/max-delta :some]
+                      [:ctx/max-speed :some]
+                      [:ctx/minimum-size :some]
+                      [:ctx/mouseover-eid :any]
+                      [:ctx/paused? :any]
+                      [:ctx/player-eid :some]
+                      [:ctx/potential-field-cache :some]
+                      [:ctx/raycaster :some]
+                      [:ctx/render-z-order :some]
+                      [:ctx/schema :some]
+                      [:ctx/shape-drawer :some]
+                      [:ctx/shape-drawer-texture :some]
+                      [:ctx/stage :some]
+                      [:ctx/textures :some]
+                      [:ctx/tiled-map :some]
+                      [:ctx/tiled-map-renderer :some]
+                      [:ctx/ui-viewport :some]
+                      [:ctx/unit-scale :some]
+                      [:ctx/world-unit-scale :some]
+                      [:ctx/world-viewport :some]
+                      [:ctx/z-orders :some]])}))
+
 (defn do! [config]
   (doseq [[name color-params] (:colors config)]
     (Colors/put name (color/->obj color-params)))
@@ -144,67 +186,25 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
         batch (SpriteBatch.)
         stage (ui/stage ui-viewport batch)]
     (input/set-processor! input stage)
-    (-> (map->Context {:schema (m/schema [:map {:closed true}
-                                          [:ctx/active-entities :some]
-                                          [:ctx/audio :some]
-                                          [:ctx/batch :some]
-                                          [:ctx/config :some]
-                                          [:ctx/content-grid :some]
-                                          [:ctx/cursors :some]
-                                          [:ctx/db :some]
-                                          [:ctx/default-font :some]
-                                          [:ctx/delta-time :some]
-                                          [:ctx/elapsed-time :some]
-                                          [:ctx/entity-ids :some]
-                                          [:ctx/explored-tile-corners :some]
-                                          [:ctx/factions-iterations :some]
-                                          [:ctx/graphics :some]
-                                          [:ctx/grid :some]
-                                          [:ctx/id-counter :some]
-                                          [:ctx/input :some]
-                                          [:ctx/max-delta :some]
-                                          [:ctx/max-speed :some]
-                                          [:ctx/minimum-size :some]
-                                          [:ctx/mouseover-eid :any]
-                                          [:ctx/paused? :any]
-                                          [:ctx/player-eid :some]
-                                          [:ctx/potential-field-cache :some]
-                                          [:ctx/raycaster :some]
-                                          [:ctx/render-z-order :some]
-                                          [:ctx/schema :some]
-                                          [:ctx/shape-drawer :some]
-                                          [:ctx/shape-drawer-texture :some]
-                                          [:ctx/stage :some]
-                                          [:ctx/textures :some]
-                                          [:ctx/tiled-map :some]
-                                          [:ctx/tiled-map-renderer :some]
-                                          [:ctx/ui-viewport :some]
-                                          [:ctx/unit-scale :some]
-                                          [:ctx/world-unit-scale :some]
-                                          [:ctx/world-viewport :some]
-                                          [:ctx/z-orders :some]])
-                       :graphics Gdx/graphics
-                       :textures (cdq.textures-impl/create Gdx/files)
-                       :audio (audio/create Gdx/audio Gdx/files (:audio config))
-                       :config config
-                       :cursors (load-cursors
-                                 Gdx/files
-                                 Gdx/graphics
-                                 (:cursors config)
-                                 (:cursor-path-format config))
-                       :db (db/create (:db config))
-                       :ui-viewport ui-viewport
-                       :input input
-                       :stage stage
-                       :tiled-map-renderer (tm-renderer/create world-unit-scale batch)
-                       :world-viewport world-viewport
-                       :default-font (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
-                                                    (:params (:default-font config)))
-                       :world-unit-scale world-unit-scale
-                       :batch batch
-                       :unit-scale (atom 1)
-                       :shape-drawer-texture shape-drawer-texture
-                       :shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))})
+    (-> (initial-context)
+        (assoc :ctx/graphics Gdx/graphics)
+        (assoc :ctx/textures (cdq.textures-impl/create Gdx/files))
+        (assoc :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config)))
+        (assoc :ctx/config config)
+        (assoc :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config)))
+        (assoc :ctx/db (db/create (:db config)))
+        (assoc :ctx/ui-viewport ui-viewport)
+        (assoc :ctx/input input)
+        (assoc :ctx/stage stage)
+        (assoc :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
+        (assoc :ctx/world-viewport world-viewport)
+        (assoc :ctx/default-font (generate-font (Files/.internal Gdx/files (:file (:default-font config)))
+                                                (:params (:default-font config))))
+        (assoc :ctx/world-unit-scale world-unit-scale)
+        (assoc :ctx/batch batch)
+        (assoc :ctx/unit-scale (atom 1))
+        (assoc :ctx/shape-drawer-texture shape-drawer-texture)
+        (assoc :ctx/shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
         ((requiring-resolve (:reset-game-state! config)) (:starting-level config))
         (assoc :ctx/mouseover-eid nil
                :ctx/paused? nil
