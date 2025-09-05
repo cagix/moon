@@ -10,7 +10,8 @@
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.ui :as ui])
+            [cdq.ui :as ui]
+            [cdq.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx Gdx
                              Files)
            (com.badlogic.gdx.graphics Color
@@ -186,7 +187,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
 
 (defn do! [config]
   (put-colors! (:colors config))
-  (ui/load! (:stage config))
+  (vis-ui/load! (:stage config))
   (-> (game-record/create-with-schema)
       (assoc :ctx/config config)
       assoc-sprite-batch

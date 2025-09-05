@@ -1,5 +1,5 @@
 (ns cdq.gdx-app.dispose
-  (:require [cdq.ui :as ui])
+  (:require [cdq.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn- dispose-audio! [sounds]
@@ -24,4 +24,4 @@
   (when default-font
     (Disposable/.dispose default-font))
   (Disposable/.dispose tiled-map)
-  (ui/dispose!))
+  (vis-ui/dispose!))

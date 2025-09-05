@@ -13,6 +13,7 @@
             [cdq.textures-impl]
             [cdq.tiled :as tiled]
             [cdq.ui :as ui]
+            [cdq.vis-ui :as vis-ui]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx])
@@ -89,7 +90,7 @@
 (defrecord Context [])
 
 (defn create! []
-  (ui/load! {:skin-scale :x1})
+  (vis-ui/load! {:skin-scale :x1})
   (let [input Gdx/input
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
@@ -125,7 +126,7 @@
 (defn dispose! []
   ; TODO ? disposing properly everything cdq.start stuff??
   ; batch, cursors, default-font, shape-drawer-texture, etc.
-  (ui/dispose!)
+  (vis-ui/dispose!)
   (let [{:keys [ctx/sprite-batch
                 ctx/tiled-map]} @state]
     (Disposable/.dispose sprite-batch) ; TODO that wont work anymore -> and one more fn so have to move it together?
