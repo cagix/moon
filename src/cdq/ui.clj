@@ -5,21 +5,16 @@
             [cdq.ui.table :as table]
             [cdq.ui.utils :as utils]
             [cdq.ui.widget-group :as widget-group])
-  (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               Image
                                                Table
                                                VerticalGroup
                                                Widget
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable)
-           (com.badlogic.gdx.utils Align
-                                   Scaling)
-           (com.kotcrab.vis.ui.widget VisImage
-                                      VisImageButton
+           (com.kotcrab.vis.ui.widget VisImageButton
                                       VisLabel
                                       VisScrollPane
                                       VisTable
@@ -64,30 +59,6 @@
         (when center?          (.centerWindow   window))
         (when close-on-escape? (.closeOnEscape  window))
         window)
-      (set-opts! opts)))
-
-(defmulti ^:private image* type)
-
-(defmethod image* Drawable [^Drawable drawable]
-  (VisImage. drawable))
-
-(defmethod image* Texture [texture]
-  (VisImage. (TextureRegion. ^Texture texture)))
-
-(defmethod image* TextureRegion [texture-region]
-  (VisImage. ^TextureRegion texture-region))
-
-(defn image-widget ; TODO widget also make, for fill parent
-  "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
-  [object {:keys [scaling align fill-parent?] :as opts}]
-  (-> (let [^Image image (image* object)]
-        (when (= :center align)
-          (.setAlign image Align/center))
-        (when (= :fill scaling)
-          (.setScaling image Scaling/fill))
-        (when fill-parent?
-          (.setFillParent image true))
-        image)
       (set-opts! opts)))
 
 (defn scroll-pane [actor]

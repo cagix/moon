@@ -4,6 +4,7 @@
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
+            [cdq.ui.image :as image]
             [cdq.ui :as ui]
             [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
@@ -76,10 +77,10 @@
                             :user-object cell
                             :click-listener (clicked-cell-fn cell)
                             :actors [(draw-rect-actor)
-                                     (ui/image-widget background-drawable
-                                                      {:name "image-widget"
-                                                       :user-object {:background-drawable background-drawable
-                                                                     :cell-size cell-size}})]}}))]
+                                     (image/create background-drawable
+                                                   {:name "image-widget"
+                                                    :user-object {:background-drawable background-drawable
+                                                                  :cell-size cell-size}})]}}))]
     (ui/window {:title title
                 :id id
                 :visible? visible?

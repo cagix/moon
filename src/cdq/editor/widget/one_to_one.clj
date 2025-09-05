@@ -6,6 +6,7 @@
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
+            [cdq.ui.image :as image]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui :as ui]))
@@ -39,8 +40,8 @@
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (textures/image->texture-region textures (property/image property))
-               image-widget (ui/image-widget texture-region
-                                             {:id property-id})]
+               image-widget (image/create texture-region
+                                          {:id property-id})]
            (actor/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id

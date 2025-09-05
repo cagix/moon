@@ -1,6 +1,7 @@
 (ns cdq.ui.menu
   (:require [cdq.ui.group :as group]
             [cdq.ui :as ui]
+            [cdq.ui.image :as image]
             [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
@@ -18,7 +19,7 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (ui/image-widget icon {})
+   (let [icon (image/create icon {})
          label (ui/label {:label/text ""})
          sub-table (ui/table {:rows [[icon label]]})]
      (group/add! table (set-label-text-actor label text-fn))
