@@ -13,6 +13,7 @@
             [cdq.textures-impl]
             [cdq.tiled :as tiled]
             [cdq.ui :as ui]
+            [cdq.ui.ctx-stage :as ctx-stage]
             [cdq.vis-ui :as vis-ui]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
@@ -95,7 +96,7 @@
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (SpriteBatch.)
-        stage (ui/stage ui-viewport sprite-batch)
+        stage (ctx-stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

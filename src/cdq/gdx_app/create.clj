@@ -10,7 +10,7 @@
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.ui :as ui]
+            [cdq.ui.ctx-stage :as ctx-stage]
             [cdq.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx Gdx
                              Files)
@@ -147,7 +147,7 @@ MipMapLinearLinear ; Fetch the two best fitting images from the mip map chain an
   [{:keys [ctx/ui-viewport
            ctx/batch]
     :as ctx}]
-  (assoc ctx :ctx/stage (ui/stage ui-viewport batch)))
+  (assoc ctx :ctx/stage (ctx-stage/create ui-viewport batch)))
 
 (defn assoc-tiled-map-renderer
   [{:keys [ctx/world-unit-scale
