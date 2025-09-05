@@ -1,4 +1,4 @@
-package cdq.graphics;
+package clojure.gdx.graphics;
 
 import com.badlogic.gdx.graphics.Color;
 

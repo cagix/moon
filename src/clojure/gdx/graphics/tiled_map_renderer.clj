@@ -1,8 +1,8 @@
-(ns cdq.graphics.tiled-map-renderer
+(ns clojure.gdx.graphics.tiled-map-renderer
   (:require [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.graphics.color :as color])
-  (:import (cdq.graphics OrthogonalTiledMapRenderer
-                             ColorSetter)))
+  (:import (clojure.gdx.graphics OrthogonalTiledMapRenderer
+                                 ColorSetter)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]
   (let [^OrthogonalTiledMapRenderer renderer (tiled-map-renderer tiled-map)

@@ -2,7 +2,7 @@
   (:require [clojure.gdx.input :as input]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.graphics.camera :as camera]))
+            [clojure.gdx.graphics.camera :as camera]))
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)

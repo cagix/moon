@@ -1,5 +1,5 @@
 (ns cdq.render.draw-world-map
-  (:require [cdq.graphics.tiled-map-renderer :as tm-renderer]
+  (:require [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.raycaster :as raycaster]
             [cdq.tile-color-setter :as tile-color-setter]))
 

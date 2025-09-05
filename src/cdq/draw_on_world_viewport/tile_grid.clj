@@ -1,6 +1,6 @@
 (ns cdq.draw-on-world-viewport.tile-grid
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics.camera :as camera]))
+            [clojure.gdx.graphics.camera :as camera]))
 
 (defn- draw-tile-grid* [world-viewport]
   (let [[left-x _right-x bottom-y _top-y] (camera/frustum (:viewport/camera world-viewport))]

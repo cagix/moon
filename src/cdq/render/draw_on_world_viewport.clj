@@ -1,25 +1,25 @@
 (ns cdq.render.draw-on-world-viewport
   (:require [clojure.earlygrey.shape-drawer :as sd]
-            [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics.g2d Batch)))
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.g2d.batch :as batch]))
 
 (defn do!
-  [{:keys [^Batch ctx/batch
+  [{:keys [ctx/batch
            ctx/shape-drawer
-           ctx/world-unit-scale
            ctx/unit-scale
+           ctx/world-unit-scale
            ctx/world-viewport]
     :as ctx}
    draw-fns]
   ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
   ; -> also Widgets, etc. ? check.
-  (.setColor batch (color/->obj :white))
-  (.setProjectionMatrix batch (:camera/combined (:viewport/camera world-viewport)))
-  (.begin batch)
+  (batch/set-color! batch color/white)
+  (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
+  (batch/begin! batch)
   (sd/with-line-width shape-drawer world-unit-scale
     (fn []
       (reset! unit-scale world-unit-scale)
       (doseq [f draw-fns]
         ((requiring-resolve f) ctx))
       (reset! unit-scale 1)))
-  (.end batch))
+  (batch/end! batch))
