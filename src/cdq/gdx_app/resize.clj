@@ -1,9 +1,9 @@
 (ns cdq.gdx-app.resize
-  (:import (com.badlogic.gdx.utils.viewport Viewport)))
+  (:require [clojure.gdx.utils.viewport :as viewport]))
 
 (defn do!
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (Viewport/.update ui-viewport width height true)
-  (Viewport/.update world-viewport width height false))
+  (viewport/update! ui-viewport    width height :center? true)
+  (viewport/update! world-viewport width height :center? false))

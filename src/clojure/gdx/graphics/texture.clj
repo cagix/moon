@@ -1,6 +1,10 @@
 (ns clojure.gdx.graphics.texture
-  (:import (com.badlogic.gdx.graphics Texture)
+  (:import (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
+
+(defn from-file [file-handle]
+  (Texture. ^FileHandle file-handle))
 
 (defn create [pixmap]
   (Texture. pixmap))
