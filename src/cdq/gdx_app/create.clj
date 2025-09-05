@@ -12,10 +12,10 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [cdq.ui.ctx-stage :as ctx-stage]
             [clojure.vis-ui :as vis-ui]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx Gdx
-                             Files)
-           (com.badlogic.gdx.graphics Color
+  (:import (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
                                       Pixmap$Format
@@ -26,21 +26,21 @@
 (defn- load-cursors [files graphics cursors cursor-path-format]
   (update-vals cursors
                (fn [[file [hotspot-x hotspot-y]]]
-                 (let [pixmap (Pixmap. (Files/.internal files (format cursor-path-format file)))
+                 (let [pixmap (Pixmap. (files/internal files (format cursor-path-format file)))
                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                    (.dispose pixmap)
                    cursor))))
 
 (defn- assoc-graphics [ctx]
-  (assoc ctx :ctx/graphics Gdx/graphics))
+  (assoc ctx :ctx/graphics (gdx/graphics)))
 
 (defn- assoc-textures [ctx]
-  (assoc ctx :ctx/textures (cdq.textures-impl/create Gdx/files)))
+  (assoc ctx :ctx/textures (cdq.textures-impl/create (gdx/files))))
 
 (defn- assoc-audio
   [{:keys [ctx/config]
     :as ctx}]
-  (assoc ctx :ctx/audio (audio/create Gdx/audio Gdx/files (:audio config))))
+  (assoc ctx :ctx/audio (audio/create (gdx/audio) (gdx/files) (:audio config))))
 
 (defn- put-colors! [colors]
   (doseq [[name color-params] colors]
@@ -49,7 +49,7 @@
 (defn- assoc-cursors
   [{:keys [ctx/config]
     :as ctx}]
-  (assoc ctx :ctx/cursors (load-cursors Gdx/files Gdx/graphics (:cursors config) (:cursor-path-format config))))
+  (assoc ctx :ctx/cursors (load-cursors (gdx/files) (gdx/graphics) (:cursors config) (:cursor-path-format config))))
 
 (defn assoc-db
   [{:keys [ctx/config]
@@ -107,7 +107,7 @@
   (assoc ctx :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
 (defn assoc-input [ctx]
-  (assoc ctx :ctx/input Gdx/input))
+  (assoc ctx :ctx/input (gdx/input)))
 
 (defn assoc-ui-viewport [{:keys [ctx/config] :as ctx}]
   (assoc ctx :ctx/ui-viewport (viewport/fit (:width  (:ui-viewport config))
@@ -130,7 +130,7 @@
   [{:keys [ctx/config]
     :as ctx}]
   (assoc ctx :ctx/default-font
-         (freetype/generate-font (Files/.internal Gdx/files (:file (:default-font config)))
+         (freetype/generate-font (files/internal (gdx/files) (:file (:default-font config)))
                                  (:params (:default-font config)))))
 
 (defn assoc-unit-scale [ctx]
