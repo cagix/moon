@@ -1,10 +1,11 @@
 (ns cdq.editor.overview-table
   (:require [cdq.db :as db]
             [cdq.property :as property]
-            [cdq.utils :refer [pprint-to-str]]
             [cdq.textures :as textures]
+            [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
-            [cdq.ui :as ui]))
+            [cdq.ui.image-button :as image-button]
+            [cdq.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties
 
@@ -56,9 +57,9 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (ui/image-button {:texture-region (textures/image->texture-region textures image)
-                                                     :on-clicked on-clicked
-                                                     :scale scale})
+                                   (image-button/create {:texture-region (textures/image->texture-region textures image)
+                                                         :on-clicked on-clicked
+                                                         :scale scale})
                                    (ui/text-button (name id)
                                                    on-clicked))
                           top-widget (ui/label {:label/text (or (and extra-info-text

@@ -5,17 +5,13 @@
             [cdq.ui.table :as table]
             [cdq.ui.utils :as utils]
             [cdq.ui.widget-group :as widget-group])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Table
                                                VerticalGroup
-                                               Widget
                                                WidgetGroup)
-           (com.badlogic.gdx.scenes.scene2d.utils Drawable)
-           (com.kotcrab.vis.ui.widget VisImageButton
-                                      VisLabel
+           (com.kotcrab.vis.ui.widget VisLabel
                                       VisScrollPane
                                       VisTable
                                       VisTextButton
@@ -71,24 +67,12 @@
   (doto (VisTextButton. (str text))
     (.addListener (utils/change-listener on-clicked))))
 
-(defn image-button [{:keys [^TextureRegion texture-region on-clicked scale]}]
-  (let [scale (or scale 1)
-        [w h] [(.getRegionWidth  texture-region)
-               (.getRegionHeight texture-region)]
-        drawable (utils/drawable texture-region
-                                 :width  (* scale w)
-                                 :height (* scale h))
-        image-button (VisImageButton. ^Drawable drawable)]
-    (when on-clicked
-      (.addListener image-button (utils/change-listener on-clicked)))
-    image-button))
-
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]
   (when-let [ctx (actor/get-stage-ctx actor)]
     (f actor delta ctx)))
 
-(defn- try-draw [actor f]
+(defn try-draw [actor f]
   (when-let [ctx (actor/get-stage-ctx actor)]
     (ctx/handle-draws! ctx (f actor ctx))))
 
@@ -101,9 +85,3 @@
             (when-let [f (:draw opts)]
               (try-draw this f))))
     (actor/set-opts! opts)))
-
-(defmethod actor/construct :actor.type/widget [opts]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (when-let [f (:draw opts)]
-        (try-draw this f)))))

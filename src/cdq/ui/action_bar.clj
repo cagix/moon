@@ -1,7 +1,7 @@
 (ns cdq.ui.action-bar
   (:require [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui :as ui])
+            [cdq.ui.image-button :as image-button])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 
@@ -37,8 +37,8 @@
            texture-region
            tooltip-text]}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (ui/image-button {:texture-region texture-region
-                                 :scale 2})]
+        button (image-button/create {:texture-region texture-region
+                                     :scale 2})]
     (actor/set-user-object! button skill-id)
     (actor/add-tooltip!     button tooltip-text)
     (group/add!        horizontal-group button)

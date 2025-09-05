@@ -7,6 +7,7 @@
             cdq.ui.select-box
             cdq.ui.stack
             cdq.ui.text-field
+            cdq.ui.widget
             )
   (:gen-class))
 
