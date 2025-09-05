@@ -4,7 +4,7 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]
             [cdq.graphics.viewport :as viewport]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [clojure.gdx.backends.lwjgl3 :as lwjgl]
             [cdq.render.clear-screen]
             [cdq.render.render-stage]

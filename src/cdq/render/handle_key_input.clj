@@ -1,5 +1,5 @@
 (ns cdq.render.handle-key-input
-  (:require [cdq.input :as input]
+  (:require [clojure.gdx.input :as input]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.graphics.camera :as camera]))

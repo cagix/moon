@@ -1,6 +1,6 @@
 (ns cdq.editor.widget.map
   (:require [cdq.db :as db]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.stacktrace :as stacktrace]

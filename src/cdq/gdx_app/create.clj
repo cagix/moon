@@ -1,10 +1,10 @@
 (ns cdq.gdx-app.create
   (:require [cdq.audio :as audio]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.db-impl :as db]
             [cdq.textures-impl]
             [cdq.game-record :as game-record]
-            [cdq.graphics :as graphics]
+            [clojure.gdx.graphics :as graphics]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.viewport :as viewport]
             [cdq.graphics.tiled-map-renderer :as tm-renderer]

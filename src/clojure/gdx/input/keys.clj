@@ -1,16 +1,7 @@
-(ns cdq.input
-  (:import (com.badlogic.gdx Input
-                             Input$Buttons
-                             Input$Keys)))
+(ns clojure.gdx.input.keys
+  (:import (com.badlogic.gdx Input$Keys)))
 
-(def ^:private k->Input$Buttons
-  {:back    Input$Buttons/BACK
-   :forward Input$Buttons/FORWARD
-   :left    Input$Buttons/LEFT
-   :middle  Input$Buttons/MIDDLE
-   :right   Input$Buttons/RIGHT})
-
-(def ^:private k->Input$Keys
+(def k->value
   {:a                   Input$Keys/A
    :alt-left            Input$Keys/ALT_LEFT
    :alt-right           Input$Keys/ALT_RIGHT
@@ -193,18 +184,3 @@
    :x                   Input$Keys/X
    :y                   Input$Keys/Y
    :z                   Input$Keys/Z})
-
-(defn button-just-pressed? [^Input this button]
-  {:pre [(contains? k->Input$Buttons button)]}
-  (.isButtonJustPressed this (get k->Input$Buttons button)))
-
-(defn key-pressed? [^Input this key]
-  {:pre [(contains? k->Input$Keys key)]}
-  (.isKeyPressed this (get k->Input$Keys key)))
-
-(defn key-just-pressed? [^Input this key]
-  {:pre [(contains? k->Input$Keys key)]}
-  (.isKeyJustPressed this (get k->Input$Keys key)))
-
-(defn set-processor! [^Input this input-processor]
-  (.setInputProcessor this input-processor))

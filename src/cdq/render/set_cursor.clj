@@ -1,5 +1,5 @@
 (ns cdq.render.set-cursor
-  (:require [cdq.graphics :as graphics]))
+  (:require [clojure.gdx.graphics :as graphics]))
 
 (declare state->cursor)
 

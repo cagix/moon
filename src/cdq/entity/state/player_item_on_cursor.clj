@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
             [cdq.textures :as textures]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.gdx.math.vector2 :as v]
             [cdq.ui :as ui]))
 
