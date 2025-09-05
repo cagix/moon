@@ -50,11 +50,6 @@
   (doto (cdq.ui.group/proxy-ILookup Group [])
     (set-opts! opts)))
 
-#_(defn- -vertical-group [actors]
-    (let [group (cdq.ui.group/proxy-ILookup VerticalGroup [])]
-      (run! #(group/add! group %) actors) ; redundant if we use map based
-      group))
-
 (import 'clojure.lang.MultiFn)
 (MultiFn/.addMethod cdq.construct/construct :actor.type/label label)
 (MultiFn/.addMethod cdq.construct/construct :actor.type/table table)
