@@ -9,7 +9,7 @@
                     (fn [x]
                       (if (and (symbol? x) (namespace x))
                         (try
-                         (requiring-resolve x)
+                         @(requiring-resolve x)
                          (catch Exception _ x))
                         x))
                     value))))

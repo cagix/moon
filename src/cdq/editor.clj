@@ -1,6 +1,5 @@
 (ns cdq.editor
-  (:require [cdq.application :as application]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.ui.editor.overview-table]
             [cdq.ui.editor.scroll-pane :as scroll-pane]
@@ -29,7 +28,8 @@
   [props
    {:keys [ctx/db
            ctx/ui-viewport]
-    :as ctx}]
+    :as ctx}
+   application-state-atom]
   (let [schema (get (:schemas db) (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
@@ -40,11 +40,11 @@
                            :cell-defaults {:pad 5}})
         widget (widget/create schema nil props ctx)
         save!   (apply-context-fn window (fn [{:keys [ctx/db]}]
-                                           (swap! application/state update :ctx/db
+                                           (swap! application-state-atom update :ctx/db
                                                   db/update!
                                                   (widget/value schema nil widget (:schemas db)))))
         delete! (apply-context-fn window (fn [_ctx]
-                                           (swap! application/state update :ctx/db
+                                           (swap! application-state-atom update :ctx/db
                                                   db/delete!
                                                   (:property/id props))))]
     (table/add-rows! window [[(scroll-pane/table-cell (:viewport/height ui-viewport)
@@ -64,10 +64,12 @@
     (.pack window)
     window))
 
+(declare application-state-atom)
+
 (defn open-property-editor-window! [{:keys [ctx/stage]
                                      :as ctx}
                                     property]
-  (stage/add! stage (create-editor-window property ctx)))
+  (stage/add! stage (create-editor-window property ctx application-state-atom)))
 
 (defn open-editor-overview-window! [{:keys [ctx/stage] :as ctx} property-type]
   (let [window (ui/window {:title "Edit"
