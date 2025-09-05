@@ -1,53 +1,32 @@
 (ns cdq.ui
   (:require [cdq.ctx :as ctx]
-            [cdq.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
             [cdq.ui.utils :as utils]
-            [cdq.ui.widget-group :as widget-group]
-            [cdq.ui.check-box])
+            [cdq.ui.widget-group :as widget-group])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               HorizontalGroup
                                                Image
                                                Table
-                                               Stack
                                                VerticalGroup
                                                Widget
                                                WidgetGroup)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
-                                                  Drawable
-                                                  TextureRegionDrawable)
+           (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.badlogic.gdx.utils Align
                                    Scaling)
            (com.kotcrab.vis.ui.widget VisImage
                                       VisImageButton
                                       VisLabel
-                                      VisSelectBox
                                       VisScrollPane
                                       VisTable
                                       VisTextButton
-                                      VisTextField
                                       VisWindow)))
 
-(defmethod actor/construct :actor.type/select-box [{:keys [items selected]}]
-  (doto (VisSelectBox.)
-    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
-    (.setSelected selected)))
-
-(defn drawable [texture-region & {:keys [width height tint-color]}]
-  (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)]
-    (when (and width height)
-      (BaseDrawable/.setMinSize drawable (float width) (float height)))
-    (if tint-color
-      (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
-      drawable)))
-
-(defn- set-opts! [actor opts]
+(defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
   (when (instance? Table actor)
     (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
@@ -57,27 +36,13 @@
     (run! #(group/add! actor %) (:actors opts)))
   actor)
 
-(defmethod actor/construct :actor.type/horizontal-group [{:keys [space pad] :as opts}]
-  (let [group (cdq.ui.group/proxy-ILookup HorizontalGroup [])]
-    (when space (.space group (float space)))
-    (when pad   (.pad   group (float pad)))
-    (set-opts! group opts)))
-
 (defn table ^Table [opts]
-  (-> (cdq.ui.group/proxy-ILookup VisTable [])
+  (-> (group/proxy-ILookup VisTable [])
       (set-opts! opts)))
-
-(defmethod actor/construct :actor.type/stack [opts]
-  (doto (cdq.ui.group/proxy-ILookup Stack [])
-    (set-opts! opts))) ; TODO group opts already has 'actors' ? stack is a group ?
 
 (defn label ^VisLabel [{:keys [label/text] :as opts}]
   (doto (VisLabel. ^CharSequence text)
     (set-opts! opts)))
-
-(defmethod actor/construct :actor.type/text-field [{:keys [text-field/text] :as opts}]
-  (-> (VisTextField. (str text))
-      (set-opts! opts)))
 
 (defmethod actor/construct :actor.type/group [opts]
   (doto (cdq.ui.group/proxy-ILookup Group [])
@@ -92,8 +57,6 @@
 (MultiFn/.addMethod actor/construct :actor.type/label label)
 (MultiFn/.addMethod actor/construct :actor.type/table table)
 
-(def get-selected VisSelectBox/.getSelected)
-
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
   (-> (let [window (doto (cdq.ui.group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
@@ -102,8 +65,6 @@
         (when close-on-escape? (.closeOnEscape  window))
         window)
       (set-opts! opts)))
-
-(def get-text VisTextField/.getText)
 
 (defmulti ^:private image* type)
 
@@ -143,9 +104,9 @@
   (let [scale (or scale 1)
         [w h] [(.getRegionWidth  texture-region)
                (.getRegionHeight texture-region)]
-        drawable (drawable texture-region
-                           :width  (* scale w)
-                           :height (* scale h))
+        drawable (utils/drawable texture-region
+                                 :width  (* scale w)
+                                 :height (* scale h))
         image-button (VisImageButton. ^Drawable drawable)]
     (when on-clicked
       (.addListener image-button (utils/change-listener on-clicked)))

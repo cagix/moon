@@ -1,7 +1,7 @@
 (ns cdq.editor.widget.edn
   (:require [cdq.utils :refer [->edn-str]]
             [clojure.edn :as edn]
-            [cdq.ui :as ui]))
+            [cdq.ui.text-field :as text-field]))
 
 (defn create [schema  _attribute v _ctx]
   {:actor/type :actor.type/text-field
@@ -9,5 +9,5 @@
    :tooltip (str schema)})
 
 (defn value [_  _attribute widget _schemas]
-  (edn/read-string (ui/get-text widget)))
+  (edn/read-string (text-field/get-text widget)))
 

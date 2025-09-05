@@ -4,7 +4,8 @@
             [cdq.textures :as textures]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui :as ui])
+            [cdq.ui :as ui]
+            [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn create
@@ -39,10 +40,10 @@
                                                                   :image/bounds bounds})))
         cell-size 48
         slot->drawable (fn [slot]
-                         (ui/drawable (slot->texture-region slot)
-                                      :width cell-size
-                                      :height cell-size
-                                      :tint-color [1 1 1 0.4]))
+                         (utils/drawable (slot->texture-region slot)
+                                         :width cell-size
+                                         :height cell-size
+                                         :tint-color [1 1 1 0.4]))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
@@ -115,7 +116,7 @@
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
-        drawable (ui/drawable texture-region :width cell-size :height cell-size)]
+        drawable (utils/drawable texture-region :width cell-size :height cell-size)]
     (Image/.setDrawable image-widget drawable)
     (actor/add-tooltip! cell-widget tooltip-text)))
 

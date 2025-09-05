@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.string
-  (:require [cdq.ui :as ui]))
+  (:require [cdq.ui.text-field :as text-field]))
 
 (defn create [schema  _attribute v _ctx]
   {:actor/type :actor.type/text-field
@@ -7,4 +7,4 @@
    :tooltip (str schema)})
 
 (defn value [_  _attribute widget _schemas]
-  (ui/get-text widget))
+  (text-field/get-text widget))
