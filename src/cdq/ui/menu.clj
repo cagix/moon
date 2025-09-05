@@ -1,6 +1,7 @@
 (ns cdq.ui.menu
   (:require [cdq.ui.group :as group]
-            [cdq.ui :as ui])
+            [cdq.ui :as ui]
+            [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label
@@ -39,7 +40,7 @@
   (let [app-menu (Menu. label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (doto (MenuItem. label)
-                                     (.addListener (ui/change-listener
+                                     (.addListener (utils/change-listener
                                                     (fn [actor ctx]
                                                       (when on-click
                                                         (on-click actor ctx))))))))

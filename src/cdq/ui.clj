@@ -3,12 +3,13 @@
             [cdq.graphics.color :as color]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui.table :as table])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+            [cdq.ui.table :as table]
+            [cdq.ui.utils :as utils]
+            [cdq.ui.widget-group :as widget-group]
+            [cdq.ui.check-box])
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
-                                            InputEvent
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                HorizontalGroup
@@ -20,12 +21,10 @@
                                                WidgetGroup)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
                                                   Drawable
-                                                  ChangeListener
                                                   TextureRegionDrawable)
            (com.badlogic.gdx.utils Align
                                    Scaling)
-           (com.kotcrab.vis.ui.widget VisCheckBox
-                                      VisImage
+           (com.kotcrab.vis.ui.widget VisImage
                                       VisImageButton
                                       VisLabel
                                       VisSelectBox
@@ -33,40 +32,7 @@
                                       VisTable
                                       VisTextButton
                                       VisTextField
-                                      VisWindow)
-           (cdq.ui CtxStage)))
-
-(defn stage [viewport batch]
-  (proxy [CtxStage ILookup] [viewport batch (atom nil)]
-    (valAt [id]
-      (group/find-actor-with-id (CtxStage/.getRoot this) id))))
-
-(defn change-listener ^ChangeListener [on-clicked]
-  (proxy [ChangeListener] []
-    (changed [event actor]
-      (on-clicked actor @(.ctx ^CtxStage (InputEvent/.getStage event))))))
-
-(comment
- ; fill parent & pack is from Widget TODO ( not widget-group ?)
- com.badlogic.gdx.scenes.scene2d.ui.Widget
- ; about .pack :
- ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
- )
-(defn set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
-  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
-  (when pack?
-    (.pack widget-group))
-  widget-group)
-
-(defmethod actor/construct :actor.type/check-box -check-box
-  [{:keys [text on-clicked checked?]}]
-  (let [^Button button (VisCheckBox. (str text))]
-    (.setChecked button checked?)
-    (.addListener button
-                  (proxy [ChangeListener] []
-                    (changed [event ^Button actor]
-                      (on-clicked (.isChecked actor)))))
-    button))
+                                      VisWindow)))
 
 (defmethod actor/construct :actor.type/select-box [{:keys [items selected]}]
   (doto (VisSelectBox.)
@@ -86,7 +52,7 @@
   (when (instance? Table actor)
     (table/set-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
-    (set-widget-group-opts actor opts))
+    (widget-group/set-opts! actor opts))
   (when (instance? Group actor)
     (run! #(group/add! actor %) (:actors opts)))
   actor)
@@ -125,8 +91,6 @@
 (import 'clojure.lang.MultiFn)
 (MultiFn/.addMethod actor/construct :actor.type/label label)
 (MultiFn/.addMethod actor/construct :actor.type/table table)
-
-(def checked? VisCheckBox/.isChecked)
 
 (def get-selected VisSelectBox/.getSelected)
 
@@ -173,7 +137,7 @@
 
 (defn text-button [text on-clicked]
   (doto (VisTextButton. (str text))
-    (.addListener (change-listener on-clicked))))
+    (.addListener (utils/change-listener on-clicked))))
 
 (defn image-button [{:keys [^TextureRegion texture-region on-clicked scale]}]
   (let [scale (or scale 1)
@@ -184,7 +148,7 @@
                            :height (* scale h))
         image-button (VisImageButton. ^Drawable drawable)]
     (when on-clicked
-      (.addListener image-button (change-listener on-clicked)))
+      (.addListener image-button (utils/change-listener on-clicked)))
     image-button))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.

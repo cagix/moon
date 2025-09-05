@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.boolean
-  (:require [cdq.ui :as ui]))
+  (:require [cdq.ui.check-box :as check-box]))
 
 (defn create [_ _attribute checked? _ctx]
   (assert (boolean? checked?))
@@ -9,4 +9,4 @@
    :checked? checked?})
 
 (defn value [_ _attribute widget _schemas]
-  (ui/checked? widget))
+  (check-box/checked? widget))
