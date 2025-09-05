@@ -1,27 +1,63 @@
 (ns cdq.reset-game-state
   (:require [cdq.grid.cell :as cell]
             [cdq.grid-impl :as grid-impl]
-            [cdq.raycaster :as raycaster]
+            [cdq.raycaster]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
+            [cdq.gdx.math.vector2 :as v]
             [cdq.grid2d :as g2d]
+            [cdq.math.raycaster :as raycaster]
             [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.utils.tiled :as tiled]
             [cdq.content-grid :as content-grid]))
 
+; not tested
+(defn- create-double-ray-endpositions
+  "path-w in tiles."
+  [[start-x start-y] [target-x target-y] path-w]
+  {:pre [(< path-w 0.98)]} ; wieso 0.98??
+  (let [path-w (+ path-w 0.02) ;etwas gr�sser damit z.b. projektil nicht an ecken anst�sst
+        v (v/direction [start-x start-y]
+                       [target-y target-y])
+        [normal1 normal2] (v/normal-vectors v)
+        normal1 (v/scale normal1 (/ path-w 2))
+        normal2 (v/scale normal2 (/ path-w 2))
+        start1  (v/add [start-x  start-y]  normal1)
+        start2  (v/add [start-x  start-y]  normal2)
+        target1 (v/add [target-x target-y] normal1)
+        target2 (v/add [target-x target-y] normal2)]
+    [start1,target1,start2,target2]))
+
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn- create-raycaster [grid]
+(defn- create-raycaster-arr [grid]
   (let [width  (g2d/width  (.g2d grid))
         height (g2d/height (.g2d grid))
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells (.g2d grid))]
       (set-arr arr @cell cell/blocks-vision?))
     [arr width height]))
+
+(defn- create-raycaster [grid]
+  (let [arr (create-raycaster-arr grid)]
+    (reify cdq.raycaster/Raycaster
+      (blocked? [_ start end]
+        (raycaster/blocked? arr start end))
+
+      (path-blocked? [_ start target path-w]
+        (let [[start1,target1,start2,target2] (create-double-ray-endpositions start target path-w)]
+          (or
+           (raycaster/blocked? arr start1 target1)
+           (raycaster/blocked? arr start2 target2))))
+
+      (line-of-sight? [_ source target]
+        (not (raycaster/blocked? arr
+                                 (:body/position (:entity/body source))
+                                 (:body/position (:entity/body target))))))))
 
 (defn- world-ctx
   [{:keys [tiled-map] :as config}]
@@ -104,6 +140,11 @@
                             (let [[f params] world-fn]
                               ((requiring-resolve f) ctx params)))
         world-ctx* (world-ctx world-config)]
+    ;World data structure:
+    ; * from tiled-map
+    ; => grid, raycaster, explored-tile-corners, content-grid, potential-field-cache
+    ; etc. id-counter, etc.
+    ; => world protocol ???
     (-> ctx
         (merge world-ctx*)
         (assoc :ctx/tiled-map (:tiled-map world-config))
