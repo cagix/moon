@@ -4,12 +4,12 @@
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.property :as property]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.utils :as utils]))
 
 (defn prepare-creature-properties [creature-properties textures]
   (for [creature creature-properties
-        :let [texture-region (textures/image->texture-region textures (property/image creature))]]
+        :let [texture-region (image/texture-region (property/image creature) textures)]]
     (utils/safe-merge creature
                       {:tile/id (:property/id creature)
                        :tile/texture-region texture-region})))

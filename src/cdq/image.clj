@@ -1,10 +1,8 @@
-(ns cdq.textures
+(ns cdq.image
   (:require [clojure.gdx.graphics.texture :as texture]))
 
-; FIXME this can be memoized
-; also good for tiled-map tiles they have to be memoized too
-(defn image->texture-region
-  [textures {:keys [image/file image/bounds]}]
+(defn texture-region
+  [{:keys [image/file image/bounds]} textures]
   (assert file)
   (assert (contains? textures file))
   (let [texture (get textures file)]

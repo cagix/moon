@@ -1,6 +1,6 @@
 (ns cdq.render-layers
   (:require [cdq.animation :as animation]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
             [cdq.effect :as effect]
@@ -32,8 +32,7 @@
            ctx/world-mouse-position]}]
   (when (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor)
     [[:draw/texture-region
-      (textures/image->texture-region textures
-                                      (:entity/image item))
+      (image/texture-region (:entity/image item) textures)
       (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
       {:center? true}]]))
 
@@ -90,7 +89,7 @@
                                  ctx/elapsed-time]
                           :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (textures/image->texture-region textures image)
+    (concat (draw-skill-image (image/texture-region image textures)
                               entity
                               (entity/position entity)
                               (timer/ratio elapsed-time counter))
@@ -106,7 +105,7 @@
    entity
    {:keys [ctx/textures]}]
   [[:draw/texture-region
-    (textures/image->texture-region textures image)
+    (image/texture-region image textures)
     (entity/position entity)
     {:center? true
      :rotation (or (:body/rotation-angle (:entity/body entity))

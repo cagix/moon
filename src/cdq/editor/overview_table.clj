@@ -1,7 +1,7 @@
 (ns cdq.editor.overview-table
   (:require [cdq.db :as db]
             [cdq.property :as property]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.image-button :as image-button]
@@ -58,7 +58,7 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (image-button/create {:texture-region (textures/image->texture-region textures image)
+                                   (image-button/create {:texture-region (image/texture-region image textures)
                                                          :on-clicked on-clicked
                                                          :scale scale})
                                    (text-button/create (name id)

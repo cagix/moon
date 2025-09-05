@@ -3,10 +3,10 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui.image :as image]
+            [cdq.ui.image :as ui.image]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
@@ -40,9 +40,9 @@
                                  (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/get-raw db property-id)
-               texture-region (textures/image->texture-region textures (property/image property))
-               image-widget (image/create texture-region
-                                          {:id property-id})]
+               texture-region (image/texture-region (property/image property) textures)
+               image-widget (ui.image/create texture-region
+                                             {:id property-id})]
            (actor/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id

@@ -172,11 +172,11 @@
   (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
-  (cdq.application.mac-os-config/set-glfw-async!)
+  (cdq.application.mac-os-config/set-glfw-async! nil)
   (lwjgl/start-application! {:create! create!
                              :dispose! dispose!
                              :render! render!
-                             :resize resize!
+                             :resize! resize!
                              :resume! (fn [])
                              :pause! (fn [])}
                             {:title "Levelgen test"

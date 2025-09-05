@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [clojure.gdx.input :as input]
             [cdq.gdx.math.vector2 :as v]
             [cdq.ui :as ui]))
@@ -84,8 +84,8 @@
            ctx/ui-mouse-position]}]
   (when (not (world-item? mouseover-actor))
     [[:draw/texture-region
-      (textures/image->texture-region textures
-                                      (:entity/image (:entity/item-on-cursor @eid)))
+      (image/texture-region (:entity/image (:entity/item-on-cursor @eid))
+                            textures)
       ui-mouse-position
       {:center? true}]]))
 

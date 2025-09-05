@@ -1,6 +1,6 @@
 (ns cdq.tx.add-skill
   (:require [cdq.info :as info]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.ui.action-bar :as action-bar]))
 
 (defn- add-skill!
@@ -10,7 +10,7 @@
   (-> stage
       :action-bar
       (action-bar/add-skill! {:skill-id (:property/id skill)
-                              :texture-region (textures/image->texture-region textures (:entity/image skill))
+                              :texture-region (image/texture-region (:entity/image skill) textures)
                               ; (assoc ctx :effect/source (world/player)) FIXME
                               :tooltip-text #(info/info-text % skill)}))
   nil)

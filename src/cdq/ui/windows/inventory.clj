@@ -1,10 +1,10 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
-            [cdq.textures :as textures]
+            [cdq.image :as image]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.ui.image :as image]
+            [cdq.ui.image :as ui.image]
             [cdq.ui :as ui]
             [cdq.ui.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
@@ -36,9 +36,9 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (textures/image->texture-region textures
-                                                                 {:image/file "images/items.png"
-                                                                  :image/bounds bounds})))
+                                 (image/texture-region {:image/file "images/items.png"
+                                                        :image/bounds bounds}
+                                                       textures)))
         cell-size 48
         slot->drawable (fn [slot]
                          (utils/drawable (slot->texture-region slot)
@@ -77,10 +77,10 @@
                             :user-object cell
                             :click-listener (clicked-cell-fn cell)
                             :actors [(draw-rect-actor)
-                                     (image/create background-drawable
-                                                   {:name "image-widget"
-                                                    :user-object {:background-drawable background-drawable
-                                                                  :cell-size cell-size}})]}}))]
+                                     (ui.image/create background-drawable
+                                                      {:name "image-widget"
+                                                       :user-object {:background-drawable background-drawable
+                                                                     :cell-size cell-size}})]}}))]
     (ui/window {:title title
                 :id id
                 :visible? visible?
