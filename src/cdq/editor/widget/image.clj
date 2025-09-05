@@ -7,8 +7,8 @@
 #_(defn- texture-rows [ctx]
     (for [file (sort (assets/all-of-type assets :texture))]
       [(image-button/create {:texture-region (texture/region (assets file))})]
-      #_[(ui/text-button file
-                         (fn [_actor _ctx]))]))
+      #_[(text-button/create file
+                             (fn [_actor _ctx]))]))
 
 (defn create [schema  _attribute image {:keys [ctx/textures]}]
   (image-button/create {:texture-region (textures/image->texture-region textures image)

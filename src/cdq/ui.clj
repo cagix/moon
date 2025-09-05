@@ -3,7 +3,6 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
-            [cdq.ui.utils :as utils]
             [cdq.ui.widget-group :as widget-group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
@@ -14,7 +13,6 @@
            (com.kotcrab.vis.ui.widget VisLabel
                                       VisScrollPane
                                       VisTable
-                                      VisTextButton
                                       VisWindow)))
 
 (defn set-opts! [actor opts]
@@ -62,10 +60,6 @@
     (actor/set-user-object! :scroll-pane)
     (.setFlickScroll false)
     (.setFadeScrollBars false)))
-
-(defn text-button [text on-clicked]
-  (doto (VisTextButton. (str text))
-    (.addListener (utils/change-listener on-clicked))))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn- try-act [actor delta f]

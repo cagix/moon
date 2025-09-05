@@ -8,6 +8,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
+            [cdq.ui.text-button :as text-button]
             [cdq.editor.scroll-pane :as scroll-pane] ; to cdq.ui
             [cdq.editor.overview-table] ; ?
             [cdq.editor.widget :as widget]
@@ -52,13 +53,13 @@
                                                   (:property/id props))))]
     (table/add-rows! window [[(scroll-pane/table-cell (:viewport/height ui-viewport)
                                                       [[{:actor widget :colspan 2}]
-                                                       [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]"
-                                                                                (fn [_actor ctx]
-                                                                                  (save! ctx)))
+                                                       [{:actor (text-button/create "Save [LIGHT_GRAY](ENTER)[]"
+                                                                                    (fn [_actor ctx]
+                                                                                      (save! ctx)))
                                                          :center? true}
-                                                        {:actor (ui/text-button "Delete"
-                                                                                (fn [_actor ctx]
-                                                                                  (delete! ctx)))
+                                                        {:actor (text-button/create "Delete"
+                                                                                    (fn [_actor ctx]
+                                                                                      (delete! ctx)))
                                                          :center? true}]])]])
     (group/add! window {:actor/type :actor.type/actor
                         :act (fn [_this _delta {:keys [ctx/input]}]
@@ -118,10 +119,10 @@
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
             :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
-                              (ui/text-button "-"
-                                              (fn [_actor ctx]
-                                                (actor/remove! (find-kv-widget table k))
-                                                (rebuild-editor-window! ctx))))
+                              (text-button/create "-"
+                                                  (fn [_actor ctx]
+                                                    (actor/remove! (find-kv-widget table k))
+                                                    (rebuild-editor-window! ctx))))
                      :left? true}
                     {:actor {:actor/type :actor.type/label
                              :label/text (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -149,15 +150,15 @@
     (table/add-rows!
      window
      (for [k remaining-ks]
-       [(ui/text-button (name k)
-                        (fn [_actor ctx]
-                          (.remove window)
-                          (table/add-rows! map-widget-table [(component-row ctx
-                                                                            [k (schemas/k->default-value schemas k)]
-                                                                            schema
-                                                                            schemas
-                                                                            map-widget-table)])
-                          (rebuild-editor-window! ctx)))]))
+       [(text-button/create (name k)
+                            (fn [_actor ctx]
+                              (.remove window)
+                              (table/add-rows! map-widget-table [(component-row ctx
+                                                                                [k (schemas/k->default-value schemas k)]
+                                                                                schema
+                                                                                schemas
+                                                                                map-widget-table)])
+                              (rebuild-editor-window! ctx)))]))
     (.pack window)
     (stage/add! stage window)))
 
@@ -185,9 +186,9 @@
     (table/add-rows!
      table
      (concat [(when opt?
-                [{:actor (ui/text-button "Add component"
-                                         (fn [_actor ctx]
-                                           (open-add-component-window! ctx schema table)))
+                [{:actor (text-button/create "Add component"
+                                             (fn [_actor ctx]
+                                               (open-add-component-window! ctx schema table)))
                   :colspan colspan}])]
              [(when opt?
                 [(separator/horizontal colspan)])]

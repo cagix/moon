@@ -1,6 +1,7 @@
 (ns cdq.dev.data-view
   (:require [cdq.ui.stage :as stage]
-            [cdq.ui :as ui]))
+            [cdq.ui :as ui]
+            [cdq.ui.text-button :as text-button]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -26,15 +27,15 @@
 
 (defn- v->actor [v]
   (if (map? v)
-    (ui/text-button "Map"
-                    (fn [_actor {:keys [ctx/stage]}]
-                      (stage/add! stage (table-view-window {:title "title"
-                                                            :data v
-                                                            :width 500
-                                                            :height 500
-                                                            }))
-                      )
-                    )
+    (text-button/create "Map"
+                        (fn [_actor {:keys [ctx/stage]}]
+                          (stage/add! stage (table-view-window {:title "title"
+                                                                :data v
+                                                                :width 500
+                                                                :height 500
+                                                                }))
+                          )
+                        )
     {:actor/type :actor.type/label
      :label/text (v->text v)}))
 

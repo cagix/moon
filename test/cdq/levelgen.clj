@@ -13,6 +13,7 @@
             [cdq.textures-impl]
             [cdq.tiled :as tiled]
             [cdq.ui :as ui]
+            [cdq.ui.text-button :as text-button]
             [cdq.ui.ctx-stage :as ctx-stage]
             [cdq.vis-ui :as vis-ui]
             [cdq.world-fns.modules]
@@ -83,9 +84,9 @@
   (ui/window {:title "Edit"
               :cell-defaults {:pad 10}
               :rows (for [level-fn level-fns]
-                      [(ui/text-button (str "Generate " (first level-fn))
-                                       (fn [_actor _ctx]
-                                         (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
+                      [(text-button/create (str "Generate " (first level-fn))
+                                           (fn [_actor _ctx]
+                                             (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
               :pack? true}))
 
 (defrecord Context [])

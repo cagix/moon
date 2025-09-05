@@ -9,6 +9,7 @@
             [cdq.ui.image :as image]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
+            [cdq.ui.text-button :as text-button]
             [cdq.ui :as ui]))
 
 (defn- add-one-to-one-rows
@@ -24,19 +25,19 @@
     (table/add-rows!
      table
      [[(when-not property-id
-         (ui/text-button "+"
-                         (fn [_actor {:keys [ctx/stage] :as ctx}]
-                           (let [window (ui/window {:title "Choose"
-                                                    :modal? true
-                                                    :close-button? true
-                                                    :center? true
-                                                    :close-on-escape? true})
-                                 clicked-id-fn (fn [id ctx]
-                                                 (.remove window)
-                                                 (redo-rows ctx id))]
-                             (table/add! window (cdq.editor.overview-table/create ctx property-type clicked-id-fn))
-                             (.pack window)
-                             (stage/add! stage window)))))]
+         (text-button/create "+"
+                             (fn [_actor {:keys [ctx/stage] :as ctx}]
+                               (let [window (ui/window {:title "Choose"
+                                                        :modal? true
+                                                        :close-button? true
+                                                        :center? true
+                                                        :close-on-escape? true})
+                                     clicked-id-fn (fn [id ctx]
+                                                     (.remove window)
+                                                     (redo-rows ctx id))]
+                                 (table/add! window (cdq.editor.overview-table/create ctx property-type clicked-id-fn))
+                                 (.pack window)
+                                 (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (textures/image->texture-region textures (property/image property))
@@ -45,9 +46,9 @@
            (actor/add-tooltip! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id
-         (ui/text-button "-"
-                         (fn [_actor ctx]
-                           (redo-rows ctx nil))))]])))
+         (text-button/create "-"
+                             (fn [_actor ctx]
+                               (redo-rows ctx nil))))]])))
 
 (defn create [[_ property-type]  _attribute property-id ctx]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
