@@ -34,6 +34,26 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
+(defn- create-item-stack
+  [{:keys [tooltip-text
+           label-text
+           text-button-text
+           texture-region
+           scale
+           on-clicked]}]
+  (let [button (if texture-region
+                 (image-button/create {:drawable/texture-region texture-region
+                                       :on-clicked on-clicked
+                                       :drawable/scale scale})
+                 (text-button/create text-button-text on-clicked))
+        top-widget (label/create {:label/text label-text})
+        stack {:actor/type :actor.type/stack
+               :actors [button
+                        top-widget]}]
+    (tooltip/add! button tooltip-text)
+    (actor/set-touchable! top-widget :disabled)
+    stack))
+
 (defn create
   [{:keys [ctx/db
            ctx/textures]}
@@ -53,23 +73,14 @@
      :cell-defaults {:pad 5}
      :rows (for [properties (partition-all columns properties)]
              (for [{:keys [property/id] :as property} properties]
-               (try (let [on-clicked (fn [_actor ctx]
-                                       (clicked-id-fn id ctx))
-                          button (if-let [image (property/image property)]
-                                   (image-button/create
-                                    {:drawable/texture-region (image/texture-region image textures)
-                                     :on-clicked on-clicked
-                                     :drawable/scale scale})
-                                   (text-button/create (name id)
-                                                       on-clicked))
-                          top-widget (label/create {:label/text (or (and extra-info-text
-                                                                         (extra-info-text property))
-                                                                    "")})
-                          stack {:actor/type :actor.type/stack
-                                 :actors [button
-                                          top-widget]}]
-                      (tooltip/add! button (pprint-to-str property))
-                      (actor/set-touchable! top-widget :disabled)
-                      {:actor stack})
-                    (catch Throwable t
-                      (throw (ex-info "" {:property property} t))))))}))
+               {:actor (create-item-stack
+                        {:tooltip-text (pprint-to-str property)
+                         :label-text (or (and extra-info-text
+                                              (extra-info-text property))
+                                         "")
+                         :text-button-text (name id)
+                         :texture-region (when-let [image (property/image property)]
+                                           (image/texture-region image textures))
+                         :scale scale
+                         :on-clicked (fn [_actor ctx]
+                                       (clicked-id-fn id ctx))})}))}))
