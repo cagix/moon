@@ -2,7 +2,7 @@
   (:require [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.stage :as stage]))
+            [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

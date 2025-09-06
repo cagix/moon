@@ -1,9 +1,9 @@
 (ns cdq.ui.actor
   (:require [cdq.ctx :as ctx]
-            [cdq.ui.stage :as stage]
             [cdq.ui.tooltip :as tooltip]
             [cdq.ui.utils :as utils]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)

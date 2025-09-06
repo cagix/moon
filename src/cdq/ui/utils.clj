@@ -1,5 +1,5 @@
 (ns cdq.ui.utils
-  (:require [cdq.ui.stage :as stage]
+  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.input-event :as input-event]
             [clojure.gdx.scenes.scene2d.utils :as utils]))
 

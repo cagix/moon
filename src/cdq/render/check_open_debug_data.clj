@@ -1,6 +1,7 @@
 (ns cdq.render.check-open-debug-data
   (:require [cdq.grid :as grid]
-            [cdq.ui.stage :as stage]
+            [cdq.ui.data-viewer :as data-viewer]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.input :as input]))
 
 ; TODO also items/skills/mouseover-actors
@@ -14,11 +15,11 @@
   (let [data (or (and mouseover-eid @mouseover-eid)
                  @(grid/cell grid
                              (mapv int world-mouse-position)))]
-    (stage/add! stage {:actor/type :actor.type/data-viewer
-                       :title "Data View"
-                       :data data
-                       :width 500
-                       :height 500})))
+    (stage/add! stage (data-viewer/create
+                       {:title "Data View"
+                        :data data
+                        :width 500
+                        :height 500}))))
 
 (defn do!
   [{:keys [ctx/input] :as ctx}]

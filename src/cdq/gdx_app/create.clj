@@ -3,7 +3,6 @@
             [cdq.db-impl :as db]
             [cdq.game-record :as game-record]
             [cdq.textures-impl]
-            [cdq.ui.stage :as stage]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]
@@ -17,6 +16,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]))
 

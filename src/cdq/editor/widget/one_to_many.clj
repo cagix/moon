@@ -8,7 +8,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.ui.stage :as stage]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]

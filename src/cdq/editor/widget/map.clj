@@ -7,13 +7,13 @@
             [cdq.ui :as ui]
             [cdq.ui.group :as group]
             [cdq.ui.separator :as separator]
-            [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.set :as set]))
 
 (declare application-state-atom)
