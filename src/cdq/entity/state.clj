@@ -15,5 +15,4 @@
         (clojure.pprint/pprint result))
     result))
 
-(def ->enter)
 (def ->exit)

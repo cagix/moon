@@ -15,9 +15,5 @@
 (defn create [eid movement-vector _ctx]
   {:movement-vector movement-vector})
 
-(defn enter [{:keys [movement-vector]} eid]
-  [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                    :speed (speed @eid)}]])
-
 (defn exit [_ eid _ctx]
   [[:tx/dissoc eid :entity/movement]])

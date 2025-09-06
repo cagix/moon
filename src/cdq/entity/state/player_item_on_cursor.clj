@@ -57,9 +57,6 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn enter [{:keys [item]} eid]
-  [[:tx/assoc eid :entity/item-on-cursor item]])
-
 (defn exit [_ eid {:keys [ctx/world-mouse-position]}]
   ; at clicked-cell when we put it into a inventory-cell
   ; we do not want to drop it on the ground too additonally,
