@@ -80,7 +80,8 @@
                              [cdq.ui.table                      :actor.type/table]
                              [cdq.ui.image-button               :actor.type/image-button]
                              [cdq.ui.text-button                :actor.type/text-button]
-                             [cdq.ui.property-editor :actor.type/property-editor]
+                             [cdq.ui.property-editor            :actor.type/property-editor]
+                             [cdq.ui.data-viewer                :actor.type/data-viewer]
                              ]]]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
