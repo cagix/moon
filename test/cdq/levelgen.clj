@@ -1,6 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.start]
-            [cdq.db-impl :as db]
+  (:require [cdq.db-impl :as db]
             [cdq.gdx-app.resize]
             [cdq.render.clear-screen]
             [cdq.render.render-stage]
@@ -171,7 +170,7 @@
   (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
-  (cdq.start/set-mac-os-config!)
+  ;(cdq.start/set-mac-os-config!)
   (lwjgl/start-application! {:create! create!
                              :dispose! dispose!
                              :render! render!

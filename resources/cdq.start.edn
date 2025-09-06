@@ -1,4 +1,6 @@
 [
+ [cdq.os-settings/dispatch! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}]
+ [cdq.var/bind-roots! {cdq.draw-on-world-viewport.entities/render-layers cdq.entity.render/render-layers}]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
                              [cdq.info.creature.stats :creature/stats]
