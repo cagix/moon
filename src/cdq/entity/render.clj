@@ -1,4 +1,4 @@
-(ns cdq.render-layers
+(ns cdq.entity.render
   (:require [cdq.animation :as animation]
             [cdq.image :as image]
             [cdq.timer :as timer]
@@ -180,3 +180,17 @@
       (draw-hpbar world-unit-scale
                   (:entity/body entity)
                   ratio))))
+
+(def render-layers
+  [{:entity/mouseover? draw-mouseover-highlighting
+    :stunned draw-stunned-state
+    :player-item-on-cursor draw-item-on-cursor-state}
+   {:entity/clickable draw-clickable-mouseover-text
+    :entity/animation call-render-image
+    :entity/image draw-centered-rotated-image
+    :entity/line-render draw-line-entity}
+   {:npc-sleeping draw-sleeping-state
+    :entity/temp-modifier draw-temp-modifiers
+    :entity/string-effect draw-text-over-entity}
+   {:creature/stats draw-stats
+    :active-skill draw-active-skill}])
