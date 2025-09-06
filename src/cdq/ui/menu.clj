@@ -1,6 +1,5 @@
 (ns cdq.ui.menu
   (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [cdq.ui.label :as cdq.label]
             [cdq.ui.image :as image]
             [cdq.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.label :as label]
@@ -8,7 +7,8 @@
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
             [clojure.vis-ui.menu-item :as menu-item]
-            [clojure.vis-ui.popup-menu :as popup-menu]))
+            [clojure.vis-ui.popup-menu :as popup-menu]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
@@ -18,12 +18,12 @@
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (image/create icon {})
-         label (cdq.label/create {:label/text ""})
+         label (widget/label {:label/text ""})
          sub-table (table/create {:rows [[icon label]]})]
      (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (table/add! table sub-table)))))
   ([table text-fn]
-   (let [label (cdq.label/create {:label/text ""})]
+   (let [label (widget/label {:label/text ""})]
      (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (table/add! table label))))))
 

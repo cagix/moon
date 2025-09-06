@@ -11,11 +11,7 @@
                          edn/read-string)]
     ((requiring-resolve f) config)))
 
-(doseq [[f k] '[[clojure.vis-ui.select-box/create         :actor.type/select-box]
-                [cdq.ui.label/create                      :actor.type/label]
-                [cdq.ui.stack/create                      :actor.type/stack]
-                [cdq.ui.text-field/create                 :actor.type/text-field]
-                [cdq.ui.widget/create                     :actor.type/widget]
+(doseq [[f k] '[[cdq.ui.text-field/create                 :actor.type/text-field]
                 [clojure.vis-ui.check-box/create          :actor.type/check-box]
                 [cdq.ui.table/create                      :actor.type/table]
                 [cdq.ui.image-button/create               :actor.type/image-button]
@@ -26,3 +22,5 @@
    clojure.gdx.scenes.scene2d.actor/build
    k
    (requiring-resolve f)))
+
+(require 'clojure.gdx.scenes.scene2d.ui)

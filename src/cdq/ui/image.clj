@@ -1,5 +1,5 @@
 (ns cdq.ui.image
-  (:require [cdq.ui.widget :as widget]
+  (:require [clojure.gdx.scenes.scene2d.ui.widget :as widget]
             [clojure.vis-ui.image :as image]))
 
 (defn create

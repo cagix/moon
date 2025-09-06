@@ -1,5 +1,5 @@
 (ns cdq.ui.text-field
-  (:require [cdq.ui.widget :as widget]
+  (:require [clojure.gdx.scenes.scene2d.ui.widget :as widget]
             [clojure.vis-ui.text-field :as text-field]
             [clojure.vis-ui.tooltip :as tooltip]))
 
