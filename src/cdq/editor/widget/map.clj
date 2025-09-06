@@ -23,20 +23,18 @@
 ; otherwise at update! we would have to convert again back to edn
 ; for example at images/relationships
 (defn- create-editor-window
-  [props
-   {:keys [ctx/db
-           ctx/ui-viewport]
-    :as ctx}
-   application-state-atom]
-  (let [schema (get (:schemas db) (property/type props))
-        window (window/create {:title (str "[SKY]Property[]")
+  [{:keys [application-state-atom
+           schema
+           scrollpane-height
+           props
+           widget]}]
+  (let [window (window/create {:title (str "[SKY]Property[]")
                                :id :property-editor-window
                                :modal? true
                                :close-button? true
                                :center? true
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
-        widget (widget/create schema nil props ctx)
         apply-context-fn (fn [window f]
                            (fn [{:keys [ctx/stage] :as ctx}]
                              (try (f ctx)
@@ -52,7 +50,7 @@
                                            (swap! application-state-atom update :ctx/db
                                                   db/delete!
                                                   (:property/id props))))]
-    (table/add-rows! window [[(scroll-pane/table-cell (:viewport/height ui-viewport)
+    (table/add-rows! window [[(scroll-pane/table-cell scrollpane-height
                                                       [[{:actor widget :colspan 2}]
                                                        [{:actor (text-button/create "Save [LIGHT_GRAY](ENTER)[]"
                                                                                     (fn [_actor ctx]
@@ -63,7 +61,7 @@
                                                                                       (delete! ctx)))
                                                          :center? true}]])]])
     (group/add! window {:actor/type :actor.type/actor
-                        :act (fn [_this _delta {:keys [ctx/input]}]
+                        :act (fn [_this _delta {:keys [ctx/input] :as ctx}]
                                (when (input/key-just-pressed? input :enter)
                                  (save! ctx)))})
     (.pack window)
@@ -71,10 +69,19 @@
 
 (declare application-state-atom)
 
-(defn- open-property-editor-window! [{:keys [ctx/stage]
-                                     :as ctx}
-                                    property]
-  (stage/add! stage (create-editor-window property ctx application-state-atom)))
+(defn- open-property-editor-window!
+  [{:keys [ctx/db
+           ctx/stage
+           ctx/ui-viewport]
+    :as ctx}
+   property]
+  (stage/add! stage (create-editor-window
+                     (let [schema (get (:schemas db) (property/type property))]
+                       {:application-state-atom application-state-atom
+                        :schema schema
+                        :scrollpane-height (:viewport/height ui-viewport)
+                        :props property
+                        :widget (widget/create schema nil property ctx)}))))
 
 (def ^:private property-k-sort-order
   [:property/id
