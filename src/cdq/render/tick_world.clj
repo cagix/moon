@@ -1,10 +1,10 @@
 (ns cdq.render.tick-world
   (:require [cdq.ctx :as ctx]
-            [clojure.gdx.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]
             [cdq.potential-fields.update :as potential-fields.update]
             [cdq.ui.stage :as stage]
-            [cdq.ui.error-window :as error-window]))
+            [cdq.ui.error-window :as error-window]
+            [clojure.gdx.graphics :as graphics]))
 
 (declare entity->tick)
 
