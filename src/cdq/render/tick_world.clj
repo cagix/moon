@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
             [cdq.stacktrace :as stacktrace]
             [cdq.potential-fields.update :as potential-fields.update]
+            [cdq.ui.widget :as widget]
             [clojure.gdx.scenes.scene2d.stage :as stage]
-            [cdq.ui.error-window :as error-window]
             [clojure.gdx.graphics :as graphics]))
 
 (declare entity->tick)
@@ -54,7 +54,7 @@
      (tick-entity! ctx eid))
    (catch Throwable t
      (stacktrace/pretty-print t)
-     (stage/add! stage (error-window/create t))
+     (stage/add! stage (widget/error-window t))
      #_(bind-root ::error t)))
   ctx)
 

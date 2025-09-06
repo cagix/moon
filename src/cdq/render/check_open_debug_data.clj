@@ -1,6 +1,6 @@
 (ns cdq.render.check-open-debug-data
   (:require [cdq.grid :as grid]
-            [cdq.ui.data-viewer :as data-viewer]
+            [cdq.ui.widget :as widget]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.input :as input]))
 
@@ -15,7 +15,7 @@
   (let [data (or (and mouseover-eid @mouseover-eid)
                  @(grid/cell grid
                              (mapv int world-mouse-position)))]
-    (stage/add! stage (data-viewer/create
+    (stage/add! stage (widget/data-viewer
                        {:title "Data View"
                         :data data
                         :width 500

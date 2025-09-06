@@ -1,6 +1,6 @@
 (ns cdq.editor.widget.sound
-  (:require [cdq.editor.scroll-pane :as scroll-pane]
-            [cdq.audio :as audio]
+  (:require [cdq.audio :as audio]
+            [cdq.ui.widget]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -29,8 +29,8 @@
                                       (let [[k _] (actor/user-object table)]
                                         (actor/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage/add! stage (scroll-pane/choose-window (:viewport/width ui-viewport)
-                                                 rows))))
+    (stage/add! stage (cdq.ui.widget/scroll-pane-window (:viewport/width ui-viewport)
+                                                        rows))))
 
 (defn- columns [table sound-name]
   [(widget/text-button sound-name

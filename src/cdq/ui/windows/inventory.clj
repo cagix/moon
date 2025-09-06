@@ -61,14 +61,13 @@
         ; maybe .setTransform stack true ? , but docs say it should work anyway
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
-                           :draw
-                           (fn [actor {:keys [ctx/ui-mouse-position
-                                              ctx/player-eid]}]
-                             (draw-cell-rect @player-eid
-                                             (actor/get-x actor)
-                                             (actor/get-y actor)
-                                             (actor/hit actor ui-mouse-position)
-                                             (actor/user-object (actor/parent actor))))})
+                           :draw (fn [actor {:keys [ctx/ui-mouse-position
+                                                    ctx/player-eid]}]
+                                   (draw-cell-rect @player-eid
+                                                   (actor/get-x actor)
+                                                   (actor/get-y actor)
+                                                   (actor/hit actor ui-mouse-position)
+                                                   (actor/user-object (actor/parent actor))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
