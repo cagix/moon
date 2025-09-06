@@ -1,6 +1,5 @@
 (ns cdq.editor.widget.image
-  (:require [cdq.image :as image]
-            [cdq.ui.image-button :as image-button]))
+  (:require [cdq.image :as image]))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -11,8 +10,9 @@
                              (fn [_actor _ctx]))]))
 
 (defn create [schema  _attribute image {:keys [ctx/textures]}]
-  (image-button/create {:texture-region (image/texture-region image textures)
-                        :scale 2})
+  {:actor/type :actor.type/image-button
+   :drawable/texture-region (image/texture-region image textures)
+   :drawable/scale 2}
   #_(ui/image-button image
                      (fn [_actor ctx]
                        (c/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))

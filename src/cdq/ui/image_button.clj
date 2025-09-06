@@ -3,7 +3,10 @@
             [clojure.vis-ui.image-button :as image-button]
             [cdq.ui.utils :as utils]))
 
-(defn create [{:keys [texture-region on-clicked scale]}]
+(defn create
+  [{:keys [drawable/texture-region
+           on-clicked
+           drawable/scale]}]
   (let [scale (or scale 1)
         [w h] (texture-region/dimensions texture-region)
         drawable (utils/drawable texture-region

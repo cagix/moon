@@ -36,8 +36,8 @@
            texture-region
            tooltip-text]}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (image-button/create {:texture-region texture-region
-                                     :scale 2})]
+        button (image-button/create {:drawable/texture-region texture-region
+                                     :drawable/scale 2})]
     (actor/set-user-object! button skill-id)
     (tooltip/add!     button tooltip-text)
     (group/add!        horizontal-group button)

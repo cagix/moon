@@ -59,9 +59,10 @@
                (try (let [on-clicked (fn [_actor ctx]
                                        (clicked-id-fn id ctx))
                           button (if-let [image (property/image property)]
-                                   (image-button/create {:texture-region (image/texture-region image textures)
-                                                         :on-clicked on-clicked
-                                                         :scale scale})
+                                   (image-button/create
+                                    {:drawable/texture-region (image/texture-region image textures)
+                                     :on-clicked on-clicked
+                                     :drawable/scale scale})
                                    (text-button/create (name id)
                                                        on-clicked))
                           top-widget (label/create {:label/text (or (and extra-info-text
