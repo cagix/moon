@@ -2,12 +2,9 @@
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.image :as image]
-            [cdq.ui.image-button :as image-button]
-            [cdq.ui.label :as label]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.utils :refer [pprint-to-str]]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+            [cdq.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties
 
@@ -41,18 +38,18 @@
            texture-region
            scale
            on-clicked]}]
-  (let [button (if texture-region
-                 (image-button/create {:drawable/texture-region texture-region
-                                       :on-clicked on-clicked
-                                       :drawable/scale scale})
-                 (text-button/create text-button-text on-clicked))
-        top-widget (label/create {:label/text label-text})
-        stack {:actor/type :actor.type/stack
-               :actors [button
-                        top-widget]}]
-    (tooltip/add! button tooltip-text)
-    (actor/set-touchable! top-widget :disabled)
-    stack))
+  {:actor/type :actor.type/stack
+   :actors [(if texture-region
+              {:actor/type :actor.type/image-button
+               :drawable/texture-region texture-region
+               :on-clicked on-clicked
+               :drawable/scale scale
+               :tooltip tooltip-text}
+              (doto (text-button/create text-button-text on-clicked)
+                (tooltip/add! tooltip-text)))
+            {:actor/type :actor.type/label
+             :label/text label-text
+             :actor/touchable :disabled}]})
 
 (defn create
   [{:keys [ctx/db

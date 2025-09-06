@@ -1,12 +1,14 @@
 (ns cdq.ui.image-button
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.vis-ui.image-button :as image-button]
-            [cdq.ui.utils :as utils]))
+  (:require [cdq.ui.table :as table]
+            [cdq.ui.utils :as utils]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.vis-ui.image-button :as image-button]))
 
 (defn create
   [{:keys [drawable/texture-region
            on-clicked
-           drawable/scale]}]
+           drawable/scale]
+    :as opts}]
   (let [scale (or scale 1)
         [w h] (texture-region/dimensions texture-region)
         drawable (utils/drawable texture-region
@@ -15,4 +17,4 @@
         image-button (image-button/create drawable)]
     (when on-clicked
       (.addListener image-button (utils/change-listener on-clicked)))
-    image-button))
+    (table/set-opts! image-button opts)))
