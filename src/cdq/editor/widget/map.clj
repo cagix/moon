@@ -18,33 +18,32 @@
 
 (declare application-state-atom)
 
-(defn- open-property-editor-window!
+(defn- property-editor-window
   [{:keys [ctx/db
-           ctx/stage
            ctx/ui-viewport]
     :as ctx}
    property]
-  (stage/add! stage (let [schema (get (:schemas db) (property/type property))
-                          widget (widget/create schema nil property ctx)]
-                      {:actor/type :actor.type/property-editor
-                       :delete-fn (fn [_ctx]
-                                    (swap! application-state-atom update :ctx/db
-                                           db/delete!
-                                           (:property/id property)))
-                       :save? #(input/key-just-pressed? % :enter)
-                       :save-fn (fn [{:keys [ctx/db]}]
-                                  (swap! application-state-atom update :ctx/db
-                                         db/update!
-                                         (widget/value schema nil widget (:schemas db))))
-                       :scrollpane-height (:viewport/height ui-viewport)
-                       :widget widget
-                       :window-opts {:title (str "[SKY]Property[]")
-                                     :id :property-editor-window
-                                     :modal? true
-                                     :close-button? true
-                                     :center? true
-                                     :close-on-escape? true
-                                     :cell-defaults {:pad 5}}})))
+  (let [schema (get (:schemas db) (property/type property))
+        widget (widget/create schema nil property ctx)]
+    {:actor/type :actor.type/property-editor
+     :delete-fn (fn [_ctx]
+                  (swap! application-state-atom update :ctx/db
+                         db/delete!
+                         (:property/id property)))
+     :save? #(input/key-just-pressed? % :enter)
+     :save-fn (fn [{:keys [ctx/db]}]
+                (swap! application-state-atom update :ctx/db
+                       db/update!
+                       (widget/value schema nil widget (:schemas db))))
+     :scrollpane-height (:viewport/height ui-viewport)
+     :widget widget
+     :window-opts {:title (str "[SKY]Property[]")
+                   :id :property-editor-window
+                   :modal? true
+                   :close-button? true
+                   :center? true
+                   :close-on-escape? true
+                   :cell-defaults {:pad 5}}}))
 
 
 (def ^:private property-k-sort-order
@@ -72,12 +71,14 @@
        table (:map-widget scroll-pane-table)]
    (widget/value [:s/map] nil table schemas)))
 
-(defn- rebuild-editor-window! [{:keys [ctx/db
-                                       ctx/stage] :as ctx}]
+(defn- rebuild-editor-window!
+  [{:keys [ctx/db
+           ctx/stage]
+    :as ctx}]
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (actor/remove! window)
-    (open-property-editor-window! ctx prop-value)))
+    (stage/add! stage (property-editor-window ctx prop-value))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -174,6 +175,7 @@
               :let [[k _] (actor/user-object widget)]]
           [k (widget/value (get schemas k) k widget schemas)])))
 
+; construct !
 (defn open-editor-overview-window!
   [{:keys [ctx/stage]
     :as ctx}
@@ -183,8 +185,11 @@
                                :close-button? true
                                :center? true
                                :close-on-escape? true})
-        on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
-                        (open-property-editor-window! ctx (db/get-raw db id)))]
+        on-clicked-id (fn [id
+                           {:keys [ctx/db
+                                   ctx/stage]
+                            :as ctx}]
+                        (stage/add! stage (property-editor-window ctx (db/get-raw db id))))]
     (table/add! window (cdq.editor.overview-table/create ctx
                                                          property-type
                                                          on-clicked-id))
