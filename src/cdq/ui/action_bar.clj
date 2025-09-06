@@ -1,9 +1,9 @@
 (ns cdq.ui.action-bar
-  (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [cdq.ui.image-button :as image-button]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]
             [clojure.vis-ui.tooltip :as tooltip]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]))
+            [clojure.vis-ui.widget :as widget]))
 
 (defn create [_ctx {:keys [id]}]
   {:actor/type :actor.type/table
@@ -36,7 +36,7 @@
            texture-region
            tooltip-text]}]
   (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-        button (image-button/create {:drawable/texture-region texture-region
+        button (widget/image-button {:drawable/texture-region texture-region
                                      :drawable/scale 2})]
     (actor/set-user-object! button skill-id)
     (tooltip/add!     button tooltip-text)

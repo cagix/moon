@@ -3,17 +3,16 @@
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.editor.overview-table]
-            [cdq.editor.widget :as widget]
+            [cdq.editor.widget :as editor-widget]
             [cdq.ui.separator :as separator]
-            [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.set :as set]))
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.set :as set]
+            [clojure.vis-ui.widget :as widget]))
 
 (declare application-state-atom)
 
@@ -23,7 +22,7 @@
     :as ctx}
    property]
   (let [schema (get (:schemas db) (property/type property))
-        widget (widget/create schema nil property ctx)]
+        widget (editor-widget/create schema nil property ctx)]
     {:actor/type :actor.type/property-editor
      :delete-fn (fn [_ctx]
                   (swap! application-state-atom update :ctx/db
@@ -33,7 +32,7 @@
      :save-fn (fn [{:keys [ctx/db]}]
                 (swap! application-state-atom update :ctx/db
                        db/update!
-                       (widget/value schema nil widget (:schemas db))))
+                       (editor-widget/value schema nil widget (:schemas db))))
      :scrollpane-height (:viewport/height ui-viewport)
      :widget widget
      :window-opts {:title (str "[SKY]Property[]")
@@ -68,7 +67,7 @@
        scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (table/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
-   (widget/value [:s/map] nil table schemas)))
+   (editor-widget/value [:s/map] nil table schemas)))
 
 (defn- rebuild-editor-window!
   [{:keys [ctx/db
@@ -91,7 +90,7 @@
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
             :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
-                              (text-button/create "-"
+                              (widget/text-button "-"
                                                   (fn [_actor ctx]
                                                     (actor/remove! (find-kv-widget table k))
                                                     (rebuild-editor-window! ctx))))
@@ -101,7 +100,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (actor/build? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (actor/build? (editor-widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])
@@ -111,18 +110,18 @@
                                    schema
                                    map-widget-table]
   (let [schemas (:schemas db)
-        window (window/create {:title "Choose"
+        window (widget/window {:title "Choose"
                                :modal? true
                                :close-button? true
                                :center? true
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (widget/value schema nil map-widget-table schemas)))
+        remaining-ks (sort (remove (set (keys (editor-widget/value schema nil map-widget-table schemas)))
                                    (schemas/map-keys schemas schema)))]
     (table/add-rows!
      window
      (for [k remaining-ks]
-       [(text-button/create (name k)
+       [(widget/text-button (name k)
                             (fn [_actor ctx]
                               (.remove window)
                               (table/add-rows! map-widget-table [(component-row ctx
@@ -141,7 +140,7 @@
   (drop 1 (interleave (repeatedly f) coll)))
 
 (defn create [schema  _attribute m {:keys [ctx/db] :as ctx}]
-  (let [table (table/create
+  (let [table (widget/table
                {:cell-defaults {:pad 5}
                 :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -159,7 +158,7 @@
     (table/add-rows!
      table
      (concat [(when opt?
-                [{:actor (text-button/create "Add component"
+                [{:actor (widget/text-button "Add component"
                                              (fn [_actor ctx]
                                                (open-add-component-window! ctx schema table)))
                   :colspan colspan}])]
@@ -172,14 +171,14 @@
   (into {}
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
-          [k (widget/value (get schemas k) k widget schemas)])))
+          [k (editor-widget/value (get schemas k) k widget schemas)])))
 
 ; construct !
 (defn open-editor-overview-window!
   [{:keys [ctx/stage]
     :as ctx}
    property-type]
-  (let [window (window/create {:title "Edit"
+  (let [window (widget/window {:title "Edit"
                                :modal? true
                                :close-button? true
                                :center? true

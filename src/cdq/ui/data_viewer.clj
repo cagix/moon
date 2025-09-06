@@ -1,9 +1,7 @@
 (ns cdq.ui.data-viewer
   (:require [clojure.gdx.scenes.scene2d.stage :as stage]
-            [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
-            [clojure.vis-ui.scroll-pane :as scroll-pane]))
+            [clojure.vis-ui.scroll-pane :as scroll-pane]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -27,7 +25,7 @@
 
 (defn- v->actor [v]
   (if (map? v)
-    (text-button/create "Map"
+    (widget/text-button "Map"
                         (fn [_actor {:keys [ctx/stage]}]
                           (stage/add! stage (create {:title "title"
                                                      :data v
@@ -45,13 +43,13 @@
   (let [rows (for [[k v] (sort-by key data)]
                {:label (k->label-str k)
                 :actor (v->actor v)})
-        scroll-pane-table (table/create
+        scroll-pane-table (widget/table
                            {:rows (for [{:keys [label actor]} rows]
                                     [{:actor {:actor/type :actor.type/label
                                               :label/text label}}
                                      {:actor actor}])})
         scroll-pane-cell (let [;viewport (:ctx/ui-viewport ctx)
-                               table (table/create
+                               table (widget/table
                                       {:rows [[scroll-pane-table]]
                                        :cell-defaults {:pad 1}
                                        :pack? true})]
@@ -59,7 +57,7 @@
                             :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
                             :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
-    (window/create {:title title
+    (widget/window {:title title
                     :close-button? true
                     :close-on-escape? true
                     :center? true

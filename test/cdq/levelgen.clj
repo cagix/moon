@@ -5,8 +5,6 @@
             [cdq.render.clear-screen]
             [cdq.render.render-stage]
             [cdq.textures-impl]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
@@ -21,7 +19,8 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.vis-ui :as vis-ui]))
+            [clojure.vis-ui :as vis-ui]
+            [clojure.vis-ui.widget :as widget]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -80,10 +79,10 @@
 (def state (atom nil))
 
 (defn- edit-window []
-  (window/create {:title "Edit"
+  (widget/window {:title "Edit"
                   :cell-defaults {:pad 10}
                   :rows (for [level-fn level-fns]
-                          [(text-button/create (str "Generate " (first level-fn))
+                          [(widget/text-button (str "Generate " (first level-fn))
                                                (fn [_actor _ctx]
                                                  (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
                   :pack? true}))

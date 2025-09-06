@@ -9,10 +9,9 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
-            [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]))
+            [clojure.vis-ui.widget :as widget]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
@@ -26,9 +25,9 @@
                     (scene2d.window/pack-ancestors! table))]
     (table/add-rows!
      table
-     [[(text-button/create "+"
+     [[(widget/text-button "+"
                            (fn [_actor {:keys [ctx/stage] :as ctx}]
-                             (let [window (window/create {:title "Choose"
+                             (let [window (widget/window {:title "Choose"
                                                           :modal? true
                                                           :close-button? true
                                                           :center? true
@@ -45,12 +44,12 @@
               image-widget (ui.image/create texture-region {:id property-id})]
           (tooltip/add! image-widget (pprint-to-str property))))
       (for [id property-ids]
-        (text-button/create "-"
+        (widget/text-button "-"
                             (fn [_actor ctx]
                               (redo-rows ctx (disj property-ids id)))))])))
 
 (defn create [[_ property-type]  _attribute property-ids ctx]
-  (let [table (table/create {:cell-defaults {:pad 5}})]
+  (let [table (widget/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
 

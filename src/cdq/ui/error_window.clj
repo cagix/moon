@@ -1,10 +1,10 @@
 (ns cdq.ui.error-window
-  (:require [cdq.ui.window :as window]
-            [cdq.utils :refer [with-err-str]]
-            clojure.repl))
+  (:require [cdq.utils :refer [with-err-str]]
+            clojure.repl
+            [clojure.vis-ui.widget :as widget]))
 
 (defn create [throwable]
-  (window/create
+  (widget/window
    {:title "Error"
     :rows [[{:actor {:actor/type :actor.type/label
                      :label/text (binding [*print-level* 3]

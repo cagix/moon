@@ -3,12 +3,12 @@
             [cdq.inventory :as inventory]
             [cdq.image :as image]
             [cdq.ui.image :as ui.image]
-            [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.image]
             [clojure.gdx.scenes.scene2d.utils :as utils]
-            [clojure.vis-ui.tooltip :as tooltip]))
+            [clojure.vis-ui.tooltip :as tooltip]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn create
   [{:keys [ctx/ui-viewport
@@ -82,7 +82,7 @@
                                                       {:name "image-widget"
                                                        :user-object {:background-drawable background-drawable
                                                                      :cell-size cell-size}})]}}))]
-    (window/create {:title title
+    (widget/window {:title title
                     :id id
                     :visible? visible?
                     :pack? true

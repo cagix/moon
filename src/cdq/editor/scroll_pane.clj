@@ -1,11 +1,10 @@
 (ns cdq.editor.scroll-pane
-  (:require [cdq.ui.table :as table]
-            [cdq.ui.window :as window]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.vis-ui.scroll-pane :as scroll-pane]))
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.vis-ui.scroll-pane :as scroll-pane]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn table-cell [viewport-height rows]
-  (let [table (table/create
+  (let [table (widget/table
                {:rows rows
                 :name "scroll-pane-table"
                 :cell-defaults {:pad 5}
@@ -17,7 +16,7 @@
                   (.getHeight table))}))
 
 (defn choose-window [viewport-height rows]
-  (window/create {:title "Choose"
+  (widget/window {:title "Choose"
                   :modal? true
                   :close-button? true
                   :center? true

@@ -1,8 +1,7 @@
 (ns cdq.tx.show-modal
-  (:require [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]))
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.vis-ui.widget :as widget]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -13,10 +12,10 @@
                            {:keys [title text button-text on-click]}]
   (assert (not (::modal stage)))
   (stage/add! stage
-              (window/create {:title title
+              (widget/window {:title title
                               :rows [[{:actor {:actor/type :actor.type/label
                                                :label/text text}}]
-                                     [(text-button/create button-text
+                                     [(widget/text-button button-text
                                                           (fn [_actor _ctx]
                                                             (actor/remove! (::modal stage))
                                                             (on-click)))]]

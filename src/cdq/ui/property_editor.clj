@@ -2,12 +2,11 @@
   (:require [cdq.editor.scroll-pane :as scroll-pane]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]))
+            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn create
   [{:keys [check-enter-to-save
@@ -17,7 +16,7 @@
            scrollpane-height
            widget
            window-opts]}]
-  (let [window (window/create window-opts)
+  (let [window (widget/window window-opts)
         apply-context-fn (fn [window f]
                            (fn [{:keys [ctx/stage] :as ctx}]
                              (try (f ctx)
@@ -29,10 +28,10 @@
         delete! (apply-context-fn window delete-fn)]
     (table/add-rows! window [[(scroll-pane/table-cell scrollpane-height
                                                       [[{:actor widget :colspan 2}]
-                                                       [{:actor (text-button/create "Save [LIGHT_GRAY](ENTER)[]"
+                                                       [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]"
                                                                                     (fn [_actor ctx] (save! ctx)))
                                                          :center? true}
-                                                        {:actor (text-button/create "Delete"
+                                                        {:actor (widget/text-button "Delete"
                                                                                     (fn [_actor ctx] (delete! ctx)))
                                                          :center? true}]])]])
     (group/add! window {:actor/type :actor.type/actor

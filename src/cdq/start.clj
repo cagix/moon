@@ -11,11 +11,7 @@
                          edn/read-string)]
     ((requiring-resolve f) config)))
 
-(doseq [[f k] '[[cdq.ui.text-field/create                 :actor.type/text-field]
-                [clojure.vis-ui.check-box/create          :actor.type/check-box]
-                [cdq.ui.table/create                      :actor.type/table]
-                [cdq.ui.image-button/create               :actor.type/image-button]
-                [cdq.ui.text-button/create                :actor.type/text-button]
+(doseq [[f k] '[
                 [cdq.ui.property-editor/create            :actor.type/property-editor]
                 [cdq.ui.data-viewer/create                :actor.type/data-viewer]]]
   (clojure.lang.MultiFn/.addMethod

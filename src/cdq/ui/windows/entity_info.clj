@@ -1,7 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.vis-ui.widget :as widget]
-            [cdq.ui.window :as window]))
+            [clojure.vis-ui.widget :as widget]))
 
 (defn create [{:keys [ctx/ui-viewport]}
               {:keys [y
@@ -9,7 +8,7 @@
   (let [position [(:viewport/width ui-viewport)
                   y]
         label (widget/label {:label/text ""})
-        window (window/create {:title "Info"
+        window (widget/window {:title "Info"
                                :id :entity-info-window
                                :visible? false
                                :position position

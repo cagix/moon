@@ -10,10 +10,8 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
-            [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
-            [cdq.ui.window :as window]))
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.vis-ui.widget :as widget]))
 
 (defn- add-one-to-one-rows
   [{:keys [ctx/db
@@ -28,9 +26,9 @@
     (table/add-rows!
      table
      [[(when-not property-id
-         (text-button/create "+"
+         (widget/text-button "+"
                              (fn [_actor {:keys [ctx/stage] :as ctx}]
-                               (let [window (window/create {:title "Choose"
+                               (let [window (widget/window {:title "Choose"
                                                             :modal? true
                                                             :close-button? true
                                                             :center? true
@@ -49,12 +47,12 @@
            (tooltip/add! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id
-         (text-button/create "-"
+         (widget/text-button "-"
                              (fn [_actor ctx]
                                (redo-rows ctx nil))))]])))
 
 (defn create [[_ property-type]  _attribute property-id ctx]
-  (let [table (table/create {:cell-defaults {:pad 5}})]
+  (let [table (widget/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows ctx table property-type property-id)
     table))
 
