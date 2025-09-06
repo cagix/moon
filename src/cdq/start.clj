@@ -1,12 +1,6 @@
 (ns cdq.start
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-
-            cdq.ui.select-box
-            cdq.ui.stack
-            cdq.ui.text-field
-            cdq.ui.widget
-            )
+            [clojure.java.io :as io])
   (:gen-class))
 
 (defn -main []

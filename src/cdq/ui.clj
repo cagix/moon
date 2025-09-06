@@ -1,5 +1,5 @@
 (ns cdq.ui
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx] ; pass a protocol .... for handle-txs and handle-input ....
             [cdq.ui.ctx-stage :as ctx-stage]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
@@ -7,7 +7,7 @@
             [cdq.ui.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            clojure.vis-ui.check-box
+            [clojure.vis-ui.check-box]
             [clojure.vis-ui.label :as label]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.table]
@@ -35,14 +35,9 @@
   (doto (label/create text)
     (set-opts! opts)))
 
-(defmethod cdq.construct/create :actor.type/group [opts]
-  (doto (clojure.gdx.scenes.scene2d.group/create)
-    (set-opts! opts)))
-
 (import 'clojure.lang.MultiFn)
 (MultiFn/.addMethod cdq.construct/create :actor.type/label label)
 (MultiFn/.addMethod cdq.construct/create :actor.type/table table)
-(MultiFn/.addMethod cdq.construct/create :actor.type/check-box clojure.vis-ui.check-box/create)
 
 (defn window [opts]
   (-> (window/create opts)
@@ -53,7 +48,7 @@
     (actor/set-user-object! :scroll-pane)))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
-(defn- try-act [actor delta f]
+(defn try-act [actor delta f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
                    (ctx-stage/get-ctx stage))]
     (f actor delta ctx)))
@@ -62,13 +57,3 @@
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
                    (ctx-stage/get-ctx stage))]
     (ctx/handle-draws! ctx (f actor ctx))))
-
-(defmethod cdq.construct/create :actor.type/actor [opts]
-  (doto (actor/create
-          (fn [this delta]
-            (when-let [f (:act opts)]
-              (try-act this delta f)))
-          (fn [this _batch _parent-alpha]
-            (when-let [f (:draw opts)]
-              (try-draw this f))))
-    (set-opts! opts)))
