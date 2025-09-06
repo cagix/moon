@@ -11,8 +11,7 @@
                          edn/read-string)]
     ((requiring-resolve f) config)))
 
-(doseq [[f k] '[[cdq.ui.horizontal-group/build           :actor.type/horizontal-group]
-                [clojure.vis-ui.select-box/create         :actor.type/select-box]
+(doseq [[f k] '[[clojure.vis-ui.select-box/create         :actor.type/select-box]
                 [cdq.ui.label/create                      :actor.type/label]
                 [cdq.ui.stack/create                      :actor.type/stack]
                 [cdq.ui.text-field/create                 :actor.type/text-field]
