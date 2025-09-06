@@ -4,7 +4,6 @@
             [cdq.schemas :as schemas]
             [cdq.editor.overview-table]
             [cdq.editor.widget :as widget]
-            [cdq.ui :as ui]
             [cdq.ui.group :as group]
             [cdq.ui.separator :as separator]
             [cdq.ui.stage :as stage]
@@ -102,7 +101,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (ui/construct? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (actor/construct? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])

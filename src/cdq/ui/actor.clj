@@ -25,7 +25,7 @@
     (ctx/handle-draws! ctx (f actor ctx))))
 
 (defn create [opts]
-  (doto (actor/create
+  (doto (actor/create*
          (fn [this delta]
            (when-let [f (:act opts)]
              (try-act this delta f)))
