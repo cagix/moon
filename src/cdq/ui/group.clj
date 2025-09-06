@@ -1,10 +1,10 @@
 (ns cdq.ui.group
-  (:require [cdq.ui.actor :as actor]
-            [clojure.gdx.scenes.scene2d.actor :as scene2d.actor]
+  (:require [cdq.ui :as ui]
+            [cdq.ui.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]))
 
 (defn add! [group actor-or-decl]
-  (group/add! group (scene2d.actor/construct? actor-or-decl)))
+  (group/add! group (ui/construct? actor-or-decl)))
 
 (def find-actor         group/find-actor)
 (def clear-children!    group/clear-children!)

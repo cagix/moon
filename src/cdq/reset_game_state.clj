@@ -3,6 +3,7 @@
             [cdq.grid-impl :as grid-impl]
             [cdq.raycaster]
             [cdq.ctx :as ctx]
+            [cdq.ui :as ui]
             [cdq.db :as db]
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid2d :as g2d]
@@ -135,7 +136,7 @@
   (doseq [actor-decl (map #(let [[f params] %]
                              ((requiring-resolve f) ctx params))
                           (:create-ui-actors config))]
-    (stage/add! stage (actor/create actor-decl)))
+    (stage/add! stage (ui/create actor-decl)))
   (let [world-config (merge (::world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f) ctx params)))

@@ -1,5 +1,5 @@
 (ns cdq.ui.stage
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [cdq.ui :as ui]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage])
   (:import (clojure.lang ILookup)
@@ -17,7 +17,7 @@
   (reset! (.ctx ^Stage stage) ctx))
 
 (defn add! [stage actor-or-decl]
-  (stage/add! stage (actor/construct? actor-or-decl)))
+  (stage/add! stage (ui/construct? actor-or-decl)))
 
 (def act!   stage/act!)
 (def draw!  stage/draw!)
