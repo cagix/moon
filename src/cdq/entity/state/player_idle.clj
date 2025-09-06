@@ -1,8 +1,8 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.ui.action-bar :as action-bar]
-            [cdq.controls :as controls]
+  (:require [cdq.ui.action-bar :as action-bar] ; 'ctx/render-frame'
+            [cdq.controls :as controls]        ; input
             [cdq.gdx.math.vector2 :as v]
-            [cdq.inventory :as inventory]
+            [cdq.inventory :as inventory] ; entity.inventory
             [cdq.ui.windows.inventory :as inventory-window]
             [cdq.skill :as skill]
             [cdq.entity :as entity]
@@ -33,6 +33,17 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
+; TODO this is just mouseover state!
+; either over an ui-actor
+; or clickable-entity
+; otherwise nothing mouseover (or a target) or a tile ?
+; or nothing ?
+; thats it ?
+; it depends only on graphics layers
+; * black
+; * tiled-map -> what tile ... can click also
+; * entities -> check , target otherwise
+; * user interface -> check
 (defn interaction-state
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid

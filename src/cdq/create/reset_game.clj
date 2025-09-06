@@ -1,0 +1,6 @@
+(ns cdq.create.reset-game)
+
+(defn do!
+  [{:keys [ctx/config]
+    :as ctx}]
+  ((requiring-resolve (:reset-game-state! config)) ctx (:starting-level config)))
