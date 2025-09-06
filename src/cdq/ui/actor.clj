@@ -1,15 +1,12 @@
 (ns cdq.ui.actor
   (:require [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.utils :as utils]))
+            [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
   (when-let [tooltip (:tooltip opts)]
     (tooltip/add! actor tooltip))
-  (when-let [f (:click-listener opts)]
-    (.addListener actor (utils/click-listener f)))
   actor)
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
