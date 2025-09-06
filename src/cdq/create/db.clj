@@ -2,6 +2,5 @@
   (:require [cdq.db-impl :as db]))
 
 (defn do!
-  [{:keys [ctx/config]
-    :as ctx}]
-  (assoc ctx :ctx/db (db/create (:db config))))
+  [ctx params]
+  (assoc ctx :ctx/db (db/create params)))

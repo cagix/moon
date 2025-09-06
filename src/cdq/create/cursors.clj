@@ -13,6 +13,10 @@
                    cursor))))
 
 (defn do!
-  [{:keys [ctx/config]
-    :as ctx}]
-  (assoc ctx :ctx/cursors (load-cursors (gdx/files) (gdx/graphics) (:cursors config) (:cursor-path-format config))))
+  [ctx
+   {:keys [data
+           path-format]}]
+  (assoc ctx :ctx/cursors (load-cursors (gdx/files)
+                                        (gdx/graphics)
+                                        data
+                                        path-format)))

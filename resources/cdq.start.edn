@@ -246,11 +246,7 @@
                       :windowed-mode {:width 1440 :height 900}
                       :foreground-fps 60}
    :listener [cdq.application-listener/create
-              {:config {:audio {:sounds "sounds.edn"
-                                :path-format "sounds/%s.wav"}
-                        :db {:schemas "schema.edn"
-                             :properties "properties.edn"}
-                        :reset-game-state! cdq.reset-game-state/do!
+              {:config {:reset-game-state! cdq.reset-game-state/do!
                         :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                              :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                      {:world-fns [[cdq.world-fns.tmx/create
@@ -286,33 +282,6 @@
                                            [cdq.ui.player-state-draw/create]
                                            [cdq.ui.message/create {:duration-seconds 0.5
                                                                    :name "player-message"}]]
-                        :starting-level [cdq.world-fns.tmx/create
-                                         {:tmx-file "maps/vampire.tmx"
-                                          :start-position [32 71]}]
-                        :tile-size 48
-                        :ui-viewport    {:width 1440 :height 900}
-                        :world-viewport {:width 1440 :height 900}
-                        :cursor-path-format "cursors/%s.png"
-                        :cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                  :cursors/black-x               ["black_x"      [0   0]]
-                                  :cursors/default               ["default"      [0   0]]
-                                  :cursors/denied                ["denied"       [16 16]]
-                                  :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                  :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                  :cursors/hand-grab             ["hand003"      [4  16]]
-                                  :cursors/move-window           ["move002"      [16 16]]
-                                  :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                  :cursors/over-button           ["hand002"      [0   0]]
-                                  :cursors/sandclock             ["sandclock"    [16 16]]
-                                  :cursors/skill-not-usable      ["x007"         [0   0]]
-                                  :cursors/use-skill             ["pointer004"   [0   0]]
-                                  :cursors/walking               ["walking"      [16 16]]}
-                        :default-font {:file "exocet/films.EXL_____.ttf"
-                                       :params {:size 16
-                                                :quality-scaling 2
-                                                :enable-markup? true
-                                                ; false, otherwise scaling to world-units not visible
-                                                :use-integer-positions? false}}
                         :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                  :initial-state :npc-sleeping}
                                                     :entity/faction :evil}
@@ -340,21 +309,45 @@
                          cdq.create.sprite-batch/do!
                          cdq.create.graphics/do!
                          cdq.create.textures/do!
-                         cdq.create.audio/do!
-                         cdq.create.cursors/do!
-                         cdq.create.db/do!
-                         cdq.create.world-unit-scale/do!
-                         cdq.create.ui-viewport/do!
+                         [cdq.create.audio/do! {:sounds "sounds.edn"
+                                                :path-format "sounds/%s.wav"}]
+                         [cdq.create.cursors/do! {:path-format "cursors/%s.png"
+                                                  :data {:cursors/bag                   ["bag001"       [0   0]]
+                                                         :cursors/black-x               ["black_x"      [0   0]]
+                                                         :cursors/default               ["default"      [0   0]]
+                                                         :cursors/denied                ["denied"       [16 16]]
+                                                         :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                         :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                         :cursors/hand-grab             ["hand003"      [4  16]]
+                                                         :cursors/move-window           ["move002"      [16 16]]
+                                                         :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                         :cursors/over-button           ["hand002"      [0   0]]
+                                                         :cursors/sandclock             ["sandclock"    [16 16]]
+                                                         :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                         :cursors/use-skill             ["pointer004"   [0   0]]
+                                                         :cursors/walking               ["walking"      [16 16]]}}]
+                         [cdq.create.db/do! {:schemas "schema.edn"
+                                             :properties "properties.edn"}]
+                         [cdq.create.world-unit-scale/do! {:tile-size 48}]
+                         [cdq.create.ui-viewport/do! {:width 1440
+                                                      :height 900}]
                          cdq.create.input/do!
                          cdq.create.stage/do!
                          cdq.create.input-processor/do!
                          cdq.create.tiled-map-renderer/do!
-                         cdq.create.world-viewport/do!
-                         cdq.create.default-font/do!
+                         [cdq.create.world-viewport/do! {:width 1440
+                                                         :height 900}]
+                         [cdq.create.default-font/do! {:file "exocet/films.EXL_____.ttf"
+                                                       :params {:size 16
+                                                                :quality-scaling 2
+                                                                :enable-markup? true
+                                                                ; false, otherwise scaling to world-units not visible
+                                                                :use-integer-positions? false}}]
                          cdq.create.unit-scale/do!
                          cdq.create.shape-drawer-texture/do!
                          cdq.create.shape-drawer/do!
-                         cdq.create.reset-game/do!
+                         [cdq.create.reset-game/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                               :start-position [32 71]}]]
                          cdq.create.frame/do!]
 
                :dispose! cdq.gdx-app.dispose/do!

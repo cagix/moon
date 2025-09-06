@@ -4,8 +4,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]))
 
 (defn do!
-  [{:keys [ctx/config]
-    :as ctx}]
+  [ctx {:keys [file params]}]
   (assoc ctx :ctx/default-font
-         (freetype/generate-font (files/internal (gdx/files) (:file (:default-font config)))
-                                 (:params (:default-font config)))))
+         (freetype/generate-font (files/internal (gdx/files) file)
+                                 params)))
