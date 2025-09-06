@@ -1,8 +1,8 @@
 (ns cdq.render.check-open-debug-data
-  (:require [cdq.dev.data-view :as data-view]
-            [clojure.gdx.input :as input]
+  (:require [cdq.grid :as grid]
+            [cdq.ui.data-viewer :as data-view]
             [cdq.ui.stage :as stage]
-            [cdq.grid :as grid]))
+            [clojure.gdx.input :as input]))
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
@@ -15,11 +15,10 @@
   (let [data (or (and mouseover-eid @mouseover-eid)
                  @(grid/cell grid
                              (mapv int world-mouse-position)))]
-    (stage/add! stage
-                (data-view/table-view-window {:title "Data View"
-                                              :data data
-                                              :width 500
-                                              :height 500}))))
+    (stage/add! stage (data-view/create {:title "Data View"
+                                         :data data
+                                         :width 500
+                                         :height 500}))))
 
 (defn do!
   [{:keys [ctx/input] :as ctx}]

@@ -1,7 +1,7 @@
-(ns cdq.dev.data-view
-  (:require [cdq.ui.text-button :as text-button]
-            [cdq.ui.scroll-pane-table-window :as scroll-pane-table-window]
-            [cdq.ui.stage :as stage]))
+(ns cdq.ui.data-viewer
+  (:require [cdq.ui.scroll-pane-table-window :as scroll-pane-table-window]
+            [cdq.ui.stage :as stage]
+            [cdq.ui.text-button :as text-button]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -21,22 +21,24 @@
    :else
    (str (class v))))
 
-(declare table-view-window)
-
-; TODO isn't there a clojure data browser thingy library
+(declare create)
 
 (defn- v->actor [v]
   (if (map? v)
     (text-button/create "Map"
                         (fn [_actor {:keys [ctx/stage]}]
-                          (stage/add! stage (table-view-window {:title "title"
-                                                                :data v
-                                                                :width 500
-                                                                :height 500}))))
+                          (stage/add! stage (create {:title "title"
+                                                     :data v
+                                                     :width 500
+                                                     :height 500}))))
     {:actor/type :actor.type/label
      :label/text (v->text v)}))
 
-(defn table-view-window [{:keys [title data width height]}]
+(defn create
+  [{:keys [title
+           data
+           width
+           height]}]
   {:pre [(map? data)]}
   (scroll-pane-table-window/create {:title title
                                     :rows (for [[k v] (sort-by key data)]
