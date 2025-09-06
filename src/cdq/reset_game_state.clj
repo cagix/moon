@@ -135,7 +135,7 @@
   (doseq [actor-decl (map #(let [[f params] %]
                              ((requiring-resolve f) ctx params))
                           (:create-ui-actors config))]
-    (stage/add! stage (cdq.construct/construct actor-decl)))
+    (stage/add! stage (cdq.construct/create actor-decl)))
   (let [world-config (merge (::world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f) ctx params)))

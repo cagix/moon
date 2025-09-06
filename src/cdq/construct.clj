@@ -1,13 +1,13 @@
 (ns cdq.construct
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defmulti construct :actor/type)
+(defmulti create :actor/type)
 
 (defn construct? ^Actor [actor-declaration]
   (try
    (cond
     (instance? Actor actor-declaration) actor-declaration
-    (map? actor-declaration) (construct actor-declaration)
+    (map? actor-declaration) (create actor-declaration)
     (nil? actor-declaration) nil
     :else (throw (ex-info "Cannot find constructor"
                           {:instance-actor? (instance? Actor actor-declaration)

@@ -35,14 +35,14 @@
   (doto (label/create text)
     (set-opts! opts)))
 
-(defmethod cdq.construct/construct :actor.type/group [opts]
+(defmethod cdq.construct/create :actor.type/group [opts]
   (doto (clojure.gdx.scenes.scene2d.group/create)
     (set-opts! opts)))
 
 (import 'clojure.lang.MultiFn)
-(MultiFn/.addMethod cdq.construct/construct :actor.type/label label)
-(MultiFn/.addMethod cdq.construct/construct :actor.type/table table)
-(MultiFn/.addMethod cdq.construct/construct :actor.type/check-box clojure.vis-ui.check-box/create)
+(MultiFn/.addMethod cdq.construct/create :actor.type/label label)
+(MultiFn/.addMethod cdq.construct/create :actor.type/table table)
+(MultiFn/.addMethod cdq.construct/create :actor.type/check-box clojure.vis-ui.check-box/create)
 
 (defn window [opts]
   (-> (window/create opts)
@@ -63,7 +63,7 @@
                    (ctx-stage/get-ctx stage))]
     (ctx/handle-draws! ctx (f actor ctx))))
 
-(defmethod cdq.construct/construct :actor.type/actor [opts]
+(defmethod cdq.construct/create :actor.type/actor [opts]
   (doto (actor/create
           (fn [this delta]
             (when-let [f (:act opts)]

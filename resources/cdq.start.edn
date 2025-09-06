@@ -67,6 +67,8 @@
                                                            :player-item-on-cursor :cursors/hand-grab
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
+ [cdq.multifn/add-methods! [{:required [cdq.construct/create]}
+                            [[cdq.ui.construct.horizontal-group :actor.type/horizontal-group]]]]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
                              [cdq.info.creature.stats :creature/stats]

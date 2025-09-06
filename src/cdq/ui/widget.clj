@@ -3,7 +3,7 @@
             cdq.construct
             [clojure.gdx.scenes.scene2d.ui.widget :as widget]))
 
-(defmethod cdq.construct/construct :actor.type/widget [opts]
+(defmethod cdq.construct/create :actor.type/widget [opts]
   (widget/create
     (fn [this _batch _parent-alpha]
       (when-let [f (:draw opts)]

@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
 
-            cdq.ui.horizontal-group
             cdq.ui.select-box
             cdq.ui.stack
             cdq.ui.text-field
