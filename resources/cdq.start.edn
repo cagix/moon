@@ -1,7 +1,11 @@
 [
  [cdq.application.mac-os-config/set-glfw-async!]
  [cdq.var/bind-roots! [
+
+                       ; no need, just require it
                        [cdq.editor.widget.map/application-state-atom cdq.application/state]
+
+
                        [cdq.entity.state/->exit {:npc-moving            cdq.entity.state.npc-moving/exit
                                                  :npc-sleeping          cdq.entity.state.npc-sleeping/exit
                                                  :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
