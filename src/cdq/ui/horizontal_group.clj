@@ -2,6 +2,6 @@
   (:require [cdq.ui.group :as group]
             [clojure.gdx.scenes.scene2d.ui :as ui]))
 
-(defn create [{:keys [space pad] :as opts}]
+(defn build [{:keys [space pad] :as opts}]
   (doto (ui/horizontal-group space pad)
     (group/set-opts! opts)))

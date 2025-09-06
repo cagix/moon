@@ -7,7 +7,6 @@
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid2d :as g2d]
             [cdq.math.raycaster :as raycaster]
-            [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.utils :as utils]
@@ -136,7 +135,7 @@
   (doseq [actor-decl (map #(let [[f params] %]
                              ((requiring-resolve f) ctx params))
                           (:create-ui-actors config))]
-    (stage/add! stage (scene2d/create actor-decl)))
+    (stage/add! stage (actor/build actor-decl)))
   (let [world-config (merge (::world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f) ctx params)))

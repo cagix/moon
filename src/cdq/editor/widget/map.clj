@@ -11,7 +11,6 @@
             [cdq.ui.window :as window]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.set :as set]))
@@ -78,7 +77,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (actor/remove! window)
-    (stage/add! stage (scene2d/create (property-editor-window ctx prop-value)))))
+    (stage/add! stage (actor/build (property-editor-window ctx prop-value)))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -102,7 +101,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (scene2d/construct? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (actor/build? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])
@@ -189,7 +188,7 @@
                            {:keys [ctx/db
                                    ctx/stage]
                             :as ctx}]
-                        (stage/add! stage (scene2d/create (property-editor-window ctx (db/get-raw db id)))))]
+                        (stage/add! stage (actor/build (property-editor-window ctx (db/get-raw db id)))))]
     (table/add! window (cdq.editor.overview-table/create ctx
                                                          property-type
                                                          on-clicked-id))
