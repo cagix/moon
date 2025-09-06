@@ -1,6 +1,6 @@
 (ns cdq.ui.text-button
   (:require [cdq.ui.table :as table]
-            [cdq.ui.utils :as utils]
+            [clojure.gdx.scenes.scene2d.utils :as utils]
             [clojure.vis-ui.text-button :as text-button]))
 
 (defn create

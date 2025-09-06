@@ -5,10 +5,10 @@
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.ui.utils :as utils]
             [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.ui.image]))
+            [clojure.gdx.scenes.scene2d.ui.image]
+            [clojure.gdx.scenes.scene2d.utils :as utils]))
 
 (defn create
   [{:keys [ctx/ui-viewport

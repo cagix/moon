@@ -1,7 +1,7 @@
 (ns cdq.ui.image-button
   (:require [cdq.ui.table :as table]
-            [cdq.ui.utils :as utils]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.scenes.scene2d.utils :as utils]
             [clojure.vis-ui.image-button :as image-button]))
 
 (defn create
