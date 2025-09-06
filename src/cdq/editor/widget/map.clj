@@ -78,7 +78,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (actor/remove! window)
-    (stage/add! stage (property-editor-window ctx prop-value))))
+    (stage/add! stage (ui/create (property-editor-window ctx prop-value)))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -189,7 +189,7 @@
                            {:keys [ctx/db
                                    ctx/stage]
                             :as ctx}]
-                        (stage/add! stage (property-editor-window ctx (db/get-raw db id))))]
+                        (stage/add! stage (ui/create (property-editor-window ctx (db/get-raw db id)))))]
     (table/add! window (cdq.editor.overview-table/create ctx
                                                          property-type
                                                          on-clicked-id))
