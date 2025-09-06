@@ -39,12 +39,7 @@
                                                           :stunned cdq.entity.state.stunned/tick!
                                                           :entity/string-effect cdq.entity.string-effect/tick!
                                                           :entity/temp-modifier cdq.entity.temp-modifier/tick!}]
-                       [cdq.render.set-cursor/state->cursor {:active-skill :cursors/sandclock
-                                                           :player-dead :cursors/black-x
-                                                           :player-idle cdq.entity.state.player-idle/->cursor
-                                                           :player-item-on-cursor :cursors/hand-grab
-                                                           :player-moving :cursors/walking
-                                                           :stunned :cursors/denied}]]]
+                       ]]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
                              [cdq.info.creature.stats :creature/stats]
