@@ -35,7 +35,7 @@
 
 #_(defn- ->info-window []
   (let [label (ui/label {:label/text ""})
-        window (ui/window {:title "Info" :rows [[label]]})]
+        window (window/create {:title "Info" :rows [[label]]})]
     (.addActor window (proxy [Actor] []
                         (act [_delta]
                           (do
@@ -84,15 +84,15 @@
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)))
 
 #_(defn ->generate-map-window [c level-id]
-  (ui/window {:title "Properties"
-              :cell-defaults {:pad 10}
-              :rows [[(ui/label {:label/text (with-out-str (pprint (db/build db level-id)))})]
-                     [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id))
-                                                    (catch Throwable t
-                                                      (pretty-pst t)
-                                                      (g/show-error-window! ctx t)
-                                                      (println t))))]]
-              :pack? true}))
+    (window/create {:title "Properties"
+                    :cell-defaults {:pad 10}
+                    :rows [[(ui/label {:label/text (with-out-str (pprint (db/build db level-id)))})]
+                           [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id))
+                                                          (catch Throwable t
+                                                            (pretty-pst t)
+                                                            (g/show-error-window! ctx t)
+                                                            (println t))))]]
+                    :pack? true}))
 
 (defn render [_]
   #_(cdq.graphics/draw-on-world-view @state render-on-map)

@@ -5,8 +5,8 @@
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
-            [cdq.ui :as ui]
             [cdq.ui.utils :as utils]
+            [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.image]))
 
@@ -82,33 +82,33 @@
                                                       {:name "image-widget"
                                                        :user-object {:background-drawable background-drawable
                                                                      :cell-size cell-size}})]}}))]
-    (ui/window {:title title
-                :id id
-                :visible? visible?
-                :pack? true
-                :position [(:viewport/width ui-viewport)
-                           (:viewport/height ui-viewport)]
-                :rows [[{:actor {:id ::table
-                                 :actor/type :actor.type/table
-                                 :rows (concat [[nil nil
-                                                 (->cell :inventory.slot/helm)
-                                                 (->cell :inventory.slot/necklace)]
-                                                [nil
-                                                 (->cell :inventory.slot/weapon)
-                                                 (->cell :inventory.slot/chest)
-                                                 (->cell :inventory.slot/cloak)
-                                                 (->cell :inventory.slot/shield)]
-                                                [nil nil
-                                                 (->cell :inventory.slot/leg)]
-                                                [nil
-                                                 (->cell :inventory.slot/glove)
-                                                 (->cell :inventory.slot/rings :position [0 0])
-                                                 (->cell :inventory.slot/rings :position [1 0])
-                                                 (->cell :inventory.slot/boot)]]
-                                               (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                                                 (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                                                   (->cell :inventory.slot/bag :position [x y]))))}
-                         :pad 4}]]})))
+    (window/create {:title title
+                    :id id
+                    :visible? visible?
+                    :pack? true
+                    :position [(:viewport/width ui-viewport)
+                               (:viewport/height ui-viewport)]
+                    :rows [[{:actor {:id ::table
+                                     :actor/type :actor.type/table
+                                     :rows (concat [[nil nil
+                                                     (->cell :inventory.slot/helm)
+                                                     (->cell :inventory.slot/necklace)]
+                                                    [nil
+                                                     (->cell :inventory.slot/weapon)
+                                                     (->cell :inventory.slot/chest)
+                                                     (->cell :inventory.slot/cloak)
+                                                     (->cell :inventory.slot/shield)]
+                                                    [nil nil
+                                                     (->cell :inventory.slot/leg)]
+                                                    [nil
+                                                     (->cell :inventory.slot/glove)
+                                                     (->cell :inventory.slot/rings :position [0 0])
+                                                     (->cell :inventory.slot/rings :position [1 0])
+                                                     (->cell :inventory.slot/boot)]]
+                                                   (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+                                                     (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+                                                       (->cell :inventory.slot/bag :position [x y]))))}
+                             :pad 4}]]})))
 
 (defn set-item!
   [inventory-window

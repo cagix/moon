@@ -1,6 +1,7 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ui.group :as group]
-            [cdq.ui :as ui]))
+            [cdq.ui :as ui]
+            [cdq.ui.window :as window]))
 
 (defn create [{:keys [ctx/ui-viewport]}
               {:keys [y
@@ -8,11 +9,11 @@
   (let [position [(:viewport/width ui-viewport)
                   y]
         label (ui/label {:label/text ""})
-        window (ui/window {:title "Info"
-                           :id :entity-info-window
-                           :visible? false
-                           :position position
-                           :rows [[{:actor label :expand? true}]]})]
+        window (window/create {:title "Info"
+                               :id :entity-info-window
+                               :visible? false
+                               :position position
+                               :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
     (group/add! window {:actor/type :actor.type/actor

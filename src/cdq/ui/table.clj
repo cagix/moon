@@ -26,13 +26,14 @@
     (table/row! table))
   table)
 
-(defn set-opts! [table {:keys [rows cell-defaults]}]
+(defn set-opts! [table {:keys [rows cell-defaults] :as opts}]
   (cell/set-opts! (table/defaults table) cell-defaults)
-  (add-rows! table rows))
+  (doto table
+    (add-rows! rows)
+    (widget-group/set-opts! opts)
+    (group/set-opts! opts)
+    (actor/set-opts! opts)))
 
 (defn create [opts]
   (-> (vis-ui.table/create)
-      (set-opts! opts)
-      (widget-group/set-opts! opts)
-      (group/set-opts! opts)
-      (actor/set-opts! opts)))
+      (set-opts! opts)))

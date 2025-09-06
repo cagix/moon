@@ -14,7 +14,7 @@
             [cdq.editor.overview-table] ; ?
             [cdq.editor.widget :as widget]
             [cdq.ui.error-window :as error-window] ; ?
-            [cdq.ui :as ui] ; ?
+            [cdq.ui.window :as window] ; ?
             [cdq.ui.separator :as separator] ; table/separator cell ... should be data declarated possible
             [cdq.utils :as utils]
             [clojure.set :as set]))
@@ -29,13 +29,13 @@
     :as ctx}
    application-state-atom]
   (let [schema (get (:schemas db) (property/type props))
-        window (ui/window {:title (str "[SKY]Property[]")
-                           :id :property-editor-window
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true
-                           :cell-defaults {:pad 5}})
+        window (window/create {:title (str "[SKY]Property[]")
+                               :id :property-editor-window
+                               :modal? true
+                               :close-button? true
+                               :center? true
+                               :close-on-escape? true
+                               :cell-defaults {:pad 5}})
         widget (widget/create schema nil props ctx)
         apply-context-fn (fn [window f]
                            (fn [{:keys [ctx/stage] :as ctx}]
@@ -140,12 +140,12 @@
                                    schema
                                    map-widget-table]
   (let [schemas (:schemas db)
-        window (ui/window {:title "Choose"
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true
-                           :cell-defaults {:pad 5}})
+        window (window/create {:title "Choose"
+                               :modal? true
+                               :close-button? true
+                               :center? true
+                               :close-on-escape? true
+                               :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (widget/value schema nil map-widget-table schemas)))
                                    (schemas/map-keys schemas schema)))]
     (table/add-rows!
@@ -207,11 +207,11 @@
   [{:keys [ctx/stage]
     :as ctx}
    property-type]
-  (let [window (ui/window {:title "Edit"
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true})
+  (let [window (window/create {:title "Edit"
+                               :modal? true
+                               :close-button? true
+                               :center? true
+                               :close-on-escape? true})
         on-clicked-id (fn [id {:keys [ctx/db] :as ctx}]
                         (open-property-editor-window! ctx (db/get-raw db id)))]
     (table/add! window (cdq.editor.overview-table/create ctx

@@ -1,7 +1,7 @@
 (ns cdq.dev.data-view
-  (:require [cdq.ui :as ui]
-            [cdq.ui.table :as table]
+  (:require [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
+            [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.scroll-pane :as scroll-pane]))
 
@@ -57,9 +57,9 @@
                             :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
                             :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
-    (ui/window {:title title
-                :close-button? true
-                :close-on-escape? true
-                :center? true
-                :rows [[scroll-pane-cell]]
-                :pack? true})))
+    (window/create {:title title
+                    :close-button? true
+                    :close-on-escape? true
+                    :center? true
+                    :rows [[scroll-pane-cell]]
+                    :pack? true})))

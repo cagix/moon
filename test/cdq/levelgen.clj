@@ -5,9 +5,9 @@
             [cdq.render.clear-screen]
             [cdq.render.render-stage]
             [cdq.textures-impl]
-            [cdq.ui :as ui]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.ctx-stage :as ctx-stage]
+            [cdq.ui.window :as window]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
@@ -80,13 +80,13 @@
 (def state (atom nil))
 
 (defn- edit-window []
-  (ui/window {:title "Edit"
-              :cell-defaults {:pad 10}
-              :rows (for [level-fn level-fns]
-                      [(text-button/create (str "Generate " (first level-fn))
-                                           (fn [_actor _ctx]
-                                             (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
-              :pack? true}))
+  (window/create {:title "Edit"
+                  :cell-defaults {:pad 10}
+                  :rows (for [level-fn level-fns]
+                          [(text-button/create (str "Generate " (first level-fn))
+                                               (fn [_actor _ctx]
+                                                 (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
+                  :pack? true}))
 
 (defrecord Context [])
 

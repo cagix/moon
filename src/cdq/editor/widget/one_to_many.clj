@@ -9,10 +9,10 @@
             [cdq.ui.image :as ui.image]
             [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.window :as window]
+            [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
-            [cdq.ui :as ui]))
+            [cdq.ui.window :as window]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
@@ -23,16 +23,16 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (window/pack-ancestors! table))]
+                    (scene2d.window/pack-ancestors! table))]
     (table/add-rows!
      table
      [[(text-button/create "+"
                            (fn [_actor {:keys [ctx/stage] :as ctx}]
-                             (let [window (ui/window {:title "Choose"
-                                                      :modal? true
-                                                      :close-button? true
-                                                      :center? true
-                                                      :close-on-escape? true})
+                             (let [window (window/create {:title "Choose"
+                                                          :modal? true
+                                                          :close-button? true
+                                                          :center? true
+                                                          :close-on-escape? true})
                                    clicked-id-fn (fn [id ctx]
                                                    (.remove window)
                                                    (redo-rows ctx (conj property-ids id)))]

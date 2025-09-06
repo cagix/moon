@@ -3,5 +3,5 @@
             [clojure.vis-ui.text-button :as text-button]))
 
 (defn create [text on-clicked]
-  (doto (text-button/create)
+  (doto (text-button/create text)
     (.addListener (utils/change-listener on-clicked))))

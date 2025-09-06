@@ -3,8 +3,7 @@
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [clojure.vis-ui.label :as label]
-            [clojure.vis-ui.window :as window]))
+            [clojure.vis-ui.label :as label]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
@@ -22,7 +21,3 @@
 
 (import 'clojure.lang.MultiFn)
 (MultiFn/.addMethod cdq.construct/create :actor.type/label label)
-
-(defn window [opts]
-  (-> (window/create opts)
-      (set-opts! opts)))
