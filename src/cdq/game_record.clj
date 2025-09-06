@@ -1,7 +1,7 @@
 (ns cdq.game-record
   (:require [qrecord.core :as q]
             [cdq.ctx :as ctx]
-            [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d :as scene2d]
             [cdq.malli :as m]))
 
 (defmacro def-record-and-schema [record-sym & ks]
@@ -53,7 +53,7 @@
   )
 
 (extend-type Context
-  cdq.ui.actor/Context
+  clojure.gdx.scenes.scene2d/Context
   (handle-draws! [ctx draws]
     (ctx/handle-draws! ctx draws)))
 

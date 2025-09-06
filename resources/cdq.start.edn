@@ -76,7 +76,6 @@
                              [cdq.ui.widget                     :actor.type/widget]
                              [cdq.ui.group                      :actor.type/group]
                              [clojure.vis-ui.check-box          :actor.type/check-box]
-                             [cdq.ui.actor                      :actor.type/actor]
                              [cdq.ui.table                      :actor.type/table]
                              [cdq.ui.image-button               :actor.type/image-button]
                              [cdq.ui.text-button                :actor.type/text-button]

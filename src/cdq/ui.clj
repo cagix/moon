@@ -1,4 +1,5 @@
 (ns cdq.ui
+  (:require [clojure.gdx.scenes.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defmulti create :actor/type)
@@ -17,3 +18,5 @@
                      {:actor-declaration actor-declaration}
                      t)))))
 
+(defmethod create :actor.type/actor [opts]
+  (scene2d/actor opts))

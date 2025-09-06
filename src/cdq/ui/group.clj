@@ -1,7 +1,7 @@
 (ns cdq.ui.group
   (:require [cdq.ui :as ui]
-            [cdq.ui.actor :as actor]
             [clojure.gdx.scenes.scene2d :as scene2d]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]))
 
 (defn add! [group actor-or-decl]
