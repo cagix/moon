@@ -14,5 +14,3 @@
         (println "result of create-state-v " state-k)
         (clojure.pprint/pprint result))
     result))
-
-(def ->exit)

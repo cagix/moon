@@ -13,9 +13,6 @@
                         (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
                            reaction-time-multiplier))})
 
-(defn exit [_ eid _ctx]
-  [[:tx/dissoc eid :entity/movement]])
-
 (defn tick! [{:keys [timer]} eid {:keys [ctx/elapsed-time]}]
   (when (timer/stopped? elapsed-time timer)
     [[:tx/event eid :timer-finished]]))

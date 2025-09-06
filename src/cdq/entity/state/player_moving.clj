@@ -14,6 +14,3 @@
 
 (defn create [eid movement-vector _ctx]
   {:movement-vector movement-vector})
-
-(defn exit [_ eid _ctx]
-  [[:tx/dissoc eid :entity/movement]])
