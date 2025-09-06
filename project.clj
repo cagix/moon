@@ -16,16 +16,15 @@
                  ; clojure.gdx.graphics.g2d.freetype
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
 
-                 ; & this here !?
+                 ; this keep here
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
 
                  ; clojure.earlygrey.shape-drawer
                  [space.earlygrey/shapedrawer "2.5.0"]
-                 ;
 
-                 ; TODO
+                 ; clojure.vis-ui
                  [com.kotcrab.vis/vis-ui "1.5.2"]
-                 ;
+
                  [metosin/malli "0.13.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]
