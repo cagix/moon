@@ -1,5 +1,5 @@
 (ns cdq.tx.show-message
-  (:require [cdq.ui.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [cdq.ui.message]))
 

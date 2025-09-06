@@ -2,7 +2,7 @@
   (:require [cdq.editor.scroll-pane :as scroll-pane]
             [cdq.stacktrace :as stacktrace]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.group :as group]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]

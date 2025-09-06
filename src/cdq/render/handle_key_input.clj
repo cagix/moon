@@ -1,7 +1,7 @@
 (ns cdq.render.handle-key-input
   (:require [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.group :as group]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.graphics.camera :as camera]))
 
 (def ^:private close-windows-key  :escape)

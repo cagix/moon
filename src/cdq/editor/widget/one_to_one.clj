@@ -5,7 +5,7 @@
             [cdq.utils :refer [pprint-to-str]]
             [cdq.image :as image]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.group :as group]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.image :as ui.image]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]

@@ -17,7 +17,6 @@
                 [cdq.ui.stack/create                      :actor.type/stack]
                 [cdq.ui.text-field/create                 :actor.type/text-field]
                 [cdq.ui.widget/create                     :actor.type/widget]
-                [cdq.ui.group/create                      :actor.type/group]
                 [clojure.vis-ui.check-box/create          :actor.type/check-box]
                 [cdq.ui.table/create                      :actor.type/table]
                 [cdq.ui.image-button/create               :actor.type/image-button]

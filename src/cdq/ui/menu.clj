@@ -1,5 +1,5 @@
 (ns cdq.ui.menu
-  (:require [cdq.ui.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.label :as cdq.label]
             [cdq.ui.image :as image]
             [cdq.ui.table :as table]

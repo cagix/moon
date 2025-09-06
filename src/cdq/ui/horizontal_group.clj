@@ -1,5 +1,5 @@
 (ns cdq.ui.horizontal-group
-  (:require [cdq.ui.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui :as ui]))
 
 (defn build [{:keys [space pad] :as opts}]

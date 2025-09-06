@@ -1,5 +1,5 @@
 (ns cdq.ui.widget-group
-  (:require [cdq.ui.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn set-opts! [widget-group opts]

@@ -2,13 +2,13 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.image :as image]
-            [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
-            [clojure.vis-ui.tooltip :as tooltip]
             [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.image]
-            [clojure.gdx.scenes.scene2d.utils :as utils]))
+            [clojure.gdx.scenes.scene2d.utils :as utils]
+            [clojure.vis-ui.tooltip :as tooltip]))
 
 (defn create
   [{:keys [ctx/ui-viewport

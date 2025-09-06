@@ -1,5 +1,5 @@
 (ns cdq.ui.windows.entity-info
-  (:require [cdq.ui.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.label :as label]
             [cdq.ui.window :as window]))
 
