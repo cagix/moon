@@ -1,5 +1,5 @@
 (ns cdq.gdx-app
-  (:require [clojure.gdx.backends.lwjgl3 :as lwjgl]))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start!
   [{:keys [lwjgl-app-config listener]}]

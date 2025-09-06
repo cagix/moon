@@ -12,7 +12,7 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
