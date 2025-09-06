@@ -3,7 +3,7 @@
             [clojure.gdx.graphics :as graphics]
             [cdq.stacktrace :as stacktrace]
             [cdq.potential-fields.update :as potential-fields.update]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [cdq.ui.error-window :as error-window]))
 
 (declare entity->tick)

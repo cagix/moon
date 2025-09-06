@@ -1,7 +1,7 @@
 (ns cdq.dev.data-view
   (:require [cdq.ui.text-button :as text-button]
             [cdq.ui.scroll-pane-table-window :as scroll-pane-table-window]
-            [clojure.gdx.scenes.scene2d.stage :as stage]))
+            [cdq.ui.stage :as stage]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"

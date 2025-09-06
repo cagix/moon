@@ -1,5 +1,5 @@
 (ns cdq.ui.dev-menu.menus.ctx-data-view
-  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
+  (:require [cdq.ui.stage :as stage]
             [cdq.dev.data-view :as data-view]))
 
 (defn items [_ctx _params]

@@ -5,7 +5,7 @@
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- play-button [sound-name]

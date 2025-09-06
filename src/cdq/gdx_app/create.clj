@@ -3,7 +3,7 @@
             [cdq.db-impl :as db]
             [cdq.game-record :as game-record]
             [cdq.textures-impl]
-            [cdq.ui.ctx-stage :as ctx-stage]
+            [cdq.ui.stage :as stage]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]
@@ -91,7 +91,7 @@
   [{:keys [ctx/ui-viewport
            ctx/batch]
     :as ctx}]
-  (assoc ctx :ctx/stage (ctx-stage/create ui-viewport batch)))
+  (assoc ctx :ctx/stage (stage/create ui-viewport batch)))
 
 (defn assoc-tiled-map-renderer
   [{:keys [ctx/world-unit-scale

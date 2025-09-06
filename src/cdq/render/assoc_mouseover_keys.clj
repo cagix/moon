@@ -1,6 +1,6 @@
 (ns cdq.render.assoc-mouseover-keys
   (:require [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.utils.viewport :as viewport]
             [cdq.math :as math]))
 

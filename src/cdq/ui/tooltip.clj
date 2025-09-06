@@ -1,5 +1,5 @@
 (ns cdq.ui.tooltip
-  (:require [cdq.ui.ctx-stage :as ctx-stage]
+  (:require [cdq.ui.stage :as stage]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.vis-ui.tooltip :as tooltip]))
 
@@ -13,7 +13,7 @@
                           ; acturs might be initialized without a stage yet so we do when-let
                           ; FIXME double when-let
                           ctx (when-let [stage (actor/get-stage actor)]
-                                (ctx-stage/get-ctx stage))]
+                                (stage/get-ctx stage))]
                       (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
                         (tooltip/set-text! tooltip (str (tooltip-text ctx))))))))
   actor)

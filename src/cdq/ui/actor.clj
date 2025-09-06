@@ -1,6 +1,6 @@
 (ns cdq.ui.actor
   (:require [cdq.ctx :as ctx]
-            [cdq.ui.ctx-stage :as ctx-stage]
+            [cdq.ui.stage :as stage]
             [cdq.ui.tooltip :as tooltip]
             [cdq.ui.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]))
@@ -16,12 +16,12 @@
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn try-act [actor delta f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (ctx-stage/get-ctx stage))]
+                   (stage/get-ctx stage))]
     (f actor delta ctx)))
 
 (defn try-draw [actor f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (ctx-stage/get-ctx stage))]
+                   (stage/get-ctx stage))]
     (ctx/handle-draws! ctx (f actor ctx))))
 
 (defn create [opts]
