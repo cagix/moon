@@ -57,9 +57,6 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn create [_eid item _ctx]
-  {:item item})
-
 (defn draw-gui-view
   [eid
    {:keys [ctx/textures

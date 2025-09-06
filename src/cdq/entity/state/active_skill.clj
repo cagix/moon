@@ -1,6 +1,5 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
-            [cdq.stats :as modifiers]
             [cdq.timer :as timer]
             [cdq.raycaster :as raycaster]))
 
@@ -13,11 +12,6 @@
            (raycaster/line-of-sight? raycaster @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
-
-(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
-  (/ action-time
-     (or (modifiers/get-stat-value stats (:skill/action-time-modifier-key skill))
-         1)))
 
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
@@ -33,11 +27,3 @@
    (timer/stopped? elapsed-time counter)
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
-
-(defn create [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
-  {:skill skill
-   :effect-ctx effect-ctx
-   :counter (->> skill
-                 :skill/action-time
-                 (apply-action-speed-modifier @eid skill)
-                 (timer/create elapsed-time))})

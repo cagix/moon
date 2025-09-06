@@ -11,6 +11,3 @@
     [[:tx/assoc eid :entity/movement {:direction movement-vector
                                       :speed (speed @eid)}]]
     [[:tx/event eid :no-movement-input]]))
-
-(defn create [eid movement-vector _ctx]
-  {:movement-vector movement-vector})
