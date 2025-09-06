@@ -4,7 +4,6 @@
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
-            [cdq.ui :as ui]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))

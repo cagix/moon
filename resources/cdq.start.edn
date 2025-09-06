@@ -68,13 +68,13 @@
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
  [cdq.multifn/add-methods! [{:required [cdq.construct/create]}
-                            [[cdq.ui.construct.horizontal-group :actor.type/horizontal-group]
+                            [[cdq.ui.horizontal-group           :actor.type/horizontal-group]
                              [clojure.vis-ui.select-box         :actor.type/select-box]
                              [cdq.ui.label                      :actor.type/label]
                              [cdq.ui.stack                      :actor.type/stack]
                              [cdq.ui.text-field                 :actor.type/text-field]
                              [cdq.ui.widget                     :actor.type/widget]
-                             [cdq.ui.construct.group            :actor.type/group]
+                             [cdq.ui.group                      :actor.type/group]
                              [clojure.vis-ui.check-box          :actor.type/check-box]
                              [cdq.ui.actor                      :actor.type/actor]
                              [cdq.ui.table                      :actor.type/table]]]]

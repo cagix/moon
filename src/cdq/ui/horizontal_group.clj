@@ -1,7 +1,7 @@
-(ns cdq.ui.construct.horizontal-group
-  (:require [cdq.ui :as ui]
+(ns cdq.ui.horizontal-group
+  (:require [cdq.ui.group :as group]
             [clojure.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]))
 
 (defn create [{:keys [space pad] :as opts}]
   (doto (horizontal-group/create space pad)
-    (ui/set-opts! opts)))
+    (group/set-opts! opts)))

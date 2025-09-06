@@ -1,7 +1,7 @@
 (ns cdq.ui.stack
-  (:require [cdq.ui :as ui]
-            [clojure.gdx.scenes.scene2d.ui.stack :as stack]))
+  (:require [clojure.gdx.scenes.scene2d.ui.stack :as stack]
+            [cdq.ui.widget-group :as widget-group]))
 
 (defn create [opts]
   (doto (stack/create)
-    (ui/set-opts! opts)))
+    (widget-group/set-opts! opts)))

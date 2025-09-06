@@ -1,5 +1,5 @@
 (ns cdq.ui.ctx-stage
-  (:require [cdq.ui.group :as group])
+  (:require [clojure.gdx.scenes.scene2d.group :as group])
   (:import (clojure.lang ILookup)
            (cdq.ui CtxStage)))
 

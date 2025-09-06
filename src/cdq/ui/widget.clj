@@ -7,3 +7,6 @@
     (fn [this _batch _parent-alpha]
       (when-let [f (:draw opts)]
         (actor/try-draw this f)))))
+
+(defn set-opts! [widget opts]
+  (actor/set-opts! widget opts))

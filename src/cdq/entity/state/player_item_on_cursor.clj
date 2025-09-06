@@ -3,8 +3,7 @@
             [cdq.inventory :as inventory]
             [cdq.image :as image]
             [clojure.gdx.input :as input]
-            [cdq.gdx.math.vector2 :as v]
-            [cdq.ui :as ui]))
+            [cdq.gdx.math.vector2 :as v]))
 
 (defn clicked-cell [eid cell]
   (let [entity @eid

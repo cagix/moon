@@ -1,10 +1,8 @@
 (ns cdq.ui.table
   (:require [cdq.construct]
-            [cdq.ui.actor :as actor]
-            [cdq.ui.group :as group]
+            [cdq.ui.widget-group :as widget-group]
             [clojure.gdx.scenes.scene2d.ui.cell :as cell]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.vis-ui.table :as vis-ui.table]))
 
 (defn add! [table actor-or-decl]
@@ -30,10 +28,7 @@
   (cell/set-opts! (table/defaults table) cell-defaults)
   (doto table
     (add-rows! rows)
-    (widget-group/set-opts! opts)
-    (group/set-opts! opts)
-    ; widget also ?
-    (actor/set-opts! opts)))
+    (widget-group/set-opts! opts)))
 
 (defn create [opts]
   (-> (vis-ui.table/create)
