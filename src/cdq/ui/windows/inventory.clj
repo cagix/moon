@@ -2,7 +2,6 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.inventory :as inventory]
             [cdq.image :as image]
-            [cdq.ui.image :as ui.image]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.image]
@@ -78,10 +77,10 @@
                             :user-object cell
                             :click-listener (clicked-cell-fn cell)
                             :actors [(draw-rect-actor)
-                                     (ui.image/create background-drawable
-                                                      {:name "image-widget"
-                                                       :user-object {:background-drawable background-drawable
-                                                                     :cell-size cell-size}})]}}))]
+                                     (widget/image background-drawable
+                                                   {:name "image-widget"
+                                                    :user-object {:background-drawable background-drawable
+                                                                  :cell-size cell-size}})]}}))]
     (widget/window {:title title
                     :id id
                     :visible? visible?

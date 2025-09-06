@@ -1,6 +1,5 @@
 (ns cdq.ui.menu
   (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [cdq.ui.image :as image]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.label :as label]
             [clojure.gdx.scenes.scene2d.utils :as utils]
@@ -17,7 +16,7 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (image/create icon {})
+   (let [icon (widget/image icon {})
          label (widget/label {:label/text ""})
          sub-table (widget/table {:rows [[icon label]]})]
      (group/add! table (set-label-text-actor label text-fn))

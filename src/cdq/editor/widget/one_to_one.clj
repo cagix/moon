@@ -6,7 +6,6 @@
             [cdq.image :as image]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [cdq.ui.image :as ui.image]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
@@ -42,8 +41,8 @@
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (image/texture-region (property/image property) textures)
-               image-widget (ui.image/create texture-region
-                                             {:id property-id})]
+               image-widget (widget/image texture-region
+                                          {:id property-id})]
            (tooltip/add! image-widget (pprint-to-str property))
            image-widget))]
       [(when property-id

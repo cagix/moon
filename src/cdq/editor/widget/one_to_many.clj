@@ -4,7 +4,6 @@
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]
             [cdq.image :as image]
-            [cdq.ui.image :as ui.image]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -41,7 +40,7 @@
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
               texture-region (image/texture-region (property/image property) textures)
-              image-widget (ui.image/create texture-region {:id property-id})]
+              image-widget (widget/image texture-region {:id property-id})]
           (tooltip/add! image-widget (pprint-to-str property))))
       (for [id property-ids]
         (widget/text-button "-"
