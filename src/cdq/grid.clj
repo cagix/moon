@@ -9,6 +9,8 @@
   (cells->entities [_ cells])
   (cached-adjacent-cells [_ cell])
   (point->entities [_ position])
+  ; https://github.com/damn/core/issues/58
+  ;(assert (valid-position? grid @eid))
   (add-entity! [_ eid])
   (remove-entity! [_ eid])
   (position-changed! [_ eid])

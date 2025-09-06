@@ -41,9 +41,7 @@
       s
       (remove-newlines new-s))))
 
-(defmulti info-segment (fn [[k] _ctx] k))
-
-(defmethod info-segment :default [_ _ctx])
+(declare info-fns)
 
 (defn info-text
   "Creates a formatted informational text representation of components."
@@ -51,7 +49,8 @@
   (->> components
        (utils/sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
-               (str (let [s (try (info-segment component ctx)
+               (str (let [s (try (if-let [info-fn (info-fns k)]
+                                   (info-fn [k v] ctx))
                                  (catch Throwable t
                                    ; fails for
                                    ; effects/spawn
