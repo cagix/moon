@@ -1,7 +1,8 @@
 (ns cdq.dev.data-view
-  (:require [clojure.gdx.scenes.scene2d.stage :as stage]
-            [cdq.ui :as ui]
-            [cdq.ui.text-button :as text-button]))
+  (:require [cdq.ui :as ui]
+            [cdq.ui.text-button :as text-button]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.vis-ui.scroll-pane :as scroll-pane]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -48,10 +49,9 @@
         scroll-pane-cell (let [;viewport (:ctx/ui-viewport ctx)
                                table (ui/table {:rows [[scroll-pane-table]]
                                                 :cell-defaults {:pad 1}
-                                                :pack? true})
-                               scroll-pane (ui/scroll-pane table)]
-                           {:actor scroll-pane
-                            :width  width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
+                                                :pack? true})]
+                           {:actor (scroll-pane/create table)
+                            :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
                             :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
     (ui/window {:title title

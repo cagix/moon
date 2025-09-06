@@ -7,9 +7,7 @@
             [cdq.ui.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [clojure.vis-ui.check-box]
             [clojure.vis-ui.label :as label]
-            [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.table]
             [clojure.vis-ui.window :as window]))
 
@@ -42,10 +40,6 @@
 (defn window [opts]
   (-> (window/create opts)
       (set-opts! opts)))
-
-(defn scroll-pane [actor]
-  (doto (scroll-pane/create actor)
-    (actor/set-user-object! :scroll-pane)))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn try-act [actor delta f]
