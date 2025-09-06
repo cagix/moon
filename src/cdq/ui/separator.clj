@@ -1,8 +1,8 @@
 (ns cdq.ui.separator
-  (:import (com.kotcrab.vis.ui.widget Separator)))
+  (:require [clojure.vis-ui.separator :as separator]))
 
 (defn horizontal [colspan]
-  {:actor (Separator. "default")
+  {:actor (separator/horizontal)
    :pad-top 2
    :pad-bottom 2
    :colspan colspan
@@ -10,7 +10,7 @@
    :expand-x? true})
 
 (defn vertical []
-  {:actor (Separator. "vertical")
+  {:actor (separator/vertical)
    :pad-top 2
    :pad-bottom 2
    :fill-y? true
