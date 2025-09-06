@@ -129,11 +129,23 @@
 (defn assoc-unit-scale [ctx]
   (assoc ctx :ctx/unit-scale (atom 1)))
 
-(defn do! [config]
+(defn load-colors!
+  [{:keys [ctx/config]
+    :as ctx}]
   (colors/put! (:colors config))
+  ctx)
+
+(defn load-vis-ui!
+  [{:keys [ctx/config]
+    :as ctx}]
   (vis-ui/load! (:stage config))
+  ctx)
+
+(defn do! [config]
   (-> (game-record/create-with-schema)
       (assoc :ctx/config config)
+      load-vis-ui!
+      load-colors!
       assoc-sprite-batch
       assoc-graphics
       assoc-textures
@@ -151,5 +163,5 @@
       assoc-unit-scale
       assoc-shape-drawer-texture
       assoc-shape-drawer
-      reset-stage-and-world-state! ; koennte man auch als assoc ausdruecken ...
+      reset-stage-and-world-state!
       assoc-frame-keys-for-schema))
