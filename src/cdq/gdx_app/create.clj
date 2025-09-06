@@ -142,26 +142,28 @@
   ctx)
 
 (defn do! [config]
-  (-> (game-record/create-with-schema)
-      (assoc :ctx/config config)
-      load-vis-ui!
-      load-colors!
-      assoc-sprite-batch
-      assoc-graphics
-      assoc-textures
-      assoc-audio
-      assoc-cursors
-      assoc-db
-      assoc-world-unit-scale
-      assoc-ui-viewport
-      assoc-input
-      assoc-stage
-      set-stage-as-input-processor!
-      assoc-tiled-map-renderer
-      assoc-world-viewport
-      assoc-default-font
-      assoc-unit-scale
-      assoc-shape-drawer-texture
-      assoc-shape-drawer
-      reset-stage-and-world-state!
-      assoc-frame-keys-for-schema))
+  (reduce (fn [ctx f]
+            (f ctx))
+          (-> (game-record/create-with-schema)
+              (assoc :ctx/config config))
+          [load-vis-ui!
+           load-colors!
+           assoc-sprite-batch
+           assoc-graphics
+           assoc-textures
+           assoc-audio
+           assoc-cursors
+           assoc-db
+           assoc-world-unit-scale
+           assoc-ui-viewport
+           assoc-input
+           assoc-stage
+           set-stage-as-input-processor!
+           assoc-tiled-map-renderer
+           assoc-world-viewport
+           assoc-default-font
+           assoc-unit-scale
+           assoc-shape-drawer-texture
+           assoc-shape-drawer
+           reset-stage-and-world-state!
+           assoc-frame-keys-for-schema]))
