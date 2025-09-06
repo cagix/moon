@@ -1,9 +1,13 @@
 (ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
+            [cdq.entity :as entity]
             [cdq.grid :as grid]))
 
-(declare entity-components)
+(def entity-components
+  {:entity/destroy-audiovisual
+   {:destroy! (fn [audiovisuals-id eid _ctx]
+                [[:tx/audiovisual (entity/position @eid) audiovisuals-id]])}})
 
 (defn do!
   [{:keys [ctx/entity-ids
