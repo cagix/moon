@@ -1,9 +1,7 @@
 (ns cdq.dev.data-view
-  (:require [cdq.ui.table :as table]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.window :as window]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.vis-ui.scroll-pane :as scroll-pane]))
+  (:require [cdq.ui.text-button :as text-button]
+            [cdq.ui.scroll-pane-table-window :as scroll-pane-table-window]
+            [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -34,32 +32,15 @@
                           (stage/add! stage (table-view-window {:title "title"
                                                                 :data v
                                                                 :width 500
-                                                                :height 500
-                                                                }))
-                          )
-                        )
+                                                                :height 500}))))
     {:actor/type :actor.type/label
      :label/text (v->text v)}))
 
 (defn table-view-window [{:keys [title data width height]}]
   {:pre [(map? data)]}
-  (let [scroll-pane-table (table/create
-                           {:rows (for [[k v] (sort-by key data)]
-                                    [{:actor {:actor/type :actor.type/label
-                                              :label/text (k->label-str k)}}
-                                     {:actor (v->actor v)}])})
-        scroll-pane-cell (let [;viewport (:ctx/ui-viewport ctx)
-                               table (table/create
-                                      {:rows [[scroll-pane-table]]
-                                       :cell-defaults {:pad 1}
-                                       :pack? true})]
-                           {:actor (scroll-pane/create table)
-                            :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
-                            :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
-                            })]
-    (window/create {:title title
-                    :close-button? true
-                    :close-on-escape? true
-                    :center? true
-                    :rows [[scroll-pane-cell]]
-                    :pack? true})))
+  (scroll-pane-table-window/create {:title title
+                                    :rows (for [[k v] (sort-by key data)]
+                                            {:label (k->label-str k)
+                                             :actor (v->actor v)})
+                                    :width width
+                                    :height height}))
