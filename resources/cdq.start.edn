@@ -75,7 +75,8 @@
                              [cdq.ui.widget                     :actor.type/widget]
                              [cdq.ui.construct.group            :actor.type/group]
                              [clojure.vis-ui.check-box          :actor.type/check-box]
-                             [cdq.ui.construct.actor            :actor.type/actor]]]]
+                             [cdq.ui.actor                      :actor.type/actor]
+                             [cdq.ui.table                      :actor.type/table]]]]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
                              [cdq.info.creature.stats :creature/stats]

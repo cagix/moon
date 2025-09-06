@@ -2,9 +2,9 @@
   (:require [cdq.ui.group :as group]
             [cdq.ui :as ui]
             [cdq.ui.image :as image]
+            [cdq.ui.table :as table]
             [cdq.ui.utils :as utils]
             [clojure.gdx.scenes.scene2d.ui.label :as label]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
             [clojure.vis-ui.menu-item :as menu-item]
@@ -19,7 +19,7 @@
   ([table text-fn icon]
    (let [icon (image/create icon {})
          label (ui/label {:label/text ""})
-         sub-table (ui/table {:rows [[icon label]]})]
+         sub-table (table/create {:rows [[icon label]]})]
      (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (table/add! table sub-table)))))
   ([table text-fn]

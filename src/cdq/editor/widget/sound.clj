@@ -40,7 +40,7 @@
    (play-button sound-name)])
 
 (defn create [_  _attribute sound-name _ctx]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (table/create {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (columns table sound-name)
                               [(text-button/create "No sound"

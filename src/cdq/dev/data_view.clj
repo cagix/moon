@@ -1,5 +1,6 @@
 (ns cdq.dev.data-view
   (:require [cdq.ui :as ui]
+            [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.scroll-pane :as scroll-pane]))
@@ -42,14 +43,16 @@
 
 (defn table-view-window [{:keys [title data width height]}]
   {:pre [(map? data)]}
-  (let [scroll-pane-table (ui/table {:rows (for [[k v] (sort-by key data)]
-                                             [{:actor {:actor/type :actor.type/label
-                                                       :label/text (k->label-str k)}}
-                                              {:actor (v->actor v)}])})
+  (let [scroll-pane-table (table/create
+                           {:rows (for [[k v] (sort-by key data)]
+                                    [{:actor {:actor/type :actor.type/label
+                                              :label/text (k->label-str k)}}
+                                     {:actor (v->actor v)}])})
         scroll-pane-cell (let [;viewport (:ctx/ui-viewport ctx)
-                               table (ui/table {:rows [[scroll-pane-table]]
-                                                :cell-defaults {:pad 1}
-                                                :pack? true})]
+                               table (table/create
+                                      {:rows [[scroll-pane-table]]
+                                       :cell-defaults {:pad 1}
+                                       :pack? true})]
                            {:actor (scroll-pane/create table)
                             :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
                             :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))

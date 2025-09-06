@@ -53,7 +53,7 @@
                                (redo-rows ctx nil))))]])))
 
 (defn create [[_ property-type]  _attribute property-id ctx]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (table/create {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows ctx table property-type property-id)
     table))
 

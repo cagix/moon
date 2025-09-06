@@ -170,8 +170,9 @@
   (drop 1 (interleave (repeatedly f) coll)))
 
 (defn create [schema  _attribute m {:keys [ctx/db] :as ctx}]
-  (let [table (ui/table {:cell-defaults {:pad 5}
-                         :id :map-widget})
+  (let [table (table/create
+               {:cell-defaults {:pad 5}
+                :id :map-widget})
         component-rows (interpose-f horiz-sep
                                     (map (fn [[k v]]
                                            (component-row ctx
