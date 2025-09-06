@@ -229,8 +229,6 @@
                               :tx/spawn-line]
                              [cdq.tx.deal-damage
                               :tx/deal-damage]
-                             [cdq.tx.set-movement
-                              :tx/set-movement]
                              [cdq.tx.move-entity
                               :tx/move-entity]
                              [cdq.tx.spawn-projectile
