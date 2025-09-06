@@ -135,7 +135,6 @@
   ctx)
 
 (defn load-vis-ui!
-  [{:keys [ctx/config]
-    :as ctx}]
-  (vis-ui/load! (:stage config))
-  ctx)
+  [_ctx params]
+  (vis-ui/load! params)
+  nil)

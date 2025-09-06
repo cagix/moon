@@ -246,8 +246,7 @@
                       :windowed-mode {:width 1440 :height 900}
                       :foreground-fps 60}
    :listener [cdq.application-listener/create
-              {:config {:stage {:skin-scale :x1}
-                        :audio {:sounds "sounds.edn"
+              {:config {:audio {:sounds "sounds.edn"
                                 :path-format "sounds/%s.wav"}
                         :db {:schemas "schema.edn"
                              :properties "properties.edn"}
@@ -337,7 +336,7 @@
                                    :zoom-out :equals
                                    :unpause-once :p
                                    :unpause-continously :space}}
-               :create! [cdq.gdx-app.create/load-vis-ui!
+               :create! [[cdq.gdx-app.create/load-vis-ui! {:skin-scale :x1}]
                          cdq.gdx-app.create/load-colors!
                          cdq.gdx-app.create/assoc-sprite-batch
                          cdq.gdx-app.create/assoc-graphics
