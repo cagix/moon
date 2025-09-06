@@ -29,28 +29,6 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn- create-item-stack
-  [{:keys [tooltip-text
-           label-text
-           text-button-text
-           texture-region
-           scale
-           on-clicked]}]
-  {:actor/type :actor.type/stack
-   :actors [(if texture-region
-              {:actor/type :actor.type/image-button
-               :drawable/texture-region texture-region
-               :on-clicked on-clicked
-               :drawable/scale scale
-               :tooltip tooltip-text}
-              {:actor/type :actor.type/text-button
-               :text text-button-text
-               :on-clicked on-clicked
-               :tooltip tooltip-text})
-            {:actor/type :actor.type/label
-             :label/text label-text
-             :actor/touchable :disabled}]})
-
 (defn create
   [{:keys [ctx/db
            ctx/textures]}
@@ -69,15 +47,25 @@
     {:actor/type :actor.type/table
      :cell-defaults {:pad 5}
      :rows (for [properties (partition-all columns properties)]
-             (for [{:keys [property/id] :as property} properties]
-               {:actor (create-item-stack
-                        {:tooltip-text (pprint-to-str property)
-                         :label-text (or (and extra-info-text
-                                              (extra-info-text property))
-                                         "")
-                         :text-button-text (name id)
-                         :texture-region (when-let [image (property/image property)]
-                                           (image/texture-region image textures))
-                         :scale scale
-                         :on-clicked (fn [_actor ctx]
-                                       (clicked-id-fn id ctx))})}))}))
+             (for [{:keys [property/id] :as property} properties
+                   :let [on-clicked (fn [_actor ctx]
+                                      (clicked-id-fn id ctx))
+                         tooltip-text (pprint-to-str property)]]
+               {:actor
+                {:actor/type :actor.type/stack
+                 :actors [(if-let [texture-region (when-let [image (property/image property)]
+                                                    (image/texture-region image textures))]
+                            {:actor/type :actor.type/image-button
+                             :drawable/texture-region texture-region
+                             :on-clicked on-clicked
+                             :drawable/scale scale
+                             :tooltip tooltip-text}
+                            {:actor/type :actor.type/text-button
+                             :text (name id)
+                             :on-clicked on-clicked
+                             :tooltip tooltip-text})
+                          {:actor/type :actor.type/label
+                           :label/text (or (and extra-info-text
+                                                (extra-info-text property))
+                                           "")
+                           :actor/touchable :disabled}]}}))}))
