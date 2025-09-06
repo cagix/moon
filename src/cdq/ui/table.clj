@@ -1,12 +1,12 @@
 (ns cdq.ui.table
-  (:require [cdq.construct]
+  (:require [cdq.ui :as ui]
             [cdq.ui.widget-group :as widget-group]
             [clojure.gdx.scenes.scene2d.ui.cell :as cell]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.vis-ui.table :as vis-ui.table]))
 
 (defn add! [table actor-or-decl]
-  (table/add! table (cdq.construct/construct? actor-or-decl)))
+  (table/add! table (ui/construct? actor-or-decl)))
 
 (def cells table/cells)
 

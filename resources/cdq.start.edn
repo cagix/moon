@@ -67,7 +67,7 @@
                                                            :player-item-on-cursor :cursors/hand-grab
                                                            :player-moving :cursors/walking
                                                            :stunned :cursors/denied}]]]
- [cdq.multifn/add-methods! [{:required [cdq.construct/create]}
+ [cdq.multifn/add-methods! [{:required [cdq.ui/create]}
                             [[cdq.ui.horizontal-group           :actor.type/horizontal-group]
                              [clojure.vis-ui.select-box         :actor.type/select-box]
                              [cdq.ui.label                      :actor.type/label]

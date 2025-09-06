@@ -1,4 +1,4 @@
-(ns cdq.construct
+(ns cdq.ui
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defmulti create :actor/type)

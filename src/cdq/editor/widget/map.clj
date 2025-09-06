@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.map
-  (:require cdq.construct
+  (:require [cdq.ui :as ui]
             [cdq.db :as db]
             [clojure.gdx.input :as input]
             [cdq.property :as property]
@@ -130,7 +130,7 @@
                              }}]]}
     :right? true}
    (separator/vertical)
-   {:actor (let [widget (cdq.construct/construct? (widget/create (get schemas k) k v ctx))]
+   {:actor (let [widget (ui/construct? (widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
     :left? true}])
