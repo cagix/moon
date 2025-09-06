@@ -79,7 +79,9 @@
                              [cdq.ui.actor                      :actor.type/actor]
                              [cdq.ui.table                      :actor.type/table]
                              [cdq.ui.image-button               :actor.type/image-button]
-                             [cdq.ui.text-button                :actor.type/text-button]]]]
+                             [cdq.ui.text-button                :actor.type/text-button]
+                             [cdq.ui.property-editor :actor.type/property-editor]
+                             ]]]
  [cdq.multifn/add-methods! [{:required [cdq.info/info-segment]}
                             [[cdq.info.creature.level :creature/level]
                              [cdq.info.creature.stats :creature/stats]

@@ -12,6 +12,7 @@
             [cdq.ui.text-button :as text-button]
             [cdq.ui.window :as window]
             [cdq.utils :as utils]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.set :as set]))
 
@@ -23,13 +24,28 @@
            ctx/ui-viewport]
     :as ctx}
    property]
-  (stage/add! stage (let [schema (get (:schemas db) (property/type property))]
+  (stage/add! stage (let [schema (get (:schemas db) (property/type property))
+                          widget (widget/create schema nil property ctx)]
                       {:actor/type :actor.type/property-editor
-                       :application-state-atom application-state-atom
-                       :schema schema
+                       :delete-fn (fn [_ctx]
+                                    (swap! application-state-atom update :ctx/db
+                                           db/delete!
+                                           (:property/id property)))
+                       :save? #(input/key-just-pressed? % :enter)
+                       :save-fn (fn [{:keys [ctx/db]}]
+                                  (swap! application-state-atom update :ctx/db
+                                         db/update!
+                                         (widget/value schema nil widget (:schemas db))))
                        :scrollpane-height (:viewport/height ui-viewport)
-                       :props property
-                       :widget (widget/create schema nil property ctx)})))
+                       :widget widget
+                       :window-opts {:title (str "[SKY]Property[]")
+                                     :id :property-editor-window
+                                     :modal? true
+                                     :close-button? true
+                                     :center? true
+                                     :close-on-escape? true
+                                     :cell-defaults {:pad 5}}})))
+
 
 (def ^:private property-k-sort-order
   [:property/id
