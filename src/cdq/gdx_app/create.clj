@@ -1,7 +1,6 @@
 (ns cdq.gdx-app.create
   (:require [cdq.audio :as audio]
             [cdq.db-impl :as db]
-            [cdq.game-record :as game-record]
             [cdq.textures-impl]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx :as gdx]
@@ -140,30 +139,3 @@
     :as ctx}]
   (vis-ui/load! (:stage config))
   ctx)
-
-(defn do! [config]
-  (reduce (fn [ctx f]
-            (f ctx))
-          (-> (game-record/create-with-schema)
-              (assoc :ctx/config config))
-          [load-vis-ui!
-           load-colors!
-           assoc-sprite-batch
-           assoc-graphics
-           assoc-textures
-           assoc-audio
-           assoc-cursors
-           assoc-db
-           assoc-world-unit-scale
-           assoc-ui-viewport
-           assoc-input
-           assoc-stage
-           set-stage-as-input-processor!
-           assoc-tiled-map-renderer
-           assoc-world-viewport
-           assoc-default-font
-           assoc-unit-scale
-           assoc-shape-drawer-texture
-           assoc-shape-drawer
-           reset-stage-and-world-state!
-           assoc-frame-keys-for-schema]))
