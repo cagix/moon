@@ -7,7 +7,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
-            [cdq.ui.tooltip :as tooltip]
+            [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as scene2d.window]
             [cdq.ui.table :as table]

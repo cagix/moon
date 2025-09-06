@@ -4,7 +4,7 @@
             [cdq.image :as image]
             [cdq.ui.group :as group]
             [cdq.ui.image :as ui.image]
-            [cdq.ui.tooltip :as tooltip]
+            [clojure.vis-ui.tooltip :as tooltip]
             [cdq.ui.window :as window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.image]

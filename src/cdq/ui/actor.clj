@@ -1,6 +1,6 @@
 (ns cdq.ui.actor
   (:require [cdq.ctx :as ctx]
-            [cdq.ui.tooltip :as tooltip]
+            [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils :as utils]))
