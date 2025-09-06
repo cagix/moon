@@ -1,9 +1,7 @@
 (ns cdq.editor.overview-table
   (:require [cdq.db :as db]
-            [cdq.property :as property]
             [cdq.image :as image]
-            [cdq.ui.text-button :as text-button]
-            [cdq.ui.tooltip :as tooltip]
+            [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties
@@ -45,8 +43,10 @@
                :on-clicked on-clicked
                :drawable/scale scale
                :tooltip tooltip-text}
-              (doto (text-button/create text-button-text on-clicked)
-                (tooltip/add! tooltip-text)))
+              {:actor/type :actor.type/text-button
+               :text text-button-text
+               :on-clicked on-clicked
+               :tooltip tooltip-text})
             {:actor/type :actor.type/label
              :label/text label-text
              :actor/touchable :disabled}]})
