@@ -2,8 +2,7 @@
   (:require [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [clojure.vis-ui.label :as label]))
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn set-opts! [actor opts]
   (actor/set-opts! actor opts)
@@ -14,10 +13,3 @@
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group actor)
     (group/set-opts! actor opts))
   actor)
-
-(defn label [{:keys [label/text] :as opts}]
-  (doto (label/create text)
-    (set-opts! opts)))
-
-(import 'clojure.lang.MultiFn)
-(MultiFn/.addMethod cdq.construct/create :actor.type/label label)

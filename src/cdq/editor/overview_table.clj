@@ -2,12 +2,12 @@
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.image :as image]
-            [cdq.ui :as ui]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.tooltip :as tooltip]
             [cdq.ui.image-button :as image-button]
+            [cdq.ui.label :as label]
             [cdq.ui.text-button :as text-button]
-            [cdq.utils :refer [pprint-to-str]]))
+            [cdq.ui.tooltip :as tooltip]
+            [cdq.utils :refer [pprint-to-str]]
+            [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 ; FIXME not refreshed after changes in properties
 
@@ -64,9 +64,9 @@
                                                          :scale scale})
                                    (text-button/create (name id)
                                                        on-clicked))
-                          top-widget (ui/label {:label/text (or (and extra-info-text
-                                                                     (extra-info-text property))
-                                                                "")})
+                          top-widget (label/create {:label/text (or (and extra-info-text
+                                                                         (extra-info-text property))
+                                                                    "")})
                           stack {:actor/type :actor.type/stack
                                  :actors [button
                                           top-widget]}]

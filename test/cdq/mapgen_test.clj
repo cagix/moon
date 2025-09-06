@@ -34,7 +34,7 @@
          (str/join "\n"))))
 
 #_(defn- ->info-window []
-  (let [label (ui/label {:label/text ""})
+    (let [label (label/create {:label/text ""})
         window (window/create {:title "Info" :rows [[label]]})]
     (.addActor window (proxy [Actor] []
                         (act [_delta]
@@ -86,7 +86,7 @@
 #_(defn ->generate-map-window [c level-id]
     (window/create {:title "Properties"
                     :cell-defaults {:pad 10}
-                    :rows [[(ui/label {:label/text (with-out-str (pprint (db/build db level-id)))})]
+                    :rows [[(label/create {:label/text (with-out-str (pprint (db/build db level-id)))})]
                            [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id))
                                                           (catch Throwable t
                                                             (pretty-pst t)

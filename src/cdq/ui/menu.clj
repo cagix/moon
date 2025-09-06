@@ -1,6 +1,6 @@
 (ns cdq.ui.menu
   (:require [cdq.ui.group :as group]
-            [cdq.ui :as ui]
+            [cdq.ui.label :as cdq.label]
             [cdq.ui.image :as image]
             [cdq.ui.table :as table]
             [cdq.ui.utils :as utils]
@@ -18,12 +18,12 @@
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (image/create icon {})
-         label (ui/label {:label/text ""})
+         label (cdq.label/create {:label/text ""})
          sub-table (table/create {:rows [[icon label]]})]
      (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (table/add! table sub-table)))))
   ([table text-fn]
-   (let [label (ui/label {:label/text ""})]
+   (let [label (cdq.label/create {:label/text ""})]
      (group/add! table (set-label-text-actor label text-fn))
      (.expandX (.right (table/add! table label))))))
 

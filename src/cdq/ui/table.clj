@@ -32,6 +32,7 @@
     (add-rows! rows)
     (widget-group/set-opts! opts)
     (group/set-opts! opts)
+    ; widget also ?
     (actor/set-opts! opts)))
 
 (defn create [opts]

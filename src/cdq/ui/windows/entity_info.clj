@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ui.group :as group]
-            [cdq.ui :as ui]
+            [cdq.ui.label :as label]
             [cdq.ui.window :as window]))
 
 (defn create [{:keys [ctx/ui-viewport]}
@@ -8,7 +8,7 @@
                       ->label-text]}]
   (let [position [(:viewport/width ui-viewport)
                   y]
-        label (ui/label {:label/text ""})
+        label (label/create {:label/text ""})
         window (window/create {:title "Info"
                                :id :entity-info-window
                                :visible? false
