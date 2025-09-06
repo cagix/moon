@@ -16,7 +16,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]))
 
@@ -91,7 +91,7 @@
   [{:keys [ctx/ui-viewport
            ctx/batch]
     :as ctx}]
-  (assoc ctx :ctx/stage (stage/create ui-viewport batch)))
+  (assoc ctx :ctx/stage (scene2d/stage ui-viewport batch)))
 
 (defn assoc-tiled-map-renderer
   [{:keys [ctx/world-unit-scale

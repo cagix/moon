@@ -25,11 +25,11 @@
     (ctx/handle-draws! ctx (f actor ctx))))
 
 (defn create [opts]
-  (doto (actor/create
-         (fn [this delta]
-           (when-let [f (:act opts)]
-             (try-act this delta f)))
-         (fn [this _batch _parent-alpha]
-           (when-let [f (:draw opts)]
-             (try-draw this f))))
+  (doto (proxy [com.badlogic.gdx.scenes.scene2d.Actor] []
+          (act [delta]
+            (when-let [f (:act opts)]
+              (try-act this delta f)))
+          (draw [_batch _parent-alpha]
+            (when-let [f (:draw opts)]
+              (try-draw this f))))
     (set-opts! opts)))
