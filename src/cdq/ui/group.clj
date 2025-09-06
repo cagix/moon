@@ -1,6 +1,7 @@
 (ns cdq.ui.group
   (:require [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
+            [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.group :as group]))
 
 (defn add! [group actor-or-decl]
@@ -15,5 +16,5 @@
   (actor/set-opts! group opts))
 
 (defn create [opts]
-  (doto (group/create)
+  (doto (scene2d/group)
     (set-opts! opts)))
