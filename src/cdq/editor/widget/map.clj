@@ -1,5 +1,6 @@
 (ns cdq.editor.widget.map
-  (:require [cdq.db :as db]
+  (:require [cdq.application :as application]
+            [cdq.db :as db]
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.editor.overview-table]
@@ -14,8 +15,6 @@
             [clojure.set :as set]
             [clojure.vis-ui.widget :as widget]))
 
-(declare application-state-atom)
-
 (defn- property-editor-window
   [{:keys [ctx/db
            ctx/ui-viewport]
@@ -25,12 +24,12 @@
         widget (editor-widget/create schema nil property ctx)]
     {:actor/type :actor.type/property-editor
      :delete-fn (fn [_ctx]
-                  (swap! application-state-atom update :ctx/db
+                  (swap! application/state update :ctx/db
                          db/delete!
                          (:property/id property)))
      :save? #(input/key-just-pressed? % :enter)
      :save-fn (fn [{:keys [ctx/db]}]
-                (swap! application-state-atom update :ctx/db
+                (swap! application/state update :ctx/db
                        db/update!
                        (editor-widget/value schema nil widget (:schemas db))))
      :scrollpane-height (:viewport/height ui-viewport)
