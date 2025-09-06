@@ -49,7 +49,10 @@
         delete! (apply-context-fn window (fn [_ctx]
                                            (swap! application-state-atom update :ctx/db
                                                   db/delete!
-                                                  (:property/id props))))]
+                                                  (:property/id props))))
+        check-enter-to-save (fn [_actor _delta {:keys [ctx/input] :as ctx}]
+                              (when (input/key-just-pressed? input :enter)
+                                (save! ctx))) ]
     (table/add-rows! window [[(scroll-pane/table-cell scrollpane-height
                                                       [[{:actor widget :colspan 2}]
                                                        [{:actor (text-button/create "Save [LIGHT_GRAY](ENTER)[]"
@@ -61,9 +64,7 @@
                                                                                       (delete! ctx)))
                                                          :center? true}]])]])
     (group/add! window {:actor/type :actor.type/actor
-                        :act (fn [_this _delta {:keys [ctx/input] :as ctx}]
-                               (when (input/key-just-pressed? input :enter)
-                                 (save! ctx)))})
+                        :act check-enter-to-save})
     (.pack window)
     window))
 
