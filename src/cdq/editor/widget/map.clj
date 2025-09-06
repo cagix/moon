@@ -1,22 +1,22 @@
 (ns cdq.editor.widget.map
-  (:require [cdq.ui :as ui]
-            [cdq.db :as db]
-            [clojure.gdx.input :as input]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.stacktrace :as stacktrace]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [cdq.editor.scroll-pane :as scroll-pane]
+            [cdq.editor.overview-table]
+            [cdq.editor.widget :as widget]
+            [cdq.ui :as ui]
+            [cdq.ui.error-window :as error-window]
             [cdq.ui.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [cdq.ui.separator :as separator]
             [cdq.ui.table :as table]
             [cdq.ui.text-button :as text-button]
-            [cdq.editor.scroll-pane :as scroll-pane] ; to cdq.ui
-            [cdq.editor.overview-table] ; ?
-            [cdq.editor.widget :as widget]
-            [cdq.ui.error-window :as error-window] ; ?
-            [cdq.ui.window :as window] ; ?
-            [cdq.ui.separator :as separator] ; table/separator cell ... should be data declarated possible
+            [cdq.ui.window :as window]
             [cdq.utils :as utils]
+            [clojure.gdx.input :as input]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.set :as set]))
 
 ; We are working with raw property data without fetching relationships and build
