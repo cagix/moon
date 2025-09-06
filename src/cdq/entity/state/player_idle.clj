@@ -155,16 +155,3 @@
       :interaction-state/no-skill-selected
       [[:tx/sound "bfxr_denied"]
        [:tx/show-message "No selected skill"]])))
-
-(defn handle-input [player-eid {:keys [ctx/input] :as ctx}]
-  (if-let [movement-vector (controls/player-movement-vector input)]
-    [[:tx/event player-eid :movement-input movement-vector]]
-    (when (input/button-just-pressed? input :left)
-      (interaction-state->txs ctx player-eid))))
-
-(defn clicked-inventory-cell [eid cell]
-  ; TODO no else case
-  (when-let [item (get-in (:entity/inventory @eid) cell)]
-    [[:tx/sound "bfxr_takeit"]
-     [:tx/event eid :pickup-item item]
-     [:tx/remove-item eid cell]]))
