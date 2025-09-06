@@ -9,7 +9,7 @@
                  [clojure.gdx.backends.lwjgl        "1.13.5"]
                  [clojure.gdx.graphics.g2d.freetype "1.13.5"]
                  [clojure.earlygrey.shape-drawer "2.5.0"]
-                 [com.kotcrab.vis/vis-ui "1.5.2"]
+                 [clojure.vis-ui "1.5.2"]
                  [metosin/malli "0.13.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]
