@@ -1,5 +1,7 @@
 (ns cdq.game-record
   (:require [qrecord.core :as q]
+            [cdq.ctx :as ctx]
+            [cdq.ui.actor :as actor]
             [cdq.malli :as m]))
 
 (defmacro def-record-and-schema [record-sym & ks]
@@ -49,6 +51,11 @@
   [:ctx/world-viewport :some]
   [:ctx/z-orders :some]
   )
+
+(extend-type Context
+  cdq.ui.actor/Context
+  (handle-draws! [ctx draws]
+    (ctx/handle-draws! ctx draws)))
 
 (defn create-with-schema []
   (map->Context {:schema (m/schema schema)}))

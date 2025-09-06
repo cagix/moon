@@ -1,6 +1,5 @@
 (ns cdq.ui.actor
-  (:require [cdq.ctx :as ctx]
-            [clojure.vis-ui.tooltip :as tooltip]
+  (:require [clojure.vis-ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils :as utils]))
@@ -19,10 +18,13 @@
                    (stage/get-ctx stage))]
     (f actor delta ctx)))
 
+(defprotocol Context
+  (handle-draws! [_ draws]))
+
 (defn try-draw [actor f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
                    (stage/get-ctx stage))]
-    (ctx/handle-draws! ctx (f actor ctx))))
+    (handle-draws! ctx (f actor ctx))))
 
 (defn create [opts]
   (doto (proxy [com.badlogic.gdx.scenes.scene2d.Actor] []
