@@ -4,8 +4,6 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.utils :as utils]))
 
-(declare render-layers)
-
 (def ^:dbg-flag show-body-bounds? false)
 
 (defn- draw-body-rect [{:keys [body/position body/width body/height]} color]
@@ -28,6 +26,7 @@
 
 (defn do!
   [{:keys [ctx/player-eid
+           ctx/render-layers
            ctx/render-z-order
            ctx/active-entities
            ctx/raycaster]

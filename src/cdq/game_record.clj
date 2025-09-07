@@ -38,6 +38,7 @@
   [:ctx/player-eid :some]
   [:ctx/potential-field-cache :some]
   [:ctx/raycaster :some]
+  [:ctx/render-layers :some]
   [:ctx/render-z-order :some]
   [:ctx/schema :some]
   [:ctx/shape-drawer :some]
