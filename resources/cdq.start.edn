@@ -139,8 +139,7 @@
             :foreground-fps 60}
    :state cdq.application/state
    :initial-record cdq.game-record/create-with-schema
-   :create! [[cdq.create.config/do! {:reset-game-state! cdq.reset-game-state/do!
-                                     :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
+   :create! [[cdq.create.config/do! {:create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                                           :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                                   {:world-fns [[cdq.world-fns.tmx/create
                                                                                                                 {:tmx-file "maps/vampire.tmx"
@@ -242,8 +241,8 @@
              cdq.create.unit-scale/do!
              cdq.create.shape-drawer-texture/do!
              cdq.create.shape-drawer/do!
-             [cdq.create.reset-game/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                   :start-position [32 71]}]]
+             [cdq.reset-game-state/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                  :start-position [32 71]}]]
              cdq.create.frame/do!]
 
    :dispose! cdq.gdx-app.dispose/do!
