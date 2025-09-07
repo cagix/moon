@@ -18,7 +18,5 @@
                 io/resource
                 slurp
                 edn/read-string)]
-    ; walk & require-resolve !
-    ; fix all require-resolve !
     (os-specific-settings/handle! ctx)
     (lwjgl-application/start! ctx)))
