@@ -1,6 +1,4 @@
-(ns cdq.application-listener
-  (:require [cdq.application :as application]
-            [cdq.game-record :as game-record]))
+(ns cdq.application-listener)
 
 (defn- render!* [ctx f]
   (let [result (if (vector? f)
@@ -12,25 +10,28 @@
       result)))
 
 (defn create
-  [{:keys [config
+  [{:keys [state
+           initial-record
+           config
            create!
            dispose!
            render!
            resize!]}]
-  {:create! (fn []
-              (reset! application/state
-                      (reduce render!*
-                              (-> (game-record/create-with-schema)
-                                  (assoc :ctx/config config))
-                              create!)))
-   :dispose! (fn []
-               ((requiring-resolve dispose!) @application/state))
-   :render! (fn []
-              (swap! application/state (fn [ctx]
-                                         (reduce render!*
-                                                 ctx
-                                                 render!))))
-   :resize! (fn [width height]
-              ((requiring-resolve resize!) @application/state width height))
-   :pause! (fn [])
-   :resume! (fn [])})
+  (let [state @(requiring-resolve state)]
+    {:create! (fn []
+                (reset! state
+                        (reduce render!*
+                                (-> ((requiring-resolve initial-record))
+                                    (assoc :ctx/config config))
+                                create!)))
+     :dispose! (fn []
+                 ((requiring-resolve dispose!) @state))
+     :render! (fn []
+                (swap! state (fn [ctx]
+                               (reduce render!*
+                                       ctx
+                                       render!))))
+     :resize! (fn [width height]
+                ((requiring-resolve resize!) @state width height))
+     :pause! (fn [])
+     :resume! (fn [])}))

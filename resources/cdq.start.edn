@@ -8,6 +8,11 @@
 [
  [dispatch! {:on clojure.gdx.utils.shared-library-loader/operating-system
              :k->executions {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}}]
+ ; straightforward , only cdq.editor.widget.map not
+ ; and cdq.editor.widget.one-to-many
+ ; cdq.editor.widget.one-to-one
+ ; and sound
+ ; otherwise can make anonymouse method fns
  [add-methods! [{:optional [cdq.editor.widget/create
                             cdq.editor.widget/value]}
                 [[cdq.editor.widget.map
@@ -32,6 +37,7 @@
                   :widget/image]
                  [cdq.editor.widget.animation
                   :widget/animation]]]]
+ ; straightforward
  [add-methods! [{:required [cdq.effect/applicable?
                             cdq.effect/handle]
                  :optional [cdq.effect/useful?
@@ -123,7 +129,7 @@
                   :tx/spawn-item]
                  [cdq.tx.spawn-creature
                   :tx/spawn-creature]
-                 [cdq.tx.spawn-entity
+                 [cdq.tx.spawn-entity ; problematic
                   :tx/spawn-entity]
                  ]]]
  [set-taskbar-icon! "icon.png"]
@@ -132,7 +138,9 @@
                       :windowed-mode {:width 1440 :height 900}
                       :foreground-fps 60}
    :listener [cdq.application-listener/create
-              {:config {:reset-game-state! cdq.reset-game-state/do!
+              {:state cdq.application/state
+               :initial-record cdq.game-record/create-with-schema
+               :config {:reset-game-state! cdq.reset-game-state/do!
                         :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                              :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                      {:world-fns [[cdq.world-fns.tmx/create
