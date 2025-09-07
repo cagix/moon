@@ -1,4 +1,4 @@
-(ns cdq.create.txs
+(ns cdq.tx-handler
   (:require [cdq.animation :as animation]
             [cdq.audio :as audio]
             [cdq.ctx :as ctx]
@@ -597,4 +597,5 @@
                                     (create! v eid ctx)))
                                 @eid)))})
 
-(.bindRoot #'cdq.ctx/fn-map fn-map)
+(defn extend-ctx [ctx]
+  (.bindRoot #'cdq.ctx/fn-map fn-map))

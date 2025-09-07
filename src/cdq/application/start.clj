@@ -3,8 +3,6 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(require 'cdq.create.txs)
-
 (defn -main []
   (let [ctx (-> "ctx.edn"
                 io/resource

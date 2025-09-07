@@ -1,5 +1,6 @@
 {
  :cdq.application.start/pipeline [cdq.application.context.record/create
+                                  cdq.tx-handler/extend-ctx
                                   cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
                                   cdq.application/self-reference
