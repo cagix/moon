@@ -3,144 +3,140 @@
  :config {:title "Cyber Dungeon Quest"
           :windowed-mode {:width 1440 :height 900}
           :foreground-fps 60}
- :listener [cdq.application.listener/create
-            {:state cdq.application/state
-             :initial-record cdq.game-record/create-with-schema
-             :create-pipeline [cdq.create.txs/do!
-                               cdq.create.effects/do!
-                               cdq.create.editor-widgets/do!
-                               [cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
-                                                                                            :items [cdq.ui.dev-menu.menus.select-world/create
-                                                                                                    {:world-fns [[cdq.world-fns.tmx/create
-                                                                                                                  {:tmx-file "maps/vampire.tmx"
-                                                                                                                   :start-position [32 71]}]
-                                                                                                                 [cdq.world-fns.uf-caves/create
-                                                                                                                  {:tile-size 48
-                                                                                                                   :texture-path "maps/uf_terrain.png"
-                                                                                                                   :spawn-rate 0.02
-                                                                                                                   :scaling 3
-                                                                                                                   :cave-size 200
-                                                                                                                   :cave-style :wide}]
-                                                                                                                 [cdq.world-fns.modules/create
-                                                                                                                  {:world/map-size 5,
-                                                                                                                   :world/max-area-level 3,
-                                                                                                                   :world/spawn-rate 0.05}]]
-                                                                                                     :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
-                                                                                                    ]}
-                                                                                           {:label "Help"
-                                                                                            :items [cdq.ui.dev-menu/help-items]}
-                                                                                           {:label "Editor"
-                                                                                            :items [cdq.ui.dev-menu.menus.db/create]}
-                                                                                           {:label "Ctx Data"
-                                                                                            :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
-                                                          [cdq.ui.action-bar/create {:id :action-bar}]
-                                                          [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                                                                      :rahmenw 150
-                                                                                      :rahmenh 26
-                                                                                      :hpcontent-file "images/hp.png"
-                                                                                      :manacontent-file "images/mana.png"
-                                                                                      :y-mana 80}]
-                                                          [cdq.ui.windows/create]
-                                                          [cdq.ui.player-state-draw/create]
-                                                          [cdq.ui.message/create {:duration-seconds 0.5
-                                                                                  :name "player-message"}]]]
-                               cdq.create.draw-on-world-viewport/do!
-                               [cdq.create.config/do! {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                                                                :initial-state :npc-sleeping}
-                                                                                   :entity/faction :evil}
-                                                       :cdq.game/player-props {:creature-id :creatures/vampire
-                                                                               :components {:entity/fsm {:fsm :fsms/player
-                                                                                                         :initial-state :player-idle}
-                                                                                            :entity/faction :good
-                                                                                            :entity/player? true
-                                                                                            :entity/free-skill-points 3
-                                                                                            :entity/clickable {:type :clickable/player}
-                                                                                            :entity/click-distance-tiles 1.5}}
-                                                       :cdq.reset-game-state/world {:content-grid-cell-size 16
-                                                                                    :potential-field-factions-iterations {:good 15
-                                                                                                                          :evil 5}}
-                                                       :effect-body-props {:width 0.5
-                                                                           :height 0.5
-                                                                           :z-order :z-order/effect}
+ :listener {:state cdq.application/state
+            :initial-record cdq.game-record/create-with-schema
+            :create-pipeline [cdq.create.txs/do!
+                              cdq.create.effects/do!
+                              cdq.create.editor-widgets/do!
+                              [cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
+                                                                                           :items [cdq.ui.dev-menu.menus.select-world/create
+                                                                                                   {:world-fns [[cdq.world-fns.tmx/create
+                                                                                                                 {:tmx-file "maps/vampire.tmx"
+                                                                                                                  :start-position [32 71]}]
+                                                                                                                [cdq.world-fns.uf-caves/create
+                                                                                                                 {:tile-size 48
+                                                                                                                  :texture-path "maps/uf_terrain.png"
+                                                                                                                  :spawn-rate 0.02
+                                                                                                                  :scaling 3
+                                                                                                                  :cave-size 200
+                                                                                                                  :cave-style :wide}]
+                                                                                                                [cdq.world-fns.modules/create
+                                                                                                                 {:world/map-size 5,
+                                                                                                                  :world/max-area-level 3,
+                                                                                                                  :world/spawn-rate 0.05}]]
+                                                                                                    :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
+                                                                                                   ]}
+                                                                                          {:label "Help"
+                                                                                           :items [cdq.ui.dev-menu/help-items]}
+                                                                                          {:label "Editor"
+                                                                                           :items [cdq.ui.dev-menu.menus.db/create]}
+                                                                                          {:label "Ctx Data"
+                                                                                           :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                                                         [cdq.ui.action-bar/create {:id :action-bar}]
+                                                         [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                                                     :rahmenw 150
+                                                                                     :rahmenh 26
+                                                                                     :hpcontent-file "images/hp.png"
+                                                                                     :manacontent-file "images/mana.png"
+                                                                                     :y-mana 80}]
+                                                         [cdq.ui.windows/create]
+                                                         [cdq.ui.player-state-draw/create]
+                                                         [cdq.ui.message/create {:duration-seconds 0.5
+                                                                                 :name "player-message"}]]]
+                              cdq.create.draw-on-world-viewport/do!
+                              [cdq.create.config/do! {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                                               :initial-state :npc-sleeping}
+                                                                                  :entity/faction :evil}
+                                                      :cdq.game/player-props {:creature-id :creatures/vampire
+                                                                              :components {:entity/fsm {:fsm :fsms/player
+                                                                                                        :initial-state :player-idle}
+                                                                                           :entity/faction :good
+                                                                                           :entity/player? true
+                                                                                           :entity/free-skill-points 3
+                                                                                           :entity/clickable {:type :clickable/player}
+                                                                                           :entity/click-distance-tiles 1.5}}
+                                                      :cdq.reset-game-state/world {:content-grid-cell-size 16
+                                                                                   :potential-field-factions-iterations {:good 15
+                                                                                                                         :evil 5}}
+                                                      :effect-body-props {:width 0.5
+                                                                          :height 0.5
+                                                                          :z-order :z-order/effect}
 
-                                                       :controls {:zoom-in :minus
-                                                                  :zoom-out :equals
-                                                                  :unpause-once :p
-                                                                  :unpause-continously :space}}]
-                               [cdq.create.vis-ui/do! {:skin-scale :x1}]
-                               [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
-                               cdq.create.draw-fns/do!
-                               cdq.create.render-layers/do!
-                               cdq.create.info/do!
-                               cdq.create.sprite-batch/do!
-                               cdq.create.graphics/do!
-                               cdq.create.textures/do!
-                               [cdq.create.audio/do! {:sounds "sounds.edn"
-                                                      :path-format "sounds/%s.wav"}]
-                               [cdq.create.cursors/do! {:path-format "cursors/%s.png"
-                                                        :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                               :cursors/black-x               ["black_x"      [0   0]]
-                                                               :cursors/default               ["default"      [0   0]]
-                                                               :cursors/denied                ["denied"       [16 16]]
-                                                               :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                               :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                               :cursors/hand-grab             ["hand003"      [4  16]]
-                                                               :cursors/move-window           ["move002"      [16 16]]
-                                                               :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                               :cursors/over-button           ["hand002"      [0   0]]
-                                                               :cursors/sandclock             ["sandclock"    [16 16]]
-                                                               :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                               :cursors/use-skill             ["pointer004"   [0   0]]
-                                                               :cursors/walking               ["walking"      [16 16]]}}]
-                               [cdq.create.db/do! {:schemas "schema.edn"
-                                                   :properties "properties.edn"}]
-                               [cdq.create.world-unit-scale/do! {:tile-size 48}]
-                               [cdq.create.ui-viewport/do! {:width 1440
-                                                            :height 900}]
-                               cdq.create.input/do!
-                               cdq.create.stage/do!
-                               cdq.create.input-processor/do!
-                               cdq.create.tiled-map-renderer/do!
-                               [cdq.create.world-viewport/do! {:width 1440
-                                                               :height 900}]
-                               [cdq.create.default-font/do! {:file "exocet/films.EXL_____.ttf"
-                                                             :params {:size 16
-                                                                      :quality-scaling 2
-                                                                      :enable-markup? true
-                                                                      ; false, otherwise scaling to world-units not visible
-                                                                      :use-integer-positions? false}}]
-                               cdq.create.unit-scale/do!
-                               cdq.create.shape-drawer-texture/do!
-                               cdq.create.shape-drawer/do!
-                               [cdq.reset-game-state/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                                    :start-position [32 71]}]]
-                               cdq.create.frame/do!]
+                                                      :controls {:zoom-in :minus
+                                                                 :zoom-out :equals
+                                                                 :unpause-once :p
+                                                                 :unpause-continously :space}}]
+                              [cdq.create.vis-ui/do! {:skin-scale :x1}]
+                              [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
+                              cdq.create.draw-fns/do!
+                              cdq.create.render-layers/do!
+                              cdq.create.info/do!
+                              cdq.create.sprite-batch/do!
+                              cdq.create.graphics/do!
+                              cdq.create.textures/do!
+                              [cdq.create.audio/do! {:sounds "sounds.edn"
+                                                     :path-format "sounds/%s.wav"}]
+                              [cdq.create.cursors/do! {:path-format "cursors/%s.png"
+                                                       :data {:cursors/bag                   ["bag001"       [0   0]]
+                                                              :cursors/black-x               ["black_x"      [0   0]]
+                                                              :cursors/default               ["default"      [0   0]]
+                                                              :cursors/denied                ["denied"       [16 16]]
+                                                              :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                              :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                              :cursors/hand-grab             ["hand003"      [4  16]]
+                                                              :cursors/move-window           ["move002"      [16 16]]
+                                                              :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                              :cursors/over-button           ["hand002"      [0   0]]
+                                                              :cursors/sandclock             ["sandclock"    [16 16]]
+                                                              :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                              :cursors/use-skill             ["pointer004"   [0   0]]
+                                                              :cursors/walking               ["walking"      [16 16]]}}]
+                              [cdq.create.db/do! {:schemas "schema.edn"
+                                                  :properties "properties.edn"}]
+                              [cdq.create.world-unit-scale/do! {:tile-size 48}]
+                              [cdq.create.ui-viewport/do! {:width 1440
+                                                           :height 900}]
+                              cdq.create.input/do!
+                              cdq.create.stage/do!
+                              cdq.create.input-processor/do!
+                              cdq.create.tiled-map-renderer/do!
+                              [cdq.create.world-viewport/do! {:width 1440
+                                                              :height 900}]
+                              [cdq.create.default-font/do! {:file "exocet/films.EXL_____.ttf"
+                                                            :params {:size 16
+                                                                     :quality-scaling 2
+                                                                     :enable-markup? true
+                                                                     ; false, otherwise scaling to world-units not visible
+                                                                     :use-integer-positions? false}}]
+                              cdq.create.unit-scale/do!
+                              cdq.create.shape-drawer-texture/do!
+                              cdq.create.shape-drawer/do!
+                              [cdq.reset-game-state/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                                   :start-position [32 71]}]]
+                              cdq.create.frame/do!]
 
-             :dispose-fn cdq.gdx-app.dispose/do!
-             :render-pipeline [
-                               cdq.render.validate/do!
-                               cdq.render.assoc-mouseover-keys/do!
-                               cdq.render.update-mouseover-eid/do!
-                               cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-                               cdq.render.assoc-active-entities/do!
-                               cdq.render.set-camera-on-player/do!
-                               cdq.render.clear-screen/do!
-                               cdq.render.draw-world-map/do!
-                               cdq.render.draw-on-world-viewport/do!
-                               cdq.render.render-stage/do!
-                               cdq.render.set-cursor/do!
-                               cdq.render.player-state-handle-input/do!
-                               cdq.render.assoc-paused/do!
-                               cdq.render.tick-world/do!
-                               cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                               cdq.render.handle-key-input/do!
-                               cdq.render.dissoc-mouseover-keys/do!
-                               cdq.render.validate/do!
-                               ; :cdq.render/validate
-                               ; -> render multifn / method map ?
-                               ; tx just  method map ?
-                               ]
-             :resize-fn cdq.gdx-app.resize/do!
-             }
-            ]
- }
+            :dispose-fn cdq.gdx-app.dispose/do!
+            :render-pipeline [
+                              cdq.render.validate/do!
+                              cdq.render.assoc-mouseover-keys/do!
+                              cdq.render.update-mouseover-eid/do!
+                              cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+                              cdq.render.assoc-active-entities/do!
+                              cdq.render.set-camera-on-player/do!
+                              cdq.render.clear-screen/do!
+                              cdq.render.draw-world-map/do!
+                              cdq.render.draw-on-world-viewport/do!
+                              cdq.render.render-stage/do!
+                              cdq.render.set-cursor/do!
+                              cdq.render.player-state-handle-input/do!
+                              cdq.render.assoc-paused/do!
+                              cdq.render.tick-world/do!
+                              cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                              cdq.render.handle-key-input/do!
+                              cdq.render.dissoc-mouseover-keys/do!
+                              cdq.render.validate/do!
+                              ; :cdq.render/validate
+                              ; -> render multifn / method map ?
+                              ; tx just  method map ?
+                              ]
+            :resize-fn cdq.gdx-app.resize/do!}}
