@@ -66,6 +66,7 @@
   [:ctx/dispose-fn :some]
   [:ctx/resize-fn :some]
   [:ctx/application-state :some]
+  [:ctx/fsms :some]
   )
 
 (defn create [ctx]

@@ -3,6 +3,7 @@
                                   cdq.tx-handler/extend-ctx
                                   cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
+                                  cdq.fsms/add
                                   cdq.application/self-reference
                                   cdq.application.lwjgl/start!]
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
