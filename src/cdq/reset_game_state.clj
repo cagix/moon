@@ -127,15 +127,17 @@
 ; then even at cdq.start ? just [:tx.app/] ?
 ; this is just a bunch of functions in the context of 'cdq.reset-game-state' ...
 (defn do!
-  [{:keys [ctx/config
+  [{:keys [ctx/ui-actors
+           ctx/config
            ctx/stage]
     :as ctx}
    world-fn]
-  (stage/clear! stage)
-  (doseq [actor-decl (map #(let [[f params] %]
-                             ((requiring-resolve f) ctx params))
-                          (:create-ui-actors config))]
-    (stage/add! stage (actor/build actor-decl)))
+  (let [actors (map #(let [[f params] %]
+                       ((requiring-resolve f) ctx params))
+                    ui-actors)]
+    (stage/clear! stage)
+    (doseq [actor actors]
+      (stage/add! stage (actor/build actor))))
   (let [world-config (merge (::world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f) ctx params)))
