@@ -17,6 +17,12 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
+; Move config to ctx/editor (functions, etc.)
+; and pure ui building but with editor config
+; so it dispatches on ctx/editor ....
+; which can have implementation/protocol
+; and input stage ui functions can also returns txs
+; [:tx.stage/add [:ui.actor/property-editor-window options]]
 (defn property-editor-window
   [{:keys [ctx/db
            ctx/ui-viewport]
@@ -30,19 +36,35 @@
                                    (actor/remove! (window/find-ancestor actor))
                                    (catch Throwable t
                                      (stacktrace/pretty-print t)
-                                     (stage/add! stage (cdq.ui.widget/error-window t))))))]
-    {:actor/type :actor.type/property-editor
-     :clicked-save-fn   (with-window-close (fn [{:keys [ctx/db]}]
+                                     (stage/add! stage (cdq.ui.widget/error-window t))))))
+        clicked-save-fn (with-window-close (fn [{:keys [ctx/db]}]
                                              (swap! application/state update :ctx/db
                                                     db/update!
                                                     (editor-widget/value schema nil widget (:schemas db)))))
-     :clicked-delete-fn (with-window-close (fn [_ctx]
-                                             (swap! application/state update :ctx/db
-                                                    db/delete!
-                                                    (:property/id property))))
-     :save? #(input/key-just-pressed? % :enter)
-     :scrollpane-height (:viewport/height ui-viewport)
-     :widget widget}))
+        clicked-delete-fn (with-window-close (fn [_ctx]
+                                               (swap! application/state update :ctx/db
+                                                      db/delete!
+                                                      (:property/id property))))
+        save? #(input/key-just-pressed? % :enter)
+        scrollpane-height (:viewport/height ui-viewport)]
+    (doto (widget/window {:title (str "[SKY]Property[]")
+                          :id :property-editor-window
+                          :modal? true
+                          :close-button? true
+                          :center? true
+                          :close-on-escape? true
+                          :rows [[(cdq.ui.widget/scroll-pane-cell scrollpane-height
+                                                                  [[{:actor widget :colspan 2}]
+                                                                   [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
+                                                                     :center? true}
+                                                                    {:actor (widget/text-button "Delete" clicked-delete-fn)
+                                                                     :center? true}]])]]
+                          :actors [{:actor/type :actor.type/actor
+                                    :act (fn [actor _delta {:keys [ctx/input] :as ctx}]
+                                           (when (save? input)
+                                             (clicked-save-fn actor ctx)))}]
+                          :cell-defaults {:pad 5}})
+      (.pack))))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -76,7 +98,7 @@
   (let [window (:property-editor-window stage)
         prop-value (window->property-value window (:schemas db))]
     (actor/remove! window)
-    (stage/add! stage (actor/build (property-editor-window ctx prop-value)))))
+    (stage/add! stage (property-editor-window ctx prop-value))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]

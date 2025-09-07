@@ -1,10 +1,8 @@
 (ns cdq.ui.widget
   (:require [cdq.utils :refer [with-err-str]]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui] ; load defmethods
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.repl]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.widget :as widget]))
@@ -42,35 +40,6 @@
     :close-on-escape? true
     :center? true
     :pack? true}))
-
-(defn property-editor-window
-  [{:keys [check-enter-to-save
-           clicked-save-fn
-           clicked-delete-fn
-           save?
-           scrollpane-height
-           widget]}]
-  (doto (widget/window {:title (str "[SKY]Property[]")
-                        :id :property-editor-window
-                        :modal? true
-                        :close-button? true
-                        :center? true
-                        :close-on-escape? true
-                        :rows [[(scroll-pane-cell scrollpane-height
-                                                  [[{:actor widget :colspan 2}]
-                                                   [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
-                                                     :center? true}
-                                                    {:actor (widget/text-button "Delete" clicked-delete-fn)
-                                                     :center? true}]])]]
-                        :actors [{:actor/type :actor.type/actor
-                                  :act (fn [actor _delta {:keys [ctx/input] :as ctx}]
-                                         (when (save? input)
-                                           (clicked-save-fn actor ctx)))}]
-                        :cell-defaults {:pad 5}})
-    (.pack)))
-
-(defmethod actor/build :actor.type/property-editor [opts]
-  (property-editor-window opts))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
