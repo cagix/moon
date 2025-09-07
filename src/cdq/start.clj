@@ -209,28 +209,29 @@
     ; tx just  method map ?
     ])
 
+(defn- create-ctx-listener []
+  {:create (fn []
+             (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+                                  :create-pipeline create-pipeline}))
+   :dispose cdq.gdx-app.dispose/do!
+   :render (fn [ctx]
+             (reduce (fn [ctx f]
+                       (if-let [new-ctx ((requiring-resolve f) ctx)]
+                         new-ctx
+                         ctx))
+                     ctx
+                     render-pipeline))
+   :resize cdq.gdx-app.resize/do!})
+
 (defn -main []
   (let [{:keys [operating-sytem->executables
                 config
                 state-atom]} (-> "cdq.start.edn"
-                             io/resource
-                             slurp
-                             edn/read-string)
-        state @(requiring-resolve state-atom)
-        listener (cdq.application.listener/create
-                  {:state state
-                   :create (fn []
-                             (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
-                                                  :create-pipeline create-pipeline}))
-                   :dispose cdq.gdx-app.dispose/do!
-                   :render (fn [ctx]
-                             (reduce (fn [ctx f]
-                                       (if-let [new-ctx ((requiring-resolve f) ctx)]
-                                         new-ctx
-                                         ctx))
-                                     ctx
-                                     render-pipeline))
-                   :resize cdq.gdx-app.resize/do!})]
+                                 io/resource
+                                 slurp
+                                 edn/read-string)
+        listener (cdq.application.listener/create @(requiring-resolve state-atom)
+                                                  (create-ctx-listener))]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))

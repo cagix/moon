@@ -1,8 +1,8 @@
 (ns cdq.application.listener)
 
 (defn create
-  [{:keys [state
-           create
+  [state
+   {:keys [create
            dispose
            render
            resize]}]
