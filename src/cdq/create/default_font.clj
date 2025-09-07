@@ -5,6 +5,5 @@
 
 (defn do!
   [ctx {:keys [file params]}]
-  (assoc ctx :ctx/default-font
-         (freetype/generate-font (files/internal (gdx/files) file)
-                                 params)))
+  (assoc ctx :ctx/default-font (freetype/generate-font (files/internal (gdx/files) file)
+                                                       params)))
