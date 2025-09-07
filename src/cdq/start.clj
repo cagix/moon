@@ -1,5 +1,6 @@
 (ns cdq.start
-  (:require [clojure.edn :as edn]
+  (:require [cdq.application :as application]
+            [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.io :as io])
@@ -9,14 +10,12 @@
   ((requiring-resolve f) params))
 
 (defn- create-listener
-  [{:keys [state
-           initial-record
+  [{:keys [initial-record
            create-pipeline
            dispose-fn
            render-pipeline
            resize-fn]}]
-  (let [state @(requiring-resolve state)
-        create! (fn []
+  (let [create! (fn []
                   (reduce (fn [ctx f]
                             (let [result (if (vector? f)
                                            (let [[f params] f]
@@ -39,13 +38,13 @@
         resize! (fn [ctx width height]
                   ((requiring-resolve resize-fn) ctx width height))]
     {:create! (fn []
-                (reset! state (create!)))
+                (reset! application/state (create!)))
      :dispose! (fn []
-                 (dispose! @state))
+                 (dispose! @application/state))
      :render! (fn []
-                (swap! state render!))
+                (swap! application/state render!))
      :resize! (fn [width height]
-                (resize! @state width height))
+                (resize! @application/state width height))
      :pause! (fn [])
      :resume! (fn [])}))
 
