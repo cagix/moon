@@ -313,6 +313,13 @@
 (defn- pay-mana-cost [entity cost]
   (update entity :creature/stats stats/pay-mana-cost cost))
 
+(declare fn-map)
+
+(defn do!
+  [{k 0 :as component}
+   ctx]
+  ((get fn-map k) component ctx))
+
 (def fn-map
   {:tx/assoc (fn [[_ eid k value] _ctx]
                (swap! eid assoc k value)
@@ -355,7 +362,7 @@
                        (if (inventory/stackable? item cell-item)
                          (do
                           #_(tx/stack-item ctx eid cell item))
-                         (ctx/do! [:tx/set-item eid cell item] ctx))))
+                         (do! [:tx/set-item eid cell item] ctx))))
 
    :tx/set-cooldown (fn [[_ eid skill] {:keys [ctx/elapsed-time]}]
                       (swap! eid assoc-in
@@ -597,5 +604,29 @@
                                     (create! v eid ctx)))
                                 @eid)))})
 
+(defn- valid-tx? [transaction]
+  (vector? transaction))
+
+(defn- handle-tx! [tx ctx]
+  (assert (valid-tx? tx) (pr-str tx))
+  (try
+   (do! tx ctx)
+   (catch Throwable t
+     (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
+
 (defn extend-ctx [ctx]
-  (.bindRoot #'cdq.ctx/fn-map fn-map))
+  (extend-type (class ctx)
+    cdq.ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (loop [ctx ctx
+             txs transactions
+             handled []]
+        (if (seq txs)
+          (let [tx (first txs)]
+            (if tx
+              (let [new-txs (handle-tx! tx ctx)]
+                (recur ctx
+                       (concat (or new-txs []) (rest txs))
+                       (conj handled tx)))
+              (recur ctx (rest txs) handled)))
+          handled)))))
