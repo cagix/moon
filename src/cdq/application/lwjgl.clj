@@ -11,10 +11,9 @@
       result)))
 
 (defn start!
-  [{:keys [lwjgl-app-config
+  [{:keys [config
            state
            initial-record
-           config
            create!
            dispose!
            render!
@@ -23,8 +22,7 @@
                               {:create! (fn []
                                           (reset! state
                                                   (reduce render!*
-                                                          (-> ((requiring-resolve initial-record))
-                                                              (assoc :ctx/config config))
+                                                          ((requiring-resolve initial-record))
                                                           create!)))
                                :dispose! (fn []
                                            ((requiring-resolve dispose!) @state))
@@ -37,4 +35,4 @@
                                           ((requiring-resolve resize!) @state width height))
                                :pause! (fn [])
                                :resume! (fn [])})
-                            lwjgl-app-config))
+                            config))
