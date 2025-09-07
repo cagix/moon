@@ -45,7 +45,9 @@
                                                (swap! application/state update :ctx/db
                                                       db/delete!
                                                       (:property/id property))))
-        save? #(input/key-just-pressed? % :enter)
+        extra-act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
+                       (when (input/key-just-pressed? input :enter)
+                         (clicked-save-fn actor ctx)))
         scrollpane-height (:viewport/height ui-viewport)]
     (doto (widget/window {:title (str "[SKY]Property[]")
                           :id :property-editor-window
@@ -60,9 +62,7 @@
                                                                     {:actor (widget/text-button "Delete" clicked-delete-fn)
                                                                      :center? true}]])]]
                           :actors [{:actor/type :actor.type/actor
-                                    :act (fn [actor _delta {:keys [ctx/input] :as ctx}]
-                                           (when (save? input)
-                                             (clicked-save-fn actor ctx)))}]
+                                    :act extra-act-fn}]
                           :cell-defaults {:pad 5}})
       (.pack))))
 
