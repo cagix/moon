@@ -1,6 +1,5 @@
 (ns cdq.start
-  (:require [cdq.application :as application]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             cdq.gdx-app.dispose
             cdq.gdx-app.resize
             [cdq.core :as core]
@@ -209,43 +208,45 @@
 
 (defn -main []
   (let [{:keys [operating-sytem->executables
-                config]} (-> "cdq.start.edn"
+                config
+                state-atom]} (-> "cdq.start.edn"
                              io/resource
                              slurp
-                             edn/read-string)]
+                             edn/read-string)
+        create! (fn []
+                  (reduce (fn [ctx f]
+                            (let [result (if (vector? f)
+                                           (let [[f params] f]
+                                             ((requiring-resolve f) ctx params))
+                                           ((requiring-resolve f) ctx))]
+                              (if (nil? result)
+                                ctx
+                                result)))
+                          (map->Context {:schema (m/schema schema)})
+                          create-pipeline))
+        dispose! (fn [ctx]
+                   (cdq.gdx-app.dispose/do! ctx))
+        render! (fn [ctx]
+                  (reduce (fn [ctx f]
+                            (if-let [new-ctx ((requiring-resolve f) ctx)]
+                              new-ctx
+                              ctx))
+                          ctx
+                          render-pipeline))
+        resize! (fn [ctx width height]
+                  (cdq.gdx-app.resize/do! ctx width height))
+        state @(requiring-resolve state-atom)]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))
-    (lwjgl/start-application! (let [create! (fn []
-                                              (reduce (fn [ctx f]
-                                                        (let [result (if (vector? f)
-                                                                       (let [[f params] f]
-                                                                         ((requiring-resolve f) ctx params))
-                                                                       ((requiring-resolve f) ctx))]
-                                                          (if (nil? result)
-                                                            ctx
-                                                            result)))
-                                                      (map->Context {:schema (m/schema schema)})
-                                                      create-pipeline))
-                                    dispose! (fn [ctx]
-                                               (cdq.gdx-app.dispose/do! ctx))
-                                    render! (fn [ctx]
-                                              (reduce (fn [ctx f]
-                                                        (if-let [new-ctx ((requiring-resolve f) ctx)]
-                                                          new-ctx
-                                                          ctx))
-                                                      ctx
-                                                      render-pipeline))
-                                    resize! (fn [ctx width height]
-                                              (cdq.gdx-app.resize/do! ctx width height))]
-                                {:create! (fn []
-                                            (reset! application/state (create!)))
-                                 :dispose! (fn []
-                                             (dispose! @application/state))
-                                 :render! (fn []
-                                            (swap! application/state render!))
-                                 :resize! (fn [width height]
-                                            (resize! @application/state width height))
-                                 :pause! (fn [])
-                                 :resume! (fn [])})
+    (lwjgl/start-application! {:create! (fn []
+                                          (reset! state (create!)))
+                               :dispose! (fn []
+                                           (dispose! @state))
+                               :render! (fn []
+                                          (swap! state render!))
+                               :resize! (fn [width height]
+                                          (resize! @state width height))
+                               :pause! (fn [])
+                               :resume! (fn [])}
                               config)))
