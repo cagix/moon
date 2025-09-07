@@ -1,5 +1,6 @@
 (ns cdq.application.context.record
-  (:require [qrecord.core :as q]))
+  (:require [cdq.malli :as m]
+            [qrecord.core :as q]))
 
 (defmacro def-record-and-schema [record-sym & ks]
   `(do
@@ -56,4 +57,17 @@
   [:ctx/world-unit-scale :some]
   [:ctx/world-viewport :some]
   [:ctx/z-orders :some]
+
+  [:ctx/initial-pipeline :some]
+  [:ctx/os-settings :some]
+  [:ctx/lwjgl :some]
+  [:ctx/create-pipeline :some]
+  [:ctx/render-pipeline :some]
+  [:ctx/dispose-fn :some]
+  [:ctx/resize-fn :some]
+  [:ctx/application-state :some]
   )
+
+(defn create [ctx]
+  (merge (map->Context {:schema (m/schema schema)})
+         ctx))

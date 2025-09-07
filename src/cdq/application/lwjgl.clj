@@ -1,14 +1,14 @@
 (ns cdq.application.lwjgl
-  (:require cdq.gdx-app.dispose
-            cdq.gdx-app.resize
-            [cdq.application.context.record :as ctx-record]
-            [cdq.malli :as m]
-            [clojure.gdx.backends.lwjgl :as lwjgl]))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start!
   [{:keys [ctx/application-state
+           ctx/lwjgl
            ctx/create-pipeline
-           ctx/render-pipeline]}]
+           ctx/render-pipeline
+           ctx/dispose-fn
+           ctx/resize-fn]
+    :as ctx}]
   (lwjgl/start-application!
    {:create! (fn []
                (reset! application-state (reduce (fn [ctx f]
@@ -16,10 +16,10 @@
                                                      (if (nil? result)
                                                        ctx
                                                        result)))
-                                                 (ctx-record/map->Context {:schema (m/schema ctx-record/schema)})
+                                                 ctx
                                                  (map requiring-resolve create-pipeline))))
     :dispose! (fn []
-                (cdq.gdx-app.dispose/do! @application-state))
+                ((requiring-resolve dispose-fn) @application-state))
     :render! (fn []
                (swap! application-state (fn [ctx]
                                           (reduce (fn [ctx f]
@@ -29,9 +29,7 @@
                                                   ctx
                                                   (map requiring-resolve render-pipeline)))))
     :resize! (fn [width height]
-               (cdq.gdx-app.resize/do! @application-state width height))
+               ((requiring-resolve resize-fn) @application-state width height))
     :pause! (fn [])
     :resume! (fn [])}
-   {:title "Cyber Dungeon Quest"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}))
+   lwjgl))

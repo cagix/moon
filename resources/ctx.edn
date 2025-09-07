@@ -1,8 +1,12 @@
 {
- :ctx/initial-pipeline [cdq.application.os-specific-settings/handle!
+ :ctx/initial-pipeline [cdq.application.context.record/create
+                        cdq.application.os-specific-settings/handle!
                         cdq.application.lwjgl/start!]
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
+ :ctx/lwjgl {:title "Cyber Dungeon Quest"
+             :windowed-mode {:width 1440 :height 900}
+             :foreground-fps 60}
  :ctx/create-pipeline [cdq.create.txs/do!
                        cdq.create.effects/do!
                        cdq.create.editor-widgets/do!
@@ -55,4 +59,6 @@
                        ; -> render multifn / method map ?
                        ; tx just  method map ?
                        ]
+ :ctx/dispose-fn cdq.gdx-app.dispose/do!
+ :ctx/resize-fn  cdq.gdx-app.resize/do!
  }
