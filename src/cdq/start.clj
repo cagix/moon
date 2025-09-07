@@ -1,5 +1,6 @@
 (ns cdq.start
   (:require cdq.application
+            cdq.application.listener
             [cdq.ctx :as ctx]
             cdq.ctx.create
             cdq.gdx-app.dispose
@@ -228,10 +229,11 @@
                                  ctx))
                              ctx
                              render-pipeline))
-        listener (cdq.application/listener {:create create-ctx
-                                            :dispose dispose-ctx
-                                            :render render-ctx
-                                            :resize resize-ctx})]
+        listener (cdq.application.listener/create {:state state
+                                                   :create create-ctx
+                                                   :dispose dispose-ctx
+                                                   :render render-ctx
+                                                   :resize resize-ctx})]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))
