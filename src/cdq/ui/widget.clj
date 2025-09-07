@@ -1,12 +1,10 @@
 (ns cdq.ui.widget
-  (:require [cdq.stacktrace :as stacktrace]
-            [cdq.utils :refer [with-err-str]]
+  (:require [cdq.utils :refer [with-err-str]]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui] ; load defmethods
             [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.window :as window]
             [clojure.repl]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.widget :as widget]))
@@ -47,22 +45,13 @@
 
 (defn property-editor-window
   [{:keys [check-enter-to-save
-           delete-fn
+           clicked-save-fn
+           clicked-delete-fn
            save?
-           save-fn
            scrollpane-height
            widget
            window-opts]}]
-  (let [window (widget/window window-opts)
-        with-window-close (fn [f]
-                            (fn [actor {:keys [ctx/stage] :as ctx}]
-                              (try (f ctx)
-                                   (actor/remove! (window/find-ancestor actor))
-                                   (catch Throwable t
-                                     (stacktrace/pretty-print t)
-                                     (stage/add! stage (error-window t))))))
-        clicked-save-fn   (with-window-close save-fn)
-        clicked-delete-fn (with-window-close delete-fn)]
+  (let [window (widget/window window-opts)]
     (table/add-rows! window [[(scroll-pane-cell scrollpane-height
                                                 [[{:actor widget :colspan 2}]
                                                  [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)

@@ -3,13 +3,16 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.schemas :as schemas]
+            [cdq.stacktrace :as stacktrace]
             [cdq.editor.widget :as editor-widget]
+            [cdq.ui.widget]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scenes.scene2d.ui.window :as window]
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
@@ -20,17 +23,24 @@
     :as ctx}
    property]
   (let [schema (get (:schemas db) (property/type property))
-        widget (editor-widget/create schema nil property ctx)]
+        widget (editor-widget/create schema nil property ctx)
+        with-window-close (fn [f]
+                            (fn [actor {:keys [ctx/stage] :as ctx}]
+                              (try (f ctx)
+                                   (actor/remove! (window/find-ancestor actor))
+                                   (catch Throwable t
+                                     (stacktrace/pretty-print t)
+                                     (stage/add! stage (cdq.ui.widget/error-window t))))))]
     {:actor/type :actor.type/property-editor
-     :delete-fn (fn [_ctx]
-                  (swap! application/state update :ctx/db
-                         db/delete!
-                         (:property/id property)))
+     :clicked-save-fn   (with-window-close (fn [{:keys [ctx/db]}]
+                                             (swap! application/state update :ctx/db
+                                                    db/update!
+                                                    (editor-widget/value schema nil widget (:schemas db)))))
+     :clicked-delete-fn (with-window-close (fn [_ctx]
+                                             (swap! application/state update :ctx/db
+                                                    db/delete!
+                                                    (:property/id property))))
      :save? #(input/key-just-pressed? % :enter)
-     :save-fn (fn [{:keys [ctx/db]}]
-                (swap! application/state update :ctx/db
-                       db/update!
-                       (editor-widget/value schema nil widget (:schemas db))))
      :scrollpane-height (:viewport/height ui-viewport)
      :widget widget
      :window-opts {:title (str "[SKY]Property[]")
@@ -40,7 +50,6 @@
                    :center? true
                    :close-on-escape? true
                    :cell-defaults {:pad 5}}}))
-
 
 (def ^:private property-k-sort-order
   [:property/id
