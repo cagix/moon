@@ -1,4 +1,4 @@
 (ns cdq.core)
 
-(defn execute! [[f params]]
+(fn [[f params]]
   ((requiring-resolve f) params))
