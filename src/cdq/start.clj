@@ -217,23 +217,20 @@
                              slurp
                              edn/read-string)
         state @(requiring-resolve state-atom)
-        create-ctx (fn []
-                     (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
-                                          :create-pipeline create-pipeline}))
-        dispose-ctx cdq.gdx-app.dispose/do!
-        resize-ctx cdq.gdx-app.resize/do!
-        render-ctx (fn [ctx]
-                     (reduce (fn [ctx f]
-                               (if-let [new-ctx ((requiring-resolve f) ctx)]
-                                 new-ctx
-                                 ctx))
-                             ctx
-                             render-pipeline))
-        listener (cdq.application.listener/create {:state state
-                                                   :create create-ctx
-                                                   :dispose dispose-ctx
-                                                   :render render-ctx
-                                                   :resize resize-ctx})]
+        listener (cdq.application.listener/create
+                  {:state state
+                   :create (fn []
+                             (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+                                                  :create-pipeline create-pipeline}))
+                   :dispose cdq.gdx-app.dispose/do!
+                   :render (fn [ctx]
+                             (reduce (fn [ctx f]
+                                       (if-let [new-ctx ((requiring-resolve f) ctx)]
+                                         new-ctx
+                                         ctx))
+                                     ctx
+                                     render-pipeline))
+                   :resize cdq.gdx-app.resize/do!})]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))
