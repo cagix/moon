@@ -8,5 +8,4 @@
                          io/resource
                          slurp
                          edn/read-string)]
-    (println f)
     ((requiring-resolve f) config)))
