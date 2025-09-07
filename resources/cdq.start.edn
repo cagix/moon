@@ -1,33 +1,7 @@
 [
  [cdq.os-settings/dispatch! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}]
- [cdq.var/bind-roots! {cdq.draw-on-world-viewport.entities/render-layers cdq.entity.render/render-layers}]
- [cdq.multifn/add-methods! [{:required [cdq.ctx/draw!]}
-                            [[cdq.draw.with-line-width
-                              :draw/with-line-width]
-                             [cdq.draw.grid
-                              :draw/grid]
-                             [cdq.draw.texture-region
-                              :draw/texture-region]
-                             [cdq.draw.text
-                              :draw/text]
-                             [cdq.draw.ellipse
-                              :draw/ellipse]
-                             [cdq.draw.filled-ellipse
-                              :draw/filled-ellipse]
-                             [cdq.draw.circle
-                              :draw/circle]
-                             [cdq.draw.filled-circle
-                              :draw/filled-circle]
-                             [cdq.draw.rectangle
-                              :draw/rectangle]
-                             [cdq.draw.filled-rectangle
-                              :draw/filled-rectangle]
-                             [cdq.draw.arc
-                              :draw/arc]
-                             [cdq.draw.sector
-                              :draw/sector]
-                             [cdq.draw.line
-                              :draw/line]]]]
+ [cdq.var/bind-roots! {cdq.draw-on-world-viewport.entities/render-layers cdq.entity.render/render-layers
+                       cdq.ctx/draw-fns cdq.draw-impl/draw-fns}]
  [cdq.multifn/add-methods! [{:optional [cdq.editor.widget/create
                                         cdq.editor.widget/value]}
                             [[cdq.editor.widget.map

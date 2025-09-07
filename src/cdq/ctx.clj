@@ -29,9 +29,11 @@
           (recur ctx (rest txs) handled)))
       handled)))
 
-(defmulti draw!
-  (fn [[k] _ctx]
-    k))
+(declare draw-fns)
+
+(defn draw! [{k 0 :as component} ctx]
+  (let [draw-fn (draw-fns k)]
+    (draw-fn component ctx)))
 
 (defn handle-draws! [ctx draws]
   (doseq [component draws
