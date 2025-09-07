@@ -3,10 +3,14 @@
 
 (defmacro def-record-and-schema [record-sym & ks]
   `(do
+
     (q/defrecord ~record-sym
       ~(mapv (comp symbol first) ks))
+
     (def schema
-      [:map {:closed true} ~@ks])))
+      [:map {:closed true} ~@ks])
+
+    ))
 
 (def-record-and-schema Context
   [:ctx/active-entities :some]
