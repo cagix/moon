@@ -22,6 +22,7 @@
   [:ctx/default-font :some]
   [:ctx/delta-time :some]
   [:ctx/draw-fns :some]
+  [:ctx/draw-on-world-viewport :some]
   [:ctx/elapsed-time :some]
   [:ctx/entity-ids :some]
   [:ctx/explored-tile-corners :some]
