@@ -10,7 +10,7 @@
            path-format]}]
   (assoc ctx :ctx/cursors (update-vals data
                                        (fn [[file [hotspot-x hotspot-y]]]
-                                         (let [pixmap (pixmap/create (files/internal (gfx/files) (format path-format file)))
+                                         (let [pixmap (pixmap/create (files/internal (gdx/files) (format path-format file)))
                                                cursor (graphics/cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
                                            (.dispose pixmap)
                                            cursor)))))

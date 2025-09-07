@@ -1,123 +1,6 @@
 [
  [dispatch! {:on clojure.gdx.utils.shared-library-loader/operating-system
              :k->executions {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}}]
- [add-methods! [{:optional [cdq.editor.widget/create
-                            cdq.editor.widget/value]}
-                [[cdq.editor.widget.map
-                  :s/map]
-                 [cdq.editor.widget.default
-                  :default]
-                 [cdq.editor.widget.edn
-                  :widget/edn]
-                 [cdq.editor.widget.string
-                  :string]
-                 [cdq.editor.widget.boolean
-                  :boolean]
-                 [cdq.editor.widget.enum
-                  :enum]
-                 [cdq.editor.widget.sound
-                  :s/sound]
-                 [cdq.editor.widget.one-to-one
-                  :s/one-to-one]
-                 [cdq.editor.widget.one-to-many
-                  :s/one-to-many]
-                 [cdq.editor.widget.image
-                  :widget/image]
-                 [cdq.editor.widget.animation
-                  :widget/animation]]]]
- [add-methods! [{:required [cdq.effect/applicable?
-                            cdq.effect/handle]
-                 :optional [cdq.effect/useful?
-                            cdq.effect/render]}
-                [[cdq.effects.audiovisual
-                  :effects/audiovisual]
-                 [cdq.effects.projectile
-                  :effects/projectile]
-                 [cdq.effects.sound
-                  :effects/sound]
-                 [cdq.effects.spawn
-                  :effects/spawn]
-                 [cdq.effects.target-all
-                  :effects/target-all]
-                 [cdq.effects.target-entity
-                  :effects/target-entity]
-                 [cdq.effects.target.audiovisual
-                  :effects.target/audiovisual]
-                 [cdq.effects.target.convert
-                  :effects.target/convert]
-                 [cdq.effects.target.damage
-                  :effects.target/damage]
-                 [cdq.effects.target.kill
-                  :effects.target/kill]
-                 [cdq.effects.target.melee-damage
-                  :effects.target/melee-damage]
-                 [cdq.effects.target.spiderweb
-                  :effects.target/spiderweb]
-                 [cdq.effects.target.stun
-                  :effects.target/stun]]]]
- [add-methods! [{:required [cdq.ctx/do!]}
-                [[cdq.tx.assoc
-                  :tx/assoc]
-                 [cdq.tx.assoc-in
-                  :tx/assoc-in]
-                 [cdq.tx.dissoc
-                  :tx/dissoc]
-                 [cdq.tx.effect
-                  :tx/effect]
-                 [cdq.tx.mark-destroyed
-                  :tx/mark-destroyed]
-                 [cdq.tx.mod-add
-                  :tx/mod-add]
-                 [cdq.tx.mod-remove
-                  :tx/mod-remove]
-                 [cdq.tx.pay-mana-cost
-                  :tx/pay-mana-cost]
-                 [cdq.tx.pickup-item
-                  :tx/pickup-item]
-                 [cdq.tx.set-cooldown
-                  :tx/set-cooldown]
-                 [cdq.tx.add-text-effect
-                  :tx/add-text-effect]
-                 [cdq.tx.add-skill
-                  :tx/add-skill]
-                 [cdq.tx.set-item
-                  :tx/set-item]
-                 [cdq.tx.remove-item
-                  :tx/remove-item]
-                 [cdq.tx.event
-                  :tx/event]
-                 [cdq.tx.toggle-inventory-visible
-                  :tx/toggle-inventory-visible]
-                 [cdq.tx.show-message
-                  :tx/show-message]
-                 [cdq.tx.show-modal
-                  :tx/show-modal]
-                 [cdq.tx.sound
-                  :tx/sound]
-                 [cdq.tx.state-exit
-                  :tx/state-exit]
-                 [cdq.tx.state-enter
-                  :tx/state-enter]
-                 [cdq.tx.audiovisual
-                  :tx/audiovisual]
-                 [cdq.tx.spawn-alert
-                  :tx/spawn-alert]
-                 [cdq.tx.spawn-line
-                  :tx/spawn-line]
-                 [cdq.tx.deal-damage
-                  :tx/deal-damage]
-                 [cdq.tx.move-entity
-                  :tx/move-entity]
-                 [cdq.tx.spawn-projectile
-                  :tx/spawn-projectile]
-                 [cdq.tx.spawn-effect
-                  :tx/spawn-effect]
-                 [cdq.tx.spawn-item
-                  :tx/spawn-item]
-                 [cdq.tx.spawn-creature
-                  :tx/spawn-creature]
-                 [cdq.tx.spawn-entity
-                  :tx/spawn-entity]]]]
  [set-taskbar-icon! "icon.png"]
  [cdq.application.lwjgl/start!
   {:config {:title "Cyber Dungeon Quest"
@@ -126,7 +9,10 @@
    :listener [cdq.application.listener/create
               {:state cdq.application/state
                :initial-record cdq.game-record/create-with-schema
-               :create-pipeline [[cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
+               :create-pipeline [cdq.create.txs/do!
+                                 cdq.create.effects/do!
+                                 cdq.create.editor-widgets/do!
+                                 [cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                                               :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                                       {:world-fns [[cdq.world-fns.tmx/create
                                                                                                                     {:tmx-file "maps/vampire.tmx"
