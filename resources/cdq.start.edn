@@ -139,7 +139,7 @@
             :foreground-fps 60}
    :state cdq.application/state
    :initial-record cdq.game-record/create-with-schema
-   :create! [[cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
+   :create-pipeline [[cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                           :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                   {:world-fns [[cdq.world-fns.tmx/create
                                                                                                 {:tmx-file "maps/vampire.tmx"
@@ -245,8 +245,8 @@
                                                                   :start-position [32 71]}]]
              cdq.create.frame/do!]
 
-   :dispose! cdq.gdx-app.dispose/do!
-   :render! [
+   :dispose-fn cdq.gdx-app.dispose/do!
+   :render-pipeline [
              cdq.render.validate/do!
              cdq.render.assoc-mouseover-keys/do!
              cdq.render.update-mouseover-eid/do!
@@ -273,4 +273,4 @@
              ; -> render multifn / method map ?
              ; tx just  method map ?
              ]
-   :resize! cdq.gdx-app.resize/do!}]]
+   :resize-fn cdq.gdx-app.resize/do!}]]

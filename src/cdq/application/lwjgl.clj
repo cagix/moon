@@ -14,25 +14,29 @@
   [{:keys [config
            state
            initial-record
-           create!
-           dispose!
-           render!
-           resize!]}]
-  (lwjgl/start-application! (let [state @(requiring-resolve state)]
+           create-pipeline
+           dispose-fn
+           render-pipeline
+           resize-fn]}]
+  (lwjgl/start-application! (let [state @(requiring-resolve state)
+                                  create! (fn []
+                                            (reduce render!*
+                                                    ((requiring-resolve initial-record))
+                                                    create-pipeline))
+                                  dispose! (fn [ctx]
+                                             (requiring-resolve dispose-fn) ctx)
+                                  render! (fn [ctx]
+                                            (reduce render!* ctx render-pipeline))
+                                  resize! (fn [ctx width height]
+                                            ((requiring-resolve resize-fn) ctx width height))]
                               {:create! (fn []
-                                          (reset! state
-                                                  (reduce render!*
-                                                          ((requiring-resolve initial-record))
-                                                          create!)))
+                                          (reset! state (create!)))
                                :dispose! (fn []
-                                           ((requiring-resolve dispose!) @state))
+                                           (dispose! @state))
                                :render! (fn []
-                                          (swap! state (fn [ctx]
-                                                         (reduce render!*
-                                                                 ctx
-                                                                 render!))))
+                                          (swap! state render!))
                                :resize! (fn [width height]
-                                          ((requiring-resolve resize!) @state width height))
+                                          (resize! @state width height))
                                :pause! (fn [])
                                :resume! (fn [])})
                             config))
