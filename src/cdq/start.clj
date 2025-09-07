@@ -1,6 +1,9 @@
 (ns cdq.start
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
+            cdq.gdx-app.dispose
+            cdq.gdx-app.resize
+            [cdq.core :as core]
             [cdq.malli :as m]
             [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -179,52 +182,70 @@
                                                          :start-position [32 71]}]]
     cdq.create.frame/do!])
 
-(defn- create-listener
-  [{:keys [dispose-fn
-           render-pipeline
-           resize-fn]}]
-  (let [create! (fn []
-                  (reduce (fn [ctx f]
-                            (let [result (if (vector? f)
-                                           (let [[f params] f]
-                                             ((requiring-resolve f) ctx params))
-                                           ((requiring-resolve f) ctx))]
-                              (if (nil? result)
-                                ctx
-                                result)))
-                          (map->Context {:schema (m/schema schema)})
-                          create-pipeline))
-        dispose! (fn [ctx]
-                   (requiring-resolve dispose-fn) ctx)
-        render! (fn [ctx]
-                  (reduce (fn [ctx f]
-                            (if-let [new-ctx ((requiring-resolve f) ctx)]
-                              new-ctx
-                              ctx))
-                          ctx
-                          render-pipeline))
-        resize! (fn [ctx width height]
-                  ((requiring-resolve resize-fn) ctx width height))]
-    {:create! (fn []
-                (reset! application/state (create!)))
-     :dispose! (fn []
-                 (dispose! @application/state))
-     :render! (fn []
-                (swap! application/state render!))
-     :resize! (fn [width height]
-                (resize! @application/state width height))
-     :pause! (fn [])
-     :resume! (fn [])}))
-
-(defn- execute! [[f params]]
-  ((requiring-resolve f) params))
+(def render-pipeline
+  '[
+    cdq.render.validate/do!
+    cdq.render.assoc-mouseover-keys/do!
+    cdq.render.update-mouseover-eid/do!
+    cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+    cdq.render.assoc-active-entities/do!
+    cdq.render.set-camera-on-player/do!
+    cdq.render.clear-screen/do!
+    cdq.render.draw-world-map/do!
+    cdq.render.draw-on-world-viewport/do!
+    cdq.render.render-stage/do!
+    cdq.render.set-cursor/do!
+    cdq.render.player-state-handle-input/do!
+    cdq.render.assoc-paused/do!
+    cdq.render.tick-world/do!
+    cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+    cdq.render.handle-key-input/do!
+    cdq.render.dissoc-mouseover-keys/do!
+    cdq.render.validate/do!
+    ; :cdq.render/validate
+    ; -> render multifn / method map ?
+    ; tx just  method map ?
+    ])
 
 (defn -main []
   (let [{:keys [operating-sytem->executables
-                listener
-                config]} (-> "cdq.start.edn" io/resource slurp edn/read-string)]
+                config]} (-> "cdq.start.edn"
+                             io/resource
+                             slurp
+                             edn/read-string)]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
-         (run! execute!))
-    (lwjgl/start-application! (create-listener listener)
+         (run! core/execute!))
+    (lwjgl/start-application! (let [create! (fn []
+                                              (reduce (fn [ctx f]
+                                                        (let [result (if (vector? f)
+                                                                       (let [[f params] f]
+                                                                         ((requiring-resolve f) ctx params))
+                                                                       ((requiring-resolve f) ctx))]
+                                                          (if (nil? result)
+                                                            ctx
+                                                            result)))
+                                                      (map->Context {:schema (m/schema schema)})
+                                                      create-pipeline))
+                                    dispose! (fn [ctx]
+                                               (cdq.gdx-app.dispose/do! ctx))
+                                    render! (fn [ctx]
+                                              (reduce (fn [ctx f]
+                                                        (if-let [new-ctx ((requiring-resolve f) ctx)]
+                                                          new-ctx
+                                                          ctx))
+                                                      ctx
+                                                      render-pipeline))
+                                    resize! (fn [ctx width height]
+                                              (cdq.gdx-app.resize/do! ctx width height))]
+                                {:create! (fn []
+                                            (reset! application/state (create!)))
+                                 :dispose! (fn []
+                                             (dispose! @application/state))
+                                 :render! (fn []
+                                            (swap! application/state render!))
+                                 :resize! (fn [width height]
+                                            (resize! @application/state width height))
+                                 :pause! (fn [])
+                                 :resume! (fn [])})
                               config)))
