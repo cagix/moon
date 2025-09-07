@@ -15,9 +15,15 @@
     (cdq.ctx/handle-draws! ctx draws)))
 
 (defn -main []
-  (let [ctx (-> "ctx.edn"
-                io/resource
-                slurp
-                edn/read-string)]
-    (os-specific-settings/handle! ctx)
-    (lwjgl-application/start! (assoc ctx :ctx/application-state cdq.application/state))))
+  (reduce (fn [ctx f]
+            (if-let [new-ctx (f ctx)]
+              new-ctx
+              ctx))
+          (-> "ctx.edn"
+              io/resource
+              slurp
+              edn/read-string)
+          [(fn [ctx]
+             (assoc ctx :ctx/application-state cdq.application/state))
+           os-specific-settings/handle!
+           lwjgl-application/start!]))
