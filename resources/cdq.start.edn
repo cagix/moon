@@ -133,7 +133,7 @@
                   :tx/spawn-entity]
                  ]]]
  [set-taskbar-icon! "icon.png"]
- [start-lwjgl-application!
+ [cdq.application.lwjgl/start!
   {:lwjgl-app-config {:title "Cyber Dungeon Quest"
                       :windowed-mode {:width 1440 :height 900}
                       :foreground-fps 60}
@@ -275,7 +275,4 @@
                          ; -> render multifn / method map ?
                          ; tx just  method map ?
                          ]
-               :resize! cdq.gdx-app.resize/do!}]
-   }
-  ]
-]
+               :resize! cdq.gdx-app.resize/do!}]}]]

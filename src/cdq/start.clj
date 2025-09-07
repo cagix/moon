@@ -1,18 +1,11 @@
 (ns cdq.start
   (:require [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.java.io :as io])
   (:import (clojure.lang MultiFn
                          Var)
            (java.awt Taskbar
                      Toolkit))
   (:gen-class))
-
-(defn start-lwjgl-application!
-  [{:keys [lwjgl-app-config listener]}]
-  (lwjgl/start-application! (let [[f params] listener]
-                              ((requiring-resolve f) params))
-                            lwjgl-app-config))
 
 (defn set-taskbar-icon! [path]
   (.setIconImage (Taskbar/getTaskbar)
