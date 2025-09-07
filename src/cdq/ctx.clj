@@ -3,8 +3,12 @@
 (defn- valid-tx? [transaction]
   (vector? transaction))
 
-(defmulti do! (fn [[k & _params] _ctx]
-                k))
+(declare fn-map)
+
+(defn do!
+  [{k 0 :as component}
+   ctx]
+  ((get fn-map k) component ctx))
 
 (defn- handle-tx! [tx ctx]
   (assert (valid-tx? tx) (pr-str tx))
