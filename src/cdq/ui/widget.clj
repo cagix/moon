@@ -6,6 +6,7 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui] ; load defmethods
             [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scenes.scene2d.ui.window :as window]
             [clojure.repl]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.widget :as widget]))
@@ -53,27 +54,25 @@
            widget
            window-opts]}]
   (let [window (widget/window window-opts)
-        apply-context-fn (fn [window f]
-                           (fn [{:keys [ctx/stage] :as ctx}]
-                             (try (f ctx)
-                                  (actor/remove! window)
-                                  (catch Throwable t
-                                    (stacktrace/pretty-print t)
-                                    (stage/add! stage (error-window t))))))
-        save!   (apply-context-fn window save-fn)
-        delete! (apply-context-fn window delete-fn)]
+        with-window-close (fn [f]
+                            (fn [actor {:keys [ctx/stage] :as ctx}]
+                              (try (f ctx)
+                                   (actor/remove! (window/find-ancestor actor))
+                                   (catch Throwable t
+                                     (stacktrace/pretty-print t)
+                                     (stage/add! stage (error-window t))))))
+        clicked-save-fn   (with-window-close save-fn)
+        clicked-delete-fn (with-window-close delete-fn)]
     (table/add-rows! window [[(scroll-pane-cell scrollpane-height
                                                 [[{:actor widget :colspan 2}]
-                                                 [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]"
-                                                                              (fn [_actor ctx] (save! ctx)))
+                                                 [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
                                                    :center? true}
-                                                  {:actor (widget/text-button "Delete"
-                                                                              (fn [_actor ctx] (delete! ctx)))
+                                                  {:actor (widget/text-button "Delete" clicked-delete-fn)
                                                    :center? true}]])]])
     (group/add! window {:actor/type :actor.type/actor
-                        :act (fn [_actor _delta {:keys [ctx/input] :as ctx}]
+                        :act (fn [actor _delta {:keys [ctx/input] :as ctx}]
                                (when (save? input)
-                                 (save! ctx)))})
+                                 (clicked-save-fn actor ctx)))})
     (.pack window)
     window))
 
