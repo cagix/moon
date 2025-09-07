@@ -5,6 +5,7 @@
                                   cdq.application.os-specific-settings/handle!
                                   cdq.fsms/add
                                   cdq.entity-components/add
+                                  cdq.spawn-entity-schema/add
                                   cdq.application/self-reference
                                   cdq.application.lwjgl/start!]
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]

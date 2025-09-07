@@ -68,6 +68,7 @@
   [:ctx/application-state :some]
   [:ctx/fsms :some]
   [:ctx/entity-components :some]
+  [:ctx/spawn-entity-schema :some]
   )
 
 (defn create [ctx]
