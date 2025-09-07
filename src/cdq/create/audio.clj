@@ -5,9 +5,10 @@
             [clojure.gdx.files :as files]
             [clojure.java.io :as io]))
 
-(defn do!
-  [ctx
-   {:keys [sounds path-format]}]
+(def sounds "sounds.edn")
+(def path-format "sounds/%s.wav")
+
+(defn do! [ctx]
   (assoc ctx :ctx/audio (into {}
                               (for [sound-name (->> sounds io/resource slurp edn/read-string)
                                     :let [path (format path-format sound-name)]]

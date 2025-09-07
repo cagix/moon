@@ -2,6 +2,6 @@
   (:require [clojure.vis-ui :as vis-ui]))
 
 (defn do!
-  [_ctx params]
-  (vis-ui/load! params)
+  [_ctx]
+  (vis-ui/load! {:skin-scale :x1})
   nil)

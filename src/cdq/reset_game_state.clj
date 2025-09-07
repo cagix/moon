@@ -13,6 +13,10 @@
             [cdq.utils.tiled :as tiled]
             [cdq.content-grid :as content-grid]))
 
+(def starting-world
+  '[cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                              :start-position [32 71]}])
+
 ; not tested
 (defn- create-double-ray-endpositions
   "path-w in tiles."
@@ -127,38 +131,40 @@
 ; then even at cdq.start ? just [:tx.app/] ?
 ; this is just a bunch of functions in the context of 'cdq.reset-game-state' ...
 (defn do!
-  [{:keys [ctx/ui-actors
-           ctx/config
-           ctx/stage]
-    :as ctx}
-   world-fn]
-  (let [actors (map #(let [[f params] %]
-                       ((requiring-resolve f) ctx params))
-                    ui-actors)]
-    (stage/clear! stage)
-    (doseq [actor actors]
-      (stage/add! stage (actor/build actor))))
-  (let [world-config (merge (::world config)
-                            (let [[f params] world-fn]
-                              ((requiring-resolve f) ctx params)))
-        world-ctx* (world-ctx world-config)]
-    ;World data structure:
-    ; * from tiled-map
-    ; => grid, raycaster, explored-tile-corners, content-grid, potential-field-cache
-    ; etc. id-counter, etc.
-    ; => world protocol ???
-    (-> ctx
-        (merge world-ctx*)
-        (assoc :ctx/tiled-map (:tiled-map world-config))
-        (assoc :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config)))
-        (assoc :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
-                                                      (:tiled-map/height (:tiled-map world-config))
-                                                      (:content-grid-cell-size world-config)))
-        (assoc :ctx/potential-field-cache (atom nil))
-        (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
-        (assoc :ctx/id-counter (atom 0))
-        (assoc :ctx/entity-ids (atom {}))
-        (assoc :ctx/render-z-order (utils/define-order (:ctx/z-orders world-ctx*)))
-        (spawn-player! (:start-position world-config))
-        assoc-player-eid
-        spawn-enemies!)))
+  ([ctx]
+   (do! ctx starting-world))
+  ([{:keys [ctx/ui-actors
+            ctx/config
+            ctx/stage]
+     :as ctx}
+    world-fn]
+   (let [actors (map #(let [[f params] %]
+                        ((requiring-resolve f) ctx params))
+                     ui-actors)]
+     (stage/clear! stage)
+     (doseq [actor actors]
+       (stage/add! stage (actor/build actor))))
+   (let [world-config (merge (::world config)
+                             (let [[f params] world-fn]
+                               ((requiring-resolve f) ctx params)))
+         world-ctx* (world-ctx world-config)]
+     ;World data structure:
+     ; * from tiled-map
+     ; => grid, raycaster, explored-tile-corners, content-grid, potential-field-cache
+     ; etc. id-counter, etc.
+     ; => world protocol ???
+     (-> ctx
+         (merge world-ctx*)
+         (assoc :ctx/tiled-map (:tiled-map world-config))
+         (assoc :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config)))
+         (assoc :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
+                                                       (:tiled-map/height (:tiled-map world-config))
+                                                       (:content-grid-cell-size world-config)))
+         (assoc :ctx/potential-field-cache (atom nil))
+         (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
+         (assoc :ctx/id-counter (atom 0))
+         (assoc :ctx/entity-ids (atom {}))
+         (assoc :ctx/render-z-order (utils/define-order (:ctx/z-orders world-ctx*)))
+         (spawn-player! (:start-position world-config))
+         assoc-player-eid
+         spawn-enemies!))))

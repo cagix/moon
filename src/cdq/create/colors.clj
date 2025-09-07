@@ -2,6 +2,6 @@
   (:require [clojure.gdx.graphics.colors :as colors]))
 
 (defn do!
-  [_ctx params]
-  (colors/put! params)
+  [_ctx]
+  (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
   nil)
