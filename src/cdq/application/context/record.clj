@@ -58,7 +58,7 @@
   [:ctx/world-viewport :some]
   [:ctx/z-orders :some]
 
-  [:ctx/initial-pipeline :some]
+  [:cdq.application.start/pipeline :some]
   [:ctx/os-settings :some]
   [:ctx/lwjgl :some]
   [:ctx/create-pipeline :some]

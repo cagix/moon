@@ -13,4 +13,4 @@
                 new-ctx
                 ctx))
             ctx
-            (map requiring-resolve (:ctx/initial-pipeline ctx)))))
+            (map requiring-resolve (::pipeline ctx)))))
