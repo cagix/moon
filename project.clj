@@ -1,6 +1,6 @@
 (def libgdx-version "1.13.5")
 
-(def main-namespace 'cdq.start)
+(def main-namespace 'cdq.application.start)
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
@@ -18,7 +18,7 @@
   :java-source-paths ["src"]
 
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main))"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
