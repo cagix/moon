@@ -1,19 +1,20 @@
 (ns cdq.application.lwjgl
-  (:require cdq.application
-            cdq.ctx.listener
+  (:require [cdq.application :as application]
+            [cdq.application.context :as ctx]
             [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start! []
-  (lwjgl/start-application! {:create! (fn []
-                                        (reset! cdq.application/state (cdq.ctx.listener/create)))
-                             :dispose! (fn []
-                                         (cdq.ctx.listener/dispose @cdq.application/state))
-                             :render! (fn []
-                                        (swap! cdq.application/state cdq.ctx.listener/render))
-                             :resize! (fn [width height]
-                                        (cdq.ctx.listener/resize @cdq.application/state width height))
-                             :pause! (fn [])
-                             :resume! (fn [])}
-                            {:title "Cyber Dungeon Quest"
-                             :windowed-mode {:width 1440 :height 900}
-                             :foreground-fps 60}))
+  (lwjgl/start-application!
+   {:create! (fn []
+               (reset! application/state (ctx/create)))
+    :dispose! (fn []
+                (ctx/dispose @application/state))
+    :render! (fn []
+               (swap! application/state ctx/render))
+    :resize! (fn [width height]
+               (ctx/resize @application/state width height))
+    :pause! (fn [])
+    :resume! (fn [])}
+   {:title "Cyber Dungeon Quest"
+    :windowed-mode {:width 1440 :height 900}
+    :foreground-fps 60}))
