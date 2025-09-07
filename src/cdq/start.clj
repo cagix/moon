@@ -1,5 +1,6 @@
 (ns cdq.start
   (:require [cdq.ctx :as ctx]
+            cdq.ctx.create
             cdq.gdx-app.dispose
             cdq.gdx-app.resize
             [cdq.core :as core]
@@ -213,17 +214,8 @@
                              io/resource
                              slurp
                              edn/read-string)
-        create! (fn []
-                  (reduce (fn [ctx f]
-                            (let [result (if (vector? f)
-                                           (let [[f params] f]
-                                             ((requiring-resolve f) ctx params))
-                                           ((requiring-resolve f) ctx))]
-                              (if (nil? result)
-                                ctx
-                                result)))
-                          (map->Context {:schema (m/schema schema)})
-                          create-pipeline))
+        create! (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+                                     :create-pipeline create-pipeline})
         dispose! (fn [ctx]
                    (cdq.gdx-app.dispose/do! ctx))
         render! (fn [ctx]
