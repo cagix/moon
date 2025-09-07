@@ -1,12 +1,10 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.ui.action-bar :as action-bar] ; 'ctx/render-frame'
-            [cdq.controls :as controls]        ; input
+  (:require [cdq.ui.action-bar :as action-bar]
+            [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.inventory :as inventory] ; entity.inventory
             [cdq.skill :as skill]
             [cdq.entity :as entity]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+            [clojure.gdx.input :as input]))
 
 (defn- action-bar-selected-skill [stage]
   (-> stage
@@ -30,17 +28,6 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
-; TODO this is just mouseover state!
-; either over an ui-actor
-; or clickable-entity
-; otherwise nothing mouseover (or a target) or a tile ?
-; or nothing ?
-; thats it ?
-; it depends only on graphics layers
-; * black
-; * tiled-map -> what tile ... can click also
-; * entities -> check , target otherwise
-; * user interface -> check
 (defn interaction-state
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
@@ -67,57 +54,3 @@
          [:interaction-state.skill/usable [skill effect-ctx]]
          [:interaction-state.skill/not-usable state]))
      [:interaction-state/no-skill-selected])))
-
-(defn inventory-window-visible? [stage]
-  (-> stage :windows :inventory-window actor/visible?))
-
-(defn can-pickup-item? [entity item]
-  (inventory/can-pickup-item? (:entity/inventory entity) item))
-
-(defn interaction-state->txs [ctx player-eid]
-  (let [[k params] (interaction-state ctx player-eid)]
-    (case k
-      :interaction-state/mouseover-actor nil ; handled by ui actors themself.
-
-      :interaction-state/clickable-mouseover-eid
-      (let [{:keys [clicked-eid
-                    in-click-range?]} params]
-        (if in-click-range?
-          (case (:type (:entity/clickable @clicked-eid))
-            :clickable/player
-            [[:tx/toggle-inventory-visible]]
-
-            :clickable/item
-            (let [item (:entity/item @clicked-eid)]
-              (cond
-               (inventory-window-visible? (:ctx/stage ctx))
-               [[:tx/sound "bfxr_takeit"]
-                [:tx/mark-destroyed clicked-eid]
-                [:tx/event player-eid :pickup-item item]]
-
-               (can-pickup-item? @player-eid item)
-               [[:tx/sound "bfxr_pickup"]
-                [:tx/mark-destroyed clicked-eid]
-                [:tx/pickup-item player-eid item]]
-
-               :else
-               [[:tx/sound "bfxr_denied"]
-                [:tx/show-message "Your Inventory is full"]])))
-          [[:tx/sound "bfxr_denied"]
-           [:tx/show-message "Too far away"]]))
-
-      :interaction-state.skill/usable
-      (let [[skill effect-ctx] params]
-        [[:tx/event player-eid :start-action [skill effect-ctx]]])
-
-      :interaction-state.skill/not-usable
-      (let [state params]
-        [[:tx/sound "bfxr_denied"]
-         [:tx/show-message (case state
-                             :cooldown "Skill is still on cooldown"
-                             :not-enough-mana "Not enough mana"
-                             :invalid-params "Cannot use this here")]])
-
-      :interaction-state/no-skill-selected
-      [[:tx/sound "bfxr_denied"]
-       [:tx/show-message "No selected skill"]])))
