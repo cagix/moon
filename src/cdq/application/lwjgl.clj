@@ -7,7 +7,7 @@
             [cdq.malli :as m]
             [clojure.gdx.backends.lwjgl :as lwjgl]))
 
-(defn start! []
+(defn start! [_ctx]
   (lwjgl/start-application!
    {:create! (fn []
                (reset! application/state (ctx/create
