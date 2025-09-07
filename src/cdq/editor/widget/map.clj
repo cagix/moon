@@ -4,7 +4,6 @@
             [cdq.property :as property]
             [cdq.schemas :as schemas]
             [cdq.editor.widget :as editor-widget]
-            [cdq.ui.separator :as separator]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -12,6 +11,7 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.set :as set]
+            [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
 (defn property-editor-window
@@ -97,7 +97,11 @@
                              :label/text (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                              }}]]}
     :right? true}
-   (separator/vertical)
+   {:actor (separator/vertical)
+    :pad-top 2
+    :pad-bottom 2
+    :fill-y? true
+    :expand-y? true}
    {:actor (let [widget (actor/build? (editor-widget/create (get schemas k) k v ctx))]
              (actor/set-user-object! widget [k v])
              widget)
@@ -132,7 +136,12 @@
     (stage/add! stage window)))
 
 (defn- horiz-sep []
-  [(separator/horizontal component-row-cols)])
+  [{:actor (separator/horizontal)
+    :pad-top 2
+    :pad-bottom 2
+    :colspan component-row-cols
+    :fill-x? true
+    :expand-x? true}])
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -161,7 +170,12 @@
                                                (open-add-component-window! ctx schema table)))
                   :colspan colspan}])]
              [(when opt?
-                [(separator/horizontal colspan)])]
+                [{:actor (separator/horizontal)
+                  :pad-top 2
+                  :pad-bottom 2
+                  :colspan colspan
+                  :fill-x? true
+                  :expand-x? true}])]
              component-rows))
     table))
 
