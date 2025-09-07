@@ -1,4 +1,4 @@
-(ns cdq.info-impl
+(ns cdq.create.info
   (:require [cdq.stats :as modifiers]
             [cdq.timer :as timer]
             [cdq.op :as op]
@@ -44,7 +44,7 @@
    :entity/armor-save
    :entity/armor-pierce])
 
-(def info-fns
+(def info-configuration
   {:k->colors {:property/pretty-name "PRETTY_NAME"
                :entity/modifiers "CYAN"
                :maxrange "LIGHT_GRAY"
@@ -143,3 +143,6 @@
                             (when-not (zero? v)
                               (str "Cost: " v " Mana")))
               :maxrange (fn [[_ v] _ctx] v)}})
+
+(defn do! [ctx]
+  (assoc ctx :ctx/info info-configuration))

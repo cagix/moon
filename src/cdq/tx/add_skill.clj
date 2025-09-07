@@ -11,8 +11,8 @@
       :action-bar
       (action-bar/add-skill! {:skill-id (:property/id skill)
                               :texture-region (image/texture-region (:entity/image skill) textures)
-                              ; (assoc ctx :effect/source (world/player)) FIXME
-                              :tooltip-text #(info/info-text % skill)}))
+                              :tooltip-text (fn [ctx]
+                                              (info/generate (:ctx/info ctx) skill ctx))}))
   nil)
 
 #_(defn- remove-skill! [{:keys [ctx/stage]} skill]

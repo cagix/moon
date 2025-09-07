@@ -68,7 +68,7 @@
 
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (info/info-text ctx (apply dissoc entity disallowed-keys)))
+  (info/generate (:ctx/info ctx) (apply dissoc entity disallowed-keys) ctx))
 
 (defn create [ctx _]
   {:actor/type :actor.type/group

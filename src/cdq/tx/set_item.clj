@@ -15,7 +15,8 @@
       :inventory-window
       (inventory-window/set-item! inventory-cell
                                   {:texture-region (image/texture-region (:entity/image item) textures)
-                                   :tooltip-text (info/info-text ctx item)})))
+                                   :tooltip-text (fn [ctx]
+                                                   (info/generate (:ctx/info ctx) item ctx))})))
 
 (defn do! [[_ eid cell item] ctx]
   (let [entity @eid
