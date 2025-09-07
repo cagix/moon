@@ -137,8 +137,9 @@
   {:config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440 :height 900}
             :foreground-fps 60}
-   :listener [cdq.application/listener
-              {:initial-record cdq.game-record/create-with-schema
+   :listener [cdq.application.listener/create
+              {:state cdq.application/state
+               :initial-record cdq.game-record/create-with-schema
                :create-pipeline [[cdq.create.ui-actors/do! [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                                                               :items [cdq.ui.dev-menu.menus.select-world/create
                                                                                                       {:world-fns [[cdq.world-fns.tmx/create
