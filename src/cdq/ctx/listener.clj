@@ -201,17 +201,17 @@
     ; tx just  method map ?
     ])
 
-
 (defn create []
-  {:create (fn []
-             (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
-                                  :create-pipeline create-pipeline}))
-   :dispose cdq.gdx-app.dispose/do!
-   :render (fn [ctx]
-             (reduce (fn [ctx f]
-                       (if-let [new-ctx ((requiring-resolve f) ctx)]
-                         new-ctx
-                         ctx))
-                     ctx
-                     render-pipeline))
-   :resize cdq.gdx-app.resize/do!})
+  (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+                       :create-pipeline create-pipeline}))
+(def dispose cdq.gdx-app.dispose/do!)
+
+(defn render [ctx]
+  (reduce (fn [ctx f]
+            (if-let [new-ctx ((requiring-resolve f) ctx)]
+              new-ctx
+              ctx))
+          ctx
+          render-pipeline))
+
+(def resize cdq.gdx-app.resize/do!)
