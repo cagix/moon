@@ -1,7 +1,7 @@
 [
  [cdq.os-settings/dispatch! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}]
  [cdq.var/bind-roots! {cdq.draw-on-world-viewport.entities/render-layers cdq.entity.render/render-layers
-                       cdq.info/info-fns cdq.info-impl/info-fns}]
+                       cdq.info/config cdq.info-impl/info-fns}]
  [cdq.multifn/add-methods! [{:required [cdq.ctx/draw!]}
                             [[cdq.draw.with-line-width
                               :draw/with-line-width]
