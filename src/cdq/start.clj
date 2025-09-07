@@ -1,23 +1,25 @@
 (ns cdq.start
-  (:require cdq.application.listener
+  (:require cdq.application
+            cdq.application.listener
             cdq.ctx.listener
             [cdq.core :as core]
-            [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
-            [clojure.java.io :as io])
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader])
   (:gen-class))
 
+(defn- os-specific-settings! []
+  (->> (shared-library-loader/operating-system)
+       {:mac '[[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+               [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
+       (run! core/execute!)))
+
+(defn- start-lwjgl-application! []
+  (lwjgl/start-application! (cdq.application.listener/create cdq.application/state
+                                                             (cdq.ctx.listener/create))
+                            {:title "Cyber Dungeon Quest"
+                             :windowed-mode {:width 1440 :height 900}
+                             :foreground-fps 60}))
+
 (defn -main []
-  (let [{:keys [operating-sytem->executables
-                config
-                state-atom]} (-> "cdq.start.edn"
-                                 io/resource
-                                 slurp
-                                 edn/read-string)
-        listener (cdq.application.listener/create @(requiring-resolve state-atom)
-                                                  (cdq.ctx.listener/create))]
-    (->> (shared-library-loader/operating-system)
-         operating-sytem->executables
-         (run! core/execute!))
-    (lwjgl/start-application! listener config)))
+  (os-specific-settings!)
+  (start-lwjgl-application!))
