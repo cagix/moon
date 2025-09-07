@@ -121,8 +121,8 @@
                  [cdq.tx.spawn-entity
                   :tx/spawn-entity]
                  ]]]
- [cdq.java.awt/set-taskbar-icon! "icon.png"]
- [cdq.gdx-app/start!
+ [set-taskbar-icon! "icon.png"]
+ [start-lwjgl-application!
   {:lwjgl-app-config {:title "Cyber Dungeon Quest"
                       :windowed-mode {:width 1440 :height 900}
                       :foreground-fps 60}
