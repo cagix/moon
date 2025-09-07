@@ -244,7 +244,7 @@
                          [cdq.render.draw-on-world-viewport/do! [cdq.draw-on-world-viewport.tile-grid/do!
                                                                  cdq.draw-on-world-viewport.cell-debug/do!
                                                                  cdq.draw-on-world-viewport.entities/do!
-                                                                 ;cdq.draw-on-world-viewport.geom-test/do!
+                                                                 ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
                                                                  cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]]
                          cdq.render.render-stage/do!
                          cdq.render.set-cursor/do!
