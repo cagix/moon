@@ -149,7 +149,7 @@
                                                                             {:label "Help"
                                                                              :items [cdq.ui.dev-menu/help-items]}
                                                                             {:label "Editor"
-                                                                             :items [cdq.ui.dev-menu.menus.db/create cdq.editor.widget.map/open-editor-overview-window!]}
+                                                                             :items [cdq.ui.dev-menu.menus.db/create]}
                                                                             {:label "Ctx Data"
                                                                              :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
                                            [cdq.ui.action-bar/create {:id :action-bar}]

@@ -3,7 +3,6 @@
             [cdq.db :as db]
             [cdq.property :as property]
             [cdq.schemas :as schemas]
-            [cdq.editor.overview-table]
             [cdq.editor.widget :as editor-widget]
             [cdq.ui.separator :as separator]
             [cdq.utils :as utils]
@@ -15,7 +14,7 @@
             [clojure.set :as set]
             [clojure.vis-ui.widget :as widget]))
 
-(defn- property-editor-window
+(defn property-editor-window
   [{:keys [ctx/db
            ctx/ui-viewport]
     :as ctx}
@@ -171,24 +170,3 @@
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
           [k (editor-widget/value (get schemas k) k widget schemas)])))
-
-; construct !
-(defn open-editor-overview-window!
-  [{:keys [ctx/stage]
-    :as ctx}
-   property-type]
-  (let [window (widget/window {:title "Edit"
-                               :modal? true
-                               :close-button? true
-                               :center? true
-                               :close-on-escape? true})
-        on-clicked-id (fn [id
-                           {:keys [ctx/db
-                                   ctx/stage]
-                            :as ctx}]
-                        (stage/add! stage (actor/build (property-editor-window ctx (db/get-raw db id)))))]
-    (table/add! window (cdq.editor.overview-table/create ctx
-                                                         property-type
-                                                         on-clicked-id))
-    (.pack window)
-    (stage/add! stage window)))
