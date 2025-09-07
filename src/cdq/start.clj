@@ -1,5 +1,6 @@
 (ns cdq.start
-  (:require [cdq.ctx :as ctx]
+  (:require cdq.application
+            [cdq.ctx :as ctx]
             cdq.ctx.create
             cdq.gdx-app.dispose
             cdq.gdx-app.resize
@@ -214,31 +215,24 @@
                              io/resource
                              slurp
                              edn/read-string)
-        create! (cdq.ctx.create/do! {:state-atom @(requiring-resolve 'cdq.application/state)
-                                     :initial-value (map->Context {:schema (m/schema schema)})
-                                     :create-pipeline create-pipeline})
-        dispose! (fn [ctx]
-                   (cdq.gdx-app.dispose/do! ctx))
-        render! (fn [ctx]
-                  (reduce (fn [ctx f]
-                            (if-let [new-ctx ((requiring-resolve f) ctx)]
-                              new-ctx
-                              ctx))
-                          ctx
-                          render-pipeline))
-        resize! (fn [ctx width height]
-                  (cdq.gdx-app.resize/do! ctx width height))
-        state @(requiring-resolve state-atom)]
+        state @(requiring-resolve state-atom)
+        create-ctx (fn []
+                     (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+                                          :create-pipeline create-pipeline}))
+        dispose-ctx cdq.gdx-app.dispose/do!
+        resize-ctx cdq.gdx-app.resize/do!
+        render-ctx (fn [ctx]
+                     (reduce (fn [ctx f]
+                               (if-let [new-ctx ((requiring-resolve f) ctx)]
+                                 new-ctx
+                                 ctx))
+                             ctx
+                             render-pipeline))
+        listener (cdq.application/listener {:create create-ctx
+                                            :dispose dispose-ctx
+                                            :render render-ctx
+                                            :resize resize-ctx})]
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))
-    (lwjgl/start-application! {:create! create!
-                               :dispose! (fn []
-                                           (dispose! @state))
-                               :render! (fn []
-                                          (swap! state render!))
-                               :resize! (fn [width height]
-                                          (resize! @state width height))
-                               :pause! (fn [])
-                               :resume! (fn [])}
-                              config)))
+    (lwjgl/start-application! listener config)))
