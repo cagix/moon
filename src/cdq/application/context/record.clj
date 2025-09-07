@@ -67,6 +67,7 @@
   [:ctx/resize-fn :some]
   [:ctx/application-state :some]
   [:ctx/fsms :some]
+  [:ctx/entity-components :some]
   )
 
 (defn create [ctx]
