@@ -42,14 +42,7 @@
                                                     (:property/id property))))
      :save? #(input/key-just-pressed? % :enter)
      :scrollpane-height (:viewport/height ui-viewport)
-     :widget widget
-     :window-opts {:title (str "[SKY]Property[]")
-                   :id :property-editor-window
-                   :modal? true
-                   :close-button? true
-                   :center? true
-                   :close-on-escape? true
-                   :cell-defaults {:pad 5}}}))
+     :widget widget}))
 
 (def ^:private property-k-sort-order
   [:property/id
