@@ -214,7 +214,8 @@
                              io/resource
                              slurp
                              edn/read-string)
-        create! (cdq.ctx.create/do! {:initial-value (map->Context {:schema (m/schema schema)})
+        create! (cdq.ctx.create/do! {:state-atom @(requiring-resolve 'cdq.application/state)
+                                     :initial-value (map->Context {:schema (m/schema schema)})
                                      :create-pipeline create-pipeline})
         dispose! (fn [ctx]
                    (cdq.gdx-app.dispose/do! ctx))
@@ -231,8 +232,7 @@
     (->> (shared-library-loader/operating-system)
          operating-sytem->executables
          (run! core/execute!))
-    (lwjgl/start-application! {:create! (fn []
-                                          (reset! state (create!)))
+    (lwjgl/start-application! {:create! create!
                                :dispose! (fn []
                                            (dispose! @state))
                                :render! (fn []
