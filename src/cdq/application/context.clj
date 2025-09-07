@@ -1,17 +1,8 @@
 (ns cdq.application.context
-  (:require [cdq.application.context.record :as ctx-record]
-            [cdq.ctx :as ctx]
-            cdq.gdx-app.dispose
-            cdq.gdx-app.resize
-            [cdq.malli :as m]
-            [clojure.gdx.scenes.scene2d :as scene2d]))
+  (:require cdq.gdx-app.dispose
+            cdq.gdx-app.resize))
 
-(extend-type cdq.application.context.record.Context
-  clojure.gdx.scenes.scene2d/Context
-  (handle-draws! [ctx draws]
-    (ctx/handle-draws! ctx draws)))
-
-(defn create []
+(defn create [ctx]
   (reduce (fn [ctx f]
             (let [result (if (vector? f)
                            (let [[f params] f]
@@ -20,7 +11,7 @@
               (if (nil? result)
                 ctx
                 result)))
-          (ctx-record/map->Context {:schema (m/schema ctx-record/schema)})
+          ctx
           '[cdq.create.txs/do!
             cdq.create.effects/do!
             cdq.create.editor-widgets/do!
