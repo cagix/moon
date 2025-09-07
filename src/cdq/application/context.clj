@@ -1,7 +1,6 @@
 (ns cdq.application.context
   (:require [cdq.application.context.record :as ctx-record]
             [cdq.ctx :as ctx]
-            cdq.ctx.create
             cdq.gdx-app.dispose
             cdq.gdx-app.resize
             [cdq.malli :as m]
@@ -123,34 +122,18 @@
                                                          :start-position [32 71]}]]
     cdq.create.frame/do!])
 
-(def render-pipeline
-  '[
-    cdq.render.validate/do!
-    cdq.render.assoc-mouseover-keys/do!
-    cdq.render.update-mouseover-eid/do!
-    cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
-    cdq.render.assoc-active-entities/do!
-    cdq.render.set-camera-on-player/do!
-    cdq.render.clear-screen/do!
-    cdq.render.draw-world-map/do!
-    cdq.render.draw-on-world-viewport/do!
-    cdq.render.render-stage/do!
-    cdq.render.set-cursor/do!
-    cdq.render.player-state-handle-input/do!
-    cdq.render.assoc-paused/do!
-    cdq.render.tick-world/do!
-    cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-    cdq.render.handle-key-input/do!
-    cdq.render.dissoc-mouseover-keys/do!
-    cdq.render.validate/do!
-    ; :cdq.render/validate
-    ; -> render multifn / method map ?
-    ; tx just  method map ?
-    ])
-
 (defn create []
-  (cdq.ctx.create/do! {:initial-value (ctx-record/map->Context {:schema (m/schema ctx-record/schema)})
-                       :create-pipeline create-pipeline}))
+  (reduce (fn [ctx f]
+            (let [result (if (vector? f)
+                           (let [[f params] f]
+                             ((requiring-resolve f) ctx params))
+                           ((requiring-resolve f) ctx))]
+              (if (nil? result)
+                ctx
+                result)))
+          (ctx-record/map->Context {:schema (m/schema ctx-record/schema)})
+          create-pipeline))
+
 (def dispose cdq.gdx-app.dispose/do!)
 
 (defn render [ctx]
@@ -159,6 +142,27 @@
               new-ctx
               ctx))
           ctx
-          render-pipeline))
+          '[cdq.render.validate/do!
+            cdq.render.assoc-mouseover-keys/do!
+            cdq.render.update-mouseover-eid/do!
+            cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+            cdq.render.assoc-active-entities/do!
+            cdq.render.set-camera-on-player/do!
+            cdq.render.clear-screen/do!
+            cdq.render.draw-world-map/do!
+            cdq.render.draw-on-world-viewport/do!
+            cdq.render.render-stage/do!
+            cdq.render.set-cursor/do!
+            cdq.render.player-state-handle-input/do!
+            cdq.render.assoc-paused/do!
+            cdq.render.tick-world/do!
+            cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+            cdq.render.handle-key-input/do!
+            cdq.render.dissoc-mouseover-keys/do!
+            cdq.render.validate/do!
+            ; :cdq.render/validate
+            ; -> render multifn / method map ?
+            ; tx just  method map ?
+            ]))
 
 (def resize cdq.gdx-app.resize/do!)
