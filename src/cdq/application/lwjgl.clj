@@ -2,15 +2,8 @@
   (:require [cdq.application :as application]
             [cdq.application.context :as ctx]
             [cdq.application.context.record :as ctx-record]
-            [cdq.ctx]
             [cdq.malli :as m]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.scenes.scene2d :as scene2d]))
-
-(extend-type cdq.application.context.record.Context
-  clojure.gdx.scenes.scene2d/Context
-  (handle-draws! [ctx draws]
-    (cdq.ctx/handle-draws! ctx draws)))
+            [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start! []
   (lwjgl/start-application!
