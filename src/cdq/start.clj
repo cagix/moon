@@ -50,10 +50,6 @@
   (doseq [[f params] (k->executions ((requiring-resolve on)))]
     ((requiring-resolve f) params)))
 
-(defn bind-roots! [bindings]
-  (doseq [[var-sym value] bindings]
-    (Var/.bindRoot (requiring-resolve var-sym) @(requiring-resolve value))))
-
 (defn -main []
   (doseq [[f config] (-> "cdq.start.edn"
                          io/resource

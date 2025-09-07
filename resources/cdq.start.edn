@@ -8,7 +8,6 @@
 [
  [dispatch! {:on clojure.gdx.utils.shared-library-loader/operating-system
              :k->executions {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]]}}]
- [bind-roots! {cdq.ctx/draw-fns cdq.draw-impl/draw-fns}]
  [add-methods! [{:optional [cdq.editor.widget/create
                             cdq.editor.widget/value]}
                 [[cdq.editor.widget.map
@@ -193,6 +192,7 @@
                                    :unpause-continously :space}}
                :create! [[cdq.create.vis-ui/do! {:skin-scale :x1}]
                          [cdq.create.colors/do! [["PRETTY_NAME" [0.84 0.8 0.52 1]]]]
+                         cdq.create.draw-fns/do!
                          cdq.create.render-layers/do!
                          cdq.create.info/do!
                          cdq.create.sprite-batch/do!

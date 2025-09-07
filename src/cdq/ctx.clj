@@ -29,9 +29,10 @@
           (recur ctx (rest txs) handled)))
       handled)))
 
-(declare draw-fns)
-
-(defn draw! [{k 0 :as component} ctx]
+(defn draw!
+  [{k 0 :as component}
+   {:keys [ctx/draw-fns]
+    :as ctx}]
   (let [draw-fn (draw-fns k)]
     (draw-fn component ctx)))
 
