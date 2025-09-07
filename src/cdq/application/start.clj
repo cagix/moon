@@ -1,5 +1,6 @@
 (ns cdq.application.start
-  (:require [cdq.application.os-specific-settings :as os-specific-settings]
+  (:require [cdq.application]
+            [cdq.application.os-specific-settings :as os-specific-settings]
             [cdq.application.lwjgl :as lwjgl-application]
             cdq.application.context.record
             [clojure.gdx.scenes.scene2d :as scene2d]
@@ -19,4 +20,4 @@
                 slurp
                 edn/read-string)]
     (os-specific-settings/handle! ctx)
-    (lwjgl-application/start! ctx)))
+    (lwjgl-application/start! (assoc ctx :ctx/application-state cdq.application/state))))
