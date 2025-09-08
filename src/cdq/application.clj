@@ -1,20 +1,17 @@
 (ns cdq.application
   (:require [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
+            [cdq.application.draw-on-world-viewport :as draw-on-world-viewport]
+            [cdq.application.draw-impl :as draw-impl]
             [cdq.application.effects :as effects]
             [cdq.application.entity-components :as entity-components]
             [cdq.application.fsms :as fsms]
+            [cdq.application.info :as application.info]
+            [cdq.application.tx-spawn-schema :as tx-spawn-schema]
             [cdq.application.ui-actors :as ui-actors]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [cdq.op :as op]
             [cdq.db-impl]
-            cdq.draw-impl
-            cdq.draw-on-world-viewport.tile-grid
-            cdq.draw-on-world-viewport.cell-debug
-            cdq.draw-on-world-viewport.entities
-            cdq.draw-on-world-viewport.geom-test
-            cdq.draw-on-world-viewport.highlight-mouseover-tile
             [cdq.files]
             [cdq.animation :as animation]
             [cdq.audio]
@@ -78,8 +75,6 @@
             [clojure.gdx.scenes.scene2d.ui.button :as button]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.math :as math]
-            [clojure.string :as str]
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]
             [clojure.vis-ui.window :as window]
@@ -897,178 +892,6 @@
                              [[:tx/dissoc eid :entity/temp-modifier]
                               [:tx/mod-remove eid modifiers]]))})
 
-(.bindRoot #'cdq.entity.state/->create state->create)
-(.bindRoot #'cdq.entity.state/state->enter state->enter)
-(.bindRoot #'cdq.entity.state/state->cursor state->cursor)
-(.bindRoot #'cdq.entity.state/state->exit state->exit)
-(.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
-(.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
-
-(def ^:private components-schema
-  (m/schema [:map {:closed true}
-             [:entity/body :some]
-             [:entity/image {:optional true} :some]
-             [:entity/animation {:optional true} :some]
-             [:entity/delete-after-animation-stopped? {:optional true} :some]
-             [:entity/alert-friendlies-after-duration {:optional true} :some]
-             [:entity/line-render {:optional true} :some]
-             [:entity/delete-after-duration {:optional true} :some]
-             [:entity/destroy-audiovisual {:optional true} :some]
-             [:entity/fsm {:optional true} :some]
-             [:entity/player? {:optional true} :some]
-             [:entity/free-skill-points {:optional true} :some]
-             [:entity/click-distance-tiles {:optional true} :some]
-             [:entity/clickable {:optional true} :some]
-             [:property/id {:optional true} :some]
-             [:property/pretty-name {:optional true} :some]
-             [:creature/level {:optional true} :some]
-             [:entity/faction {:optional true} :some]
-             [:entity/species {:optional true} :some]
-             [:entity/movement {:optional true} :some]
-             [:entity/skills {:optional true} :some]
-             [:creature/stats {:optional true} :some]
-             [:entity/inventory    {:optional true} :some]
-             [:entity/item {:optional true} :some]
-             [:entity/projectile-collision {:optional true} :some]]))
-
-(defmulti ^:private op-value-text (fn [[k]]
-                                    k))
-
-(defmethod op-value-text :op/inc
-  [[_ value]]
-  (str value))
-
-(defmethod op-value-text :op/mult
-  [[_ value]]
-  (str value "%"))
-
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defn- op-info [op k]
-  (str/join "\n"
-            (keep
-             (fn [{v 1 :as component}]
-               (when-not (zero? v)
-                 (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
-             (sort-by op/-order op))))
-
-(defn- damage-info [{[min max] :damage/min-max}]
-  (str min "-" max " damage"))
-
-(def ^:private non-val-max-stat-ks
-  [:entity/movement-speed
-   :entity/aggro-range
-   :entity/reaction-time
-   :entity/strength
-   :entity/cast-speed
-   :entity/attack-speed
-   :entity/armor-save
-   :entity/armor-pierce])
-
-(def info-configuration
-  {:k->colors {:property/pretty-name "PRETTY_NAME"
-               :entity/modifiers "CYAN"
-               :maxrange "LIGHT_GRAY"
-               :creature/level "GRAY"
-               :projectile/piercing? "LIME"
-               :skill/action-time-modifier-key "VIOLET"
-               :skill/action-time "GOLD"
-               :skill/cooldown "SKY"
-               :skill/cost "CYAN"
-               :entity/delete-after-duration "LIGHT_GRAY"
-               :entity/faction "SLATE"
-               :entity/fsm "YELLOW"
-               :entity/species "LIGHT_GRAY"
-               :entity/temp-modifier "LIGHT_GRAY"}
-   :k-order [:property/pretty-name
-             :skill/action-time-modifier-key
-             :skill/action-time
-             :skill/cooldown
-             :skill/cost
-             :skill/effects
-             :entity/species
-             :creature/level
-             :creature/stats
-             :entity/delete-after-duration
-             :projectile/piercing?
-             :entity/projectile-collision
-             :maxrange
-             :entity-effects]
-   :info-fns {:creature/level (fn [[_ v] _ctx]
-                                (str "Level: " v))
-              :creature/stats (fn [[k stats] _ctx]
-                                (str/join "\n" (concat
-                                                ["*STATS*"
-                                                 (str "Mana: " (if (:entity/mana stats)
-                                                                 (stats/get-mana stats)
-                                                                 "-"))
-                                                 (str "Hitpoints: " (stats/get-hitpoints stats))]
-                                                (for [stat-k non-val-max-stat-ks]
-                                                  (str (str/capitalize (name stat-k)) ": "
-                                                       (stats/get-stat-value stats stat-k))))))
-              :effects.target/convert (fn [_ _ctx]
-                                        "Converts target to your side.")
-              :effects.target/damage (fn [[_ damage] _ctx]
-                                       (damage-info damage)
-                                       #_(if source
-                                           (let [modified (stats/damage @source damage)]
-                                             (if (= damage modified)
-                                               (damage-info damage)
-                                               (str (damage-info damage) "\nModified: " (damage/info modified))))
-                                           (damage-info damage)) ; property menu no source,modifiers
-                                       )
-              :effects.target/kill (fn [_ _ctx] "Kills target")
-              :effects.target/melee-damage (fn [_ _ctx]
-                                             (str "Damage based on entity strength."
-                                                  #_(when source
-                                                      (str "\n" (damage-info (entity->melee-damage @source))))))
-              :effects.target/spiderweb (fn [_ _ctx] "Spiderweb slows 50% for 5 seconds.")
-              :effects.target/stun (fn [[_ duration] _ctx]
-                                     (str "Stuns for " (utils/readable-number duration) " seconds"))
-              :effects/spawn (fn [[_ {:keys [property/pretty-name]}] _ctx]
-                               (str "Spawns a " pretty-name))
-              :effects/target-all (fn [_ _ctx]
-                                    "All visible targets")
-              :entity/delete-after-duration (fn [[_ counter] {:keys [ctx/elapsed-time]}]
-                                              (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
-              :entity/faction (fn [[_ faction] _ctx]
-                                (str "Faction: " (name faction)))
-              :entity/fsm (fn [[_ fsm] _ctx]
-                            (str "State: " (name (:state fsm))))
-              :entity/modifiers (fn [[_ mods] _ctx]
-                                  (when (seq mods)
-                                    (str/join "\n" (keep (fn [[k ops]]
-                                                           (op-info ops k)) mods))))
-              :entity/skills (fn [[_ skills] _ctx]
-                               ; => recursive info-text leads to endless text wall
-                               (when (seq skills)
-                                 (str "Skills: " (str/join "," (map name (keys skills))))))
-              :entity/species (fn [[_ species] _ctx]
-                                (str "Creature - " (str/capitalize (name species))))
-              :entity/temp-modifier (fn [[_ {:keys [counter]}] {:keys [ctx/elapsed-time]}]
-                                      (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
-              :projectile/piercing? (fn [_ _ctx] ; TODO also when false ?!
-                                      "Piercing")
-              :property/pretty-name (fn [[_ v] _ctx]
-                                      v)
-              :skill/action-time (fn [[_ v] _ctx]
-                                   (str "Action-Time: " (utils/readable-number v) " seconds"))
-              :skill/action-time-modifier-key (fn [[_ v] _ctx]
-                                                (case v
-                                                  :entity/cast-speed "Spell"
-                                                  :entity/attack-speed "Attack"))
-              :skill/cooldown (fn [[_ v] _ctx]
-                                (when-not (zero? v)
-                                  (str "Cooldown: " (utils/readable-number v) " seconds")))
-              :skill/cost (fn [[_ v] _ctx]
-                            (when-not (zero? v)
-                              (str "Cost: " v " Mana")))
-              :maxrange (fn [[_ v] _ctx] v)}})
-
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48
         image-width 32]
@@ -1505,13 +1328,9 @@
            #(assoc %
                    :ctx/fsms fsms/k->fsm
                    :ctx/entity-components entity-components/method-mappings
-                   :ctx/spawn-entity-schema components-schema
+                   :ctx/spawn-entity-schema tx-spawn-schema/components-schema
                    :ctx/ui-actors ui-actors/create-stuff
-                   :ctx/draw-on-world-viewport [cdq.draw-on-world-viewport.tile-grid/do!
-                                                cdq.draw-on-world-viewport.cell-debug/do!
-                                                cdq.draw-on-world-viewport.entities/do!
-                                                ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
-                                                cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
+                   :ctx/draw-on-world-viewport draw-on-world-viewport/draw-fns
                    :ctx/config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                          :initial-state :npc-sleeping}
                                                             :entity/faction :evil}
@@ -1534,14 +1353,14 @@
                                            :zoom-out :equals
                                            :unpause-once :p
                                            :unpause-continously :space}}
-                   :ctx/draw-fns cdq.draw-impl/draw-fns
+                   :ctx/draw-fns draw-impl/draw-fns
                    :ctx/mouseover-eid nil
                    :ctx/paused? nil
                    :ctx/delta-time 2
                    :ctx/active-entities 1
                    :ctx/unit-scale (atom 1)
                    :ctx/world-unit-scale (float (/ 48))
-                   :ctx/info info-configuration
+                   :ctx/info application.info/info-configuration
                    :ctx/db (cdq.db-impl/create {:schemas "schema.edn"
                                                 :properties "properties.edn"})
                    :ctx/render-layers render-layers)
@@ -1549,3 +1368,10 @@
            handle-os-settings!
            define-gdx-colors!
            start-gdx-app]))
+
+(.bindRoot #'cdq.entity.state/->create state->create)
+(.bindRoot #'cdq.entity.state/state->enter state->enter)
+(.bindRoot #'cdq.entity.state/state->cursor state->cursor)
+(.bindRoot #'cdq.entity.state/state->exit state->exit)
+(.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
+(.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
