@@ -3,10 +3,6 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.batch :as batch]))
 
-; make begin!
-; and end! drawing
-; not with-line-width
-; and setup assoces unit-scale, etc.
 (defn draw-on-world-viewport!
   [{:keys [ctx/batch
            ctx/shape-drawer
@@ -25,3 +21,15 @@
       (draw!)
       (reset! unit-scale 1)))
   (batch/end! batch))
+
+(defn- draw!
+  [{k 0 :as component}
+   {:keys [ctx/draw-fns]
+    :as ctx}]
+  (let [draw-fn (draw-fns k)]
+    (draw-fn component ctx)))
+
+(defn handle-draws! [ctx draws]
+  (doseq [component draws
+          :when component]
+    (draw! component ctx)))

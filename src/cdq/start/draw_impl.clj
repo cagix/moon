@@ -1,5 +1,5 @@
 (ns cdq.start.draw-impl
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.graphics :as graphics]
             [cdq.math :as math]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics.color :as color]
@@ -12,7 +12,7 @@
                             {:keys [ctx/shape-drawer] :as ctx}]
                            (sd/with-line-width shape-drawer width
                              (fn []
-                               (ctx/handle-draws! ctx draws))))
+                               (graphics/handle-draws! ctx draws))))
    :draw/grid (fn [[_ leftx bottomy gridw gridh cellw cellh color]
                    ctx]
                 (let [w (* (float gridw) (float cellw))
@@ -21,10 +21,12 @@
                       rightx (+ (float leftx) (float w))]
                   (doseq [idx (range (inc (float gridw)))
                           :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-                    (ctx/draw! [:draw/line [linex topy] [linex bottomy] color] ctx))
+                    (graphics/handle-draws! [[:draw/line [linex topy] [linex bottomy] color]]
+                                            ctx))
                   (doseq [idx (range (inc (float gridh)))
                           :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-                    (ctx/draw! [:draw/line [leftx liney] [rightx liney] color] ctx))))
+                    (graphics/handle-draws! [[:draw/line [leftx liney] [rightx liney] color]]
+                                            ctx))))
    :draw/texture-region (fn [[_ texture-region [x y] {:keys [center? rotation]}]
                              {:keys [ctx/batch
                                      ctx/unit-scale

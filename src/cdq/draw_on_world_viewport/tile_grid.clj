@@ -1,5 +1,5 @@
 (ns cdq.draw-on-world-viewport.tile-grid
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]))
 
 (defn- draw-tile-grid* [world-viewport]
@@ -19,4 +19,4 @@
   [{:keys [ctx/world-viewport]
     :as ctx}]
   (when show-tile-grid?
-    (ctx/handle-draws! ctx (draw-tile-grid* world-viewport))))
+    (graphics/handle-draws! ctx (draw-tile-grid* world-viewport))))
