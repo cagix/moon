@@ -11,7 +11,6 @@
             [cdq.image :as image]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
-            [cdq.malli :as m]
             [cdq.rand :refer [rand-int-between]]
             [cdq.stage]
             [cdq.stats :as stats]
@@ -373,34 +372,8 @@
                               (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                               (utils/safe-merge components))]])
 
-   :tx/spawn-entity (fn [[_ components]
-                         {:keys [ctx/id-counter
-                                 ctx/entity-ids
-                                 ctx/entity-components
-                                 ctx/spawn-entity-schema
-                                 ctx/content-grid
-                                 ctx/grid]
-                          :as ctx}]
-                      (m/validate-humanize spawn-entity-schema components)
-                      (assert (and (not (contains? components :entity/id))))
-                      (let [eid (atom (merge (world/map->Entity {})
-                                             (reduce (fn [m [k v]]
-                                                       (assoc m k (if-let [create (:create (k entity-components))]
-                                                                    (create v ctx)
-                                                                    v)))
-                                                     {}
-                                                     (assoc components :entity/id (swap! id-counter inc)))))]
-                        (let [id (:entity/id @eid)]
-                          (assert (number? id))
-                          (swap! entity-ids assoc id eid))
-                        (content-grid/add-entity! content-grid eid)
-                        ; https://github.com/damn/core/issues/58
-                        ;(assert (valid-position? grid @eid))
-                        (grid/add-entity! grid eid)
-                        (mapcat (fn [[k v]]
-                                  (when-let [create! (:create! (k entity-components))]
-                                    (create! v eid ctx)))
-                                @eid)))})
+   :tx/spawn-entity (fn [[_ components] ctx]
+                      (world/spawn-entity! ctx components))})
 
 (defn- valid-tx? [transaction]
   (vector? transaction))
