@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require cdq.create.colors
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.op :as op]
             [cdq.db-impl]
@@ -47,6 +46,7 @@
             [cdq.val-max :as val-max]
             [cdq.world :as world]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -61,6 +61,11 @@
             [qrecord.core :as q]
             [reduce-fsm :as fsm])
   (:gen-class))
+
+(defn- define-gdx-colors!
+  [_ctx]
+  (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
+  nil)
 
 (defmacro def-record-and-schema [record-sym & ks]
   `(do
@@ -1509,5 +1514,5 @@
             [create-initial-context
              self-reference
              handle-os-settings!
-             cdq.create.colors/do!
+             define-gdx-colors!
              start-gdx-app])))
