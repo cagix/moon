@@ -2,6 +2,7 @@
   (:require [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
             [cdq.application.effects :as effects]
+            [cdq.application.entity-components :as entity-components]
             [cdq.application.fsms :as fsms]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -81,7 +82,6 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]
             [clojure.vis-ui.window :as window]
-            [qrecord.core :as q]
             [reduce-fsm :as fsm])
   (:gen-class))
 
@@ -127,72 +127,6 @@
   [ctx]
   (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
   ctx)
-
-(q/defrecord Body [body/position
-                   body/width
-                   body/height
-                   body/collides?
-                   body/z-order
-                   body/rotation-angle])
-
-(def entity-components
-  {:entity/animation
-   {:create   (fn [v _ctx]
-                (animation/create v))}
-   :entity/body                            {:create   (fn [{[x y] :position
-                                                            :keys [position
-                                                                   width
-                                                                   height
-                                                                   collides?
-                                                                   z-order
-                                                                   rotation-angle]}
-                                                           {:keys [ctx/minimum-size
-                                                                   ctx/z-orders]}]
-                                                        (assert position)
-                                                        (assert width)
-                                                        (assert height)
-                                                        (assert (>= width  (if collides? minimum-size 0)))
-                                                        (assert (>= height (if collides? minimum-size 0)))
-                                                        (assert (or (boolean? collides?) (nil? collides?)))
-                                                        (assert ((set z-orders) z-order))
-                                                        (assert (or (nil? rotation-angle)
-                                                                    (<= 0 rotation-angle 360)))
-                                                        (map->Body
-                                                         {:position (mapv float position)
-                                                          :width  (float width)
-                                                          :height (float height)
-                                                          :collides? collides?
-                                                          :z-order z-order
-                                                          :rotation-angle (or rotation-angle 0)}))}
-   :entity/delete-after-animation-stopped? {:create!  (fn [_ eid _ctx]
-                                                        (-> @eid :entity/animation :looping? not assert)
-                                                        nil)}
-   :entity/delete-after-duration           {:create   (fn [duration {:keys [ctx/elapsed-time]}]
-                                                        (timer/create elapsed-time duration))}
-   :entity/projectile-collision            {:create   (fn create [v _ctx]
-                                                        (assoc v :already-hit-bodies #{}))}
-   :creature/stats                         {:create   (fn [stats _ctx]
-                                                        (-> (if (:entity/mana stats)
-                                                              (update stats :entity/mana (fn [v] [v v]))
-                                                              stats)
-                                                            (update :entity/hp   (fn [v] [v v])))
-                                                        #_(-> stats
-                                                              (update :entity/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
-                                                              (update :entity/hp   (fn [v] [v v]))))}
-   :entity/fsm                             {:create!  (fn [{:keys [fsm initial-state]} eid {:keys [ctx/fsms]
-                                                                                            :as ctx}]
-                                                        ; fsm throws when initial-state is not part of states, so no need to assert initial-state
-                                                        ; initial state is nil, so associng it. make bug report at reduce-fsm?
-                                                        [[:tx/assoc eid :entity/fsm (assoc ((get fsms fsm) initial-state nil) :state initial-state)]
-                                                         [:tx/assoc eid initial-state (state/create ctx initial-state eid nil)]])}
-   :entity/inventory                       {:create!  (fn [items eid _ctx]
-                                                        (cons [:tx/assoc eid :entity/inventory inventory/empty-inventory]
-                                                              (for [item items]
-                                                                [:tx/pickup-item eid item])))}
-   :entity/skills                          {:create!  (fn [skills eid _ctx]
-                                                        (cons [:tx/assoc eid :entity/skills nil]
-                                                              (for [skill skills]
-                                                                [:tx/add-skill eid skill])))}})
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -1325,85 +1259,6 @@
   (handle-draws! [ctx draws]
     (cdq.ctx/handle-draws! ctx draws)))
 
-(defn create-initial-context [ctx]
-  (merge ctx
-         {:ctx/entity-components entity-components
-          :ctx/spawn-entity-schema components-schema
-          :ctx/ui-actors '[[cdq.ui.dev-menu/create {:menus [{:label "World"
-                                                             :items [cdq.ui.dev-menu.menus.select-world/create
-                                                                     {:world-fns [[cdq.world-fns.tmx/create
-                                                                                   {:tmx-file "maps/vampire.tmx"
-                                                                                    :start-position [32 71]}]
-                                                                                  [cdq.world-fns.uf-caves/create
-                                                                                   {:tile-size 48
-                                                                                    :texture-path "maps/uf_terrain.png"
-                                                                                    :spawn-rate 0.02
-                                                                                    :scaling 3
-                                                                                    :cave-size 200
-                                                                                    :cave-style :wide}]
-                                                                                  [cdq.world-fns.modules/create
-                                                                                   {:world/map-size 5,
-                                                                                    :world/max-area-level 3,
-                                                                                    :world/spawn-rate 0.05}]]
-                                                                      :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
-                                                                     ]}
-                                                            {:label "Help"
-                                                             :items [cdq.ui.dev-menu/help-items]}
-                                                            {:label "Editor"
-                                                             :items [cdq.ui.dev-menu.menus.db/create]}
-                                                            {:label "Ctx Data"
-                                                             :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
-                           [cdq.ui.action-bar/create {:id :action-bar}]
-                           [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                                       :rahmenw 150
-                                                       :rahmenh 26
-                                                       :hpcontent-file "images/hp.png"
-                                                       :manacontent-file "images/mana.png"
-                                                       :y-mana 80}]
-                           [cdq.ui.windows/create]
-                           [cdq.ui.player-state-draw/create]
-                           [cdq.ui.message/create {:duration-seconds 0.5
-                                                   :name "player-message"}]]
-          :ctx/draw-on-world-viewport [cdq.draw-on-world-viewport.tile-grid/do!
-                                   cdq.draw-on-world-viewport.cell-debug/do!
-                                   cdq.draw-on-world-viewport.entities/do!
-                                   ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
-                                   cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
-          :ctx/config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                            :initial-state :npc-sleeping}
-                                               :entity/faction :evil}
-                   :cdq.game/player-props {:creature-id :creatures/vampire
-                                           :components {:entity/fsm {:fsm :fsms/player
-                                                                     :initial-state :player-idle}
-                                                        :entity/faction :good
-                                                        :entity/player? true
-                                                        :entity/free-skill-points 3
-                                                        :entity/clickable {:type :clickable/player}
-                                                        :entity/click-distance-tiles 1.5}}
-                   :world {:content-grid-cell-size 16
-                           :potential-field-factions-iterations {:good 15
-                                                                 :evil 5}}
-                   :effect-body-props {:width 0.5
-                                       :height 0.5
-                                       :z-order :z-order/effect}
-
-                   :controls {:zoom-in :minus
-                              :zoom-out :equals
-                              :unpause-once :p
-                              :unpause-continously :space}}
-          :ctx/draw-fns cdq.draw-impl/draw-fns
-          :ctx/mouseover-eid nil
-          :ctx/paused? nil
-          :ctx/delta-time 2
-          :ctx/active-entities 1
-          :ctx/unit-scale (atom 1)
-          :ctx/world-unit-scale (float (/ 48))
-          :ctx/info info-configuration
-          :ctx/db (cdq.db-impl/create {:schemas "schema.edn"
-                                   :properties "properties.edn"})
-          :ctx/render-layers render-layers
-          }))
-
 (defn handle-os-settings!
   [{:keys [ctx/os-settings]
     :as ctx}]
@@ -1646,8 +1501,83 @@
           (config/load "ctx.edn")
           [context-record/create
            effects/init!
-           #(assoc % :ctx/fsms fsms/k->fsm)
-           create-initial-context
+           #(assoc %
+                   :ctx/fsms fsms/k->fsm
+                   :ctx/entity-components entity-components/method-mappings
+                   :ctx/spawn-entity-schema components-schema
+                   :ctx/ui-actors '[[cdq.ui.dev-menu/create {:menus [{:label "World"
+                                                                      :items [cdq.ui.dev-menu.menus.select-world/create
+                                                                              {:world-fns [[cdq.world-fns.tmx/create
+                                                                                            {:tmx-file "maps/vampire.tmx"
+                                                                                             :start-position [32 71]}]
+                                                                                           [cdq.world-fns.uf-caves/create
+                                                                                            {:tile-size 48
+                                                                                             :texture-path "maps/uf_terrain.png"
+                                                                                             :spawn-rate 0.02
+                                                                                             :scaling 3
+                                                                                             :cave-size 200
+                                                                                             :cave-style :wide}]
+                                                                                           [cdq.world-fns.modules/create
+                                                                                            {:world/map-size 5,
+                                                                                             :world/max-area-level 3,
+                                                                                             :world/spawn-rate 0.05}]]
+                                                                               :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
+                                                                              ]}
+                                                                     {:label "Help"
+                                                                      :items [cdq.ui.dev-menu/help-items]}
+                                                                     {:label "Editor"
+                                                                      :items [cdq.ui.dev-menu.menus.db/create]}
+                                                                     {:label "Ctx Data"
+                                                                      :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                                    [cdq.ui.action-bar/create {:id :action-bar}]
+                                    [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                                :rahmenw 150
+                                                                :rahmenh 26
+                                                                :hpcontent-file "images/hp.png"
+                                                                :manacontent-file "images/mana.png"
+                                                                :y-mana 80}]
+                                    [cdq.ui.windows/create]
+                                    [cdq.ui.player-state-draw/create]
+                                    [cdq.ui.message/create {:duration-seconds 0.5
+                                                            :name "player-message"}]]
+                   :ctx/draw-on-world-viewport [cdq.draw-on-world-viewport.tile-grid/do!
+                                                cdq.draw-on-world-viewport.cell-debug/do!
+                                                cdq.draw-on-world-viewport.entities/do!
+                                                ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
+                                                cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
+                   :ctx/config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                         :initial-state :npc-sleeping}
+                                                            :entity/faction :evil}
+                                :cdq.game/player-props {:creature-id :creatures/vampire
+                                                        :components {:entity/fsm {:fsm :fsms/player
+                                                                                  :initial-state :player-idle}
+                                                                     :entity/faction :good
+                                                                     :entity/player? true
+                                                                     :entity/free-skill-points 3
+                                                                     :entity/clickable {:type :clickable/player}
+                                                                     :entity/click-distance-tiles 1.5}}
+                                :world {:content-grid-cell-size 16
+                                        :potential-field-factions-iterations {:good 15
+                                                                              :evil 5}}
+                                :effect-body-props {:width 0.5
+                                                    :height 0.5
+                                                    :z-order :z-order/effect}
+
+                                :controls {:zoom-in :minus
+                                           :zoom-out :equals
+                                           :unpause-once :p
+                                           :unpause-continously :space}}
+                   :ctx/draw-fns cdq.draw-impl/draw-fns
+                   :ctx/mouseover-eid nil
+                   :ctx/paused? nil
+                   :ctx/delta-time 2
+                   :ctx/active-entities 1
+                   :ctx/unit-scale (atom 1)
+                   :ctx/world-unit-scale (float (/ 48))
+                   :ctx/info info-configuration
+                   :ctx/db (cdq.db-impl/create {:schemas "schema.edn"
+                                                :properties "properties.edn"})
+                   :ctx/render-layers render-layers)
            self-reference
            handle-os-settings!
            define-gdx-colors!
