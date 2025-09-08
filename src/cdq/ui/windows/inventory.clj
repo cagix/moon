@@ -1,6 +1,5 @@
 (ns cdq.ui.windows.inventory
-  (:require [cdq.grid2d :as g2d]
-            [cdq.inventory :as inventory]
+  (:require [cdq.inventory :as inventory]
             [cdq.image :as image]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -103,8 +102,8 @@
                                                      (->cell :inventory.slot/rings :position [0 0])
                                                      (->cell :inventory.slot/rings :position [1 0])
                                                      (->cell :inventory.slot/boot)]]
-                                                   (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                                                     (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+                                                   (for [y (range 4)]
+                                                     (for [x (range 6)]
                                                        (->cell :inventory.slot/bag :position [x y]))))}
                              :pad 4}]]})))
 

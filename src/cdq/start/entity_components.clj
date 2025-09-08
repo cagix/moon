@@ -2,8 +2,15 @@
   (:require [cdq.animation :as animation]
             [cdq.inventory :as inventory]
             [cdq.entity.state :as state]
+            [cdq.grid2d :as g2d]
             [cdq.timer :as timer]
             [qrecord.core :as q]))
+
+(defn- create-inventory []
+  (->> inventory/empty-inventory
+       (map (fn [[slot [width height]]]
+              [slot (g2d/create-grid width height (constantly nil))]))
+       (into {})))
 
 (defrecord Animation [frames frame-duration looping? cnt maxcnt]
   cdq.animation/Animation
@@ -93,7 +100,7 @@
                                                         [[:tx/assoc eid :entity/fsm (assoc ((get fsms fsm) initial-state nil) :state initial-state)]
                                                          [:tx/assoc eid initial-state (state/create ctx initial-state eid nil)]])}
    :entity/inventory                       {:create!  (fn [items eid _ctx]
-                                                        (cons [:tx/assoc eid :entity/inventory inventory/empty-inventory]
+                                                        (cons [:tx/assoc eid :entity/inventory (create-inventory)]
                                                               (for [item items]
                                                                 [:tx/pickup-item eid item])))}
    :entity/skills                          {:create!  (fn [skills eid _ctx]
