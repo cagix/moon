@@ -103,15 +103,6 @@
 (defn- pay-mana-cost [entity cost]
   (update entity :creature/stats stats/pay-mana-cost cost))
 
-(declare txs-fn-map)
-
-(defn do!*
-  [{k 0 :as component}
-   ctx]
-  (let [f (get txs-fn-map k)]
-    (assert f (pr-str k))
-    (f component ctx)))
-
 (def txs-fn-map
   {:tx/assoc (fn [[_ eid k value] _ctx]
                (swap! eid assoc k value)
@@ -145,7 +136,7 @@
                        (swap! eid pay-mana-cost cost)
                        nil)
 
-   :tx/pickup-item (fn [[_ eid item] ctx]
+   :tx/pickup-item (fn [[_ eid item] _ctx]
                      (inventory/assert-valid-item? item)
                      (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
                        (assert cell)
@@ -154,7 +145,7 @@
                        (if (inventory/stackable? item cell-item)
                          (do
                           #_(tx/stack-item ctx eid cell item))
-                         (do!* [:tx/set-item eid cell item] ctx))))
+                         [[:tx/set-item eid cell item]])))
 
    :tx/set-cooldown (fn [[_ eid skill] {:keys [ctx/elapsed-time]}]
                       (swap! eid assoc-in
@@ -414,10 +405,17 @@
 (defn- valid-tx? [transaction]
   (vector? transaction))
 
-(defn- handle-tx! [tx ctx]
+(defn- do!*
+  [ctx
+   {k 0 :as component}]
+  (let [f (get txs-fn-map k)]
+    (assert f (pr-str k))
+    (f component ctx)))
+
+(defn- handle-tx! [ctx tx]
   (assert (valid-tx? tx) (pr-str tx))
   (try
-   (do!* tx ctx)
+   (do!* ctx tx)
    (catch Throwable t
      (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
 
@@ -431,7 +429,7 @@
         (if (seq txs)
           (let [tx (first txs)]
             (if tx
-              (let [new-txs (handle-tx! tx ctx)]
+              (let [new-txs (handle-tx! ctx tx)]
                 (recur ctx
                        (concat (or new-txs []) (rest txs))
                        (conj handled tx)))
