@@ -72,9 +72,9 @@
   (when tiled-map
     (disposable/dispose! tiled-map))
   (let [level (let [[f params] level-fn]
-                (f (cdq.db/all-raw db :properties/creatures)
-                   textures
-                   params))
+                (f (assoc params
+                          :creature-properties (cdq.db/all-raw db :properties/creatures)
+                          :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)

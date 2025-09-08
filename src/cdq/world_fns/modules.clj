@@ -161,8 +161,8 @@
      :area-level-grid scaled-area-level-grid}))
 
 (defn create
-  [creature-properties
-   textures
-   params]
+  [{:keys [creature-properties
+           textures]
+    :as params}]
   (generate-modules params
                     (prepare-creature-properties creature-properties textures)))

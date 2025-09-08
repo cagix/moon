@@ -135,14 +135,15 @@
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level :level/grid grid)))
 
-(defn create [creature-properties
-              textures
-              {:keys [tile-size
-                      texture-path
-                      spawn-rate
-                      scaling
-                      cave-size
-                      cave-style]}]
+(defn create
+  [{:keys [creature-properties
+           textures
+           tile-size
+           texture-path
+           spawn-rate
+           scaling
+           cave-size
+           cave-style]}]
   (reduce (fn [m f]
             (f m))
           {:size cave-size

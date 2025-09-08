@@ -138,9 +138,9 @@
   (let [world-config (merge (:world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f)
-                               (db/all-raw db :properties/creatures)
-                               textures
-                               params)))
+                               (assoc params
+                                      :creature-properties (db/all-raw db :properties/creatures)
+                                      :textures textures))))
         world-ctx* (world-ctx world-config)]
     ;World data structure:
     ; * from tiled-map
