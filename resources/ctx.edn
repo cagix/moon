@@ -49,4 +49,5 @@
                        cdq.render.validate/do!]
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
+ :ctx/reset-game-state-fn cdq.reset-game-state/do!
  }

@@ -1,6 +1,5 @@
 (ns cdq.create.lwjgl-create-pipeline
-  (:require [cdq.reset-game-state]
-            [cdq.textures-impl]
+  (:require [cdq.textures-impl]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
@@ -55,10 +54,11 @@
    :cursors/walking               ["walking"      [16 16]]})
 
 (defn do!
-  [{:keys [ctx/world-unit-scale]
+  [{:keys [ctx/reset-game-state-fn
+           ctx/world-unit-scale]
     :as ctx}]
   (vis-ui/load! {:skin-scale :x1})
-  (cdq.reset-game-state/do!
+  ((requiring-resolve reset-game-state-fn)
    (let [batch (sprite-batch/create)
          ui-viewport (viewport/fit ui-viewport-width ui-viewport-height (camera/orthographic))
          input (gdx/input)

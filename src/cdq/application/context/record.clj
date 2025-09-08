@@ -70,6 +70,7 @@
   [:ctx/entity-components :some]
   [:ctx/spawn-entity-schema :some]
   [:ctx/render-fn :some]
+  [:ctx/reset-game-state-fn :some]
   )
 
 (defn create [ctx]
