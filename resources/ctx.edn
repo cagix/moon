@@ -1,7 +1,7 @@
 {
  :ctx/config {
               :cdq.start [
-                          entity-states
+                          bind-roots
                           entity-tick
                           editor-widgets
                           effects
@@ -22,6 +22,14 @@
                           extend-scene2d
                           lwjgl
                           ]
+
+              :cdq.start.bind-roots {
+                                     cdq.entity.state/->create            cdq.entity.state.create/function-map
+                                     cdq.entity.state/state->enter        cdq.entity.state.enter/function-map
+                                     cdq.entity.state/state->cursor       cdq.entity.state.cursor/function-map
+                                     cdq.entity.state/state->exit         cdq.entity.state.exit/function-map
+                                     cdq.entity.state/state->handle-input cdq.entity.state.handle-input/function-map
+                                     }
 
               :cdq.start.register-self cdq.application/state
 
