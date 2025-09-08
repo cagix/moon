@@ -8,7 +8,6 @@
  :ctx/lwjgl {:title "Cyber Dungeon Quest"
              :windowed-mode {:width 1440 :height 900}
              :foreground-fps 60}
- :ctx/create-fn cdq.create.lwjgl-create-pipeline/do!
  :ctx/render-fn cdq.render-pipeline/do!
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
