@@ -75,7 +75,7 @@
    )
  )
 
-(defn init! [_ctx]
+(defn init! [ctx]
   (.bindRoot #'cdq.effect/k->method-map
              {:effects/audiovisual {:applicable? (fn [_ {:keys [effect/target-position]}]
                                                    target-position)
@@ -270,4 +270,5 @@
 
                                     :handle (fn [[_ duration] {:keys [effect/target]} _ctx]
                                               [[:tx/event target :stun duration]])
-                                    }}))
+                                    }})
+  ctx)

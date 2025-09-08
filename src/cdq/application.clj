@@ -124,9 +124,9 @@
    :cursors/walking               ["walking"      [16 16]]})
 
 (defn- define-gdx-colors!
-  [_ctx]
+  [ctx]
   (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
-  nil)
+  ctx)
 
 (q/defrecord Body [body/position
                    body/width
@@ -1404,11 +1404,14 @@
           :ctx/render-layers render-layers
           }))
 
-(defn handle-os-settings! [{:keys [ctx/os-settings]}]
+(defn handle-os-settings!
+  [{:keys [ctx/os-settings]
+    :as ctx}]
   (->> (shared-library-loader/operating-system)
        os-settings
        (run! (fn [[f params]]
-               ((requiring-resolve f) params)))))
+               ((requiring-resolve f) params))))
+  ctx)
 
 ; not tested
 (defn- create-double-ray-endpositions
@@ -1639,9 +1642,7 @@
 
 (defn -main []
   (reduce (fn [ctx f]
-            (if-let [new-ctx (f ctx)]
-              new-ctx
-              ctx))
+            (f ctx))
           (config/load "ctx.edn")
           [context-record/create
            effects/init!
