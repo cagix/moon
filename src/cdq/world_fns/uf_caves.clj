@@ -115,10 +115,10 @@
 (require '[cdq.level.caves :as caves])
 
 (defn- initial-grid-creation
-  [level
-   {:keys [size
+  [{:keys [size
            cave-style
-           random]}]
+           random]
+    :as level}]
   (let [{:keys [start grid]} (caves/create random size size cave-style)]
     (assert (= #{:wall :ground} (set (g2d/cells grid))))
     (assoc level
@@ -143,11 +143,12 @@
                       scaling
                       cave-size
                       cave-style]}]
-  (reduce (fn [level step]
-            (if (vector? step)
-              (let [[f params] step] (f level params))
-              (let [f step]          (f level))))
-          {:level/tile-size tile-size
+  (reduce (fn [m f]
+            (f m))
+          {:size cave-size
+           :cave-style cave-style
+           :random (java.util.Random.)
+           :level/tile-size tile-size
            :level/create-tile (let [texture (utils/safe-get textures texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
@@ -161,8 +162,6 @@
            :level/spawn-rate spawn-rate
            :level/scaling scaling
            :level/creature-properties (prepare-creature-properties creature-properties textures)}
-          [[initial-grid-creation {:size cave-size
-                                   :cave-style cave-style
-                                   :random (java.util.Random.)}]
+          [initial-grid-creation
            fix-nads
            create*]))
