@@ -1,6 +1,6 @@
 {
 
- ; requiring-resolve
+ :ctx/state-atom cdq.application/state
 
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
@@ -10,8 +10,13 @@
              :foreground-fps 60}
 
  :ctx/render-fn cdq.render-pipeline/do!
+
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
+
  :ctx/resize-fn  cdq.gdx-app.resize/do!
- :ctx/starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                :start-position [32 71]}]
+
+ :ctx/starting-world [cdq.world-fns.tmx/create
+                      {:tmx-file "maps/vampire.tmx"
+                       :start-position [32 71]}]
+
  }

@@ -1,5 +1,3 @@
-(def main-namespace 'cdq.application)
-
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
@@ -16,7 +14,7 @@
   :java-source-paths ["src"]
 
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application/-main))"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
@@ -54,11 +52,11 @@
                 *print-level* 3
                 }
 
-  :profiles {:uberjar {:aot [~main-namespace]}}
+  :profiles {:uberjar {:aot [cdq.start]}}
 
   :uberjar-name "cdq.jar"
 
-  :main ~main-namespace)
+  :main cdq.start)
 
 ; * Notes
 

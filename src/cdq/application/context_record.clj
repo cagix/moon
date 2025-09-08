@@ -68,6 +68,7 @@
   [:ctx/spawn-entity-schema :some]
   [:ctx/render-fn :some]
   [:ctx/starting-world :some]
+  [:ctx/state-atom :some]
   )
 
 (defn create [ctx]
