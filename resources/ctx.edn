@@ -1,12 +1,33 @@
 {
  :ctx/config {
-              :cdq.start.lwjgl  {
-                                 :listener cdq.start.lwjgl.listener/create
-                                 :config {:title "Cyber Dungeon Quest"
-                                          :windowed-mode {:width 1440 :height 900}
-                                          :foreground-fps 60}
-                                 }
-
+              :cdq.start [
+                          entity-states
+                          entity-tick
+                          editor-widgets
+                          effects
+                          context-record
+                          register-self
+                          fsms
+                          entity-components
+                          tx-spawn-schema
+                          draw-impl
+                          info
+                          unit-scale
+                          world-unit-scale
+                          db
+                          render-layers
+                          os-settings
+                          colors
+                          txs
+                          extend-scene2d
+                          lwjgl
+                          ]
+              :cdq.start.lwjgl {
+                                :listener cdq.start.lwjgl.listener/create
+                                :config {:title "Cyber Dungeon Quest"
+                                         :windowed-mode {:width 1440 :height 900}
+                                         :foreground-fps 60}
+                                }
               :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                        :initial-state :npc-sleeping}
                                           :entity/faction :evil}
@@ -31,26 +52,7 @@
                          :unpause-continously :space}
               }
 
- :cdq.start/pipeline [entity-states
-                      entity-tick
-                      editor-widgets
-                      effects
-                      context-record
-                      register-self
-                      fsms
-                      entity-components
-                      tx-spawn-schema
-                      draw-impl
-                      info
-                      unit-scale
-                      world-unit-scale
-                      db
-                      render-layers
-                      os-settings
-                      colors
-                      txs
-                      extend-scene2d
-                      lwjgl]
+
 
  :ctx/state-atom cdq.application/state
 

@@ -9,4 +9,4 @@
               (f ctx))
             ctx
             (map #(requiring-resolve (symbol (str "cdq.start." % "/do!")))
-                 (::pipeline ctx)))))
+                 (:cdq.start (:ctx/config ctx))))))
