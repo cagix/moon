@@ -13,4 +13,8 @@
                 new-ctx
                 ctx))
             ctx
-            (map requiring-resolve (::pipeline ctx)))))
+            (map requiring-resolve '[cdq.application.context.record/create
+                                     cdq.application/self-reference
+                                     cdq.application.os-specific-settings/handle!
+                                     cdq.create.colors/do!
+                                     cdq.application.lwjgl/start!]))))

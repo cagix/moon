@@ -1,9 +1,4 @@
 {
- :cdq.application.start/pipeline [cdq.application.context.record/create
-                                  cdq.application/self-reference
-                                  cdq.application.os-specific-settings/handle!
-                                  cdq.create.colors/do!
-                                  cdq.application.lwjgl/start!]
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
  :ctx/lwjgl {:title "Cyber Dungeon Quest"

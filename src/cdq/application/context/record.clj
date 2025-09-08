@@ -112,7 +112,6 @@
   [:ctx/world-viewport :some]
   [:ctx/z-orders :some]
 
-  [:cdq.application.start/pipeline :some]
   [:ctx/os-settings :some]
   [:ctx/lwjgl :some]
   [:ctx/create-fn :some]
