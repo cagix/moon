@@ -19,8 +19,14 @@
 
      :else stype)))
 
-(defmulti create (fn [schema attribute v _ctx]
-                   (widget-type schema attribute)))
+(declare k->methods)
 
-(defmulti value (fn [schema attribute _widget _schemas]
-                  (widget-type schema attribute)))
+(defn create [schema attribute v ctx]
+  (if-let [f (:create (k->methods (widget-type schema attribute)))]
+    (f schema attribute v ctx)
+    ((:create (k->methods :default )) schema attribute v ctx)))
+
+(defn value [schema attribute widget schemas]
+  (if-let [f (:value (k->methods (widget-type schema attribute)))]
+    (f schema attribute widget schemas)
+    ((:value (k->methods :default)) schema attribute widget schemas)))
