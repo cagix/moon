@@ -1,4 +1,4 @@
-(ns cdq.application.tx-spawn-schema
+(ns cdq.start.pipeline.tx-spawn-schema
   (:require [cdq.malli :as m]))
 
 (def components-schema

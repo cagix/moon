@@ -1,4 +1,4 @@
-(ns cdq.application.txs
+(ns cdq.start.pipeline.txs
   (:require [cdq.audio :as audio]
             [cdq.ctx]
             [cdq.content-grid :as content-grid]

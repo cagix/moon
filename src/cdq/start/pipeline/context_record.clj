@@ -1,4 +1,4 @@
-(ns cdq.application.context-record
+(ns cdq.start.pipeline.context-record
   (:require [cdq.malli :as m]
             [qrecord.core :as q]))
 

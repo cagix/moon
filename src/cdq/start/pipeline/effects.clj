@@ -1,4 +1,4 @@
-(ns cdq.application.effects
+(ns cdq.start.pipeline.effects
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.faction :as faction]

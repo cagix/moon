@@ -1,4 +1,4 @@
-(ns cdq.application.world-unit-scale)
+(ns cdq.start.pipeline.world-unit-scale)
 
 (defn create [ctx]
   (assoc ctx :ctx/world-unit-scale (float (/ 48))))

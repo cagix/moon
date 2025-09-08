@@ -1,4 +1,4 @@
-(ns cdq.application.entity-components
+(ns cdq.start.pipeline.entity-components
   (:require [cdq.animation :as animation]
             [cdq.inventory :as inventory]
             [cdq.entity.state :as state]

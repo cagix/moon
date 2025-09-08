@@ -1,24 +1,24 @@
 {
- :cdq.start/pipeline [cdq.application.entity-states/bind-roots
-                      cdq.application.entity-tick/bind-root
-                      cdq.application.editor-widgets/bind-root
-                      cdq.application.effects/init!
-                      cdq.application.context-record/create
-                      cdq.application.register-self/do!
-                      cdq.application.fsms/create
-                      cdq.application.entity-components/create
-                      cdq.application.tx-spawn-schema/create
-                      cdq.application.draw-impl/create
-                      cdq.application.info/create
-                      cdq.application.unit-scale/create
-                      cdq.application.world-unit-scale/create
-                      cdq.application.db/create2
-                      cdq.application.render-layers/create
-                      cdq.application.os-settings/handle!
-                      cdq.application.colors/define-gdx-colors!
-                      cdq.application.txs/extend-it
-                      cdq.application.extend-scene2d/extend-it
-                      cdq.application.lwjgl/start-gdx-app]
+ :cdq.start/pipeline [cdq.start.pipeline.entity-states/bind-roots
+                      cdq.start.pipeline.entity-tick/bind-root
+                      cdq.start.pipeline.editor-widgets/bind-root
+                      cdq.start.pipeline.effects/init!
+                      cdq.start.pipeline.context-record/create
+                      cdq.start.pipeline.register-self/do!
+                      cdq.start.pipeline.fsms/create
+                      cdq.start.pipeline.entity-components/create
+                      cdq.start.pipeline.tx-spawn-schema/create
+                      cdq.start.pipeline.draw-impl/create
+                      cdq.start.pipeline.info/create
+                      cdq.start.pipeline.unit-scale/create
+                      cdq.start.pipeline.world-unit-scale/create
+                      cdq.start.pipeline.db/create2
+                      cdq.start.pipeline.render-layers/create
+                      cdq.start.pipeline.os-settings/handle!
+                      cdq.start.pipeline.colors/define-gdx-colors!
+                      cdq.start.pipeline.txs/extend-it
+                      cdq.start.pipeline.extend-scene2d/extend-it
+                      cdq.start.pipeline.lwjgl/start-gdx-app]
 
  :ctx/state-atom cdq.application/state
 

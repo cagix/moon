@@ -1,4 +1,4 @@
-(ns cdq.application.colors
+(ns cdq.start.pipeline.colors
   (:require [clojure.gdx.graphics.colors :as colors]))
 
 (defn define-gdx-colors!

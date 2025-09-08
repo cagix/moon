@@ -1,4 +1,4 @@
-(ns cdq.application.extend-scene2d
+(ns cdq.start.pipeline.extend-scene2d
   (:require [cdq.ctx :as ctx]
             [clojure.gdx.scenes.scene2d]))
 

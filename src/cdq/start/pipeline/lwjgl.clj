@@ -1,4 +1,4 @@
-(ns cdq.application.lwjgl
+(ns cdq.start.pipeline.lwjgl
   (:require [cdq.application.reset-game-state]
             [cdq.application.gdx-create]
             [clojure.gdx.backends.lwjgl :as lwjgl]))

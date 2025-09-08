@@ -1,4 +1,4 @@
-(ns cdq.application.editor-widgets
+(ns cdq.start.pipeline.editor-widgets
   (:require cdq.editor-window
             [cdq.audio :as audio]
             [cdq.db :as db]

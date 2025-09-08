@@ -1,4 +1,4 @@
-(ns cdq.application.draw-impl
+(ns cdq.start.pipeline.draw-impl
   (:require [cdq.ctx :as ctx]
             [cdq.math :as math]
             [clojure.earlygrey.shape-drawer :as sd]

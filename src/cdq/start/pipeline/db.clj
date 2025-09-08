@@ -1,4 +1,4 @@
-(ns cdq.application.db
+(ns cdq.start.pipeline.db
   (:require [cdq.db :as db]
             [cdq.malli :as m]
             [cdq.schema :as schema]
