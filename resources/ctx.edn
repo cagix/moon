@@ -87,6 +87,9 @@
                                      cdq.entity.state/state->handle-input
                                      cdq.entity.state.handle-input/function-map
 
+                                     cdq.ui.windows/state->clicked-inventory-cell
+                                     cdq.entity.state.clicked-inventory-cell/function-map
+
                                      cdq.editor.widget/k->methods
                                      cdq.editor.widgets/k->methods
 
