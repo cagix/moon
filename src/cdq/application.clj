@@ -1047,51 +1047,50 @@
   [{:keys [ctx/world-unit-scale]
     :as ctx}]
   (vis-ui/load! {:skin-scale :x1})
-  (reset-game-state!
-   (let [batch (sprite-batch/create)
-         ui-viewport (viewport/fit ui-viewport-width ui-viewport-height (camera/orthographic))
-         input (gdx/input)
-         stage (scene2d/stage ui-viewport batch)
-         shape-drawer-texture (let [pixmap (doto (pixmap/create)
-                                             (pixmap/set-color! color/white)
-                                             (pixmap/draw-pixel! 0 0))
-                                    texture (texture/create pixmap)]
-                                (pixmap/dispose! pixmap)
-                                texture)]
-     (input/set-processor! input stage)
-     (merge ctx
-            {:ctx/batch batch
-             :ctx/ui-viewport ui-viewport
-             :ctx/input input
-             :ctx/stage stage
-             :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
-             :ctx/graphics (gdx/graphics)
-             :ctx/textures (into {} (for [[path file-handle] (cdq.files/search (gdx/files)
-                                                                               {:folder "resources/"
-                                                                                :extensions #{"png" "bmp"}})]
-                                      [path (texture/from-file file-handle)]))
-             :ctx/audio (into {}
-                              (for [sound-name (->> sounds io/resource slurp edn/read-string)
-                                    :let [path (format sound-path-format sound-name)]]
-                                [sound-name
-                                 (audio/sound (gdx/audio) (files/internal (gdx/files) path))]))
-             :ctx/cursors (update-vals cursor-data
-                                       (fn [[file [hotspot-x hotspot-y]]]
-                                         (let [pixmap (pixmap/create (files/internal (gdx/files) (format path-format file)))
-                                               cursor (graphics/cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
-                                           (.dispose pixmap)
-                                           cursor)))
-             :ctx/world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
-                                       world-height (* world-viewport-height world-unit-scale)]
-                                   (viewport/fit world-width
-                                                 world-height
-                                                 (camera/orthographic :y-down? false
-                                                                      :world-width world-width
-                                                                      :world-height world-height)))
-             :ctx/default-font (freetype/generate-font (files/internal (gdx/files) font-file)
-                                                       font-params)
-             :ctx/shape-drawer-texture shape-drawer-texture
-             :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))}))))
+  (let [batch (sprite-batch/create)
+        ui-viewport (viewport/fit ui-viewport-width ui-viewport-height (camera/orthographic))
+        input (gdx/input)
+        stage (scene2d/stage ui-viewport batch)
+        shape-drawer-texture (let [pixmap (doto (pixmap/create)
+                                            (pixmap/set-color! color/white)
+                                            (pixmap/draw-pixel! 0 0))
+                                   texture (texture/create pixmap)]
+                               (pixmap/dispose! pixmap)
+                               texture)]
+    (input/set-processor! input stage)
+    (merge ctx
+           {:ctx/batch batch
+            :ctx/ui-viewport ui-viewport
+            :ctx/input input
+            :ctx/stage stage
+            :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
+            :ctx/graphics (gdx/graphics)
+            :ctx/textures (into {} (for [[path file-handle] (cdq.files/search (gdx/files)
+                                                                              {:folder "resources/"
+                                                                               :extensions #{"png" "bmp"}})]
+                                     [path (texture/from-file file-handle)]))
+            :ctx/audio (into {}
+                             (for [sound-name (->> sounds io/resource slurp edn/read-string)
+                                   :let [path (format sound-path-format sound-name)]]
+                               [sound-name
+                                (audio/sound (gdx/audio) (files/internal (gdx/files) path))]))
+            :ctx/cursors (update-vals cursor-data
+                                      (fn [[file [hotspot-x hotspot-y]]]
+                                        (let [pixmap (pixmap/create (files/internal (gdx/files) (format path-format file)))
+                                              cursor (graphics/cursor (gdx/graphics) pixmap hotspot-x hotspot-y)]
+                                          (.dispose pixmap)
+                                          cursor)))
+            :ctx/world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
+                                      world-height (* world-viewport-height world-unit-scale)]
+                                  (viewport/fit world-width
+                                                world-height
+                                                (camera/orthographic :y-down? false
+                                                                     :world-width world-width
+                                                                     :world-height world-height)))
+            :ctx/default-font (freetype/generate-font (files/internal (gdx/files) font-file)
+                                                      font-params)
+            :ctx/shape-drawer-texture shape-drawer-texture
+            :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))})))
 
 (def state (atom nil))
 
@@ -1146,7 +1145,8 @@
                    :ctx/render-layers render-layers/render-layers)
            os-settings/handle!
            colors/define-gdx-colors!
-           [lwjgl/start-gdx-app after-gdx-create!]]))
+           [lwjgl/start-gdx-app (comp reset-game-state!
+                                      after-gdx-create!)]]))
 
 (.bindRoot #'cdq.entity.state/->create state->create)
 (.bindRoot #'cdq.entity.state/state->enter state->enter)
