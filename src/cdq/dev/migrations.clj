@@ -1,5 +1,5 @@
 (ns cdq.dev.migrations
-  (:require [cdq.db-impl :as db]
+  (:require [cdq.application.db :as db]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 

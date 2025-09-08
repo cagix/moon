@@ -1,4 +1,4 @@
-(ns cdq.db-impl
+(ns cdq.application.db
   (:require [cdq.db :as db]
             [cdq.malli :as m]
             [cdq.schema :as schema]

@@ -12,4 +12,6 @@
  :ctx/render-fn cdq.render-pipeline/do!
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
+ :ctx/starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                :start-position [32 71]}]
  }
