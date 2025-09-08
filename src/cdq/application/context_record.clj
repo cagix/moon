@@ -69,6 +69,7 @@
   [:ctx/render-fn :some]
   [:ctx/starting-world :some]
   [:ctx/state-atom :some]
+  [:cdq.start/pipeline :some]
   )
 
 (defn create [ctx]

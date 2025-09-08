@@ -1,4 +1,23 @@
 {
+ :cdq.start/pipeline [cdq.application.context-record/create
+                      cdq.application.effects/init!
+                      cdq.application.register-self/do!
+                      cdq.application.fsms/create
+                      cdq.application.entity-components/create
+                      cdq.application.tx-spawn-schema/create
+                      cdq.application.ui-actors/create
+                      cdq.application.draw-on-world-viewport/create
+                      cdq.application.draw-impl/create
+                      cdq.application.info/create
+                      cdq.application.unit-scale/create
+                      cdq.application.world-unit-scale/create
+                      cdq.application.db/create2
+                      cdq.application.render-layers/create
+                      cdq.application.os-settings/handle!
+                      cdq.application.colors/define-gdx-colors!
+                      cdq.application.txs/extend-it
+                      cdq.application.extend-scene2d/extend-it
+                      cdq.application.lwjgl/start-gdx-app]
 
  :ctx/state-atom cdq.application/state
 
