@@ -122,14 +122,14 @@
 
 ; TODO dispose old ctx/tiled-map if already present
 (defn reset-game-state!
-  [{:keys [ctx/ui-actors
-           ctx/config
+  [{:keys [ctx/config
            ctx/stage]
     :as ctx}
    world-fn]
-  (let [actors (map #(let [[f params] %]
+  (let [config (:cdq.application.reset-game-state config)
+        actors (map #(let [[f params] %]
                        ((requiring-resolve f) ctx params))
-                    ui-actors)]
+                    (:create-ui-actors config))]
     (stage/clear! stage)
     (doseq [actor actors]
       (stage/add! stage (actor/build actor))))

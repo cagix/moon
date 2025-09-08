@@ -51,7 +51,6 @@
   [:ctx/textures :some]
   [:ctx/tiled-map :some]
   [:ctx/tiled-map-renderer :some]
-  [:ctx/ui-actors :some]
   [:ctx/ui-viewport :some]
   [:ctx/unit-scale :some]
   [:ctx/world-unit-scale :some]
