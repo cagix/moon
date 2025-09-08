@@ -1,5 +1,6 @@
 (ns cdq.world
-  (:require [cdq.content-grid :as content-grid]
+  (:require [cdq.ctx :as ctx]
+            [cdq.content-grid :as content-grid]
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid :as grid]
             [cdq.malli :as m]
@@ -51,3 +52,27 @@
   (when rotate-in-movement-direction?
     (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
   nil)
+
+(def destroy-components
+  {:entity/destroy-audiovisual
+   {:destroy! (fn [audiovisuals-id eid _ctx]
+                [[:tx/audiovisual
+                  (:body/position (:entity/body @eid))
+                  audiovisuals-id]])}})
+
+(defn remove-destroyed-entities!
+  [{:keys [ctx/entity-ids
+           ctx/grid]
+    :as ctx}]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (vals @entity-ids))]
+    (let [id (:entity/id @eid)]
+      (assert (contains? @entity-ids id))
+      (swap! entity-ids dissoc id))
+    (content-grid/remove-entity! eid)
+    (grid/remove-entity! grid eid)
+    (ctx/handle-txs! ctx
+                     (mapcat (fn [[k v]]
+                               (when-let [destroy! (:destroy! (k destroy-components))]
+                                 (destroy! v eid ctx)))
+                             @eid))))

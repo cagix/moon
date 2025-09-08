@@ -17,6 +17,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.widget :as widget]
             [cdq.utils :as utils]
+            [cdq.world :as world]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
@@ -98,11 +99,6 @@
           :ctx/mouseover-actor
           :ctx/ui-mouse-position
           :ctx/world-mouse-position))
-
-(def entity-components
-  {:entity/destroy-audiovisual
-   {:destroy! (fn [audiovisuals-id eid _ctx]
-                [[:tx/audiovisual (entity/position @eid) audiovisuals-id]])}})
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)
@@ -197,20 +193,9 @@
     (when (input/key-just-pressed? input toggle-entity-info) (toggle-entity-info-window! stage))))
 
 (defn remove-destroyed-entities
-  [{:keys [ctx/entity-ids
-           ctx/grid]
-    :as ctx}]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @entity-ids))]
-    (let [id (:entity/id @eid)]
-      (assert (contains? @entity-ids id))
-      (swap! entity-ids dissoc id))
-    (content-grid/remove-entity! eid)
-    (grid/remove-entity! grid eid)
-    (ctx/handle-txs! ctx (mapcat (fn [[k v]]
-                                   (when-let [destroy! (:destroy! (k entity-components))]
-                                     (destroy! v eid ctx)))
-                                 @eid))))
+  [ctx]
+  (world/remove-destroyed-entities! ctx)
+  ctx)
 
 (defn render-stage [{:keys [ctx/stage] :as ctx}]
   (stage/set-ctx! stage ctx)
