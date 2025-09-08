@@ -139,3 +139,5 @@
   (doseq [component draws
           :when component]
     (draw! component ctx)))
+
+(def zoom-level (comp :camera/zoom :viewport/camera :ctx/world-viewport))
