@@ -1,4 +1,4 @@
-(ns cdq.game.effects
+(ns cdq.application.effects
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.faction :as faction]
@@ -75,7 +75,7 @@
    )
  )
 
-(defn init! []
+(defn init! [_ctx]
   (.bindRoot #'cdq.effect/k->method-map
              {:effects/audiovisual {:applicable? (fn [_ {:keys [effect/target-position]}]
                                                    target-position)

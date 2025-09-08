@@ -1,6 +1,8 @@
 (ns cdq.application
   (:require [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
+            [cdq.application.effects :as effects]
+            [cdq.application.fsms :as fsms]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.op :as op]
@@ -36,7 +38,7 @@
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.math.raycaster]
-            [cdq.game.effects]
+            [cdq.application.effects]
             [cdq.editor-widgets]
             [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
@@ -125,56 +127,6 @@
   [_ctx]
   (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
   nil)
-
-(def ^:private npc-fsm
-  (fsm/fsm-inc
-   [[:npc-sleeping
-     :kill -> :npc-dead
-     :stun -> :stunned
-     :alert -> :npc-idle]
-    [:npc-idle
-     :kill -> :npc-dead
-     :stun -> :stunned
-     :start-action -> :active-skill
-     :movement-direction -> :npc-moving]
-    [:npc-moving
-     :kill -> :npc-dead
-     :stun -> :stunned
-     :timer-finished -> :npc-idle]
-    [:active-skill
-     :kill -> :npc-dead
-     :stun -> :stunned
-     :action-done -> :npc-idle]
-    [:stunned
-     :kill -> :npc-dead
-     :effect-wears-off -> :npc-idle]
-    [:npc-dead]]))
-
-(def ^:private player-fsm
-  (fsm/fsm-inc
-   [[:player-idle
-     :kill -> :player-dead
-     :stun -> :stunned
-     :start-action -> :active-skill
-     :pickup-item -> :player-item-on-cursor
-     :movement-input -> :player-moving]
-    [:player-moving
-     :kill -> :player-dead
-     :stun -> :stunned
-     :no-movement-input -> :player-idle]
-    [:active-skill
-     :kill -> :player-dead
-     :stun -> :stunned
-     :action-done -> :player-idle]
-    [:stunned
-     :kill -> :player-dead
-     :effect-wears-off -> :player-idle]
-    [:player-item-on-cursor
-     :kill -> :player-dead
-     :stun -> :stunned
-     :drop-item -> :player-idle
-     :dropped-item -> :player-idle]
-    [:player-dead]]))
 
 (q/defrecord Body [body/position
                    body/width
@@ -1374,48 +1326,44 @@
     (cdq.ctx/handle-draws! ctx draws)))
 
 (defn create-initial-context [ctx]
-  (cdq.game.effects/init!)
   (merge ctx
-         {
-          :ctx/fsms {:fsms/player player-fsm
-                 :fsms/npc npc-fsm}
-          :ctx/entity-components entity-components
+         {:ctx/entity-components entity-components
           :ctx/spawn-entity-schema components-schema
           :ctx/ui-actors '[[cdq.ui.dev-menu/create {:menus [{:label "World"
-                                                         :items [cdq.ui.dev-menu.menus.select-world/create
-                                                                 {:world-fns [[cdq.world-fns.tmx/create
-                                                                               {:tmx-file "maps/vampire.tmx"
-                                                                                :start-position [32 71]}]
-                                                                              [cdq.world-fns.uf-caves/create
-                                                                               {:tile-size 48
-                                                                                :texture-path "maps/uf_terrain.png"
-                                                                                :spawn-rate 0.02
-                                                                                :scaling 3
-                                                                                :cave-size 200
-                                                                                :cave-style :wide}]
-                                                                              [cdq.world-fns.modules/create
-                                                                               {:world/map-size 5,
-                                                                                :world/max-area-level 3,
-                                                                                :world/spawn-rate 0.05}]]
-                                                                  :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
-                                                                 ]}
-                                                        {:label "Help"
-                                                         :items [cdq.ui.dev-menu/help-items]}
-                                                        {:label "Editor"
-                                                         :items [cdq.ui.dev-menu.menus.db/create]}
-                                                        {:label "Ctx Data"
-                                                         :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
-                       [cdq.ui.action-bar/create {:id :action-bar}]
-                       [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                                   :rahmenw 150
-                                                   :rahmenh 26
-                                                   :hpcontent-file "images/hp.png"
-                                                   :manacontent-file "images/mana.png"
-                                                   :y-mana 80}]
-                       [cdq.ui.windows/create]
-                       [cdq.ui.player-state-draw/create]
-                       [cdq.ui.message/create {:duration-seconds 0.5
-                                               :name "player-message"}]]
+                                                             :items [cdq.ui.dev-menu.menus.select-world/create
+                                                                     {:world-fns [[cdq.world-fns.tmx/create
+                                                                                   {:tmx-file "maps/vampire.tmx"
+                                                                                    :start-position [32 71]}]
+                                                                                  [cdq.world-fns.uf-caves/create
+                                                                                   {:tile-size 48
+                                                                                    :texture-path "maps/uf_terrain.png"
+                                                                                    :spawn-rate 0.02
+                                                                                    :scaling 3
+                                                                                    :cave-size 200
+                                                                                    :cave-style :wide}]
+                                                                                  [cdq.world-fns.modules/create
+                                                                                   {:world/map-size 5,
+                                                                                    :world/max-area-level 3,
+                                                                                    :world/spawn-rate 0.05}]]
+                                                                      :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
+                                                                     ]}
+                                                            {:label "Help"
+                                                             :items [cdq.ui.dev-menu/help-items]}
+                                                            {:label "Editor"
+                                                             :items [cdq.ui.dev-menu.menus.db/create]}
+                                                            {:label "Ctx Data"
+                                                             :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                           [cdq.ui.action-bar/create {:id :action-bar}]
+                           [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                       :rahmenw 150
+                                                       :rahmenh 26
+                                                       :hpcontent-file "images/hp.png"
+                                                       :manacontent-file "images/mana.png"
+                                                       :y-mana 80}]
+                           [cdq.ui.windows/create]
+                           [cdq.ui.player-state-draw/create]
+                           [cdq.ui.message/create {:duration-seconds 0.5
+                                                   :name "player-message"}]]
           :ctx/draw-on-world-viewport [cdq.draw-on-world-viewport.tile-grid/do!
                                    cdq.draw-on-world-viewport.cell-debug/do!
                                    cdq.draw-on-world-viewport.entities/do!
@@ -1696,6 +1644,8 @@
               ctx))
           (config/load "ctx.edn")
           [context-record/create
+           effects/init!
+           #(assoc % :ctx/fsms fsms/k->fsm)
            create-initial-context
            self-reference
            handle-os-settings!
