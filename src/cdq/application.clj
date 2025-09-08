@@ -1690,15 +1690,14 @@
   (assoc ctx :ctx/application-state state))
 
 (defn -main []
-  (let [ctx (config/load "ctx.edn")]
-    (reduce (fn [ctx f]
-              (if-let [new-ctx (f ctx)]
-                new-ctx
-                ctx))
-            ctx
-            [context-record/create
-             create-initial-context
-             self-reference
-             handle-os-settings!
-             define-gdx-colors!
-             start-gdx-app])))
+  (reduce (fn [ctx f]
+            (if-let [new-ctx (f ctx)]
+              new-ctx
+              ctx))
+          (config/load "ctx.edn")
+          [context-record/create
+           create-initial-context
+           self-reference
+           handle-os-settings!
+           define-gdx-colors!
+           start-gdx-app]))
