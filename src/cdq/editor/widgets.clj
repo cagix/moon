@@ -53,6 +53,14 @@
                          (open-choose-sound-window! table ctx)))
    (play-button sound-name)])
 
+(defn create-sound-widget [sound-name]
+  (let [table (widget/table {:cell-defaults {:pad 5}})]
+    (table/add-rows! table [(if sound-name
+                              (sound-columns table sound-name)
+                              [(widget/text-button "No sound"
+                                                   (fn [_actor ctx]
+                                                     (open-choose-sound-window! table ctx)))])])
+    table))
 
 (defn- add-one-to-one-rows
   [{:keys [ctx/db
@@ -320,13 +328,7 @@
    :s/sound {
 
              :create (fn [_  _attribute sound-name _ctx]
-                       (let [table (widget/table {:cell-defaults {:pad 5}})]
-                         (table/add-rows! table [(if sound-name
-                                                   (sound-columns table sound-name)
-                                                   [(widget/text-button "No sound"
-                                                                        (fn [_actor ctx]
-                                                                          (open-choose-sound-window! table ctx)))])])
-                         table))
+                       (create-sound-widget sound-name))
              }
 
    :s/one-to-one {
