@@ -1,4 +1,4 @@
-(def main-namespace 'cdq.application.start)
+(def main-namespace 'cdq.application)
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
@@ -16,7 +16,7 @@
   :java-source-paths ["src"]
 
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application.start/-main))"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }

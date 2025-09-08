@@ -1,4 +1,4 @@
-(ns cdq.application.start
+(ns cdq.application
   (:require cdq.create.colors
             [clojure.edn :as edn]
             [clojure.java.io :as io]
