@@ -1,19 +1,15 @@
 {
- ; effects, editor-widgets
- ; create-ui (cdq.ui.widget)
- ; render
- ; then start pipeline maybe too
  :cdq.application.start/pipeline [cdq.application.context.record/create
                                   cdq.tx-handler/extend-ctx
                                   cdq.fsms/add
                                   cdq.entity-state-impl/do!
                                   cdq.entity-components/add
                                   cdq.tick-impl/do!
-                                  cdq.create.effects/do! ; FIXME
-                                  cdq.create.editor-widgets/do! ; FIXME
+                                  cdq.create.effects/do!
+                                  cdq.create.editor-widgets/do!
                                   cdq.spawn-entity-schema/add
-                                  cdq.create.ui-actors/do! ; FIXME
-                                  cdq.create.draw-on-world-viewport/do! ; FIXME
+                                  cdq.create.ui-actors/do!
+                                  cdq.create.draw-on-world-viewport/do!
                                   cdq.create.config/do!
                                   cdq.create.draw-fns/do!
                                   cdq.create.render-layers/do!
@@ -23,14 +19,10 @@
                                   cdq.create.world-unit-scale/do!
                                   cdq.create.frame/do!
                                   cdq.application/self-reference
-
-                                  ;; gdx stuff
                                   cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
                                   cdq.create.colors/do!
-                                  cdq.application.lwjgl/start!
-                                  ;;
-                                  ]
+                                  cdq.application.lwjgl/start!]
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
  :ctx/lwjgl {:title "Cyber Dungeon Quest"
