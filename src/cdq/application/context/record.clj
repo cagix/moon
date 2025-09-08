@@ -28,6 +28,7 @@
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
+            [cdq.game.effects]
             [cdq.multifn]
             [cdq.rand :refer [rand-int-between]]
             [cdq.raycaster :as raycaster]
@@ -1014,39 +1015,10 @@
 (.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
 (.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
 
-(cdq.multifn/add-methods! '[{:required [cdq.effect/applicable?
-                                        cdq.effect/handle]
-                             :optional [cdq.effect/useful?
-                                        cdq.effect/render]}
-                            [[cdq.effects.audiovisual
-                              :effects/audiovisual]
-                             [cdq.effects.projectile
-                              :effects/projectile]
-                             [cdq.effects.sound
-                              :effects/sound]
-                             [cdq.effects.spawn
-                              :effects/spawn]
-                             [cdq.effects.target-all
-                              :effects/target-all]
-                             [cdq.effects.target-entity
-                              :effects/target-entity]
-                             [cdq.effects.target.audiovisual
-                              :effects.target/audiovisual]
-                             [cdq.effects.target.convert
-                              :effects.target/convert]
-                             [cdq.effects.target.damage
-                              :effects.target/damage]
-                             [cdq.effects.target.kill
-                              :effects.target/kill]
-                             [cdq.effects.target.melee-damage
-                              :effects.target/melee-damage]
-                             [cdq.effects.target.spiderweb
-                              :effects.target/spiderweb]
-                             [cdq.effects.target.stun
-                              :effects.target/stun]]])
+
 
 (cdq.multifn/add-methods! '[{:optional [cdq.editor.widget/create
-                                          cdq.editor.widget/value]}
+                                        cdq.editor.widget/value]}
                               [[cdq.editor.widget.map
                                 :s/map]
                                [cdq.editor.widget.default
@@ -1427,6 +1399,7 @@
     (cdq.ctx/handle-draws! ctx draws)))
 
 (defn create [ctx]
+  (cdq.game.effects/init!)
   (merge (map->Context
           {
            :schema (m/schema schema)
