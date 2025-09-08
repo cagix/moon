@@ -1,15 +1,15 @@
 {
 
- ; TODO requiring-resolve is the problem !! obscures abstraction layers/dependencies
- ; creates 'fake order'
+ ; requiring-resolve
 
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
+
  :ctx/lwjgl {:title "Cyber Dungeon Quest"
              :windowed-mode {:width 1440 :height 900}
              :foreground-fps 60}
+
  :ctx/render-fn cdq.render-pipeline/do!
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
- :ctx/reset-game-state-fn cdq.reset-game-state/do!
  }
