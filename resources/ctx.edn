@@ -98,6 +98,9 @@
 
                                      cdq.entity-tick/entity->tick
                                      cdq.entity.tick/function-map
+
+                                     cdq.start.txs/txs-fn-map
+                                     cdq.txs/txs-fn-map
                                      }
 
               :cdq.start.register-self cdq.application/state
