@@ -1,15 +1,12 @@
 (ns cdq.render-pipeline
-  (:require [cdq.content-grid :as content-grid]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.entity-tick]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.grid :as grid]
             [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.raycaster :as raycaster]
-            [cdq.potential-fields.update :as potential-fields.update]
             [cdq.skill :as skill]
             [cdq.stacktrace :as stacktrace]
             [cdq.stage]
@@ -32,10 +29,8 @@
             [clojure.gdx.utils.viewport :as viewport]))
 
 (defn assoc-active-entities
-  [{:keys [ctx/content-grid
-           ctx/player-eid]
-    :as ctx}]
-  (assoc ctx :ctx/active-entities (content-grid/active-entities content-grid @player-eid)))
+  [ctx]
+  (world/assoc-active-entities ctx))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -229,41 +224,16 @@
         (assoc :ctx/delta-time delta-ms)
         (update :ctx/elapsed-time + delta-ms))))
 
-(defn- update-potential-fields!
-  [{:keys [ctx/factions-iterations
-           ctx/potential-field-cache
-           ctx/grid
-           ctx/active-entities]
-    :as ctx}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (potential-fields.update/tick! potential-field-cache
-                                   grid
-                                   faction
-                                   active-entities
-                                   max-iterations))
+(defn update-potential-fields!
+  [ctx]
+  (world/update-potential-fields! ctx)
   ctx)
 
-(defn- tick-component! [k v eid ctx]
-  (when-let [f (cdq.entity-tick/entity->tick k)]
-    (f v eid ctx)))
-
-(defn- tick-entity! [ctx eid]
-  (doseq [k (keys @eid)]
-    (try (when-let [v (k @eid)]
-           (ctx/handle-txs! ctx (tick-component! k v eid ctx)))
-         (catch Throwable t
-           (throw (ex-info "entity-tick"
-                           {:k k
-                            :entity/id (:entity/id @eid)}
-                           t))))))
-
 (defn- tick-entities!
-  [{:keys [ctx/stage
-           ctx/active-entities]
+  [{:keys [ctx/stage]
     :as ctx}]
   (try
-   (doseq [eid active-entities]
-     (tick-entity! ctx eid))
+   (world/tick-entities! ctx)
    (catch Throwable t
      (stacktrace/pretty-print t)
      (stage/add! stage (widget/error-window t))
