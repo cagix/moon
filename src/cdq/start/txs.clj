@@ -1,13 +1,11 @@
 (ns cdq.start.txs
   (:require [cdq.audio :as audio]
             [cdq.ctx]
-            [cdq.content-grid :as content-grid]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.grid :as grid]
             [cdq.image :as image]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
@@ -293,16 +291,8 @@
                            [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
                            [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]]))))
 
-   :tx/move-entity (fn
-                     [[_ eid body direction rotate-in-movement-direction?]
-                      {:keys [ctx/content-grid
-                              ctx/grid]}]
-                     (content-grid/position-changed! content-grid eid)
-                     (grid/position-changed! grid eid)
-                     (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
-                     (when rotate-in-movement-direction?
-                       (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
-                     nil)
+   :tx/move-entity (fn [params ctx]
+                     (world/move-entity! ctx params))
 
    :tx/spawn-projectile (fn
                           [[_
