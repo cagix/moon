@@ -1,5 +1,13 @@
 (ns cdq.application.context.record
-  (:require [cdq.animation :as animation]
+  (:require [cdq.op :as op]
+            [cdq.db-impl]
+            cdq.draw-impl
+            cdq.draw-on-world-viewport.tile-grid
+            cdq.draw-on-world-viewport.cell-debug
+            cdq.draw-on-world-viewport.entities
+            cdq.draw-on-world-viewport.geom-test
+            cdq.draw-on-world-viewport.highlight-mouseover-tile
+            [cdq.animation :as animation]
             [cdq.audio :as audio]
             [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
@@ -37,6 +45,8 @@
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
+            [clojure.math :as math]
+            [clojure.string :as str]
             [clojure.vis-ui.widget :as widget]
             [clojure.vis-ui.window :as window]
             [qrecord.core :as q]
@@ -227,16 +237,6 @@
                                                         (cons [:tx/assoc eid :entity/skills nil]
                                                               (for [skill skills]
                                                                 [:tx/add-skill eid skill])))}})
-
-(defn create [ctx]
-  (merge (map->Context
-          {
-           :schema (m/schema schema)
-           :fsms {:fsms/player player-fsm
-                  :fsms/npc npc-fsm}
-           :entity-components entity-components
-           })
-         ctx))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -1066,3 +1066,251 @@
                                 :widget/image]
                                [cdq.editor.widget.animation
                                 :widget/animation]]])
+
+(def ^:private components-schema
+  (m/schema [:map {:closed true}
+             [:entity/body :some]
+             [:entity/image {:optional true} :some]
+             [:entity/animation {:optional true} :some]
+             [:entity/delete-after-animation-stopped? {:optional true} :some]
+             [:entity/alert-friendlies-after-duration {:optional true} :some]
+             [:entity/line-render {:optional true} :some]
+             [:entity/delete-after-duration {:optional true} :some]
+             [:entity/destroy-audiovisual {:optional true} :some]
+             [:entity/fsm {:optional true} :some]
+             [:entity/player? {:optional true} :some]
+             [:entity/free-skill-points {:optional true} :some]
+             [:entity/click-distance-tiles {:optional true} :some]
+             [:entity/clickable {:optional true} :some]
+             [:property/id {:optional true} :some]
+             [:property/pretty-name {:optional true} :some]
+             [:creature/level {:optional true} :some]
+             [:entity/faction {:optional true} :some]
+             [:entity/species {:optional true} :some]
+             [:entity/movement {:optional true} :some]
+             [:entity/skills {:optional true} :some]
+             [:creature/stats {:optional true} :some]
+             [:entity/inventory    {:optional true} :some]
+             [:entity/item {:optional true} :some]
+             [:entity/projectile-collision {:optional true} :some]]))
+
+(defmulti ^:private op-value-text (fn [[k]]
+                                    k))
+
+(defmethod op-value-text :op/inc
+  [[_ value]]
+  (str value))
+
+(defmethod op-value-text :op/mult
+  [[_ value]]
+  (str value "%"))
+
+(defn- +? [n]
+  (case (math/signum n)
+    0.0 ""
+    1.0 "+"
+    -1.0 ""))
+
+(defn- op-info [op k]
+  (str/join "\n"
+            (keep
+             (fn [{v 1 :as component}]
+               (when-not (zero? v)
+                 (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
+             (sort-by op/-order op))))
+
+(defn- damage-info [{[min max] :damage/min-max}]
+  (str min "-" max " damage"))
+
+(def ^:private non-val-max-stat-ks
+  [:entity/movement-speed
+   :entity/aggro-range
+   :entity/reaction-time
+   :entity/strength
+   :entity/cast-speed
+   :entity/attack-speed
+   :entity/armor-save
+   :entity/armor-pierce])
+
+(def info-configuration
+  {:k->colors {:property/pretty-name "PRETTY_NAME"
+               :entity/modifiers "CYAN"
+               :maxrange "LIGHT_GRAY"
+               :creature/level "GRAY"
+               :projectile/piercing? "LIME"
+               :skill/action-time-modifier-key "VIOLET"
+               :skill/action-time "GOLD"
+               :skill/cooldown "SKY"
+               :skill/cost "CYAN"
+               :entity/delete-after-duration "LIGHT_GRAY"
+               :entity/faction "SLATE"
+               :entity/fsm "YELLOW"
+               :entity/species "LIGHT_GRAY"
+               :entity/temp-modifier "LIGHT_GRAY"}
+   :k-order [:property/pretty-name
+             :skill/action-time-modifier-key
+             :skill/action-time
+             :skill/cooldown
+             :skill/cost
+             :skill/effects
+             :entity/species
+             :creature/level
+             :creature/stats
+             :entity/delete-after-duration
+             :projectile/piercing?
+             :entity/projectile-collision
+             :maxrange
+             :entity-effects]
+   :info-fns {:creature/level (fn [[_ v] _ctx]
+                                (str "Level: " v))
+              :creature/stats (fn [[k stats] _ctx]
+                                (str/join "\n" (concat
+                                                ["*STATS*"
+                                                 (str "Mana: " (if (:entity/mana stats)
+                                                                 (stats/get-mana stats)
+                                                                 "-"))
+                                                 (str "Hitpoints: " (stats/get-hitpoints stats))]
+                                                (for [stat-k non-val-max-stat-ks]
+                                                  (str (str/capitalize (name stat-k)) ": "
+                                                       (stats/get-stat-value stats stat-k))))))
+              :effects.target/convert (fn [_ _ctx]
+                                        "Converts target to your side.")
+              :effects.target/damage (fn [[_ damage] _ctx]
+                                       (damage-info damage)
+                                       #_(if source
+                                           (let [modified (stats/damage @source damage)]
+                                             (if (= damage modified)
+                                               (damage-info damage)
+                                               (str (damage-info damage) "\nModified: " (damage/info modified))))
+                                           (damage-info damage)) ; property menu no source,modifiers
+                                       )
+              :effects.target/kill (fn [_ _ctx] "Kills target")
+              :effects.target/melee-damage (fn [_ _ctx]
+                                             (str "Damage based on entity strength."
+                                                  #_(when source
+                                                      (str "\n" (damage-info (entity->melee-damage @source))))))
+              :effects.target/spiderweb (fn [_ _ctx] "Spiderweb slows 50% for 5 seconds.")
+              :effects.target/stun (fn [[_ duration] _ctx]
+                                     (str "Stuns for " (utils/readable-number duration) " seconds"))
+              :effects/spawn (fn [[_ {:keys [property/pretty-name]}] _ctx]
+                               (str "Spawns a " pretty-name))
+              :effects/target-all (fn [_ _ctx]
+                                    "All visible targets")
+              :entity/delete-after-duration (fn [[_ counter] {:keys [ctx/elapsed-time]}]
+                                              (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+              :entity/faction (fn [[_ faction] _ctx]
+                                (str "Faction: " (name faction)))
+              :entity/fsm (fn [[_ fsm] _ctx]
+                            (str "State: " (name (:state fsm))))
+              :entity/modifiers (fn [[_ mods] _ctx]
+                                  (when (seq mods)
+                                    (str/join "\n" (keep (fn [[k ops]]
+                                                           (op-info ops k)) mods))))
+              :entity/skills (fn [[_ skills] _ctx]
+                               ; => recursive info-text leads to endless text wall
+                               (when (seq skills)
+                                 (str "Skills: " (str/join "," (map name (keys skills))))))
+              :entity/species (fn [[_ species] _ctx]
+                                (str "Creature - " (str/capitalize (name species))))
+              :entity/temp-modifier (fn [[_ {:keys [counter]}] {:keys [ctx/elapsed-time]}]
+                                      (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+              :projectile/piercing? (fn [_ _ctx] ; TODO also when false ?!
+                                      "Piercing")
+              :property/pretty-name (fn [[_ v] _ctx]
+                                      v)
+              :skill/action-time (fn [[_ v] _ctx]
+                                   (str "Action-Time: " (utils/readable-number v) " seconds"))
+              :skill/action-time-modifier-key (fn [[_ v] _ctx]
+                                                (case v
+                                                  :entity/cast-speed "Spell"
+                                                  :entity/attack-speed "Attack"))
+              :skill/cooldown (fn [[_ v] _ctx]
+                                (when-not (zero? v)
+                                  (str "Cooldown: " (utils/readable-number v) " seconds")))
+              :skill/cost (fn [[_ v] _ctx]
+                            (when-not (zero? v)
+                              (str "Cost: " v " Mana")))
+              :maxrange (fn [[_ v] _ctx] v)}})
+
+(defn create [ctx]
+  (merge (map->Context
+          {
+           :schema (m/schema schema)
+           :fsms {:fsms/player player-fsm
+                  :fsms/npc npc-fsm}
+           :entity-components entity-components
+           :spawn-entity-schema components-schema
+           :ui-actors '[[cdq.ui.dev-menu/create {:menus [{:label "World"
+                                                          :items [cdq.ui.dev-menu.menus.select-world/create
+                                                                  {:world-fns [[cdq.world-fns.tmx/create
+                                                                                {:tmx-file "maps/vampire.tmx"
+                                                                                 :start-position [32 71]}]
+                                                                               [cdq.world-fns.uf-caves/create
+                                                                                {:tile-size 48
+                                                                                 :texture-path "maps/uf_terrain.png"
+                                                                                 :spawn-rate 0.02
+                                                                                 :scaling 3
+                                                                                 :cave-size 200
+                                                                                 :cave-style :wide}]
+                                                                               [cdq.world-fns.modules/create
+                                                                                {:world/map-size 5,
+                                                                                 :world/max-area-level 3,
+                                                                                 :world/spawn-rate 0.05}]]
+                                                                   :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
+                                                                  ]}
+                                                         {:label "Help"
+                                                          :items [cdq.ui.dev-menu/help-items]}
+                                                         {:label "Editor"
+                                                          :items [cdq.ui.dev-menu.menus.db/create]}
+                                                         {:label "Ctx Data"
+                                                          :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                        [cdq.ui.action-bar/create {:id :action-bar}]
+                        [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                    :rahmenw 150
+                                                    :rahmenh 26
+                                                    :hpcontent-file "images/hp.png"
+                                                    :manacontent-file "images/mana.png"
+                                                    :y-mana 80}]
+                        [cdq.ui.windows/create]
+                        [cdq.ui.player-state-draw/create]
+                        [cdq.ui.message/create {:duration-seconds 0.5
+                                                :name "player-message"}]]
+           :draw-on-world-viewport [cdq.draw-on-world-viewport.tile-grid/do!
+                                    cdq.draw-on-world-viewport.cell-debug/do!
+                                    cdq.draw-on-world-viewport.entities/do!
+                                    ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
+                                    cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
+           :config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                             :initial-state :npc-sleeping}
+                                                :entity/faction :evil}
+                    :cdq.game/player-props {:creature-id :creatures/vampire
+                                            :components {:entity/fsm {:fsm :fsms/player
+                                                                      :initial-state :player-idle}
+                                                         :entity/faction :good
+                                                         :entity/player? true
+                                                         :entity/free-skill-points 3
+                                                         :entity/clickable {:type :clickable/player}
+                                                         :entity/click-distance-tiles 1.5}}
+                    :cdq.reset-game-state/world {:content-grid-cell-size 16
+                                                 :potential-field-factions-iterations {:good 15
+                                                                                       :evil 5}}
+                    :effect-body-props {:width 0.5
+                                        :height 0.5
+                                        :z-order :z-order/effect}
+
+                    :controls {:zoom-in :minus
+                               :zoom-out :equals
+                               :unpause-once :p
+                               :unpause-continously :space}}
+           :draw-fns cdq.draw-impl/draw-fns
+           :mouseover-eid nil
+           :paused? nil
+           :delta-time 2
+           :active-entities 1
+           :unit-scale (atom 1)
+           :world-unit-scale (float (/ 48))
+           :info info-configuration
+           :db (cdq.db-impl/create {:schemas "schema.edn"
+                                    :properties "properties.edn"})
+           })
+         ctx))

@@ -1,16 +1,6 @@
 {
  :cdq.application.start/pipeline [cdq.application.context.record/create
-                                  cdq.spawn-entity-schema/add
-                                  cdq.create.ui-actors/do!
-                                  cdq.create.draw-on-world-viewport/do!
-                                  cdq.create.config/do!
-                                  cdq.create.draw-fns/do!
                                   cdq.create.render-layers/do!
-                                  cdq.create.info/do!
-                                  cdq.create.db/do!
-                                  cdq.create.unit-scale/do!
-                                  cdq.create.world-unit-scale/do!
-                                  cdq.create.frame/do!
                                   cdq.application/self-reference
                                   cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
