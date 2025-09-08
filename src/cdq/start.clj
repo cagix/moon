@@ -21,9 +21,6 @@
             [cdq.application.db])
   (:gen-class))
 
-; ifs are the problem !
-; just walk through and remove if's !
-; and fight right abstraction layers
 (defn -main []
   (reduce (fn [ctx f]
             (f ctx))
