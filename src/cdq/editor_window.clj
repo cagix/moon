@@ -1,6 +1,5 @@
 (ns cdq.editor-window
-  (:require [cdq.application :as application]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.editor.widget :as editor-widget]
@@ -12,7 +11,8 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn property-editor-window
-  [{:keys [ctx/db
+  [{:keys [ctx/application-state
+           ctx/db
            ctx/ui-viewport]
     :as ctx}
    property]
@@ -26,11 +26,11 @@
                                      (stacktrace/pretty-print t)
                                      (stage/add! stage (cdq.ui.widget/error-window t))))))
         clicked-save-fn (with-window-close (fn [{:keys [ctx/db]}]
-                                             (swap! application/state update :ctx/db
+                                             (swap! application-state update :ctx/db
                                                     db/update!
                                                     (editor-widget/value schema nil widget (:schemas db)))))
         clicked-delete-fn (with-window-close (fn [_ctx]
-                                               (swap! application/state update :ctx/db
+                                               (swap! application-state update :ctx/db
                                                       db/delete!
                                                       (:property/id property))))
         extra-act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]

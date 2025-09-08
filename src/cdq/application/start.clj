@@ -1,8 +1,5 @@
 (ns cdq.application.start
-  (:require cdq.application
-            cdq.application.os-specific-settings
-            cdq.create.colors
-            cdq.application.lwjgl
+  (:require cdq.create.colors
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.op :as op]
@@ -49,12 +46,14 @@
             [cdq.utils :as utils :refer [find-first]]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.vis-ui.widget :as widget]
@@ -1465,6 +1464,38 @@
            })
          ctx))
 
+(defn handle-os-settings! [{:keys [ctx/os-settings]}]
+  (->> (shared-library-loader/operating-system)
+       os-settings
+       (run! (fn [[f params]]
+               ((requiring-resolve f) params)))))
+
+(defn start-gdx-app
+  [{:keys [ctx/application-state
+           ctx/lwjgl
+           ctx/create-fn
+           ctx/render-fn
+           ctx/dispose-fn
+           ctx/resize-fn]
+    :as ctx}]
+  (lwjgl/start-application!
+   {:create! (fn []
+               (reset! application-state ((requiring-resolve create-fn) ctx)))
+    :dispose! (fn []
+                ((requiring-resolve dispose-fn) @application-state))
+    :render! (fn []
+               (swap! application-state (requiring-resolve render-fn)))
+    :resize! (fn [width height]
+               ((requiring-resolve resize-fn) @application-state width height))
+    :pause! (fn [])
+    :resume! (fn [])}
+   lwjgl))
+
+(def state (atom nil))
+
+(defn self-reference [ctx]
+  (assoc ctx :ctx/application-state state))
+
 (defn -main []
   (let [ctx (-> "ctx.edn"
                 io/resource
@@ -1476,7 +1507,7 @@
                 ctx))
             ctx
             [create-initial-context
-             cdq.application/self-reference
-             cdq.application.os-specific-settings/handle!
+             self-reference
+             handle-os-settings!
              cdq.create.colors/do!
-             cdq.application.lwjgl/start!])))
+             start-gdx-app])))
