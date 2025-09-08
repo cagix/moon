@@ -1,17 +1,21 @@
 (ns cdq.application.lwjgl
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
+  (:require [cdq.application.reset-game-state]
+            [cdq.application.gdx-create]
+            [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start-gdx-app
   [{:keys [ctx/application-state
            ctx/lwjgl
            ctx/render-fn
            ctx/dispose-fn
-           ctx/resize-fn]
-    :as ctx}
-   after-gdx-create!]
+           ctx/resize-fn
+           ctx/starting-world]
+    :as ctx}]
   (lwjgl/start-application!
    {:create! (fn []
-               (reset! application-state (after-gdx-create! ctx)))
+               (reset! application-state (cdq.application.reset-game-state/reset-game-state!
+                                          (cdq.application.gdx-create/after-gdx-create! ctx)
+                                          starting-world)))
     :dispose! (fn []
                 ((requiring-resolve dispose-fn) @application-state))
     :render! (fn []

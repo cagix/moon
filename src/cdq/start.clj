@@ -11,10 +11,8 @@
             [cdq.application.entity-tick]
             [cdq.application.extend-scene2d]
             [cdq.application.fsms :as fsms]
-            [cdq.application.gdx-create]
             [cdq.application.info :as application.info]
             [cdq.application.lwjgl :as lwjgl]
-            [cdq.application.reset-game-state]
             [cdq.application.render-layers :as render-layers]
             [cdq.application.txs]
             [cdq.application.tx-spawn-schema :as tx-spawn-schema]
@@ -23,12 +21,12 @@
             [cdq.application.db])
   (:gen-class))
 
+; ifs are the problem !
+; just walk through and remove if's !
+; and fight right abstraction layers
 (defn -main []
   (reduce (fn [ctx f]
-            (if (vector? f)
-              (let [[f params] f]
-                (f ctx params))
-              (f ctx)))
+            (f ctx))
           (config/load "ctx.edn")
           [context-record/create
            effects/init!
@@ -76,8 +74,4 @@
            colors/define-gdx-colors!
            cdq.application.txs/extend-it
            cdq.application.extend-scene2d/extend-it
-           [lwjgl/start-gdx-app (fn [{:keys [ctx/starting-world]
-                                      :as ctx}]
-                                  (cdq.application.reset-game-state/reset-game-state!
-                                   (cdq.application.gdx-create/after-gdx-create! ctx)
-                                   starting-world))]]))
+           lwjgl/start-gdx-app]))
