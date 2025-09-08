@@ -1,5 +1,6 @@
 (ns cdq.start
-  (:require [cdq.application.colors :as colors]
+  (:require [cdq.application.register-self]
+            [cdq.application.colors :as colors]
             [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
             [cdq.application.draw-on-world-viewport :as draw-on-world-viewport]
@@ -27,40 +28,14 @@
           (config/load "ctx.edn")
           [context-record/create
            effects/init!
+           cdq.application.register-self/do!
            #(assoc %
-                   :ctx/application-state @(requiring-resolve (:ctx/state-atom %))
                    :ctx/fsms fsms/k->fsm
                    :ctx/entity-components entity-components/method-mappings
                    :ctx/spawn-entity-schema tx-spawn-schema/components-schema
                    :ctx/ui-actors ui-actors/create-stuff
                    :ctx/draw-on-world-viewport draw-on-world-viewport/draw-fns
-                   :ctx/config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                                         :initial-state :npc-sleeping}
-                                                            :entity/faction :evil}
-                                :cdq.game/player-props {:creature-id :creatures/vampire
-                                                        :components {:entity/fsm {:fsm :fsms/player
-                                                                                  :initial-state :player-idle}
-                                                                     :entity/faction :good
-                                                                     :entity/player? true
-                                                                     :entity/free-skill-points 3
-                                                                     :entity/clickable {:type :clickable/player}
-                                                                     :entity/click-distance-tiles 1.5}}
-                                :world {:content-grid-cell-size 16
-                                        :potential-field-factions-iterations {:good 15
-                                                                              :evil 5}}
-                                :effect-body-props {:width 0.5
-                                                    :height 0.5
-                                                    :z-order :z-order/effect}
-
-                                :controls {:zoom-in :minus
-                                           :zoom-out :equals
-                                           :unpause-once :p
-                                           :unpause-continously :space}}
                    :ctx/draw-fns draw-impl/draw-fns
-                   :ctx/mouseover-eid nil
-                   :ctx/paused? nil
-                   :ctx/delta-time 2
-                   :ctx/active-entities 1
                    :ctx/unit-scale (atom 1)
                    :ctx/world-unit-scale (float (/ 48))
                    :ctx/info application.info/info-configuration
