@@ -123,7 +123,9 @@
 ; TODO dispose old ctx/tiled-map if already present
 (defn reset-game-state!
   [{:keys [ctx/config
-           ctx/stage]
+           ctx/db
+           ctx/stage
+           ctx/textures]
     :as ctx}
    world-fn]
   (let [config (:cdq.application.reset-game-state config)
@@ -135,7 +137,10 @@
       (stage/add! stage (actor/build actor))))
   (let [world-config (merge (:world config)
                             (let [[f params] world-fn]
-                              ((requiring-resolve f) ctx params)))
+                              ((requiring-resolve f)
+                               (db/all-raw db :properties/creatures)
+                               textures
+                               params)))
         world-ctx* (world-ctx world-config)]
     ;World data structure:
     ; * from tiled-map

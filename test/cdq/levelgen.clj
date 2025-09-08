@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.start.db :as db]
+  (:require [cdq.db]
+            [cdq.start.db :as db]
             [cdq.gdx-app.resize]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -65,11 +66,15 @@
 ;                java.lang.OutOfMemoryError: Java heap space
 ; com.badlogic.gdx.utils.GdxRuntimeException: java.lang.OutOfMemoryError: Java heap space
 
-(defn- generate-level [{:keys [ctx/tiled-map] :as ctx} level-fn]
+(defn- generate-level [{:keys [ctx/db
+                               ctx/textures
+                               ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
     (disposable/dispose! tiled-map))
   (let [level (let [[f params] level-fn]
-                (f ctx params))
+                (f (cdq.db/all-raw db :properties/creatures)
+                   textures
+                   params))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)

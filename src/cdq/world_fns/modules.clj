@@ -1,6 +1,5 @@
 (ns cdq.world-fns.modules
   (:require [cdq.area-level-grid :as area-level-grid]
-            [cdq.db :as db]
             [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [prepare-creature-properties
                                       add-creatures-layer!
@@ -162,9 +161,8 @@
      :area-level-grid scaled-area-level-grid}))
 
 (defn create
-  [{:keys [ctx/textures
-           ctx/db]}
+  [creature-properties
+   textures
    params]
   (generate-modules params
-                    (prepare-creature-properties (db/all-raw db :properties/creatures)
-                                                 textures)))
+                    (prepare-creature-properties creature-properties textures)))
