@@ -1,8 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.db-impl :as db]
             [cdq.gdx-app.resize]
-            [cdq.render.clear-screen]
-            [cdq.render.render-stage]
             [cdq.textures-impl]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
@@ -17,6 +15,7 @@
             [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
+            [clojure.gdx.utils.screen :as screen]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]))
@@ -159,12 +158,17 @@
   (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
+(defn render-stage [{:keys [ctx/stage] :as ctx}]
+  (stage/set-ctx! stage ctx)
+  (stage/act! stage)
+  (stage/draw! stage))
+
 (defn render! []
-  (cdq.render.clear-screen/do! @state)
+  (screen/clear!)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
-  (cdq.render.render-stage/do! @state))
+  (render-stage @state))
 
 (defn resize! [width height]
   (cdq.gdx-app.resize/do! @state width height))

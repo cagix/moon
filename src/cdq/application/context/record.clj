@@ -62,7 +62,6 @@
   [:ctx/os-settings :some]
   [:ctx/lwjgl :some]
   [:ctx/create-fn :some]
-  [:ctx/render-pipeline :some]
   [:ctx/dispose-fn :some]
   [:ctx/resize-fn :some]
   [:ctx/application-state :some]

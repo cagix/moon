@@ -1,4 +1,8 @@
 {
+ ; effects, editor-widgets
+ ; create-ui (cdq.ui.widget)
+ ; render
+ ; then start pipeline maybe too
  :cdq.application.start/pipeline [cdq.application.context.record/create
                                   cdq.tx-handler/extend-ctx
                                   cdq.extend-scene2d/do!
@@ -7,11 +11,11 @@
                                   cdq.entity-state-impl/do!
                                   cdq.entity-components/add
                                   cdq.tick-impl/do!
-                                  cdq.create.effects/do!
-                                  cdq.create.editor-widgets/do!
+                                  cdq.create.effects/do! ; FIXME
+                                  cdq.create.editor-widgets/do! ; FIXME
                                   cdq.spawn-entity-schema/add
-                                  cdq.create.ui-actors/do!
-                                  cdq.create.draw-on-world-viewport/do!
+                                  cdq.create.ui-actors/do! ; FIXME
+                                  cdq.create.draw-on-world-viewport/do! ; FIXME
                                   cdq.create.config/do!
                                   cdq.create.colors/do!
                                   cdq.create.draw-fns/do!
@@ -30,24 +34,6 @@
              :foreground-fps 60}
  :ctx/create-fn cdq.create.lwjgl-create-pipeline/do!
  :ctx/render-fn cdq.render-pipeline/do!
- :ctx/render-pipeline [cdq.render.validate/do!
-                       cdq.render.assoc-mouseover-keys/do!
-                       cdq.render.update-mouseover-eid/do!
-                       cdq.render.check-open-debug-data/do!
-                       cdq.render.assoc-active-entities/do!
-                       cdq.render.set-camera-on-player/do!
-                       cdq.render.clear-screen/do!
-                       cdq.render.draw-world-map/do!
-                       cdq.render.draw-on-world-viewport/do!
-                       cdq.render.render-stage/do!
-                       cdq.render.set-cursor/do!
-                       cdq.render.player-state-handle-input/do!
-                       cdq.render.assoc-paused/do!
-                       cdq.render.tick-world/do!
-                       cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                       cdq.render.handle-key-input/do!
-                       cdq.render.dissoc-mouseover-keys/do!
-                       cdq.render.validate/do!]
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
  :ctx/reset-game-state-fn cdq.reset-game-state/do!

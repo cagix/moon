@@ -13,7 +13,7 @@
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.render.handle-key-input :refer [toggle-inventory-visible!]]
+            [cdq.stage]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.ui.action-bar :as action-bar]
@@ -218,7 +218,7 @@
    :tx/toggle-inventory-visible (fn [_ ctx]
                                   (-> ctx
                                       :ctx/stage
-                                      toggle-inventory-visible!)
+                                      cdq.stage/toggle-inventory-visible!)
                                   nil)
    :tx/show-message (fn
                       [[_ message]
