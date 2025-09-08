@@ -7,6 +7,7 @@
             [cdq.world-fns.tmx]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            clojure.lwjgl.system.configuration
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
@@ -178,7 +179,7 @@
   (cdq.gdx-app.resize/do! @state width height))
 
 (defn -main []
-  ;(cdq.start/set-mac-os-config!)
+  (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
   (lwjgl/start-application! {:create! create!
                              :dispose! dispose!
                              :render! render!
