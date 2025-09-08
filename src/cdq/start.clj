@@ -1,4 +1,3 @@
-; TODO fix extend-type calls, break on reload
 (ns cdq.start
   (:require [cdq.application.colors :as colors]
             [cdq.application.config :as config]
@@ -75,6 +74,8 @@
                    :ctx/render-layers render-layers/render-layers)
            os-settings/handle!
            colors/define-gdx-colors!
+           cdq.application.txs/extend-it
+           cdq.application.extend-scene2d/extend-it
            [lwjgl/start-gdx-app (fn [{:keys [ctx/starting-world]
                                       :as ctx}]
                                   (cdq.application.reset-game-state/reset-game-state!

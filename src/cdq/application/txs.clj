@@ -421,18 +421,20 @@
    (catch Throwable t
      (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
 
-(extend-type cdq.application.context_record.Context
-  cdq.ctx/TransactionHandler
-  (handle-txs! [ctx transactions]
-    (loop [ctx ctx
-           txs transactions
-           handled []]
-      (if (seq txs)
-        (let [tx (first txs)]
-          (if tx
-            (let [new-txs (handle-tx! tx ctx)]
-              (recur ctx
-                     (concat (or new-txs []) (rest txs))
-                     (conj handled tx)))
-            (recur ctx (rest txs) handled)))
-        handled))))
+(defn extend-it [ctx]
+  (extend-type (class ctx)
+    cdq.ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (loop [ctx ctx
+             txs transactions
+             handled []]
+        (if (seq txs)
+          (let [tx (first txs)]
+            (if tx
+              (let [new-txs (handle-tx! tx ctx)]
+                (recur ctx
+                       (concat (or new-txs []) (rest txs))
+                       (conj handled tx)))
+              (recur ctx (rest txs) handled)))
+          handled))))
+  ctx)
