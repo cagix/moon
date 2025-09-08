@@ -26,6 +26,12 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
+; TODO try to do this without cond/if !!!
+; so have to define a order of handling inputs, etc.
+; also in components method no if/else
+; => protocol
+; => straightforward
+; game without ifs
 (defn interaction-state
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
