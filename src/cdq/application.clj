@@ -7,8 +7,10 @@
             [cdq.application.entity-components :as entity-components]
             [cdq.application.fsms :as fsms]
             [cdq.application.info :as application.info]
+            [cdq.application.lwjgl :as lwjgl]
             [cdq.application.render-layers :as render-layers]
             [cdq.application.tx-spawn-schema :as tx-spawn-schema]
+            [cdq.application.os-settings :as os-settings]
             [cdq.application.ui-actors :as ui-actors]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -54,7 +56,6 @@
             [cdq.world :as world]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.audio :as audio]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
@@ -72,7 +73,6 @@
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]
@@ -896,15 +896,6 @@
   (handle-draws! [ctx draws]
     (cdq.ctx/handle-draws! ctx draws)))
 
-(defn handle-os-settings!
-  [{:keys [ctx/os-settings]
-    :as ctx}]
-  (->> (shared-library-loader/operating-system)
-       os-settings
-       (run! (fn [[f params]]
-               ((requiring-resolve f) params))))
-  ctx)
-
 ; not tested
 (defn- create-double-ray-endpositions
   "path-w in tiles."
@@ -1107,38 +1098,19 @@
              :ctx/shape-drawer-texture shape-drawer-texture
              :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))}))))
 
-(defn start-gdx-app
-  [{:keys [ctx/application-state
-           ctx/lwjgl
-           ctx/render-fn
-           ctx/dispose-fn
-           ctx/resize-fn]
-    :as ctx}]
-  (lwjgl/start-application!
-   {:create! (fn []
-               (reset! application-state (after-gdx-create! ctx)))
-    :dispose! (fn []
-                ((requiring-resolve dispose-fn) @application-state))
-    :render! (fn []
-               (swap! application-state (requiring-resolve render-fn)))
-    :resize! (fn [width height]
-               ((requiring-resolve resize-fn) @application-state width height))
-    :pause! (fn [])
-    :resume! (fn [])}
-   lwjgl))
-
 (def state (atom nil))
-
-(defn- self-reference [ctx]
-  (assoc ctx :ctx/application-state state))
 
 (defn -main []
   (reduce (fn [ctx f]
-            (f ctx))
+            (if (vector? f)
+              (let [[f params] f]
+                (f ctx params))
+              (f ctx)))
           (config/load "ctx.edn")
           [context-record/create
            effects/init!
            #(assoc %
+                   :ctx/application-state state
                    :ctx/fsms fsms/k->fsm
                    :ctx/entity-components entity-components/method-mappings
                    :ctx/spawn-entity-schema tx-spawn-schema/components-schema
@@ -1177,10 +1149,9 @@
                    :ctx/db (cdq.db-impl/create {:schemas "schema.edn"
                                                 :properties "properties.edn"})
                    :ctx/render-layers render-layers/render-layers)
-           self-reference
-           handle-os-settings!
+           os-settings/handle!
            define-gdx-colors!
-           start-gdx-app]))
+           [lwjgl/start-gdx-app after-gdx-create!]]))
 
 (.bindRoot #'cdq.entity.state/->create state->create)
 (.bindRoot #'cdq.entity.state/state->enter state->enter)
