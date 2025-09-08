@@ -6,7 +6,6 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.entity.state.player-item-on-cursor]
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid :as grid]
             [cdq.image :as image]
@@ -27,53 +26,6 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]
             [reduce-fsm :as fsm]))
-
-(def state->enter {:npc-dead              (fn [_ eid]
-                                     [[:tx/mark-destroyed eid]])
-            :npc-moving            (fn [{:keys [movement-vector]} eid]
-                                     [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                                                       :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
-                                                                                  0)}]])
-            :player-dead           (fn [_ _eid]
-                                     [[:tx/sound "bfxr_playerdeath"]
-                                      [:tx/show-modal {:title "YOU DIED - again!"
-                                                       :text "Good luck next time!"
-                                                       :button-text "OK"
-                                                       :on-click (fn [])}]])
-            :player-item-on-cursor (fn [{:keys [item]} eid]
-                                     [[:tx/assoc eid :entity/item-on-cursor item]])
-            :player-moving         (fn [{:keys [movement-vector]} eid]
-                                     [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                                                       :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
-                                                                                  0)}]])
-            :active-skill          (fn [{:keys [skill]} eid]
-                                     [[:tx/sound (:skill/start-action-sound skill)]
-                                      (when (:skill/cooldown skill)
-                                        [:tx/set-cooldown eid skill])
-                                      (when (and (:skill/cost skill)
-                                                 (not (zero? (:skill/cost skill))))
-                                        [:tx/pay-mana-cost eid (:skill/cost skill)])])})
-
-(def state->exit
-  {:npc-moving            (fn [_ eid _ctx]
-                            [[:tx/dissoc eid :entity/movement]])
-   :npc-sleeping          (fn [_ eid _ctx]
-                            [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]
-                             [:tx/add-text-effect eid "[WHITE]!" 1]])
-   :player-item-on-cursor (fn [_ eid {:keys [ctx/world-mouse-position]}]
-                            ; at clicked-cell when we put it into a inventory-cell
-                            ; we do not want to drop it on the ground too additonally,
-                            ; so we dissoc it there manually. Otherwise it creates another item
-                            ; on the ground
-                            (let [entity @eid]
-                              (when (:entity/item-on-cursor entity)
-                                [[:tx/sound "bfxr_itemputground"]
-                                 [:tx/dissoc eid :entity/item-on-cursor]
-                                 [:tx/spawn-item
-                                  (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
-                                  (:entity/item-on-cursor entity)]])))
-   :player-moving         (fn [_ eid _ctx]
-                            [[:tx/dissoc eid :entity/movement]])})
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -289,11 +241,11 @@
                nil)
 
    :tx/state-exit (fn [[_ eid [state-k state-v]] ctx]
-                    (when-let [f (state-k state->exit)]
+                    (when-let [f (state-k state/state->exit)]
                       (f state-v eid ctx)))
 
    :tx/state-enter (fn [[_ eid [state-k state-v]] _ctx]
-                     (when-let [f (state-k state->enter)]
+                     (when-let [f (state-k state/state->enter)]
                        (f state-v eid)))
 
    :tx/audiovisual (fn [[_ position audiovisual]
