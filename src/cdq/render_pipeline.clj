@@ -4,6 +4,7 @@
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.grid :as grid]
+            [cdq.graphics]
             [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.raycaster :as raycaster]
@@ -15,12 +16,9 @@
             [cdq.ui.widget :as widget]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -296,25 +294,14 @@
                        :invisible-tile-color [0 0 0 1]})))
 
 (defn draw-on-world-viewport
-  [{:keys [ctx/config
-           ctx/batch
-           ctx/shape-drawer
-           ctx/unit-scale
-           ctx/world-unit-scale
-           ctx/world-viewport]
+  [{:keys [ctx/config]
     :as ctx}]
-  ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-  ; -> also Widgets, etc. ? check.
-  (batch/set-color! batch color/white)
-  (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
-  (batch/begin! batch)
-  (sd/with-line-width shape-drawer world-unit-scale
-    (fn []
-      (reset! unit-scale world-unit-scale)
-      (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
-        ((requiring-resolve f) ctx))
-      (reset! unit-scale 1)))
-  (batch/end! batch))
+  (cdq.graphics/draw-on-world-viewport!
+   ctx
+   (fn []
+     (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
+       ((requiring-resolve f) ctx))))
+  ctx)
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
