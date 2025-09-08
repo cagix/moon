@@ -1,6 +1,5 @@
 {
  :cdq.application.start/pipeline [cdq.application.context.record/create
-                                  cdq.tx-handler/extend-ctx
                                   cdq.fsms/add
                                   cdq.entity-state-impl/do!
                                   cdq.entity-components/add
