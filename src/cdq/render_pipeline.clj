@@ -280,7 +280,7 @@
                        :invisible-tile-color [0 0 0 1]})))
 
 (defn draw-on-world-viewport
-  [{:keys [ctx/draw-on-world-viewport
+  [{:keys [ctx/config
            ctx/batch
            ctx/shape-drawer
            ctx/unit-scale
@@ -295,7 +295,7 @@
   (sd/with-line-width shape-drawer world-unit-scale
     (fn []
       (reset! unit-scale world-unit-scale)
-      (doseq [f draw-on-world-viewport]
+      (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
         ((requiring-resolve f) ctx))
       (reset! unit-scale 1)))
   (batch/end! batch))
