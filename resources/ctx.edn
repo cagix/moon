@@ -4,6 +4,7 @@
                                   cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
                                   cdq.fsms/add
+                                  cdq.entity-state-impl/do!
                                   cdq.entity-components/add
                                   cdq.create.effects/do!
                                   cdq.create.editor-widgets/do!
