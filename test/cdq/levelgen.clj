@@ -1,13 +1,14 @@
 (ns cdq.levelgen
   (:require [cdq.db-impl :as db]
             [cdq.gdx-app.resize]
-            [cdq.textures-impl]
+            [cdq.files :as files]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
@@ -110,7 +111,10 @@
         ctx (assoc ctx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (cdq.textures-impl/create (gdx/files))
+                   :ctx/textures (into {} (for [[path file-handle] (files/search (gdx/files)
+                                                                                 {:folder "resources/"
+                                                                                  :extensions #{"png" "bmp"}})]
+                                            [path (texture/from-file file-handle)]))
                    :ctx/camera (:viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1

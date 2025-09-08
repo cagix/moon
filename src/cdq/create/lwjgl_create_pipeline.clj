@@ -1,5 +1,5 @@
 (ns cdq.create.lwjgl-create-pipeline
-  (:require [cdq.textures-impl]
+  (:require [cdq.files]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
@@ -77,7 +77,10 @@
              :ctx/stage stage
              :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
              :ctx/graphics (gdx/graphics)
-             :ctx/textures (cdq.textures-impl/create (gdx/files))
+             :ctx/textures (into {} (for [[path file-handle] (cdq.files/search (gdx/files)
+                                                                               {:folder "resources/"
+                                                                                :extensions #{"png" "bmp"}})]
+                                      [path (texture/from-file file-handle)]))
              :ctx/audio (into {}
                               (for [sound-name (->> sounds io/resource slurp edn/read-string)
                                     :let [path (format sound-path-format sound-name)]]
