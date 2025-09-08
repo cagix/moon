@@ -1,23 +1,19 @@
-(ns cdq.start.lwjgl.listener
-  (:require cdq.application.reset-game-state
-            cdq.application.gdx-create))
+(ns cdq.start.lwjgl.listener)
 
 (defn create
   [{:keys [ctx/application-state
-           ctx/render-fn
-           ctx/dispose-fn
-           ctx/resize-fn
-           ctx/starting-world]
+           ctx/config]
     :as ctx}]
-  {:create! (fn []
-              (reset! application-state (cdq.application.reset-game-state/reset-game-state!
-                                         (cdq.application.gdx-create/after-gdx-create! ctx)
-                                         starting-world)))
-   :dispose! (fn []
-               ((requiring-resolve dispose-fn) @application-state))
-   :render! (fn []
-              (swap! application-state (requiring-resolve render-fn)))
-   :resize! (fn [width height]
-              ((requiring-resolve resize-fn) @application-state width height))
-   :pause! (fn [])
-   :resume! (fn [])})
+  (let [config (:cdq.start.lwjgl.listener config)]
+    {:create! (fn []
+                (reset! application-state ((requiring-resolve (:reset-game-state config))
+                                           ((requiring-resolve (:after-gdx-create config)) ctx)
+                                           (:starting-world config))))
+     :dispose! (fn []
+                 ((requiring-resolve (:dispose config)) @application-state))
+     :render! (fn []
+                (swap! application-state (requiring-resolve (:render config))))
+     :resize! (fn [width height]
+                ((requiring-resolve (:resize config)) @application-state width height))
+     :pause! (fn [])
+     :resume! (fn [])}))

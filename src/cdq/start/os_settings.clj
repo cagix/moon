@@ -2,11 +2,10 @@
   (:require [clojure.gdx.utils.shared-library-loader :as shared-library-loader]))
 
 (defn do!
-  [{:keys [ctx/os-settings]
+  [{:keys [ctx/config]
     :as ctx}]
-  (->> (shared-library-loader/operating-system)
-       os-settings
-       (run! (fn [[f params]]
-               (println [f params])
-               ((requiring-resolve f) params))))
+  (doseq [[f params] ((:cdq.start.os-settings config)
+                      (shared-library-loader/operating-system))]
+    (println [f params])
+    ((requiring-resolve f) params))
   ctx)

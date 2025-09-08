@@ -22,12 +22,30 @@
                           extend-scene2d
                           lwjgl
                           ]
+
+              :cdq.start.register-self cdq.application/state
+
+              :cdq.start.os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                                            [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
+
               :cdq.start.lwjgl {
                                 :listener cdq.start.lwjgl.listener/create
                                 :config {:title "Cyber Dungeon Quest"
                                          :windowed-mode {:width 1440 :height 900}
                                          :foreground-fps 60}
                                 }
+
+              :cdq.start.lwjgl.listener {
+                                         :render cdq.render-pipeline/do!
+                                         :dispose cdq.gdx-app.dispose/do!
+                                         :resize cdq.gdx-app.resize/do!
+                                         :reset-game-state cdq.application.reset-game-state/reset-game-state!
+                                         :after-gdx-create cdq.application.gdx-create/after-gdx-create!
+                                         :starting-world [cdq.world-fns.tmx/create
+                                                          {:tmx-file "maps/vampire.tmx"
+                                                           :start-position [32 71]}]
+                                         }
+
               :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                        :initial-state :npc-sleeping}
                                           :entity/faction :evil}
@@ -52,22 +70,6 @@
                          :unpause-continously :space}
               }
 
-
-
- :ctx/state-atom cdq.application/state
-
- :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                         [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
-
- :ctx/render-fn cdq.render-pipeline/do!
-
- :ctx/dispose-fn cdq.gdx-app.dispose/do!
-
- :ctx/resize-fn  cdq.gdx-app.resize/do!
-
- :ctx/starting-world [cdq.world-fns.tmx/create
-                      {:tmx-file "maps/vampire.tmx"
-                       :start-position [32 71]}]
 
  :ctx/mouseover-eid nil
  :ctx/paused? nil

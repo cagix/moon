@@ -58,16 +58,10 @@
   [:ctx/world-viewport :some]
   [:ctx/z-orders :some]
 
-  [:ctx/os-settings :some]
-  [:ctx/dispose-fn :some]
-  [:ctx/resize-fn :some]
   [:ctx/application-state :some]
   [:ctx/fsms :some]
   [:ctx/entity-components :some]
   [:ctx/spawn-entity-schema :some]
-  [:ctx/render-fn :some]
-  [:ctx/starting-world :some]
-  [:ctx/state-atom :some]
   )
 
 (defn do! [ctx]
