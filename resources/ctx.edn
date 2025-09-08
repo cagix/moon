@@ -41,7 +41,7 @@
                        cdq.render.set-cursor/do!
                        cdq.render.player-state-handle-input/do!
                        cdq.render.assoc-paused/do!
-                       cdq.render.tick-world/do!
+                       cdq.render.tick-world/do! ; entity->tick
                        cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                        cdq.render.handle-key-input/do!
                        cdq.render.dissoc-mouseover-keys/do!
