@@ -2,9 +2,6 @@
  :ctx/config {
               :cdq.start [
                           bind-roots
-                          entity-tick
-                          editor-widgets
-                          effects
                           context-record
                           register-self
                           fsms
@@ -24,11 +21,29 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.entity.state/->create            cdq.entity.state.create/function-map
-                                     cdq.entity.state/state->enter        cdq.entity.state.enter/function-map
-                                     cdq.entity.state/state->cursor       cdq.entity.state.cursor/function-map
-                                     cdq.entity.state/state->exit         cdq.entity.state.exit/function-map
-                                     cdq.entity.state/state->handle-input cdq.entity.state.handle-input/function-map
+                                     cdq.entity.state/->create
+                                     cdq.entity.state.create/function-map
+
+                                     cdq.entity.state/state->enter
+                                     cdq.entity.state.enter/function-map
+
+                                     cdq.entity.state/state->cursor
+                                     cdq.entity.state.cursor/function-map
+
+                                     cdq.entity.state/state->exit
+                                     cdq.entity.state.exit/function-map
+
+                                     cdq.entity.state/state->handle-input
+                                     cdq.entity.state.handle-input/function-map
+
+                                     cdq.editor.widget/k->methods
+                                     cdq.editor.widgets/k->methods
+
+                                     cdq.effect/k->method-map
+                                     cdq.effects/method-map
+
+                                     cdq.entity-tick/entity->tick
+                                     cdq.entity.tick/function-map
                                      }
 
               :cdq.start.register-self cdq.application/state

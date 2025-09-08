@@ -1,4 +1,4 @@
-(ns cdq.start.entity-tick
+(ns cdq.entity.tick
   (:require [cdq.animation :as animation]
             [cdq.entity-tick]
             [cdq.effect :as effect]
@@ -71,7 +71,7 @@
                      (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
        first))
 
-(def entity->tick
+(def function-map
   {:entity/alert-friendlies-after-duration (fn [{:keys [counter faction]}
                                                 eid
                                                 {:keys [ctx/elapsed-time
@@ -183,7 +183,3 @@
                            (when (timer/stopped? elapsed-time counter)
                              [[:tx/dissoc eid :entity/temp-modifier]
                               [:tx/mod-remove eid modifiers]]))})
-
-(defn do! [ctx]
-  (.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
-  ctx)

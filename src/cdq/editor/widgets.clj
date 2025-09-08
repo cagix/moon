@@ -1,4 +1,4 @@
-(ns cdq.start.editor-widgets
+(ns cdq.editor.widgets
   (:require cdq.editor-window
             [cdq.audio :as audio]
             [cdq.db :as db]
@@ -234,156 +234,155 @@
 (defn do! [ctx]
   ctx)
 
-(.bindRoot #'cdq.editor.widget/k->methods
-           {:s/map {:create (fn [schema  _attribute m {:keys [ctx/db] :as ctx}]
-                              (let [table (widget/table
-                                           {:cell-defaults {:pad 5}
-                                            :id :map-widget})
-                                    component-rows (interpose-f horiz-sep
-                                                                (map (fn [[k v]]
-                                                                       (component-row ctx
-                                                                                      [k v]
-                                                                                      schema
-                                                                                      (:schemas db)
-                                                                                      table))
-                                                                     (utils/sort-by-k-order property-k-sort-order
-                                                                                            m)))
-                                    colspan component-row-cols
-                                    opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
-                                                              (set (keys m))))]
-                                (table/add-rows!
-                                 table
-                                 (concat [(when opt?
-                                            [{:actor (widget/text-button "Add component"
-                                                                         (fn [_actor ctx]
-                                                                           (open-add-component-window! ctx schema table)))
-                                              :colspan colspan}])]
-                                         [(when opt?
-                                            [{:actor (separator/horizontal)
-                                              :pad-top 2
-                                              :pad-bottom 2
-                                              :colspan colspan
-                                              :fill-x? true
-                                              :expand-x? true}])]
-                                         component-rows))
-                                table))
-                    :value (fn [_  _attribute table schemas]
-                             (into {}
-                                   (for [widget (filter (comp vector? actor/user-object) (group/children table))
-                                         :let [[k _] (actor/user-object widget)]]
-                                     [k (editor-widget/value (get schemas k) k widget schemas)])))}
+(def k->methods
+  {:s/map {:create (fn [schema  _attribute m {:keys [ctx/db] :as ctx}]
+                     (let [table (widget/table
+                                  {:cell-defaults {:pad 5}
+                                   :id :map-widget})
+                           component-rows (interpose-f horiz-sep
+                                                       (map (fn [[k v]]
+                                                              (component-row ctx
+                                                                             [k v]
+                                                                             schema
+                                                                             (:schemas db)
+                                                                             table))
+                                                            (utils/sort-by-k-order property-k-sort-order
+                                                                                   m)))
+                           colspan component-row-cols
+                           opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
+                                                     (set (keys m))))]
+                       (table/add-rows!
+                        table
+                        (concat [(when opt?
+                                   [{:actor (widget/text-button "Add component"
+                                                                (fn [_actor ctx]
+                                                                  (open-add-component-window! ctx schema table)))
+                                     :colspan colspan}])]
+                                [(when opt?
+                                   [{:actor (separator/horizontal)
+                                     :pad-top 2
+                                     :pad-bottom 2
+                                     :colspan colspan
+                                     :fill-x? true
+                                     :expand-x? true}])]
+                                component-rows))
+                       table))
+           :value (fn [_  _attribute table schemas]
+                    (into {}
+                          (for [widget (filter (comp vector? actor/user-object) (group/children table))
+                                :let [[k _] (actor/user-object widget)]]
+                            [k (editor-widget/value (get schemas k) k widget schemas)])))}
 
 
-            :default {:create (fn [_ _attribute v _ctx]
-                                {:actor/type :actor.type/label
-                                 :label/text (utils/truncate (utils/->edn-str v) 60)})
-                      :value (fn [_  _attribute widget _schemas]
-                               ((actor/user-object widget) 1))
-                      }
+   :default {:create (fn [_ _attribute v _ctx]
+                       {:actor/type :actor.type/label
+                        :label/text (utils/truncate (utils/->edn-str v) 60)})
+             :value (fn [_  _attribute widget _schemas]
+                      ((actor/user-object widget) 1))
+             }
 
-            :widget/edn {:create (fn [schema  _attribute v _ctx]
-                                   {:actor/type :actor.type/text-field
-                                    :text-field/text (utils/->edn-str v)
-                                    :tooltip (str schema)})
-                         :value (fn [_  _attribute widget _schemas]
-                                  (edn/read-string (text-field/get-text widget)))}
+   :widget/edn {:create (fn [schema  _attribute v _ctx]
+                          {:actor/type :actor.type/text-field
+                           :text-field/text (utils/->edn-str v)
+                           :tooltip (str schema)})
+                :value (fn [_  _attribute widget _schemas]
+                         (edn/read-string (text-field/get-text widget)))}
 
-            :string {:create (fn [schema  _attribute v _ctx]
-                                {:actor/type :actor.type/text-field
-                                 :text-field/text v
-                                 :tooltip (str schema)})
+   :string {:create (fn [schema  _attribute v _ctx]
+                      {:actor/type :actor.type/text-field
+                       :text-field/text v
+                       :tooltip (str schema)})
 
-                     :value (fn [_  _attribute widget _schemas]
-                              (text-field/get-text widget))}
+            :value (fn [_  _attribute widget _schemas]
+                     (text-field/get-text widget))}
 
-            :boolean {:create (fn [_ _attribute checked? _ctx]
-                                (assert (boolean? checked?))
-                                {:actor/type :actor.type/check-box
-                                 :text ""
-                                 :on-clicked (fn [_])
-                                 :checked? checked?})
+   :boolean {:create (fn [_ _attribute checked? _ctx]
+                       (assert (boolean? checked?))
+                       {:actor/type :actor.type/check-box
+                        :text ""
+                        :on-clicked (fn [_])
+                        :checked? checked?})
 
-                      :value (fn [_ _attribute widget _schemas]
-                               (check-box/checked? widget))}
+             :value (fn [_ _attribute widget _schemas]
+                      (check-box/checked? widget))}
 
-            :enum {
- :create (fn [schema _attribute v _ctx]
-  {:actor/type :actor.type/select-box
-   :items (map utils/->edn-str (rest schema))
-   :selected (utils/->edn-str v)})
+   :enum {
+          :create (fn [schema _attribute v _ctx]
+                    {:actor/type :actor.type/select-box
+                     :items (map utils/->edn-str (rest schema))
+                     :selected (utils/->edn-str v)})
 
- :value (fn [_  _attribute widget _schemas]
-  (edn/read-string (select-box/get-selected widget)))
+          :value (fn [_  _attribute widget _schemas]
+                   (edn/read-string (select-box/get-selected widget)))
 
+          }
+
+   :s/sound {
+
+             :create (fn [_  _attribute sound-name _ctx]
+                       (let [table (widget/table {:cell-defaults {:pad 5}})]
+                         (table/add-rows! table [(if sound-name
+                                                   (sound-columns table sound-name)
+                                                   [(widget/text-button "No sound"
+                                                                        (fn [_actor ctx]
+                                                                          (open-choose-sound-window! table ctx)))])])
+                         table))
+             }
+
+   :s/one-to-one {
+
+                  :create (fn [[_ property-type]  _attribute property-id ctx]
+                            (let [table (widget/table {:cell-defaults {:pad 5}})]
+                              (add-one-to-one-rows ctx table property-type property-id)
+                              table))
+
+                  :value (fn [_  _attribute widget _schemas]
+                           (->> (group/children widget)
+                                (keep actor/user-object)
+                                first))
+                  }
+
+   :s/one-to-many {
+
+                   :create (fn [[_ property-type]  _attribute property-ids ctx]
+                             (let [table (widget/table {:cell-defaults {:pad 5}})]
+                               (add-one-to-many-rows ctx table property-type property-ids)
+                               table))
+
+                   :value (fn [_  _attribute widget _schemas]
+                            (->> (group/children widget)
+                                 (keep actor/user-object)
+                                 set))
                    }
 
-            :s/sound {
+   :widget/image {
+                  ; too many ! too big ! scroll ... only show files first & preview?
+                  ; make tree view from folders, etc. .. !! all creatures animations showing...
+                  #_(defn- texture-rows [ctx]
+                      (for [file (sort (assets/all-of-type assets :texture))]
+                        [(image-button/create {:texture-region (texture/region (assets file))})]
+                        #_[(text-button/create file
+                                               (fn [_actor _ctx]))]))
 
- :create (fn [_  _attribute sound-name _ctx]
-  (let [table (widget/table {:cell-defaults {:pad 5}})]
-    (table/add-rows! table [(if sound-name
-                              (sound-columns table sound-name)
-                              [(widget/text-button "No sound"
-                                                   (fn [_actor ctx]
-                                                     (open-choose-sound-window! table ctx)))])])
-    table))
+                  :create (fn [schema  _attribute image {:keys [ctx/textures]}]
+                            {:actor/type :actor.type/image-button
+                             :drawable/texture-region (image/texture-region image textures)
+                             :drawable/scale 2}
+                            #_(ui/image-button image
+                                               (fn [_actor ctx]
+                                                 (c/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))
+                                               {:dimensions [96 96]})) ; x2  , not hardcoded here
+                  }
+
+   :widget/animation {
+
+                      :create (fn [_ _attribute animation {:keys [ctx/textures]}]
+                                {:actor/type :actor.type/table
+                                 :rows [(for [image (:animation/frames animation)]
+                                          {:actor {:actor/type :actor.type/image-button
+                                                   :drawable/texture-region (image/texture-region image textures)
+                                                   :drawable/scale 2}})]
+                                 :cell-defaults {:pad 1}})
                       }
 
-            :s/one-to-one {
-
- :create (fn [[_ property-type]  _attribute property-id ctx]
-  (let [table (widget/table {:cell-defaults {:pad 5}})]
-    (add-one-to-one-rows ctx table property-type property-id)
-    table))
-
- :value (fn [_  _attribute widget _schemas]
-  (->> (group/children widget)
-       (keep actor/user-object)
-       first))
-                           }
-
-            :s/one-to-many {
-
- :create (fn [[_ property-type]  _attribute property-ids ctx]
-  (let [table (widget/table {:cell-defaults {:pad 5}})]
-    (add-one-to-many-rows ctx table property-type property-ids)
-    table))
-
- :value (fn [_  _attribute widget _schemas]
-  (->> (group/children widget)
-       (keep actor/user-object)
-       set))
-                            }
-
-            :widget/image {
-; too many ! too big ! scroll ... only show files first & preview?
-; make tree view from folders, etc. .. !! all creatures animations showing...
-#_(defn- texture-rows [ctx]
-    (for [file (sort (assets/all-of-type assets :texture))]
-      [(image-button/create {:texture-region (texture/region (assets file))})]
-      #_[(text-button/create file
-                             (fn [_actor _ctx]))]))
-
- :create (fn [schema  _attribute image {:keys [ctx/textures]}]
-  {:actor/type :actor.type/image-button
-   :drawable/texture-region (image/texture-region image textures)
-   :drawable/scale 2}
-  #_(ui/image-button image
-                     (fn [_actor ctx]
-                       (c/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))
-                     {:dimensions [96 96]})) ; x2  , not hardcoded here
-                           }
-
-            :widget/animation {
-
- :create (fn [_ _attribute animation {:keys [ctx/textures]}]
-  {:actor/type :actor.type/table
-   :rows [(for [image (:animation/frames animation)]
-            {:actor {:actor/type :actor.type/image-button
-                     :drawable/texture-region (image/texture-region image textures)
-                     :drawable/scale 2}})]
-   :cell-defaults {:pad 1}})
-                               }
-
-            }
-           )
+   })
