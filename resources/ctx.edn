@@ -1,4 +1,36 @@
 {
+ :ctx/config {
+              :cdq.start.lwjgl  {
+                                 :listener cdq.start.lwjgl.listener/create
+                                 :config {:title "Cyber Dungeon Quest"
+                                          :windowed-mode {:width 1440 :height 900}
+                                          :foreground-fps 60}
+                                 }
+
+              :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                       :initial-state :npc-sleeping}
+                                          :entity/faction :evil}
+              :cdq.game/player-props {:creature-id :creatures/vampire
+                                      :components {:entity/fsm {:fsm :fsms/player
+                                                                :initial-state :player-idle}
+                                                   :entity/faction :good
+                                                   :entity/player? true
+                                                   :entity/free-skill-points 3
+                                                   :entity/clickable {:type :clickable/player}
+                                                   :entity/click-distance-tiles 1.5}}
+              :world {:content-grid-cell-size 16
+                      :potential-field-factions-iterations {:good 15
+                                                            :evil 5}}
+              :effect-body-props {:width 0.5
+                                  :height 0.5
+                                  :z-order :z-order/effect}
+
+              :controls {:zoom-in :minus
+                         :zoom-out :equals
+                         :unpause-once :p
+                         :unpause-continously :space}
+              }
+
  :cdq.start/pipeline [entity-states
                       entity-tick
                       editor-widgets
@@ -25,11 +57,6 @@
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
 
- :cdq.start.lwjgl/create-listener cdq.start.lwjgl.listener/create
- :cdq.start.lwjgl/config2 {:title "Cyber Dungeon Quest"
-                          :windowed-mode {:width 1440 :height 900}
-                          :foreground-fps 60}
-
  :ctx/render-fn cdq.render-pipeline/do!
 
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
@@ -44,29 +71,6 @@
  :ctx/paused? nil
  :ctx/delta-time 2
  :ctx/active-entities 1
-
- :ctx/config {:cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                       :initial-state :npc-sleeping}
-                                          :entity/faction :evil}
-              :cdq.game/player-props {:creature-id :creatures/vampire
-                                      :components {:entity/fsm {:fsm :fsms/player
-                                                                :initial-state :player-idle}
-                                                   :entity/faction :good
-                                                   :entity/player? true
-                                                   :entity/free-skill-points 3
-                                                   :entity/clickable {:type :clickable/player}
-                                                   :entity/click-distance-tiles 1.5}}
-              :world {:content-grid-cell-size 16
-                      :potential-field-factions-iterations {:good 15
-                                                            :evil 5}}
-              :effect-body-props {:width 0.5
-                                  :height 0.5
-                                  :z-order :z-order/effect}
-
-              :controls {:zoom-in :minus
-                         :zoom-out :equals
-                         :unpause-once :p
-                         :unpause-continously :space}}
 
  :ctx/ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                                    :items [cdq.ui.dev-menu.menus.select-world/create

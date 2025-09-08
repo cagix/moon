@@ -69,8 +69,6 @@
   [:ctx/starting-world :some]
   [:ctx/state-atom :some]
   [:cdq.start/pipeline :some]
-  [:cdq.start.lwjgl/create-listener :some]
-  [:cdq.start.lwjgl/config2 :some]
   )
 
 (defn do! [ctx]

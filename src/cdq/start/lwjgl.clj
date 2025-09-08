@@ -2,6 +2,9 @@
   (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn do!
-  [ctx]
-  (lwjgl/start-application! ((requiring-resolve (::create-listener ctx)) ctx)
-                            (::config2 ctx)))
+  [{:keys [ctx/config]
+    :as ctx}]
+  (let [{:keys [listener
+                config]} (:cdq.start.lwjgl config)]
+    (lwjgl/start-application! ((requiring-resolve listener) ctx)
+                              config)))
