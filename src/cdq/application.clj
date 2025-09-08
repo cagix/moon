@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [cdq.application.config :as config]
+  (:require [cdq.application.colors :as colors]
+            [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
             [cdq.application.draw-on-world-viewport :as draw-on-world-viewport]
             [cdq.application.draw-impl :as draw-impl]
@@ -61,7 +62,6 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
@@ -117,11 +117,6 @@
    :cursors/skill-not-usable      ["x007"         [0   0]]
    :cursors/use-skill             ["pointer004"   [0   0]]
    :cursors/walking               ["walking"      [16 16]]})
-
-(defn- define-gdx-colors!
-  [ctx]
-  (colors/put! [["PRETTY_NAME" [0.84 0.8 0.52 1]]])
-  ctx)
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -1150,7 +1145,7 @@
                                                 :properties "properties.edn"})
                    :ctx/render-layers render-layers/render-layers)
            os-settings/handle!
-           define-gdx-colors!
+           colors/define-gdx-colors!
            [lwjgl/start-gdx-app after-gdx-create!]]))
 
 (.bindRoot #'cdq.entity.state/->create state->create)
