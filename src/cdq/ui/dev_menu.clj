@@ -8,7 +8,7 @@
   [{:keys [ctx/application-state
            ctx/config]}
    world-fn]
-  (swap! application-state (requiring-resolve 'cdq.application/reset-game-state!) world-fn))
+  (swap! application-state (requiring-resolve 'cdq.application.reset-game-state/reset-game-state!) world-fn))
 
 (defn create
   [{:keys [ctx/textures] :as ctx} {:keys [menus]}]
