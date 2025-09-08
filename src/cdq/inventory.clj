@@ -1,6 +1,5 @@
 (ns cdq.inventory
-  (:require [cdq.grid2d :as g2d]
-            [cdq.utils :refer [find-first]]))
+  (:require [cdq.grid2d :as g2d]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -39,10 +38,10 @@
 
 (defn- free-cell [inventory slot item]
   (assert (valid-slots slot) (str "Slot :" (pr-str slot)))
-  (find-first (fn [[_cell cell-item]]
-                (or (stackable? item cell-item)
-                    (nil? cell-item)))
-              (cells-and-items inventory slot)))
+  (first (filter (fn [[_cell cell-item]]
+                   (or (stackable? item cell-item)
+                       (nil? cell-item)))
+                 (cells-and-items inventory slot))))
 
 (defn assert-valid-item? [item]
   (assert (:item/slot item)
