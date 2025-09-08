@@ -296,7 +296,7 @@
     (fn []
       (reset! unit-scale world-unit-scale)
       (doseq [f draw-on-world-viewport]
-        (f ctx))
+        ((requiring-resolve f) ctx))
       (reset! unit-scale 1)))
   (batch/end! batch))
 

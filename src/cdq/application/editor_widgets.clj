@@ -231,6 +231,9 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
+(defn bind-root [ctx]
+  ctx)
+
 (.bindRoot #'cdq.editor.widget/k->methods
            {:s/map {:create (fn [schema  _attribute m {:keys [ctx/db] :as ctx}]
                               (let [table (widget/table

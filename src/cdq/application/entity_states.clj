@@ -1,6 +1,7 @@
 (ns cdq.application.entity-states
   (:require [cdq.controls :as controls]
             [cdq.entity :as entity]
+            [cdq.entity.state]
             [cdq.entity.state.player-idle]
             [cdq.entity.state.player-item-on-cursor]
             [cdq.inventory :as inventory]
@@ -200,8 +201,10 @@
                                                                 :speed (speed @eid)}]]
                               [[:tx/event eid :no-movement-input]]))})
 
-(.bindRoot #'cdq.entity.state/->create state->create)
-(.bindRoot #'cdq.entity.state/state->enter state->enter)
-(.bindRoot #'cdq.entity.state/state->cursor state->cursor)
-(.bindRoot #'cdq.entity.state/state->exit state->exit)
-(.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
+(defn bind-roots [ctx]
+  (.bindRoot #'cdq.entity.state/->create state->create)
+  (.bindRoot #'cdq.entity.state/state->enter state->enter)
+  (.bindRoot #'cdq.entity.state/state->cursor state->cursor)
+  (.bindRoot #'cdq.entity.state/state->exit state->exit)
+  (.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
+  ctx)

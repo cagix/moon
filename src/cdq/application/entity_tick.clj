@@ -184,4 +184,6 @@
                              [[:tx/dissoc eid :entity/temp-modifier]
                               [:tx/mod-remove eid modifiers]]))})
 
-(.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
+(defn bind-root [ctx]
+  (.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
+  ctx)
