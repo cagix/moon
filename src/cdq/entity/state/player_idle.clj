@@ -1,10 +1,8 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.ui.action-bar :as action-bar]
-            [cdq.controls :as controls]
             [cdq.gdx.math.vector2 :as v]
             [cdq.skill :as skill]
-            [cdq.entity :as entity]
-            [clojure.gdx.input :as input]))
+            [cdq.entity :as entity]))
 
 (defn- action-bar-selected-skill [stage]
   (-> stage
