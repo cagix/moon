@@ -6,6 +6,7 @@
                                   cdq.fsms/add
                                   cdq.entity-state-impl/do!
                                   cdq.entity-components/add
+                                  cdq.tick-impl/do!
                                   cdq.create.effects/do!
                                   cdq.create.editor-widgets/do!
                                   cdq.spawn-entity-schema/add
