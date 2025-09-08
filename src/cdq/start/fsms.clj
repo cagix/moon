@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.fsms
+(ns cdq.start.fsms
   (:require [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm

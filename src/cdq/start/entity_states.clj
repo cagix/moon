@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.entity-states
+(ns cdq.start.entity-states
   (:require [cdq.controls :as controls]
             [cdq.entity :as entity]
             [cdq.entity.state]

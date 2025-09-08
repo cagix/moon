@@ -8,5 +8,5 @@
     (reduce (fn [ctx f]
               (f ctx))
             ctx
-            (map #(requiring-resolve (symbol (str "cdq.start.pipeline." % "/do!")))
+            (map #(requiring-resolve (symbol (str "cdq.start." % "/do!")))
                  (::pipeline ctx)))))

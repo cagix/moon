@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.render-layers
+(ns cdq.start.render-layers
   (:require [cdq.animation :as animation]
             [cdq.effect :as effect]
             [cdq.entity :as entity]

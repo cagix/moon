@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.entity-tick
+(ns cdq.start.entity-tick
   (:require [cdq.animation :as animation]
             [cdq.entity-tick]
             [cdq.effect :as effect]

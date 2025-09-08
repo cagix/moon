@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.colors
+(ns cdq.start.colors
   (:require [clojure.gdx.graphics.colors :as colors]))
 
 (defn do!

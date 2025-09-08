@@ -1,5 +1,5 @@
 (ns cdq.dev.migrations
-  (:require [cdq.start.pipeline.db :as db]
+  (:require [cdq.start.db :as db]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 

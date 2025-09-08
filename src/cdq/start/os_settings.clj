@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.os-settings
+(ns cdq.start.os-settings
   (:require [clojure.gdx.utils.shared-library-loader :as shared-library-loader]))
 
 (defn do!

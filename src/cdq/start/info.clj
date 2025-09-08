@@ -1,4 +1,4 @@
-(ns cdq.start.pipeline.info
+(ns cdq.start.info
   (:require [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.op :as op]
