@@ -1,8 +1,6 @@
 {
  :cdq.application.start/pipeline [cdq.application.context.record/create
-                                  cdq.create.render-layers/do!
                                   cdq.application/self-reference
-                                  cdq.extend-scene2d/do!
                                   cdq.application.os-specific-settings/handle!
                                   cdq.create.colors/do!
                                   cdq.application.lwjgl/start!]
