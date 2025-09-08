@@ -1,30 +1,44 @@
 (ns cdq.application.context.record
-  (:require [cdq.audio :as audio]
+  (:require [cdq.animation :as animation]
+            [cdq.audio :as audio]
             [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
+            [cdq.controls :as controls]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.body :as body]
+            cdq.entity-tick
             [cdq.entity.state :as state]
+            [cdq.entity.state.player-item-on-cursor]
+            [cdq.entity.state.player-idle]
             [cdq.gdx.math.vector2 :as v]
             [cdq.grid :as grid]
+            [cdq.grid.cell :as cell]
             [cdq.image :as image]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
+            [cdq.multifn]
             [cdq.rand :refer [rand-int-between]]
+            [cdq.raycaster :as raycaster]
             [cdq.stage]
+            [cdq.skill :as skill]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
+            [cdq.potential-fields.movement :as potential-fields.movement]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.message]
             [cdq.ui.windows.inventory :as inventory-window]
-            [cdq.utils :as utils]
+            [cdq.utils :as utils :refer [find-first]]
             [cdq.world :as world]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.gdx.scenes.scene2d.ui.button :as button]
             [clojure.vis-ui.widget :as widget]
+            [clojure.vis-ui.window :as window]
             [qrecord.core :as q]
             [reduce-fsm :as fsm]))
 
@@ -98,8 +112,130 @@
   [:ctx/reset-game-state-fn :some]
   )
 
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
+
+(q/defrecord Body [body/position
+                   body/width
+                   body/height
+                   body/collides?
+                   body/z-order
+                   body/rotation-angle])
+
+(def entity-components
+  {:entity/animation
+   {:create   (fn [v _ctx]
+                (animation/create v))}
+   :entity/body                            {:create   (fn [{[x y] :position
+                                                            :keys [position
+                                                                   width
+                                                                   height
+                                                                   collides?
+                                                                   z-order
+                                                                   rotation-angle]}
+                                                           {:keys [ctx/minimum-size
+                                                                   ctx/z-orders]}]
+                                                        (assert position)
+                                                        (assert width)
+                                                        (assert height)
+                                                        (assert (>= width  (if collides? minimum-size 0)))
+                                                        (assert (>= height (if collides? minimum-size 0)))
+                                                        (assert (or (boolean? collides?) (nil? collides?)))
+                                                        (assert ((set z-orders) z-order))
+                                                        (assert (or (nil? rotation-angle)
+                                                                    (<= 0 rotation-angle 360)))
+                                                        (map->Body
+                                                         {:position (mapv float position)
+                                                          :width  (float width)
+                                                          :height (float height)
+                                                          :collides? collides?
+                                                          :z-order z-order
+                                                          :rotation-angle (or rotation-angle 0)}))}
+   :entity/delete-after-animation-stopped? {:create!  (fn [_ eid _ctx]
+                                                        (-> @eid :entity/animation :looping? not assert)
+                                                        nil)}
+   :entity/delete-after-duration           {:create   (fn [duration {:keys [ctx/elapsed-time]}]
+                                                        (timer/create elapsed-time duration))}
+   :entity/projectile-collision            {:create   (fn create [v _ctx]
+                                                        (assoc v :already-hit-bodies #{}))}
+   :creature/stats                         {:create   (fn [stats _ctx]
+                                                        (-> (if (:entity/mana stats)
+                                                              (update stats :entity/mana (fn [v] [v v]))
+                                                              stats)
+                                                            (update :entity/hp   (fn [v] [v v])))
+                                                        #_(-> stats
+                                                              (update :entity/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
+                                                              (update :entity/hp   (fn [v] [v v]))))}
+   :entity/fsm                             {:create!  (fn [{:keys [fsm initial-state]} eid {:keys [ctx/fsms]
+                                                                                            :as ctx}]
+                                                        ; fsm throws when initial-state is not part of states, so no need to assert initial-state
+                                                        ; initial state is nil, so associng it. make bug report at reduce-fsm?
+                                                        [[:tx/assoc eid :entity/fsm (assoc ((get fsms fsm) initial-state nil) :state initial-state)]
+                                                         [:tx/assoc eid initial-state (state/create ctx initial-state eid nil)]])}
+   :entity/inventory                       {:create!  (fn [items eid _ctx]
+                                                        (cons [:tx/assoc eid :entity/inventory inventory/empty-inventory]
+                                                              (for [item items]
+                                                                [:tx/pickup-item eid item])))}
+   :entity/skills                          {:create!  (fn [skills eid _ctx]
+                                                        (cons [:tx/assoc eid :entity/skills nil]
+                                                              (for [skill skills]
+                                                                [:tx/add-skill eid skill])))}})
+
 (defn create [ctx]
-  (merge (map->Context {:schema (m/schema schema)})
+  (merge (map->Context
+          {
+           :schema (m/schema schema)
+           :fsms {:fsms/player player-fsm
+                  :fsms/npc npc-fsm}
+           :entity-components entity-components
+           })
          ctx))
 
 ; no window movable type cursor appears here like in player idle
@@ -509,3 +645,424 @@
                      (conj handled tx)))
             (recur ctx (rest txs) handled)))
         handled))))
+
+(def reaction-time-multiplier 0.016)
+
+(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
+  (/ action-time
+     (or (stats/get-stat-value stats (:skill/action-time-modifier-key skill))
+         1)))
+
+(def state->create
+  {:active-skill          (fn [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
+                            {:skill skill
+                             :effect-ctx effect-ctx
+                             :counter (->> skill
+                                           :skill/action-time
+                                           (apply-action-speed-modifier @eid skill)
+                                           (timer/create elapsed-time))})
+   :npc-moving            (fn [eid movement-vector {:keys [ctx/elapsed-time]}]
+                            {:movement-vector movement-vector
+                             :timer (timer/create elapsed-time
+                                                  (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
+                                                     reaction-time-multiplier))})
+   :player-item-on-cursor (fn [_eid item _ctx]
+                            {:item item})
+   :player-moving         (fn [eid movement-vector _ctx]
+                            {:movement-vector movement-vector})
+   :stunned               (fn [_eid duration {:keys [ctx/elapsed-time]}]
+                            {:counter (timer/create elapsed-time duration)})})
+
+(def state->enter {:npc-dead              (fn [_ eid]
+                                     [[:tx/mark-destroyed eid]])
+            :npc-moving            (fn [{:keys [movement-vector]} eid]
+                                     [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                                       :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                                                                  0)}]])
+            :player-dead           (fn [_ _eid]
+                                     [[:tx/sound "bfxr_playerdeath"]
+                                      [:tx/show-modal {:title "YOU DIED - again!"
+                                                       :text "Good luck next time!"
+                                                       :button-text "OK"
+                                                       :on-click (fn [])}]])
+            :player-item-on-cursor (fn [{:keys [item]} eid]
+                                     [[:tx/assoc eid :entity/item-on-cursor item]])
+            :player-moving         (fn [{:keys [movement-vector]} eid]
+                                     [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                                       :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                                                                  0)}]])
+            :active-skill          (fn [{:keys [skill]} eid]
+                                     [[:tx/sound (:skill/start-action-sound skill)]
+                                      (when (:skill/cooldown skill)
+                                        [:tx/set-cooldown eid skill])
+                                      (when (and (:skill/cost skill)
+                                                 (not (zero? (:skill/cost skill))))
+                                        [:tx/pay-mana-cost eid (:skill/cost skill)])])})
+
+(def state->exit
+  {:npc-moving            (fn [_ eid _ctx]
+                            [[:tx/dissoc eid :entity/movement]])
+   :npc-sleeping          (fn [_ eid _ctx]
+                            [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]
+                             [:tx/add-text-effect eid "[WHITE]!" 1]])
+   :player-item-on-cursor (fn [_ eid {:keys [ctx/world-mouse-position]}]
+                            ; at clicked-cell when we put it into a inventory-cell
+                            ; we do not want to drop it on the ground too additonally,
+                            ; so we dissoc it there manually. Otherwise it creates another item
+                            ; on the ground
+                            (let [entity @eid]
+                              (when (:entity/item-on-cursor entity)
+                                [[:tx/sound "bfxr_itemputground"]
+                                 [:tx/dissoc eid :entity/item-on-cursor]
+                                 [:tx/spawn-item
+                                  (cdq.entity.state.player-item-on-cursor/item-place-position world-mouse-position entity)
+                                  (:entity/item-on-cursor entity)]])))
+   :player-moving         (fn [_ eid _ctx]
+                            [[:tx/dissoc eid :entity/movement]])})
+
+(def state->cursor
+  {:active-skill :cursors/sandclock
+   :player-dead :cursors/black-x
+   :player-idle (fn [player-eid ctx]
+                  (let [[k params] (cdq.entity.state.player-idle/interaction-state ctx player-eid)]
+                    (case k
+                      :interaction-state/mouseover-actor
+                      (let [actor params]
+                        (let [inventory-slot (inventory-window/cell-with-item? actor)]
+                          (cond
+                           (and inventory-slot
+                                (get-in (:entity/inventory @player-eid) inventory-slot)) :cursors/hand-before-grab
+                           (window/title-bar? actor) :cursors/move-window
+                           (button/is?        actor) :cursors/over-button
+                           :else :cursors/default)))
+
+                      :interaction-state/clickable-mouseover-eid
+                      (let [{:keys [clicked-eid
+                                    in-click-range?]} params]
+                        (case (:type (:entity/clickable @clicked-eid))
+                          :clickable/item (if in-click-range?
+                                            :cursors/hand-before-grab
+                                            :cursors/hand-before-grab-gray)
+                          :clickable/player :cursors/bag))
+
+                      :interaction-state.skill/usable
+                      :cursors/use-skill
+
+                      :interaction-state.skill/not-usable
+                      :cursors/skill-not-usable
+
+                      :interaction-state/no-skill-selected
+                      :cursors/no-skill-selected)))
+   :player-item-on-cursor :cursors/hand-grab
+   :player-moving :cursors/walking
+   :stunned :cursors/denied})
+
+(defn inventory-window-visible? [stage]
+  (-> stage :windows :inventory-window actor/visible?))
+
+(defn can-pickup-item? [entity item]
+  (inventory/can-pickup-item? (:entity/inventory entity) item))
+
+(defn interaction-state->txs [ctx player-eid]
+  (let [[k params] (cdq.entity.state.player-idle/interaction-state ctx player-eid)]
+    (case k
+      :interaction-state/mouseover-actor nil ; handled by ui actors themself.
+
+      :interaction-state/clickable-mouseover-eid
+      (let [{:keys [clicked-eid
+                    in-click-range?]} params]
+        (if in-click-range?
+          (case (:type (:entity/clickable @clicked-eid))
+            :clickable/player
+            [[:tx/toggle-inventory-visible]]
+
+            :clickable/item
+            (let [item (:entity/item @clicked-eid)]
+              (cond
+               (inventory-window-visible? (:ctx/stage ctx))
+               [[:tx/sound "bfxr_takeit"]
+                [:tx/mark-destroyed clicked-eid]
+                [:tx/event player-eid :pickup-item item]]
+
+               (can-pickup-item? @player-eid item)
+               [[:tx/sound "bfxr_pickup"]
+                [:tx/mark-destroyed clicked-eid]
+                [:tx/pickup-item player-eid item]]
+
+               :else
+               [[:tx/sound "bfxr_denied"]
+                [:tx/show-message "Your Inventory is full"]])))
+          [[:tx/sound "bfxr_denied"]
+           [:tx/show-message "Too far away"]]))
+
+      :interaction-state.skill/usable
+      (let [[skill effect-ctx] params]
+        [[:tx/event player-eid :start-action [skill effect-ctx]]])
+
+      :interaction-state.skill/not-usable
+      (let [state params]
+        [[:tx/sound "bfxr_denied"]
+         [:tx/show-message (case state
+                             :cooldown "Skill is still on cooldown"
+                             :not-enough-mana "Not enough mana"
+                             :invalid-params "Cannot use this here")]])
+
+      :interaction-state/no-skill-selected
+      [[:tx/sound "bfxr_denied"]
+       [:tx/show-message "No selected skill"]])))
+
+(defn- speed [{:keys [creature/stats]}]
+  (or (stats/get-stat-value stats :entity/movement-speed)
+      0))
+
+(def state->handle-input
+  {:player-idle           (fn [player-eid {:keys [ctx/input] :as ctx}]
+                            (if-let [movement-vector (controls/player-movement-vector input)]
+                              [[:tx/event player-eid :movement-input movement-vector]]
+                              (when (input/button-just-pressed? input :left)
+                                (interaction-state->txs ctx player-eid))))
+
+   :player-item-on-cursor (fn [eid
+                               {:keys [ctx/input
+                                       ctx/mouseover-actor]}]
+                            (when (and (input/button-just-pressed? input :left)
+                                       (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor))
+                              [[:tx/event eid :drop-item]]))
+   :player-moving         (fn [eid {:keys [ctx/input]}]
+                            (if-let [movement-vector (controls/player-movement-vector input)]
+                              [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                                :speed (speed @eid)}]]
+                              [[:tx/event eid :no-movement-input]]))})
+
+(defn- move-position [position {:keys [direction speed delta-time]}]
+  (mapv #(+ %1 (* %2 speed delta-time)) position direction))
+
+(defn- move-body [body movement]
+  (update body :body/position move-position movement))
+
+(defn- try-move [grid body entity-id movement]
+  (let [new-body (move-body body movement)]
+    (when (grid/valid-position? grid new-body entity-id)
+      new-body)))
+
+; TODO sliding threshold
+; TODO name - with-sliding? 'on'
+; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
+; direection [0 0] which is a waste of processor power...
+(defn- try-move-solid-body [grid body entity-id {[vx vy] :direction :as movement}]
+  (let [xdir (Math/signum (float vx))
+        ydir (Math/signum (float vy))]
+    (or (try-move grid body entity-id movement)
+        (try-move grid body entity-id (assoc movement :direction [xdir 0]))
+        (try-move grid body entity-id (assoc movement :direction [0 ydir])))))
+
+; this is not necessary if effect does not need target, but so far not other solution came up.
+(defn- update-effect-ctx
+  "Call this on effect-context if the time of using the context is not the time when context was built."
+  [raycaster {:keys [effect/source effect/target] :as effect-ctx}]
+  (if (and target
+           (not (:entity/destroyed? @target))
+           (raycaster/line-of-sight? raycaster @source @target))
+    effect-ctx
+    (dissoc effect-ctx :effect/target)))
+
+(defn- npc-effect-ctx
+  [{:keys [ctx/raycaster
+           ctx/grid]}
+   eid]
+  (let [entity @eid
+        target (grid/nearest-enemy grid entity)
+        target (when (and target
+                          (raycaster/line-of-sight? raycaster entity @target))
+                 target)]
+    {:effect/source eid
+     :effect/target target
+     :effect/target-direction (when target
+                                (v/direction (entity/position entity)
+                                             (entity/position @target)))}))
+
+(defn- npc-choose-skill [ctx entity effect-ctx]
+  (->> entity
+       :entity/skills
+       vals
+       (sort-by #(or (:skill/cost %) 0))
+       reverse
+       (filter #(and (= :usable (skill/usable-state entity % effect-ctx))
+                     (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
+       first))
+
+(def entity->tick
+  {:entity/alert-friendlies-after-duration (fn [{:keys [counter faction]}
+                                                eid
+                                                {:keys [ctx/elapsed-time
+                                                        ctx/grid]}]
+                                             (when (timer/stopped? elapsed-time counter)
+                                               (cons [:tx/mark-destroyed eid]
+                                                     (for [friendly-eid (->> {:position (entity/position @eid)
+                                                                              :radius 4}
+                                                                             (grid/circle->entities grid)
+                                                                             (filter #(= (:entity/faction @%) faction)))]
+                                                       [:tx/event friendly-eid :alert]))))
+   :entity/animation (fn [animation eid {:keys [ctx/delta-time]}]
+                       [[:tx/assoc eid :entity/animation (animation/tick animation delta-time)]])
+   :entity/delete-after-animation-stopped? (fn [_ eid _ctx]
+                                             (when (animation/stopped? (:entity/animation @eid))
+                                               [[:tx/mark-destroyed eid]]))
+   :entity/delete-after-duration (fn [counter eid {:keys [ctx/elapsed-time]}]
+                                   (when (timer/stopped? elapsed-time counter)
+                                     [[:tx/mark-destroyed eid]]))
+   :entity/movement (fn [{:keys [direction
+                                 speed
+                                 rotate-in-movement-direction?]
+                          :as movement}
+                         eid
+                         {:keys [ctx/delta-time
+                                 ctx/grid
+                                 ctx/max-speed]}]
+                      (assert (<= 0 speed max-speed)
+                              (pr-str speed))
+                      (assert (or (zero? (v/length direction))
+                                  (v/nearly-normalised? direction))
+                              (str "cannot understand direction: " (pr-str direction)))
+                      (when-not (or (zero? (v/length direction))
+                                    (nil? speed)
+                                    (zero? speed))
+                        (let [movement (assoc movement :delta-time delta-time)
+                              body (:entity/body @eid)]
+                          (when-let [body (if (:body/collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
+                                            (try-move-solid-body grid body (:entity/id @eid) movement)
+                                            (move-body body movement))]
+                            [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))
+   :entity/projectile-collision (fn [{:keys [entity-effects already-hit-bodies piercing?]}
+                                     eid
+                                     {:keys [ctx/grid]}]
+                                  ; TODO this could be called from body on collision
+                                  ; for non-solid
+                                  ; means non colliding with other entities
+                                  ; but still collding with other stuff here ? o.o
+                                  (let [entity @eid
+                                        cells* (map deref (grid/body->cells grid (:entity/body entity))) ; just use cached-touched -cells
+                                        hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
+                                                                     (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
+                                                                           (:entity/faction @%))
+                                                                     (:body/collides? (:entity/body @%))
+                                                                     (body/overlaps? (:entity/body entity)
+                                                                                     (:entity/body @%)))
+                                                               (grid/cells->entities grid cells*))
+                                        destroy? (or (and hit-entity (not piercing?))
+                                                     (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]
+                                    [(when destroy?
+                                       [:tx/mark-destroyed eid])
+                                     (when hit-entity
+                                       [:tx/assoc-in eid [:entity/projectile-collision :already-hit-bodies] (conj already-hit-bodies hit-entity)] ; this is only necessary in case of not piercing ...
+                                       )
+                                     (when hit-entity
+                                       [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
+   :entity/skills (fn [skills eid {:keys [ctx/elapsed-time]}]
+                    (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
+                          :when (and cooling-down?
+                                     (timer/stopped? elapsed-time cooling-down?))]
+                      [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
+   :active-skill (fn [{:keys [skill effect-ctx counter]}
+                      eid
+                      {:keys [ctx/elapsed-time
+                              ctx/raycaster]}]
+                   (cond
+                    (not (effect/some-applicable? (update-effect-ctx raycaster effect-ctx) ; TODO how 2 test
+                                                  (:skill/effects skill)))
+                    [[:tx/event eid :action-done]
+                     ; TODO some sound ?
+                     ]
+
+                    (timer/stopped? elapsed-time counter)
+                    [[:tx/effect effect-ctx (:skill/effects skill)]
+                     [:tx/event eid :action-done]]))
+   :npc-idle (fn [_ eid {:keys [ctx/grid] :as ctx}]
+               (let [effect-ctx (npc-effect-ctx ctx eid)]
+                 (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
+                   [[:tx/event eid :start-action [skill effect-ctx]]]
+                   [[:tx/event eid :movement-direction (or (potential-fields.movement/find-direction grid eid)
+                                                           [0 0])]])))
+   :npc-moving (fn [{:keys [timer]} eid {:keys [ctx/elapsed-time]}]
+                 (when (timer/stopped? elapsed-time timer)
+                   [[:tx/event eid :timer-finished]]))
+   :npc-sleeping (fn [_ eid {:keys [ctx/grid]}]
+                   (let [entity @eid]
+                     (when-let [distance (grid/nearest-enemy-distance grid entity)]
+                       (when (<= distance (stats/get-stat-value (:creature/stats entity) :entity/aggro-range))
+                         [[:tx/event eid :alert]]))))
+   :stunned (fn [{:keys [counter]} eid {:keys [ctx/elapsed-time]}]
+              (when (timer/stopped? elapsed-time counter)
+                [[:tx/event eid :effect-wears-off]]))
+   :entity/string-effect (fn [{:keys [counter]} eid {:keys [ctx/elapsed-time]}]
+                           (when (timer/stopped? elapsed-time counter)
+                             [[:tx/dissoc eid :entity/string-effect]]))
+   :entity/temp-modifier (fn [{:keys [modifiers counter]}
+                              eid
+                              {:keys [ctx/elapsed-time]}]
+                           (when (timer/stopped? elapsed-time counter)
+                             [[:tx/dissoc eid :entity/temp-modifier]
+                              [:tx/mod-remove eid modifiers]]))})
+
+(.bindRoot #'cdq.entity.state/->create state->create)
+(.bindRoot #'cdq.entity.state/state->enter state->enter)
+(.bindRoot #'cdq.entity.state/state->cursor state->cursor)
+(.bindRoot #'cdq.entity.state/state->exit state->exit)
+(.bindRoot #'cdq.entity.state/state->handle-input state->handle-input)
+(.bindRoot #'cdq.entity-tick/entity->tick entity->tick)
+
+(cdq.multifn/add-methods! '[{:required [cdq.effect/applicable?
+                                        cdq.effect/handle]
+                             :optional [cdq.effect/useful?
+                                        cdq.effect/render]}
+                            [[cdq.effects.audiovisual
+                              :effects/audiovisual]
+                             [cdq.effects.projectile
+                              :effects/projectile]
+                             [cdq.effects.sound
+                              :effects/sound]
+                             [cdq.effects.spawn
+                              :effects/spawn]
+                             [cdq.effects.target-all
+                              :effects/target-all]
+                             [cdq.effects.target-entity
+                              :effects/target-entity]
+                             [cdq.effects.target.audiovisual
+                              :effects.target/audiovisual]
+                             [cdq.effects.target.convert
+                              :effects.target/convert]
+                             [cdq.effects.target.damage
+                              :effects.target/damage]
+                             [cdq.effects.target.kill
+                              :effects.target/kill]
+                             [cdq.effects.target.melee-damage
+                              :effects.target/melee-damage]
+                             [cdq.effects.target.spiderweb
+                              :effects.target/spiderweb]
+                             [cdq.effects.target.stun
+                              :effects.target/stun]]])
+
+(cdq.multifn/add-methods! '[{:optional [cdq.editor.widget/create
+                                          cdq.editor.widget/value]}
+                              [[cdq.editor.widget.map
+                                :s/map]
+                               [cdq.editor.widget.default
+                                :default]
+                               [cdq.editor.widget.edn
+                                :widget/edn]
+                               [cdq.editor.widget.string
+                                :string]
+                               [cdq.editor.widget.boolean
+                                :boolean]
+                               [cdq.editor.widget.enum
+                                :enum]
+                               [cdq.editor.widget.sound
+                                :s/sound]
+                               [cdq.editor.widget.one-to-one
+                                :s/one-to-one]
+                               [cdq.editor.widget.one-to-many
+                                :s/one-to-many]
+                               [cdq.editor.widget.image
+                                :widget/image]
+                               [cdq.editor.widget.animation
+                                :widget/animation]]])
