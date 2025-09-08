@@ -1,15 +1,8 @@
-; audio
-; world
-; ui /tx\/
 (ns cdq.tx-handler
   (:require [cdq.audio :as audio]
-
-            [cdq.ctx :as ctx] ; ???
-
+            [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
-
-            [cdq.db :as db] ; ??
-
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
@@ -21,17 +14,12 @@
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.rand :refer [rand-int-between]]
-
-            ; ??
             [cdq.render.handle-key-input :refer [toggle-inventory-visible!]]
-
             [cdq.stats :as stats]
             [cdq.timer :as timer]
-
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.message]
             [cdq.ui.windows.inventory :as inventory-window]
-
             [cdq.utils :as utils]
             [cdq.world :as world]
             [clojure.gdx.scenes.scene2d.actor :as actor]
