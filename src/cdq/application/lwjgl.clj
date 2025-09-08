@@ -4,30 +4,18 @@
 (defn start!
   [{:keys [ctx/application-state
            ctx/lwjgl
-           ctx/create-pipeline
-           ctx/render-pipeline
+           ctx/create-fn
+           ctx/render-fn
            ctx/dispose-fn
            ctx/resize-fn]
     :as ctx}]
   (lwjgl/start-application!
    {:create! (fn []
-               (reset! application-state (reduce (fn [ctx f]
-                                                   (let [result (f ctx)]
-                                                     (if (nil? result)
-                                                       ctx
-                                                       result)))
-                                                 ctx
-                                                 (map requiring-resolve create-pipeline))))
+               (reset! application-state ((requiring-resolve create-fn) ctx)))
     :dispose! (fn []
                 ((requiring-resolve dispose-fn) @application-state))
     :render! (fn []
-               (swap! application-state (fn [ctx]
-                                          (reduce (fn [ctx f]
-                                                    (if-let [new-ctx (f ctx)]
-                                                      new-ctx
-                                                      ctx))
-                                                  ctx
-                                                  (map requiring-resolve render-pipeline)))))
+               (swap! application-state (requiring-resolve render-fn)))
     :resize! (fn [width height]
                ((requiring-resolve resize-fn) @application-state width height))
     :pause! (fn [])

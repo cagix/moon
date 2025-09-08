@@ -61,6 +61,7 @@
   [:cdq.application.start/pipeline :some]
   [:ctx/os-settings :some]
   [:ctx/lwjgl :some]
+  [:ctx/create-fn :some]
   [:ctx/create-pipeline :some]
   [:ctx/render-pipeline :some]
   [:ctx/dispose-fn :some]
@@ -69,6 +70,7 @@
   [:ctx/fsms :some]
   [:ctx/entity-components :some]
   [:ctx/spawn-entity-schema :some]
+  [:ctx/render-fn :some]
   )
 
 (defn create [ctx]
