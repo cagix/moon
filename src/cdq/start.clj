@@ -6,6 +6,7 @@
 (defn -main []
   (let [ctx (-> "ctx.edn" io/resource slurp edn/read-string)]
     (reduce (fn [ctx f]
-              ((requiring-resolve f) ctx))
+              (f ctx))
             ctx
-            (::pipeline ctx))))
+            (map #(requiring-resolve (symbol (str "cdq.start.pipeline." % "/do!")))
+                 (::pipeline ctx)))))

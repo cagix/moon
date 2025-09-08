@@ -201,7 +201,7 @@
                                                                 :speed (speed @eid)}]]
                               [[:tx/event eid :no-movement-input]]))})
 
-(defn bind-roots [ctx]
+(defn do! [ctx]
   (.bindRoot #'cdq.entity.state/->create state->create)
   (.bindRoot #'cdq.entity.state/state->enter state->enter)
   (.bindRoot #'cdq.entity.state/state->cursor state->cursor)

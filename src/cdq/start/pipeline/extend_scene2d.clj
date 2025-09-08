@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [clojure.gdx.scenes.scene2d]))
 
-(defn extend-it [ctx]
+(defn do! [ctx]
   (extend-type (class ctx)
     clojure.gdx.scenes.scene2d/Context
     (handle-draws! [ctx draws]

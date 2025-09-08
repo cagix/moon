@@ -195,5 +195,5 @@
    {:creature/stats draw-stats
     :active-skill draw-active-skill}])
 
-(defn create [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/render-layers render-layers))

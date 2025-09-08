@@ -1,4 +1,4 @@
 (ns cdq.start.pipeline.unit-scale)
 
-(defn create [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/unit-scale (atom 1)))

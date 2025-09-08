@@ -75,7 +75,7 @@
    )
  )
 
-(defn init! [ctx]
+(defn do! [ctx]
   (.bindRoot #'cdq.effect/k->method-map
              {:effects/audiovisual {:applicable? (fn [_ {:keys [effect/target-position]}]
                                                    target-position)

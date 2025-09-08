@@ -231,7 +231,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defn bind-root [ctx]
+(defn do! [ctx]
   ctx)
 
 (.bindRoot #'cdq.editor.widget/k->methods

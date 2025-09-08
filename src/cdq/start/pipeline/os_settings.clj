@@ -1,7 +1,7 @@
 (ns cdq.start.pipeline.os-settings
   (:require [clojure.gdx.utils.shared-library-loader :as shared-library-loader]))
 
-(defn handle!
+(defn do!
   [{:keys [ctx/os-settings]
     :as ctx}]
   (->> (shared-library-loader/operating-system)

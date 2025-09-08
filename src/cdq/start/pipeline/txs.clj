@@ -105,7 +105,7 @@
 
 (declare txs-fn-map)
 
-(defn do!
+(defn do!*
   [{k 0 :as component}
    ctx]
   (let [f (get txs-fn-map k)]
@@ -154,7 +154,7 @@
                        (if (inventory/stackable? item cell-item)
                          (do
                           #_(tx/stack-item ctx eid cell item))
-                         (do! [:tx/set-item eid cell item] ctx))))
+                         (do!* [:tx/set-item eid cell item] ctx))))
 
    :tx/set-cooldown (fn [[_ eid skill] {:keys [ctx/elapsed-time]}]
                       (swap! eid assoc-in
@@ -417,11 +417,11 @@
 (defn- handle-tx! [tx ctx]
   (assert (valid-tx? tx) (pr-str tx))
   (try
-   (do! tx ctx)
+   (do!* tx ctx)
    (catch Throwable t
      (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
 
-(defn extend-it [ctx]
+(defn do! [ctx]
   (extend-type (class ctx)
     cdq.ctx/TransactionHandler
     (handle-txs! [ctx transactions]

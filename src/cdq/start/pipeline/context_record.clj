@@ -72,7 +72,7 @@
   [:cdq.start/pipeline :some]
   )
 
-(defn create [ctx]
+(defn do! [ctx]
   (merge (map->Context
           {:schema (m/schema schema)})
          ctx))

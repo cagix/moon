@@ -159,6 +159,6 @@
               :file properties-file
               :schemas schemas})))
 
-(defn create2 [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/db (create {:schemas "schema.edn"
                               :properties "properties.edn"})))

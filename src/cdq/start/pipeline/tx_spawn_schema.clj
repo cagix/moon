@@ -28,5 +28,5 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-(defn create [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/spawn-entity-schema components-schema))

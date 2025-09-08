@@ -109,5 +109,5 @@
                 (sd/set-color! shape-drawer (color/->obj color))
                 (sd/line! shape-drawer sx sy ex ey))})
 
-(defn create [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/draw-fns draw-fns))

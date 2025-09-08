@@ -71,5 +71,5 @@
                                                               (for [skill skills]
                                                                 [:tx/add-skill eid skill])))}})
 
-(defn create [ctx]
+(defn do! [ctx]
   (assoc ctx :ctx/entity-components method-mappings))

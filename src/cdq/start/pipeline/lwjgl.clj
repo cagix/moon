@@ -3,7 +3,7 @@
             [cdq.application.gdx-create]
             [clojure.gdx.backends.lwjgl :as lwjgl]))
 
-(defn start-gdx-app
+(defn do!
   [{:keys [ctx/application-state
            ctx/lwjgl
            ctx/render-fn

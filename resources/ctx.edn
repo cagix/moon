@@ -1,24 +1,24 @@
 {
- :cdq.start/pipeline [cdq.start.pipeline.entity-states/bind-roots
-                      cdq.start.pipeline.entity-tick/bind-root
-                      cdq.start.pipeline.editor-widgets/bind-root
-                      cdq.start.pipeline.effects/init!
-                      cdq.start.pipeline.context-record/create
-                      cdq.start.pipeline.register-self/do!
-                      cdq.start.pipeline.fsms/create
-                      cdq.start.pipeline.entity-components/create
-                      cdq.start.pipeline.tx-spawn-schema/create
-                      cdq.start.pipeline.draw-impl/create
-                      cdq.start.pipeline.info/create
-                      cdq.start.pipeline.unit-scale/create
-                      cdq.start.pipeline.world-unit-scale/create
-                      cdq.start.pipeline.db/create2
-                      cdq.start.pipeline.render-layers/create
-                      cdq.start.pipeline.os-settings/handle!
-                      cdq.start.pipeline.colors/define-gdx-colors!
-                      cdq.start.pipeline.txs/extend-it
-                      cdq.start.pipeline.extend-scene2d/extend-it
-                      cdq.start.pipeline.lwjgl/start-gdx-app]
+ :cdq.start/pipeline [entity-states
+                      entity-tick
+                      editor-widgets
+                      effects
+                      context-record
+                      register-self
+                      fsms
+                      entity-components
+                      tx-spawn-schema
+                      draw-impl
+                      info
+                      unit-scale
+                      world-unit-scale
+                      db
+                      render-layers
+                      os-settings
+                      colors
+                      txs
+                      extend-scene2d
+                      lwjgl]
 
  :ctx/state-atom cdq.application/state
 
