@@ -9,6 +9,5 @@
            (throw (ex-info ""
                            {:var-sym var-sym
                             :to-set-sym to-set-sym}
-                           t)))
-         ))
+                           t)))))
   ctx)

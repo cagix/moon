@@ -1,14 +1,13 @@
 (ns cdq.entity.state.cursor
-  (:require [cdq.entity.state.player-idle]
-            [cdq.ui.windows.inventory :as inventory-window]
+  (:require [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
             [clojure.vis-ui.window :as window]))
 
 (def function-map
   {:active-skill :cursors/sandclock
    :player-dead :cursors/black-x
-   :player-idle (fn [player-eid ctx]
-                  (let [[k params] (cdq.entity.state.player-idle/interaction-state ctx player-eid)]
+   :player-idle (fn [player-eid {:keys [ctx/interaction-state]}]
+                  (let [[k params] interaction-state]
                     (case k
                       :interaction-state/mouseover-actor
                       (let [actor params]

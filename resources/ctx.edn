@@ -42,6 +42,7 @@
               [:ctx/world-viewport :some]
               [:ctx/z-orders :some]
 
+              [:ctx/interaction-state :some]
               [:ctx/application-state :some]
               [:ctx/fsms :some]
               [:ctx/entity-components :some]
@@ -198,4 +199,5 @@
  :ctx/paused? nil
  :ctx/delta-time 2
  :ctx/active-entities 1
+ :ctx/interaction-state :yes
  }
