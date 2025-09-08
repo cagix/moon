@@ -1,8 +1,15 @@
+; audio
+; world
+; ui /tx\/
 (ns cdq.tx-handler
   (:require [cdq.audio :as audio]
-            [cdq.ctx :as ctx]
+
+            [cdq.ctx :as ctx] ; ???
+
             [cdq.content-grid :as content-grid]
-            [cdq.db :as db]
+
+            [cdq.db :as db] ; ??
+
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
@@ -14,36 +21,24 @@
             [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.rand :refer [rand-int-between]]
+
+            ; ??
             [cdq.render.handle-key-input :refer [toggle-inventory-visible!]]
+
             [cdq.stats :as stats]
             [cdq.timer :as timer]
+
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.message]
             [cdq.ui.windows.inventory :as inventory-window]
+
             [cdq.utils :as utils]
+            [cdq.world :as world]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]
-            [qrecord.core :as q]
             [reduce-fsm :as fsm]))
-
-(q/defrecord Entity [entity/body])
-
-; # :z-order/flying has no effect for now
-; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-; because using potential-field for z-order/ground
-; -> would have to add one more potential-field for each faction for z-order/flying
-; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-; * they could also go over ground units and not collide with them
-; ( a test showed then flying OVER player entity )
-; -> so no flying units for now
-(defn- create-creature-body [position {:keys [body/width body/height #_body/flying?]}]
-  {:position position
-   :width  width
-   :height height
-   :collides? true
-   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (def state->enter {:npc-dead              (fn [_ eid]
                                      [[:tx/mark-destroyed eid]])
@@ -419,6 +414,15 @@
                        :entity/item item
                        :entity/clickable {:type :clickable/item
                                           :text (:property/pretty-name item)}}]])
+
+   ; # :z-order/flying has no effect for now
+   ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
+   ; because using potential-field for z-order/ground
+   ; -> would have to add one more potential-field for each faction for z-order/flying
+   ; * they would also (maybe) need a separate occupied-cells if they don't collide with other
+   ; * they could also go over ground units and not collide with them
+   ; ( a test showed then flying OVER player entity )
+   ; -> so no flying units for now
    :tx/spawn-creature (fn
                         [[_ {:keys [position
                                     creature-property
@@ -427,8 +431,12 @@
                         (assert creature-property)
                         [[:tx/spawn-entity
                           (-> creature-property
-                              (assoc :entity/body (create-creature-body position
-                                                                        (:entity/body creature-property)))
+                              (assoc :entity/body (let [{:keys [body/width body/height #_body/flying?]} (:entity/body creature-property)]
+                                                    {:position position
+                                                     :width  width
+                                                     :height height
+                                                     :collides? true
+                                                     :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)}))
                               (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                               (utils/safe-merge components))]])
 
@@ -442,7 +450,7 @@
                           :as ctx}]
                       (m/validate-humanize spawn-entity-schema components)
                       (assert (and (not (contains? components :entity/id))))
-                      (let [eid (atom (merge (map->Entity {})
+                      (let [eid (atom (merge (world/map->Entity {})
                                              (reduce (fn [m [k v]]
                                                        (assoc m k (if-let [create (:create (k entity-components))]
                                                                     (create v ctx)
