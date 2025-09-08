@@ -53,3 +53,6 @@
 
 (def k->fsm {:fsms/player player-fsm
              :fsms/npc npc-fsm})
+
+(defn create [ctx]
+  (assoc ctx :ctx/fsms k->fsm))

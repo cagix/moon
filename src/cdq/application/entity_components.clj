@@ -70,3 +70,6 @@
                                                         (cons [:tx/assoc eid :entity/skills nil]
                                                               (for [skill skills]
                                                                 [:tx/add-skill eid skill])))}})
+
+(defn create [ctx]
+  (assoc ctx :ctx/entity-components method-mappings))

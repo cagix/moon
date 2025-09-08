@@ -158,3 +158,7 @@
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file
               :schemas schemas})))
+
+(defn create2 [ctx]
+  (assoc ctx :ctx/db (create {:schemas "schema.edn"
+                              :properties "properties.edn"})))

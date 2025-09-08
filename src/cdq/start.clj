@@ -1,5 +1,7 @@
 (ns cdq.start
-  (:require [cdq.application.register-self]
+  (:require [cdq.application.unit-scale]
+            [cdq.application.world-unit-scale]
+            [cdq.application.register-self]
             [cdq.application.colors :as colors]
             [cdq.application.config :as config]
             [cdq.application.context-record :as context-record]
@@ -29,19 +31,17 @@
           [context-record/create
            effects/init!
            cdq.application.register-self/do!
-           #(assoc %
-                   :ctx/fsms fsms/k->fsm
-                   :ctx/entity-components entity-components/method-mappings
-                   :ctx/spawn-entity-schema tx-spawn-schema/components-schema
-                   :ctx/ui-actors ui-actors/create-stuff
-                   :ctx/draw-on-world-viewport draw-on-world-viewport/draw-fns
-                   :ctx/draw-fns draw-impl/draw-fns
-                   :ctx/unit-scale (atom 1)
-                   :ctx/world-unit-scale (float (/ 48))
-                   :ctx/info application.info/info-configuration
-                   :ctx/db (cdq.application.db/create {:schemas "schema.edn"
-                                                       :properties "properties.edn"})
-                   :ctx/render-layers render-layers/render-layers)
+           fsms/create
+           entity-components/create
+           tx-spawn-schema/create
+           ui-actors/create
+           draw-on-world-viewport/create
+           draw-impl/create
+           application.info/create
+           cdq.application.unit-scale/create
+           cdq.application.world-unit-scale/create
+           cdq.application.db/create2
+           render-layers/create
            os-settings/handle!
            colors/define-gdx-colors!
            cdq.application.txs/extend-it

@@ -27,3 +27,6 @@
              [:entity/inventory    {:optional true} :some]
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
+
+(defn create [ctx]
+  (assoc ctx :ctx/spawn-entity-schema components-schema))

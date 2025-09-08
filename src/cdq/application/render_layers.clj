@@ -194,3 +194,6 @@
     :entity/string-effect draw-text-over-entity}
    {:creature/stats draw-stats
     :active-skill draw-active-skill}])
+
+(defn create [ctx]
+  (assoc ctx :ctx/render-layers render-layers))

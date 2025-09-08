@@ -143,3 +143,6 @@
                             (when-not (zero? v)
                               (str "Cost: " v " Mana")))
               :maxrange (fn [[_ v] _ctx] v)}})
+
+(defn create [ctx]
+  (assoc ctx :ctx/info info-configuration))

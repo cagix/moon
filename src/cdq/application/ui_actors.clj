@@ -36,3 +36,6 @@
    [cdq.ui.player-state-draw/create]
    [cdq.ui.message/create {:duration-seconds 0.5
                            :name "player-message"}]])
+
+(defn create [ctx]
+  (assoc ctx :ctx/ui-actors create-stuff))

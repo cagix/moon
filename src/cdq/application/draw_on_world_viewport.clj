@@ -11,3 +11,6 @@
    cdq.draw-on-world-viewport.entities/do!
    ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
    cdq.draw-on-world-viewport.highlight-mouseover-tile/do!])
+
+(defn create [ctx]
+  (assoc ctx :ctx/draw-on-world-viewport draw-fns))
