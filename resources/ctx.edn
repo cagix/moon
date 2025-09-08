@@ -31,7 +31,7 @@
  :ctx/render-pipeline [cdq.render.validate/do!
                        cdq.render.assoc-mouseover-keys/do!
                        cdq.render.update-mouseover-eid/do!
-                       cdq.render.check-open-debug-data/do! ; TODO FIXME its not documented I forgot rightclick can open debug data view!
+                       cdq.render.check-open-debug-data/do!
                        cdq.render.assoc-active-entities/do!
                        cdq.render.set-camera-on-player/do!
                        cdq.render.clear-screen/do!
@@ -45,11 +45,7 @@
                        cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
                        cdq.render.handle-key-input/do!
                        cdq.render.dissoc-mouseover-keys/do!
-                       cdq.render.validate/do!
-                       ; :cdq.render/validate
-                       ; -> render multifn / method map ?
-                       ; tx just  method map ?
-                       ]
+                       cdq.render.validate/do!]
  :ctx/dispose-fn cdq.gdx-app.dispose/do!
  :ctx/resize-fn  cdq.gdx-app.resize/do!
  }
