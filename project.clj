@@ -5,6 +5,13 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
+                 ; => animation, grid2d, etc. all _independent_ projects/libs ?
+                 ; so put everything in one project again ?
+                 ; but its different projects!
+                 ; can I go further from here ?
+                 ; the whole project
+                 ; just depends on start-fns etc
+                 ; but crazy
                  [clojure.gdx                       "1.13.5"]
                  [clojure.gdx.backends.lwjgl        "1.13.5"]
                  [clojure.gdx.graphics.g2d.freetype "1.13.5"]
