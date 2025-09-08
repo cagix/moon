@@ -1,19 +1,22 @@
 (ns cdq.effect)
 
-(defmulti applicable? (fn [[k] effect-ctx]
-                        k))
+(declare k->method-map)
 
-(defmulti handle (fn [[k] effect-ctx ctx]
-                   k))
+(defn applicable? [{k 0 :as component} effect-ctx]
+  ((:applicable? (k->method-map k)) component effect-ctx))
 
-(defmulti useful? (fn [[k] effect-ctx ctx]
-                    k))
-(defmethod useful? :default [_ _effect-ctx ctx]
-  true)
+(defn handle [{k 0 :as component} effect-ctx ctx]
+  ((:handle (k->method-map k)) component effect-ctx ctx))
 
-(defmulti render (fn [[k] _effect-ctx ctx]
-                   k))
-(defmethod render :default [_ _effect-ctx ctx])
+(defn useful? [{k 0 :as component} effect-ctx ctx]
+  (if-let [f (:useful? (k->method-map k))]
+    (f component effect-ctx ctx)
+    true))
+
+(defn render [{k 0 :as component} effect-ctx ctx]
+  (if-let [f (:render (k->method-map k))]
+    (f component effect-ctx ctx)
+    nil))
 
 (defn filter-applicable? [effect-ctx effect]
   (filter #(applicable? % effect-ctx) effect))
