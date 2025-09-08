@@ -1,4 +1,8 @@
 {
+
+ ; TODO requiring-resolve is the problem !! obscures abstraction layers/dependencies
+ ; creates 'fake order'
+
  :ctx/os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
  :ctx/lwjgl {:title "Cyber Dungeon Quest"
