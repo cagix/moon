@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.entity :as entity]
-            [cdq.gdx.math.vector2 :as v]))
+  (:require [cdq.gdx.math.vector2 :as v]))
 
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))
@@ -15,7 +14,7 @@
                        (v/distance player target)))))
 
 (defn item-place-position [world-mouse-position entity]
-  (placement-point (entity/position entity)
+  (placement-point (:body/position (:entity/body entity))
                    world-mouse-position
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
