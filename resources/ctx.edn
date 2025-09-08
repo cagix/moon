@@ -1,9 +1,8 @@
 {
-
  :ctx/schema [:map {:closed true}
-              [:ctx/active-entities :some] ; world
+              [:ctx/active-entities :some]
               [:ctx/audio :some]
-              [:ctx/batch :some] ; graphics
+              [:ctx/batch :some]
               [:ctx/config :some]
               [:ctx/content-grid :some]
               [:ctx/cursors :some]
