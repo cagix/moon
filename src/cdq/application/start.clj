@@ -1,7 +1,15 @@
 (ns cdq.application.start
-  (:require [clojure.edn :as edn]
+  (:require cdq.application.context.record
+            cdq.application
+            cdq.application.os-specific-settings
+            cdq.create.colors
+            cdq.application.lwjgl
+            [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:gen-class))
+
+; TODO requiring-resolve is the problem !! obscures abstraction layers/dependencies
+; creates 'fake order'
 
 (defn -main []
   (let [ctx (-> "ctx.edn"
@@ -13,8 +21,8 @@
                 new-ctx
                 ctx))
             ctx
-            (map requiring-resolve '[cdq.application.context.record/create
-                                     cdq.application/self-reference
-                                     cdq.application.os-specific-settings/handle!
-                                     cdq.create.colors/do!
-                                     cdq.application.lwjgl/start!]))))
+            [cdq.application.context.record/create
+             cdq.application/self-reference
+             cdq.application.os-specific-settings/handle!
+             cdq.create.colors/do!
+             cdq.application.lwjgl/start!])))
