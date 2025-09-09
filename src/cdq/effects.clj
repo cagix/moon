@@ -38,11 +38,14 @@
 
 (require '[clojure.walk :as walk])
 
-(def method-map
+(defn walk-method-map [method-map]
   (walk/postwalk (fn [form]
                    (if (symbol? form)
                      (let [var (requiring-resolve form)]
                        (assert var form)
                        var)
                      form))
-                 method-map*))
+                 method-map))
+
+(def method-map
+  (walk-method-map method-map*))
