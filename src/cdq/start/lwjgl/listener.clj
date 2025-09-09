@@ -1,4 +1,5 @@
-(ns cdq.start.lwjgl.listener)
+(ns cdq.start.lwjgl.listener
+  (:require [cdq.ctx :as ctx]))
 
 (defn create
   [{:keys [ctx/application-state
@@ -7,7 +8,9 @@
   (let [config (:cdq.start.lwjgl.listener config)]
     {:create! (fn []
                 (reset! application-state ((requiring-resolve (:reset-game-state config))
-                                           ((requiring-resolve (:after-gdx-create config)) ctx)
+                                           (let [ctx ((requiring-resolve (:after-gdx-create config)) ctx)]
+                                             (ctx/reset-stage! ctx)
+                                             ctx)
                                            (:starting-world config))))
      :dispose! (fn []
                  ((requiring-resolve (:dispose config)) @application-state))

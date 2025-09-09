@@ -6,8 +6,10 @@
 
 (defn reset-game-fn
   [{:keys [ctx/application-state
-           ctx/config]}
+           ctx/config]
+    :as ctx}
    world-fn]
+  (cdq.ctx/reset-stage! ctx)
   (swap! application-state (requiring-resolve 'cdq.application.reset-game-state/reset-game-state!) world-fn))
 
 (defn create
