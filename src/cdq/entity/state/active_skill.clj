@@ -2,7 +2,18 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.image :as image]
+            [cdq.raycaster :as raycaster]
             [cdq.timer :as timer]))
+
+; this is not necessary if effect does not need target, but so far not other solution came up.
+(defn- update-effect-ctx
+  "Call this on effect-context if the time of using the context is not the time when context was built."
+  [raycaster {:keys [effect/source effect/target] :as effect-ctx}]
+  (if (and target
+           (not (:entity/destroyed? @target))
+           (raycaster/line-of-sight? raycaster @source @target))
+    effect-ctx
+    (dissoc effect-ctx :effect/target)))
 
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48
@@ -27,6 +38,21 @@
       (* (float action-counter-ratio) 360) ; degree
       [1 1 1 0.5]]
      [:draw/texture-region texture-region [(- (float x) radius) y]]]))
+
+(defn tick! [{:keys [skill effect-ctx counter]}
+             eid
+             {:keys [ctx/elapsed-time
+                     ctx/raycaster]}]
+  (cond
+   (not (effect/some-applicable? (update-effect-ctx raycaster effect-ctx) ; TODO how 2 test
+                                 (:skill/effects skill)))
+   [[:tx/event eid :action-done]
+    ; TODO some sound ?
+    ]
+
+   (timer/stopped? elapsed-time counter)
+   [[:tx/effect effect-ctx (:skill/effects skill)]
+    [:tx/event eid :action-done]]))
 
 (defn draw
   [{:keys [skill effect-ctx counter]}
