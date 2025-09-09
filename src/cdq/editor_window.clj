@@ -39,22 +39,22 @@
                        (when (input/key-just-pressed? input :enter)
                          (clicked-save-fn actor ctx)))
         scrollpane-height (:viewport/height ui-viewport)]
-    (doto (widget/window {:title (str "[SKY]Property[]")
-                          :id :property-editor-window
-                          :modal? true
-                          :close-button? true
-                          :center? true
-                          :close-on-escape? true
-                          :rows [[(cdq.ui.widget/scroll-pane-cell scrollpane-height
-                                                                  [[{:actor widget :colspan 2}]
-                                                                   [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
-                                                                     :center? true}
-                                                                    {:actor (widget/text-button "Delete" clicked-delete-fn)
-                                                                     :center? true}]])]]
-                          :actors [{:actor/type :actor.type/actor
-                                    :act extra-act-fn}]
-                          :cell-defaults {:pad 5}})
-      (.pack))))
+    (widget/window {:title (str "[SKY]Property[]")
+                    :id :property-editor-window
+                    :modal? true
+                    :close-button? true
+                    :center? true
+                    :close-on-escape? true
+                    :rows [[(cdq.ui.widget/scroll-pane-cell scrollpane-height
+                                                            [[{:actor widget :colspan 2}]
+                                                             [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
+                                                               :center? true}
+                                                              {:actor (widget/text-button "Delete" clicked-delete-fn)
+                                                               :center? true}]])]]
+                    :actors [{:actor/type :actor.type/actor
+                              :act extra-act-fn}]
+                    :cell-defaults {:pad 5}
+                    :pack? true})))
 
 (defn rebuild!
   [{:keys [ctx/db
