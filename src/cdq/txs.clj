@@ -9,16 +9,13 @@
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.rand :refer [rand-int-between]]
+            [cdq.skills :as skills]
             [cdq.stage :as stage]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.utils :as utils]
             [cdq.world :as world]
             [reduce-fsm :as fsm]))
-
-(defn- add-skill [entity {:keys [property/id] :as skill}]
-  {:pre [(not (contains? (:entity/skills entity) id))]}
-  (assoc-in entity [:entity/skills id] skill))
 
 (defn- add-text-effect [entity text duration elapsed-time]
   (assoc entity
@@ -88,7 +85,7 @@
                          nil)
 
    :tx/add-skill (fn [[_ eid skill] _ctx]
-                   (swap! eid add-skill skill)
+                   (swap! eid update :entity/skills skills/add-skill skill)
                    (if (:entity/player? @eid)
                      [[:tx/player-add-skill skill]]
                      nil))
