@@ -17,8 +17,6 @@
                            (= k ((actor/user-object actor) 0))))
                     (group/children table)))
 
-(def ^:private component-row-cols 3)
-
 (defn- component-row [ctx [k v] map-schema schemas table]
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
@@ -70,13 +68,14 @@
     (.pack window)
     (stage/add! stage window)))
 
-(defn- horiz-sep []
-  [{:actor (separator/horizontal)
-    :pad-top 2
-    :pad-bottom 2
-    :colspan component-row-cols
-    :fill-x? true
-    :expand-x? true}])
+(defn- horiz-sep [colspan]
+  (fn []
+    [{:actor (separator/horizontal)
+      :pad-top 2
+      :pad-bottom 2
+      :colspan colspan
+      :fill-x? true
+      :expand-x? true}]))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -87,7 +86,8 @@
         table (widget/table
                {:cell-defaults {:pad 5}
                 :id :map-widget})
-        component-rows (interpose-f horiz-sep
+        colspan 3
+        component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]
                                            (component-row ctx
                                                           [k v]
@@ -95,7 +95,6 @@
                                                           (:schemas db)
                                                           table))
                                          (utils/sort-by-k-order k-sort-order m)))
-        colspan component-row-cols
         opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
                                   (set (keys m))))]
     (table/add-rows!
