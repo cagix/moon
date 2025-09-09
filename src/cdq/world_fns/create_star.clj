@@ -2,6 +2,7 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.level.helper :as helper]
             [cdq.rand :as rand]
+            [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.gdx.maps.tiled :as tiled]))
 
 (defn- assoc-transition-cells [grid]
@@ -102,7 +103,7 @@
                         :when (<= (rand) spawn-rate)]
                     [position (rand-nth creatures)])]
     ; - add creature layer -
-    (helper/add-creatures-layer! tiled-map creatures)
+    (creature-layer/add-creatures-layer! tiled-map creatures)
     ; - finished -
     {:tiled-map tiled-map
      :start-position start-position}))

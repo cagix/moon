@@ -4,6 +4,7 @@
             [cdq.level.helper :as helper]
             [cdq.world-fns.module :as module]
             [cdq.world-fns.creature-tiles :as creature-tiles]
+            [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.gdx.maps.tiled :as tiled]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
@@ -74,7 +75,7 @@
                                    (<= (rand) spawn-rate)
                                    (seq creatures))]
                     [position (rand-nth creatures)])]
-    (helper/add-creatures-layer! tiled-map creatures)
+    (creature-layer/add-creatures-layer! tiled-map creatures)
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))

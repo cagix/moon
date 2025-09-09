@@ -1,25 +1,8 @@
 (ns cdq.level.helper
-  (:require [clojure.gdx.maps.tiled :as tiled]
-            [cdq.grid2d :as g2d]
+  (:require [cdq.grid2d :as g2d]
             [cdq.level.caves :as caves]
             [cdq.level.nads :as nads]
             [cdq.utils :as utils]))
-
-; out of memory error -> each texture region is a new object
-; so either memoize on id or property/image already calculated !? idk
-(def creature-tile
-  (memoize
-   (fn [{:keys [tile/id
-                tile/texture-region]}]
-     (assert (and id
-                  texture-region))
-     (tiled/static-tiled-map-tile texture-region "id" id))))
-
-(defn add-creatures-layer! [tiled-map spawn-positions]
-  (tiled/add-layer! tiled-map {:name "creatures"
-                               :visible? false
-                               :tiles (for [[position creature-property] spawn-positions]
-                                        [position (creature-tile creature-property)])}))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)
