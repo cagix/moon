@@ -2,6 +2,7 @@
   (:require cdq.editor-window
             cdq.editor.widget.animation
             cdq.editor.widget.image
+            cdq.editor.widget.one-to-many
             cdq.editor.sound
             [cdq.db :as db]
             [cdq.image :as image]
@@ -62,41 +63,6 @@
          (widget/text-button "-"
                              (fn [_actor ctx]
                                (redo-rows ctx nil))))]])))
-
-(defn- add-one-to-many-rows
-  [{:keys [ctx/db
-           ctx/textures]}
-   table
-   property-type
-   property-ids]
-  (let [redo-rows (fn [ctx property-ids]
-                    (group/clear-children! table)
-                    (add-one-to-many-rows ctx table property-type property-ids)
-                    (window/pack-ancestors! table))]
-    (table/add-rows!
-     table
-     [[(widget/text-button "+"
-                           (fn [_actor {:keys [ctx/stage] :as ctx}]
-                             (let [window (widget/window {:title "Choose"
-                                                          :modal? true
-                                                          :close-button? true
-                                                          :center? true
-                                                          :close-on-escape? true})
-                                   clicked-id-fn (fn [id ctx]
-                                                   (.remove window)
-                                                   (redo-rows ctx (conj property-ids id)))]
-                               (table/add! window (cdq.editor.overview-table/create ctx property-type clicked-id-fn))
-                               (.pack window)
-                               (stage/add! stage window))))]
-      (for [property-id property-ids]
-        (let [property (db/get-raw db property-id)
-              texture-region (image/texture-region (property/image property) textures)
-              image-widget (widget/image texture-region {:id property-id})]
-          (tooltip/add! image-widget (utils/pprint-to-str property))))
-      (for [id property-ids]
-        (widget/text-button "-"
-                            (fn [_actor ctx]
-                              (redo-rows ctx (disj property-ids id)))))])))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -304,19 +270,8 @@
                                 first))
                   }
 
-   :s/one-to-many {
-
-                   :create (fn [[_ property-type]  _attribute property-ids ctx]
-                             (let [table (widget/table {:cell-defaults {:pad 5}})]
-                               (add-one-to-many-rows ctx table property-type property-ids)
-                               table))
-
-                   :value (fn [_  _attribute widget _schemas]
-                            (->> (group/children widget)
-                                 (keep actor/user-object)
-                                 set))
-                   }
-
+   :s/one-to-many {:create cdq.editor.widget.one-to-many/create
+                   :value cdq.editor.widget.one-to-many/value}
    :widget/image     {:create cdq.editor.widget.image/create}
    :widget/animation {:create cdq.editor.widget.animation/create}
    })
