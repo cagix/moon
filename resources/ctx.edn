@@ -67,7 +67,6 @@
                           txs
                           extend-scene2d
                           stage-impl
-                          world-impl
                           lwjgl
                           ]
 
