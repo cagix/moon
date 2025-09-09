@@ -1,44 +1,21 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
-            [cdq.image :as image]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.image]
+            [clojure.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils :as utils]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
 (defn create
-  [{:keys [ctx/ui-viewport
-           ctx/textures]}
+  [{:keys [ctx/ui-viewport]}
    {:keys [title
            id
            visible?
-           clicked-cell-fn]}]
-  (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
-                                             :shield   1
-                                             :rings    2
-                                             :necklace 3
-                                             :helm     4
-                                             :cloak    5
-                                             :chest    6
-                                             :leg      7
-                                             :glove    8
-                                             :boot     9
-                                             :bag      10} ; transparent
-        slot->texture-region (fn [slot]
-                               (let [width  48
-                                     height 48
-                                     sprite-x 21
-                                     sprite-y (+ (slot->y-sprite-idx slot) 2)
-                                     bounds [(* sprite-x width)
-                                             (* sprite-y height)
-                                             width
-                                             height]]
-                                 (image/texture-region {:image/file "images/items.png"
-                                                        :image/bounds bounds}
-                                                       textures)))
-        cell-size 48
+           clicked-cell-fn
+           slot->texture-region
+           ]}]
+  (let [cell-size 48
         slot->drawable (fn [slot]
                          (utils/drawable (slot->texture-region slot)
                                          :width cell-size
@@ -116,13 +93,13 @@
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (utils/drawable texture-region :width cell-size :height cell-size)]
-    (clojure.gdx.scenes.scene2d.ui.image/set-drawable! image-widget drawable)
+    (image/set-drawable! image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")]
-    (clojure.gdx.scenes.scene2d.ui.image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
+    (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))
 
 (defn cell-with-item?

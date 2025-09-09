@@ -1,5 +1,6 @@
 (ns cdq.ui.windows
   (:require [cdq.ctx :as ctx]
+            [cdq.image :as image]
             [cdq.info :as info]
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory))
@@ -30,19 +31,49 @@
   ; don't use select-keys as it loses Entity record type
   (info/generate (:ctx/info ctx) (apply dissoc entity disallowed-keys) ctx))
 
+(defn create-inventory [ctx]
+  (cdq.ui.windows.inventory/create
+   ctx
+   (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
+                                             :shield   1
+                                             :rings    2
+                                             :necklace 3
+                                             :helm     4
+                                             :cloak    5
+                                             :chest    6
+                                             :leg      7
+                                             :glove    8
+                                             :boot     9
+                                             :bag      10} ; transparent
+         slot->texture-region (fn [slot]
+                                (let [width  48
+                                      height 48
+                                      sprite-x 21
+                                      sprite-y (+ (slot->y-sprite-idx slot) 2)
+                                      bounds [(* sprite-x width)
+                                              (* sprite-y height)
+                                              width
+                                              height]]
+                                  (image/texture-region {:image/file "images/items.png"
+                                                         :image/bounds bounds}
+                                                        (:ctx/textures ctx))))
+         ]
+     {:title "Inventory"
+      :id :inventory-window
+      :visible? false
+      :clicked-cell-fn (fn [cell]
+                         (fn [{:keys [ctx/player-eid] :as ctx}]
+                           (ctx/handle-txs!
+                            ctx
+                            (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+                              (f player-eid cell)))))
+      :slot->texture-region slot->texture-region
+      })))
+
 (defn create [ctx _]
   {:actor/type :actor.type/group
    :id :windows
    :actors [(cdq.ui.windows.entity-info/create ctx {:y 0
                                                     :->label-text ->label-text
                                                     }) ; graphics only
-            (cdq.ui.windows.inventory/create ctx ; graphics only
-                                             {:title "Inventory"
-                                              :id :inventory-window
-                                              :visible? false
-                                              :clicked-cell-fn (fn [cell]
-                                                                 (fn [{:keys [ctx/player-eid] :as ctx}]
-                                                                   (ctx/handle-txs!
-                                                                    ctx
-                                                                    (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
-                                                                      (f player-eid cell)))))})]})
+            (create-inventory ctx)]})
