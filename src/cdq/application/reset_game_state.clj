@@ -175,11 +175,6 @@
                                       :creature-properties (db/all-raw db :properties/creatures)
                                       :textures textures))))
         world-ctx* (world-ctx world-config)]
-    ;World data structure:
-    ; * from tiled-map
-    ; => grid, raycaster, explored-tile-corners, content-grid, potential-field-cache
-    ; etc. id-counter, etc.
-    ; => world protocol ???
     (-> ctx
         (merge world-ctx*)
         (assoc :ctx/tiled-map (:tiled-map world-config))
