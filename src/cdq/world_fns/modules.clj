@@ -1,14 +1,7 @@
 (ns cdq.world-fns.modules
   (:require [cdq.area-level-grid :as area-level-grid]
             [cdq.grid2d :as g2d]
-            [cdq.level.helper :refer [prepare-creature-properties
-                                      add-creatures-layer!
-                                      scale-grid
-                                      cave-grid
-                                      adjacent-wall-positions
-                                      flood-fill
-                                      grid->tiled-map
-                                      transition-idx-value]]
+            [cdq.level.helper :as helper]
             [clojure.gdx.maps.tiled :as tiled]))
 
 (def modules-file "maps/modules.tmx") ; used @ tst
@@ -47,7 +40,7 @@
                       & {:keys [transition?
                                 transition-neighbor?]}]
   (let [idxvalue (if transition?
-                   (transition-idx-value unscaled-position transition-neighbor?)
+                   (helper/transition-idx-value unscaled-position transition-neighbor?)
                    floor-idxvalue)
         tiled-map-positions (module-index->tiled-map-positions
                              (if transition?
@@ -84,7 +77,7 @@
                                                                     (get unscaled-grid %))))
                             scaled-grid
                             unscaled-transition-positions)]
-    (grid->tiled-map modules-tiled-map scaled-grid)))
+    (helper/grid->tiled-map modules-tiled-map scaled-grid)))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
 ; * at the beginning enemies very close, different area different spawn-rate !
@@ -100,10 +93,10 @@
            world/spawn-rate]}
    creature-properties]
   (assert (<= max-area-level map-size))
-  (let [{:keys [start grid]} (cave-grid :size map-size)
+  (let [{:keys [start grid]} (helper/cave-grid :size map-size)
         ;_ (printgrid grid)
         ;_ (println " - ")
-        grid (reduce #(assoc %1 %2 :transition) grid (adjacent-wall-positions grid))
+        grid (reduce #(assoc %1 %2 :transition) grid (helper/adjacent-wall-positions grid))
         ;_ (printgrid grid)
         ;_ (println " - ")
         _ (assert (or
@@ -111,7 +104,7 @@
                    (= #{:ground :transition} (set (g2d/cells grid))))
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules-scale
-        scaled-grid (scale-grid grid scale)
+        scaled-grid (helper/scale-grid grid scale)
         tiled-map (place-module (tiled/tmx-tiled-map modules-file)
                                  scaled-grid
                                  grid
@@ -120,7 +113,7 @@
         start-position (mapv * start scale)
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
-        spawn-positions (flood-fill scaled-grid start-position can-spawn?)
+        spawn-positions (helper/flood-fill scaled-grid start-position can-spawn?)
         ;_ (println "scaled grid with filled nil: '?' \n")
         ;_ (printgrid (reduce #(assoc %1 %2 nil) scaled-grid spawn-positions))
         ;_ (println "\n")
@@ -135,7 +128,7 @@
                       (set (g2d/cells area-level-grid)))
                    (= (set (concat [:wall max-area-level] (range max-area-level)))
                       (set (g2d/cells area-level-grid)))))
-        scaled-area-level-grid (scale-grid area-level-grid scale)
+        scaled-area-level-grid (helper/scale-grid area-level-grid scale)
         get-free-position-in-area-level (fn [area-level]
                                           (rand-nth
                                            (filter
@@ -154,7 +147,7 @@
                                    (<= (rand) spawn-rate)
                                    (seq creatures))]
                     [position (rand-nth creatures)])]
-    (add-creatures-layer! tiled-map creatures)
+    (helper/add-creatures-layer! tiled-map creatures)
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
@@ -164,4 +157,4 @@
            textures]
     :as params}]
   (generate-modules params
-                    (prepare-creature-properties creature-properties textures)))
+                    (helper/prepare-creature-properties creature-properties textures)))
