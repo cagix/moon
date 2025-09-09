@@ -43,9 +43,58 @@
                                           (:body/position (:entity/body source))
                                           (:body/position (:entity/body target))))))))
 
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  cell/Cell
+  (blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied))
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance))
+
+  (pf-blocked? [this]
+    (cell/blocked? this :z-order/ground)))
+
+(defn- create-grid-cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (atom (map->RCell
+         {:position position
+          :middle (utils/tile->middle position)
+          :movement movement
+          :entities #{}
+          :occupied #{}})))
+
 (defn- world-ctx
   [{:keys [tiled-map] :as config}]
-  (let [grid (grid-impl/create tiled-map)
+  (let [grid (grid-impl/->Grid
+              (g2d/create-grid (:tiled-map/width  tiled-map)
+                               (:tiled-map/height tiled-map)
+                               (fn [position]
+                                 (create-grid-cell position
+                                                   (case (tiled/movement-property tiled-map position)
+                                                     "none" :none
+                                                     "air"  :air
+                                                     "all"  :all)))))
         z-orders [:z-order/on-ground
                   :z-order/ground
                   :z-order/flying

@@ -3,10 +3,7 @@
             [cdq.faction :as faction]
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
-            [cdq.grid2d :as g2d]
-            [cdq.gdx.math.geom :as geom]
-            [cdq.utils :as utils]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [cdq.gdx.math.geom :as geom]))
 
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
@@ -103,56 +100,3 @@
   (nearest-enemy [grid entity]
     (cell/nearest-entity @(grid/cell grid (mapv int (entity/position entity)))
                          (faction/enemy (:entity/faction entity)))))
-
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  cell/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance))
-
-  (pf-blocked? [this]
-    (cell/blocked? this :z-order/ground)))
-
-(defn- create-grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (atom (map->RCell
-         {:position position
-          :middle (utils/tile->middle position)
-          :movement movement
-          :entities #{}
-          :occupied #{}})))
-
-(defn create [tiled-map]
-  (->Grid
-   (g2d/create-grid (:tiled-map/width  tiled-map)
-                    (:tiled-map/height tiled-map)
-                    (fn [position]
-                      (create-grid-cell position
-                                        ; also do at level creation, here no tiled foozaboozls.
-                                        (case (tiled/movement-property tiled-map position)
-                                          "none" :none
-                                          "air"  :air
-                                          "all"  :all))))))
