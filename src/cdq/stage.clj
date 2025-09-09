@@ -1,66 +1,10 @@
-(ns cdq.stage
-  (:require [cdq.ui.message]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.vis-ui.widget :as widget]))
+(ns cdq.stage)
 
-(defn toggle-inventory-visible! [stage]
-  (-> stage :windows :inventory-window actor/toggle-visible!))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal-window! [stage
-                           ui-viewport
-                           {:keys [title text button-text on-click]}]
-  (assert (not (::modal stage)))
-  (stage/add! stage
-              (widget/window {:title title
-                              :rows [[{:actor {:actor/type :actor.type/label
-                                               :label/text text}}]
-                                     [(widget/text-button button-text
-                                                          (fn [_actor _ctx]
-                                                            (actor/remove! (::modal stage))
-                                                            (on-click)))]]
-                              :id ::modal
-                              :modal? true
-                              :center-position [(/ (:viewport/width  ui-viewport) 2)
-                                                (* (:viewport/height ui-viewport) (/ 3 4))]
-                              :pack? true})))
-
-(defn set-item!
-  [stage cell item-properties]
-  (-> stage
-      :windows
-      :inventory-window
-      (inventory-window/set-item! cell item-properties)))
-
-(defn remove-item!
-  [stage inventory-cell]
-  (-> stage
-      :windows
-      :inventory-window
-      (inventory-window/remove-item! inventory-cell)))
-
-(defn add-skill!
-  [stage skill-properties]
-  (-> stage
-      :action-bar
-      (action-bar/add-skill! skill-properties)))
-
-(defn remove-skill!
-  [stage skill-id]
-  (-> stage
-      :action-bar
-      (action-bar/remove-skill! skill-id)))
-
-(defn show-text-message!
-  [stage message]
-  (-> stage
-      stage/root
-      (group/find-actor "player-message")
-      (cdq.ui.message/show! message)))
+(defprotocol Stage
+  (toggle-inventory-visible! [stage])
+  (show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}])
+  (set-item!  [stage cell item-properties])
+  (remove-item!  [stage inventory-cell])
+  (add-skill!  [stage skill-properties])
+  (remove-skill!  [stage skill-id])
+  (show-text-message!  [stage message]))
