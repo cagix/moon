@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.map
-  (:require cdq.editor-window
+  (:require [cdq.editor-window :as editor-window]
             [cdq.schemas :as schemas]
             [cdq.editor.widget :as editor-widget]
             [cdq.utils :as utils]
@@ -10,22 +10,6 @@
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
-
-(defn- window->property-value [property-editor-window schemas]
- (let [window property-editor-window
-       scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (table/cells scroll-pane-table)))
-       table (:map-widget scroll-pane-table)]
-   (editor-widget/value [:s/map] nil table schemas)))
-
-(defn- rebuild-editor-window!
-  [{:keys [ctx/db
-           ctx/stage]
-    :as ctx}]
-  (let [window (:property-editor-window stage)
-        prop-value (window->property-value window (:schemas db))]
-    (actor/remove! window)
-    (stage/add! stage (cdq.editor-window/property-editor-window ctx prop-value))))
 
 (defn- find-kv-widget [table k]
   (utils/find-first (fn [actor]
@@ -42,7 +26,7 @@
                               (widget/text-button "-"
                                                   (fn [_actor ctx]
                                                     (actor/remove! (find-kv-widget table k))
-                                                    (rebuild-editor-window! ctx))))
+                                                    (editor-window/rebuild! ctx))))
                      :left? true}
                     {:actor {:actor/type :actor.type/label
                              :label/text (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -82,7 +66,7 @@
                                                                                 schema
                                                                                 schemas
                                                                                 map-widget-table)])
-                              (rebuild-editor-window! ctx)))]))
+                              (editor-window/rebuild! ctx)))]))
     (.pack window)
     (stage/add! stage window)))
 

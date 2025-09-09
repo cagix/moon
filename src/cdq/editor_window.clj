@@ -6,6 +6,7 @@
             [cdq.ui.widget]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]
             [clojure.vis-ui.widget :as widget]))
@@ -54,3 +55,16 @@
                                     :act extra-act-fn}]
                           :cell-defaults {:pad 5}})
       (.pack))))
+
+(defn rebuild!
+  [{:keys [ctx/db
+           ctx/stage]
+    :as ctx}]
+  (let [window (:property-editor-window stage)
+        map-widget-table (-> window
+                             :scroll-pane
+                             (group/find-actor "scroll-pane-table")
+                             :map-widget)
+        prop-value (editor-widget/value [:s/map] nil map-widget-table (:schemas db))]
+    (actor/remove! window)
+    (stage/add! stage (property-editor-window ctx prop-value))))
