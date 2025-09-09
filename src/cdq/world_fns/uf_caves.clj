@@ -7,7 +7,6 @@
                                       flood-fill]]
             [cdq.rand :refer [get-rand-weighted-item]]
             [cdq.utils :as utils]
-            [cdq.utils.tiled :as utils.tiled]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.maps.tiled :as tiled]))
 
@@ -98,7 +97,7 @@
         ; -
 
         ; - calculate spawn positions -
-        can-spawn? #(= "all" (utils.tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
         creatures (filter #(= level (:creature/level %)) creature-properties)

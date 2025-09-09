@@ -8,9 +8,9 @@
             [cdq.math.raycaster]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
-            [cdq.utils.tiled :as tiled]
             [cdq.gdx.math.vector2 :as v]
             [cdq.world :as world]
+            [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 

@@ -6,7 +6,7 @@
             [cdq.grid2d :as g2d]
             [cdq.gdx.math.geom :as geom]
             [cdq.utils :as utils]
-            [cdq.utils.tiled :as tiled]))
+            [clojure.gdx.maps.tiled :as tiled]))
 
 (defn- rectangle->touched-tiles
   "x is leftmost point and y bottom most point in the rectangle."
