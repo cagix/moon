@@ -1,5 +1,6 @@
 (ns cdq.editor.widget
-  (:require [cdq.schema :as schema]))
+  (:require [cdq.schema :as schema]
+            [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 (defn- widget-type
   [schema attribute]
@@ -30,3 +31,8 @@
   (if-let [f (:value (k->methods (widget-type schema attribute)))]
     (f schema attribute widget schemas)
     ((:value (k->methods :default)) schema attribute widget schemas)))
+
+(defn build [ctx schema k v]
+  (let [widget (actor/build? (create schema k v ctx))]
+    (actor/set-user-object! widget [k v])
+    widget))

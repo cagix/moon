@@ -17,11 +17,6 @@
                            (= k ((actor/user-object actor) 0))))
                     (group/children table)))
 
-(defn- create-schema-widget [ctx schemas k v]
-  (let [widget (actor/build? (editor-widget/create (get schemas k) k v ctx))]
-    (actor/set-user-object! widget [k v])
-    widget))
-
 (defn- component-row [editor-widget k map-schema schemas table]
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
@@ -62,10 +57,10 @@
        [(widget/text-button (name k)
                             (fn [_actor ctx]
                               (.remove window)
-                              (table/add-rows! map-widget-table [(component-row (create-schema-widget ctx
-                                                                                                      schemas
-                                                                                                      k
-                                                                                                      (schemas/k->default-value schemas k))
+                              (table/add-rows! map-widget-table [(component-row (editor-widget/build ctx
+                                                                                                     (get schemas k)
+                                                                                                     k
+                                                                                                     (schemas/k->default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas
@@ -95,7 +90,7 @@
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]
-                                           (component-row (create-schema-widget ctx (:schemas db) k v)
+                                           (component-row (editor-widget/build ctx (get (:schemas db) k) k v)
                                                           k
                                                           schema
                                                           (:schemas db)
