@@ -2,6 +2,7 @@
   (:require [cdq.editor-window :as editor-window]
             [cdq.schemas :as schemas]
             [cdq.editor.widget :as editor-widget]
+            [cdq.editor.widget.map.helper :as helper]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -11,28 +12,6 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
-(defn- k->label-text [k]
-  (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-  )
-
-(defn- label-cell
-  [{:keys [display-remove-component-button? k table label-text]}]
-  {:actor {:actor/type :actor.type/table
-           :cell-defaults {:pad 2}
-           :rows [[{:actor (when display-remove-component-button?
-                             {:actor/type :actor.type/text-button
-                              :text "-"
-                              :on-clicked (fn [_actor ctx]
-                                            (actor/remove! (utils/find-first (fn [actor]
-                                                                               (and (actor/user-object actor)
-                                                                                    (= k ((actor/user-object actor) 0))))
-                                                                             (group/children table)))
-                                            (editor-window/rebuild! ctx))})
-                    :left? true}
-                   {:actor {:actor/type :actor.type/label
-                            :label/text label-text}}]]}
-   :right? true})
-
 (defn- vertical-separator-cell []
   {:actor (separator/vertical)
    :pad-top 2
@@ -41,10 +20,10 @@
    :expand-y? true})
 
 (defn- component-row [editor-widget k map-schema schemas table]
-  [(label-cell {:display-remove-component-button? (schemas/optional-k? schemas map-schema k)
-                :k k
-                :table table
-                :label-text (k->label-text k)})
+  [(helper/label-cell {:display-remove-component-button? (schemas/optional-k? schemas map-schema k)
+                       :k k
+                       :table table
+                       :label-text (helper/k->label-text k)})
    (vertical-separator-cell)
    {:actor editor-widget
     :left? true}])
