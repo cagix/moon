@@ -7,6 +7,7 @@
                  [clojure.earlygrey.shape-drawer "2.5.0"]
                  [clojure.vis-ui "1.5.2"]
                  [cdq.grid2d "0.1"]
+                 [cdq.rand "0.1"]
                  [cdq.utils "0.1"]
                  [metosin/malli "0.13.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
