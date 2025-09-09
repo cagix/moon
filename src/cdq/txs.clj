@@ -17,19 +17,6 @@
             [cdq.world :as world]
             [reduce-fsm :as fsm]))
 
-(defn- add-text-effect [entity text duration elapsed-time]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter timer/increment duration))
-           {:text text
-            :counter (timer/create elapsed-time duration)})))
-
-(defn- pay-mana-cost [entity cost]
-  (update entity :creature/stats stats/pay-mana-cost cost))
-
 (def txs-fn-map
   {:tx/assoc (fn [[_ eid k value] _ctx]
                (swap! eid assoc k value)
@@ -60,7 +47,7 @@
                     nil)
 
    :tx/pay-mana-cost (fn [[_ eid cost] _ctx]
-                       (swap! eid pay-mana-cost cost)
+                       (swap! eid update :creature/stats stats/pay-mana-cost cost)
                        nil)
 
    :tx/pickup-item (fn [[_ eid item] _ctx]
@@ -81,8 +68,15 @@
                       nil)
 
    :tx/add-text-effect (fn [[_ eid text duration] {:keys [ctx/elapsed-time]}]
-                         (swap! eid add-text-effect text duration elapsed-time)
-                         nil)
+                         [[:tx/assoc
+                           eid
+                           :entity/string-effect
+                           (if-let [existing (:entity/string-effect @eid)]
+                             (-> existing
+                                 (update :text str "\n" text)
+                                 (update :counter timer/increment duration))
+                             {:text text
+                              :counter (timer/create elapsed-time duration)})]])
 
    :tx/add-skill (fn [[_ eid skill] _ctx]
                    (swap! eid update :entity/skills skills/add-skill skill)
