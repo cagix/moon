@@ -8,32 +8,6 @@
             [cdq.utils :as utils]
             [clojure.gdx.maps.tiled :as tiled]))
 
-(defn- rectangle->touched-tiles
-  "x is leftmost point and y bottom most point in the rectangle."
-  [{:keys [x y width height]}]
-  {:pre [x y width height]}
-  (let [x       (float x)
-        y       (float y)
-        width   (float width)
-        height  (float height)
-        l (int x)
-        b (int y)
-        r (int (+ x width))
-        t (int (+ y height))]
-    (set
-     (if (or (> width 1) (> height 1))
-       (for [x (range l (inc r))
-             y (range b (inc t))]
-         [x y])
-       [[l b] [l t] [r b] [r t]]))))
-
-(defn- body->touched-tiles
-  [{:keys [body/position body/width body/height]}]
-  (rectangle->touched-tiles {:x (- (position 0) (/ width  2))
-                             :y (- (position 1) (/ height 2))
-                             :width  width
-                             :height height}))
-
 (defn- set-touched-cells! [grid eid]
   (let [cells (grid/body->cells grid (:entity/body @eid))]
     (assert (not-any? nil? cells))
@@ -75,12 +49,12 @@
     (into [] (keep g2d) int-positions))
 
   (body->cells [this body]
-    (grid/cells this (body->touched-tiles body)))
+    (grid/cells this (geom/body->touched-tiles body)))
 
   (circle->cells [this circle]
     (->> circle
          geom/circle->outer-rectangle
-         rectangle->touched-tiles
+         geom/rectangle->touched-tiles
          (grid/cells this)))
 
   (circle->entities [this {:keys [position radius] :as circle}]
