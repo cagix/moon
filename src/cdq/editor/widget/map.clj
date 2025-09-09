@@ -17,6 +17,11 @@
                            (= k ((actor/user-object actor) 0))))
                     (group/children table)))
 
+(defn- create-schema-widget [ctx schemas k v]
+  (let [widget (actor/build? (editor-widget/create (get schemas k) k v ctx))]
+    (actor/set-user-object! widget [k v])
+    widget))
+
 (defn- component-row [ctx [k v] map-schema schemas table]
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
@@ -35,9 +40,7 @@
     :pad-bottom 2
     :fill-y? true
     :expand-y? true}
-   {:actor (let [widget (actor/build? (editor-widget/create (get schemas k) k v ctx))]
-             (actor/set-user-object! widget [k v])
-             widget)
+   {:actor (create-schema-widget ctx schemas k v)
     :left? true}])
 
 (defn- open-add-component-window! [{:keys [ctx/db
