@@ -1,5 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.gdx.math.vector2 :as v]))
+  (:require [cdq.image :as image]
+            [cdq.gdx.math.vector2 :as v]))
 
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))
@@ -18,3 +19,15 @@
                    world-mouse-position
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
+
+(defn draw
+  [{:keys [item]}
+   entity
+   {:keys [ctx/textures
+           ctx/mouseover-actor
+           ctx/world-mouse-position]}]
+  (when (world-item? mouseover-actor)
+    [[:draw/texture-region
+      (image/texture-region (:entity/image item) textures)
+      (item-place-position world-mouse-position entity)
+      {:center? true}]]))

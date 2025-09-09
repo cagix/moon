@@ -1,5 +1,6 @@
 (ns cdq.entity.animation
-  (:require [cdq.animation :as animation]))
+  (:require [cdq.animation :as animation]
+            [cdq.entity.image :as image]))
 
 (defrecord Animation [frames frame-duration looping? cnt maxcnt]
   animation/Animation
@@ -33,3 +34,8 @@
 
 (defn create [v _ctx]
   (create-animation v))
+
+(defn draw [animation entity ctx]
+  (image/draw (animation/current-frame animation)
+              entity
+              ctx))
