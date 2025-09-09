@@ -65,7 +65,9 @@
         (content-grid/add-entity! content-grid eid)
         ; https://github.com/damn/core/issues/58
         ;(assert (valid-position? grid @eid))
-        (grid/add-entity! grid eid)
+        (grid/set-touched-cells! grid eid)
+        (when (:body/collides? (:entity/body @eid))
+          (grid/set-occupied-cells! grid eid))
         (mapcat (fn [[k v]]
                   (when-let [create! (:create! (k entity-components))]
                     (create! v eid ctx)))
@@ -76,7 +78,11 @@
                ctx/grid]}
        [_ eid body direction rotate-in-movement-direction?]]
       (content-grid/position-changed! content-grid eid)
-      (grid/position-changed! grid eid)
+      (grid/remove-from-touched-cells! grid eid)
+      (grid/set-touched-cells! grid eid)
+      (when (:body/collides? (:entity/body @eid))
+        (grid/remove-from-occupied-cells! grid eid)
+        (grid/set-occupied-cells! grid eid))
       (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
       (when rotate-in-movement-direction?
         (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
@@ -92,7 +98,9 @@
           (assert (contains? @entity-ids id))
           (swap! entity-ids dissoc id))
         (content-grid/remove-entity! eid)
-        (grid/remove-entity! grid eid)
+        (grid/remove-from-touched-cells! grid eid)
+        (when (:body/collides? (:entity/body @eid))
+          (grid/remove-from-occupied-cells! grid eid))
         (ctx/handle-txs! ctx
                          (mapcat (fn [[k v]]
                                    (when-let [destroy! (:destroy! (k destroy-components))]

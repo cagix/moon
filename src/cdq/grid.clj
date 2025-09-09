@@ -11,9 +11,10 @@
   (point->entities [_ position])
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid))
-  (add-entity! [_ eid])
-  (remove-entity! [_ eid])
-  (position-changed! [_ eid])
+  (set-touched-cells! [grid eid])
+  (remove-from-touched-cells! [_ eid])
+  (set-occupied-cells! [grid eid])
+  (remove-from-occupied-cells! [_ eid])
   (valid-position? [_ new-body entity-id])
   (nearest-enemy-distance [_ entity])
   (nearest-enemy [_ entity]))

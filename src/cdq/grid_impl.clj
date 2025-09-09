@@ -8,37 +8,12 @@
             [cdq.utils :as utils]
             [clojure.gdx.maps.tiled :as tiled]))
 
-(defn- set-touched-cells! [grid eid]
-  (let [cells (grid/body->cells grid (:entity/body @eid))]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-touched-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
 ; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
 ; => only now there are no >1 tile entities anyway
 (defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/body->cells grid body)
     [(grid/cell grid (mapv int position))]))
-
-(defn- set-occupied-cells! [grid eid]
-  (let [cells (body->occupied-cells grid (:entity/body @eid))]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
 
 (deftype Grid [g2d]
   grid/Grid
@@ -83,22 +58,30 @@
       (filter #(geom/contains? (geom/body->gdx-rectangle (:entity/body @%)) position)
               (:entities @cell))))
 
-  (add-entity! [this eid]
-    (set-touched-cells! this eid)
-    (when (:body/collides? (:entity/body @eid))
-      (set-occupied-cells! this eid)))
+  (set-touched-cells! [grid eid]
+    (let [cells (grid/body->cells grid (:entity/body @eid))]
+      (assert (not-any? nil? cells))
+      (swap! eid assoc ::touched-cells cells)
+      (doseq [cell cells]
+        (assert (not (get (:entities @cell) eid)))
+        (swap! cell update :entities conj eid))))
 
-  (remove-entity! [_ eid]
-    (remove-from-touched-cells! eid)
-    (when (:body/collides? (:entity/body @eid))
-      (remove-from-occupied-cells! eid)))
+  (remove-from-touched-cells! [_ eid]
+    (doseq [cell (::touched-cells @eid)]
+      (assert (get (:entities @cell) eid))
+      (swap! cell update :entities disj eid)))
 
-  (position-changed! [this eid]
-    (remove-from-touched-cells! eid)
-    (set-touched-cells! this eid)
-    (when (:body/collides? (:entity/body @eid))
-      (remove-from-occupied-cells! eid)
-      (set-occupied-cells! this eid)))
+  (set-occupied-cells! [grid eid]
+    (let [cells (body->occupied-cells grid (:entity/body @eid))]
+      (doseq [cell cells]
+        (assert (not (get (:occupied @cell) eid)))
+        (swap! cell update :occupied conj eid))
+      (swap! eid assoc ::occupied-cells cells)))
+
+  (remove-from-occupied-cells! [_ eid]
+    (doseq [cell (::occupied-cells @eid)]
+      (assert (get (:occupied @cell) eid))
+      (swap! cell update :occupied disj eid)))
 
   (valid-position? [this {:keys [body/z-order] :as body} entity-id]
     {:pre [(:body/collides? body)]}
