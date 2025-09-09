@@ -10,3 +10,6 @@
   ; initial state is nil, so associng it. make bug report at reduce-fsm?
   [[:tx/assoc eid :entity/fsm (assoc ((get fsms fsm) initial-state nil) :state initial-state)]
    [:tx/assoc eid initial-state (state/create ctx initial-state eid nil)]])
+
+(defn info-text [[_ fsm] _ctx]
+  (str "State: " (name (:state fsm))))

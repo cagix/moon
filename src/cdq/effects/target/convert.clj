@@ -8,3 +8,6 @@
 
 (defn handle [_ {:keys [effect/source effect/target]} _ctx]
   [[:tx/assoc target :entity/faction (:entity/faction @source)]])
+
+(defn info-text [_ _ctx]
+  "Converts target to your side.")

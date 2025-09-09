@@ -1,48 +1,6 @@
-(ns cdq.start.info
-  (:require [cdq.stats :as stats]
-            [cdq.timer :as timer]
-            [cdq.op :as op]
-            [cdq.utils :as utils]
-            [clojure.math :as math]
-            [clojure.string :as str]))
+(ns cdq.start.info)
 
-(defmulti ^:private op-value-text (fn [[k]]
-                                    k))
-
-(defmethod op-value-text :op/inc
-  [[_ value]]
-  (str value))
-
-(defmethod op-value-text :op/mult
-  [[_ value]]
-  (str value "%"))
-
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defn- op-info [op k]
-  (str/join "\n"
-            (keep
-             (fn [{v 1 :as component}]
-               (when-not (zero? v)
-                 (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
-             (sort-by op/-order op))))
-
-(defn- damage-info [{[min max] :damage/min-max}]
-  (str min "-" max " damage"))
-
-(def ^:private non-val-max-stat-ks
-  [:entity/movement-speed
-   :entity/aggro-range
-   :entity/reaction-time
-   :entity/strength
-   :entity/cast-speed
-   :entity/attack-speed
-   :entity/armor-save
-   :entity/armor-pierce])
+(require 'cdq.effects)
 
 (def info-configuration
   {:k->colors {:property/pretty-name "PRETTY_NAME"
@@ -73,76 +31,31 @@
              :entity/projectile-collision
              :maxrange
              :entity-effects]
-   :info-fns {:creature/level (fn [[_ v] _ctx]
-                                (str "Level: " v))
-              :creature/stats (fn [[_ stats] _ctx]
-                                (str/join "\n" (concat
-                                                ["*STATS*"
-                                                 (str "Mana: " (if (:entity/mana stats)
-                                                                 (stats/get-mana stats)
-                                                                 "-"))
-                                                 (str "Hitpoints: " (stats/get-hitpoints stats))]
-                                                (for [stat-k non-val-max-stat-ks]
-                                                  (str (str/capitalize (name stat-k)) ": "
-                                                       (stats/get-stat-value stats stat-k))))))
-              :effects.target/convert (fn [_ _ctx]
-                                        "Converts target to your side.")
-              :effects.target/damage (fn [[_ damage] _ctx]
-                                       (damage-info damage)
-                                       #_(if source
-                                           (let [modified (stats/damage @source damage)]
-                                             (if (= damage modified)
-                                               (damage-info damage)
-                                               (str (damage-info damage) "\nModified: " (damage/info modified))))
-                                           (damage-info damage)) ; property menu no source,modifiers
-                                       )
-              :effects.target/kill (fn [_ _ctx] "Kills target")
-              :effects.target/melee-damage (fn [_ _ctx]
-                                             (str "Damage based on entity strength."
-                                                  #_(when source
-                                                      (str "\n" (damage-info (entity->melee-damage @source))))))
-              :effects.target/spiderweb (fn [_ _ctx] "Spiderweb slows 50% for 5 seconds.")
-              :effects.target/stun (fn [[_ duration] _ctx]
-                                     (str "Stuns for " (utils/readable-number duration) " seconds"))
-              :effects/spawn (fn [[_ {:keys [property/pretty-name]}] _ctx]
-                               (str "Spawns a " pretty-name))
-              :effects/target-all (fn [_ _ctx]
-                                    "All visible targets")
-              :entity/delete-after-duration (fn [[_ counter] {:keys [ctx/elapsed-time]}]
-                                              (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
-              :entity/faction (fn [[_ faction] _ctx]
-                                (str "Faction: " (name faction)))
-              :entity/fsm (fn [[_ fsm] _ctx]
-                            (str "State: " (name (:state fsm))))
-              :entity/modifiers (fn [[_ mods] _ctx]
-                                  (when (seq mods)
-                                    (str/join "\n" (keep (fn [[k ops]]
-                                                           (op-info ops k)) mods))))
-              :entity/skills (fn [[_ skills] _ctx]
-                               ; => recursive info-text leads to endless text wall
-                               (when (seq skills)
-                                 (str "Skills: " (str/join "," (map name (keys skills))))))
-              :entity/species (fn [[_ species] _ctx]
-                                (str "Creature - " (str/capitalize (name species))))
-              :entity/temp-modifier (fn [[_ {:keys [counter]}] {:keys [ctx/elapsed-time]}]
-                                      (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
-              :projectile/piercing? (fn [_ _ctx] ; TODO also when false ?!
-                                      "Piercing")
-              :property/pretty-name (fn [[_ v] _ctx]
-                                      v)
-              :skill/action-time (fn [[_ v] _ctx]
-                                   (str "Action-Time: " (utils/readable-number v) " seconds"))
-              :skill/action-time-modifier-key (fn [[_ v] _ctx]
-                                                (case v
-                                                  :entity/cast-speed "Spell"
-                                                  :entity/attack-speed "Attack"))
-              :skill/cooldown (fn [[_ v] _ctx]
-                                (when-not (zero? v)
-                                  (str "Cooldown: " (utils/readable-number v) " seconds")))
-              :skill/cost (fn [[_ v] _ctx]
-                            (when-not (zero? v)
-                              (str "Cost: " v " Mana")))
-              :maxrange (fn [[_ v] _ctx] v)}})
+   :info-fns (cdq.effects/walk-method-map
+              '{:creature/level cdq.creature.level/info-text
+                :creature/stats cdq.entity.stats/info-text
+                :effects.target/convert cdq.effects.target.convert/info-text
+                :effects.target/damage cdq.effects.target.damage/info-text
+                :effects.target/kill cdq.effects.target.kill/info-text
+                :effects.target/melee-damage cdq.effects.target.melee-damage/info-text
+                :effects.target/spiderweb cdq.effects.target.spiderweb/info-text
+                :effects.target/stun cdq.effects.target.stun/info-text
+                :effects/spawn cdq.effects.spawn/info-text
+                :effects/target-all cdq.effects.target-all/info-text
+                :entity/delete-after-duration cdq.entity.delete-after-duration/info-text
+                :entity/faction cdq.entity.faction/info-text
+                :entity/fsm cdq.entity.fsm/info-text
+                :entity/modifiers cdq.entity.modifiers/info-text
+                :entity/skills cdq.entity.skills/info-text
+                :entity/species cdq.entity.species/info-text
+                :entity/temp-modifier cdq.entity.temp-modifier/info-text
+                :projectile/piercing? cdq.projectile.piercing/info-text
+                :property/pretty-name cdq.property.pretty-name/info-text
+                :skill/action-time cdq.skill.action-time/info-text
+                :skill/action-time-modifier-key cdq.skill.action-time-modifier-key/info-text
+                :skill/cooldown cdq.skill.cooldown/info-text
+                :skill/cost cdq.skill.cost/info-text
+                :maxrange cdq.maxrange/info-text})})
 
 (defn do! [ctx]
   (assoc ctx :ctx/info info-configuration))

@@ -6,3 +6,6 @@
 
 (defn handle [_ {:keys [effect/target]} _ctx]
   [[:tx/event target :kill]])
+
+(defn info-text [_ _ctx]
+  "Kills target")

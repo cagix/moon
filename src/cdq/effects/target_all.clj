@@ -44,3 +44,6 @@
        (:body/position (:entity/body source*)) #_(start-point source* target*)
        (:body/position (:entity/body target*))
        [1 0 0 0.5]])))
+
+(defn info-text [_ _ctx]
+  "All visible targets")

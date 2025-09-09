@@ -1,6 +1,7 @@
 (ns cdq.entity.stats
   (:require [cdq.stats :as stats]
-            [cdq.val-max :as val-max]))
+            [cdq.val-max :as val-max]
+            [clojure.string :as str]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0 1]
@@ -48,3 +49,24 @@
       (draw-hpbar world-unit-scale
                   (:entity/body entity)
                   ratio))))
+
+(def ^:private non-val-max-stat-ks
+  [:entity/movement-speed
+   :entity/aggro-range
+   :entity/reaction-time
+   :entity/strength
+   :entity/cast-speed
+   :entity/attack-speed
+   :entity/armor-save
+   :entity/armor-pierce])
+
+(defn info-text [[_ stats] _ctx]
+  (str/join "\n" (concat
+                  ["*STATS*"
+                   (str "Mana: " (if (:entity/mana stats)
+                                   (stats/get-mana stats)
+                                   "-"))
+                   (str "Hitpoints: " (stats/get-hitpoints stats))]
+                  (for [stat-k non-val-max-stat-ks]
+                    (str (str/capitalize (name stat-k)) ": "
+                         (stats/get-stat-value stats stat-k))))))
