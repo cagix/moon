@@ -39,7 +39,7 @@
                        (when (input/key-just-pressed? input :enter)
                          (clicked-save-fn actor ctx)))
         scrollpane-height (:viewport/height ui-viewport)]
-    (widget/window {:title (str "[SKY]Property[]")
+    (widget/window {:title "[SKY]Property[]"
                     :id :property-editor-window
                     :modal? true
                     :close-button? true
