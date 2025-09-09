@@ -9,33 +9,16 @@
 ; * entities do not move to NADs (they remove them)
 ; * the potential field flows into diagonals, so they should be reachable too.
 ;
-; TODO assert @ mapload no NAD's and @ potential field init & remove from
-; potential-field-following the removal of NAD's.
-
-
-; FIXME assert @ mapload no NAD's and @ potential field init & remove from
+; TODO assert somewhere/at map load no NAD's and @ potential field init & remove from
 ; potential-field-following the removal of NAD's.
 
 ; TODO remove max pot field movement player screen + 10 tiles as of screen size
 ; => is coupled to max-steps & also
 ; to friendly units follow player distance
 
-; TODO remove cached get adj cells & use grid as atom not cells ?
-; how to compare perfr ?
-
-; TODO visualize steps, maybe I see something I missed
-
-(comment
- (defrecord Foo [a b c])
-
- (let [^Foo foo (->Foo 1 2 3)]
-   (time (dotimes [_ 10000000] (:a foo)))
-   (time (dotimes [_ 10000000] (.a foo)))
-   ; .a 7x faster ! => use for faction/distance & make record?
-   ))
-
 (comment
  ; Stepping through manually
+
  (clear-marked-cells! :good (get @faction->marked-cells :good))
 
  (defn- faction->tiles->entities-map* [entities]
