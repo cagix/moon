@@ -3,12 +3,9 @@
             cdq.editor.widget.animation
             cdq.editor.widget.image
             cdq.editor.widget.one-to-many
+            cdq.editor.widget.one-to-one
             cdq.editor.sound
-            [cdq.db :as db]
-            [cdq.image :as image]
-            [cdq.property :as property]
             [cdq.schemas :as schemas]
-            [cdq.editor.overview-table]
             [cdq.editor.widget :as editor-widget]
             [cdq.ui.widget]
             [cdq.utils :as utils]
@@ -23,46 +20,7 @@
             [clojure.vis-ui.select-box :as select-box]
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.text-field :as text-field]
-            [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
-
-(defn- add-one-to-one-rows
-  [{:keys [ctx/db
-           ctx/textures]}
-   table
-   property-type
-   property-id]
-  (let [redo-rows (fn [ctx id]
-                    (group/clear-children! table)
-                    (add-one-to-one-rows ctx table property-type id)
-                    (window/pack-ancestors! table))]
-    (table/add-rows!
-     table
-     [[(when-not property-id
-         (widget/text-button "+"
-                             (fn [_actor {:keys [ctx/stage] :as ctx}]
-                               (let [window (widget/window {:title "Choose"
-                                                            :modal? true
-                                                            :close-button? true
-                                                            :center? true
-                                                            :close-on-escape? true})
-                                     clicked-id-fn (fn [id ctx]
-                                                     (.remove window)
-                                                     (redo-rows ctx id))]
-                                 (table/add! window (cdq.editor.overview-table/create ctx property-type clicked-id-fn))
-                                 (.pack window)
-                                 (stage/add! stage window)))))]
-      [(when property-id
-         (let [property (db/get-raw db property-id)
-               texture-region (image/texture-region (property/image property) textures)
-               image-widget (widget/image texture-region
-                                          {:id property-id})]
-           (tooltip/add! image-widget (utils/pprint-to-str property))
-           image-widget))]
-      [(when property-id
-         (widget/text-button "-"
-                             (fn [_actor ctx]
-                               (redo-rows ctx nil))))]])))
 
 (def ^:private property-k-sort-order
   [:property/id
@@ -257,19 +215,8 @@
                        (cdq.editor.sound/widget sound-name))
              }
 
-   :s/one-to-one {
-
-                  :create (fn [[_ property-type]  _attribute property-id ctx]
-                            (let [table (widget/table {:cell-defaults {:pad 5}})]
-                              (add-one-to-one-rows ctx table property-type property-id)
-                              table))
-
-                  :value (fn [_  _attribute widget _schemas]
-                           (->> (group/children widget)
-                                (keep actor/user-object)
-                                first))
-                  }
-
+   :s/one-to-one {:create cdq.editor.widget.one-to-one/create
+                  :value cdq.editor.widget.one-to-one/value}
    :s/one-to-many {:create cdq.editor.widget.one-to-many/create
                    :value cdq.editor.widget.one-to-many/value}
    :widget/image     {:create cdq.editor.widget.image/create}
