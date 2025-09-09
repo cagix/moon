@@ -21,25 +21,6 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [reduce-fsm :as fsm]))
 
-(defn- remove-item! [{:keys [ctx/stage]} inventory-cell]
-  (-> stage
-      :windows
-      :inventory-window
-      (inventory-window/remove-item! inventory-cell)))
-
-(defn- set-item!
-  [{:keys [ctx/textures
-           ctx/stage]
-    :as ctx}
-   inventory-cell item]
-  (-> stage
-      :windows
-      :inventory-window
-      (inventory-window/set-item! inventory-cell
-                                  {:texture-region (image/texture-region (:entity/image item) textures)
-                                   :tooltip-text (fn [ctx]
-                                                   (info/generate (:ctx/info ctx) item ctx))})))
-
 (defn- add-skill!
   [{:keys [ctx/textures
            ctx/stage]}
@@ -141,7 +122,7 @@
        (when (:entity/player? @eid)
          (remove-skill! ctx skill)))
 
-   :tx/set-item (fn [[_ eid cell item] ctx]
+   :tx/set-item (fn [[_ eid cell item] _ctx]
                   (let [entity @eid
                         inventory (:entity/inventory entity)]
                     (assert (and (nil? (get-in inventory cell))
@@ -149,20 +130,37 @@
                     (swap! eid assoc-in (cons :entity/inventory cell) item)
                     (when (inventory/applies-modifiers? cell)
                       (swap! eid update :creature/stats stats/add (:entity/modifiers item)))
-                    (when (:entity/player? entity)
-                      (set-item! ctx cell item))
-                    nil))
+                    (if (:entity/player? entity)
+                      [[:tx/player-set-item cell item]]
+                      nil)))
 
-   :tx/remove-item (fn [[_ eid cell] ctx]
+   :tx/player-set-item (fn [[_ cell item]
+                            {:keys [ctx/textures
+                                    ctx/stage]
+                             :as ctx}]
+                         (-> stage
+                             :windows
+                             :inventory-window
+                             (inventory-window/set-item! cell
+                                                         {:texture-region (image/texture-region (:entity/image item) textures)
+                                                          :tooltip-text (fn [ctx]
+                                                                          (info/generate (:ctx/info ctx) item ctx))}))
+                         nil)
+
+   :tx/remove-item (fn [[_ eid cell] _ctx]
                      (let [entity @eid
                            item (get-in (:entity/inventory entity) cell)]
                        (assert item)
                        (swap! eid assoc-in (cons :entity/inventory cell) nil)
                        (when (inventory/applies-modifiers? cell)
                          (swap! eid update :creature/stats stats/remove (:entity/modifiers item)))
-                       (when (:entity/player? entity)
-                         (remove-item! ctx cell))
-                       nil))
+                       (if (:entity/player? entity)
+                         [[:tx/player-remove-item cell]]
+                         nil)))
+
+   :tx/player-remove-item (fn [[_ cell] {:keys [ctx/stage]}]
+                            (cdq.stage/remove-item! stage cell)
+                            nil)
 
    :tx/event (fn [[_ eid event params] ctx]
                (let [fsm (:entity/fsm @eid)

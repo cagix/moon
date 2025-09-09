@@ -1,5 +1,6 @@
 (ns cdq.stage
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [cdq.ui.windows.inventory :as inventory-window]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 
@@ -27,3 +28,9 @@
                               :center-position [(/ (:viewport/width  ui-viewport) 2)
                                                 (* (:viewport/height ui-viewport) (/ 3 4))]
                               :pack? true})))
+
+(defn remove-item! [stage inventory-cell]
+  (-> stage
+      :windows
+      :inventory-window
+      (inventory-window/remove-item! inventory-cell)))
