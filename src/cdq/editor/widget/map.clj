@@ -22,7 +22,7 @@
     (actor/set-user-object! widget [k v])
     widget))
 
-(defn- component-row [ctx [k v] map-schema schemas table]
+(defn- component-row [editor-widget k map-schema schemas table]
   [{:actor {:actor/type :actor.type/table
             :cell-defaults {:pad 2}
             :rows [[{:actor (when (schemas/optional-k? schemas map-schema k)
@@ -40,7 +40,7 @@
     :pad-bottom 2
     :fill-y? true
     :expand-y? true}
-   {:actor (create-schema-widget ctx schemas k v)
+   {:actor editor-widget
     :left? true}])
 
 (defn- open-add-component-window! [{:keys [ctx/db
@@ -62,8 +62,11 @@
        [(widget/text-button (name k)
                             (fn [_actor ctx]
                               (.remove window)
-                              (table/add-rows! map-widget-table [(component-row ctx
-                                                                                [k (schemas/k->default-value schemas k)]
+                              (table/add-rows! map-widget-table [(component-row (create-schema-widget ctx
+                                                                                                      schemas
+                                                                                                      k
+                                                                                                      (schemas/k->default-value schemas k))
+                                                                                k
                                                                                 schema
                                                                                 schemas
                                                                                 map-widget-table)])
@@ -92,8 +95,8 @@
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]
-                                           (component-row ctx
-                                                          [k v]
+                                           (component-row (create-schema-widget ctx (:schemas db) k v)
+                                                          k
                                                           schema
                                                           (:schemas db)
                                                           table))
