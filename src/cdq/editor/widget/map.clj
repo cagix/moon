@@ -11,24 +11,6 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
-(def ^:private property-k-sort-order
-  [:property/id
-   :property/pretty-name
-   :entity/image
-   :entity/animation
-   :entity/species
-   :creature/level
-   :entity/body
-   :item/slot
-   :projectile/speed
-   :projectile/max-range
-   :projectile/piercing?
-   :skill/action-time-modifier-key
-   :skill/action-time
-   :skill/start-action-sound
-   :skill/cost
-   :skill/cooldown])
-
 (defn- window->property-value [property-editor-window schemas]
  (let [window property-editor-window
        scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
@@ -115,8 +97,10 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defn create [schema  _attribute m {:keys [ctx/db] :as ctx}]
-  (let [table (widget/table
+(defn create [schema  _attribute m {:keys [ctx/db
+                                           ctx/config] :as ctx}]
+  (let [k-sort-order (:property-k-sort-order (:cdq.editor.widget.map config))
+        table (widget/table
                {:cell-defaults {:pad 5}
                 :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -126,8 +110,7 @@
                                                           schema
                                                           (:schemas db)
                                                           table))
-                                         (utils/sort-by-k-order property-k-sort-order
-                                                                m)))
+                                         (utils/sort-by-k-order k-sort-order m)))
         colspan component-row-cols
         opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
                                   (set (keys m))))]

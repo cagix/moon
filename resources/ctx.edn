@@ -200,6 +200,24 @@
                          :zoom-out :equals
                          :unpause-once :p
                          :unpause-continously :space}
+              :cdq.editor.widget.map {
+                                      :property-k-sort-order [:property/id
+                                                              :property/pretty-name
+                                                              :entity/image
+                                                              :entity/animation
+                                                              :entity/species
+                                                              :creature/level
+                                                              :entity/body
+                                                              :item/slot
+                                                              :projectile/speed
+                                                              :projectile/max-range
+                                                              :projectile/piercing?
+                                                              :skill/action-time-modifier-key
+                                                              :skill/action-time
+                                                              :skill/start-action-sound
+                                                              :skill/cost
+                                                              :skill/cooldown]
+                                      }
               }
  :ctx/mouseover-eid nil
  :ctx/paused? nil
