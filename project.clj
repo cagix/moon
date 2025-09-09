@@ -15,8 +15,6 @@
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]]
 
-  :java-source-paths ["src"] ; anything java left ??
-
   :aliases {
             "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
