@@ -1,5 +1,43 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.world :as world]))
+  (:require [cdq.content-grid :as content-grid]
+            [cdq.grid :as grid]
+            [cdq.malli :as m]
+            [qrecord.core :as q]))
 
-(defn do! [[_ components] ctx]
-  (world/spawn-entity! ctx components))
+(q/defrecord Entity [entity/body])
+
+(defn do!
+  [[_ entity]
+   {:keys [ctx/id-counter
+           ctx/entity-ids
+           ctx/entity-components
+           ctx/spawn-entity-schema
+           ctx/content-grid
+           ctx/grid]
+    :as ctx}]
+  (m/validate-humanize spawn-entity-schema entity)
+  (let [build-component (fn [[k v]]
+                          (if-let [create (:create (k entity-components))]
+                            (create v ctx)
+                            v))
+        entity (reduce (fn [m [k v]]
+                         (assoc m k (build-component [k v])))
+                       {}
+                       entity)
+        _ (assert (and (not (contains? entity :entity/id))))
+        entity (assoc entity :entity/id (swap! id-counter inc))
+        entity (merge (map->Entity {}) entity)
+        eid (atom entity)]
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (swap! entity-ids assoc id eid))
+    (content-grid/add-entity! content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid))
+    (grid/set-touched-cells! grid eid)
+    (when (:body/collides? (:entity/body @eid))
+      (grid/set-occupied-cells! grid eid))
+    (mapcat (fn [[k v]]
+              (when-let [create! (:create! (k entity-components))]
+                (create! v eid ctx)))
+            @eid)))
