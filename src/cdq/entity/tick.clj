@@ -4,6 +4,7 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.body :as body]
+            [cdq.entity.skills]
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
             [cdq.raycaster :as raycaster]
@@ -138,11 +139,7 @@
                                        )
                                      (when hit-entity
                                        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
-   :entity/skills (fn [skills eid {:keys [ctx/elapsed-time]}]
-                    (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
-                          :when (and cooling-down?
-                                     (timer/stopped? elapsed-time cooling-down?))]
-                      [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
+   :entity/skills cdq.entity.skills/tick!
    :active-skill (fn [{:keys [skill effect-ctx counter]}
                       eid
                       {:keys [ctx/elapsed-time

@@ -75,7 +75,7 @@
              :entity-effects]
    :info-fns {:creature/level (fn [[_ v] _ctx]
                                 (str "Level: " v))
-              :creature/stats (fn [[k stats] _ctx]
+              :creature/stats (fn [[_ stats] _ctx]
                                 (str/join "\n" (concat
                                                 ["*STATS*"
                                                  (str "Mana: " (if (:entity/mana stats)
