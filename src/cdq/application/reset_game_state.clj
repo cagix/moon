@@ -5,43 +5,12 @@
             [cdq.grid-impl :as grid-impl]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
-            [cdq.math.raycaster]
-            [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]
-            [cdq.path-rays :as path-rays]
+            [cdq.raycaster-impl]
             [cdq.world :as world]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn- create-raycaster-arr [grid]
-  (let [width  (g2d/width  (.g2d grid))
-        height (g2d/height (.g2d grid))
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells (.g2d grid))]
-      (set-arr arr @cell cell/blocks-vision?))
-    [arr width height]))
-
-(defn- create-raycaster [grid]
-  (let [arr (create-raycaster-arr grid)]
-    (reify cdq.raycaster/Raycaster
-      (blocked? [_ start end]
-        (cdq.math.raycaster/blocked? arr start end))
-
-      (path-blocked? [_ start target path-w]
-        (let [[start1,target1,start2,target2] (path-rays/create-double-ray-endpositions start target path-w)]
-          (or
-           (cdq.math.raycaster/blocked? arr start1 target1)
-           (cdq.math.raycaster/blocked? arr start2 target2))))
-
-      (line-of-sight? [_ source target]
-        (not (cdq.math.raycaster/blocked? arr
-                                          (:body/position (:entity/body source))
-                                          (:body/position (:entity/body target))))))))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -109,7 +78,7 @@
         ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
         max-speed (/ minimum-size max-delta)]
     {:ctx/grid grid
-     :ctx/raycaster (create-raycaster grid)
+     :ctx/raycaster (cdq.raycaster-impl/create grid)
      :ctx/elapsed-time 0
      :ctx/max-delta max-delta
      :ctx/max-speed max-speed
