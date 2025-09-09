@@ -24,7 +24,8 @@
                                    (actor/remove! (window/find-ancestor actor))
                                    (catch Throwable t
                                      (stacktrace/pretty-print t)
-                                     (stage/add! stage (cdq.ui.widget/error-window t))))))
+                                     (stage/add! stage {:actor/type :actor.type/error-window
+                                                        :throwable t})))))
         clicked-save-fn (with-window-close (fn [{:keys [ctx/db]}]
                                              (swap! application-state update :ctx/db
                                                     db/update!

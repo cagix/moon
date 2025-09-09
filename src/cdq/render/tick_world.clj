@@ -1,6 +1,5 @@
 (ns cdq.render.tick-world
   (:require [cdq.stacktrace :as stacktrace]
-            [cdq.ui.widget :as widget]
             [cdq.world :as world]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
@@ -26,7 +25,8 @@
    (world/tick-entities! ctx)
    (catch Throwable t
      (stacktrace/pretty-print t)
-     (stage/add! stage (widget/error-window t))
+     (stage/add! stage {:actor/type :actor.type/error-window
+                        :throwable t})
      #_(bind-root ::error t)))
   ctx)
 

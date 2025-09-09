@@ -103,3 +103,6 @@
 
 (defmethod actor/build :actor.type/data-viewer [opts]
   (data-viewer opts))
+
+(defmethod actor/build :actor.type/error-window [{:keys [throwable]}]
+  (error-window throwable))
