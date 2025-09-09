@@ -16,21 +16,6 @@
             [cdq.world :as world]
             [reduce-fsm :as fsm]))
 
-(defn- add-skill!
-  [{:keys [ctx/textures
-           ctx/stage]}
-   skill]
-  (stage/add-skill! stage
-                    {:skill-id (:property/id skill)
-                     :texture-region (image/texture-region (:entity/image skill) textures)
-                     :tooltip-text (fn [ctx]
-                                     (info/generate (:ctx/info ctx) skill ctx))})
-  nil)
-
-#_(defn- remove-skill! [{:keys [ctx/stage]} skill]
-    (stage/remove-skill! stage (:property/id skill))
-    nil)
-
 (defn- add-skill [entity {:keys [property/id] :as skill}]
   {:pre [(not (contains? (:entity/skills entity) id))]}
   (assoc-in entity [:entity/skills id] skill))
@@ -102,17 +87,30 @@
                          (swap! eid add-text-effect text duration elapsed-time)
                          nil)
 
-   :tx/add-skill (fn [[_ eid skill] ctx]
+   :tx/add-skill (fn [[_ eid skill] _ctx]
                    (swap! eid add-skill skill)
-                   (when (:entity/player? @eid)
-                     (add-skill! ctx skill))
-                   nil)
+                   (if (:entity/player? @eid)
+                     [[:tx/player-add-skill skill]]
+                     nil))
 
    #_(defn remove-skill [eid {:keys [property/id] :as skill}]
        {:pre [(contains? (:entity/skills @eid) id)]}
        (swap! eid update :entity/skills dissoc id)
        (when (:entity/player? @eid)
          (remove-skill! ctx skill)))
+
+   :tx/player-add-skill (fn [[_ skill] {:keys [ctx/textures
+                                               ctx/stage]}]
+                          (stage/add-skill! stage
+                                            {:skill-id (:property/id skill)
+                                             :texture-region (image/texture-region (:entity/image skill) textures)
+                                             :tooltip-text (fn [ctx]
+                                                             (info/generate (:ctx/info ctx) skill ctx))})
+                          nil)
+
+   #_(defn- remove-skill! [{:keys [ctx/stage]} skill]
+       (stage/remove-skill! stage (:property/id skill))
+       nil)
 
    :tx/set-item (fn [[_ eid cell item] _ctx]
                   (let [entity @eid
@@ -126,16 +124,6 @@
                       [[:tx/player-set-item cell item]]
                       nil)))
 
-   :tx/player-set-item (fn [[_ cell item]
-                            {:keys [ctx/textures
-                                    ctx/stage]
-                             :as ctx}]
-                         (stage/set-item! stage cell
-                                          {:texture-region (image/texture-region (:entity/image item) textures)
-                                           :tooltip-text (fn [ctx]
-                                                           (info/generate (:ctx/info ctx) item ctx))})
-                         nil)
-
    :tx/remove-item (fn [[_ eid cell] _ctx]
                      (let [entity @eid
                            item (get-in (:entity/inventory entity) cell)]
@@ -146,6 +134,16 @@
                        (if (:entity/player? entity)
                          [[:tx/player-remove-item cell]]
                          nil)))
+
+   :tx/player-set-item (fn [[_ cell item]
+                            {:keys [ctx/textures
+                                    ctx/stage]
+                             :as ctx}]
+                         (stage/set-item! stage cell
+                                          {:texture-region (image/texture-region (:entity/image item) textures)
+                                           :tooltip-text (fn [ctx]
+                                                           (info/generate (:ctx/info ctx) item ctx))})
+                         nil)
 
    :tx/player-remove-item (fn [[_ cell] {:keys [ctx/stage]}]
                             (stage/remove-item! stage cell)
