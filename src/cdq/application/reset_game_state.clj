@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.db :as db]
+            [cdq.cell-impl]
             [cdq.grid-impl :as grid-impl]
-            [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.utils :as utils]
             [cdq.raycaster-impl]
@@ -12,70 +12,23 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  cell/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance))
-
-  (pf-blocked? [this]
-    (cell/blocked? this :z-order/ground)))
-
-(defn- create-grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (atom (map->RCell
-         {:position position
-          :middle (utils/tile->middle position)
-          :movement movement
-          :entities #{}
-          :occupied #{}})))
-
 (defn- world-ctx
   [{:keys [tiled-map] :as config}]
   (let [grid (grid-impl/->Grid
               (g2d/create-grid (:tiled-map/width  tiled-map)
                                (:tiled-map/height tiled-map)
                                (fn [position]
-                                 (create-grid-cell position
-                                                   (case (tiled/movement-property tiled-map position)
-                                                     "none" :none
-                                                     "air"  :air
-                                                     "all"  :all)))))
+                                 (atom (cdq.cell-impl/create position
+                                                             (case (tiled/movement-property tiled-map position)
+                                                               "none" :none
+                                                               "air"  :air
+                                                               "all"  :all))))))
         z-orders [:z-order/on-ground
                   :z-order/ground
                   :z-order/flying
                   :z-order/effect]
-        ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
         max-delta 0.04
-        ; setting a min-size for colliding bodies so movement can set a max-speed for not
-        ; skipping bodies at too fast movement
-        ; TODO assert at properties load
-        minimum-size 0.39 ; == spider smallest creature size.
-        ; set max speed so small entities are not skipped by projectiles
-        ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+        minimum-size 0.39
         max-speed (/ minimum-size max-delta)]
     {:ctx/grid grid
      :ctx/raycaster (cdq.raycaster-impl/create grid)
