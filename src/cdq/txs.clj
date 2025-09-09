@@ -9,34 +9,26 @@
             [cdq.info :as info]
             [cdq.inventory :as inventory]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.stage]
+            [cdq.stage :as stage]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.message]
-            [cdq.ui.windows.inventory :as inventory-window]
             [cdq.utils :as utils]
             [cdq.world :as world]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
             [reduce-fsm :as fsm]))
 
 (defn- add-skill!
   [{:keys [ctx/textures
            ctx/stage]}
    skill]
-  (-> stage
-      :action-bar
-      (action-bar/add-skill! {:skill-id (:property/id skill)
-                              :texture-region (image/texture-region (:entity/image skill) textures)
-                              :tooltip-text (fn [ctx]
-                                              (info/generate (:ctx/info ctx) skill ctx))}))
+  (stage/add-skill! stage
+                    {:skill-id (:property/id skill)
+                     :texture-region (image/texture-region (:entity/image skill) textures)
+                     :tooltip-text (fn [ctx]
+                                     (info/generate (:ctx/info ctx) skill ctx))})
   nil)
 
 #_(defn- remove-skill! [{:keys [ctx/stage]} skill]
-    (-> stage
-        :action-bar
-        (action-bar/remove-skill! (:property/id skill)))
+    (stage/remove-skill! stage (:property/id skill))
     nil)
 
 (defn- add-skill [entity {:keys [property/id] :as skill}]
@@ -138,13 +130,10 @@
                             {:keys [ctx/textures
                                     ctx/stage]
                              :as ctx}]
-                         (-> stage
-                             :windows
-                             :inventory-window
-                             (inventory-window/set-item! cell
-                                                         {:texture-region (image/texture-region (:entity/image item) textures)
-                                                          :tooltip-text (fn [ctx]
-                                                                          (info/generate (:ctx/info ctx) item ctx))}))
+                         (stage/set-item! stage cell
+                                          {:texture-region (image/texture-region (:entity/image item) textures)
+                                           :tooltip-text (fn [ctx]
+                                                           (info/generate (:ctx/info ctx) item ctx))})
                          nil)
 
    :tx/remove-item (fn [[_ eid cell] _ctx]
@@ -159,7 +148,7 @@
                          nil)))
 
    :tx/player-remove-item (fn [[_ cell] {:keys [ctx/stage]}]
-                            (cdq.stage/remove-item! stage cell)
+                            (stage/remove-item! stage cell)
                             nil)
 
    :tx/event (fn [[_ eid event params] ctx]
@@ -178,23 +167,18 @@
                       [:tx/state-exit eid old-state-obj]
                       [:tx/state-enter eid new-state-obj]]))))
 
-   :tx/toggle-inventory-visible (fn [_ ctx]
-                                  (-> ctx
-                                      :ctx/stage
-                                      cdq.stage/toggle-inventory-visible!)
+   :tx/toggle-inventory-visible (fn [_ {:keys [ctx/stage]}]
+                                  (stage/toggle-inventory-visible! stage)
                                   nil)
    :tx/show-message (fn
                       [[_ message]
                        {:keys [ctx/stage]}]
-                      (-> stage
-                          stage/root
-                          (group/find-actor "player-message")
-                          (cdq.ui.message/show! message))
+                      (stage/show-text-message! stage message)
                       nil)
 
    :tx/show-modal (fn [[_ opts] {:keys [ctx/stage
                                         ctx/ui-viewport]}]
-                    (cdq.stage/show-modal-window! stage ui-viewport opts)
+                    (stage/show-modal-window! stage ui-viewport opts)
                     nil)
 
    :tx/sound (fn [[_ sound-name] {:keys [ctx/audio]}]

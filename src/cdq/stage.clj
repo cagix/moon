@@ -1,6 +1,9 @@
 (ns cdq.stage
-  (:require [cdq.ui.windows.inventory :as inventory-window]
+  (:require [cdq.ui.message]
+            [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 
@@ -29,8 +32,35 @@
                                                 (* (:viewport/height ui-viewport) (/ 3 4))]
                               :pack? true})))
 
-(defn remove-item! [stage inventory-cell]
+(defn set-item!
+  [stage cell item-properties]
+  (-> stage
+      :windows
+      :inventory-window
+      (inventory-window/set-item! cell item-properties)))
+
+(defn remove-item!
+  [stage inventory-cell]
   (-> stage
       :windows
       :inventory-window
       (inventory-window/remove-item! inventory-cell)))
+
+(defn add-skill!
+  [stage skill-properties]
+  (-> stage
+      :action-bar
+      (action-bar/add-skill! skill-properties)))
+
+(defn remove-skill!
+  [stage skill-id]
+  (-> stage
+      :action-bar
+      (action-bar/remove-skill! skill-id)))
+
+(defn show-text-message!
+  [stage message]
+  (-> stage
+      stage/root
+      (group/find-actor "player-message")
+      (cdq.ui.message/show! message)))
