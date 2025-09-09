@@ -1,5 +1,5 @@
 (ns cdq.graphics
-  (:require [cdq.math :as math]
+  (:require [cdq.utils :as utils]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.batch :as batch]
@@ -115,8 +115,8 @@
                         center-x
                         center-y
                         radius
-                        (math/degree->radians start-angle)
-                        (math/degree->radians degree)))
+                        (utils/degree->radians start-angle)
+                        (utils/degree->radians degree)))
    :draw/sector (fn [[_ [center-x center-y] radius start-angle degree color]
                      {:keys [ctx/shape-drawer]}]
                   (sd/set-color! shape-drawer (color/->obj color))
@@ -124,8 +124,8 @@
                               center-x
                               center-y
                               radius
-                              (math/degree->radians start-angle)
-                              (math/degree->radians degree)))
+                              (utils/degree->radians start-angle)
+                              (utils/degree->radians degree)))
    :draw/line (fn [[_ [sx sy] [ex ey] color]
                    {:keys [ctx/shape-drawer]}]
                 (sd/set-color! shape-drawer (color/->obj color))

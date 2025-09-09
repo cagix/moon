@@ -1,5 +1,5 @@
 (ns cdq.render.update-mouse
-  (:require [cdq.math :as math]
+  (:require [cdq.utils :as utils]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.viewport :as viewport]))
@@ -10,12 +10,12 @@
 ; TODO ? "Can be negative coordinates, undefined cells."
 (defn- unproject-clamp [viewport [x y]]
   (viewport/unproject viewport
-                      (math/clamp x
-                                  (:viewport/left-gutter-width viewport)
-                                  (:viewport/right-gutter-x    viewport))
-                      (math/clamp y
-                                  (:viewport/top-gutter-height viewport)
-                                  (:viewport/top-gutter-y      viewport))))
+                      (utils/clamp x
+                                   (:viewport/left-gutter-width viewport)
+                                   (:viewport/right-gutter-x    viewport))
+                      (utils/clamp y
+                                   (:viewport/top-gutter-height viewport)
+                                   (:viewport/top-gutter-y      viewport))))
 
 (defn do!
   [{:keys [ctx/input

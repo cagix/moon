@@ -1,5 +1,5 @@
 (ns cdq.math.vector2-test
-  (:require [cdq.math :as math]
+  (:require [cdq.utils :as utils]
             [cdq.gdx.math.vector2 :as v]
             [clojure.test :refer :all]))
 
@@ -18,7 +18,7 @@
                        [0.0 0.0])))
 
 (deftest length
-  (is (math/nearly-equal? (v/length [1.2 0.1])
-                          1.2041595))
-  (is (math/nearly-equal? (v/length [1.2 -0.1])
-                          1.2041595)))
+  (is (utils/nearly-equal? (v/length [1.2 0.1])
+                           1.2041595))
+  (is (utils/nearly-equal? (v/length [1.2 -0.1])
+                           1.2041595)))
