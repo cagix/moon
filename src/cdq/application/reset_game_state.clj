@@ -12,31 +12,16 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 
-(defn- world-ctx
-  [{:keys [tiled-map] :as config}]
-  (let [grid (grid-impl/->Grid
-              (g2d/create-grid (:tiled-map/width  tiled-map)
-                               (:tiled-map/height tiled-map)
-                               (fn [position]
-                                 (atom (cdq.cell-impl/create position
-                                                             (case (tiled/movement-property tiled-map position)
-                                                               "none" :none
-                                                               "air"  :air
-                                                               "all"  :all))))))
-        z-orders [:z-order/on-ground
-                  :z-order/ground
-                  :z-order/flying
-                  :z-order/effect]
-        max-delta 0.04
-        minimum-size 0.39
-        max-speed (/ minimum-size max-delta)]
-    {:ctx/grid grid
-     :ctx/raycaster (cdq.raycaster-impl/create grid)
-     :ctx/elapsed-time 0
-     :ctx/max-delta max-delta
-     :ctx/max-speed max-speed
-     :ctx/minimum-size minimum-size
-     :ctx/z-orders z-orders}))
+(defn create-grid [tiled-map]
+  (grid-impl/->Grid
+   (g2d/create-grid (:tiled-map/width  tiled-map)
+                    (:tiled-map/height tiled-map)
+                    (fn [position]
+                      (atom (cdq.cell-impl/create position
+                                                  (case (tiled/movement-property tiled-map position)
+                                                    "none" :none
+                                                    "air"  :air
+                                                    "all"  :all)))))))
 
 (defn- create-explored-tile-corners [tiled-map]
   (atom (g2d/create-grid (:tiled-map/width  tiled-map)
@@ -96,25 +81,39 @@
     :as ctx}
    world-fn]
   (reset-stage! ctx)
-  (let [world-config (merge (:world config)
-                            (let [[f params] world-fn]
-                              ((requiring-resolve f)
-                               (assoc params
-                                      :creature-properties (db/all-raw db :properties/creatures)
-                                      :textures textures))))
-        world-ctx* (world-ctx world-config)]
+  (let [world (let [[f params] world-fn]
+                ((requiring-resolve f)
+                 (assoc params
+                        :creature-properties (db/all-raw db :properties/creatures)
+                        :textures textures)))
+        {:keys [tiled-map]
+         :as world-config} (merge (:world config) world)
+        grid (create-grid tiled-map)
+        z-orders [:z-order/on-ground
+                  :z-order/ground
+                  :z-order/flying
+                  :z-order/effect]
+        max-delta 0.04
+        minimum-size 0.39
+        max-speed (/ minimum-size max-delta)]
     (-> ctx
-        (merge world-ctx*)
-        (assoc :ctx/tiled-map (:tiled-map world-config))
-        (assoc :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config)))
-        (assoc :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
-                                                      (:tiled-map/height (:tiled-map world-config))
-                                                      (:content-grid-cell-size world-config)))
-        (assoc :ctx/potential-field-cache (atom nil))
-        (assoc :ctx/factions-iterations (:potential-field-factions-iterations world-config))
-        (assoc :ctx/id-counter (atom 0))
-        (assoc :ctx/entity-ids (atom {}))
-        (assoc :ctx/render-z-order (utils/define-order (:ctx/z-orders world-ctx*)))
+        (merge {:ctx/tiled-map (:tiled-map world-config)
+                :ctx/grid grid
+                :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
+                                                       (:tiled-map/height (:tiled-map world-config))
+                                                       (:content-grid-cell-size world-config))
+                :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config))
+                :ctx/raycaster (cdq.raycaster-impl/create grid)
+                :ctx/elapsed-time 0
+                :ctx/max-delta max-delta
+                :ctx/max-speed max-speed
+                :ctx/minimum-size minimum-size
+                :ctx/z-orders z-orders
+                :ctx/potential-field-cache (atom nil)
+                :ctx/factions-iterations (:potential-field-factions-iterations world-config)
+                :ctx/id-counter (atom 0)
+                :ctx/entity-ids (atom {})
+                :ctx/render-z-order (utils/define-order z-orders)})
         (spawn-player! (:start-position world-config))
         assoc-player-eid
         spawn-enemies!)))
