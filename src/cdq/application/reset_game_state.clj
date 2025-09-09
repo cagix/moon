@@ -75,6 +75,18 @@
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
+(defn reset-stage!
+  [{:keys [ctx/config
+           ctx/stage]
+    :as ctx}]
+  (stage/clear! stage)
+  (let [config (:cdq.application.reset-game-state config)
+        actors (map #(let [[f params] %]
+                       ((requiring-resolve f) ctx params))
+                    (:create-ui-actors config))]
+    (doseq [actor actors]
+      (stage/add! stage (actor/build actor)))))
+
 ; TODO dispose old ctx/tiled-map if already present
 (defn reset-game-state!
   [{:keys [ctx/config
@@ -83,13 +95,7 @@
            ctx/textures]
     :as ctx}
    world-fn]
-  (let [config (:cdq.application.reset-game-state config)
-        actors (map #(let [[f params] %]
-                       ((requiring-resolve f) ctx params))
-                    (:create-ui-actors config))]
-    (stage/clear! stage)
-    (doseq [actor actors]
-      (stage/add! stage (actor/build actor))))
+  (reset-stage! ctx)
   (let [world-config (merge (:world config)
                             (let [[f params] world-fn]
                               ((requiring-resolve f)
