@@ -8,8 +8,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.window :as window]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn property-editor-window
   [{:keys [ctx/application-state
@@ -39,22 +38,27 @@
                        (when (input/key-just-pressed? input :enter)
                          (clicked-save-fn actor ctx)))
         scrollpane-height (:viewport/height ui-viewport)]
-    (widget/window {:title "[SKY]Property[]"
-                    :id :property-editor-window
-                    :modal? true
-                    :close-button? true
-                    :center? true
-                    :close-on-escape? true
-                    :rows [[(cdq.ui.widget/scroll-pane-cell scrollpane-height
-                                                            [[{:actor widget :colspan 2}]
-                                                             [{:actor (widget/text-button "Save [LIGHT_GRAY](ENTER)[]" clicked-save-fn)
-                                                               :center? true}
-                                                              {:actor (widget/text-button "Delete" clicked-delete-fn)
-                                                               :center? true}]])]]
-                    :actors [{:actor/type :actor.type/actor
-                              :act extra-act-fn}]
-                    :cell-defaults {:pad 5}
-                    :pack? true})))
+    {:actor/type :actor.type/window
+     :title "[SKY]Property[]"
+     :id :property-editor-window
+     :modal? true
+     :close-button? true
+     :center? true
+     :close-on-escape? true
+     :rows [[(cdq.ui.widget/scroll-pane-cell scrollpane-height
+                                             [[{:actor widget :colspan 2}]
+                                              [{:actor {:actor/type :actor.type/text-button
+                                                        :text "Save [LIGHT_GRAY](ENTER)[]"
+                                                        :on-clicked clicked-save-fn}
+                                                :center? true}
+                                               {:actor {:actor/type :actor.type/text-button
+                                                        :text "Delete"
+                                                        :on-clicked clicked-delete-fn}
+                                                :center? true}]])]]
+     :actors [{:actor/type :actor.type/actor
+               :act extra-act-fn}]
+     :cell-defaults {:pad 5}
+     :pack? true}))
 
 (defn rebuild!
   [{:keys [ctx/db
@@ -67,4 +71,4 @@
                              :map-widget)
         prop-value (editor-widget/value [:s/map] nil map-widget-table (:schemas db))]
     (actor/remove! window)
-    (stage/add! stage (property-editor-window ctx prop-value))))
+    (stage/add! stage (actor/build (property-editor-window ctx prop-value)))))
