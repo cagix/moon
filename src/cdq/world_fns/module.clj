@@ -1,5 +1,6 @@
 (ns cdq.world-fns.module
-  (:require [cdq.level.helper :as helper]))
+  (:require [cdq.world-fns.grid-to-tiled-map :as grid-to-tiled-map]
+            [cdq.level.helper :as helper]))
 
 (def modules-file "maps/modules.tmx")
 (def modules-width  32)
@@ -74,4 +75,4 @@
                                                                     (get unscaled-grid %))))
                             scaled-grid
                             unscaled-transition-positions)]
-    (helper/grid->tiled-map modules-tiled-map scaled-grid)))
+    (grid-to-tiled-map/grid->tiled-map modules-tiled-map scaled-grid)))
