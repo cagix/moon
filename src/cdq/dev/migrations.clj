@@ -27,7 +27,7 @@
 
 (def creature? :creature/level)
 
-(defn update-properties-file! []
+#_(defn update-properties-file! []
   (let [new-data (for [property (read-properties)]
                    (if (creature? property)
                      (move-stats-in-separate-component property)
