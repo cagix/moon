@@ -1,6 +1,6 @@
 (ns cdq.world-fns.uf-caves
   (:require [cdq.utils :as utils]
-            [cdq.level.helper :as helper]
+            [cdq.world-fns.creature-tiles :as creature-tiles]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.maps.tiled :as tiled]))
 
@@ -31,7 +31,7 @@
                                                                 "movement" movement))))
            :level/spawn-rate spawn-rate
            :level/scaling scaling
-           :level/creature-properties (helper/prepare-creature-properties creature-properties textures)}
+           :level/creature-properties (creature-tiles/prepare creature-properties textures)}
           (map requiring-resolve '[cdq.world-fns.initial-grid-creation/do!
                                    cdq.world-fns.fix-nads/do!
                                    cdq.world-fns.create-star/do!])))

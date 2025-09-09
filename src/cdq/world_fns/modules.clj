@@ -3,6 +3,7 @@
             [cdq.grid2d :as g2d]
             [cdq.level.helper :as helper]
             [cdq.world-fns.module :as module]
+            [cdq.world-fns.creature-tiles :as creature-tiles]
             [clojure.gdx.maps.tiled :as tiled]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
@@ -83,4 +84,4 @@
            textures]
     :as params}]
   (generate-modules params
-                    (helper/prepare-creature-properties creature-properties textures)))
+                    (creature-tiles/prepare creature-properties textures)))
