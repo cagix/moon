@@ -17,49 +17,10 @@
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]))
 
-(def ui-viewport-width 1440)
-(def ui-viewport-height 900)
-(def font-file "exocet/films.EXL_____.ttf")
-(def font-params {:size 16
-                  :quality-scaling 2
-                  :enable-markup? true
-                  :use-integer-positions? false}) ; false, otherwise scaling to world-units not visible
-(def path-format "cursors/%s.png")
-(def cursor-data
-  {:cursors/bag                   ["bag001"       [0   0]]
-   :cursors/black-x               ["black_x"      [0   0]]
-   :cursors/default               ["default"      [0   0]]
-   :cursors/denied                ["denied"       [16 16]]
-   :cursors/hand-before-grab      ["hand004"      [4  16]]
-   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-   :cursors/hand-grab             ["hand003"      [4  16]]
-   :cursors/move-window           ["move002"      [16 16]]
-   :cursors/no-skill-selected     ["denied003"    [0   0]]
-   :cursors/over-button           ["hand002"      [0   0]]
-   :cursors/sandclock             ["sandclock"    [16 16]]
-   :cursors/skill-not-usable      ["x007"         [0   0]]
-   :cursors/use-skill             ["pointer004"   [0   0]]
-   :cursors/walking               ["walking"      [16 16]]})
-
-; TODO textures is not required but also 'clojure.gdx.graphics'
-; so is ui-viewport/camera etc
-; grep clojure.gdx.graphics
-
-; default-font could even pass a freetype font !! wtf
-; or shape drawer texture can pass
-
 (defn create
   [graphics
-   {:keys [
-           ; cursor-data
-           ; path-format
-           textures-to-load
-           world-unit-scale
-           ; world-viewport-width
-           ; world-viewport-height
-           ; font-file
-           ; font-params
-           ]}]
+   {:keys [textures-to-load
+           world-unit-scale]}]
   (let [batch (sprite-batch/create)
         shape-drawer-texture (let [pixmap (doto (pixmap/create)
                                             (pixmap/set-color! color/white)
@@ -67,35 +28,57 @@
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
                                texture)
+        ui-viewport-width 1440
+        ui-viewport-height 900
+        font-file "exocet/films.EXL_____.ttf"
+        font-params {:size 16
+                     :quality-scaling 2
+                     :enable-markup? true
+                     :use-integer-positions? false} ; false, otherwise scaling to world-units not visible
+        path-format "cursors/%s.png"
+        cursor-data
+        {:cursors/bag                   ["bag001"       [0   0]]
+         :cursors/black-x               ["black_x"      [0   0]]
+         :cursors/default               ["default"      [0   0]]
+         :cursors/denied                ["denied"       [16 16]]
+         :cursors/hand-before-grab      ["hand004"      [4  16]]
+         :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+         :cursors/hand-grab             ["hand003"      [4  16]]
+         :cursors/move-window           ["move002"      [16 16]]
+         :cursors/no-skill-selected     ["denied003"    [0   0]]
+         :cursors/over-button           ["hand002"      [0   0]]
+         :cursors/sandclock             ["sandclock"    [16 16]]
+         :cursors/skill-not-usable      ["x007"         [0   0]]
+         :cursors/use-skill             ["pointer004"   [0   0]]
+         :cursors/walking               ["walking"      [16 16]]}
         world-viewport-width 1440
-        world-viewport-height 900
-        ]
-    {:ctx/unit-scale (atom 1)
-     :ctx/world-unit-scale world-unit-scale
-     :ctx/batch batch
-     :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
-     :ctx/graphics graphics
-     :ctx/textures (into {} (for [[path file-handle] textures-to-load]
-                              [path (texture/from-file file-handle)]))
+        world-viewport-height 900]
+    {:ctx/batch batch
      :ctx/cursors (update-vals cursor-data
                                (fn [[file [hotspot-x hotspot-y]]]
                                  (let [pixmap (pixmap/create (files/internal (gdx/files) (format path-format file)))
                                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
+     :ctx/default-font (freetype/generate-font (files/internal (gdx/files) font-file)
+                                               font-params)
+     :ctx/graphics graphics
+     :ctx/shape-drawer-texture shape-drawer-texture
+     :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
+     :ctx/textures (into {} (for [[path file-handle] textures-to-load]
+                              [path (texture/from-file file-handle)]))
+     :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
+
      :ctx/ui-viewport (viewport/fit ui-viewport-width ui-viewport-height (camera/orthographic))
+     :ctx/unit-scale (atom 1)
+     :ctx/world-unit-scale world-unit-scale
      :ctx/world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
                                world-height (* world-viewport-height world-unit-scale)]
                            (viewport/fit world-width
                                          world-height
                                          (camera/orthographic :y-down? false
                                                               :world-width world-width
-                                                              :world-height world-height)))
-     :ctx/default-font (freetype/generate-font (files/internal (gdx/files) font-file)
-                                               font-params)
-     :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))}))
-
+                                                              :world-height world-height)))}))
 (defn dispose!
   [{:keys [ctx/batch
            ctx/cursors
