@@ -8,12 +8,12 @@
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
-            [cdq.raycaster :as raycaster]
+            [cdq.math.raycaster :as raycaster]
             [cdq.utils :as utils]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.disposable :as disposable]))
 
-(defn- create-raycaster [grid]
+(defn- grid->raycaster [grid]
   (let [width  (g2d/width  (.g2d grid))
         height (g2d/height (.g2d grid))
         cells  (for [cell (map deref (g2d/cells (.g2d grid)))]
@@ -236,7 +236,7 @@
                                                    (:tiled-map/height tiled-map)
                                                    (:content-grid-cell-size (:world config)))
             :ctx/explored-tile-corners (create-explored-tile-corners tiled-map)
-            :ctx/raycaster (create-raycaster grid)
+            :ctx/raycaster (grid->raycaster grid)
             :ctx/elapsed-time 0
             :ctx/max-speed (/ (:ctx/minimum-size ctx)
                               (:ctx/max-delta ctx))

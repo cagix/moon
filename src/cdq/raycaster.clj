@@ -2,12 +2,6 @@
   (:require [cdq.math.raycaster :as raycaster]
             [cdq.path-rays :as path-rays]))
 
-(defn create [width height cells]
-  (let [arr (make-array Boolean/TYPE width height)]
-    (doseq [[[x y] blocks-vision?] cells]
-      (aset arr x y (boolean blocks-vision?)))
-    [arr width height]))
-
 (defn blocked? [raycaster start end]
   (raycaster/blocked? raycaster start end))
 
