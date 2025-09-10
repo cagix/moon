@@ -2,6 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.entity-tick]
             [cdq.stacktrace :as stacktrace]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (defn- tick-component! [k v eid ctx]
@@ -31,8 +32,8 @@
    (tick-entities! ctx)
    (catch Throwable t
      (stacktrace/pretty-print t)
-     (stage/add! stage {:actor/type :actor.type/error-window
-                        :throwable t})
+     (stage/add! stage (actor/build {:actor/type :actor.type/error-window
+                                     :throwable t}))
      #_(bind-root ::error t)))
   ctx)
 

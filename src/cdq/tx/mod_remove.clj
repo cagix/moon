@@ -1,6 +1,6 @@
 (ns cdq.tx.mod-remove
   (:require [cdq.stats :as stats]))
 
-(defn do! [[_ eid modifiers] _ctx]
+(defn do! [_ctx eid modifiers]
   (swap! eid update :creature/stats stats/remove modifiers)
   nil)

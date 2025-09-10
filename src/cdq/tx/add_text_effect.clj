@@ -1,7 +1,11 @@
 (ns cdq.tx.add-text-effect
   (:require [cdq.timer :as timer]))
 
-(defn do! [[_ eid text duration] {:keys [ctx/elapsed-time]}]
+(defn do!
+  [{:keys [ctx/elapsed-time]}
+   eid
+   text
+   duration]
   [[:tx/assoc
     eid
     :entity/string-effect

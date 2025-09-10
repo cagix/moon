@@ -3,10 +3,11 @@
             [cdq.info :as info]
             [cdq.stage :as stage]))
 
-(defn do! [[_ cell item]
-           {:keys [ctx/textures
-                   ctx/stage]
-            :as ctx}]
+(defn do!
+  [{:keys [ctx/textures
+           ctx/stage]
+    :as ctx}
+   cell item]
   (stage/set-item! stage cell
                    {:texture-region (image/texture-region (:entity/image item) textures)
                     :tooltip-text (fn [ctx]

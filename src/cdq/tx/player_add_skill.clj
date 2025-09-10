@@ -3,8 +3,10 @@
             [cdq.info :as info]
             [cdq.stage :as stage]))
 
-(defn do! [[_ skill] {:keys [ctx/textures
-                             ctx/stage]}]
+(defn do!
+  [{:keys [ctx/textures
+           ctx/stage]}
+   skill]
   (stage/add-skill! stage
                     {:skill-id (:property/id skill)
                      :texture-region (image/texture-region (:entity/image skill) textures)

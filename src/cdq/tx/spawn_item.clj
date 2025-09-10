@@ -1,7 +1,6 @@
 (ns cdq.tx.spawn-item)
 
-(defn do! [[_ position item]
-           _ctx]
+(defn do! [_ctx position item]
   [[:tx/spawn-entity
     {:entity/body {:position position
                    :width 0.75

@@ -1,8 +1,9 @@
 (ns cdq.tx.spawn-alert
   (:require [cdq.timer :as timer]))
 
-(defn do! [[_ position faction duration]
-           {:keys [ctx/elapsed-time]}]
+(defn do!
+  [{:keys [ctx/elapsed-time]}
+   position faction duration]
   [[:tx/spawn-effect
     position
     {:entity/alert-friendlies-after-duration

@@ -1,5 +1,5 @@
 (ns cdq.tx.assoc)
 
-(defn do! [[_ eid k value] _ctx]
+(defn do! [_ctx eid k value]
   (swap! eid assoc k value)
   nil)

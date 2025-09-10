@@ -1,5 +1,5 @@
 (ns cdq.tx.mark-destroyed)
 
-(defn do! [[_ eid] _ctx]
+(defn do! [_ctx eid]
   (swap! eid assoc :entity/destroyed? true)
   nil)

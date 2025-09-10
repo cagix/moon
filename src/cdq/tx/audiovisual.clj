@@ -1,8 +1,10 @@
 (ns cdq.tx.audiovisual
   (:require [cdq.db :as db]))
 
-(defn do! [[_ position audiovisual]
-           {:keys [ctx/db]}]
+(defn do!
+  [{:keys [ctx/db]}
+   position
+   audiovisual]
   (let [{:keys [tx/sound
                 entity/animation]} (if (keyword? audiovisual)
                                      (db/build db audiovisual)

@@ -11,10 +11,10 @@
 ; -> so no flying units for now
 
 (defn do!
-  [[_ {:keys [position
-              creature-property
-              components]}]
-   _ctx]
+  [_ctx
+   {:keys [position
+           creature-property
+           components]}]
   (assert creature-property)
   [[:tx/spawn-entity
     (-> creature-property

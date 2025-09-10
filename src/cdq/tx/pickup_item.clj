@@ -1,7 +1,7 @@
 (ns cdq.tx.pickup-item
   (:require [cdq.inventory :as inventory]))
 
-(defn do! [[_ eid item] _ctx]
+(defn do! [_ctx eid item]
   (inventory/assert-valid-item? item)
   (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
     (assert cell)

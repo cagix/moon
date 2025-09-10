@@ -1,8 +1,9 @@
 (ns cdq.tx.spawn-effect)
 
 (defn do!
-  [[_ position components]
-   {:keys [ctx/config]}]
+  [{:keys [ctx/config]}
+   position
+   components]
   [[:tx/spawn-entity
     (assoc components
            :entity/body (assoc (:effect-body-props config) :position position))]])

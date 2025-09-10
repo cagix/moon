@@ -11,7 +11,7 @@
    {k 0 :as component}]
   (let [f (get txs-fn-map k)]
     (assert f (pr-str k))
-    (f component ctx)))
+    (apply f ctx (rest component))))
 
 (defn- handle-tx! [ctx tx]
   (assert (valid-tx? tx) (pr-str tx))

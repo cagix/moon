@@ -4,7 +4,10 @@
             [cdq.stats :as stats]))
 
 (defn do!
-  [[_ source target damage] _ctx]
+  [_ctx
+   source
+   target
+   damage]
   (let [source* @source
         target* @target
         hp (stats/get-hitpoints (:creature/stats target*))]

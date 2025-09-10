@@ -2,15 +2,14 @@
   (:require [cdq.gdx.math.vector2 :as v]))
 
 (defn do!
-  [[_
-    {:keys [position direction faction]}
-    {:keys [entity/image
-            projectile/max-range
-            projectile/speed
-            entity-effects
-            projectile/size
-            projectile/piercing?] :as projectile}]
-   _ctx]
+  [_ctx
+   {:keys [position direction faction]}
+   {:keys [entity/image
+           projectile/max-range
+           projectile/speed
+           entity-effects
+           projectile/size
+           projectile/piercing?] :as projectile}]
   [[:tx/spawn-entity
     {:entity/body {:position position
                    :width size
