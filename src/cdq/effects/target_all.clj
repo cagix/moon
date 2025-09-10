@@ -1,5 +1,14 @@
 (ns cdq.effects.target-all
-  (:require [cdq.world :as world]))
+  (:require [cdq.raycaster :as raycaster]))
+
+(defn- affected-targets
+  [active-entities
+   raycaster
+   entity]
+  (->> active-entities
+       (filter #(:entity/species @%))
+       (filter #(raycaster/line-of-sight? raycaster entity @%))
+       (remove #(:entity/player? @%))))
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -22,10 +31,14 @@
 (defn useful? [_ _effect-ctx _ctx]
   false)
 
-(defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} ctx]
+(defn handle
+  [[_ {:keys [entity-effects]}]
+   {:keys [effect/source]}
+   {:keys [ctx/active-entities
+           ctx/raycaster]}]
   (let [source* @source]
     (apply concat
-           (for [target (world/creatures-in-los-of ctx source*)]
+           (for [target (affected-targets active-entities raycaster source*)]
              [[:tx/spawn-line
                {:start (:body/position (:entity/body source*)) #_(start-point source* target*)
                 :end (:body/position (:entity/body @target))
@@ -37,9 +50,13 @@
                 :effect/target target}
                entity-effects]]))))
 
-(defn render [_ {:keys [effect/source]} ctx]
+(defn render
+  [_
+   {:keys [effect/source]}
+   {:keys [ctx/active-entities
+           ctx/raycaster]}]
   (let [source* @source]
-    (for [target* (map deref (world/creatures-in-los-of ctx source*))]
+    (for [target* (map deref (affected-targets active-entities raycaster source*))]
       [:draw/line
        (:body/position (:entity/body source*)) #_(start-point source* target*)
        (:body/position (:entity/body target*))
