@@ -4,7 +4,8 @@
 (ns cdq.potential-fields.update
   (:require [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.grid :as grid]))
+            [cdq.grid :as grid]
+            [cdq.position :as position]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.
@@ -44,20 +45,6 @@
  (step :good *1)
  )
 
-(defn- diagonal-cells? [cell* other-cell*]
-  (let [[x1 y1] (:position cell*) ; -> cell/position
-        [x2 y2] (:position other-cell*)]
-    (and (not= x1 x2)
-         (not= y1 y2))))
-
-(defrecord FieldData [distance eid])
-
-(defn- add-field-data! [cell faction distance eid]
-  (swap! cell assoc faction (->FieldData distance eid))) ; -> cell/add-potential-field-data
-
-(defn- remove-field-data! [cell faction] ; -> cell/remoev-potential-field-data
-  (swap! cell assoc faction nil)) ; don't dissoc - will lose the Cell record type
-
 ; TODO performance
 ; * cached-adjacent-non-blocked-cells ? -> no need for cell blocked check?
 ; * sorted-set-by ?
@@ -76,10 +63,11 @@
             :when (not (or (cell/pf-blocked? adjacent-cell*)
                            (marked? adjacent-cell*)))
             :let [distance-value (+ (float (distance cell*))
-                                    (float (if (diagonal-cells? cell* adjacent-cell*)
+                                    (float (if (position/diagonal? (:position cell*)
+                                                                   (:position adjacent-cell*))
                                              1.4 ; square root of 2 * 10
                                              1)))]]
-      (add-field-data! adjacent-cell faction distance-value (nearest-entity cell*))
+      (swap! adjacent-cell cell/add-field-data faction distance-value (nearest-entity cell*))
       (conj! marked-cells adjacent-cell))
     (persistent! marked-cells)))
 
@@ -90,7 +78,7 @@
                           [eid (grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
-      (add-field-data! cell faction 0 eid))
+      (swap! cell cell/add-field-data faction 0 eid))
     (loop [marked-cells     marked
            new-marked-cells marked
            iterations 0]
@@ -119,7 +107,7 @@
       (swap! pf-cache assoc-in last-state tiles->entities)
 
       (doseq [cell (get-in @pf-cache marked-cells)]
-        (remove-field-data! cell faction))
+        (swap! cell cell/remove-field-data faction))
 
       (swap! pf-cache assoc-in marked-cells (generate-potential-field
                                              grid
