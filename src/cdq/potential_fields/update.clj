@@ -1,3 +1,6 @@
+;TODO KLEINER CODE IST EINFACHER
+; DA SIEHT MAN NEUES SACHEN
+; this is  no1 code so change
 (ns cdq.potential-fields.update
   (:require [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
@@ -106,12 +109,18 @@
 
 (defn tick! [pf-cache grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
+
         last-state   [faction :tiles->entities]
+
         marked-cells [faction :marked-cells]]
+
     (when-not (= (get-in @pf-cache last-state) tiles->entities)
+
       (swap! pf-cache assoc-in last-state tiles->entities)
+
       (doseq [cell (get-in @pf-cache marked-cells)]
         (remove-field-data! cell faction))
+
       (swap! pf-cache assoc-in marked-cells (generate-potential-field
                                              grid
                                              faction

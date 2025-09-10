@@ -35,7 +35,9 @@
             :tx/spawn-effect
             :tx/spawn-item
             :tx/spawn-creature
-            :tx/spawn-entity]]
+            :tx/spawn-entity
+            :tx/update-potential-fields
+            ]]
     (into {}
           (for [k ks
                 :let [sym (symbol (format sym-format (name k)))
