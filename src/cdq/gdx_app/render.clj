@@ -1,4 +1,4 @@
-(ns cdq.render-pipeline)
+(ns cdq.gdx-app.render)
 
 (defn do!
   [ctx]
@@ -9,4 +9,4 @@
                 new-ctx
                 ctx)))
           ctx
-          (:cdq.render.pipeline (:ctx/config ctx))))
+          (:cdq.gdx-app.render (:ctx/config ctx))))
