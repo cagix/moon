@@ -1,13 +1,12 @@
 (ns cdq.application.reset-game-state
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.cell-impl]
+            [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.db :as db]
-            [cdq.cell-impl]
             [cdq.grid-impl :as grid-impl]
             [cdq.grid2d :as g2d]
-            [cdq.utils :as utils]
             [cdq.raycaster-impl]
-            [cdq.world :as world]
+            [cdq.utils :as utils]
             [clojure.gdx.maps.tiled :as tiled]))
 
 (defn create-grid [tiled-map]
@@ -65,13 +64,12 @@
            ctx/textures]
     :as ctx}
    world-fn]
-  (let [world (let [[f params] world-fn]
-                ((requiring-resolve f)
-                 (assoc params
-                        :creature-properties (db/all-raw db :properties/creatures)
-                        :textures textures)))
-        {:keys [tiled-map]
-         :as world-config} (merge (:world config) world)
+  (let [{:keys [tiled-map
+                start-position]} (let [[f params] world-fn]
+                                   ((requiring-resolve f)
+                                    (assoc params
+                                           :creature-properties (db/all-raw db :properties/creatures)
+                                           :textures textures)))
         grid (create-grid tiled-map)
         z-orders [:z-order/on-ground
                   :z-order/ground
@@ -81,12 +79,12 @@
         minimum-size 0.39
         max-speed (/ minimum-size max-delta)]
     (-> ctx
-        (merge {:ctx/tiled-map (:tiled-map world-config)
+        (merge {:ctx/tiled-map tiled-map
                 :ctx/grid grid
-                :ctx/content-grid (content-grid/create (:tiled-map/width  (:tiled-map world-config))
-                                                       (:tiled-map/height (:tiled-map world-config))
-                                                       (:content-grid-cell-size world-config))
-                :ctx/explored-tile-corners (create-explored-tile-corners (:tiled-map world-config))
+                :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                       (:tiled-map/height tiled-map)
+                                                       (:content-grid-cell-size (:world config)))
+                :ctx/explored-tile-corners (create-explored-tile-corners tiled-map)
                 :ctx/raycaster (cdq.raycaster-impl/create grid)
                 :ctx/elapsed-time 0
                 :ctx/max-delta max-delta
@@ -94,10 +92,10 @@
                 :ctx/minimum-size minimum-size
                 :ctx/z-orders z-orders
                 :ctx/potential-field-cache (atom nil)
-                :ctx/factions-iterations (:potential-field-factions-iterations world-config)
+                :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
                 :ctx/id-counter (atom 0)
                 :ctx/entity-ids (atom {})
                 :ctx/render-z-order (utils/define-order z-orders)})
-        (spawn-player! (:start-position world-config))
+        (spawn-player! start-position)
         assoc-player-eid
         spawn-enemies!)))
