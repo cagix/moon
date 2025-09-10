@@ -28,13 +28,13 @@
 
 (defn- spawn-player!
   [{:keys [ctx/config
-           ctx/db]
-    :as ctx}
-   start-position]
+           ctx/db
+           ctx/world]
+    :as ctx}]
   (ctx/handle-txs! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
                                                       components]} (:cdq.game/player-props config)]
-                                          {:position (utils/tile->middle start-position)
+                                          {:position (utils/tile->middle (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
   ctx)
@@ -81,7 +81,8 @@
         minimum-size 0.39
         max-speed (/ minimum-size max-delta)]
     (-> ctx
-        (merge {:ctx/world {:world/tiled-map tiled-map}
+        (merge {:ctx/world {:world/tiled-map tiled-map
+                            :world/start-position start-position}
                 :ctx/grid grid
                 :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                        (:tiled-map/height tiled-map)
@@ -98,6 +99,6 @@
                 :ctx/id-counter (atom 0)
                 :ctx/entity-ids (atom {})
                 :ctx/render-z-order (utils/define-order z-orders)})
-        (spawn-player! start-position)
+        spawn-player!
         assoc-player-eid
         spawn-enemies!)))
