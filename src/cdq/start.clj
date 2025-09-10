@@ -8,5 +8,4 @@
     (reduce (fn [ctx f]
               (f ctx))
             ctx
-            (map #(requiring-resolve (symbol (str "cdq.start." % "/do!")))
-                 (:cdq.start (:ctx/config ctx))))))
+            (:cdq.start (:ctx/config ctx)))))
