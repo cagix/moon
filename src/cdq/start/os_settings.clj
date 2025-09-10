@@ -6,6 +6,5 @@
     :as ctx}]
   (doseq [[f params] ((:cdq.start.os-settings config)
                       (shared-library-loader/operating-system))]
-    (println [f params])
     ((requiring-resolve f) params))
   ctx)
