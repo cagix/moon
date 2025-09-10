@@ -98,7 +98,6 @@
                                             [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
 
               :cdq.start.lwjgl {
-                                :listener cdq.start.lwjgl.listener/create
                                 :config {:title "Cyber Dungeon Quest"
                                          :windowed-mode {:width 1440 :height 900}
                                          :foreground-fps 60}
