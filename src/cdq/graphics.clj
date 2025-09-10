@@ -1,10 +1,5 @@
 (ns cdq.graphics)
 
-; dont pass vector & key
-; these are transactions on an object
-; is there something like this
-; just function calls
-; ctx first param
 (defn handle-draws!
   [{:keys [ctx/draw-fns]
     :as ctx}
