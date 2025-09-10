@@ -1,12 +1,16 @@
 (ns cdq.grid
-  (:require [cdq.entity :as entity]
-            [cdq.faction :as faction]
+  (:require [cdq.faction :as faction]
             [cdq.position :as position]
             [cdq.grid2d :as g2d]
             [cdq.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]))
 
-(defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
+(defn- body->occupied-cells
+  [grid
+   {:keys [body/position
+           body/width
+           body/height]
+    :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
     (g2d/get-cells grid (geom/body->touched-tiles body))
     [(grid (mapv int position))]))
@@ -82,9 +86,9 @@
                                                  (geom/body->gdx-rectangle body))))))))))
 
 (defn nearest-enemy-distance [grid entity]
-  (cell/nearest-entity-distance @(grid (mapv int (entity/position entity)))
+  (cell/nearest-entity-distance @(grid (mapv int (:body/position (:entity/body entity))))
                                 (faction/enemy (:entity/faction entity))))
 
 (defn nearest-enemy [grid entity]
-  (cell/nearest-entity @(grid (mapv int (entity/position entity)))
+  (cell/nearest-entity @(grid (mapv int (:body/position (:entity/body entity))))
                        (faction/enemy (:entity/faction entity))))
