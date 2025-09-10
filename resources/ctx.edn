@@ -115,6 +115,9 @@
                                                            :start-position [32 71]}]
                                          }
 
+              :cdq.audio/config {:sound-names "sounds.edn"
+                                 :path-format "sounds/%s.wav"}
+
               :cdq.application.reset-game-state
               {
                :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"

@@ -10,9 +10,6 @@
             [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.vis-ui :as vis-ui]))
 
-(def sounds "sounds.edn")
-(def sound-path-format "sounds/%s.wav")
-
 (defn after-gdx-create!
   [ctx]
   (vis-ui/load! {:skin-scale :x1})
@@ -59,8 +56,10 @@
            {:ctx/graphics (assoc graphics :ctx/draw-fns (:ctx/draw-fns ctx))
             :ctx/input input
             :ctx/stage stage
-            :ctx/audio (into {}
-                             (for [sound-name (->> sounds io/resource slurp edn/read-string)
-                                   :let [path (format sound-path-format sound-name)]]
-                               [sound-name
-                                (audio/sound (gdx/audio) (files/internal (gdx/files) path))]))})))
+            :ctx/audio (let [{:keys [sound-names
+                                     path-format]} (:cdq.audio/config (:ctx/config ctx))]
+                         (into {}
+                               (for [sound-name (->> sound-names io/resource slurp edn/read-string)
+                                     :let [path (format path-format sound-name)]]
+                                 [sound-name
+                                  (audio/sound (gdx/audio) (files/internal (gdx/files) path))])))})))
