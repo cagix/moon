@@ -237,15 +237,15 @@
 
  :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
                 :draw/grid             cdq.draw.grid/do!
-                :draw/texture-region   cdq.draw.texture-region/do!
-                :draw/text             cdq.draw.text/do!
-                :draw/ellipse          cdq.draw.ellipse/do!
-                :draw/filled-ellipse   cdq.draw.filled-ellipse/do!
-                :draw/circle           cdq.draw.circle/do!
-                :draw/filled-circle    cdq.draw.filled-circle/do!
-                :draw/rectangle        cdq.draw.rectangle/do!
-                :draw/filled-rectangle cdq.draw.filled-rectangle/do!
-                :draw/arc              cdq.draw.arc/do!
-                :draw/sector           cdq.draw.sector/do!
-                :draw/line             cdq.draw.line/do!}
+                :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
+                :draw/text             cdq.gdx.graphics/draw-text!
+                :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
+                :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
+                :draw/circle           cdq.gdx.graphics/draw-circle!
+                :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
+                :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
+                :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
+                :draw/arc              cdq.gdx.graphics/draw-arc!
+                :draw/sector           cdq.gdx.graphics/draw-sector!
+                :draw/line             cdq.gdx.graphics/draw-line!}
  }
