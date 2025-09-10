@@ -3,7 +3,21 @@
             [cdq.entity :as entity]
             [cdq.gdx.graphics :as graphics]
             [cdq.raycaster :as raycaster]
+            [cdq.stats :as stats]
             [cdq.timer :as timer]))
+
+(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
+  (/ action-time
+     (or (stats/get-stat-value stats (:skill/action-time-modifier-key skill))
+         1)))
+
+(defn create [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
+  {:skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 (timer/create elapsed-time))})
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx

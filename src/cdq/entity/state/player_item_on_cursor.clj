@@ -2,6 +2,9 @@
   (:require [cdq.gdx.graphics :as graphics]
             [cdq.gdx.math.vector2 :as v]))
 
+(defn create [_eid item _ctx]
+  {:item item})
+
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))
 
