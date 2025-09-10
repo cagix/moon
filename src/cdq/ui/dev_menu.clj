@@ -10,7 +10,7 @@
     :as ctx}
    world-fn]
   (cdq.ctx/reset-stage! ctx)
-  (swap! application-state (requiring-resolve 'cdq.application.reset-game-state/reset-game-state!) world-fn))
+  (swap! application-state cdq.ctx/reset-game-state! world-fn))
 
 (defn create
   [{:keys [ctx/graphics] :as ctx} {:keys [menus]}]
