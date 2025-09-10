@@ -1,10 +1,11 @@
 (ns cdq.ui.message
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]))
+  (:require [cdq.stage :as stage]
+            [clojure.gdx.scenes.scene2d.actor :as actor]))
 
-(defn- draw-message [state viewport]
+(defn- draw-message [state vp-width vp-height]
   (when-let [text (:text @state)]
-    [:draw/text {:x (/ (:viewport/width viewport) 2)
-                 :y (+ (/ (:viewport/height viewport) 2) 200)
+    [:draw/text {:x (/ vp-width 2)
+                 :y (+ (/ vp-height 2) 200)
                  :text text
                  :scale 2.5
                  :up? true}]))
@@ -14,9 +15,10 @@
    {:keys [duration-seconds
            name]}]
   {:actor/type :actor.type/actor
-   :draw (fn [this {:keys [ctx/ui-viewport]}]
+   :draw (fn [this {:keys [ctx/stage]}]
            [(draw-message (actor/user-object this)
-                          ui-viewport)])
+                          (stage/viewport-width  stage)
+                          (stage/viewport-height stage))])
    :act (fn [this delta _ctx]
           (let [state (actor/user-object this)]
             (when (:text @state)

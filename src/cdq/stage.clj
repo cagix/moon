@@ -8,3 +8,6 @@
   (add-skill!  [stage skill-properties])
   (remove-skill!  [stage skill-id])
   (show-text-message!  [stage message]))
+
+(defn viewport-width  [stage] (:viewport/width  (.getViewport stage)))
+(defn viewport-height [stage] (:viewport/height (.getViewport stage)))

@@ -19,17 +19,12 @@
 
 (def ui-viewport-width 1440)
 (def ui-viewport-height 900)
-
 (def font-file "exocet/films.EXL_____.ttf")
 (def font-params {:size 16
-             :quality-scaling 2
-             :enable-markup? true
-             ; false, otherwise scaling to world-units not visible
-             :use-integer-positions? false})
-
-
+                  :quality-scaling 2
+                  :enable-markup? true
+                  :use-integer-positions? false}) ; false, otherwise scaling to world-units not visible
 (def path-format "cursors/%s.png")
-
 (def cursor-data
   {:cursors/bag                   ["bag001"       [0   0]]
    :cursors/black-x               ["black_x"      [0   0]]

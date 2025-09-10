@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
+            [cdq.stage]
             [cdq.editor.widget :as editor-widget]
             [cdq.ui.widget]
             [clojure.gdx.input :as input]
@@ -13,7 +14,7 @@
 (defn property-editor-window
   [{:keys [ctx/application-state
            ctx/db
-           ctx/ui-viewport]
+           ctx/stage]
     :as ctx}
    property]
   (let [schema (get (:schemas db) (property/type property))
@@ -37,7 +38,7 @@
         extra-act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
                        (when (input/key-just-pressed? input :enter)
                          (clicked-save-fn actor ctx)))
-        scrollpane-height (:viewport/height ui-viewport)]
+        scrollpane-height (cdq.stage/viewport-height stage)]
     {:actor/type :actor.type/window
      :title "[SKY]Property[]"
      :id :property-editor-window

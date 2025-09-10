@@ -2,18 +2,19 @@
   (:require [cdq.image :as image]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
+            [cdq.stage :as stage]
             [cdq.stats :as modifiers]))
 
 (defn create
   [{:keys [ctx/textures
-           ctx/ui-viewport]}
+           ctx/stage]}
    {:keys [rahmen-file
            rahmenw
            rahmenh
            hpcontent-file
            manacontent-file
            y-mana]}]
-  (let [[x y-mana] [(/ (:viewport/width ui-viewport) 2)
+  (let [[x y-mana] [(/ (stage/viewport-width stage) 2)
                     y-mana]
         rahmen-tex-reg (image/texture-region {:image/file rahmen-file} textures)
         y-hp (+ y-mana rahmenh)
