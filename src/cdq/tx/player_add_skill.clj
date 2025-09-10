@@ -12,6 +12,3 @@
                                      (info/generate (:ctx/info ctx) skill ctx))})
   nil)
 
-#_(defn- remove-skill! [{:keys [ctx/stage]} skill]
-    (stage/remove-skill! stage (:property/id skill))
-    nil)
