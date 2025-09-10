@@ -1,6 +1,6 @@
 (ns cdq.render.handle-key-input
   (:require [cdq.stage]
-            [clojure.gdx.graphics.camera :as camera]
+            [cdq.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]))
@@ -19,12 +19,11 @@
 (defn do!
   [{:keys [ctx/config
            ctx/input
-           ctx/stage
-           ctx/world-viewport]}]
-  (let [controls (:controls config)
-        camera (:viewport/camera world-viewport)]
-    (when (input/key-pressed? input (:zoom-in  controls)) (camera/inc-zoom! camera zoom-speed))
-    (when (input/key-pressed? input (:zoom-out controls)) (camera/inc-zoom! camera (- zoom-speed)))
+           ctx/stage]
+    :as ctx}]
+  (let [controls (:controls config)]
+    (when (input/key-pressed? input (:zoom-in  controls)) (graphics/change-zoom! ctx zoom-speed))
+    (when (input/key-pressed? input (:zoom-out controls)) (graphics/change-zoom! ctx (- zoom-speed)))
     (when (input/key-just-pressed? input close-windows-key)  (close-all-windows!         stage))
     (when (input/key-just-pressed? input toggle-inventory )  (cdq.stage/toggle-inventory-visible!  stage))
     (when (input/key-just-pressed? input toggle-entity-info) (toggle-entity-info-window! stage))))

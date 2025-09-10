@@ -17,6 +17,9 @@
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]))
 
+(def ui-viewport-width 1440)
+(def ui-viewport-height 900)
+
 (def font-file "exocet/films.EXL_____.ttf")
 (def font-params {:size 16
              :quality-scaling 2
@@ -24,8 +27,6 @@
              ; false, otherwise scaling to world-units not visible
              :use-integer-positions? false})
 
-(def world-viewport-width 1440)
-(def world-viewport-height 900)
 
 (def path-format "cursors/%s.png")
 
@@ -70,7 +71,10 @@
                                             (pixmap/draw-pixel! 0 0))
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
-                               texture)]
+                               texture)
+        world-viewport-width 1440
+        world-viewport-height 900
+        ]
     {:ctx/unit-scale (atom 1)
      :ctx/world-unit-scale world-unit-scale
      :ctx/batch batch
@@ -84,6 +88,7 @@
                                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
+     :ctx/ui-viewport (viewport/fit ui-viewport-width ui-viewport-height (camera/orthographic))
      :ctx/world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
                                world-height (* world-viewport-height world-unit-scale)]
                            (viewport/fit world-width
@@ -263,4 +268,39 @@
   [{:keys [ctx/graphics]}]
   (graphics/frames-per-second graphics))
 
-(def camera-position (comp :camera/position :viewport/camera :ctx/world-viewport))
+(def world-viewport-width  (comp :viewport/width  :ctx/world-viewport))
+(def world-viewport-height (comp :viewport/height :ctx/world-viewport))
+
+(def camera-position      (comp :camera/position     :viewport/camera :ctx/world-viewport))
+(def visible-tiles        (comp camera/visible-tiles :viewport/camera :ctx/world-viewport))
+(def camera-frustum       (comp camera/frustum       :viewport/camera :ctx/world-viewport))
+(def camera-zoom          (comp :camera/zoom         :viewport/camera :ctx/world-viewport))
+
+(defn change-zoom! [{:keys [ctx/world-viewport]} amount]
+  (camera/inc-zoom! (:viewport/camera world-viewport) amount))
+
+(defn set-camera-position! [{:keys [ctx/world-viewport]} position]
+  (camera/set-position! (:viewport/camera world-viewport) position))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+; TODO clamping only works for gui-viewport ?
+; TODO ? "Can be negative coordinates, undefined cells."
+(defn- unproject-clamp [viewport [x y]]
+  (viewport/unproject viewport
+                      (utils/clamp x
+                                   (:viewport/left-gutter-width viewport)
+                                   (:viewport/right-gutter-x    viewport))
+                      (utils/clamp y
+                                   (:viewport/top-gutter-height viewport)
+                                   (:viewport/top-gutter-y      viewport))))
+
+(def unproject-ui    (fn [{:keys [ctx/ui-viewport]}    position] (unproject-clamp ui-viewport    position)))
+(def unproject-world (fn [{:keys [ctx/world-viewport]} position] (unproject-clamp world-viewport position)))
+
+(defn update-viewports!
+  [{:keys [ctx/ui-viewport
+           ctx/world-viewport]}
+   width height]
+  (viewport/update! ui-viewport    width height :center? true)
+  (viewport/update! world-viewport width height :center? false))

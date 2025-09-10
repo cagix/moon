@@ -1,6 +1,7 @@
-(ns cdq.ui.dev-menu.update-labels.zoom)
+(ns cdq.ui.dev-menu.update-labels.zoom
+  (:require [cdq.gdx.graphics :as graphics]))
 
 (defn create [icon]
   {:label "Zoom"
-   :update-fn (comp :camera/zoom :viewport/camera :ctx/world-viewport)
+   :update-fn graphics/camera-zoom
    :icon icon})
