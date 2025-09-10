@@ -1,7 +1,5 @@
 (ns cdq.gdx.graphics
   (:require [cdq.utils :as utils]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.files :as files]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
@@ -33,14 +31,13 @@
                                (pixmap/dispose! pixmap)
                                texture)]
     {:ctx/batch batch
-     :ctx/cursors (update-vals (:data cursors)
-                               (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (pixmap/create (files/internal (gdx/files) (format (:path-format cursors) file)))
+     :ctx/cursors (update-vals cursors
+                               (fn [[file-handle [hotspot-x hotspot-y]]]
+                                 (let [pixmap (pixmap/create file-handle)
                                        cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
                                    (.dispose pixmap)
                                    cursor)))
-     :ctx/default-font (freetype/generate-font (files/internal (gdx/files) (:file default-font))
-                                               (:params default-font))
+     :ctx/default-font (freetype/generate-font (:file-handle default-font) (:params default-font))
      :ctx/graphics graphics
      :ctx/shape-drawer-texture shape-drawer-texture
      :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
