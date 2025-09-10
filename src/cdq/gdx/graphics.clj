@@ -112,3 +112,26 @@
                       :h-align h-align
                       :target-width 0
                       :wrap? false}))
+
+(defn with-line-width
+  [{:keys [ctx/shape-drawer]} width f]
+  (sd/with-line-width shape-drawer width f))
+
+(defn draw-on-world-viewport!
+  [{:keys [ctx/batch
+           ctx/shape-drawer
+           ctx/unit-scale
+           ctx/world-unit-scale
+           ctx/world-viewport]}
+   f]
+  ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
+  ; -> also Widgets, etc. ? check.
+  (batch/set-color! batch color/white)
+  (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
+  (batch/begin! batch)
+  (sd/with-line-width shape-drawer world-unit-scale
+    (fn []
+      (reset! unit-scale world-unit-scale)
+      (f)
+      (reset! unit-scale 1)))
+  (batch/end! batch))
