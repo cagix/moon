@@ -14,8 +14,9 @@
            ctx/batch
            ctx/shape-drawer-texture
            ctx/default-font
-           ctx/tiled-map
-           ctx/textures]}]
+           ctx/textures
+           ctx/world
+           ]}]
   (dispose-audio! audio)
   (dispose-cursors! cursors)
   (run! disposable/dispose! (vals textures))
@@ -23,5 +24,5 @@
   (disposable/dispose! shape-drawer-texture)
   (when default-font
     (disposable/dispose! default-font))
-  (disposable/dispose! tiled-map)
+  (disposable/dispose! (:world/tiled-map world))
   (vis-ui/dispose!))

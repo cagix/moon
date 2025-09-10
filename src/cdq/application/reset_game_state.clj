@@ -41,9 +41,9 @@
 (defn- spawn-enemies!
   [{:keys [ctx/config
            ctx/db
-           ctx/tiled-map]
+           ctx/world]
     :as ctx}]
-  (doseq [[position creature-id] (tiled/positions-with-property tiled-map "creatures" "id")]
+  (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world) "creatures" "id")]
     (ctx/handle-txs! ctx
                      [[:tx/spawn-creature {:position (utils/tile->middle position)
                                            :creature-property (db/build db (keyword creature-id))
@@ -57,7 +57,7 @@
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
-; TODO dispose old ctx/tiled-map if already present
+; TODO dispose old ctx/tiled-map if already present, add 'tiled/dispose!'
 (defn reset-game-state!
   [{:keys [ctx/config
            ctx/db
@@ -79,7 +79,7 @@
         minimum-size 0.39
         max-speed (/ minimum-size max-delta)]
     (-> ctx
-        (merge {:ctx/tiled-map tiled-map
+        (merge {:ctx/world {:world/tiled-map tiled-map}
                 :ctx/grid grid
                 :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                        (:tiled-map/height tiled-map)

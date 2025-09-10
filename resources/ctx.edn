@@ -33,7 +33,6 @@
               [:ctx/shape-drawer-texture :some]
               [:ctx/stage :some]
               [:ctx/textures :some]
-              [:ctx/tiled-map :some]
               [:ctx/tiled-map-renderer :some]
               [:ctx/ui-viewport :some]
               [:ctx/unit-scale :some]
@@ -41,11 +40,14 @@
               [:ctx/world-viewport :some]
               [:ctx/z-orders :some]
 
+
               [:ctx/interaction-state :some]
               [:ctx/application-state :some]
               [:ctx/fsms :some]
               [:ctx/entity-components :some]
               [:ctx/spawn-entity-schema :some]
+
+              [:ctx/world :some]
               ]
 
  :ctx/config {

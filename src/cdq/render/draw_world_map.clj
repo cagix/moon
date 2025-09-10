@@ -5,13 +5,13 @@
 
 (defn do!
   [{:keys [ctx/explored-tile-corners
-           ctx/tiled-map
            ctx/tiled-map-renderer
            ctx/raycaster
+           ctx/world
            ctx/world-viewport]}]
   (tm-renderer/draw! tiled-map-renderer
                      world-viewport
-                     tiled-map
+                     (:world/tiled-map world)
                      (tile-color-setter/create
                       {:ray-blocked? (partial raycaster/blocked? raycaster)
                        :explored-tile-corners explored-tile-corners
