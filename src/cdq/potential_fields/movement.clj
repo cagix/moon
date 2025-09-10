@@ -3,10 +3,11 @@
             [cdq.entity :as entity]
             [cdq.faction :as faction]
             [cdq.grid :as grid]
+            [cdq.position :as position]
             [cdq.utils :as utils]
             [cdq.gdx.math.vector2 :as v]))
 
-(let [order (grid/get-8-neighbour-positions [0 0])]
+(let [order (position/get-8-neighbours [0 0])]
   (def ^:private diagonal-check-indizes
     (into {} (for [[x y] (filter v/diagonal-direction? order)]
                [(first (utils/positions #(= % [x y]) order))

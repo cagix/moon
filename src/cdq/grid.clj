@@ -1,19 +1,9 @@
 (ns cdq.grid
   (:require [cdq.entity :as entity]
             [cdq.faction :as faction]
+            [cdq.position :as position]
             [cdq.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]))
-
-; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
-(let [offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]]
-  (defn get-8-neighbour-positions [position] ; -> utils
-    (mapv #(mapv + position %) offsets)))
-
-#_(defn- get-8-neighbour-positions [[x y]]
-    (mapv (fn [tx ty]
-            [tx ty])
-          (range (dec x) (+ x 2))
-          (range (dec y) (+ y 2))))
 
 (defn cell [g2d position]
   (g2d position))
@@ -51,7 +41,7 @@
     result
     (let [result (->> @cell
                       :position
-                      get-8-neighbour-positions
+                      position/get-8-neighbours
                       (cells g2d))]
       (swap! cell assoc :adjacent-cells result)
       result)))
