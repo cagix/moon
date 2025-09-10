@@ -104,15 +104,19 @@
                                 }
 
               :cdq.start.lwjgl.listener {
+                                         :create cdq.gdx-app.create/do!
                                          :render cdq.render-pipeline/do!
                                          :dispose cdq.gdx-app.dispose/do!
                                          :resize cdq.gdx-app.resize/do!
-                                         :reset-game-state cdq.application.reset-game-state/reset-game-state!
-                                         :after-gdx-create cdq.application.gdx-create/after-gdx-create!
-                                         :starting-world [cdq.world-fns.tmx/create
-                                                          {:tmx-file "maps/vampire.tmx"
-                                                           :start-position [32 71]}]
                                          }
+
+              :cdq.gdx-app.create {
+                                   :reset-game-state cdq.application.reset-game-state/reset-game-state!
+                                   :after-gdx-create cdq.application.gdx-create/after-gdx-create!
+                                   :starting-world [cdq.world-fns.tmx/create
+                                                    {:tmx-file "maps/vampire.tmx"
+                                                     :start-position [32 71]}]
+                                   }
 
               :cdq.audio/config {:sound-names "sounds.edn"
                                  :path-format "sounds/%s.wav"}

@@ -1,25 +1,24 @@
 (ns cdq.start.lwjgl
-  (:require [cdq.ctx :as ctx]
-            [clojure.gdx.backends.lwjgl :as lwjgl]))
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn do!
   [{:keys [ctx/application-state
            ctx/config]
     :as ctx}]
   (lwjgl/start-application!
-   (let [config (:cdq.start.lwjgl.listener config)]
+   (let [{:keys [create
+                 dispose
+                 render
+                 resize]
+          :as config} (:cdq.start.lwjgl.listener config)]
      {:create! (fn []
-                 (reset! application-state ((requiring-resolve (:reset-game-state config))
-                                            (let [ctx ((requiring-resolve (:after-gdx-create config)) ctx)]
-                                              (ctx/reset-stage! ctx)
-                                              ctx)
-                                            (:starting-world config))))
+                 (reset! application-state ((requiring-resolve create) ctx)))
       :dispose! (fn []
-                  ((requiring-resolve (:dispose config)) @application-state))
+                  ((requiring-resolve dispose) @application-state))
       :render! (fn []
-                 (swap! application-state (requiring-resolve (:render config))))
+                 (swap! application-state (requiring-resolve render)))
       :resize! (fn [width height]
-                 ((requiring-resolve (:resize config)) @application-state width height))
+                 ((requiring-resolve resize) @application-state width height))
       :pause! (fn [])
       :resume! (fn [])})
    (:config (:cdq.start.lwjgl config))))
