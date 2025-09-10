@@ -22,8 +22,6 @@
       (reset! unit-scale 1)))
   (batch/end! batch))
 
-(declare handle-draws!)
-
 (require 'cdq.effects)
 
 (def ^:private draw-fns
