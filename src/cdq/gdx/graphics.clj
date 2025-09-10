@@ -18,6 +18,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]))
 
 (def font-file "exocet/films.EXL_____.ttf")
@@ -89,6 +90,18 @@
                                                font-params)
      :ctx/shape-drawer-texture shape-drawer-texture
      :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))}))
+
+(defn dispose!
+  [{:keys [ctx/batch
+           ctx/cursors
+           ctx/default-font
+           ctx/shape-drawer-texture
+           ctx/textures]}]
+  (disposable/dispose! batch)
+  (run! disposable/dispose! (vals cursors))
+  (disposable/dispose! default-font)
+  (disposable/dispose! shape-drawer-texture)
+  (run! disposable/dispose! (vals textures)))
 
 (defn draw-texture-region!
   [{:keys [ctx/batch
