@@ -15,4 +15,5 @@
                        ((requiring-resolve f) ctx params))
                     (:create-ui-actors config))]
     (doseq [actor actors]
-      (stage/add! stage (actor/build actor)))))
+      (stage/add! stage (actor/build actor))))
+  ctx)
