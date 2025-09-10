@@ -3,7 +3,7 @@
             [clojure.gdx.graphics.color :as color]))
 
 (defn do!
-  [[_ [x y] radius color]
-   {:keys [ctx/shape-drawer]}]
+  [{:keys [ctx/shape-drawer]}
+   [x y] radius color]
   (sd/set-color! shape-drawer (color/->obj color))
   (sd/filled-circle! shape-drawer x y radius))

@@ -2,8 +2,7 @@
   (:require [cdq.graphics :as graphics]))
 
 (defn do!
-  [[_ leftx bottomy gridw gridh cellw cellh color]
-   ctx]
+  [ctx leftx bottomy gridw gridh cellw cellh color]
   (let [w (* (float gridw) (float cellw))
         h (* (float gridh) (float cellh))
         topy (+ (float bottomy) (float h))

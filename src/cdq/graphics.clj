@@ -10,6 +10,5 @@
     :as ctx}
    draws]
   (doseq [{k 0 :as component} draws
-          :when component
-          :let [[k] component]]
-    ((draw-fns k) component ctx)))
+          :when component]
+    (apply (draw-fns k) ctx (rest component))))

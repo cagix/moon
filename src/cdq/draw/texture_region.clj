@@ -3,10 +3,12 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
 
 (defn do!
-  [[_ texture-region [x y] {:keys [center? rotation]}]
-   {:keys [ctx/batch
+  [{:keys [ctx/batch
            ctx/unit-scale
-           ctx/world-unit-scale]}]
+           ctx/world-unit-scale]}
+   texture-region
+   [x y]
+   & {:keys [center? rotation]}]
   (let [[w h] (let [dimensions (texture-region/dimensions texture-region)]
                 (if (= @unit-scale 1)
                   dimensions
