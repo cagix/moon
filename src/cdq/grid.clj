@@ -8,12 +8,9 @@
 (defn cells [g2d int-positions]
   (into [] (keep g2d) int-positions))
 
-(defn body->cells [g2d body]
-  (cells g2d (geom/body->touched-tiles body)))
-
 (defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
-    (body->cells grid body)
+    (cells grid (geom/body->touched-tiles body))
     [(grid (mapv int position))]))
 
 (defn circle->cells [g2d circle]
@@ -49,7 +46,7 @@
             (:entities @cell))))
 
 (defn set-touched-cells! [grid eid]
-  (let [cells (body->cells grid (:entity/body @eid))]
+  (let [cells (cells grid (geom/body->touched-tiles (:entity/body @eid)))]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -75,7 +72,7 @@
 
 (defn valid-position? [g2d {:keys [body/z-order] :as body} entity-id]
   {:pre [(:body/collides? body)]}
-  (let [cells* (into [] (map deref) (body->cells g2d body))]
+  (let [cells* (into [] (map deref) (cells g2d (geom/body->touched-tiles body)))]
     (and (not-any? #(cell/blocked? % z-order) cells*)
          (->> cells*
               (cells->entities g2d)

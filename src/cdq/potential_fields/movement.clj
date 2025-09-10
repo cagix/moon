@@ -5,6 +5,7 @@
             [cdq.grid :as grid]
             [cdq.position :as position]
             [cdq.utils :as utils]
+            [cdq.gdx.math.geom :as geom]
             [cdq.gdx.math.vector2 :as v]))
 
 (let [order (position/get-8-neighbours [0 0])]
@@ -85,7 +86,7 @@
                           own-cell)))}))))
 
 (defn- inside-cell? [grid entity cell]
-  (let [cells (grid/body->cells grid (:entity/body entity))]
+  (let [cells (grid/cells grid (geom/body->touched-tiles (:entity/body entity)))]
     (and (= 1 (count cells))
          (= cell (first cells)))))
 

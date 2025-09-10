@@ -2,7 +2,8 @@
   (:require [cdq.entity.body :as body]
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [cdq.gdx.math.geom :as geom]))
 
 (defn create [v _ctx]
   (assoc v :already-hit-bodies #{}))
@@ -16,7 +17,7 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/body->cells grid (:entity/body entity))) ; just use cached-touched -cells
+        cells* (map deref (grid/cells grid (geom/body->touched-tiles (:entity/body entity)))) ; just use cached-touched -cells
         hit-entity (utils/find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                            (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                                  (:entity/faction @%))
