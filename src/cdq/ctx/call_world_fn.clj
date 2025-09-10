@@ -1,21 +1,19 @@
 (ns cdq.ctx.call-world-fn
-  (:require [cdq.db :as db]
-            [clojure.gdx.utils.disposable :as disposable]))
+  (:require [clojure.gdx.utils.disposable :as disposable]))
 
 (defn do!
-  [{:keys [ctx/db
-           ctx/graphics]
-    :as ctx}
-   world-fn]
-  (let [{:keys [tiled-map
-                start-position]} (let [[f params] world-fn]
-                                   ((requiring-resolve f)
-                                    (assoc params
-                                           :creature-properties (db/all-raw db :properties/creatures)
-                                           :graphics graphics)))]
-    (assert tiled-map)
-    (assert start-position)
-    (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
-      (disposable/dispose! tiled-map))
-    (assoc ctx :ctx/world {:world/tiled-map tiled-map
-                           :world/start-position start-position})))
+  [ctx
+   {:keys [tiled-map
+           start-position]}]
+  (assert tiled-map)
+  (assert start-position)
+
+  ; TODO make separate fn dispose world
+  ; which is called @ dev menu restart
+  ; and not in pipeline of gdx app create
+  (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
+    (disposable/dispose! tiled-map))
+  ;
+
+  (assoc ctx :ctx/world {:world/tiled-map tiled-map
+                         :world/start-position start-position}))
