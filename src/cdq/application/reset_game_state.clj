@@ -7,7 +7,8 @@
             [cdq.grid2d :as g2d]
             [cdq.raycaster-impl]
             [cdq.utils :as utils]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.gdx.utils.disposable :as disposable]))
 
 (defn create-grid [tiled-map]
   (grid-impl/->Grid
@@ -57,13 +58,14 @@
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
-; TODO dispose old ctx/tiled-map if already present, add 'tiled/dispose!'
 (defn reset-game-state!
   [{:keys [ctx/config
            ctx/db
            ctx/textures]
     :as ctx}
    world-fn]
+  (when-let [existing-world (:ctx/world ctx)]
+    (disposable/dispose! (:world/tiled-map existing-world)))
   (let [{:keys [tiled-map
                 start-position]} (let [[f params] world-fn]
                                    ((requiring-resolve f)
