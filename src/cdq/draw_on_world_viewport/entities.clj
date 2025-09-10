@@ -2,7 +2,8 @@
   (:require [cdq.graphics :as graphics]
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils]
+            [cdq.world :as world]))
 
 (def ^:dbg-flag show-body-bounds? false)
 
@@ -31,10 +32,9 @@
   [{:keys [ctx/player-eid
            ctx/render-layers
            ctx/render-z-order
-           ctx/active-entities
            ctx/raycaster]
     :as ctx}]
-  (let [entities (map deref active-entities)
+  (let [entities (map deref (world/active-eids ctx))
         player @player-eid
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
