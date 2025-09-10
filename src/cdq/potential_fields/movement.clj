@@ -91,7 +91,7 @@
 
 (defn find-direction [grid eid]
   (let [position (entity/position @eid)
-        own-cell (grid/cell grid (mapv int position))
+        own-cell (grid (mapv int position))
         {:keys [target-entity target-cell]} (find-next-cell grid eid own-cell)]
     (cond
      target-entity

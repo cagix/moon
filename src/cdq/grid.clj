@@ -5,9 +5,6 @@
             [cdq.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]))
 
-(defn cell [g2d position]
-  (g2d position))
-
 (defn cells [g2d int-positions]
   (into [] (keep g2d) int-positions))
 
