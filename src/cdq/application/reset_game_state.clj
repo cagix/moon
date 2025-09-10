@@ -58,47 +58,66 @@
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
-(defn reset-game-state!
-  [{:keys [ctx/config
-           ctx/db
+(defn- check-dispose-existing-tiled-map
+  [{:keys [ctx/world]
+    :as ctx}]
+  (when-let [tiled-map (:world/tiled-map world)]
+    (disposable/dispose! tiled-map))
+  ctx)
+
+(defn- create-tiled-map-into-ctx-world
+  [{:keys [ctx/db
            ctx/textures]
     :as ctx}
    world-fn]
-  (when-let [existing-world (:ctx/world ctx)]
-    (disposable/dispose! (:world/tiled-map existing-world)))
   (let [{:keys [tiled-map
                 start-position]} (let [[f params] world-fn]
                                    ((requiring-resolve f)
                                     (assoc params
                                            :creature-properties (db/all-raw db :properties/creatures)
-                                           :textures textures)))
-        grid (create-grid tiled-map)
-        z-orders [:z-order/on-ground
-                  :z-order/ground
-                  :z-order/flying
-                  :z-order/effect]
-        max-delta 0.04
-        minimum-size 0.39
-        max-speed (/ minimum-size max-delta)]
-    (-> ctx
-        (merge {:ctx/world {:world/tiled-map tiled-map
-                            :world/start-position start-position}
-                :ctx/grid grid
-                :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                       (:tiled-map/height tiled-map)
-                                                       (:content-grid-cell-size (:world config)))
-                :ctx/explored-tile-corners (create-explored-tile-corners tiled-map)
-                :ctx/raycaster (cdq.raycaster-impl/create grid)
-                :ctx/elapsed-time 0
-                :ctx/max-delta max-delta
-                :ctx/max-speed max-speed
-                :ctx/minimum-size minimum-size
-                :ctx/z-orders z-orders
-                :ctx/potential-field-cache (atom nil)
-                :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
-                :ctx/id-counter (atom 0)
-                :ctx/entity-ids (atom {})
-                :ctx/render-z-order (utils/define-order z-orders)})
-        spawn-player!
-        assoc-player-eid
-        spawn-enemies!)))
+                                           :textures textures)))]
+    (assert tiled-map)
+    (assert start-position)
+    (assoc ctx :ctx/world {:world/tiled-map tiled-map
+                           :world/start-position start-position})))
+
+(defn- build-dependent-data
+  [{:keys [ctx/config
+           ctx/world]
+    :as ctx}]
+  (merge ctx
+         (let [tiled-map (:world/tiled-map world)
+               grid (create-grid tiled-map)
+               z-orders [:z-order/on-ground
+                         :z-order/ground
+                         :z-order/flying
+                         :z-order/effect]
+               max-delta 0.04
+               minimum-size 0.39
+               max-speed (/ minimum-size max-delta)]
+           {:ctx/grid grid
+            :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                   (:tiled-map/height tiled-map)
+                                                   (:content-grid-cell-size (:world config)))
+            :ctx/explored-tile-corners (create-explored-tile-corners tiled-map)
+            :ctx/raycaster (cdq.raycaster-impl/create grid)
+            :ctx/elapsed-time 0
+            :ctx/max-delta max-delta
+            :ctx/max-speed max-speed
+            :ctx/minimum-size minimum-size
+            :ctx/z-orders z-orders
+            :ctx/potential-field-cache (atom nil)
+            :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
+            :ctx/id-counter (atom 0)
+            :ctx/entity-ids (atom {})
+            :ctx/render-z-order (utils/define-order z-orders)})))
+
+(defn reset-game-state!
+  [ctx world-fn]
+  (-> ctx
+      check-dispose-existing-tiled-map
+      (create-tiled-map-into-ctx-world world-fn)
+      build-dependent-data
+      spawn-player!
+      assoc-player-eid
+      spawn-enemies!))
