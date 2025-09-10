@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.image :as image]
+  (:require [cdq.gdx.graphics :as graphics]
             [cdq.gdx.math.vector2 :as v]))
 
 (defn world-item? [mouseover-actor]
@@ -23,11 +23,11 @@
 (defn draw
   [{:keys [item]}
    entity
-   {:keys [ctx/textures
-           ctx/mouseover-actor
-           ctx/world-mouse-position]}]
+   {:keys [ctx/mouseover-actor
+           ctx/world-mouse-position]
+    :as ctx}]
   (when (world-item? mouseover-actor)
     [[:draw/texture-region
-      (image/texture-region (:entity/image item) textures)
+      (graphics/texture-region ctx (:entity/image item))
       (item-place-position world-mouse-position entity)
       {:center? true}]]))

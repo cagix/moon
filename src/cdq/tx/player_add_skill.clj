@@ -1,15 +1,15 @@
 (ns cdq.tx.player-add-skill
-  (:require [cdq.image :as image]
+  (:require [cdq.gdx.graphics :as graphics]
             [cdq.info :as info]
             [cdq.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/textures
-           ctx/stage]}
+  [{:keys [ctx/stage]
+    :as ctx}
    skill]
   (stage/add-skill! stage
                     {:skill-id (:property/id skill)
-                     :texture-region (image/texture-region (:entity/image skill) textures)
+                     :texture-region (graphics/texture-region ctx (:entity/image skill))
                      :tooltip-text (fn [ctx]
                                      (info/generate (:ctx/info ctx) skill ctx))})
   nil)

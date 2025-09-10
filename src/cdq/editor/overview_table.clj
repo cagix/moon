@@ -1,6 +1,6 @@
 (ns cdq.editor.overview-table
   (:require [cdq.db :as db]
-            [cdq.image :as image]
+            [cdq.gdx.graphics :as graphics]
             [cdq.property :as property]
             [cdq.utils :refer [pprint-to-str]]))
 
@@ -30,8 +30,8 @@
                          :properties/player-item-on-cursor {:columns 1}})
 
 (defn create
-  [{:keys [ctx/db
-           ctx/textures]}
+  [{:keys [ctx/db]
+    :as ctx}
    property-type
    clicked-id-fn]
   (assert (contains? overview property-type)
@@ -54,7 +54,7 @@
                {:actor
                 {:actor/type :actor.type/stack
                  :actors [(if-let [texture-region (when-let [image (property/image property)]
-                                                    (image/texture-region image textures))]
+                                                    (graphics/texture-region ctx image))]
                             {:actor/type :actor.type/image-button
                              :drawable/texture-region texture-region
                              :on-clicked on-clicked

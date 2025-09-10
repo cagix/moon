@@ -1,7 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.image :as image]
+            [cdq.gdx.graphics :as graphics]
             [cdq.raycaster :as raycaster]
             [cdq.timer :as timer]))
 
@@ -57,11 +57,10 @@
 (defn draw
   [{:keys [skill effect-ctx counter]}
    entity
-   {:keys [ctx/textures
-           ctx/elapsed-time]
+   {:keys [ctx/elapsed-time]
     :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (image/texture-region image textures)
+    (concat (draw-skill-image (graphics/texture-region ctx image)
                               entity
                               (entity/position entity)
                               (timer/ratio elapsed-time counter))

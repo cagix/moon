@@ -1,6 +1,6 @@
 (ns cdq.ui.windows
   (:require [cdq.ctx :as ctx]
-            [cdq.image :as image]
+            [cdq.gdx.graphics :as graphics]
             [cdq.info :as info]
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory))
@@ -54,9 +54,9 @@
                                               (* sprite-y height)
                                               width
                                               height]]
-                                  (image/texture-region {:image/file "images/items.png"
-                                                         :image/bounds bounds}
-                                                        (:ctx/textures ctx))))
+                                  (graphics/texture-region ctx
+                                                           {:image/file "images/items.png"
+                                                            :image/bounds bounds})))
          ]
      {:title "Inventory"
       :id :inventory-window

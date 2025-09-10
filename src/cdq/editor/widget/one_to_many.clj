@@ -1,7 +1,7 @@
 (ns cdq.editor.widget.one-to-many
   (:require [cdq.db :as db]
             [cdq.editor.overview-table]
-            [cdq.image :as image]
+            [cdq.gdx.graphics :as graphics]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -13,8 +13,8 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn- add-one-to-many-rows
-  [{:keys [ctx/db
-           ctx/textures]}
+  [{:keys [ctx/db]
+    :as ctx}
    table
    property-type
    property-ids]
@@ -39,7 +39,7 @@
                                (stage/add! stage window))))]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
-              texture-region (image/texture-region (property/image property) textures)
+              texture-region (graphics/texture-region ctx (property/image property))
               image-widget (widget/image texture-region {:id property-id})]
           (tooltip/add! image-widget (utils/pprint-to-str property))))
       (for [id property-ids]

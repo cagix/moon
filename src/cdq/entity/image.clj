@@ -1,12 +1,12 @@
 (ns cdq.entity.image
-  (:require [cdq.image :as image]))
+  (:require [cdq.gdx.graphics :as graphics]))
 
 (defn draw
   [image
    {:keys [entity/body]}
-   {:keys [ctx/textures]}]
+   ctx]
   [[:draw/texture-region
-    (image/texture-region image textures)
+    (graphics/texture-region ctx image)
     (:body/position body)
     {:center? true
      :rotation (or (:body/rotation-angle body)

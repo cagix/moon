@@ -1,10 +1,10 @@
 (ns cdq.editor.widget.animation
-  (:require [cdq.image :as image]))
+  (:require [cdq.gdx.graphics :as graphics]))
 
-(defn create [_ _attribute animation {:keys [ctx/textures]}]
+(defn create [_ _attribute animation ctx]
   {:actor/type :actor.type/table
    :rows [(for [image (:animation/frames animation)]
             {:actor {:actor/type :actor.type/image-button
-                     :drawable/texture-region (image/texture-region image textures)
+                     :drawable/texture-region (graphics/texture-region ctx image)
                      :drawable/scale 2}})]
    :cell-defaults {:pad 1}})

@@ -3,8 +3,7 @@
             [clojure.gdx.utils.disposable :as disposable]))
 
 (defn do!
-  [{:keys [ctx/db
-           ctx/textures]
+  [{:keys [ctx/db]
     :as ctx}
    world-fn]
   (let [{:keys [tiled-map
@@ -12,7 +11,7 @@
                                    ((requiring-resolve f)
                                     (assoc params
                                            :creature-properties (db/all-raw db :properties/creatures)
-                                           :textures textures)))]
+                                           :ctx ctx)))]
     (assert tiled-map)
     (assert start-position)
     (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]

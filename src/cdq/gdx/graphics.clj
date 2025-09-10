@@ -259,3 +259,13 @@
    width height]
   (viewport/update! ui-viewport    width height :center? true)
   (viewport/update! world-viewport width height :center? false))
+
+(defn texture-region
+  [{:keys [ctx/textures]}
+   {:keys [image/file image/bounds]}]
+  (assert file)
+  (assert (contains? textures file))
+  (let [texture (get textures file)]
+    (if bounds
+      (texture/region texture bounds)
+      (texture/region texture))))
