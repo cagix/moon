@@ -225,4 +225,11 @@
  :ctx/delta-time 2
  :ctx/active-entities 1
  :ctx/interaction-state :yes
+
+ :ctx/max-delta 0.04
+ :ctx/minimum-size 0.39
+ :ctx/z-orders [:z-order/on-ground
+                :z-order/ground
+                :z-order/flying
+                :z-order/effect]
  }

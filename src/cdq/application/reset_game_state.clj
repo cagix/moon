@@ -82,14 +82,7 @@
     :as ctx}]
   (merge ctx
          (let [tiled-map (:world/tiled-map world)
-               grid (create-grid tiled-map)
-               z-orders [:z-order/on-ground
-                         :z-order/ground
-                         :z-order/flying
-                         :z-order/effect]
-               max-delta 0.04
-               minimum-size 0.39
-               max-speed (/ minimum-size max-delta)]
+               grid (create-grid tiled-map)]
            {:ctx/grid grid
             :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                    (:tiled-map/height tiled-map)
@@ -97,15 +90,13 @@
             :ctx/explored-tile-corners (create-explored-tile-corners tiled-map)
             :ctx/raycaster (cdq.raycaster-impl/create grid)
             :ctx/elapsed-time 0
-            :ctx/max-delta max-delta
-            :ctx/max-speed max-speed
-            :ctx/minimum-size minimum-size
-            :ctx/z-orders z-orders
+            :ctx/max-speed (/ (:ctx/minimum-size ctx)
+                              (:ctx/max-delta ctx))
             :ctx/potential-field-cache (atom nil)
             :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
             :ctx/id-counter (atom 0)
             :ctx/entity-ids (atom {})
-            :ctx/render-z-order (utils/define-order z-orders)})))
+            :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))})))
 
 (defn reset-game-state!
   [ctx world-fn]
