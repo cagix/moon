@@ -58,13 +58,6 @@
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 
-(defn- check-dispose-existing-tiled-map
-  [{:keys [ctx/world]
-    :as ctx}]
-  (when-let [tiled-map (:world/tiled-map world)]
-    (disposable/dispose! tiled-map))
-  ctx)
-
 (defn- create-tiled-map-into-ctx-world
   [{:keys [ctx/db
            ctx/textures]
@@ -78,6 +71,8 @@
                                            :textures textures)))]
     (assert tiled-map)
     (assert start-position)
+    (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
+      (disposable/dispose! tiled-map))
     (assoc ctx :ctx/world {:world/tiled-map tiled-map
                            :world/start-position start-position})))
 
@@ -115,7 +110,6 @@
 (defn reset-game-state!
   [ctx world-fn]
   (-> ctx
-      check-dispose-existing-tiled-map
       (create-tiled-map-into-ctx-world world-fn)
       build-dependent-data
       spawn-player!
