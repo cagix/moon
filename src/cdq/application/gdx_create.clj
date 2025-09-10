@@ -19,13 +19,12 @@
 (def ui-viewport-height 900)
 
 (defn after-gdx-create!
-  [{:keys [ctx/world-unit-scale]
-    :as ctx}]
+  [ctx]
   (vis-ui/load! {:skin-scale :x1})
   (let [graphics (cdq.gdx.graphics/create
                   (gdx/graphics)
                   {
-                   :world-unit-scale world-unit-scale
+                   :world-unit-scale (float (/ 48))
                    :textures-to-load (cdq.files/search (gdx/files)
                                                        {:folder "resources/"
                                                         :extensions #{"png" "bmp"}})

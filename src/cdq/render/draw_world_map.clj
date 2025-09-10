@@ -13,7 +13,7 @@
                             (tile-color-setter/create
                              {:ray-blocked? (partial raycaster/blocked? raycaster)
                               :explored-tile-corners explored-tile-corners
-                              :light-position (graphics/camera-position graphics)
+                              :light-position (graphics/camera-position ctx)
                               :see-all-tiles? false
                               :explored-tile-color  [0.5 0.5 0.5 1]
                               :visible-tile-color   [1 1 1 1]

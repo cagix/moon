@@ -1,11 +1,7 @@
 (ns cdq.gdx.graphics
-  (:require [cdq.utils :as utils] ; <- name with clojure !
-
-            ;; pass file-handles !
+  (:require [cdq.utils :as utils]
             [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]
-            ;;
-
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
@@ -49,6 +45,13 @@
    :cursors/use-skill             ["pointer004"   [0   0]]
    :cursors/walking               ["walking"      [16 16]]})
 
+; TODO textures is not required but also 'clojure.gdx.graphics'
+; so is ui-viewport/camera etc
+; grep clojure.gdx.graphics
+
+; default-font could even pass a freetype font !! wtf
+; or shape drawer texture can pass
+
 (defn create
   [graphics
    {:keys [
@@ -68,7 +71,9 @@
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
                                texture)]
-    {:ctx/batch batch
+    {:ctx/unit-scale (atom 1)
+     :ctx/world-unit-scale world-unit-scale
+     :ctx/batch batch
      :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
      :ctx/graphics graphics
      :ctx/textures (into {} (for [[path file-handle] textures-to-load]

@@ -61,8 +61,6 @@
                           entity-components
                           tx-spawn-schema
                           info
-                          unit-scale
-                          world-unit-scale
                           db
                           render-layers
                           os-settings
