@@ -5,15 +5,15 @@
 
 (defn do!
   [{:keys [ctx/explored-tile-corners
+           ctx/graphics
            ctx/raycaster
-           ctx/world]
-    :as ctx}]
-  (graphics/draw-tiled-map! ctx
+           ctx/world]}]
+  (graphics/draw-tiled-map! graphics
                             (:world/tiled-map world)
                             (tile-color-setter/create
                              {:ray-blocked? (partial raycaster/blocked? raycaster)
                               :explored-tile-corners explored-tile-corners
-                              :light-position (graphics/camera-position ctx)
+                              :light-position (graphics/camera-position graphics)
                               :see-all-tiles? false
                               :explored-tile-color  [0.5 0.5 0.5 1]
                               :visible-tile-color   [1 1 1 1]

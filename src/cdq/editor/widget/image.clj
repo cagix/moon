@@ -1,9 +1,9 @@
 (ns cdq.editor.widget.image
   (:require [cdq.gdx.graphics :as graphics]))
 
-(defn create [schema  _attribute image ctx]
+(defn create [schema  _attribute image {:keys [ctx/graphics]}]
   {:actor/type :actor.type/image-button
-   :drawable/texture-region (graphics/texture-region ctx image)
+   :drawable/texture-region (graphics/texture-region graphics image)
    :drawable/scale 2}
   #_(ui/image-button image
                      (fn [_actor ctx]

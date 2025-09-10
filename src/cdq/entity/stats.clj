@@ -43,10 +43,10 @@
         (update :entity/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
         (update :entity/hp   (fn [v] [v v]))))
 
-(defn draw [_ entity {:keys [ctx/world-unit-scale]}]
+(defn draw [_ entity {:keys [ctx/graphics]}]
   (let [ratio (val-max/ratio (stats/get-hitpoints (:creature/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar world-unit-scale
+      (draw-hpbar (:ctx/world-unit-scale graphics)
                   (:entity/body entity)
                   ratio))))
 

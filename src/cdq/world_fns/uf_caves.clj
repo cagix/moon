@@ -6,7 +6,7 @@
 
 (defn create
   [{:keys [creature-properties
-           ctx
+           graphics
            tile-size
            texture-path
            spawn-rate
@@ -19,7 +19,7 @@
            :cave-style cave-style
            :random (java.util.Random.)
            :level/tile-size tile-size
-           :level/create-tile (let [texture (utils/safe-get (:ctx/textures ctx) texture-path)]
+           :level/create-tile (let [texture (utils/safe-get (:ctx/textures graphics) texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
@@ -31,7 +31,7 @@
                                                                 "movement" movement))))
            :level/spawn-rate spawn-rate
            :level/scaling scaling
-           :level/creature-properties (creature-tiles/prepare creature-properties ctx)}
+           :level/creature-properties (creature-tiles/prepare creature-properties graphics)}
           (map requiring-resolve '[cdq.world-fns.initial-grid-creation/do!
                                    cdq.world-fns.fix-nads/do!
                                    cdq.world-fns.create-star/do!])))

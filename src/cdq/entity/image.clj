@@ -4,9 +4,9 @@
 (defn draw
   [image
    {:keys [entity/body]}
-   ctx]
+   {:keys [ctx/graphics]}]
   [[:draw/texture-region
-    (graphics/texture-region ctx image)
+    (graphics/texture-region graphics image)
     (:body/position body)
     {:center? true
      :rotation (or (:body/rotation-angle body)

@@ -23,11 +23,11 @@
 (defn draw
   [{:keys [item]}
    entity
-   {:keys [ctx/mouseover-actor
-           ctx/world-mouse-position]
-    :as ctx}]
+   {:keys [ctx/graphics
+           ctx/mouseover-actor
+           ctx/world-mouse-position]}]
   (when (world-item? mouseover-actor)
     [[:draw/texture-region
-      (graphics/texture-region ctx (:entity/image item))
+      (graphics/texture-region graphics (:entity/image item))
       (item-place-position world-mouse-position entity)
       {:center? true}]]))

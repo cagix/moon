@@ -4,14 +4,14 @@
 (def ^:dbg-flag show-tile-grid? false)
 
 (defn do!
-  [ctx]
+  [{:keys [ctx/graphics]}]
   (when show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (graphics/camera-frustum ctx)]
+    (let [[left-x _right-x bottom-y _top-y] (graphics/camera-frustum graphics)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)
-        (inc (int (graphics/world-viewport-width  ctx)))
-        (+ 2 (int (graphics/world-viewport-height ctx)))
+        (inc (int (graphics/world-viewport-width  graphics)))
+        (+ 2 (int (graphics/world-viewport-height graphics)))
         1
         1
         [1 1 1 0.8]]])))

@@ -55,8 +55,8 @@
                              (:ctx/batch graphics))]
     (input/set-processor! input stage)
     (merge ctx
-           graphics
-           {:ctx/input input
+           {:ctx/graphics (assoc graphics :ctx/draw-fns (:ctx/draw-fns ctx))
+            :ctx/input input
             :ctx/stage stage
             :ctx/audio (into {}
                              (for [sound-name (->> sounds io/resource slurp edn/read-string)

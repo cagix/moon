@@ -2,5 +2,5 @@
   (:require [cdq.gdx.graphics :as graphics]))
 
 (defn do!
-  [ctx width height]
-  (graphics/update-viewports! ctx width height))
+  [{:keys [ctx/graphics]} width height]
+  (graphics/update-viewports! graphics width height))

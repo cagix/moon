@@ -6,8 +6,8 @@
             [cdq.stats :as modifiers]))
 
 (defn create
-  [{:keys [ctx/stage]
-    :as ctx}
+  [{:keys [ctx/graphics
+           ctx/stage]}
    {:keys [rahmen-file
            rahmenw
            rahmenh
@@ -16,12 +16,12 @@
            y-mana]}]
   (let [[x y-mana] [(/ (stage/viewport-width stage) 2)
                     y-mana]
-        rahmen-tex-reg (graphics/texture-region ctx {:image/file rahmen-file})
+        rahmen-tex-reg (graphics/texture-region graphics {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y content-file minmaxval name]
                             [[:draw/texture-region rahmen-tex-reg [x y]]
                              [:draw/texture-region
-                              (graphics/texture-region ctx
+                              (graphics/texture-region graphics
                                                        {:image/file content-file
                                                         :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
                               [x y]]

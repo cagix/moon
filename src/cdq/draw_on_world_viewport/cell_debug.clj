@@ -6,11 +6,11 @@
 (def ^:dbg-flag show-cell-occupied? false)
 
 (defn do!
-  [{:keys [ctx/grid
-           ctx/factions-iterations]
-    :as ctx}]
+  [{:keys [ctx/graphics
+           ctx/grid
+           ctx/factions-iterations]}]
   (apply concat
-         (for [[x y] (graphics/visible-tiles ctx)
+         (for [[x y] (graphics/visible-tiles graphics)
                :let [cell (grid [x y])]
                :when cell
                :let [cell* @cell]]

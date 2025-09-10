@@ -3,5 +3,5 @@
 
 (defn create [icon]
   {:label "FPS"
-   :update-fn graphics/frames-per-second
+   :update-fn (comp graphics/frames-per-second :ctx/graphics)
    :icon icon})

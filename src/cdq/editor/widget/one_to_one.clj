@@ -13,8 +13,8 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn- add-one-to-one-rows
-  [{:keys [ctx/db]
-    :as ctx}
+  [{:keys [ctx/db
+           ctx/graphics]}
    table
    property-type
    property-id]
@@ -40,7 +40,7 @@
                                  (stage/add! stage window)))))]
       [(when property-id
          (let [property (db/get-raw db property-id)
-               texture-region (graphics/texture-region ctx (property/image property))
+               texture-region (graphics/texture-region graphics (property/image property))
                image-widget (widget/image texture-region
                                           {:id property-id})]
            (tooltip/add! image-widget (utils/pprint-to-str property))

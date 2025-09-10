@@ -5,12 +5,12 @@
 (def state->draw-gui-view
   {:player-item-on-cursor (fn
                             [eid
-                             {:keys [ctx/mouseover-actor
-                                     ctx/ui-mouse-position]
-                              :as ctx}]
+                             {:keys [ctx/graphics
+                                     ctx/mouseover-actor
+                                     ctx/ui-mouse-position]}]
                             (when (not (cdq.entity.state.player-item-on-cursor/world-item? mouseover-actor))
                               [[:draw/texture-region
-                                (graphics/texture-region ctx (:entity/image (:entity/item-on-cursor @eid)))
+                                (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
                                 ui-mouse-position
                                 {:center? true}]]))})
 

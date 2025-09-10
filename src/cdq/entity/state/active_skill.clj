@@ -57,10 +57,11 @@
 (defn draw
   [{:keys [skill effect-ctx counter]}
    entity
-   {:keys [ctx/elapsed-time]
+   {:keys [ctx/elapsed-time
+           ctx/graphics]
     :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (graphics/texture-region ctx image)
+    (concat (draw-skill-image (graphics/texture-region graphics image)
                               entity
                               (entity/position entity)
                               (timer/ratio elapsed-time counter))

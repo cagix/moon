@@ -8,9 +8,10 @@
 
 (defn do!
   [{:keys [ctx/audio
+           ctx/graphics
            ctx/world]
     :as ctx}]
   (dispose-audio! audio)
-  (graphics/dispose! ctx)
+  (graphics/dispose! graphics)
   (disposable/dispose! (:world/tiled-map world))
   (vis-ui/dispose!))

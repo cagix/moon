@@ -31,20 +31,22 @@
   ; don't use select-keys as it loses Entity record type
   (info/generate (:ctx/info ctx) (apply dissoc entity disallowed-keys) ctx))
 
-(defn create-inventory [ctx]
+(defn create-inventory
+  [{:keys [ctx/graphics]
+    :as ctx}]
   (cdq.ui.windows.inventory/create
    ctx
    (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
-                                             :shield   1
-                                             :rings    2
-                                             :necklace 3
-                                             :helm     4
-                                             :cloak    5
-                                             :chest    6
-                                             :leg      7
-                                             :glove    8
-                                             :boot     9
-                                             :bag      10} ; transparent
+                                              :shield   1
+                                              :rings    2
+                                              :necklace 3
+                                              :helm     4
+                                              :cloak    5
+                                              :chest    6
+                                              :leg      7
+                                              :glove    8
+                                              :boot     9
+                                              :bag      10} ; transparent
          slot->texture-region (fn [slot]
                                 (let [width  48
                                       height 48
@@ -54,7 +56,7 @@
                                               (* sprite-y height)
                                               width
                                               height]]
-                                  (graphics/texture-region ctx
+                                  (graphics/texture-region graphics
                                                            {:image/file "images/items.png"
                                                             :image/bounds bounds})))
          ]

@@ -30,8 +30,8 @@
                          :properties/player-item-on-cursor {:columns 1}})
 
 (defn create
-  [{:keys [ctx/db]
-    :as ctx}
+  [{:keys [ctx/db
+           ctx/graphics]}
    property-type
    clicked-id-fn]
   (assert (contains? overview property-type)
@@ -54,7 +54,7 @@
                {:actor
                 {:actor/type :actor.type/stack
                  :actors [(if-let [texture-region (when-let [image (property/image property)]
-                                                    (graphics/texture-region ctx image))]
+                                                    (graphics/texture-region graphics image))]
                             {:actor/type :actor.type/image-button
                              :drawable/texture-region texture-region
                              :on-clicked on-clicked

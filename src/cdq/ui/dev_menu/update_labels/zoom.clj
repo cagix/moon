@@ -3,5 +3,5 @@
 
 (defn create [icon]
   {:label "Zoom"
-   :update-fn graphics/camera-zoom
+   :update-fn (comp graphics/camera-zoom :ctx/graphics)
    :icon icon})

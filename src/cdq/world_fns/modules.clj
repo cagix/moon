@@ -82,7 +82,7 @@
 
 (defn create
   [{:keys [creature-properties
-           ctx]
+           graphics]
     :as params}]
   (generate-modules params
-                    (creature-tiles/prepare creature-properties ctx)))
+                    (creature-tiles/prepare creature-properties graphics)))

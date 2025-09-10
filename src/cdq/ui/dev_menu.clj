@@ -13,12 +13,13 @@
   (swap! application-state (requiring-resolve 'cdq.application.reset-game-state/reset-game-state!) world-fn))
 
 (defn create
-  [{:keys [ctx/textures] :as ctx} {:keys [menus]}]
+  [{:keys [ctx/graphics] :as ctx} {:keys [menus]}]
   (menu/create
    {:menus (for [menu menus]
              (update menu :items (fn [[f params]]
                                    ((requiring-resolve f) ctx params))))
-    :update-labels (let [->texture (fn [path]
+    :update-labels (let [textures (:ctx/textures graphics)
+                         ->texture (fn [path]
                                      (assert (contains? textures path))
                                      (get textures path))]
                      [((requiring-resolve 'cdq.ui.dev-menu.update-labels.mouseover-entity-id/create) (->texture "images/mouseover.png"))

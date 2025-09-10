@@ -3,10 +3,11 @@
             [cdq.gdx.graphics]))
 
 (defn do!
-  [{:keys [ctx/config]
+  [{:keys [ctx/config
+           ctx/graphics]
     :as ctx}]
   (cdq.gdx.graphics/draw-on-world-viewport!
-   ctx
+   graphics
    (fn []
      (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
-       (graphics/handle-draws! ctx ((requiring-resolve f) ctx))))))
+       (graphics/handle-draws! graphics ((requiring-resolve f) ctx))))))

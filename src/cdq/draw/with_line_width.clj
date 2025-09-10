@@ -3,7 +3,7 @@
             [cdq.gdx.graphics]))
 
 (defn do!
-  [ctx width draws]
-  (cdq.gdx.graphics/with-line-width ctx width
+  [graphics width draws]
+  (cdq.gdx.graphics/with-line-width graphics width
     (fn []
-      (graphics/handle-draws! ctx draws))))
+      (graphics/handle-draws! graphics draws))))
