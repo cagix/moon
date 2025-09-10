@@ -1,5 +1,6 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [clojure.earlygrey.shape-drawer :as sd]
+  (:require [cdq.graphics :as graphics]
+            [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.batch :as batch]))
 
@@ -20,6 +21,6 @@
     (fn []
       (reset! unit-scale world-unit-scale)
       (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
-        ((requiring-resolve f) ctx))
+        (graphics/handle-draws! ctx ((requiring-resolve f) ctx)))
       (reset! unit-scale 1)))
   (batch/end! batch))
