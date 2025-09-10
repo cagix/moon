@@ -257,3 +257,5 @@
 (defn frames-per-second
   [{:keys [ctx/graphics]}]
   (graphics/frames-per-second graphics))
+
+(def camera-position (comp :camera/position :viewport/camera :ctx/world-viewport))
