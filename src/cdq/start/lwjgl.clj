@@ -5,20 +5,21 @@
   [{:keys [ctx/application-state
            ctx/config]
     :as ctx}]
-  (lwjgl/start-application!
-   (let [{:keys [create
-                 dispose
-                 render
-                 resize]
-          :as config} (:cdq.start.lwjgl.listener config)]
+  (reset! application-state ctx)
+  (let [{:keys [create
+                dispose
+                render
+                resize
+                config]} (:cdq.start.lwjgl config)]
+    (lwjgl/start-application!
      {:create! (fn []
-                 (reset! application-state ((requiring-resolve create) ctx)))
+                 (swap! application-state (requiring-resolve create)))
       :dispose! (fn []
-                  ((requiring-resolve dispose) @application-state))
+                  (swap! application-state (requiring-resolve dispose)))
       :render! (fn []
                  (swap! application-state (requiring-resolve render)))
       :resize! (fn [width height]
-                 ((requiring-resolve resize) @application-state width height))
+                 (swap! application-state (requiring-resolve resize) width height))
       :pause! (fn [])
-      :resume! (fn [])})
-   (:config (:cdq.start.lwjgl config))))
+      :resume! (fn [])}
+     config)))

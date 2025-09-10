@@ -98,17 +98,14 @@
                                             [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
 
               :cdq.start.lwjgl {
+                                :create  cdq.gdx-app.create/do!
+                                :render  cdq.render-pipeline/do!
+                                :dispose cdq.gdx-app.dispose/do!
+                                :resize  cdq.gdx-app.resize/do!
                                 :config {:title "Cyber Dungeon Quest"
                                          :windowed-mode {:width 1440 :height 900}
                                          :foreground-fps 60}
                                 }
-
-              :cdq.start.lwjgl.listener {
-                                         :create cdq.gdx-app.create/do!
-                                         :render cdq.render-pipeline/do!
-                                         :dispose cdq.gdx-app.dispose/do!
-                                         :resize cdq.gdx-app.resize/do!
-                                         }
 
               :cdq.gdx-app.create {
                                    :reset-game-state cdq.application.reset-game-state/reset-game-state!

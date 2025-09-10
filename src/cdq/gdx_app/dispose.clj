@@ -14,4 +14,5 @@
   (dispose-audio! audio)
   (graphics/dispose! graphics)
   (disposable/dispose! (:world/tiled-map world))
-  (vis-ui/dispose!))
+  (vis-ui/dispose!)
+  ctx)
