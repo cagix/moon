@@ -4,6 +4,7 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -17,12 +18,14 @@
 
 (defn create
   [graphics
-   {:keys [textures-to-load
+   {:keys [colors
+           textures-to-load
            world-unit-scale
            ui-viewport
            default-font
            cursors
            world-viewport]}]
+  (colors/put! colors)
   (let [batch (sprite-batch/create)
         shape-drawer-texture (let [pixmap (doto (pixmap/create)
                                             (pixmap/set-color! color/white)

@@ -27,6 +27,7 @@
                                            :enable-markup? true
                                            :use-integer-positions? false} ; false, otherwise scaling to world-units not visible
                                   }
+                   :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
                    :cursors (update-vals {:cursors/bag                   ["bag001"       [0   0]]
                                           :cursors/black-x               ["black_x"      [0   0]]
                                           :cursors/default               ["default"      [0   0]]
