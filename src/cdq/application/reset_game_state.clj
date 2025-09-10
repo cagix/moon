@@ -21,8 +21,6 @@
                   (boolean (cell/blocks-vision? cell))])]
     (raycaster/create width height cells)))
 
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
 (defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/body->cells grid body)
