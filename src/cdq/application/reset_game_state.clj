@@ -2,9 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.content-grid :as content-grid]
             [cdq.db :as db]
-            [cdq.entity :as entity]
-            [cdq.faction :as faction]
-            [cdq.gdx.math.geom :as geom]
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
@@ -13,107 +10,13 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.utils.disposable :as disposable]))
 
-(defn- grid->raycaster [grid]
-  (let [width  (g2d/width  (.g2d grid))
-        height (g2d/height (.g2d grid))
-        cells  (for [cell (map deref (g2d/cells (.g2d grid)))]
+(defn- grid->raycaster [g2d]
+  (let [width  (g2d/width  g2d)
+        height (g2d/height g2d)
+        cells  (for [cell (map deref (g2d/cells g2d))]
                  [(:position cell)
                   (boolean (cell/blocks-vision? cell))])]
     (raycaster/create width height cells)))
-
-(defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (grid/body->cells grid body)
-    [(grid/cell grid (mapv int position))]))
-
-(deftype Grid [g2d]
-  grid/Grid
-  (cell [_ position]
-    (g2d position))
-
-  (cells [_ int-positions]
-    (into [] (keep g2d) int-positions))
-
-  (body->cells [this body]
-    (grid/cells this (geom/body->touched-tiles body)))
-
-  (circle->cells [this circle]
-    (->> circle
-         geom/circle->outer-rectangle
-         geom/rectangle->touched-tiles
-         (grid/cells this)))
-
-  (circle->entities [this {:keys [position radius] :as circle}]
-    (->> (grid/circle->cells this circle)
-         (map deref)
-         (grid/cells->entities this)
-         (filter #(geom/overlaps?
-                   (geom/circle (position 0) (position 1) radius)
-                   (geom/body->gdx-rectangle (:entity/body @%))))))
-
-  (cells->entities [_ cells]
-    (into #{} (mapcat :entities) cells))
-
-  (cached-adjacent-cells [this cell]
-    (if-let [result (:adjacent-cells @cell)]
-      result
-      (let [result (->> @cell
-                        :position
-                        grid/get-8-neighbour-positions
-                        (grid/cells this))]
-        (swap! cell assoc :adjacent-cells result)
-        result)))
-
-  (point->entities [this position]
-    (when-let [cell (grid/cell this (mapv int position))]
-      (filter #(geom/contains? (geom/body->gdx-rectangle (:entity/body @%)) position)
-              (:entities @cell))))
-
-  (set-touched-cells! [grid eid]
-    (let [cells (grid/body->cells grid (:entity/body @eid))]
-      (assert (not-any? nil? cells))
-      (swap! eid assoc ::touched-cells cells)
-      (doseq [cell cells]
-        (assert (not (get (:entities @cell) eid)))
-        (swap! cell update :entities conj eid))))
-
-  (remove-from-touched-cells! [_ eid]
-    (doseq [cell (::touched-cells @eid)]
-      (assert (get (:entities @cell) eid))
-      (swap! cell update :entities disj eid)))
-
-  (set-occupied-cells! [grid eid]
-    (let [cells (body->occupied-cells grid (:entity/body @eid))]
-      (doseq [cell cells]
-        (assert (not (get (:occupied @cell) eid)))
-        (swap! cell update :occupied conj eid))
-      (swap! eid assoc ::occupied-cells cells)))
-
-  (remove-from-occupied-cells! [_ eid]
-    (doseq [cell (::occupied-cells @eid)]
-      (assert (get (:occupied @cell) eid))
-      (swap! cell update :occupied disj eid)))
-
-  (valid-position? [this {:keys [body/z-order] :as body} entity-id]
-    {:pre [(:body/collides? body)]}
-    (let [cells* (into [] (map deref) (grid/body->cells this body))]
-      (and (not-any? #(cell/blocked? % z-order) cells*)
-           (->> cells*
-                (grid/cells->entities this)
-                (not-any? (fn [other-entity]
-                            (let [other-entity @other-entity]
-                              (and (not= (:entity/id other-entity) entity-id)
-                                   (:body/collides? (:entity/body other-entity))
-                                   (geom/overlaps? (geom/body->gdx-rectangle (:entity/body other-entity))
-                                                   (geom/body->gdx-rectangle body))))))))))
-
-  (nearest-enemy-distance [grid entity]
-    (cell/nearest-entity-distance @(grid/cell grid (mapv int (entity/position entity)))
-                                  (faction/enemy (:entity/faction entity))))
-
-  (nearest-enemy [grid entity]
-    (cell/nearest-entity @(grid/cell grid (mapv int (entity/position entity)))
-                         (faction/enemy (:entity/faction entity)))))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -156,16 +59,15 @@
     :entities #{}
     :occupied #{}}))
 
-(defn create-grid [tiled-map]
-  (->Grid
-   (g2d/create-grid (:tiled-map/width  tiled-map)
-                    (:tiled-map/height tiled-map)
-                    (fn [position]
-                      (atom (create-grid-cell position
-                                              (case (tiled/movement-property tiled-map position)
-                                                "none" :none
-                                                "air"  :air
-                                                "all"  :all)))))))
+(defn- create-grid [tiled-map]
+  (g2d/create-grid (:tiled-map/width  tiled-map)
+                   (:tiled-map/height tiled-map)
+                   (fn [position]
+                     (atom (create-grid-cell position
+                                             (case (tiled/movement-property tiled-map position)
+                                               "none" :none
+                                               "air"  :air
+                                               "all"  :all))))))
 
 (defn- create-explored-tile-corners [tiled-map]
   (atom (g2d/create-grid (:tiled-map/width  tiled-map)
