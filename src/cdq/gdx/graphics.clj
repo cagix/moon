@@ -232,3 +232,28 @@
       (f)
       (reset! unit-scale 1)))
   (batch/end! batch))
+
+(defn draw-tiled-map!
+  [{:keys [ctx/tiled-map-renderer
+           ctx/world-viewport]}
+   tiled-map
+   color-setter]
+  (tm-renderer/draw! tiled-map-renderer
+                     world-viewport
+                     tiled-map
+                     color-setter))
+
+(defn set-cursor!
+  [{:keys [ctx/cursors
+           ctx/graphics]}
+   cursor-key]
+  (assert (contains? cursors cursor-key))
+  (graphics/set-cursor! graphics (get cursors cursor-key)))
+
+(defn delta-time
+  [{:keys [ctx/graphics]}]
+  (graphics/delta-time graphics))
+
+(defn frames-per-second
+  [{:keys [ctx/graphics]}]
+  (graphics/frames-per-second graphics))
