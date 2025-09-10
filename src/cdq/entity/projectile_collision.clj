@@ -1,5 +1,6 @@
 (ns cdq.entity.projectile-collision
   (:require [cdq.entity.body :as body]
+            [cdq.grid2d :as g2d]
             [cdq.grid :as grid]
             [cdq.grid.cell :as cell]
             [cdq.utils :as utils]
@@ -17,7 +18,7 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/cells grid (geom/body->touched-tiles (:entity/body entity)))) ; just use cached-touched -cells
+        cells* (map deref (g2d/get-cells grid (geom/body->touched-tiles (:entity/body entity)))) ; just use cached-touched -cells
         hit-entity (utils/find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                            (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                                  (:entity/faction @%))

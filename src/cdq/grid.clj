@@ -2,22 +2,20 @@
   (:require [cdq.entity :as entity]
             [cdq.faction :as faction]
             [cdq.position :as position]
+            [cdq.grid2d :as g2d]
             [cdq.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]))
 
-(defn cells [g2d int-positions]
-  (into [] (keep g2d) int-positions))
-
 (defn- body->occupied-cells [grid {:keys [body/position body/width body/height] :as body}]
   (if (or (> (float width) 1) (> (float height) 1))
-    (cells grid (geom/body->touched-tiles body))
+    (g2d/get-cells grid (geom/body->touched-tiles body))
     [(grid (mapv int position))]))
 
 (defn circle->cells [g2d circle]
   (->> circle
        geom/circle->outer-rectangle
        geom/rectangle->touched-tiles
-       (cells g2d)))
+       (g2d/get-cells g2d)))
 
 (defn cells->entities [_ cells]
   (into #{} (mapcat :entities) cells))
@@ -36,7 +34,7 @@
     (let [result (->> @cell
                       :position
                       position/get-8-neighbours
-                      (cells g2d))]
+                      (g2d/get-cells g2d))]
       (swap! cell assoc :adjacent-cells result)
       result)))
 
@@ -46,7 +44,7 @@
             (:entities @cell))))
 
 (defn set-touched-cells! [grid eid]
-  (let [cells (cells grid (geom/body->touched-tiles (:entity/body @eid)))]
+  (let [cells (g2d/get-cells grid (geom/body->touched-tiles (:entity/body @eid)))]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -72,7 +70,7 @@
 
 (defn valid-position? [g2d {:keys [body/z-order] :as body} entity-id]
   {:pre [(:body/collides? body)]}
-  (let [cells* (into [] (map deref) (cells g2d (geom/body->touched-tiles body)))]
+  (let [cells* (into [] (map deref) (g2d/get-cells g2d (geom/body->touched-tiles body)))]
     (and (not-any? #(cell/blocked? % z-order) cells*)
          (->> cells*
               (cells->entities g2d)

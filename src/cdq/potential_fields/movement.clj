@@ -3,6 +3,7 @@
             [cdq.entity :as entity]
             [cdq.faction :as faction]
             [cdq.grid :as grid]
+            [cdq.grid2d :as g2d]
             [cdq.position :as position]
             [cdq.utils :as utils]
             [cdq.gdx.math.geom :as geom]
@@ -86,7 +87,7 @@
                           own-cell)))}))))
 
 (defn- inside-cell? [grid entity cell]
-  (let [cells (grid/cells grid (geom/body->touched-tiles (:entity/body entity)))]
+  (let [cells (g2d/get-cells grid (geom/body->touched-tiles (:entity/body entity)))]
     (and (= 1 (count cells))
          (= cell (first cells)))))
 
