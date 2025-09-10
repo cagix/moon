@@ -1,4 +1,7 @@
 {
+
+ ; #1 job : remove 'def's or hardcoded shit
+ ; e.g. cdq.entity.state.stunned/stunned-circle-width
  :ctx/schema [:map {:closed true}
               [:ctx/active-entities :some]
               [:ctx/audio :some]

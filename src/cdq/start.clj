@@ -8,4 +8,4 @@
     (reduce (fn [ctx f]
               (f ctx))
             ctx
-            (:cdq.start (:ctx/config ctx)))))
+            (map requiring-resolve (:cdq.start (:ctx/config ctx))))))
