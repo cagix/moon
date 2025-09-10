@@ -110,11 +110,23 @@
                                          :foreground-fps 60}
                                 }
 
-              :cdq.gdx-app.create {
-                                   :starting-world [cdq.world-fns.tmx/create
-                                                    {:tmx-file "maps/vampire.tmx"
-                                                     :start-position [32 71]}]
-                                   }
+              :cdq.gdx-app.create [
+                                   cdq.create.input/do!
+                                   cdq.create.files/do!
+                                   cdq.create.vis-ui/do!
+                                   cdq.create.graphics/do!
+                                   cdq.create.stage/do!
+                                   cdq.create.set-input-processor/do!
+                                   cdq.create.audio/do!
+                                   cdq.create.remove-files/do!
+                                   cdq.ctx/reset-stage!
+                                   cdq.create.world/do!
+                                   ]
+
+              :cdq.create.world {
+                                 :starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                            :start-position [32 71]}]
+                                 }
 
               :cdq.gdx-app.render [cdq.render.validate/do!
                                    cdq.render.update-mouse/do!
