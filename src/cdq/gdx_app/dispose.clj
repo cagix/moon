@@ -1,5 +1,6 @@
 (ns cdq.gdx-app.dispose
   (:require [cdq.gdx.graphics :as graphics]
+            [cdq.world :as world]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.vis-ui :as vis-ui]))
 
@@ -13,6 +14,6 @@
     :as ctx}]
   (dispose-audio! audio)
   (graphics/dispose! graphics)
-  (disposable/dispose! (:world/tiled-map world))
   (vis-ui/dispose!)
+  (world/dispose! world)
   ctx)

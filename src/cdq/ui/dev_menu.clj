@@ -1,7 +1,8 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.ctx :as ctx]
             [cdq.create.world]
-            [cdq.ui.menu :as menu]))
+            [cdq.ui.menu :as menu]
+            [cdq.world :as world]))
 
 (defn help-items [_ctx _params]
   [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}])
@@ -9,6 +10,7 @@
 (defn reset-game-fn
   [{:keys [ctx/application-state] :as ctx} world-fn]
   (ctx/handle-txs! ctx [[:tx/reset-stage]])
+  (world/dispose! (:ctx/world ctx))
   (swap! application-state cdq.create.world/do! world-fn))
 
 (defn create

@@ -6,8 +6,7 @@
             [cdq.grid2d :as g2d]
             [cdq.math.raycaster :as raycaster]
             [cdq.utils :as utils]
-            [clojure.gdx.maps.tiled :as tiled]
-            [clojure.gdx.utils.disposable :as disposable]))
+            [clojure.gdx.maps.tiled :as tiled]))
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]
@@ -143,8 +142,6 @@
             ctx/graphics]
      :as ctx}
     world-fn]
-   (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
-     (disposable/dispose! tiled-map))
    (-> ctx
        (assoc-ctx-world (call-world-fn world-fn
                                        (db/all-raw db :properties/creatures)
