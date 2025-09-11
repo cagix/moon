@@ -8,17 +8,13 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
-
-; TODO express the whole thing through a reduce !!!
-; can simplifY!
 (defn create
   [{:keys [ctx/stage]}
    {:keys [title
            id
            visible?
            clicked-cell-fn
-           slot->texture-region
-           ]}]
+           slot->texture-region]}]
   (let [cell-size 48
         slot->drawable (fn [slot]
                          (utils/drawable (slot->texture-region slot)
@@ -36,9 +32,6 @@
                                           droppable-color
                                           not-allowed-color)]
                               [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
-        ; TODO why do I need to call getX ?
-        ; is not layouted automatically to cell , use 0/0 ??
-        ; maybe .setTransform stack true ? , but docs say it should work anyway
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
                            :draw (fn [actor {:keys [ctx/ui-mouse-position
@@ -88,13 +81,7 @@
                                                        (->cell :inventory.slot/bag :position [x y]))))}
                              :pad 4}]]})))
 
-; TODO express the whole thing through a reduce !!!
-; can simplifY!
-(defn set-item!
-  [inventory-window
-   cell
-   {:keys [texture-region
-           tooltip-text]}]
+(defn set-item! [inventory-window cell {:keys [texture-region tooltip-text]}]
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
@@ -108,10 +95,7 @@
     (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))
 
-(defn cell-with-item?
-  "If the actor is an inventory-cell, returns the inventory slot."
-  [actor]
-  {:pre [actor]}
+(defn cell-with-item? [actor]
   (and (actor/parent actor)
        (= "inventory-cell" (actor/get-name (actor/parent actor)))
        (actor/user-object (actor/parent actor))))
