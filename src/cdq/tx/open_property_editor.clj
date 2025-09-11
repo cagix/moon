@@ -27,20 +27,14 @@
   (fn []
     (swap! state update :ctx/db db/delete! property-id)))
 
-(defn do!
-  [{:keys [ctx/application-state
-           ctx/db
-           ctx/stage]
-    :as ctx}
-   property]
-  (let [scroll-pane-height (cdq.stage/viewport-height stage)
-        schemas (:schemas db)
-        schema (get schemas (property/type property))
-        widget (schema/create schema nil property ctx)
-        get-widget-value #(schema/value schema nil widget schemas)
-        property-id (:property/id property)
-        clicked-delete-fn (with-window-close (delete-property-fn application-state property-id))
-        clicked-save-fn   (with-window-close (update-property-fn application-state get-widget-value))
+(defn- create*
+  [{:keys [state
+           scroll-pane-height
+           widget
+           get-widget-value
+           property-id]}]
+  (let [clicked-delete-fn (with-window-close (delete-property-fn state property-id))
+        clicked-save-fn   (with-window-close (update-property-fn state get-widget-value))
         act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
                  (when (input/key-just-pressed? input :enter)
                    (clicked-save-fn actor ctx)))
@@ -59,5 +53,22 @@
                                         scroll-pane-rows)]]
         actor (editor-window/create {:rows rows
                                      :actors actors})]
+    (editor-window/create {:rows rows
+                           :actors actors})))
+
+(defn do!
+  [{:keys [ctx/application-state
+           ctx/db
+           ctx/stage]
+    :as ctx}
+   property]
+  (let [schemas (:schemas db)
+        schema (get schemas (property/type property))
+        widget (schema/create schema nil property ctx)
+        actor (create* {:state application-state
+                        :scroll-pane-height (cdq.stage/viewport-height stage)
+                        :widget widget
+                        :get-widget-value #(schema/value schema nil widget schemas)
+                        :property-id (:property/id property)})]
     (stage/add! stage (actor/build actor)))
   nil)
