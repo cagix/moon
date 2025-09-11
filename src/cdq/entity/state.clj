@@ -1,7 +1,6 @@
 (ns cdq.entity.state)
 
-(declare state->cursor
-         state->exit
+(declare state->exit
          state->handle-input)
 
 (defn create

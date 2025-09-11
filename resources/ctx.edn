@@ -61,10 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-
-                                     cdq.entity.state/state->cursor
-                                     cdq.entity.state.cursor/function-map
-
                                      cdq.entity.state/state->exit
                                      cdq.entity.state.exit/function-map
 
@@ -396,5 +392,12 @@
                             :player-moving         cdq.entity.state.player-moving/enter
                             :active-skill          cdq.entity.state.active-skill/enter}
 
-                    }
+                    :cursor {:active-skill :cursors/sandclock
+                             :player-dead :cursors/black-x
+                             :player-idle cdq.entity.state.player-idle/cursor
+                             :player-item-on-cursor :cursors/hand-grab
+                             :player-moving :cursors/walking
+                             :stunned :cursors/denied}
  }
+
+}
