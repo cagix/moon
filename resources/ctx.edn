@@ -1,7 +1,4 @@
 {
-
- ; #1 job : remove 'def's or hardcoded shit
- ; e.g. cdq.entity.state.stunned/stunned-circle-width
  :ctx/schema [:map {:closed true}
               [:ctx/active-entities :some]
               [:ctx/audio :some]
@@ -14,7 +11,7 @@
               [:ctx/entity-ids :some]
               [:ctx/explored-tile-corners :some]
               [:ctx/factions-iterations :some]
-              [:ctx/graphics :some] ; TODO fix rename internal keys to 'cdq.gdx.graphics/'
+              [:ctx/graphics :some]
               [:ctx/grid :some]
               [:ctx/id-counter :some]
               [:ctx/info :some]
@@ -32,14 +29,11 @@
               [:ctx/schema :some]
               [:ctx/stage :some]
               [:ctx/z-orders :some]
-
-
               [:ctx/interaction-state :some]
               [:ctx/application-state :some]
               [:ctx/fsms :some]
               [:ctx/entity-components :some]
               [:ctx/spawn-entity-schema :some]
-
               [:ctx/world :some]
               ]
 
