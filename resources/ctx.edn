@@ -61,8 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.entity.state/state->enter
-                                     cdq.entity.state.enter/function-map
 
                                      cdq.entity.state/state->cursor
                                      cdq.entity.state.cursor/function-map
@@ -390,6 +388,13 @@
                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
                              :player-moving cdq.entity.state.player-moving/create
                              :stunned cdq.entity.state.stunned/create}
+
+                    :enter {:npc-dead              cdq.entity.state.npc-dead/enter
+                            :npc-moving            cdq.entity.state.npc-moving/enter
+                            :player-dead           cdq.entity.state.player-dead/enter
+                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
+                            :player-moving         cdq.entity.state.player-moving/enter
+                            :active-skill          cdq.entity.state.active-skill/enter}
 
                     }
  }

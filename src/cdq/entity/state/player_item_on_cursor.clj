@@ -34,3 +34,6 @@
       (graphics/texture-region graphics (:entity/image item))
       (item-place-position world-mouse-position entity)
       {:center? true}]]))
+
+(defn enter [{:keys [item]} eid]
+  [[:tx/assoc eid :entity/item-on-cursor item]])

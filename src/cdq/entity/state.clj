@@ -1,7 +1,6 @@
 (ns cdq.entity.state)
 
-(declare state->enter
-         state->cursor
+(declare state->cursor
          state->exit
          state->handle-input)
 
