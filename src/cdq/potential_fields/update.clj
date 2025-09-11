@@ -1,6 +1,3 @@
-;TODO KLEINER CODE IST EINFACHER
-; DA SIEHT MAN NEUES SACHEN
-; this is  no1 code so change
 (ns cdq.potential-fields.update
   (:require [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
@@ -21,8 +18,6 @@
 ; to friendly units follow player distance
 
 (comment
- ; Stepping through manually
-
  (clear-marked-cells! :good (get @faction->marked-cells :good))
 
  (defn- faction->tiles->entities-map* [entities]
@@ -72,9 +67,8 @@
     (persistent! marked-cells)))
 
 (defn- generate-potential-field
-  "returns the marked-cells"
   [grid faction tiles->entities max-iterations]
-  (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
+  (let [entity-cell-seq (for [[tile eid] tiles->entities]
                           [eid (grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
@@ -85,7 +79,7 @@
       (if (= iterations max-iterations)
         marked-cells
         (let [new-marked (step grid faction new-marked-cells)]
-          (recur (concat marked-cells new-marked) ; FIXME lazy seq
+          (recur (concat marked-cells new-marked)
                  new-marked
                  (inc iterations)))))))
 
@@ -97,18 +91,12 @@
 
 (defn tick! [pf-cache grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
-
         last-state   [faction :tiles->entities]
-
         marked-cells [faction :marked-cells]]
-
     (when-not (= (get-in @pf-cache last-state) tiles->entities)
-
       (swap! pf-cache assoc-in last-state tiles->entities)
-
       (doseq [cell (get-in @pf-cache marked-cells)]
         (swap! cell cell/remove-field-data faction))
-
       (swap! pf-cache assoc-in marked-cells (generate-potential-field
                                              grid
                                              faction
