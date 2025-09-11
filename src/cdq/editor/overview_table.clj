@@ -10,27 +10,32 @@
            ctx/graphics]}
    property-type
    clicked-id-fn]
-  (assert (contains? overview property-type)
-          (pr-str property-type))
-  (let [{:keys [sort-by-fn
-                extra-info-text
-                columns
-                image-scale]} (cdq.application/property-overview property-type)
-        properties (db/all-raw db property-type)
-        properties (sort-by sort-by-fn properties)]
-    {:actor/type :actor.type/table
-     :cell-defaults {:pad 5}
-     :rows (for [properties (partition-all columns properties)]
-             (for [property properties]
-               {:actor
-                {:actor/type :actor.type/stack
-                 :actors [{:actor/type :actor.type/image-button
-                           :drawable/texture-region (graphics/texture-region graphics
-                                                                             (property/image property))
-                           :on-clicked (fn [_actor ctx]
-                                         (clicked-id-fn (:property/id property) ctx))
-                           :drawable/scale image-scale
-                           :tooltip (pprint-to-str property)}
-                          {:actor/type :actor.type/label
-                           :label/text (extra-info-text property)
-                           :actor/touchable :disabled}]}}))}))
+  {:actor/type :actor.type/table
+   :cell-defaults {:pad 5}
+   :rows (let [{:keys [sort-by-fn
+                       extra-info-text
+                       columns
+                       image-scale]} (cdq.application/property-overview property-type)
+               properties (db/all-raw db property-type)
+               properties (sort-by sort-by-fn properties)
+               table-cells (for [property properties]
+                             {:texture-region (graphics/texture-region graphics (property/image property))
+                              :on-clicked (fn [_actor ctx]
+                                            (clicked-id-fn (:property/id property) ctx))
+                              :tooltip (pprint-to-str property)
+                              :extra-info-text (extra-info-text property)})
+               rows (partition-all columns table-cells)]
+           (for [row rows]
+             (for [{:keys [texture-region
+                           on-clicked
+                           tooltip
+                           extra-info-text]} row]
+               {:actor {:actor/type :actor.type/stack
+                        :actors [{:actor/type :actor.type/image-button
+                                  :drawable/texture-region texture-region
+                                  :on-clicked on-clicked
+                                  :drawable/scale image-scale
+                                  :tooltip tooltip}
+                                 {:actor/type :actor.type/label
+                                  :label/text extra-info-text
+                                  :actor/touchable :disabled}]}})))})
