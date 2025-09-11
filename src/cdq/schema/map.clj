@@ -16,21 +16,13 @@
   (m/create-map-schema ks (fn [k]
                             (schema/malli-form (get schemas k) schemas))))
 
-(defn- vertical-separator-cell []
-  {:actor (separator/vertical)
-   :pad-top 2
-   :pad-bottom 2
-   :fill-y? true
-   :expand-y? true})
-
 (defn- component-row [editor-widget k schema schemas table]
-  [(helper/label-cell {:display-remove-component-button? (m/optional? k (schema/malli-form schema schemas))
-                       :k k
-                       :table table
-                       :label-text (helper/k->label-text k)})
-   (vertical-separator-cell)
-   {:actor editor-widget
-    :left? true}])
+  (helper/component-row
+   {:editor-widget editor-widget
+    :display-remove-component-button? (m/optional? k (schema/malli-form schema schemas))
+    :k k
+    :table table
+    :label-text (helper/k->label-text k)}))
 
 (defn- open-add-component-window! [{:keys [ctx/db
                                            ctx/stage]}

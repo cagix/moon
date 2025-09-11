@@ -17,6 +17,9 @@
   (utils/apply-kvs property
                    (fn [k v]
                      (let [schema (get schemas k)
+                           ; TODO implement create-value for :s/map ?
+                           ; * fix animation
+                           ; * fix image
                            v (if (map? v)
                                (build-values schemas v db)
                                v)]
