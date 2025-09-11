@@ -34,53 +34,53 @@
 
 ; TODO bounds (armor-save, armor-pierce)
 {
- :property/id :qualified-keyword,
+ :property/id [:qualified-keyword],
 
- :image/file :string
+ :image/file [:string]
  :image/bounds [:vector {:size 4} nat-int?]
  :entity/image [:s/map [:image/file
                         [:image/bounds {:optional true}]]],
 
- :animation/frames :some
- :animation/frame-duration :s/pos
- :animation/looping? :boolean
+ :animation/frames [:some]
+ :animation/frame-duration [:s/pos]
+ :animation/looping? [:boolean]
  :entity/animation [:s/map [:animation/frames
                             :animation/frame-duration
                             :animation/looping?]],
 
- :tx/sound :s/sound,
+ :tx/sound [:s/sound],
 
  :properties/audiovisuals [:s/map [:property/id
                                    :tx/sound
                                    :entity/animation]],
 
- :property/pretty-name :string,
+ :property/pretty-name [:string],
  :entity/species [:qualified-keyword {:namespace :species}],
- :creature/level :s/pos-int,
+ :creature/level [:s/pos-int],
 
- :body/width :s/pos,
- :body/height :s/pos,
- :body/flying? :boolean,
+ :body/width [:s/pos],
+ :body/height [:s/pos],
+ :body/flying? [:boolean],
 
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
 
  ;; stats
- :entity/hp :s/pos-int,
- :entity/movement-speed :s/pos,
- :entity/aggro-range :s/nat-int,
- :entity/reaction-time :s/pos-int,
- :entity/mana :s/nat-int,
- :entity/strength :s/nat-int,
- :entity/cast-speed :s/pos,
- :entity/attack-speed :s/pos,
- :entity/armor-save :s/number,
- :entity/armor-pierce :s/number,
+ :entity/hp [:s/pos-int],
+ :entity/movement-speed [:s/pos],
+ :entity/aggro-range [:s/nat-int],
+ :entity/reaction-time [:s/pos-int],
+ :entity/mana [:s/nat-int],
+ :entity/strength [:s/nat-int],
+ :entity/cast-speed [:s/pos],
+ :entity/attack-speed [:s/pos],
+ :entity/armor-save [:s/number],
+ :entity/armor-pierce [:s/number],
  ;;
 
  :entity/modifiers [:s/components-ns :modifier],
 
- :op/inc  :s/int,
- :op/mult :s/int,
+ :op/inc  [:s/int],
+ :op/mult [:s/int],
 
  :modifier/armor-pierce       [:s/map-optional [:op/inc]],
  :modifier/armor-save         [:s/map-optional [:op/inc]],
@@ -141,10 +141,10 @@
                             :item/slot
                             [:entity/modifiers {:optional true}]]],
 
- :projectile/max-range :s/pos-int,
- :projectile/speed :s/pos-int,
- :projectile/piercing? :boolean,
- :projectile/size :s/number
+ :projectile/max-range [:s/pos-int],
+ :projectile/speed [:s/pos-int],
+ :projectile/piercing? [:boolean],
+ :projectile/size [:s/number]
  :entity-effects [:s/components-ns :effects.target],
 
  :properties/projectiles [:s/map [:property/id
@@ -156,11 +156,11 @@
                                   :entity-effects]],
 
  :skill/action-time-modifier-key [:enum :entity/cast-speed :entity/attack-speed],
- :skill/action-time :s/pos,
- :skill/start-action-sound :s/sound,
+ :skill/action-time [:s/pos],
+ :skill/start-action-sound [:s/sound],
  :skill/effects [:s/components-ns :effects],
- :skill/cooldown :s/nat-int,
- :skill/cost :s/nat-int,
+ :skill/cooldown [:s/nat-int],
+ :skill/cost [:s/nat-int],
 
  :properties/skills [:s/map [:property/id
                              :property/pretty-name
@@ -172,17 +172,17 @@
                              [:skill/cooldown {:optional true}]
                              [:skill/cost     {:optional true}]]],
 
- :damage/min-max :s/val-max,
+ :damage/min-max [:s/val-max],
  :effects.target/damage [:s/map [:damage/min-max
                                  ; audiovisual
                                  ]],
 
- :effects/sound :s/sound
+ :effects/sound [:s/sound]
  :effects/audiovisual [:s/one-to-one :properties/audiovisuals]
  :effects/projectile [:s/one-to-one :properties/projectiles],
  :effects/spawn      [:s/one-to-one :properties/creatures],
 
- :maxrange :s/pos,
+ :maxrange [:s/pos],
  :effects/target-entity [:s/map [:entity-effects
                                  :maxrange
                                  ; audiovisual
@@ -191,9 +191,9 @@
  :effects/target-all [:s/map [:entity-effects]],
 
  :effects.target/audiovisual [:s/one-to-one :properties/audiovisuals]
- :effects.target/convert :some,
- :effects.target/kill :some,
- :effects.target/melee-damage :some,
- :effects.target/spiderweb :some,
- :effects.target/stun :s/pos,
+ :effects.target/convert [:some],
+ :effects.target/kill [:some],
+ :effects.target/melee-damage [:some],
+ :effects.target/spiderweb [:some],
+ :effects.target/stun [:s/pos],
  }

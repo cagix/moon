@@ -1,23 +1,20 @@
 (ns cdq.schema
-  (:refer-clojure :exclude [type])
   (:require [cdq.malli :as m]
             [cdq.utils :as utils]))
 
-(defn type [schema]
-  (cond
-   (vector? schema) (schema 0)
-   (keyword? schema) schema
-   :else (throw (IllegalArgumentException. (str "Unkown schema type: " (class schema))))))
+(defn- get-type [schema]
+  (assert (vector? schema))
+  (schema 0))
 
 (defmulti create-value (fn [schema _v _db]
-                         (type schema)))
+                         (get-type schema)))
 
 (defmethod create-value :default [_schema v _db]
   v)
 
 (defn widget-type
   [schema attribute]
-  (let [stype (type schema)]
+  (let [stype (get-type schema)]
     (cond
      (= attribute :entity/animation)
      :widget/animation
@@ -33,8 +30,9 @@
 
      :else stype)))
 
-(defmulti malli-form (fn [schema _schemas] (type schema)))
-(defmethod malli-form :default [schema _schemas] schema)
+(defmulti malli-form (fn [schema _schemas] (get-type schema)))
+(defmethod malli-form :default [schema _schemas]
+  schema)
 
 (defn build-values [schemas property db]
   (utils/apply-kvs property
@@ -63,7 +61,7 @@
 (defn k->default-value [schemas k]
   (let [schema (utils/safe-get schemas k)]
     (cond
-     (#{:s/one-to-one :s/one-to-many} (type schema)) nil
+     (#{:s/one-to-one :s/one-to-many} (get-type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
