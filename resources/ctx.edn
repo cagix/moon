@@ -360,6 +360,7 @@
                       :tx/deal-damage
                       :tx/move-entity
                       :tx/open-editor-overview
+                      :tx/open-property-editor
                       :tx/spawn-projectile
                       :tx/spawn-effect
                       :tx/spawn-item
