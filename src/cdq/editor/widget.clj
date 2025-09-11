@@ -6,7 +6,7 @@
   [schema attribute]
   (let [stype (schema/get-type schema)]
     (cond
-     (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
+     (#{:s/number :s/val-max} stype)
      :widget/edn
 
      :else stype)))

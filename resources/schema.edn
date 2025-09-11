@@ -41,7 +41,7 @@
  :entity/image [:s/image],
 
  :animation/frames [:s/some]
- :animation/frame-duration [:s/pos]
+ :animation/frame-duration [:s/number :pos]
  :animation/looping? [:s/boolean]
  :entity/animation [:s/animation],
 
@@ -53,41 +53,41 @@
 
  :property/pretty-name [:s/string],
  :entity/species [:s/qualified-keyword {:namespace :species}],
- :creature/level [:s/pos-int],
+ :creature/level [:s/number :pos-int],
 
- :body/width [:s/pos],
- :body/height [:s/pos],
+ :body/width [:s/number :pos],
+ :body/height [:s/number :pos],
  :body/flying? [:s/boolean],
 
- :entity/body [:s/map [:body/width :body/height :body/flying?]],
+ :entity/body [:s/map [:body/width
+                       :body/height
+                       :body/flying?]],
 
- ;; stats
- :entity/hp [:s/pos-int],
- :entity/movement-speed [:s/pos],
- :entity/aggro-range [:s/nat-int],
- :entity/reaction-time [:s/pos-int],
- :entity/mana [:s/nat-int],
- :entity/strength [:s/nat-int],
- :entity/cast-speed [:s/pos],
- :entity/attack-speed [:s/pos],
- :entity/armor-save [:s/number],
- :entity/armor-pierce [:s/number],
- ;;
+ :entity/hp             [:s/number :pos-int],
+ :entity/movement-speed [:s/number :pos],
+ :entity/aggro-range    [:s/number :nat-int],
+ :entity/reaction-time  [:s/number :pos-int],
+ :entity/mana           [:s/number :nat-int],
+ :entity/strength       [:s/number :nat-int],
+ :entity/cast-speed     [:s/number :pos],
+ :entity/attack-speed   [:s/number :pos],
+ :entity/armor-save     [:s/number :any],
+ :entity/armor-pierce   [:s/number :any],
 
- :entity/modifiers [:s/map [[:modifier/armor-pierce {:optional true}]
-                            [:modifier/armor-save {:optional true}]
-                            [:modifier/attack-speed {:optional true}]
-                            [:modifier/cast-speed {:optional true}]
-                            [:modifier/damage-deal-min {:optional true}]
-                            [:modifier/damage-deal-max {:optional true}]
+ :entity/modifiers [:s/map [[:modifier/armor-pierce       {:optional true}]
+                            [:modifier/armor-save         {:optional true}]
+                            [:modifier/attack-speed       {:optional true}]
+                            [:modifier/cast-speed         {:optional true}]
+                            [:modifier/damage-deal-min    {:optional true}]
+                            [:modifier/damage-deal-max    {:optional true}]
                             [:modifier/damage-receive-max {:optional true}]
-                            [:modifier/movement-speed {:optional true}]
-                            [:modifier/strength {:optional true}]
-                            [:modifier/hp-max {:optional true}]
-                            [:modifier/mana-max {:optional true}]]],
+                            [:modifier/movement-speed     {:optional true}]
+                            [:modifier/strength           {:optional true}]
+                            [:modifier/hp-max             {:optional true}]
+                            [:modifier/mana-max           {:optional true}]]],
 
- :op/inc  [:s/int],
- :op/mult [:s/int],
+ :op/inc  [:s/number :int],
+ :op/mult [:s/number :int],
 
  :modifier/armor-pierce       [:s/map [[:op/inc {:optinal true}]]],
  :modifier/armor-save         [:s/map [[:op/inc {:optional true}]]],
@@ -154,10 +154,10 @@
                             :item/slot
                             [:entity/modifiers {:optional true}]]],
 
- :projectile/max-range [:s/pos-int],
- :projectile/speed [:s/pos-int],
+ :projectile/max-range [:s/number :pos-int],
+ :projectile/speed [:s/number :pos-int],
  :projectile/piercing? [:s/boolean],
- :projectile/size [:s/number]
+ :projectile/size [:s/number :any]
  :entity-effects [:s/map [
                           [:effects.target/audiovisual  {:optional true}]
                           [:effects.target/convert      {:optional true}]
@@ -177,7 +177,7 @@
                                   :entity-effects]],
 
  :skill/action-time-modifier-key [:s/enum :entity/cast-speed :entity/attack-speed],
- :skill/action-time [:s/pos],
+ :skill/action-time [:s/number :pos],
  :skill/start-action-sound [:s/sound],
  :skill/effects [:s/map [
                          [:effects/sound         {:optional true}]
@@ -187,8 +187,8 @@
                          [:effects/target-entity {:optional true}],
                          [:effects/target-all    {:optional true}]
                          ]],
- :skill/cooldown [:s/nat-int],
- :skill/cost [:s/nat-int],
+ :skill/cooldown [:s/number :nat-int],
+ :skill/cost [:s/number :nat-int],
 
  :properties/skills [:s/map [:property/id
                              :property/pretty-name
@@ -210,7 +210,7 @@
  :effects/projectile [:s/one-to-one :properties/projectiles],
  :effects/spawn      [:s/one-to-one :properties/creatures],
 
- :maxrange [:s/pos],
+ :maxrange [:s/number :pos],
  :effects/target-entity [:s/map [:entity-effects
                                  :maxrange
                                  ; audiovisual
@@ -223,5 +223,5 @@
  :effects.target/kill [:s/some],
  :effects.target/melee-damage [:s/some],
  :effects.target/spiderweb [:s/some],
- :effects.target/stun [:s/pos],
+ :effects.target/stun [:s/number :pos],
  }

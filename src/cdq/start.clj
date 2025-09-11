@@ -3,14 +3,10 @@
             cdq.schema.boolean
             cdq.schema.enum
             cdq.schema.image
-            cdq.schema.int
             cdq.schema.map
-            cdq.schema.nat-int
             cdq.schema.number
             cdq.schema.one-to-many
             cdq.schema.one-to-one
-            cdq.schema.pos
-            cdq.schema.pos-int
             cdq.schema.qualified-keyword
             cdq.schema.some
             cdq.schema.sound
