@@ -18,7 +18,7 @@
           :creature-properties (db/all-raw db :properties/creatures)
           :graphics graphics)))
 
-(defn- asdf
+(defn- assoc-ctx-world
   [ctx
    {:keys [tiled-map
            start-position]}]
@@ -148,7 +148,7 @@
    (do! ctx (:starting-world (:cdq.create.world (:ctx/config ctx)))))
   ([ctx world-fn]
    (-> ctx
-       (asdf (call-world-fn ctx world-fn))
+       (assoc-ctx-world (call-world-fn ctx world-fn))
        build-world
        spawn-player!
        spawn-enemies!)))
