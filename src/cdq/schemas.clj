@@ -1,7 +1,6 @@
 (ns cdq.schemas
   (:require [cdq.malli :as m]
             [cdq.schema :as schema]
-            [cdq.property :as property]
             [cdq.utils :as utils]))
 
 (defn build-values [schemas property db]
@@ -15,13 +14,9 @@
                             (catch Throwable t
                               (throw (ex-info " " {:k k :v v} t))))))))
 
-(defn property-types [schemas]
-  (filter #(= "properties" (namespace %)) (keys schemas)))
-
-(defn validate [schemas property]
-  (m/form->validate (schema/malli-form (get schemas (property/type property))
-                                       schemas)
-                    property))
+(defn validate [schemas k value]
+  (m/form->validate (schema/malli-form (get schemas k) schemas)
+                    value))
 
 (defn map-keys [schemas map-schema]
   (m/map-keys (schema/malli-form map-schema schemas)))

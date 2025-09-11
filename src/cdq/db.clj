@@ -5,6 +5,11 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
+(defn- validate-property [schemas property]
+  (schemas/validate schemas
+                    (property/type property)
+                    property))
+
 (defn create
   [{:keys [schemas
            properties]}]
@@ -13,7 +18,7 @@
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! (partial schemas/validate schemas) properties)
+    (run! (partial validate-property schemas) properties)
     {:data (zipmap (map :property/id properties) properties)
      :file properties-file
      :schemas schemas}))
@@ -31,7 +36,7 @@
               file))
 
 (defn property-types [{:keys [schemas]}]
-  (schemas/property-types schemas))
+  (filter #(= "properties" (namespace %)) (keys schemas)))
 
 (defn update!
   [{:keys [data schemas]
@@ -39,7 +44,7 @@
    {:keys [property/id] :as property}]
   (assert (contains? property :property/id))
   (assert (contains? data id))
-  (schemas/validate schemas property)
+  (validate-property schemas property)
   (let [new-db (update this :data assoc id property)]
     (save! new-db)
     new-db))
