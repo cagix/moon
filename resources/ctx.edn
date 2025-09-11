@@ -1,6 +1,7 @@
 {
  :ctx/schema [:map {:closed true}
               [:ctx/txs-fn-map :some]
+              [:ctx/entity-states :some]
               [:ctx/active-entities :some]
               [:ctx/audio :some]
               [:ctx/draw-fns :some]
@@ -42,6 +43,7 @@
               :cdq.start [
                           cdq.start.read-schema/do!
                           cdq.start.bind-roots/do!
+                          cdq.start.entity-states/do!
                           cdq.start.context-record/do!
                           cdq.start.register-self/do!
                           cdq.start.fsms/do!
@@ -59,9 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.entity.state/->create
-                                     cdq.entity.state.create/function-map
-
                                      cdq.entity.state/state->enter
                                      cdq.entity.state.enter/function-map
 
@@ -384,4 +383,13 @@
                       :tx/spawn-creature
                       :tx/spawn-entity
                       :tx/update-potential-fields]}
-}
+
+:ctx/entity-states {
+                    :create {:active-skill cdq.entity.state.active-skill/create
+                             :npc-moving cdq.entity.state.npc-moving/create
+                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
+                             :player-moving cdq.entity.state.player-moving/create
+                             :stunned cdq.entity.state.stunned/create}
+
+                    }
+ }

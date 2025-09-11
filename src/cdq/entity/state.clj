@@ -1,14 +1,15 @@
 (ns cdq.entity.state)
 
-(declare ->create
-         state->enter
+(declare state->enter
          state->cursor
          state->exit
          state->handle-input)
 
-(defn create [ctx state-k eid params]
+(defn create
+  [{:keys [ctx/entity-states]
+    :as ctx} state-k eid params]
   {:pre [(keyword? state-k)]}
-  (let [result (if-let [f (state-k ->create)]
+  (let [result (if-let [f (state-k (:create entity-states))]
                  (f eid params ctx)
                  (if params
                    params
