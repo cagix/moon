@@ -1,6 +1,5 @@
 (ns cdq.dev.migrations
-  (:require [cdq.start.db :as db]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
 (def file "properties.edn")
