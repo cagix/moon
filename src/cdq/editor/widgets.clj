@@ -5,10 +5,12 @@
             :value cdq.schema.map/value}
     :default {:create cdq.editor.widget.default/create
               :value cdq.editor.widget.default/value}
-    :widget/edn {:create cdq.editor.widget.edn/create
-                 :value cdq.editor.widget.edn/value}
+    :s/number {:create cdq.editor.widget.edn/create
+               :value cdq.editor.widget.edn/value}
+    :s/val-max {:create cdq.editor.widget.edn/create
+                :value cdq.editor.widget.edn/value}
     :s/string {:create cdq.schema.string/create
-             :value cdq.schema.string/value}
+               :value cdq.schema.string/value}
     :s/boolean {:create cdq.schema.boolean/create
               :value cdq.schema.boolean/value}
     :s/enum {:create cdq.schema.enum/create

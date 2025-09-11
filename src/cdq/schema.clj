@@ -14,23 +14,15 @@
 (defmulti malli-form (fn [schema _schemas]
                        (get-type schema)))
 
-(defn- widget-type [schema attribute]
-  (let [stype (get-type schema)]
-    (cond
-     (#{:s/number :s/val-max} stype)
-     :widget/edn
-
-     :else stype)))
-
 (declare k->methods)
 
 (defn create [schema attribute v ctx]
-  (if-let [f (:create (k->methods (widget-type schema attribute)))]
+  (if-let [f (:create (k->methods (get-type schema)))]
     (f schema attribute v ctx)
     ((:create (k->methods :default)) schema attribute v ctx)))
 
 (defn value [schema attribute widget schemas]
-  (if-let [f (:value (k->methods (widget-type schema attribute)))]
+  (if-let [f (:value (k->methods (get-type schema)))]
     (f schema attribute widget schemas)
     ((:value (k->methods :default)) schema attribute widget schemas)))
 
