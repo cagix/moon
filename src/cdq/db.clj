@@ -7,8 +7,9 @@
             [clojure.java.io :as io]))
 
 (defn- validate-property [schemas property]
-  (m/form->validate (schema/malli-form (get schemas (property/type property)) schemas)
-                    property))
+  (m/validate-humanize (m/schema (schema/malli-form (get schemas (property/type property))
+                                                    schemas))
+                       property))
 
 (defn create
   [{:keys [schemas
