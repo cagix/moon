@@ -92,7 +92,7 @@
                                    cdq.create.set-input-processor/do!
                                    cdq.create.audio/do!
                                    cdq.create.remove-files/do!
-                                   cdq.ctx/reset-stage!
+                                   cdq.create.reset-stage/do!
                                    cdq.create.world/do!
                                    ]
 
@@ -330,7 +330,8 @@
                       :maxrange cdq.maxrange/info-text}}
 
 :ctx/txs-fn-map {:sym-format "cdq.tx.%s/do!"
-                 :ks [:tx/rebuild-editor-window
+                 :ks [:tx/reset-stage
+                      :tx/rebuild-editor-window
                       :tx/assoc
                       :tx/assoc-in
                       :tx/dissoc
