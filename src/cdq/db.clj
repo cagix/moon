@@ -1,14 +1,25 @@
 (ns cdq.db
-  (:require [cdq.schema :as schema]
+  (:require [cdq.malli :as m]
+            [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
+(defn- build-values [schemas property db]
+  (utils/apply-kvs property
+                   (fn [k v]
+                     (let [schema (get schemas k)
+                           v (if (map? v)
+                               (build-values schemas v db)
+                               v)]
+                       (try (schema/create-value schema v db)
+                            (catch Throwable t
+                              (throw (ex-info " " {:k k :v v} t))))))))
+
 (defn- validate-property [schemas property]
-  (schema/validate schemas
-                   (property/type property)
-                   property))
+  (m/form->validate (schema/malli-form (get schemas (property/type property)) schemas)
+                    property))
 
 (defn create
   [{:keys [schemas
@@ -69,13 +80,13 @@
   [{:keys [schemas]
     :as this}
    property-id]
-  (schema/build-values schemas
-                       (get-raw this property-id)
-                       this))
+  (build-values schemas
+                (get-raw this property-id)
+                this))
 
 (defn build-all
   [{:keys [schemas]
     :as this}
    property-type]
-  (map #(schema/build-values schemas % this)
+  (map #(build-values schemas % this)
        (all-raw this property-type)))

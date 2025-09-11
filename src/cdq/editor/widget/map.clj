@@ -3,6 +3,7 @@
             [cdq.schema :as schema]
             [cdq.editor.widget :as editor-widget]
             [cdq.editor.widget.map.helper :as helper]
+            [cdq.malli :as m]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -12,6 +13,14 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
+(defn- k->default-value [schemas k]
+  (let [schema (utils/safe-get schemas k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (schema/get-type schema)) nil
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+     :else (m/generate (schema/malli-form schema schemas)
+                       {:size 3}))))
+
 (defn- vertical-separator-cell []
   {:actor (separator/vertical)
    :pad-top 2
@@ -19,8 +28,8 @@
    :fill-y? true
    :expand-y? true})
 
-(defn- component-row [editor-widget k map-schema schemas table]
-  [(helper/label-cell {:display-remove-component-button? (schema/optional-k? schemas map-schema k)
+(defn- component-row [editor-widget k schema schemas table]
+  [(helper/label-cell {:display-remove-component-button? (m/optional? k (schema/malli-form schema schemas))
                        :k k
                        :table table
                        :label-text (helper/k->label-text k)})
@@ -40,7 +49,7 @@
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (editor-widget/value schema nil map-widget-table schemas)))
-                                   (schema/map-keys schemas schema)))]
+                                   (m/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -50,7 +59,7 @@
                               (table/add-rows! map-widget-table [(component-row (editor-widget/build ctx
                                                                                                      (get schemas k)
                                                                                                      k
-                                                                                                     (schema/k->default-value schemas k))
+                                                                                                     (k->default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas
@@ -86,7 +95,7 @@
                                                           (:schemas db)
                                                           table))
                                          (utils/sort-by-k-order k-sort-order m)))
-        opt? (seq (set/difference (schema/optional-keyset (:schemas db) schema)
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas db)))
                                   (set (keys m))))]
     (table/add-rows!
      table
