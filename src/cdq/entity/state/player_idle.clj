@@ -13,6 +13,9 @@
 (defn can-pickup-item? [entity item]
   (inventory/can-pickup-item? (:entity/inventory entity) item))
 
+; TODO
+; dispatch _on_ the interaction stte ! no ifs/whens !
+; -> clear as daylight !
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]
     (case k

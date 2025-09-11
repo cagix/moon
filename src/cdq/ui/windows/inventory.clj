@@ -8,6 +8,9 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
+
+; TODO express the whole thing through a reduce !!!
+; can simplifY!
 (defn create
   [{:keys [ctx/stage]}
    {:keys [title
@@ -85,6 +88,8 @@
                                                        (->cell :inventory.slot/bag :position [x y]))))}
                              :pad 4}]]})))
 
+; TODO express the whole thing through a reduce !!!
+; can simplifY!
 (defn set-item!
   [inventory-window
    cell
