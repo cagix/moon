@@ -66,9 +66,6 @@
 
                                      cdq.effect/k->method-map
                                      cdq.effects/method-map
-
-                                     cdq.entity-tick/entity->tick
-                                     cdq.entity.tick/function-map
                                      }
 
               :cdq.start.register-self cdq.application/state
@@ -368,6 +365,38 @@
                       :tx/spawn-creature
                       :tx/spawn-entity
                       :tx/update-potential-fields]}
+
+:ctx/entity-components {
+                        :tick {
+                               :entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
+                               :entity/animation cdq.entity.animation/tick!
+                               :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick!
+                               :entity/delete-after-duration cdq.entity.delete-after-duration/tick!
+                               :entity/movement cdq.entity.movement/tick!
+                               :entity/projectile-collision cdq.entity.projectile-collision/tick!
+                               :entity/skills cdq.entity.skills/tick!
+                               :active-skill cdq.entity.state.active-skill/tick!
+                               :npc-idle cdq.entity.state.npc-idle/tick!
+                               :npc-moving cdq.entity.state.npc-moving/tick!
+                               :npc-sleeping cdq.entity.state.npc-sleeping/tick!
+                               :stunned cdq.entity.state.stunned/tick!
+                               :entity/string-effect cdq.entity.string-effect/tick!
+                               :entity/temp-modifier cdq.entity.temp-modifier/tick!
+                               }
+                        :create {
+                                 :entity/animation                       cdq.entity.animation/create
+                                 :entity/body                            cdq.entity.body/create
+                                 :entity/delete-after-duration           cdq.entity.delete-after-duration/create
+                                 :entity/projectile-collision            cdq.entity.projectile-collision/create
+                                 :creature/stats                         cdq.entity.stats/create
+                                 }
+                        :create! {
+                                  :entity/fsm                             cdq.entity.fsm/create!
+                                  :entity/inventory                       cdq.entity.inventory/create!
+                                  :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/create!
+                                  :entity/skills                          cdq.entity.skills/create!
+                                  }
+                        }
 
 :ctx/entity-states {
                     :create {:active-skill cdq.entity.state.active-skill/create

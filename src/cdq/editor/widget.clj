@@ -25,7 +25,7 @@
 (defn create [schema attribute v ctx]
   (if-let [f (:create (k->methods (widget-type schema attribute)))]
     (f schema attribute v ctx)
-    ((:create (k->methods :default )) schema attribute v ctx)))
+    ((:create (k->methods :default)) schema attribute v ctx)))
 
 (defn value [schema attribute widget schemas]
   (if-let [f (:value (k->methods (widget-type schema attribute)))]

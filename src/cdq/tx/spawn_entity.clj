@@ -17,7 +17,7 @@
    entity]
   (m/validate-humanize spawn-entity-schema entity)
   (let [build-component (fn [[k v]]
-                          (if-let [create (:create (k entity-components))]
+                          (if-let [create (k (:create entity-components))]
                             (create v ctx)
                             v))
         entity (reduce (fn [m [k v]]
@@ -38,6 +38,6 @@
     (when (:body/collides? (:entity/body @eid))
       (grid/set-occupied-cells! grid eid))
     (mapcat (fn [[k v]]
-              (when-let [create! (:create! (k entity-components))]
+              (when-let [create! (k (:create! entity-components))]
                 (create! v eid ctx)))
             @eid)))

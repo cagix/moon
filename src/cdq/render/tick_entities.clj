@@ -1,12 +1,13 @@
 (ns cdq.render.tick-entities
   (:require [cdq.ctx :as ctx]
-            [cdq.entity-tick]
             [cdq.stacktrace :as stacktrace]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 
-(defn- tick-component! [k v eid ctx]
-  (when-let [f (cdq.entity-tick/entity->tick k)]
+(defn- tick-component!
+  [k v eid {:keys [ctx/entity-components]
+            :as ctx}]
+  (when-let [f ((:tick entity-components) k)]
     (f v eid ctx)))
 
 (defn- tick-entity! [ctx eid]
