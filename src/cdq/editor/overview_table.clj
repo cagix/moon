@@ -4,24 +4,33 @@
             [cdq.editor.property :as property]
             [cdq.utils :refer [pprint-to-str]]))
 
-; FIXME not refreshed after changes in properties
+(def ^:private overview
+  {
+   :properties/audiovisuals {:columns 10
+                             :image/scale 2
+                             :extra-info-text (constantly "")}
 
-(def ^:private overview {:properties/audiovisuals {:columns 10
-                                                   :image/scale 2}
-                         :properties/creatures {:columns 15
-                                                :image/scale 1.5
-                                                :sort-by-fn #(vector (:creature/level %)
-                                                                     (name (:entity/species %))
-                                                                     (name (:property/id %)))
-                                                :extra-info-text #(str (:creature/level %))}
-                         :properties/items {:columns 20
-                                            :image/scale 1.1
-                                            :sort-by-fn #(vector (name (:item/slot %))
-                                                                 (name (:property/id %)))}
-                         :properties/projectiles {:columns 16
-                                                  :image/scale 2}
-                         :properties/skills {:columns 16
-                                             :image/scale 2}})
+   :properties/creatures {:columns 15
+                          :image/scale 1.5
+                          :sort-by-fn #(vector (:creature/level %)
+                                               (name (:entity/species %))
+                                               (name (:property/id %)))
+                          :extra-info-text #(str (:creature/level %))}
+
+   :properties/items {:columns 20
+                      :image/scale 1.1
+                      :sort-by-fn #(vector (name (:item/slot %))
+                                           (name (:property/id %)))
+                      :extra-info-text (constantly "")}
+
+   :properties/projectiles {:columns 16
+                            :image/scale 2
+                            :extra-info-text (constantly "")}
+
+   :properties/skills {:columns 16
+                       :image/scale 2
+                       :extra-info-text (constantly "")}
+   })
 
 (defn create
   [{:keys [ctx/db
@@ -59,7 +68,5 @@
                              :on-clicked on-clicked
                              :tooltip tooltip-text})
                           {:actor/type :actor.type/label
-                           :label/text (or (and extra-info-text
-                                                (extra-info-text property))
-                                           "")
+                           :label/text (extra-info-text property)
                            :actor/touchable :disabled}]}}))}))
