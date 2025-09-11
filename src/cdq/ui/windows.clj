@@ -5,8 +5,6 @@
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory))
 
-(declare state->clicked-inventory-cell)
-
 (comment
 
  ; items then have 2x pretty-name
@@ -64,10 +62,11 @@
       :id :inventory-window
       :visible? false
       :clicked-cell-fn (fn [cell]
-                         (fn [{:keys [ctx/player-eid] :as ctx}]
+                         (fn [{:keys [ctx/entity-states
+                                      ctx/player-eid] :as ctx}]
                            (ctx/handle-txs!
                             ctx
-                            (when-let [f (state->clicked-inventory-cell (:state (:entity/fsm @player-eid)))]
+                            (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @player-eid)))]
                               (f player-eid cell)))))
       :slot->texture-region slot->texture-region
       })))

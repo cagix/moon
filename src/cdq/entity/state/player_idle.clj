@@ -102,3 +102,10 @@
       (interaction-state->txs interaction-state
                               stage
                               player-eid))))
+
+(defn clicked-inventory-cell [eid cell]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    [[:tx/sound "bfxr_takeit"]
+     [:tx/event eid :pickup-item item]
+     [:tx/remove-item eid cell]]))

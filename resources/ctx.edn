@@ -61,9 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.ui.windows/state->clicked-inventory-cell
-                                     cdq.entity.state.clicked-inventory-cell/function-map
-
                                      cdq.editor.widget/k->methods
                                      cdq.editor.widgets/k->methods
 
@@ -401,5 +398,8 @@
                     :handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
                                    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
                                    :player-moving         cdq.entity.state.player-moving/handle-input}
+
+                    :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
+                                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
                     }
 }
