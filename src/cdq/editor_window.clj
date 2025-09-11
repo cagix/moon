@@ -3,7 +3,7 @@
             [cdq.property :as property]
             [cdq.stacktrace :as stacktrace]
             [cdq.stage]
-            [cdq.editor.widget :as editor-widget]
+            [cdq.schema :as schema]
             [cdq.ui.widget]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -18,7 +18,7 @@
     :as ctx}
    property]
   (let [schema (get (:schemas db) (property/type property))
-        widget (editor-widget/create schema nil property ctx)
+        widget (schema/create schema nil property ctx)
         with-window-close (fn [f]
                             (fn [actor {:keys [ctx/stage] :as ctx}]
                               (try (f ctx)
@@ -31,7 +31,7 @@
         clicked-save-fn (with-window-close (fn [{:keys [ctx/db]}]
                                              (swap! application-state update :ctx/db
                                                     db/update!
-                                                    (editor-widget/value schema nil widget (:schemas db)))))
+                                                    (schema/value schema nil widget (:schemas db)))))
         clicked-delete-fn (with-window-close (fn [_ctx]
                                                (swap! application-state update :ctx/db
                                                       db/delete!
@@ -71,6 +71,6 @@
                              :scroll-pane
                              (group/find-actor "scroll-pane-table")
                              :map-widget)
-        prop-value (editor-widget/value [:s/map] nil map-widget-table (:schemas db))]
+        prop-value (schema/value [:s/map] nil map-widget-table (:schemas db))]
     (actor/remove! window)
     (stage/add! stage (actor/build (property-editor-window ctx prop-value)))))

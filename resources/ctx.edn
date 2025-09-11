@@ -61,7 +61,7 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.editor.widget/k->methods
+                                     cdq.schema/k->methods
                                      cdq.editor.widgets/k->methods
 
                                      cdq.effect/k->method-map

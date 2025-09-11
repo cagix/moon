@@ -1,7 +1,6 @@
 (ns cdq.editor.widget.map
   (:require [cdq.editor-window :as editor-window]
             [cdq.schema :as schema]
-            [cdq.editor.widget :as editor-widget]
             [cdq.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [cdq.utils :as utils]
@@ -48,7 +47,7 @@
                                :center? true
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (editor-widget/value schema nil map-widget-table schemas)))
+        remaining-ks (sort (remove (set (keys (schema/value schema nil map-widget-table schemas)))
                                    (m/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
@@ -56,10 +55,10 @@
        [(widget/text-button (name k)
                             (fn [_actor ctx]
                               (.remove window)
-                              (table/add-rows! map-widget-table [(component-row (editor-widget/build ctx
-                                                                                                     (get schemas k)
-                                                                                                     k
-                                                                                                     (k->default-value schemas k))
+                              (table/add-rows! map-widget-table [(component-row (schema/build ctx
+                                                                                              (get schemas k)
+                                                                                              k
+                                                                                              (k->default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas
@@ -89,7 +88,7 @@
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]
-                                           (component-row (editor-widget/build ctx (get (:schemas db) k) k v)
+                                           (component-row (schema/build ctx (get (:schemas db) k) k v)
                                                           k
                                                           schema
                                                           (:schemas db)
@@ -118,4 +117,4 @@
   (into {}
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
-          [k (editor-widget/value (get schemas k) k widget schemas)])))
+          [k (schema/value (get schemas k) k widget schemas)])))
