@@ -15,21 +15,3 @@
 
 (defmethod malli-form :default [schema _schemas]
   schema)
-
-(defn widget-type
-  [schema attribute]
-  (let [stype (get-type schema)]
-    (cond
-     (= attribute :entity/animation)
-     :widget/animation
-
-     (= attribute :entity/image)
-     :widget/image
-
-     (#{:s/map-optional :s/components-ns} stype)
-     :s/map
-
-     (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
-     :widget/edn
-
-     :else stype)))
