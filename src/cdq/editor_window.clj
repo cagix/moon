@@ -11,15 +11,11 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
-(defn property-editor-window
-  [{:keys [ctx/application-state
-           ctx/db
-           ctx/stage]
-    :as ctx}
-   property]
-  (let [schema (get (:schemas db) (property/type property))
-        widget (schema/create schema nil property ctx)
-        with-window-close (fn [f]
+(defn- create* [{:keys [save-fn
+                        delete-fn
+                        scrollpane-height
+                        widget]}]
+  (let [with-window-close (fn [f]
                             (fn [actor {:keys [ctx/stage] :as ctx}]
                               (try (f ctx)
                                    (actor/remove! (window/find-ancestor actor))
@@ -28,18 +24,8 @@
                                      (stage/add! stage (actor/build
                                                         {:actor/type :actor.type/error-window
                                                          :throwable t}))))))
-        clicked-save-fn (with-window-close (fn [{:keys [ctx/db]}]
-                                             (swap! application-state update :ctx/db
-                                                    db/update!
-                                                    (schema/value schema nil widget (:schemas db)))))
-        clicked-delete-fn (with-window-close (fn [_ctx]
-                                               (swap! application-state update :ctx/db
-                                                      db/delete!
-                                                      (:property/id property))))
-        extra-act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
-                       (when (input/key-just-pressed? input :enter)
-                         (clicked-save-fn actor ctx)))
-        scrollpane-height (cdq.stage/viewport-height stage)]
+        clicked-save-fn   (with-window-close save-fn)
+        clicked-delete-fn (with-window-close delete-fn)]
     {:actor/type :actor.type/window
      :title "[SKY]Property[]"
      :id :property-editor-window
@@ -58,9 +44,30 @@
                                                         :on-clicked clicked-delete-fn}
                                                 :center? true}]])]]
      :actors [{:actor/type :actor.type/actor
-               :act extra-act-fn}]
+               :act (fn [actor _delta {:keys [ctx/input] :as ctx}]
+                      (when (input/key-just-pressed? input :enter)
+                        (clicked-save-fn actor ctx)))}]
      :cell-defaults {:pad 5}
      :pack? true}))
+
+(defn property-editor-window
+  [{:keys [ctx/application-state
+           ctx/db
+           ctx/stage]
+    :as ctx}
+   property]
+  (let [schema (get (:schemas db) (property/type property))
+        widget (schema/create schema nil property ctx)]
+    (create* {:save-fn (fn [{:keys [ctx/db]}]
+                         (swap! application-state update :ctx/db
+                                db/update!
+                                (schema/value schema nil widget (:schemas db))))
+              :delete-fn (fn [_ctx]
+                           (swap! application-state update :ctx/db
+                                  db/delete!
+                                  (:property/id property)))
+              :scrollpane-height (cdq.stage/viewport-height stage)
+              :widget widget})))
 
 (defn rebuild!
   [{:keys [ctx/db
