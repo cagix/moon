@@ -61,9 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.entity.state/state->exit
-                                     cdq.entity.state.exit/function-map
-
                                      cdq.entity.state/state->handle-input
                                      cdq.entity.state.handle-input/function-map
 
@@ -391,6 +388,11 @@
                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
                             :player-moving         cdq.entity.state.player-moving/enter
                             :active-skill          cdq.entity.state.active-skill/enter}
+
+                    :exit {:npc-moving            cdq.entity.state.npc-moving/exit
+                           :npc-sleeping          cdq.entity.state.npc-sleeping/exit
+                           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
+                           :player-moving         cdq.entity.state.player-moving/exit}
 
                     :cursor {:active-skill :cursors/sandclock
                              :player-dead :cursors/black-x

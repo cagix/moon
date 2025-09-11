@@ -37,3 +37,16 @@
 
 (defn enter [{:keys [item]} eid]
   [[:tx/assoc eid :entity/item-on-cursor item]])
+
+(defn exit [_ eid {:keys [ctx/world-mouse-position]}]
+  ; at clicked-cell when we put it into a inventory-cell
+  ; we do not want to drop it on the ground too additonally,
+  ; so we dissoc it there manually. Otherwise it creates another item
+  ; on the ground
+  (let [entity @eid]
+    (when (:entity/item-on-cursor entity)
+      [[:tx/sound "bfxr_itemputground"]
+       [:tx/dissoc eid :entity/item-on-cursor]
+       [:tx/spawn-item
+        (item-place-position world-mouse-position entity)
+        (:entity/item-on-cursor entity)]])))

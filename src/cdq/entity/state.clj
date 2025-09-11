@@ -1,7 +1,6 @@
 (ns cdq.entity.state)
 
-(declare state->exit
-         state->handle-input)
+(declare state->handle-input)
 
 (defn create
   [{:keys [ctx/entity-states]

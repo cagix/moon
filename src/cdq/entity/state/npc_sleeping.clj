@@ -1,5 +1,6 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.grid :as grid]
+  (:require [cdq.entity :as entity]
+            [cdq.grid :as grid]
             [cdq.stats :as stats]))
 
 (defn draw [_ {:keys [entity/body]} _ctx]
@@ -14,3 +15,7 @@
     (when-let [distance (grid/nearest-enemy-distance grid entity)]
       (when (<= distance (stats/get-stat-value (:creature/stats entity) :entity/aggro-range))
         [[:tx/event eid :alert]]))))
+
+(defn exit [_ eid _ctx]
+  [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]
+   [:tx/add-text-effect eid "[WHITE]!" 1]])

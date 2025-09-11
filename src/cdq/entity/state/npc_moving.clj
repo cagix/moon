@@ -18,3 +18,6 @@
   [[:tx/assoc eid :entity/movement {:direction movement-vector
                                     :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
                                                0)}]])
+
+(defn exit [_ eid _ctx]
+  [[:tx/dissoc eid :entity/movement]])
