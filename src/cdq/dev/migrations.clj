@@ -38,9 +38,6 @@
  (count (filter creature? (read-properties)))
  (clojure.pprint/pprint (first (filter creature? (read-properties))))
 
- ; !!
- ;(require 'cdq.schemas-impl)
-
  (db/do! {} {:schemas "schema.edn"
              :properties "properties.edn"})
 
