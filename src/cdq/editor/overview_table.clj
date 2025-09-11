@@ -16,18 +16,12 @@
                                                 :extra-info-text #(str (:creature/level %))}
                          :properties/items {:columns 20
                                             :image/scale 1.1
-                                            :sort-by-fn #(vector (if-let [slot (:item/slot %)]
-                                                                   (name slot)
-                                                                   "")
+                                            :sort-by-fn #(vector (name (:item/slot %))
                                                                  (name (:property/id %)))}
                          :properties/projectiles {:columns 16
                                                   :image/scale 2}
                          :properties/skills {:columns 16
-                                             :image/scale 2}
-                         :properties/worlds {:columns 10}
-                         :properties/player-dead {:columns 1}
-                         :properties/player-idle {:columns 1}
-                         :properties/player-item-on-cursor {:columns 1}})
+                                             :image/scale 2}})
 
 (defn create
   [{:keys [ctx/db
