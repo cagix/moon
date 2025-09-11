@@ -1,7 +1,7 @@
 (ns cdq.editor.overview-table
   (:require [cdq.db :as db]
             [cdq.gdx.graphics :as graphics]
-            [cdq.property :as property]
+            [cdq.editor.property :as property]
             [cdq.utils :refer [pprint-to-str]]))
 
 ; FIXME not refreshed after changes in properties

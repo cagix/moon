@@ -6,7 +6,3 @@
 
 (defn type->id-namespace [property-type]
   (keyword (name property-type)))
-
-(defn image [{:keys [entity/image entity/animation]}]
-  (or image
-      (first (:animation/frames animation))))
