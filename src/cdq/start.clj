@@ -4,7 +4,6 @@
             cdq.schema.image
             cdq.schema.int
             cdq.schema.map
-            cdq.schema.map-optional
             cdq.schema.nat-int
             cdq.schema.number
             cdq.schema.one-to-many

@@ -79,17 +79,23 @@
  :op/inc  [:s/int],
  :op/mult [:s/int],
 
- :modifier/armor-pierce       [:s/map-optional [:op/inc]],
- :modifier/armor-save         [:s/map-optional [:op/inc]],
- :modifier/attack-speed       [:s/map-optional [:op/inc]],
- :modifier/cast-speed         [:s/map-optional [:op/inc]],
- :modifier/damage-deal-min    [:s/map-optional [:op/inc :op/mult]]
- :modifier/damage-deal-max    [:s/map-optional [:op/inc :op/mult]]
- :modifier/damage-receive-max [:s/map-optional [:op/inc :op/mult]],
- :modifier/movement-speed     [:s/map-optional [:op/inc :op/mult]],
- :modifier/strength           [:s/map-optional [:op/inc]],
- :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
- :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
+ :modifier/armor-pierce       [:s/map [[:op/inc {:optinal true}]]],
+ :modifier/armor-save         [:s/map [[:op/inc {:optional true}]]],
+ :modifier/attack-speed       [:s/map [[:op/inc {:optional true}]]],
+ :modifier/cast-speed         [:s/map [[:op/inc {:optional true}]]],
+ :modifier/damage-deal-min    [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]]
+ :modifier/damage-deal-max    [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]]
+ :modifier/damage-receive-max [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]],
+ :modifier/movement-speed     [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]],
+ :modifier/strength           [:s/map [[:op/inc {:optional true}]]],
+ :modifier/hp-max             [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]],
+ :modifier/mana-max           [:s/map [[:op/inc {:optional true}]
+                                       [:op/mult {:optional true}]]],
 
  :creature/stats [:s/map [[:entity/modifiers    {:optional true}]
 
