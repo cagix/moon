@@ -359,6 +359,7 @@
                       :tx/spawn-line
                       :tx/deal-damage
                       :tx/move-entity
+                      :tx/open-editor-overview
                       :tx/spawn-projectile
                       :tx/spawn-effect
                       :tx/spawn-item
