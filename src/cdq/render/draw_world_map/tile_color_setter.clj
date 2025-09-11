@@ -1,4 +1,4 @@
-(ns cdq.tile-color-setter)
+(ns cdq.render.draw-world-map.tile-color-setter)
 
 (defn create [{:keys [ray-blocked?
                       explored-tile-corners
