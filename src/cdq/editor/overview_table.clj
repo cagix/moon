@@ -7,28 +7,31 @@
 (def ^:private overview
   {
    :properties/audiovisuals {:columns 10
-                             :image/scale 2
+                             :image-scale 2
+                             :sort-by-fn (comp name :property/id)
                              :extra-info-text (constantly "")}
 
    :properties/creatures {:columns 15
-                          :image/scale 1.5
+                          :image-scale 1.5
                           :sort-by-fn #(vector (:creature/level %)
                                                (name (:entity/species %))
                                                (name (:property/id %)))
                           :extra-info-text #(str (:creature/level %))}
 
    :properties/items {:columns 20
-                      :image/scale 1.1
+                      :image-scale 1.1
                       :sort-by-fn #(vector (name (:item/slot %))
                                            (name (:property/id %)))
                       :extra-info-text (constantly "")}
 
    :properties/projectiles {:columns 16
-                            :image/scale 2
+                            :image-scale 2
+                            :sort-by-fn (comp name :property/id)
                             :extra-info-text (constantly "")}
 
    :properties/skills {:columns 16
-                       :image/scale 2
+                       :image-scale 2
+                       :sort-by-fn (comp name :property/id)
                        :extra-info-text (constantly "")}
    })
 
@@ -42,31 +45,27 @@
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
-                image/scale]} (overview property-type)
+                image-scale]} (overview property-type)
         properties (db/all-raw db property-type)
-        properties (if sort-by-fn
-                     (sort-by sort-by-fn properties)
-                     properties)]
+        properties (try (sort-by sort-by-fn properties)
+                        (catch Throwable t
+                          (println"failed to sort:")
+                          (clojure.pprint/pprint properties)
+                          )
+                        )]
     {:actor/type :actor.type/table
      :cell-defaults {:pad 5}
      :rows (for [properties (partition-all columns properties)]
-             (for [{:keys [property/id] :as property} properties
-                   :let [on-clicked (fn [_actor ctx]
-                                      (clicked-id-fn id ctx))
-                         tooltip-text (pprint-to-str property)]]
+             (for [property properties]
                {:actor
                 {:actor/type :actor.type/stack
-                 :actors [(if-let [texture-region (when-let [image (property/image property)]
-                                                    (graphics/texture-region graphics image))]
-                            {:actor/type :actor.type/image-button
-                             :drawable/texture-region texture-region
-                             :on-clicked on-clicked
-                             :drawable/scale scale
-                             :tooltip tooltip-text}
-                            {:actor/type :actor.type/text-button
-                             :text (name id)
-                             :on-clicked on-clicked
-                             :tooltip tooltip-text})
+                 :actors [{:actor/type :actor.type/image-button
+                           :drawable/texture-region (graphics/texture-region graphics
+                                                                             (property/image property))
+                           :on-clicked (fn [_actor ctx]
+                                         (clicked-id-fn (:property/id property) ctx))
+                           :drawable/scale image-scale
+                           :tooltip (pprint-to-str property)}
                           {:actor/type :actor.type/label
                            :label/text (extra-info-text property)
                            :actor/touchable :disabled}]}}))}))
