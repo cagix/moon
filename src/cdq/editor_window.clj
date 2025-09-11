@@ -10,15 +10,12 @@
             [clojure.gdx.scenes.scene2d.stage :as stage]))
 
 (defn property-editor-window
-  [{:keys [ctx/application-state
-           ctx/db
-           ctx/stage]
-    :as ctx}
+  [{:keys [state
+           schemas
+           viewport-height]}
+   ctx ; this also remove, pass widget
    property]
-  (let [state application-state
-        ui-viewport-height (cdq.stage/viewport-height stage)
-        schemas (:schemas db)
-        schema (get schemas (property/type property))
+  (let [schema (get schemas (property/type property))
         widget (schema/create schema nil property ctx)
         get-widget-value #(schema/value schema nil widget schemas)
         property-id (:property/id property)
@@ -32,11 +29,12 @@
     (cdq.editor.window/create
      (merge button-handlers
             {:act-fn act-fn
-             :scrollpane-height ui-viewport-height
+             :scrollpane-height viewport-height
              :widget widget}))))
 
 (defn rebuild!
-  [{:keys [ctx/db
+  [{:keys [ctx/application-state
+           ctx/db
            ctx/stage]
     :as ctx}]
   (let [window (:property-editor-window stage)
@@ -46,4 +44,9 @@
                              :map-widget)
         prop-value (schema/value [:s/map] nil map-widget-table (:schemas db))]
     (actor/remove! window)
-    (stage/add! stage (actor/build (property-editor-window ctx prop-value)))))
+    (stage/add! stage (actor/build (property-editor-window
+                                    {:state application-state
+                                     :schemas (:schemas db)
+                                     :viewport-height (cdq.stage/viewport-height stage)}
+                                    ctx
+                                    prop-value)))))
