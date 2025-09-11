@@ -61,9 +61,6 @@
                           ]
 
               :cdq.start.bind-roots {
-                                     cdq.entity.state/state->handle-input
-                                     cdq.entity.state.handle-input/function-map
-
                                      cdq.ui.windows/state->clicked-inventory-cell
                                      cdq.entity.state.clicked-inventory-cell/function-map
 
@@ -400,6 +397,9 @@
                              :player-item-on-cursor :cursors/hand-grab
                              :player-moving :cursors/walking
                              :stunned :cursors/denied}
- }
 
+                    :handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
+                                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
+                                   :player-moving         cdq.entity.state.player-moving/handle-input}
+                    }
 }

@@ -1,6 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.gdx.graphics :as graphics]
-            [cdq.gdx.math.vector2 :as v]))
+            [cdq.gdx.math.vector2 :as v]
+            [clojure.gdx.input :as input]))
 
 (defn create [_eid item _ctx]
   {:item item})
@@ -50,3 +51,8 @@
        [:tx/spawn-item
         (item-place-position world-mouse-position entity)
         (:entity/item-on-cursor entity)]])))
+
+(defn handle-input [eid {:keys [ctx/input ctx/mouseover-actor]}]
+  (when (and (input/button-just-pressed? input :left)
+             (world-item? mouseover-actor))
+    [[:tx/event eid :drop-item]]))

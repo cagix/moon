@@ -1,7 +1,5 @@
 (ns cdq.entity.state)
 
-(declare state->handle-input)
-
 (defn create
   [{:keys [ctx/entity-states]
     :as ctx} state-k eid params]
