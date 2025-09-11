@@ -7,9 +7,10 @@
             [clojure.java.io :as io]))
 
 (defn- validate-property [schemas property]
-  (m/validate-humanize (m/schema (schema/malli-form (get schemas (property/type property))
-                                                    schemas))
-                       property))
+  (-> (get schemas (property/type property))
+      (schema/malli-form schemas)
+      m/schema
+      (m/validate-humanize property)))
 
 (defn- validate-properties! [schemas properties]
   (assert (or (empty? properties)
