@@ -1,13 +1,10 @@
 (ns cdq.schemas-impl
   (:require [cdq.malli :as m]
-            [cdq.schema :as schema]
+            [cdq.schema :as schema :refer [malli-form]]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]))
-
-(defmulti malli-form (fn [schema _schemas] (schema/type schema)))
-(defmethod malli-form :default [schema _schemas] schema)
 
 (defmethod malli-form :s/int     [_ _schemas] int?)
 (defmethod malli-form :s/nat-int [_ _schemas] nat-int?)

@@ -7,16 +7,10 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
-(defmulti fetch* (fn [schema _v _db]
-                   (schema/type schema)))
-
-(defmethod fetch* :default [_schema v _db]
-  v)
-
-(defmethod fetch* :s/one-to-many [_ property-ids db]
+(defmethod schema/create-value :s/one-to-many [_ property-ids db]
   (set (map (partial db/build db) property-ids)))
 
-(defmethod fetch* :s/one-to-one [_ property-id db]
+(defmethod schema/create-value :s/one-to-one [_ property-id db]
   (db/build db property-id))
 
 (defn- fetch-relationships [schemas property db]
@@ -26,7 +20,7 @@
                            v (if (map? v)
                                (fetch-relationships schemas v db)
                                v)]
-                       (try (fetch* schema v db)
+                       (try (schema/create-value schema v db)
                             (catch Throwable t
                               (throw (ex-info " " {:k k :v v} t))))))))
 
