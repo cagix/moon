@@ -1,5 +1,5 @@
 (ns cdq.editor.widget.map.helper
-  (:require [cdq.editor-window :as editor-window]
+  (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -25,7 +25,7 @@
                                                                                 (and (actor/user-object actor)
                                                                                      (= k ((actor/user-object actor) 0))))
                                                                               (group/children table)))
-                                             (editor-window/rebuild! ctx))})
+                                             (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))})
                      :left? true}
                     {:actor {:actor/type :actor.type/label
                              :label/text label-text}}]]}

@@ -1,5 +1,5 @@
 (ns cdq.schema.map
-  (:require [cdq.editor-window :as editor-window]
+  (:require [cdq.ctx :as ctx]
             [cdq.schema :as schema]
             [cdq.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
@@ -51,7 +51,7 @@
                                                                                 schema
                                                                                 schemas
                                                                                 map-widget-table)])
-                              (editor-window/rebuild! ctx)))]))
+                              (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]])))]))
     (.pack window)
     (stage/add! stage window)))
 

@@ -330,7 +330,8 @@
                       :maxrange cdq.maxrange/info-text}}
 
 :ctx/txs-fn-map {:sym-format "cdq.tx.%s/do!"
-                 :ks [:tx/assoc
+                 :ks [:tx/rebuild-editor-window
+                      :tx/assoc
                       :tx/assoc-in
                       :tx/dissoc
                       :tx/effect
