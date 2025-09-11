@@ -1,5 +1,5 @@
 (ns cdq.db-complete
-  (:require [cdq.db-impl :as db]
+  (:require [cdq.db :as db]
             [cdq.schemas-impl :as schemas]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
