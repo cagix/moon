@@ -6,7 +6,7 @@
   [schema attribute]
   (let [stype (schema/get-type schema)]
     (cond
-     (= attribute :entity/animation)
+     (= stype :s/animation)
      :widget/animation
 
      (= attribute :entity/image)

@@ -44,9 +44,7 @@
  :animation/frames [:some]
  :animation/frame-duration [:s/pos]
  :animation/looping? [:boolean]
- :entity/animation [:s/map [:animation/frames
-                            :animation/frame-duration
-                            :animation/looping?]],
+ :entity/animation [:s/animation],
 
  :tx/sound [:s/sound],
 

@@ -1,5 +1,6 @@
 (ns cdq.start
-  (:require cdq.schema.components-ns
+  (:require cdq.schema.animation
+            cdq.schema.components-ns
             cdq.schema.int
             cdq.schema.map
             cdq.schema.map-optional
