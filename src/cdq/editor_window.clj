@@ -15,17 +15,18 @@
     :as ctx}
    property]
   (let [schema (get (:schemas db) (property/type property))
-        widget (schema/create schema nil property ctx)]
+        widget (schema/create schema nil property ctx)
+        property-id (:property/id property)
+        get-widget-value #(schema/value schema nil widget (:schemas db))
+        save-fn (fn [_ctx]
+                  (swap! application-state update :ctx/db db/update! (get-widget-value)))
+        delete-fn (fn [_ctx]
+                    (swap! application-state update :ctx/db db/delete! property-id))
+        scrollpane-height (cdq.stage/viewport-height stage)]
     (editor.window/create
-     {:save-fn (fn [{:keys [ctx/db]}]
-                 (swap! application-state update :ctx/db
-                        db/update!
-                        (schema/value schema nil widget (:schemas db))))
-      :delete-fn (fn [_ctx]
-                   (swap! application-state update :ctx/db
-                          db/delete!
-                          (:property/id property)))
-      :scrollpane-height (cdq.stage/viewport-height stage)
+     {:save-fn save-fn
+      :delete-fn delete-fn
+      :scrollpane-height scrollpane-height
       :widget widget})))
 
 (defn rebuild!
