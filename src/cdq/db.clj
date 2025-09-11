@@ -6,17 +6,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
-(defn- build-values [schemas property db]
-  (utils/apply-kvs property
-                   (fn [k v]
-                     (let [schema (get schemas k)
-                           v (if (map? v)
-                               (build-values schemas v db)
-                               v)]
-                       (try (schema/create-value schema v db)
-                            (catch Throwable t
-                              (throw (ex-info " " {:k k :v v} t))))))))
-
 (defn- validate-property [schemas property]
   (m/form->validate (schema/malli-form (get schemas (property/type property)) schemas)
                     property))
@@ -80,13 +69,13 @@
   [{:keys [schemas]
     :as this}
    property-id]
-  (build-values schemas
-                (get-raw this property-id)
-                this))
+  (schema/build-values schemas
+                       (get-raw this property-id)
+                       this))
 
 (defn build-all
   [{:keys [schemas]
     :as this}
    property-type]
-  (map #(build-values schemas % this)
+  (map #(schema/build-values schemas % this)
        (all-raw this property-type)))
