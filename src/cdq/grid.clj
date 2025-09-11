@@ -92,3 +92,9 @@
 (defn nearest-enemy [grid entity]
   (cell/nearest-entity @(grid (mapv int (:body/position (:entity/body entity))))
                        (faction/enemy (:entity/faction entity))))
+
+(defn create [width height cell-movement]
+  (g2d/create-grid width
+                   height
+                   (fn [position]
+                     (atom (cell/create position (cell-movement position))))))
