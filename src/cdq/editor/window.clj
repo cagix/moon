@@ -1,9 +1,8 @@
 (ns cdq.editor.window
-  (:require [cdq.stacktrace :as stacktrace]
+  (:require [cdq.ctx :as ctx]
             [cdq.ui.widget]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn create
@@ -16,10 +15,8 @@
                               (try (f ctx)
                                    (actor/remove! (window/find-ancestor actor))
                                    (catch Throwable t
-                                     (stacktrace/pretty-print t)
-                                     (stage/add! stage (actor/build
-                                                        {:actor/type :actor.type/error-window
-                                                         :throwable t}))))))
+                                     (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
+                                                           [:tx/show-error-window t]])))))
         clicked-save-fn   (with-window-close save-fn)
         clicked-delete-fn (with-window-close delete-fn)]
     {:actor/type :actor.type/window

@@ -1,8 +1,5 @@
 (ns cdq.render.tick-entities
-  (:require [cdq.ctx :as ctx]
-            [cdq.stacktrace :as stacktrace]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]))
+  (:require [cdq.ctx :as ctx]))
 
 (defn- tick-component!
   [k v eid {:keys [ctx/entity-components]
@@ -31,10 +28,10 @@
     :as ctx}]
   (try
    (tick-entities! ctx)
+   (/ 1 0)
    (catch Throwable t
-     (stacktrace/pretty-print t)
-     (stage/add! stage (actor/build {:actor/type :actor.type/error-window
-                                     :throwable t}))
+     (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
+                           [:tx/show-error-window t]])
      #_(bind-root ::error t)))
   ctx)
 

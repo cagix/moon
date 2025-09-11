@@ -339,6 +339,8 @@
                       :tx/mod-remove
                       :tx/pay-mana-cost
                       :tx/pickup-item
+                      :tx/print-stacktrace
+                      :tx/show-error-window
                       :tx/set-cooldown
                       :tx/add-text-effect
                       :tx/add-skill

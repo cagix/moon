@@ -1,9 +1,7 @@
 (ns cdq.ui.widget
-  (:require [cdq.utils :refer [with-err-str]]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui] ; load defmethods
-            [clojure.repl]
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.widget :as widget]))
 
@@ -26,19 +24,6 @@
                   :close-on-escape? true
                   :rows [[(scroll-pane-cell viewport-height rows)]]
                   :pack? true}))
-
-(defn error-window [throwable]
-  (widget/window
-   {:title "Error"
-    :rows [[{:actor {:actor/type :actor.type/label
-                     :label/text (binding [*print-level* 3]
-                                   (with-err-str
-                                     (clojure.repl/pst throwable)))}}]]
-    :modal? true
-    :close-button? true
-    :close-on-escape? true
-    :center? true
-    :pack? true}))
 
 (defn- k->label-str [k]
   (str "[LIGHT_GRAY]:"
@@ -103,6 +88,3 @@
 
 (defmethod actor/build :actor.type/data-viewer [opts]
   (data-viewer opts))
-
-(defmethod actor/build :actor.type/error-window [{:keys [throwable]}]
-  (error-window throwable))
