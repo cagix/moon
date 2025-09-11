@@ -10,22 +10,15 @@
             [clojure.gdx.utils.disposable :as disposable]))
 
 (defn- call-world-fn
-  [{:keys [ctx/db
-           ctx/graphics]}
-   [f params]]
+  [[f params] creature-properties graphics]
   ((requiring-resolve f)
    (assoc params
-          :creature-properties (db/all-raw db :properties/creatures)
+          :creature-properties creature-properties
           :graphics graphics)))
 
 (defn- assoc-ctx-world
-  [ctx
-   {:keys [tiled-map
-           start-position]}]
-  (assert tiled-map)
-  (assert start-position)
-  (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
-    (disposable/dispose! tiled-map))
+  [ctx {:keys [tiled-map
+               start-position]}]
   (assoc ctx :ctx/world {:world/tiled-map tiled-map
                          :world/start-position start-position}))
 
@@ -146,9 +139,16 @@
 (defn do!
   ([ctx]
    (do! ctx (:starting-world (:cdq.create.world (:ctx/config ctx)))))
-  ([ctx world-fn]
+  ([{:keys [ctx/db
+            ctx/graphics]
+     :as ctx}
+    world-fn]
+   (when-let [tiled-map (:world/tiled-map (:ctx/world ctx))]
+     (disposable/dispose! tiled-map))
    (-> ctx
-       (assoc-ctx-world (call-world-fn ctx world-fn))
+       (assoc-ctx-world (call-world-fn world-fn
+                                       (db/all-raw db :properties/creatures)
+                                       graphics))
        build-world
        spawn-player!
        spawn-enemies!)))
