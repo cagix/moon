@@ -28,7 +28,6 @@
     :as ctx}]
   (try
    (tick-entities! ctx)
-   (/ 1 0)
    (catch Throwable t
      (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
                            [:tx/show-error-window t]])
