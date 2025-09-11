@@ -1,5 +1,7 @@
 (ns cdq.schema
-  (:refer-clojure :exclude [type]))
+  (:refer-clojure :exclude [type])
+  (:require [cdq.malli :as m]
+            [cdq.utils :as utils]))
 
 (defn type [schema]
   (cond
@@ -33,3 +35,37 @@
 
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
+
+(defn build-values [schemas property db]
+  (utils/apply-kvs property
+                   (fn [k v]
+                     (let [schema (get schemas k)
+                           v (if (map? v)
+                               (build-values schemas v db)
+                               v)]
+                       (try (create-value schema v db)
+                            (catch Throwable t
+                              (throw (ex-info " " {:k k :v v} t))))))))
+
+(defn validate [schemas k value]
+  (m/form->validate (malli-form (get schemas k) schemas)
+                    value))
+
+(defn map-keys [schemas map-schema]
+  (m/map-keys (malli-form map-schema schemas)))
+
+(defn optional-keyset [schemas map-schema]
+  (m/optional-keyset (malli-form map-schema schemas)))
+
+(defn optional-k? [schemas map-schema k]
+  (m/optional? k (malli-form map-schema schemas)))
+
+(defn k->default-value [schemas k]
+  (let [schema (utils/safe-get schemas k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (type schema)) nil
+
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+
+     :else (m/generate (malli-form schema schemas)
+                       {:size 3}))))

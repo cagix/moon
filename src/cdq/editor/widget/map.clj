@@ -1,6 +1,6 @@
 (ns cdq.editor.widget.map
   (:require [cdq.editor-window :as editor-window]
-            [cdq.schemas :as schemas]
+            [cdq.schema :as schema]
             [cdq.editor.widget :as editor-widget]
             [cdq.editor.widget.map.helper :as helper]
             [cdq.utils :as utils]
@@ -20,7 +20,7 @@
    :expand-y? true})
 
 (defn- component-row [editor-widget k map-schema schemas table]
-  [(helper/label-cell {:display-remove-component-button? (schemas/optional-k? schemas map-schema k)
+  [(helper/label-cell {:display-remove-component-button? (schema/optional-k? schemas map-schema k)
                        :k k
                        :table table
                        :label-text (helper/k->label-text k)})
@@ -40,7 +40,7 @@
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (editor-widget/value schema nil map-widget-table schemas)))
-                                   (schemas/map-keys schemas schema)))]
+                                   (schema/map-keys schemas schema)))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -50,7 +50,7 @@
                               (table/add-rows! map-widget-table [(component-row (editor-widget/build ctx
                                                                                                      (get schemas k)
                                                                                                      k
-                                                                                                     (schemas/k->default-value schemas k))
+                                                                                                     (schema/k->default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas
@@ -86,7 +86,7 @@
                                                           (:schemas db)
                                                           table))
                                          (utils/sort-by-k-order k-sort-order m)))
-        opt? (seq (set/difference (schemas/optional-keyset (:schemas db) schema)
+        opt? (seq (set/difference (schema/optional-keyset (:schemas db) schema)
                                   (set (keys m))))]
     (table/add-rows!
      table

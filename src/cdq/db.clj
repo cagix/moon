@@ -1,14 +1,14 @@
 (ns cdq.db
-  (:require [cdq.schemas :as schemas]
+  (:require [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
 (defn- validate-property [schemas property]
-  (schemas/validate schemas
-                    (property/type property)
-                    property))
+  (schema/validate schemas
+                   (property/type property)
+                   property))
 
 (defn create
   [{:keys [schemas
@@ -69,13 +69,13 @@
   [{:keys [schemas]
     :as this}
    property-id]
-  (schemas/build-values schemas
-                        (get-raw this property-id)
-                        this))
+  (schema/build-values schemas
+                       (get-raw this property-id)
+                       this))
 
 (defn build-all
   [{:keys [schemas]
     :as this}
    property-type]
-  (map #(schemas/build-values schemas % this)
+  (map #(schema/build-values schemas % this)
        (all-raw this property-type)))
