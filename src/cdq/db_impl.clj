@@ -1,28 +1,10 @@
 (ns cdq.db-impl
   (:require [cdq.db :as db]
-            [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
-
-(defmethod schema/create-value :s/one-to-many [_ property-ids db]
-  (set (map (partial db/build db) property-ids)))
-
-(defmethod schema/create-value :s/one-to-one [_ property-id db]
-  (db/build db property-id))
-
-(defn- fetch-relationships [schemas property db]
-  (utils/apply-kvs property
-                   (fn [k v]
-                     (let [schema (get schemas k)
-                           v (if (map? v)
-                               (fetch-relationships schemas v db)
-                               v)]
-                       (try (schema/create-value schema v db)
-                            (catch Throwable t
-                              (throw (ex-info " " {:k k :v v} t))))))))
 
 (defn save-vals! [data-vals file]
   (->> data-vals
@@ -63,12 +45,12 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id]
-    (fetch-relationships schemas
-                         (db/get-raw this property-id)
-                         this))
+    (schemas/build-values schemas
+                          (db/get-raw this property-id)
+                          this))
 
   (build-all [this property-type]
-    (map #(fetch-relationships schemas % this)
+    (map #(schemas/build-values schemas % this)
          (db/all-raw this property-type))))
 
 (defn create

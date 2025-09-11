@@ -1,5 +1,7 @@
 (ns cdq.start
-  (:require [clojure.edn :as edn]
+  (:require cdq.schema.one-to-one
+            cdq.schema.one-to-many
+            [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:gen-class))
 
