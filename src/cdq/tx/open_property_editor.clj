@@ -1,6 +1,5 @@
 (ns cdq.tx.open-property-editor
-  (:require [cdq.db :as db]
-            [cdq.editor-window]
+  (:require [cdq.editor-window]
             [cdq.stage]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.stage :as stage]))
@@ -10,10 +9,11 @@
            ctx/db
            ctx/stage]
     :as ctx}
-   property-id]
+   property]
   (stage/add! stage (actor/build (cdq.editor-window/property-editor-window
                                   {:state application-state
                                    :schemas (:schemas db)
                                    :viewport-height (cdq.stage/viewport-height stage)}
                                   ctx
-                                  (db/get-raw db property-id)))))
+                                  property)))
+  nil)
