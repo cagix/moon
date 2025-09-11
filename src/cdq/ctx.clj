@@ -4,7 +4,7 @@
 (defprotocol TransactionHandler
   (handle-txs! [_ transactions]))
 
-(defn call-world-fn
+(defn- call-world-fn
   [{:keys [ctx/db
            ctx/graphics]}
    [f params]]
