@@ -6,12 +6,6 @@
   [schema attribute]
   (let [stype (schema/get-type schema)]
     (cond
-     (= stype :s/animation)
-     :widget/animation
-
-     (= attribute :entity/image)
-     :widget/image
-
      (#{:s/map-optional :s/components-ns} stype)
      :s/map
 

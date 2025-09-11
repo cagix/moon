@@ -38,8 +38,7 @@
 
  :image/file [:string]
  :image/bounds [:vector {:size 4} nat-int?]
- :entity/image [:s/map [:image/file
-                        [:image/bounds {:optional true}]]],
+ :entity/image [:s/image],
 
  :animation/frames [:some]
  :animation/frame-duration [:s/pos]

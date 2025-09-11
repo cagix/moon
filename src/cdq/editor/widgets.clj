@@ -18,8 +18,8 @@
                    :value cdq.editor.widget.one-to-one/value}
     :s/one-to-many {:create cdq.editor.widget.one-to-many/create
                     :value cdq.editor.widget.one-to-many/value}
-    :widget/image     {:create cdq.editor.widget.image/create}
-    :widget/animation {:create cdq.editor.widget.animation/create}})
+    :s/image     {:create cdq.editor.widget.image/create}
+    :s/animation {:create cdq.editor.widget.animation/create}})
 
 (require 'cdq.effects)
 
