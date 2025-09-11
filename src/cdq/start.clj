@@ -1,6 +1,8 @@
 (ns cdq.start
   (:require cdq.schema.animation
+            cdq.schema.boolean
             cdq.schema.components-ns
+            cdq.schema.enum
             cdq.schema.image
             cdq.schema.int
             cdq.schema.map
@@ -10,8 +12,12 @@
             cdq.schema.one-to-one
             cdq.schema.pos
             cdq.schema.pos-int
+            cdq.schema.qualified-keyword
+            cdq.schema.some
             cdq.schema.sound
+            cdq.schema.string
             cdq.schema.val-max
+            cdq.schema.vector
             [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:gen-class))

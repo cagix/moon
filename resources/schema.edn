@@ -34,15 +34,15 @@
 
 ; TODO bounds (armor-save, armor-pierce)
 {
- :property/id [:qualified-keyword],
+ :property/id [:s/qualified-keyword],
 
- :image/file [:string]
- :image/bounds [:vector {:size 4} nat-int?]
+ :image/file [:s/string]
+ :image/bounds [:s/vector {:size 4} nat-int?]
  :entity/image [:s/image],
 
- :animation/frames [:some]
+ :animation/frames [:s/some]
  :animation/frame-duration [:s/pos]
- :animation/looping? [:boolean]
+ :animation/looping? [:s/boolean]
  :entity/animation [:s/animation],
 
  :tx/sound [:s/sound],
@@ -51,13 +51,13 @@
                                    :tx/sound
                                    :entity/animation]],
 
- :property/pretty-name [:string],
- :entity/species [:qualified-keyword {:namespace :species}],
+ :property/pretty-name [:s/string],
+ :entity/species [:s/qualified-keyword {:namespace :species}],
  :creature/level [:s/pos-int],
 
  :body/width [:s/pos],
  :body/height [:s/pos],
- :body/flying? [:boolean],
+ :body/flying? [:s/boolean],
 
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
 
@@ -125,7 +125,7 @@
                                 :creature/stats
                                 ]],
 
- :item/slot [:enum
+ :item/slot [:s/enum
              :inventory.slot/cloak
              :inventory.slot/chest
              :inventory.slot/helm
@@ -146,7 +146,7 @@
 
  :projectile/max-range [:s/pos-int],
  :projectile/speed [:s/pos-int],
- :projectile/piercing? [:boolean],
+ :projectile/piercing? [:s/boolean],
  :projectile/size [:s/number]
  :entity-effects [:s/components-ns :effects.target],
 
@@ -158,7 +158,7 @@
                                   :projectile/size
                                   :entity-effects]],
 
- :skill/action-time-modifier-key [:enum :entity/cast-speed :entity/attack-speed],
+ :skill/action-time-modifier-key [:s/enum :entity/cast-speed :entity/attack-speed],
  :skill/action-time [:s/pos],
  :skill/start-action-sound [:s/sound],
  :skill/effects [:s/components-ns :effects],
@@ -194,9 +194,9 @@
  :effects/target-all [:s/map [:entity-effects]],
 
  :effects.target/audiovisual [:s/one-to-one :properties/audiovisuals]
- :effects.target/convert [:some],
- :effects.target/kill [:some],
- :effects.target/melee-damage [:some],
- :effects.target/spiderweb [:some],
+ :effects.target/convert [:s/some],
+ :effects.target/kill [:s/some],
+ :effects.target/melee-damage [:s/some],
+ :effects.target/spiderweb [:s/some],
  :effects.target/stun [:s/pos],
  }

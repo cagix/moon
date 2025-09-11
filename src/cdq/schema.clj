@@ -12,6 +12,3 @@
 
 (defmulti malli-form (fn [schema _schemas]
                        (get-type schema)))
-
-(defmethod malli-form :default [schema _schemas]
-  schema)
