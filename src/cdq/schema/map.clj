@@ -16,14 +16,6 @@
   (m/create-map-schema ks (fn [k]
                             (schema/malli-form (get schemas k) schemas))))
 
-(defn- k->default-value [schemas k]
-  (let [schema (utils/safe-get schemas k)]
-    (cond
-     (#{:s/one-to-one :s/one-to-many} (schema/get-type schema)) nil
-     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
-     :else (m/generate (schema/malli-form schema schemas)
-                       {:size 3}))))
-
 (defn- vertical-separator-cell []
   {:actor (separator/vertical)
    :pad-top 2
@@ -62,7 +54,7 @@
                               (table/add-rows! map-widget-table [(component-row (schema/build ctx
                                                                                               (get schemas k)
                                                                                               k
-                                                                                              (k->default-value schemas k))
+                                                                                              (schema/default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas

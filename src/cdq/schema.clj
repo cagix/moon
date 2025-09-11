@@ -1,8 +1,9 @@
 (ns cdq.schema
-  (:require [cdq.utils :as utils]
+  (:require [cdq.malli :as m]
+            [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]))
 
-(defn get-type [schema]
+(defn- get-type [schema]
   (assert (vector? schema))
   (schema 0))
 
@@ -40,3 +41,11 @@
   (let [widget (actor/build? (create schema k v ctx))]
     (actor/set-user-object! widget [k v])
     widget))
+
+(defn default-value [schemas k]
+  (let [schema (utils/safe-get schemas k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (get-type schema)) nil
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+     :else (m/generate (malli-form schema schemas)
+                       {:size 3}))))
