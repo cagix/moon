@@ -1,7 +1,6 @@
 (ns cdq.start
   (:require cdq.schema.animation
             cdq.schema.boolean
-            cdq.schema.components-ns
             cdq.schema.enum
             cdq.schema.image
             cdq.schema.int

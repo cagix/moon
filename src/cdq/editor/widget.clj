@@ -6,9 +6,6 @@
   [schema attribute]
   (let [stype (schema/get-type schema)]
     (cond
-     (#{:s/components-ns} stype)
-     :s/map
-
      (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
      :widget/edn
 

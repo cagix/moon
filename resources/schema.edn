@@ -74,7 +74,17 @@
  :entity/armor-pierce [:s/number],
  ;;
 
- :entity/modifiers [:s/components-ns :modifier],
+ :entity/modifiers [:s/map [[:modifier/armor-pierce {:optional true}]
+                            [:modifier/armor-save {:optional true}]
+                            [:modifier/attack-speed {:optional true}]
+                            [:modifier/cast-speed {:optional true}]
+                            [:modifier/damage-deal-min {:optional true}]
+                            [:modifier/damage-deal-max {:optional true}]
+                            [:modifier/damage-receive-max {:optional true}]
+                            [:modifier/movement-speed {:optional true}]
+                            [:modifier/strength {:optional true}]
+                            [:modifier/hp-max {:optional true}]
+                            [:modifier/mana-max {:optional true}]]],
 
  :op/inc  [:s/int],
  :op/mult [:s/int],
@@ -148,7 +158,15 @@
  :projectile/speed [:s/pos-int],
  :projectile/piercing? [:s/boolean],
  :projectile/size [:s/number]
- :entity-effects [:s/components-ns :effects.target],
+ :entity-effects [:s/map [
+                          [:effects.target/audiovisual  {:optional true}]
+                          [:effects.target/convert      {:optional true}]
+                          [:effects.target/damage       {:optional true}]
+                          [:effects.target/kill         {:optional true}]
+                          [:effects.target/melee-damage {:optional true}]
+                          [:effects.target/spiderweb    {:optional true}]
+                          [:effects.target/stun         {:optional true}]
+                          ]],
 
  :properties/projectiles [:s/map [:property/id
                                   :entity/image
@@ -161,7 +179,14 @@
  :skill/action-time-modifier-key [:s/enum :entity/cast-speed :entity/attack-speed],
  :skill/action-time [:s/pos],
  :skill/start-action-sound [:s/sound],
- :skill/effects [:s/components-ns :effects],
+ :skill/effects [:s/map [
+                         [:effects/sound         {:optional true}]
+                         [:effects/audiovisual   {:optional true}]
+                         [:effects/projectile    {:optional true}]
+                         [:effects/spawn         {:optional true}]
+                         [:effects/target-entity {:optional true}],
+                         [:effects/target-all    {:optional true}]
+                         ]],
  :skill/cooldown [:s/nat-int],
  :skill/cost [:s/nat-int],
 
