@@ -1,21 +1,12 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.controls :as controls]
             [cdq.inventory :as inventory]
+            [cdq.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
             [clojure.vis-ui.window :as window]))
 
-(defn inventory-window-visible? [stage]
-  (-> stage :windows :inventory-window actor/visible?))
-
-(defn can-pickup-item? [entity item]
-  (inventory/can-pickup-item? (:entity/inventory entity) item))
-
-; TODO
-; dispatch _on_ the interaction stte ! no ifs/whens !
-; -> clear as daylight !
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]
     (case k
@@ -62,12 +53,12 @@
           :clickable/item
           (let [item (:entity/item @clicked-eid)]
             (cond
-             (inventory-window-visible? stage)
+             (stage/inventory-window-visible? stage)
              [[:tx/sound "bfxr_takeit"]
               [:tx/mark-destroyed clicked-eid]
               [:tx/event player-eid :pickup-item item]]
 
-             (can-pickup-item? @player-eid item)
+             (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
              [[:tx/sound "bfxr_pickup"]
               [:tx/mark-destroyed clicked-eid]
               [:tx/pickup-item player-eid item]]

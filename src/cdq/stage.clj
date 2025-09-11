@@ -1,4 +1,5 @@
-(ns cdq.stage)
+(ns cdq.stage
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 (defprotocol Stage
   (toggle-inventory-visible! [stage])
@@ -11,3 +12,6 @@
 
 (defn viewport-width  [stage] (:viewport/width  (.getViewport stage)))
 (defn viewport-height [stage] (:viewport/height (.getViewport stage)))
+
+(defn inventory-window-visible? [stage]
+  (-> stage :windows :inventory-window actor/visible?))
