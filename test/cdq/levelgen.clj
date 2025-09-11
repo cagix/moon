@@ -1,6 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.db]
-            [cdq.db-complete :as db]
+  (:require [cdq.db :as db]
             [cdq.gdx-app.resize]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -73,7 +72,7 @@
     (disposable/dispose! tiled-map))
   (let [level (let [[f params] level-fn]
                 (f (assoc params
-                          :creature-properties (cdq.db/all-raw db :properties/creatures)
+                          :creature-properties (db/all-raw db :properties/creatures)
                           :graphics {:ctx/textures textures})))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]

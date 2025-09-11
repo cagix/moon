@@ -8,7 +8,8 @@
 (defn create
   [{:keys [schemas
            properties]}]
-  (let [properties-file (io/resource properties)
+  (let [schemas (-> schemas io/resource slurp edn/read-string)
+        properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))

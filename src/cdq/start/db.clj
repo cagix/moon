@@ -1,5 +1,5 @@
 (ns cdq.start.db
-  (:require [cdq.db-complete :as db]))
+  (:require [cdq.db :as db]))
 
 (defn do! [ctx]
   (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
