@@ -1,39 +1,9 @@
 (ns cdq.editor.overview-table
-  (:require [cdq.db :as db]
+  (:require [cdq.application]
+            [cdq.db :as db]
             [cdq.gdx.graphics :as graphics]
             [cdq.editor.property :as property]
             [cdq.utils :refer [pprint-to-str]]))
-
-(def ^:private overview
-  {
-   :properties/audiovisuals {:columns 10
-                             :image-scale 2
-                             :sort-by-fn (comp name :property/id)
-                             :extra-info-text (constantly "")}
-
-   :properties/creatures {:columns 15
-                          :image-scale 1.5
-                          :sort-by-fn #(vector (:creature/level %)
-                                               (name (:entity/species %))
-                                               (name (:property/id %)))
-                          :extra-info-text #(str (:creature/level %))}
-
-   :properties/items {:columns 20
-                      :image-scale 1.1
-                      :sort-by-fn #(vector (name (:item/slot %))
-                                           (name (:property/id %)))
-                      :extra-info-text (constantly "")}
-
-   :properties/projectiles {:columns 16
-                            :image-scale 2
-                            :sort-by-fn (comp name :property/id)
-                            :extra-info-text (constantly "")}
-
-   :properties/skills {:columns 16
-                       :image-scale 2
-                       :sort-by-fn (comp name :property/id)
-                       :extra-info-text (constantly "")}
-   })
 
 (defn create
   [{:keys [ctx/db
@@ -45,14 +15,9 @@
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
-                image-scale]} (overview property-type)
+                image-scale]} (cdq.application/property-overview property-type)
         properties (db/all-raw db property-type)
-        properties (try (sort-by sort-by-fn properties)
-                        (catch Throwable t
-                          (println"failed to sort:")
-                          (clojure.pprint/pprint properties)
-                          )
-                        )]
+        properties (sort-by sort-by-fn properties)]
     {:actor/type :actor.type/table
      :cell-defaults {:pad 5}
      :rows (for [properties (partition-all columns properties)]
