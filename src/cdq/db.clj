@@ -11,15 +11,19 @@
                                                     schemas))
                        property))
 
+(defn- validate-properties! [schemas properties]
+  (assert (or (empty? properties)
+              (apply distinct? (map :property/id properties))))
+  (doseq [property properties]
+    (validate-property schemas property)))
+
 (defn create
   [{:keys [schemas
            properties]}]
   (let [schemas (-> schemas io/resource slurp edn/read-string)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! (partial validate-property schemas) properties)
+    (validate-properties! schemas properties)
     {:data (zipmap (map :property/id properties) properties)
      :file properties-file
      :schemas schemas}))
