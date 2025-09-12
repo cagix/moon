@@ -1,6 +1,6 @@
 (ns cdq.ui.dev-menu.menus.ctx-data-view
   (:require [cdq.ui.widget :as widget]
-            [clojure.scenes.scenes2d.stage :as stage]))
+            [clojure.scene2d.stage :as stage]))
 
 (defn items [_ctx _params]
   [{:label "Show data"

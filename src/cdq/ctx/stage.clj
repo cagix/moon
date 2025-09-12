@@ -4,7 +4,7 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.scenes.scenes2d.stage :as stage]
+            [clojure.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 
 (defn viewport-width  [stage] (:viewport/width  (stage/viewport stage)))

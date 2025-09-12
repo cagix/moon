@@ -1,5 +1,5 @@
 (ns clojure.gdx.scenes.scene2d.stage
-  (:import (clojure.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defn act! [stage]
   (Stage/.act stage))
@@ -21,16 +21,3 @@
 
 (defn viewport [stage]
   (Stage/.getViewport stage))
-
-; I can set some data through a dumb actor with a userObject !
-; is this level here even necessary?
-; -> move it somewhere else first
-; second step: use the clojure protocol ns instead
-; 'scene2d' ?
-;
-
-(defn get-ctx [^Stage stage]
-  @(.ctx ^Stage stage))
-
-(defn set-ctx! [^Stage stage ctx]
-  (reset! (.ctx ^Stage stage) ctx))

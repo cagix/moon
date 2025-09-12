@@ -16,7 +16,7 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.scenes.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
@@ -169,7 +169,7 @@
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render-stage [{:keys [ctx/stage] :as ctx}]
-  (stage/set-ctx! stage ctx)
+  (reset! (.ctx ^clojure.gdx.scenes.scene2d.Stage stage) ctx)
   (stage/act! stage)
   (stage/draw! stage))
 

@@ -1,4 +1,4 @@
-(ns clojure.scenes.scenes2d.stage)
+(ns clojure.scene2d.stage)
 
 (defprotocol Stage
   (act! [stage])

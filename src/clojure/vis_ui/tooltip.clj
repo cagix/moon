@@ -1,6 +1,5 @@
 (ns clojure.vis-ui.tooltip
   (:require [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.align :as align])
   (:import (com.kotcrab.vis.ui.widget Tooltip
                                       VisLabel)))
@@ -12,7 +11,7 @@
             ; acturs might be initialized without a stage yet so we do when-let
             ; FIXME double when-let
             ctx (when-let [stage (actor/get-stage actor)]
-                  (stage/get-ctx stage))]
+                  @(.ctx ^clojure.gdx.scenes.scene2d.Stage stage))]
         (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
           (Tooltip/.setText tooltip (str (tooltip-text ctx))))))))
 

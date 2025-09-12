@@ -6,13 +6,18 @@
             [clojure.object :as object]
             [clojure.walk :as walk]
             clojure.provide
-            clojure.scenes.scenes2d.stage)
+            clojure.scene2d.stage
+            clojure.scene2d.input-event)
   (:gen-class))
 
 (clojure.provide/do!
  [[com.badlogic.gdx.scenes.scene2d.Stage
    'clojure.gdx.scenes.scene2d.stage
-   clojure.scenes.scenes2d.stage/Stage]])
+   clojure.scene2d.stage/Stage]
+  [com.badlogic.gdx.scenes.scene2d.InputEvent
+   'clojure.gdx.scenes.scene2d.input-event
+   clojure.scene2d.input-event/InputEvent]
+  ])
 
 (def effect-fn-map
   '{:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?

@@ -1,7 +1,7 @@
 (ns clojure.gdx.scenes.scene2d
   (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage])
+            [clojure.scene2d.stage :as stage])
   (:import (clojure.lang ILookup)
            (clojure.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
@@ -30,7 +30,7 @@
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn try-act [actor delta f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (stage/get-ctx stage))]
+                   @(.ctx ^clojure.gdx.scenes.scene2d.Stage stage))]
     (f actor delta ctx)))
 
 (defprotocol Context
@@ -38,7 +38,7 @@
 
 (defn try-draw [actor f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (stage/get-ctx stage))]
+                   @(.ctx ^clojure.gdx.scenes.scene2d.Stage stage))]
     (handle-draws! ctx (f actor ctx))))
 
 ; TODO have to call proxy super (fixes tooltips in pure scene2d?)
