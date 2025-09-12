@@ -9,8 +9,8 @@
   ([file-handle]
    (Pixmap. file-handle)))
 
-(defn set-color! [pixmap color]
-  (Pixmap/.setColor pixmap color))
+(defn set-color! [pixmap [r g b a]]
+  (Pixmap/.setColor pixmap r g b a))
 
 (defn draw-pixel! [pixmap x y]
   (Pixmap/.drawPixel pixmap x y))

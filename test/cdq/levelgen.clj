@@ -9,6 +9,7 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             clojure.lwjgl.system.configuration
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -173,7 +174,7 @@
   (stage/draw! stage))
 
 (defn render! []
-  (screen/clear!)
+  (screen/clear! color/black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)

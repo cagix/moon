@@ -14,8 +14,8 @@
          1 ; scale-y
          rotation))
 
-(defn set-color! [batch color]
-  (Batch/.setColor batch color))
+(defn set-color! [batch [r g b a]]
+  (Batch/.setColor batch r g b a))
 
 (defn set-projection-matrix! [batch matrix]
   (Batch/.setProjectionMatrix batch matrix))

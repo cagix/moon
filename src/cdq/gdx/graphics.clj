@@ -28,7 +28,7 @@
   (colors/put! colors)
   (let [batch (sprite-batch/create)
         shape-drawer-texture (let [pixmap (doto (pixmap/create)
-                                            (pixmap/set-color! com.badlogic.gdx.graphics.Color/WHITE)
+                                            (pixmap/set-color! color/white)
                                             (pixmap/draw-pixel! 0 0))
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
@@ -191,7 +191,7 @@
    f]
   ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
   ; -> also Widgets, etc. ? check.
-  (batch/set-color! batch com.badlogic.gdx.graphics.Color/WHITE)
+  (batch/set-color! batch color/white)
   (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
   (batch/begin! batch)
   (sd/with-line-width shape-drawer world-unit-scale
