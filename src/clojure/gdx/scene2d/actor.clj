@@ -1,9 +1,9 @@
 (ns clojure.gdx.scene2d.actor
   (:require [clojure.scene2d.event :as event]
             [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.gdx.scene2d.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.math Vector2)))
+            [clojure.gdx.scene2d.utils :as utils]
+            [clojure.gdx.math.vector2 :as vector2])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn get-stage [^Actor actor]
   (.getStage actor))
@@ -38,10 +38,10 @@
 (defn parent [^Actor actor]
   (.getParent actor))
 
-(defn stage->local-coordinates [actor [x y]]
-  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-    [(.x v)
-     (.y v)]))
+(defn stage->local-coordinates [actor position]
+  (-> actor
+      (.stageToLocalCoordinates (vector2/->java position))
+      vector2/->clj))
 
 (defn hit [actor [x y]]
   (.hit actor x y true))
