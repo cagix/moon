@@ -8,7 +8,7 @@
                               :animation/looping?]]
                      schemas))
 
-(defn create [_ _attribute animation {:keys [ctx/graphics]}]
+(defn create [_ animation {:keys [ctx/graphics]}]
   {:actor/type :actor.type/table
    :rows [(for [image (:animation/frames animation)]
             {:actor {:actor/type :actor.type/image-button

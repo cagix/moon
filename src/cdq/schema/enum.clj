@@ -7,10 +7,10 @@
 (defmethod schema/malli-form :s/enum [[_ & params] _schemas]
   (apply vector :enum params))
 
-(defn create [schema _attribute v _ctx]
+(defn create [schema v _ctx]
   {:actor/type :actor.type/select-box
    :items (map utils/->edn-str (rest schema))
    :selected (utils/->edn-str v)})
 
-(defn value [_  _attribute widget _schemas]
+(defn value [_  widget _schemas]
   (edn/read-string (select-box/get-selected widget)))

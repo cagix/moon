@@ -13,6 +13,6 @@
                              :scroll-pane
                              (group/find-actor "scroll-pane-table")
                              :map-widget)
-        property (schema/value [:s/map] nil map-widget-table (:schemas db))]
+        property (schema/value [:s/map] map-widget-table (:schemas db))]
     (actor/remove! window)
     [[:tx/open-property-editor property]]))

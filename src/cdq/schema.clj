@@ -32,16 +32,15 @@
 
 (declare k->methods)
 
-(defn create [schema attribute v ctx]
-  (let [f (:create (k->methods (get-type schema)))]
-    (f schema attribute v ctx)))
+(defn create [schema v ctx]
+  ((:create (k->methods (get-type schema))) schema v ctx))
 
-(defn value [schema attribute widget schemas]
-  (let [f (:value (k->methods (get-type schema)))]
-    (f schema attribute widget schemas)))
+(defn value [schema widget schemas]
+  ((:value (k->methods (get-type schema))) schema widget schemas))
 
 (defn build [ctx schema k v]
-  (let [widget (actor/build? (create schema k v ctx))]
+  (let [widget (actor/build? (create schema v ctx))]
+    ; FIXME assert no user object !
     (actor/set-user-object! widget [k v])
     widget))
 

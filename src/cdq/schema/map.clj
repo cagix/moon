@@ -35,7 +35,7 @@
                                :center? true
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (schema/value schema nil map-widget-table schemas)))
+        remaining-ks (sort (remove (set (keys (schema/value schema map-widget-table schemas)))
                                    (m/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
@@ -67,8 +67,11 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defn create [schema  _attribute m {:keys [ctx/db
-                                           ctx/config] :as ctx}]
+(defn create
+  [schema
+   m
+   {:keys [ctx/db
+           ctx/config] :as ctx}]
   (let [k-sort-order (:property-k-sort-order (:cdq.editor.widget.map config))
         table (widget/table
                {:cell-defaults {:pad 5}
@@ -101,8 +104,8 @@
              component-rows))
     table))
 
-(defn value [_  _attribute table schemas]
+(defn value [_  table schemas]
   (into {}
         (for [widget (filter (comp vector? actor/user-object) (group/children table))
               :let [[k _] (actor/user-object widget)]]
-          [k (schema/value (get schemas k) k widget schemas)])))
+          [k (schema/value (get schemas k) widget schemas)])))

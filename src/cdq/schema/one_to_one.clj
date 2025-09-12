@@ -58,12 +58,12 @@
                              (fn [_actor ctx]
                                (redo-rows ctx nil))))]])))
 
-(defn create [[_ property-type]  _attribute property-id ctx]
+(defn create [[_ property-type] property-id ctx]
   (let [table (widget/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows ctx table property-type property-id)
     table))
 
-(defn value [_  _attribute widget _schemas]
+(defn value [_  widget _schemas]
   (->> (group/children widget)
        (keep actor/user-object)
        first))

@@ -64,11 +64,11 @@
    property]
   (let [schemas (:schemas db)
         schema (get schemas (property/type property))
-        widget (schema/create schema nil property ctx)
+        widget (schema/create schema property ctx)
         actor (create* {:state application-state
                         :scroll-pane-height (cdq.stage/viewport-height stage)
                         :widget widget
-                        :get-widget-value #(schema/value schema nil widget schemas)
+                        :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]
     (stage/add! stage (actor/build actor)))
   nil)

@@ -5,12 +5,12 @@
 (defmethod schema/malli-form :s/boolean [[_ & params] _schemas]
   :boolean)
 
-(defn create [_ _attribute checked? _ctx]
+(defn create [_ checked? _ctx]
   (assert (boolean? checked?))
   {:actor/type :actor.type/check-box
    :text ""
    :on-clicked (fn [_])
    :checked? checked?})
 
-(defn value [_ _attribute widget _schemas]
+(defn value [_ widget _schemas]
   (check-box/checked? widget))

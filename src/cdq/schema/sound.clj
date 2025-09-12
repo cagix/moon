@@ -49,7 +49,7 @@
                        (fn [_actor {:keys [ctx/audio]}]
                          (audio/play-sound! audio sound-name)))])
 
-(defn create [_  _attribute sound-name _ctx]
+(defn create [_  sound-name _ctx]
   (let [table (widget/table {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (sound-columns table sound-name)

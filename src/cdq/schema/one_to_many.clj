@@ -55,12 +55,12 @@
                             (fn [_actor ctx]
                               (redo-rows ctx (disj property-ids id)))))])))
 
-(defn create [[_ property-type]  _attribute property-ids ctx]
+(defn create [[_ property-type] property-ids ctx]
   (let [table (widget/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
 
-(defn value [_  _attribute widget _schemas]
+(defn value [_  widget _schemas]
   (->> (group/children widget)
        (keep actor/user-object)
        set))

@@ -7,7 +7,7 @@
                               [:image/bounds {:optional true}]]]
                      schemas))
 
-(defn create [schema  _attribute image {:keys [ctx/graphics]}]
+(defn create [schema  image {:keys [ctx/graphics]}]
   {:actor/type :actor.type/image-button
    :drawable/texture-region (graphics/texture-region graphics image)
    :drawable/scale 2}
