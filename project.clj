@@ -1,19 +1,16 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [cdq.grid2d "0.1"]
-                 [cdq.malli "0.1"]
-                 [cdq.math.raycaster "0.1"]
-                 [cdq.rand "0.1"]
-                 [cdq.utils "0.1"]
                  [clojure.earlygrey.shape-drawer "2.5.0"]
                  [clojure.gdx                       "1.13.5"]
                  [clojure.gdx.graphics.g2d.freetype "1.13.5"]
                  [clojure.gdx.backends.lwjgl        "1.13.5"]
                  [clojure.vis-ui "1.5.2"]
+                 [cdq.math.raycaster "0.1"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.dev-loop "ef54a03"]
                  [fr.reuz/qrecord "0.1.0"]
+                 [metosin/malli "0.13.0"]
                  [org.clojure/clojure "1.12.0"]
                  ]
   :aliases {
