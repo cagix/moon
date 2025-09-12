@@ -29,7 +29,7 @@
 (defn set-visible! [^Actor actor visible?]
   (.setVisible actor visible?))
 
-(defn- set-touchable! [^Actor actor touchable]
+(defn set-touchable! [^Actor actor touchable]
   (.setTouchable actor touchable))
 
 (defn remove! [^Actor actor]
