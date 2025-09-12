@@ -4,11 +4,11 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.scenes.scenes2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 
-(def viewport-width  (comp :viewport/width  stage/viewport))
-(def viewport-height (comp :viewport/height stage/viewport))
+(defn viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
+(defn viewport-height [stage] (:viewport/height (stage/viewport stage)))
 
 (defn inventory-window-visible? [stage]
   (-> stage :windows :inventory-window actor/visible?))

@@ -1,7 +1,7 @@
 (ns cdq.render.check-open-debug
   (:require [cdq.ui.widget :as widget]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.stage :as stage]))
+            [clojure.scenes.scenes2d.stage :as stage]))
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)

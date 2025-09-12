@@ -8,7 +8,7 @@
             [cdq.ui.widget :as widget]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.scenes.scenes2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]

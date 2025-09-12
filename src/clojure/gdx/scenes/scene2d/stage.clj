@@ -24,6 +24,10 @@
 
 ; I can set some data through a dumb actor with a userObject !
 ; is this level here even necessary?
+; -> move it somewhere else first
+; second step: use the clojure protocol ns instead
+; 'scene2d' ?
+;
 
 (defn get-ctx [^Stage stage]
   @(.ctx ^Stage stage))

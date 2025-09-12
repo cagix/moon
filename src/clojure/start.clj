@@ -4,8 +4,15 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.object :as object]
-            [clojure.walk :as walk])
+            [clojure.walk :as walk]
+            clojure.provide
+            clojure.scenes.scenes2d.stage)
   (:gen-class))
+
+(clojure.provide/do!
+ [[com.badlogic.gdx.scenes.scene2d.Stage
+   'clojure.gdx.scenes.scene2d.stage
+   clojure.scenes.scenes2d.stage/Stage]])
 
 (def effect-fn-map
   '{:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?

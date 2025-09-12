@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
             [cdq.ui.editor.overview-table :as overview-table]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.scenes.scenes2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.vis-ui.widget :as widget]))
 

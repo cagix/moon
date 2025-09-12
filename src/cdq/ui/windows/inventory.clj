@@ -2,7 +2,7 @@
   (:require [cdq.inventory :as inventory]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage :as stage]
+            [clojure.scenes.scenes2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils :as utils]
             [clojure.vis-ui.tooltip :as tooltip]
