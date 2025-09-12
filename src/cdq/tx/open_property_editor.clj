@@ -3,7 +3,7 @@
             [cdq.ctx.db :as db]
             [cdq.ui.editor.window :as editor-window]
             [cdq.schema :as schema]
-            [cdq.stage]
+            [cdq.ctx.stage]
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
             [clojure.gdx.input :as input]
@@ -66,7 +66,7 @@
         schema (get schemas (property/type property))
         widget (schema/create schema property ctx)
         actor (create* {:state application-state
-                        :scroll-pane-height (cdq.stage/viewport-height stage)
+                        :scroll-pane-height (cdq.ctx.stage/viewport-height stage)
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]

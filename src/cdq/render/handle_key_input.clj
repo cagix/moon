@@ -1,5 +1,5 @@
 (ns cdq.render.handle-key-input
-  (:require [cdq.stage]
+  (:require [cdq.ctx.stage]
             [cdq.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -25,5 +25,5 @@
     (when (input/key-pressed? input (:zoom-in  controls)) (graphics/change-zoom! graphics zoom-speed))
     (when (input/key-pressed? input (:zoom-out controls)) (graphics/change-zoom! graphics (- zoom-speed)))
     (when (input/key-just-pressed? input close-windows-key)  (close-all-windows!         stage))
-    (when (input/key-just-pressed? input toggle-inventory )  (cdq.stage/toggle-inventory-visible!  stage))
+    (when (input/key-just-pressed? input toggle-inventory )  (cdq.ctx.stage/toggle-inventory-visible!  stage))
     (when (input/key-just-pressed? input toggle-entity-info) (toggle-entity-info-window! stage))))

@@ -1,5 +1,5 @@
 (ns cdq.ui.windows.entity-info
-  (:require [cdq.stage :as stage]
+  (:require [cdq.ctx.stage :as stage]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.vis-ui.widget :as widget]))
 

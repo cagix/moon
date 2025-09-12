@@ -2,7 +2,7 @@
   (:require [cdq.gdx.graphics :as graphics]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
-            [cdq.stage :as stage]
+            [cdq.ctx.stage :as stage]
             [cdq.stats :as modifiers]))
 
 (defn create

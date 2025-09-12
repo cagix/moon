@@ -1,5 +1,5 @@
 (ns cdq.start.stage-impl
-  (:require cdq.stage
+  (:require cdq.ctx.stage
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
@@ -12,7 +12,7 @@
   ctx)
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Stage
-  cdq.stage/Stage
+  cdq.ctx.stage/Stage
   (toggle-inventory-visible! [stage]
     (-> stage :windows :inventory-window actor/toggle-visible!))
 

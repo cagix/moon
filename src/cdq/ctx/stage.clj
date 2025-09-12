@@ -1,4 +1,4 @@
-(ns cdq.stage
+(ns cdq.ctx.stage
   (:require [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 (defprotocol Stage

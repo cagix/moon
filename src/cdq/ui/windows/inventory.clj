@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
-            [cdq.stage :as stage]
+            [cdq.ctx.stage :as stage]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.image :as image]

@@ -1,5 +1,5 @@
 (ns cdq.tx.player-remove-skill
-  (:require [cdq.stage :as stage]))
+  (:require [cdq.ctx.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]}

@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.ctx.input :as controls]
             [cdq.inventory :as inventory]
-            [cdq.stage :as stage]
+            [cdq.ctx.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.ui.button :as button]
