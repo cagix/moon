@@ -38,9 +38,13 @@
 (defn parent [^Actor actor]
   (.getParent actor))
 
-(defn hit [^Actor actor [x y]]
+(defn stage->local-coordinates [actor [x y]]
   (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-    (.hit actor (.x v) (.y v) true)))
+    [(.x v)
+     (.y v)]))
+
+(defn hit [actor [x y]]
+  (.hit actor x y true))
 
 (defn set-opts!
   [^Actor actor

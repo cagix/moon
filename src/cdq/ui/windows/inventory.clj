@@ -39,7 +39,8 @@
                                    (draw-cell-rect @player-eid
                                                    (actor/get-x actor)
                                                    (actor/get-y actor)
-                                                   (actor/hit actor ui-mouse-position)
+                                                   (actor/hit actor
+                                                              (actor/stage->local-coordinates actor ui-mouse-position))
                                                    (actor/user-object (actor/parent actor))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
