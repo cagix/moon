@@ -1,4 +1,4 @@
-(ns cdq.editor.widget.map.helper
+(ns cdq.ui.editor.widget.map.helper
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]

@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.editor :as editor]
             [cdq.gdx.graphics :as graphics]
-            [cdq.editor.property :as property]
+            [cdq.ui.editor.property :as property]
             [cdq.property]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]

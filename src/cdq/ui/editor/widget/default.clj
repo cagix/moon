@@ -1,4 +1,4 @@
-(ns cdq.editor.widget.default
+(ns cdq.ui.editor.widget.default
   (:require [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]))
 

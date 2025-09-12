@@ -1,10 +1,10 @@
-(ns cdq.editor.widgets
+(ns cdq.schema-impl
   (:require [cdq.walk :as walk]))
 
 (def k->methods*
   '{:s/animation {:malli-form cdq.schema.animation/malli-form
                   :create cdq.schema.animation/create
-                  :value cdq.editor.widget.default/value}
+                  :value cdq.ui.editor.widget.default/value}
 
     :s/boolean {:malli-form cdq.schema.boolean/malli-form
                 :create cdq.schema.boolean/create
@@ -16,15 +16,15 @@
 
     :s/image {:malli-form cdq.schema.image/malli-form
               :create cdq.schema.image/create
-              :value cdq.editor.widget.default/value}
+              :value cdq.ui.editor.widget.default/value}
 
     :s/map {:malli-form cdq.schema.map/malli-form
             :create cdq.schema.map/create
             :value cdq.schema.map/value}
 
     :s/number {:malli-form cdq.schema.number/malli-form
-               :create cdq.editor.widget.edn/create
-               :value cdq.editor.widget.edn/value}
+               :create cdq.ui.editor.widget.edn/create
+               :value cdq.ui.editor.widget.edn/value}
 
     :s/one-to-many {:malli-form cdq.schema.one-to-many/malli-form
                     :create-value cdq.schema.one-to-many/create-value
@@ -37,28 +37,28 @@
                    :value cdq.schema.one-to-one/value}
 
     :s/qualified-keyword {:malli-form cdq.schema.qualified-keyword/malli-form
-                          :create cdq.editor.widget.default/create
-                          :value cdq.editor.widget.default/value}
+                          :create cdq.ui.editor.widget.default/create
+                          :value cdq.ui.editor.widget.default/value}
 
     :s/some {:malli-form cdq.schema.some/malli-form
-             :create cdq.editor.widget.default/create
-             :value cdq.editor.widget.default/value}
+             :create cdq.ui.editor.widget.default/create
+             :value cdq.ui.editor.widget.default/value}
 
     :s/sound {:malli-form cdq.schema.sound/malli-form
               :create cdq.schema.sound/create
-              :value cdq.editor.widget.default/value}
+              :value cdq.ui.editor.widget.default/value}
 
     :s/string {:malli-form cdq.schema.string/malli-form
                :create cdq.schema.string/create
                :value cdq.schema.string/value}
 
     :s/val-max {:malli-form cdq.schema.val-max/malli-form
-                :create cdq.editor.widget.edn/create
-                :value cdq.editor.widget.edn/value}
+                :create cdq.ui.editor.widget.edn/create
+                :value cdq.ui.editor.widget.edn/value}
 
     :s/vector {:malli-form cdq.schema.vector/malli-form
-               :create cdq.editor.widget.default/create
-               :value cdq.editor.widget.default/value}
+               :create cdq.ui.editor.widget.default/create
+               :value cdq.ui.editor.widget.default/value}
     })
 
 (def k->methods

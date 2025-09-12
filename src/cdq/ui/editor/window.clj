@@ -1,4 +1,4 @@
-(ns cdq.editor.window)
+(ns cdq.ui.editor.window)
 
 (defn create
   [{:keys [actors rows]}]

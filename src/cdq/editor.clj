@@ -2,8 +2,8 @@
   (:require [cdq.application]
             [cdq.db :as db]
             [cdq.gdx.graphics :as graphics]
-            [cdq.editor.property :as property]
-            [cdq.editor.overview-table :as overview-table]
+            [cdq.ui.editor.property :as property]
+            [cdq.ui.editor.overview-table :as overview-table]
             [cdq.utils :refer [pprint-to-str]]))
 
 (defn overview-table

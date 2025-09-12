@@ -1,4 +1,4 @@
-(ns cdq.editor.widget.edn
+(ns cdq.ui.editor.widget.edn
   (:require [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.vis-ui.text-field :as text-field]))

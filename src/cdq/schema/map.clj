@@ -1,7 +1,7 @@
 (ns cdq.schema.map
   (:require [cdq.ctx :as ctx]
             [cdq.schema :as schema]
-            [cdq.editor.widget.map.helper :as helper]
+            [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -72,7 +72,7 @@
    m
    {:keys [ctx/db
            ctx/config] :as ctx}]
-  (let [k-sort-order (:property-k-sort-order (:cdq.editor.widget.map config))
+  (let [k-sort-order (:property-k-sort-order (:cdq.ui.editor.widget.map config))
         table (widget/table
                {:cell-defaults {:pad 5}
                 :id :map-widget})

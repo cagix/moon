@@ -1,4 +1,4 @@
-(ns cdq.editor.property)
+(ns cdq.ui.editor.property)
 
 (defn image [{:keys [entity/image entity/animation]}]
   (or image

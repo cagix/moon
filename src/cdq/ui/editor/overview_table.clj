@@ -1,4 +1,4 @@
-(ns cdq.editor.overview-table)
+(ns cdq.ui.editor.overview-table)
 
 (defn create [image-scale rows]
   {:actor/type :actor.type/table

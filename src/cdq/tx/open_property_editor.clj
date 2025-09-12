@@ -1,7 +1,7 @@
 (ns cdq.tx.open-property-editor
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.editor.window :as editor-window]
+            [cdq.ui.editor.window :as editor-window]
             [cdq.schema :as schema]
             [cdq.stage]
             [cdq.property :as property]
