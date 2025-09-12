@@ -4,7 +4,7 @@
             [cdq.stacktrace :as stacktrace]
             [cdq.utils :as utils]
             [cdq.ctx.world :as world]
-            [clojure.gdx.graphics.color :as color]))
+            [clojure.graphics.color :as color]))
 
 (def ^:dbg-flag show-body-bounds? false)
 

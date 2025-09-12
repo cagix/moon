@@ -13,7 +13,7 @@
     (when (and width height)
       (BaseDrawable/.setMinSize drawable (float width) (float height)))
     (if tint-color
-      (TextureRegionDrawable/.tint drawable (color/->obj tint-color))
+      (TextureRegionDrawable/.tint drawable (color/create tint-color))
       drawable)))
 
 (defn click-listener [clicked]

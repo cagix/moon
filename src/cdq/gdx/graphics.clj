@@ -3,7 +3,6 @@
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
@@ -14,7 +13,8 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.utils.disposable :as disposable]
-            [clojure.gdx.utils.viewport :as viewport]))
+            [clojure.gdx.utils.viewport :as viewport]
+            [clojure.graphics.color :as color]))
 
 (defn create
   [graphics
@@ -273,5 +273,5 @@
       (texture/region texture bounds)
       (texture/region texture))))
 
-(defn clear! [{:keys [ctx/graphics]} color]
-  (graphics/clear! graphics color))
+(defn clear! [{:keys [ctx/graphics]} [r g b a]]
+  (graphics/clear! graphics r g b a))

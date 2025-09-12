@@ -6,7 +6,7 @@
   (ShapeDrawer. batch texture-region))
 
 (defn set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (color/->obj color)))
+  (ShapeDrawer/.setColor shape-drawer (color/create color)))
 
 (defn with-line-width [^ShapeDrawer this width draw-fn]
   (let [old-line-width (.getDefaultLineWidth this)]

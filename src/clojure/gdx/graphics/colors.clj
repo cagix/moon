@@ -4,4 +4,4 @@
 
 (defn put! [colors]
   (doseq [[name color-params] colors]
-    (Colors/put name (color/->obj color-params))))
+    (Colors/put name (color/create color-params))))

@@ -10,7 +10,6 @@
             clojure.lwjgl.system.configuration
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -21,7 +20,8 @@
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.vis-ui.widget :as widget]
+            [clojure.graphics.color :as color]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
