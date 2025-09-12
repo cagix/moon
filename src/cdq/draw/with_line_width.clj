@@ -1,5 +1,5 @@
 (ns cdq.draw.with-line-width
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.gdx.graphics]))
 
 (defn do!

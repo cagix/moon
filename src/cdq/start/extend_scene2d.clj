@@ -1,5 +1,5 @@
 (ns cdq.start.extend-scene2d
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [clojure.gdx.scenes.scene2d]))
 
 (defn do! [ctx]

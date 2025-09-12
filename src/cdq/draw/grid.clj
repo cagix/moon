@@ -1,5 +1,5 @@
 (ns cdq.draw.grid
-  (:require [cdq.graphics :as graphics]))
+  (:require [cdq.ctx.graphics :as graphics]))
 
 (defn do!
   [graphics leftx bottomy gridw gridh cellw cellh color]

@@ -1,4 +1,4 @@
-(ns cdq.graphics)
+(ns cdq.ctx.graphics)
 
 (defn handle-draws!
   [{:keys [ctx/draw-fns]

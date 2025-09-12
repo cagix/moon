@@ -1,5 +1,5 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.gdx.graphics]))
 
 (defn do!

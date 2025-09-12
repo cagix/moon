@@ -1,5 +1,5 @@
 (ns cdq.draw-on-world-viewport.entities
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
             [cdq.utils :as utils]
