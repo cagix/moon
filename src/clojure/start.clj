@@ -1,11 +1,11 @@
-(ns cdq.start
+(ns clojure.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.object :as object])
   (:gen-class))
 
 (defn -main []
-  (-> "ctx.edn"
+  (-> "clojure.start.edn"
       io/resource
       slurp
       edn/read-string

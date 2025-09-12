@@ -14,7 +14,7 @@
                  [org.clojure/clojure "1.12.0"]]
 
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.start/-main))"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
@@ -52,11 +52,11 @@
                 *print-level* 3
                 }
 
-  :profiles {:uberjar {:aot [cdq.start]}}
+  :profiles {:uberjar {:aot [clojure.start]}}
 
   :uberjar-name "cdq.jar"
 
-  :main cdq.start)
+  :main clojure.start)
 
 ; * Notes
 
