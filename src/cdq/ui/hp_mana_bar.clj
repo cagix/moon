@@ -1,5 +1,5 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [cdq.ctx.stage :as stage]

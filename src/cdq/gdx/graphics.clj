@@ -16,6 +16,8 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics.color :as color]))
 
+(defrecord RGraphics [])
+
 (defn create
   [graphics
    {:keys [colors
@@ -33,32 +35,33 @@
                                    texture (texture/create pixmap)]
                                (pixmap/dispose! pixmap)
                                texture)]
-    {:ctx/batch batch
-     :ctx/cursors (update-vals cursors
-                               (fn [[file-handle [hotspot-x hotspot-y]]]
-                                 (let [pixmap (pixmap/create file-handle)
-                                       cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
-                                   (.dispose pixmap)
-                                   cursor)))
-     :ctx/default-font (freetype/generate-font (:file-handle default-font) (:params default-font))
-     :ctx/graphics graphics
-     :ctx/shape-drawer-texture shape-drawer-texture
-     :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
-     :ctx/textures (into {} (for [[path file-handle] textures-to-load]
-                              [path (texture/from-file file-handle)]))
-     :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
-     :ctx/ui-viewport (viewport/fit (:width  ui-viewport)
-                                    (:height ui-viewport)
-                                    (camera/orthographic))
-     :ctx/unit-scale (atom 1)
-     :ctx/world-unit-scale world-unit-scale
-     :ctx/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
-                               world-height (* (:height world-viewport) world-unit-scale)]
-                           (viewport/fit world-width
-                                         world-height
-                                         (camera/orthographic :y-down? false
-                                                              :world-width world-width
-                                                              :world-height world-height)))}))
+    (merge (map->RGraphics {})
+           {:ctx/batch batch
+            :ctx/cursors (update-vals cursors
+                                      (fn [[file-handle [hotspot-x hotspot-y]]]
+                                        (let [pixmap (pixmap/create file-handle)
+                                              cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
+                                          (.dispose pixmap)
+                                          cursor)))
+            :ctx/default-font (freetype/generate-font (:file-handle default-font) (:params default-font))
+            :ctx/graphics graphics
+            :ctx/shape-drawer-texture shape-drawer-texture
+            :ctx/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))
+            :ctx/textures (into {} (for [[path file-handle] textures-to-load]
+                                     [path (texture/from-file file-handle)]))
+            :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale batch)
+            :ctx/ui-viewport (viewport/fit (:width  ui-viewport)
+                                           (:height ui-viewport)
+                                           (camera/orthographic))
+            :ctx/unit-scale (atom 1)
+            :ctx/world-unit-scale world-unit-scale
+            :ctx/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                                      world-height (* (:height world-viewport) world-unit-scale)]
+                                  (viewport/fit world-width
+                                                world-height
+                                                (camera/orthographic :y-down? false
+                                                                     :world-width world-width
+                                                                     :world-height world-height)))})))
 (defn dispose!
   [{:keys [ctx/batch
            ctx/cursors

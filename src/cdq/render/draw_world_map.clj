@@ -1,6 +1,6 @@
 (ns cdq.render.draw-world-map
   (:require [cdq.math.raycaster :as raycaster]
-            [cdq.gdx.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.render.draw-world-map.tile-color-setter :as tile-color-setter]))
 
 (defn do!

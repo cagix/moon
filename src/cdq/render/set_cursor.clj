@@ -1,5 +1,5 @@
 (ns cdq.render.set-cursor
-  (:require [cdq.gdx.graphics :as graphics]))
+  (:require [cdq.ctx.graphics :as graphics]))
 
 (defn do!
   [{:keys [ctx/entity-states

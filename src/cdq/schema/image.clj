@@ -1,5 +1,5 @@
 (ns cdq.schema.image
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.schemas :as schemas]))
 
 (defn malli-form [_ schemas]

@@ -1,7 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.gdx.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.raycaster :as raycaster]
             [cdq.stats :as stats]
             [cdq.timer :as timer]))

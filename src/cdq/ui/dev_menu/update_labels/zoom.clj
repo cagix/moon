@@ -1,5 +1,5 @@
 (ns cdq.ui.dev-menu.update-labels.zoom
-  (:require [cdq.gdx.graphics :as graphics]))
+  (:require [cdq.ctx.graphics :as graphics]))
 
 (defn create [icon]
   {:label "Zoom"

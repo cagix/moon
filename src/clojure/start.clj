@@ -1,5 +1,7 @@
 (ns clojure.start
   (:require cdq.effect
+            cdq.ctx.graphics
+            cdq.gdx.graphics
             cdq.ctx.db
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -24,6 +26,10 @@
   [com.badlogic.gdx.scenes.scene2d.Stage
    'clojure.gdx.scene2d.stage
    clojure.scene2d.stage/Stage]
+
+  [cdq.gdx.graphics.RGraphics
+   'cdq.gdx.graphics
+   cdq.ctx.graphics/Graphics]
   ])
 
 (def effect-fn-map

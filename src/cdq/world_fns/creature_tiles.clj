@@ -1,5 +1,5 @@
 (ns cdq.world-fns.creature-tiles
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.utils :as utils]))
 
 (defn prepare [creature-properties graphics]

@@ -1,5 +1,5 @@
 (ns cdq.tx.player-set-item
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ctx.stage :as stage]))
 

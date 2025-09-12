@@ -1,5 +1,5 @@
 (ns cdq.gdx-app.dispose
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.ctx.world :as world]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.vis-ui :as vis-ui]))

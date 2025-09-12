@@ -1,5 +1,5 @@
 (ns cdq.ui.player-state-draw
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [cdq.ctx.graphics :as graphics]
             [cdq.entity.state.player-item-on-cursor]))
 
 (def state->draw-gui-view

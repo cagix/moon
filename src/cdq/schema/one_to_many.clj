@@ -1,7 +1,7 @@
 (ns cdq.schema.one-to-many
   (:require [cdq.ctx.db :as db]
             [cdq.ui.editor.overview-table :as overview-table]
-            [cdq.gdx.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.property]
             [cdq.string :as string]

@@ -1,6 +1,6 @@
 (ns cdq.ui.windows
   (:require [cdq.ctx :as ctx]
-            [cdq.gdx.graphics :as graphics]
+            [cdq.ctx.graphics :as graphics]
             [cdq.info :as info]
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory))
