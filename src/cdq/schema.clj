@@ -9,8 +9,6 @@
 
 (declare k->methods)
 
-;; API
-
 (defn malli-form [schema schemas]
   ((:malli-form (k->methods (get-type schema))) schema schemas))
 
@@ -25,15 +23,10 @@
 (defn value [schema widget schemas]
   ((:value (k->methods (get-type schema))) schema widget schemas))
 
-;;
-
 (defn build-values [schemas property db]
   (utils/apply-kvs property
                    (fn [k v]
                      (let [schema (get schemas k)
-                           ; TODO implement create-value for :s/map ?
-                           ; * fix animation
-                           ; * fix image
                            v (if (map? v)
                                (build-values schemas v db)
                                v)]
