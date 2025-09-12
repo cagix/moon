@@ -1,4 +1,4 @@
-(ns cdq.grid
+(ns cdq.world.grid
   (:require [cdq.entity.faction :as faction]
             [cdq.position :as position]
             [cdq.grid2d :as g2d]

@@ -1,7 +1,7 @@
 (ns cdq.create.world
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.explored-tile-corners :as explored-tile-corners]

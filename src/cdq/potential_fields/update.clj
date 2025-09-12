@@ -1,7 +1,7 @@
 (ns cdq.potential-fields.update
   (:require [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.position :as position]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both

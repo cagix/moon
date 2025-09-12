@@ -1,6 +1,6 @@
 (ns cdq.entity.state.npc-sleeping
   (:require [cdq.entity :as entity]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.stats :as stats]))
 
 (defn draw [_ {:keys [entity/body]} _ctx]

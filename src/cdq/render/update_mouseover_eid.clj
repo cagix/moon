@@ -1,5 +1,5 @@
 (ns cdq.render.update-mouseover-eid
-  (:require [cdq.grid :as grid]
+  (:require [cdq.world.grid :as grid]
             [cdq.raycaster :as raycaster]
             [cdq.utils :as utils]))
 

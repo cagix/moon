@@ -1,7 +1,7 @@
 (ns cdq.entity.projectile-collision
   (:require [cdq.entity.body :as body]
             [cdq.grid2d :as g2d]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.grid.cell :as cell]
             [cdq.utils :as utils]
             [cdq.gdx.math.geom :as geom]))

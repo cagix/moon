@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.raycaster :as raycaster]
             [cdq.skill :as skill]
             [cdq.potential-fields.movement :as potential-fields.movement]))
