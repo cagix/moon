@@ -1,10 +1,10 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.image :as image]
-            [clojure.gdx.scenes.scene2d.utils :as utils]
+            [clojure.gdx.scene2d.ui.image :as image]
+            [clojure.gdx.scene2d.utils :as utils]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 

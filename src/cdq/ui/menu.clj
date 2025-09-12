@@ -1,8 +1,8 @@
 (ns cdq.ui.menu
-  (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.label :as label]
-            [clojure.gdx.scenes.scene2d.utils :as utils]
+  (:require [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.ui.label :as label]
+            [clojure.gdx.scene2d.utils :as utils]
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
             [clojure.vis-ui.menu-item :as menu-item]

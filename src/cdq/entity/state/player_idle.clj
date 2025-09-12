@@ -4,7 +4,7 @@
             [cdq.ctx.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.ui.button :as button]
+            [clojure.gdx.scene2d.ui.button :as button]
             [clojure.vis-ui.window :as window]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]

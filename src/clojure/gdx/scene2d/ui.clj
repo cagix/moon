@@ -1,8 +1,8 @@
-(ns clojure.gdx.scenes.scene2d.ui
-  (:require [clojure.gdx.scenes.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group])
+(ns clojure.gdx.scene2d.ui
+  (:require [clojure.gdx.scene2d :as scene2d]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui.widget-group :as widget-group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup
                                                Stack
                                                Widget)))

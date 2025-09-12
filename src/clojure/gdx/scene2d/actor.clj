@@ -1,5 +1,5 @@
-(ns clojure.gdx.scenes.scene2d.actor
-  (:require [clojure.gdx.scenes.scene2d.utils :as utils])
+(ns clojure.gdx.scene2d.actor
+  (:require [clojure.gdx.scene2d.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.math Vector2)))

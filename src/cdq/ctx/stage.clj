@@ -2,8 +2,8 @@
   (:require [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 

@@ -5,10 +5,10 @@
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [cdq.utils :as utils]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))

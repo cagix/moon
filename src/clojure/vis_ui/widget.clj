@@ -1,10 +1,10 @@
 (ns clojure.vis-ui.widget
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.scenes.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.ui.widget :as widget]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.utils :as utils]
+            [clojure.gdx.scene2d :as scene2d]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui.widget :as widget]
+            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.utils :as utils]
             [clojure.vis-ui.tooltip :as tooltip])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

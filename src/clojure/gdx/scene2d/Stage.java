@@ -1,4 +1,4 @@
-package clojure.gdx.scenes.scene2d;
+package clojure.gdx.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.viewport.Viewport;

@@ -1,8 +1,8 @@
 (ns cdq.tx.rebuild-editor-window
   (:require [cdq.schema :as schema]
             cdq.schema.map
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]))
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]))
 
 (defn do!
   [{:keys [ctx/application-state

@@ -1,5 +1,5 @@
 (ns cdq.ui.message
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
 
 (defn- draw-message [state vp-width vp-height]

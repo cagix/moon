@@ -1,7 +1,7 @@
 (ns cdq.ui.action-bar
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 

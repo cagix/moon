@@ -1,8 +1,8 @@
 (ns cdq.ui.editor.widget.map.helper
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.vis-ui.separator :as separator]))
 
 (defn k->label-text [k]

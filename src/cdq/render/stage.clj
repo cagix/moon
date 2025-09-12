@@ -4,6 +4,6 @@
 (defn do!
   [{:keys [ctx/stage]
     :as ctx}]
-  (reset! (.ctx ^clojure.gdx.scenes.scene2d.Stage stage) ctx)
+  (reset! (.ctx ^clojure.gdx.scene2d.Stage stage) ctx)
   (stage/act! stage)
   (stage/draw! stage))

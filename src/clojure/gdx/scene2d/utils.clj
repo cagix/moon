@@ -1,4 +1,4 @@
-(ns clojure.gdx.scenes.scene2d.utils
+(ns clojure.gdx.scene2d.utils
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.scene2d.input-event :as input-event])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -18,9 +18,9 @@
 (defn click-listener [clicked]
   (proxy [ClickListener] []
     (clicked [event _x _y]
-      (clicked @(.ctx ^clojure.gdx.scenes.scene2d.Stage (input-event/stage event))))))
+      (clicked @(.ctx ^clojure.gdx.scene2d.Stage (input-event/stage event))))))
 
 (defn change-listener ^ChangeListener [changed]
   (proxy [ChangeListener] []
     (changed [event actor]
-      (changed actor @(.ctx ^clojure.gdx.scenes.scene2d.Stage (input-event/stage event))))))
+      (changed actor @(.ctx ^clojure.gdx.scene2d.Stage (input-event/stage event))))))

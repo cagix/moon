@@ -1,5 +1,5 @@
-(ns clojure.gdx.scenes.scene2d.ui.window
-  (:require [clojure.gdx.scenes.scene2d.actor :as actor])
+(ns clojure.gdx.scene2d.ui.window
+  (:require [clojure.gdx.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Window)))
 
 (defn find-ancestor ^Window [actor]

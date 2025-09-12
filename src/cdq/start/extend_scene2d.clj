@@ -1,10 +1,10 @@
 (ns cdq.start.extend-scene2d
   (:require [cdq.ctx.graphics :as graphics]
-            [clojure.gdx.scenes.scene2d]))
+            [clojure.gdx.scene2d]))
 
 (defn do! [ctx]
   (extend-type (class ctx)
-    clojure.gdx.scenes.scene2d/Context
+    clojure.gdx.scene2d/Context
     (handle-draws! [ctx draws]
       (graphics/handle-draws! (:ctx/graphics ctx) draws)))
   ctx)

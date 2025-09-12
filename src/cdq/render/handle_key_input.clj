@@ -2,8 +2,8 @@
   (:require [cdq.ctx.stage]
             [cdq.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]))
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]))
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)

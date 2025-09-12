@@ -12,10 +12,10 @@
 
 (clojure.provide/do!
  [[com.badlogic.gdx.scenes.scene2d.Stage
-   'clojure.gdx.scenes.scene2d.stage
+   'clojure.gdx.scene2d.stage
    clojure.scene2d.stage/Stage]
   [com.badlogic.gdx.scenes.scene2d.InputEvent
-   'clojure.gdx.scenes.scene2d.input-event
+   'clojure.gdx.scene2d.input-event
    clojure.scene2d.input-event/InputEvent]
   ])
 
