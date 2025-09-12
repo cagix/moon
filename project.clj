@@ -1,11 +1,13 @@
+(def libgdx-version "1.13.5")
+
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [com.badlogicgames.gdx/gdx                   "1.13.5"]
-                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    "1.13.5"]
-                 [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
-                 [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
-                 [com.badlogicgames.gdx/gdx-platform          "1.13.5" :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx                   ~libgdx-version]
+                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
+                 [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
+                 [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]
                  [fr.reuz/qrecord "0.1.0"]
