@@ -1,7 +1,7 @@
 (ns cdq.potential-fields.movement
   (:require [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
-            [cdq.faction :as faction]
+            [cdq.entity.faction :as faction]
             [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.position :as position]

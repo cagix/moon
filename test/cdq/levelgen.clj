@@ -1,5 +1,5 @@
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx.db :as db]
             [cdq.gdx-app.resize]
             [cdq.files :as files]
             [cdq.world-fns.modules]

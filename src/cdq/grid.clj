@@ -1,5 +1,5 @@
 (ns cdq.grid
-  (:require [cdq.faction :as faction]
+  (:require [cdq.entity.faction :as faction]
             [cdq.position :as position]
             [cdq.grid2d :as g2d]
             [cdq.grid.cell :as cell]

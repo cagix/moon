@@ -1,5 +1,5 @@
 (ns cdq.entity.mouseover
-  (:require [cdq.faction :as faction]))
+  (:require [cdq.entity.faction :as faction]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
