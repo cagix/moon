@@ -1,6 +1,6 @@
 (ns cdq.info
   (:require [cdq.string]
-            [cdq.utils :as utils]
+            [clojure.order :as order]
             [clojure.string :as str]))
 
 (defn generate
@@ -17,7 +17,7 @@
                              (str "[" color "]" s "[]")
                              s)))]
     (->> entity
-         (utils/sort-by-k-order k-order)
+         (order/sort-by-k-order k-order)
          (keep (fn [{k 0 v 1 :as component}]
                  (str (try (component-info component)
                            (catch Throwable t

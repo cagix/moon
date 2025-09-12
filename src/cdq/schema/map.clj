@@ -4,7 +4,7 @@
             [cdq.schemas :as schemas]
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
-            [cdq.utils :as utils]
+            [clojure.order :as order]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
@@ -90,7 +90,7 @@
                                                           schema
                                                           (:schemas db)
                                                           table))
-                                         (utils/sort-by-k-order k-sort-order m)))
+                                         (order/sort-by-k-order k-sort-order m)))
         opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas db)))
                                   (set (keys m))))]
     (table/add-rows!

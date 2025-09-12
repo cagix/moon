@@ -1,5 +1,4 @@
-(ns cdq.utils
-  (:import (clojure.lang PersistentVector)))
+(ns cdq.utils)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -39,17 +38,6 @@
 (defn safe-merge [m1 m2]
   {:pre [(not-any? #(contains? m1 %) (keys m2))]}
   (merge m1 m2))
-
-(defn index-of [k ^PersistentVector v]
-  (let [idx (.indexOf v k)]
-    (if (= -1 idx)
-      nil
-      idx)))
-
-(defn sort-by-k-order [k-order components]
-  (let [max-count (inc (count k-order))]
-    (sort-by (fn [[k _]] (or (index-of k k-order) max-count))
-             components)))
 
 (defn find-first
   "Returns the first item of coll for which (pred item) returns logical true.
