@@ -1,5 +1,5 @@
 (ns cdq.effects
-  (:require [cdq.walk :as walk]))
+  (:require [cdq.start.require-syms :as walk]))
 
 (def method-map*
   '{:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?

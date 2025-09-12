@@ -43,20 +43,16 @@
               :cdq.start [
                           cdq.start.read-schema/do!
                           cdq.start.bind-roots/do!
-                          cdq.start.entity-states/do!
                           cdq.start.context-record/do!
                           cdq.start.register-self/do!
                           cdq.start.fsms/do!
-                          cdq.start.entity-components/do!
                           cdq.start.tx-spawn-schema/do!
-                          cdq.start.info/do!
                           cdq.start.db/do!
-                          cdq.start.render-layers/do!
                           cdq.start.os-settings/do!
                           cdq.start.txs/do!
                           cdq.start.extend-scene2d/do!
                           cdq.start.stage-impl/do!
-                          cdq.start.load-draw-fns/do!
+                          cdq.start.require-syms/do!
                           cdq.start.lwjgl/do!
                           ]
 

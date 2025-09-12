@@ -1,5 +1,5 @@
 (ns cdq.schema-impl
-  (:require [cdq.walk :as walk]))
+  (:require [cdq.start.require-syms :as walk]))
 
 (def k->methods*
   '{:s/animation {:malli-form cdq.schema.animation/malli-form
