@@ -3,7 +3,8 @@
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.pprint :as pprint]))
 
 (defn- validate-property [schemas property]
   (schemas/validate schemas (property/type property) property))
@@ -29,12 +30,22 @@
      :file properties-file
      :schemas schemas}))
 
+(defn- async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint/pprint
+             with-out-str
+             (spit file)))))))
+
 (defn save-vals! [data-vals file]
   (->> data-vals
        (sort-by property/type)
        (map utils/recur-sort-map)
        doall
-       (utils/async-pprint-spit! file)))
+       (async-pprint-spit! file)))
 
 (defn- save! [{:keys [data file]}]
   ; TODO validate them again!?

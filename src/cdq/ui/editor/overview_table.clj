@@ -3,7 +3,7 @@
             [cdq.ctx.db :as db]
             [cdq.gdx.graphics :as graphics]
             [cdq.ui.editor.property :as property]
-            [cdq.utils :refer [pprint-to-str]]))
+            [cdq.string :as string]))
 
 (defn- create* [image-scale rows]
   {:actor/type :actor.type/table
@@ -38,7 +38,7 @@
                 {:texture-region (graphics/texture-region graphics (property/image property))
                  :on-clicked (fn [_actor ctx]
                                (clicked-id-fn (:property/id property) ctx))
-                 :tooltip (pprint-to-str property)
+                 :tooltip (string/pprint-to-str property)
                  :extra-info-text (extra-info-text property)}))
          (partition-all columns)
          (create* image-scale))))

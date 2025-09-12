@@ -2,11 +2,13 @@
   (:require [cdq.utils :as utils])
   (:import (com.badlogic.gdx.math Vector2)))
 
-(defn- m-v2
-  (^Vector2 [[x y]] (Vector2. x y))
-  (^Vector2 [x y]   (Vector2. x y)))
+(defn- ->java
+  ([[x y]]
+   (Vector2. x y))
+  ([x y]
+   (->java x y)))
 
-(defn- ->p [^Vector2 v]
+(defn- ->clj [^Vector2 v]
   [(.x v) (.y v)])
 
 (defn nearly-equal? [[x1 y1] [x2 y2]]
@@ -30,7 +32,7 @@
 ;		}
 ;		return this;
 ;	}
-  (->p (.nor (m-v2 v))))
+  (->clj (.nor (->java v))))
 
 (defn add [v1 v2]
 ;	public Vector2 add (Vector2 v) {
@@ -38,7 +40,7 @@
 ;		y += v.y;
 ;		return this;
 ;	}
-  (->p (.add (m-v2 v1) (m-v2 v2))))
+  (->clj (.add (->java v1) (->java v2))))
 
 (defn distance [v1 v2]
 ;	public static float dst (float x1, float y1, float x2, float y2) {
@@ -46,7 +48,7 @@
 ;		final float y_d = y2 - y1;
 ;		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
 ;	}
-  (.dst (m-v2 v1) (m-v2 v2)))
+  (.dst (->java v1) (->java v2)))
 
 (defn nearly-normalised? [v]
   (utils/nearly-equal? 1 (length v)))
@@ -66,7 +68,7 @@
 ;		if (angle < 0) angle += 360;
 ;		return angle;
 ;	}
-  (.angleDeg (m-v2 v) (Vector2. 0 1)))
+  (.angleDeg (->java v) (Vector2. 0 1)))
 
 (comment
 
@@ -80,8 +82,8 @@
            [-1 0]
            [-1 1]]]
     [v
-     (.angleDeg (m-v2 v) (Vector2. 0 1))
-     (get-angle-from-vector (m-v2 v))]))
+     (.angleDeg (->java v) (Vector2. 0 1))
+     (get-angle-from-vector (->java v))]))
 
  )
 

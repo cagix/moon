@@ -1,5 +1,5 @@
 (ns cdq.tx.show-error-window
-  (:require [cdq.utils :refer [with-err-str]]
+  (:require [cdq.string :as string]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]
@@ -10,7 +10,7 @@
                      {:title "Error"
                       :rows [[{:actor {:actor/type :actor.type/label
                                        :label/text (binding [*print-level* 3]
-                                                     (with-err-str
+                                                     (string/with-err-str
                                                        (clojure.repl/pst throwable)))}}]]
                       :modal? true
                       :close-button? true

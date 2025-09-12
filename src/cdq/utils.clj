@@ -1,5 +1,4 @@
 (ns cdq.utils
-  (:require [clojure.pprint :as pprint])
   (:import (clojure.lang PersistentVector)))
 
 (defn safe-get [m k]
@@ -118,40 +117,6 @@
                         (recur-sort-map %)
                         %)
                      (vals m)))))
-
-(defn async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint/pprint
-             with-out-str
-             (spit file)))))))
-
-(defmacro with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))
-
-(defn ->edn-str [v]
-  (binding [*print-level* nil]
-    (pr-str v)))
-
-(defn truncate [s limit]
-  (if (> (count s) limit)
-    (str (subs s 0 limit) "...")
-    s))
-
-(defn pprint-to-str [data & {:keys [print-level]}]
-  (binding [*print-level* (or print-level 3)]
-    (with-out-str
-     (clojure.pprint/pprint data))))
 
 ; reduce-kv?
 (defn apply-kvs

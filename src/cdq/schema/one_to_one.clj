@@ -4,7 +4,7 @@
             [cdq.gdx.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.property]
-            [cdq.utils :as utils]
+            [cdq.string :as string]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
@@ -50,7 +50,7 @@
                texture-region (graphics/texture-region graphics (property/image property))
                image-widget (widget/image texture-region
                                           {:id property-id})]
-           (tooltip/add! image-widget (utils/pprint-to-str property))
+           (tooltip/add! image-widget (string/pprint-to-str property))
            image-widget))]
       [(when property-id
          (widget/text-button "-"
