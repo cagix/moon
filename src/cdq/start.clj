@@ -3,9 +3,16 @@
             [clojure.java.io :as io])
   (:gen-class))
 
+(defn reduce-over [object functions]
+  (reduce (fn [object f]
+            (f object))
+          object
+          functions))
+
 (defn -main []
-  (let [ctx (-> "ctx.edn" io/resource slurp edn/read-string)]
-    (reduce (fn [ctx f]
-              (f ctx))
-            ctx
-            (map requiring-resolve (:cdq.start (:ctx/config ctx))))))
+  (let [{:keys [context
+                pipeline]} (-> "ctx.edn" io/resource slurp edn/read-string)]
+    (assert (map? context))
+    (assert (vector? pipeline))
+    (reduce-over context
+                 (map requiring-resolve pipeline))))

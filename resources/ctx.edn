@@ -1,328 +1,328 @@
-{
- :ctx/schema [:map {:closed true}
-              [:ctx/txs-fn-map :some]
-              [:ctx/entity-states :some]
-              [:ctx/active-entities :some]
-              [:ctx/audio :some]
-              [:ctx/draw-fns :some]
-              [:ctx/config :some]
-              [:ctx/content-grid :some]
-              [:ctx/db :some]
-              [:ctx/delta-time :some]
-              [:ctx/elapsed-time :some]
-              [:ctx/entity-ids :some]
-              [:ctx/explored-tile-corners :some]
-              [:ctx/factions-iterations :some]
-              [:ctx/graphics :some]
-              [:ctx/grid :some]
-              [:ctx/id-counter :some]
-              [:ctx/info :some]
-              [:ctx/input :some]
-              [:ctx/max-delta :some]
-              [:ctx/max-speed :some]
-              [:ctx/minimum-size :some]
-              [:ctx/mouseover-eid :any]
-              [:ctx/paused? :any]
-              [:ctx/player-eid :some]
-              [:ctx/potential-field-cache :some]
-              [:ctx/raycaster :some]
-              [:ctx/render-layers :some]
-              [:ctx/render-z-order :some]
-              [:ctx/schema :some]
-              [:ctx/stage :some]
-              [:ctx/z-orders :some]
-              [:ctx/interaction-state :some]
-              [:ctx/application-state :some]
-              [:ctx/fsms :some]
-              [:ctx/entity-components :some]
-              [:ctx/spawn-entity-schema :some]
-              [:ctx/world :some]
-              ]
+{:pipeline [
+            cdq.start.read-schema/do!
+            cdq.start.bind-roots/do!
+            cdq.start.context-record/do!
+            cdq.start.register-self/do!
+            cdq.start.fsms/do!
+            cdq.start.tx-spawn-schema/do!
+            cdq.start.db/do!
+            cdq.start.os-settings/do!
+            cdq.start.txs/do!
+            cdq.start.extend-scene2d/do!
+            cdq.start.require-syms/do!
+            cdq.start.lwjgl/do!
+            ]
+ :context
+ {
+   :ctx/schema [:map {:closed true}
+                [:ctx/txs-fn-map :some]
+                [:ctx/entity-states :some]
+                [:ctx/active-entities :some]
+                [:ctx/audio :some]
+                [:ctx/draw-fns :some]
+                [:ctx/config :some]
+                [:ctx/content-grid :some]
+                [:ctx/db :some]
+                [:ctx/delta-time :some]
+                [:ctx/elapsed-time :some]
+                [:ctx/entity-ids :some]
+                [:ctx/explored-tile-corners :some]
+                [:ctx/factions-iterations :some]
+                [:ctx/graphics :some]
+                [:ctx/grid :some]
+                [:ctx/id-counter :some]
+                [:ctx/info :some]
+                [:ctx/input :some]
+                [:ctx/max-delta :some]
+                [:ctx/max-speed :some]
+                [:ctx/minimum-size :some]
+                [:ctx/mouseover-eid :any]
+                [:ctx/paused? :any]
+                [:ctx/player-eid :some]
+                [:ctx/potential-field-cache :some]
+                [:ctx/raycaster :some]
+                [:ctx/render-layers :some]
+                [:ctx/render-z-order :some]
+                [:ctx/schema :some]
+                [:ctx/stage :some]
+                [:ctx/z-orders :some]
+                [:ctx/interaction-state :some]
+                [:ctx/application-state :some]
+                [:ctx/fsms :some]
+                [:ctx/entity-components :some]
+                [:ctx/spawn-entity-schema :some]
+                [:ctx/world :some]
+                ]
 
- :ctx/config {
-              :cdq.start [
-                          cdq.start.read-schema/do!
-                          cdq.start.bind-roots/do!
-                          cdq.start.context-record/do!
-                          cdq.start.register-self/do!
-                          cdq.start.fsms/do!
-                          cdq.start.tx-spawn-schema/do!
-                          cdq.start.db/do!
-                          cdq.start.os-settings/do!
-                          cdq.start.txs/do!
-                          cdq.start.extend-scene2d/do!
-                          cdq.start.require-syms/do!
-                          cdq.start.lwjgl/do!
-                          ]
+   :ctx/config {
+                :cdq.start.bind-roots {
+                                       cdq.schema/k->methods
+                                       cdq.schema-impl/k->methods
 
-              :cdq.start.bind-roots {
-                                     cdq.schema/k->methods
-                                     cdq.schema-impl/k->methods
+                                       cdq.effect/k->method-map
+                                       cdq.effects/method-map
+                                       }
 
-                                     cdq.effect/k->method-map
-                                     cdq.effects/method-map
-                                     }
+                :cdq.start.register-self cdq.application/state
 
-              :cdq.start.register-self cdq.application/state
+                :cdq.start.os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                                              [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
 
-              :cdq.start.os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                                            [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
+                :cdq.start.lwjgl {
+                                  :create  cdq.gdx-app.create/do!
+                                  :render  cdq.gdx-app.render/do!
+                                  :dispose cdq.gdx-app.dispose/do!
+                                  :resize  cdq.gdx-app.resize/do!
+                                  :config {:title "Cyber Dungeon Quest"
+                                           :windowed-mode {:width 1440 :height 900}
+                                           :foreground-fps 60}
+                                  }
 
-              :cdq.start.lwjgl {
-                                :create  cdq.gdx-app.create/do!
-                                :render  cdq.gdx-app.render/do!
-                                :dispose cdq.gdx-app.dispose/do!
-                                :resize  cdq.gdx-app.resize/do!
-                                :config {:title "Cyber Dungeon Quest"
-                                         :windowed-mode {:width 1440 :height 900}
-                                         :foreground-fps 60}
-                                }
+                :cdq.gdx-app.create [
+                                     cdq.create.input/do!
+                                     cdq.create.files/do!
+                                     cdq.create.vis-ui/do!
+                                     cdq.create.graphics/do!
+                                     cdq.create.stage/do!
+                                     cdq.create.set-input-processor/do!
+                                     cdq.create.audio/do!
+                                     cdq.create.remove-files/do!
+                                     cdq.create.reset-stage/do!
+                                     cdq.create.world/do!
+                                     ]
 
-              :cdq.gdx-app.create [
-                                   cdq.create.input/do!
-                                   cdq.create.files/do!
-                                   cdq.create.vis-ui/do!
-                                   cdq.create.graphics/do!
-                                   cdq.create.stage/do!
-                                   cdq.create.set-input-processor/do!
-                                   cdq.create.audio/do!
-                                   cdq.create.remove-files/do!
-                                   cdq.create.reset-stage/do!
-                                   cdq.create.world/do!
-                                   ]
+                :cdq.create.world {
+                                   :starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                              :start-position [32 71]}]
+                                   }
 
-              :cdq.create.world {
-                                 :starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                            :start-position [32 71]}]
-                                 }
+                :cdq.gdx-app.render [cdq.render.validate/do!
+                                     cdq.render.update-mouse/do!
+                                     cdq.render.update-mouseover-eid/do!
+                                     cdq.render.check-open-debug/do!
+                                     cdq.render.assoc-active-entities/do!
+                                     cdq.render.set-camera-on-player/do!
+                                     cdq.render.clear-screen/do!
+                                     cdq.render.draw-world-map/do!
+                                     cdq.render.draw-on-world-viewport/do!
+                                     cdq.render.stage/do!
+                                     cdq.render.assoc-interaction-state/do!
+                                     cdq.render.set-cursor/do!
+                                     cdq.render.player-state-handle-input/do!
+                                     cdq.render.assoc-paused/do!
+                                     cdq.render.update-time/do!
+                                     cdq.render.update-potential-fields/do!
+                                     cdq.render.tick-entities/do!
+                                     cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
+                                     cdq.render.handle-key-input/do!
+                                     cdq.render.dissoc-mouseover-keys/do!
+                                     cdq.render.validate/do!]
 
-              :cdq.gdx-app.render [cdq.render.validate/do!
-                                   cdq.render.update-mouse/do!
-                                   cdq.render.update-mouseover-eid/do!
-                                   cdq.render.check-open-debug/do!
-                                   cdq.render.assoc-active-entities/do!
-                                   cdq.render.set-camera-on-player/do!
-                                   cdq.render.clear-screen/do!
-                                   cdq.render.draw-world-map/do!
-                                   cdq.render.draw-on-world-viewport/do!
-                                   cdq.render.stage/do!
-                                   cdq.render.assoc-interaction-state/do!
-                                   cdq.render.set-cursor/do!
-                                   cdq.render.player-state-handle-input/do!
-                                   cdq.render.assoc-paused/do!
-                                   cdq.render.update-time/do!
-                                   cdq.render.update-potential-fields/do!
-                                   cdq.render.tick-entities/do!
-                                   cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                                   cdq.render.handle-key-input/do!
-                                   cdq.render.dissoc-mouseover-keys/do!
-                                   cdq.render.validate/do!]
+                :cdq.audio/config {:sound-names "sounds.edn"
+                                   :path-format "sounds/%s.wav"}
 
-              :cdq.audio/config {:sound-names "sounds.edn"
-                                 :path-format "sounds/%s.wav"}
+                :after-gdx-create {:tile-size 48
+                                   :ui-viewport {:width 1440
+                                                 :height 900}
+                                   :world-viewport {:width 1440
+                                                    :height 900}
+                                   :texture-folder {:folder "resources/"
+                                                    :extensions #{"png" "bmp"}}
+                                   :default-font {:path "exocet/films.EXL_____.ttf"
+                                                  :params {:size 16
+                                                           :quality-scaling 2
+                                                           :enable-markup? true
+                                                           :use-integer-positions? false}}
+                                   :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
+                                   :cursors {:path-format "cursors/%s.png"
+                                             :data {:cursors/bag                   ["bag001"       [0   0]]
+                                                    :cursors/black-x               ["black_x"      [0   0]]
+                                                    :cursors/default               ["default"      [0   0]]
+                                                    :cursors/denied                ["denied"       [16 16]]
+                                                    :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                    :cursors/hand-grab             ["hand003"      [4  16]]
+                                                    :cursors/move-window           ["move002"      [16 16]]
+                                                    :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                    :cursors/over-button           ["hand002"      [0   0]]
+                                                    :cursors/sandclock             ["sandclock"    [16 16]]
+                                                    :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                    :cursors/use-skill             ["pointer004"   [0   0]]
+                                                    :cursors/walking               ["walking"      [16 16]]}}}
 
-              :after-gdx-create {:tile-size 48
-                                 :ui-viewport {:width 1440
-                                               :height 900}
-                                 :world-viewport {:width 1440
-                                                  :height 900}
-                                 :texture-folder {:folder "resources/"
-                                                  :extensions #{"png" "bmp"}}
-                                 :default-font {:path "exocet/films.EXL_____.ttf"
-                                                :params {:size 16
-                                                         :quality-scaling 2
-                                                         :enable-markup? true
-                                                         :use-integer-positions? false}}
-                                 :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-                                 :cursors {:path-format "cursors/%s.png"
-                                           :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                  :cursors/black-x               ["black_x"      [0   0]]
-                                                  :cursors/default               ["default"      [0   0]]
-                                                  :cursors/denied                ["denied"       [16 16]]
-                                                  :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                  :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                  :cursors/hand-grab             ["hand003"      [4  16]]
-                                                  :cursors/move-window           ["move002"      [16 16]]
-                                                  :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                  :cursors/over-button           ["hand002"      [0   0]]
-                                                  :cursors/sandclock             ["sandclock"    [16 16]]
-                                                  :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                  :cursors/use-skill             ["pointer004"   [0   0]]
-                                                  :cursors/walking               ["walking"      [16 16]]}}}
+                :cdq.vis-ui {:skin-scale :x1}
 
-              :cdq.vis-ui {:skin-scale :x1}
+                :cdq.application.reset-game-state
+                {
+                 :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
+                                                                      :items [cdq.ui.dev-menu.menus.select-world/create
+                                                                              {:world-fns [[cdq.world-fns.tmx/create
+                                                                                            {:tmx-file "maps/vampire.tmx"
+                                                                                             :start-position [32 71]}]
+                                                                                           [cdq.world-fns.uf-caves/create
+                                                                                            {:tile-size 48
+                                                                                             :texture-path "maps/uf_terrain.png"
+                                                                                             :spawn-rate 0.02
+                                                                                             :scaling 3
+                                                                                             :cave-size 200
+                                                                                             :cave-style :wide}]
+                                                                                           [cdq.world-fns.modules/create
+                                                                                            {:world/map-size 5,
+                                                                                             :world/max-area-level 3,
+                                                                                             :world/spawn-rate 0.05}]]
+                                                                               :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
+                                                                              ]}
+                                                                     {:label "Help"
+                                                                      :items [cdq.ui.dev-menu/help-items]}
+                                                                     {:label "Editor"
+                                                                      :items [cdq.ui.dev-menu.menus.db/create]}
+                                                                     {:label "Ctx Data"
+                                                                      :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                                    [cdq.ui.action-bar/create {:id :action-bar}]
+                                    [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                                :rahmenw 150
+                                                                :rahmenh 26
+                                                                :hpcontent-file "images/hp.png"
+                                                                :manacontent-file "images/mana.png"
+                                                                :y-mana 80}]
+                                    [cdq.ui.windows/create]
+                                    [cdq.ui.player-state-draw/create]
+                                    [cdq.ui.message/create {:duration-seconds 0.5
+                                                            :name "player-message"}]]
 
-              :cdq.application.reset-game-state
-              {
-               :create-ui-actors [[cdq.ui.dev-menu/create {:menus [{:label "World"
-                                                                    :items [cdq.ui.dev-menu.menus.select-world/create
-                                                                            {:world-fns [[cdq.world-fns.tmx/create
-                                                                                          {:tmx-file "maps/vampire.tmx"
-                                                                                           :start-position [32 71]}]
-                                                                                         [cdq.world-fns.uf-caves/create
-                                                                                          {:tile-size 48
-                                                                                           :texture-path "maps/uf_terrain.png"
-                                                                                           :spawn-rate 0.02
-                                                                                           :scaling 3
-                                                                                           :cave-size 200
-                                                                                           :cave-style :wide}]
-                                                                                         [cdq.world-fns.modules/create
-                                                                                          {:world/map-size 5,
-                                                                                           :world/max-area-level 3,
-                                                                                           :world/spawn-rate 0.05}]]
-                                                                             :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
-                                                                            ]}
-                                                                   {:label "Help"
-                                                                    :items [cdq.ui.dev-menu/help-items]}
-                                                                   {:label "Editor"
-                                                                    :items [cdq.ui.dev-menu.menus.db/create]}
-                                                                   {:label "Ctx Data"
-                                                                    :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
-                                  [cdq.ui.action-bar/create {:id :action-bar}]
-                                  [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                                                              :rahmenw 150
-                                                              :rahmenh 26
-                                                              :hpcontent-file "images/hp.png"
-                                                              :manacontent-file "images/mana.png"
-                                                              :y-mana 80}]
-                                  [cdq.ui.windows/create]
-                                  [cdq.ui.player-state-draw/create]
-                                  [cdq.ui.message/create {:duration-seconds 0.5
-                                                          :name "player-message"}]]
+                 }
 
-               }
+                :cdq.render-pipeline {
+                                      :draw-on-world-viewport [
+                                                               cdq.draw-on-world-viewport.tile-grid/do!
+                                                               cdq.draw-on-world-viewport.cell-debug/do!
+                                                               cdq.draw-on-world-viewport.entities/do!
+                                                               ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
+                                                               cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
 
-              :cdq.render-pipeline {
-                                    :draw-on-world-viewport [
-                                                             cdq.draw-on-world-viewport.tile-grid/do!
-                                                             cdq.draw-on-world-viewport.cell-debug/do!
-                                                             cdq.draw-on-world-viewport.entities/do!
-                                                             ;cdq.draw-on-world-viewport.geom-test/do! : TODO can this be an independent test ?
-                                                             cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
+                                                               ]
 
-                                                             ]
+                                      }
 
-                                    }
+                :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                         :initial-state :npc-sleeping}
+                                            :entity/faction :evil}
+                :cdq.game/player-props {:creature-id :creatures/vampire
+                                        :components {:entity/fsm {:fsm :fsms/player
+                                                                  :initial-state :player-idle}
+                                                     :entity/faction :good
+                                                     :entity/player? true
+                                                     :entity/free-skill-points 3
+                                                     :entity/clickable {:type :clickable/player}
+                                                     :entity/click-distance-tiles 1.5}}
+                :world {:content-grid-cell-size 16
+                        :potential-field-factions-iterations {:good 15
+                                                              :evil 5}}
+                :effect-body-props {:width 0.5
+                                    :height 0.5
+                                    :z-order :z-order/effect}
 
-              :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                       :initial-state :npc-sleeping}
-                                          :entity/faction :evil}
-              :cdq.game/player-props {:creature-id :creatures/vampire
-                                      :components {:entity/fsm {:fsm :fsms/player
-                                                                :initial-state :player-idle}
-                                                   :entity/faction :good
-                                                   :entity/player? true
-                                                   :entity/free-skill-points 3
-                                                   :entity/clickable {:type :clickable/player}
-                                                   :entity/click-distance-tiles 1.5}}
-              :world {:content-grid-cell-size 16
-                      :potential-field-factions-iterations {:good 15
-                                                            :evil 5}}
-              :effect-body-props {:width 0.5
-                                  :height 0.5
-                                  :z-order :z-order/effect}
+                :controls {:zoom-in :minus
+                           :zoom-out :equals
+                           :unpause-once :p
+                           :unpause-continously :space}
+                :cdq.ui.editor.widget.map {
+                                           :property-k-sort-order [:property/id
+                                                                   :property/pretty-name
+                                                                   :entity/image
+                                                                   :entity/animation
+                                                                   :entity/species
+                                                                   :creature/level
+                                                                   :entity/body
+                                                                   :item/slot
+                                                                   :projectile/speed
+                                                                   :projectile/max-range
+                                                                   :projectile/piercing?
+                                                                   :skill/action-time-modifier-key
+                                                                   :skill/action-time
+                                                                   :skill/start-action-sound
+                                                                   :skill/cost
+                                                                   :skill/cooldown]
+                                           }
+                }
+   :ctx/mouseover-eid nil
+   :ctx/paused? nil
+   :ctx/delta-time 2
+   :ctx/active-entities 1
+   :ctx/interaction-state :yes
 
-              :controls {:zoom-in :minus
-                         :zoom-out :equals
-                         :unpause-once :p
-                         :unpause-continously :space}
-              :cdq.ui.editor.widget.map {
-                                         :property-k-sort-order [:property/id
-                                                                 :property/pretty-name
-                                                                 :entity/image
-                                                                 :entity/animation
-                                                                 :entity/species
-                                                                 :creature/level
-                                                                 :entity/body
-                                                                 :item/slot
-                                                                 :projectile/speed
-                                                                 :projectile/max-range
-                                                                 :projectile/piercing?
-                                                                 :skill/action-time-modifier-key
-                                                                 :skill/action-time
-                                                                 :skill/start-action-sound
-                                                                 :skill/cost
-                                                                 :skill/cooldown]
-                                         }
-              }
- :ctx/mouseover-eid nil
- :ctx/paused? nil
- :ctx/delta-time 2
- :ctx/active-entities 1
- :ctx/interaction-state :yes
+   :ctx/max-delta 0.04
+   :ctx/minimum-size 0.39
+   :ctx/z-orders [:z-order/on-ground
+                  :z-order/ground
+                  :z-order/flying
+                  :z-order/effect]
 
- :ctx/max-delta 0.04
- :ctx/minimum-size 0.39
- :ctx/z-orders [:z-order/on-ground
-                :z-order/ground
-                :z-order/flying
-                :z-order/effect]
-
- :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
-                :draw/grid             cdq.draw.grid/do!
-                :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
-                :draw/text             cdq.gdx.graphics/draw-text!
-                :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
-                :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
-                :draw/circle           cdq.gdx.graphics/draw-circle!
-                :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
-                :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
-                :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
-                :draw/arc              cdq.gdx.graphics/draw-arc!
-                :draw/sector           cdq.gdx.graphics/draw-sector!
-                :draw/line             cdq.gdx.graphics/draw-line!}
-:ctx/info {:k->colors {:property/pretty-name "PRETTY_NAME"
-                       :entity/modifiers "CYAN"
-                       :maxrange "LIGHT_GRAY"
-                       :creature/level "GRAY"
-                       :projectile/piercing? "LIME"
-                       :skill/action-time-modifier-key "VIOLET"
-                       :skill/action-time "GOLD"
-                       :skill/cooldown "SKY"
-                       :skill/cost "CYAN"
-                       :entity/delete-after-duration "LIGHT_GRAY"
-                       :entity/faction "SLATE"
-                       :entity/fsm "YELLOW"
-                       :entity/species "LIGHT_GRAY"
-                       :entity/temp-modifier "LIGHT_GRAY"}
-           :k-order [:property/pretty-name
-                     :skill/action-time-modifier-key
-                     :skill/action-time
-                     :skill/cooldown
-                     :skill/cost
-                     :skill/effects
-                     :entity/species
-                     :creature/level
-                     :creature/stats
-                     :entity/delete-after-duration
-                     :projectile/piercing?
-                     :entity/projectile-collision
-                     :maxrange
-                     :entity-effects]
-           :info-fns {:creature/level cdq.creature.level/info-text
-                      :creature/stats cdq.entity.stats/info-text
-                      :effects.target/convert cdq.effects.target.convert/info-text
-                      :effects.target/damage cdq.effects.target.damage/info-text
-                      :effects.target/kill cdq.effects.target.kill/info-text
-                      :effects.target/melee-damage cdq.effects.target.melee-damage/info-text
-                      :effects.target/spiderweb cdq.effects.target.spiderweb/info-text
-                      :effects.target/stun cdq.effects.target.stun/info-text
-                      :effects/spawn cdq.effects.spawn/info-text
-                      :effects/target-all cdq.effects.target-all/info-text
-                      :entity/delete-after-duration cdq.entity.delete-after-duration/info-text
-                      :entity/faction cdq.entity.faction/info-text
-                      :entity/fsm cdq.entity.fsm/info-text
-                      :entity/modifiers cdq.entity.modifiers/info-text
-                      :entity/skills cdq.entity.skills/info-text
-                      :entity/species cdq.entity.species/info-text
-                      :entity/temp-modifier cdq.entity.temp-modifier/info-text
-                      :projectile/piercing? cdq.projectile.piercing/info-text
-                      :property/pretty-name cdq.property.pretty-name/info-text
-                      :skill/action-time cdq.skill.action-time/info-text
-                      :skill/action-time-modifier-key cdq.skill.action-time-modifier-key/info-text
-                      :skill/cooldown cdq.skill.cooldown/info-text
-                      :skill/cost cdq.skill.cost/info-text
-                      :maxrange cdq.maxrange/info-text}}
+   :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
+                  :draw/grid             cdq.draw.grid/do!
+                  :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
+                  :draw/text             cdq.gdx.graphics/draw-text!
+                  :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
+                  :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
+                  :draw/circle           cdq.gdx.graphics/draw-circle!
+                  :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
+                  :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
+                  :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
+                  :draw/arc              cdq.gdx.graphics/draw-arc!
+                  :draw/sector           cdq.gdx.graphics/draw-sector!
+                  :draw/line             cdq.gdx.graphics/draw-line!}
+   :ctx/info {:k->colors {:property/pretty-name "PRETTY_NAME"
+                          :entity/modifiers "CYAN"
+                          :maxrange "LIGHT_GRAY"
+                          :creature/level "GRAY"
+                          :projectile/piercing? "LIME"
+                          :skill/action-time-modifier-key "VIOLET"
+                          :skill/action-time "GOLD"
+                          :skill/cooldown "SKY"
+                          :skill/cost "CYAN"
+                          :entity/delete-after-duration "LIGHT_GRAY"
+                          :entity/faction "SLATE"
+                          :entity/fsm "YELLOW"
+                          :entity/species "LIGHT_GRAY"
+                          :entity/temp-modifier "LIGHT_GRAY"}
+              :k-order [:property/pretty-name
+                        :skill/action-time-modifier-key
+                        :skill/action-time
+                        :skill/cooldown
+                        :skill/cost
+                        :skill/effects
+                        :entity/species
+                        :creature/level
+                        :creature/stats
+                        :entity/delete-after-duration
+                        :projectile/piercing?
+                        :entity/projectile-collision
+                        :maxrange
+                        :entity-effects]
+              :info-fns {:creature/level cdq.creature.level/info-text
+                         :creature/stats cdq.entity.stats/info-text
+                         :effects.target/convert cdq.effects.target.convert/info-text
+                         :effects.target/damage cdq.effects.target.damage/info-text
+                         :effects.target/kill cdq.effects.target.kill/info-text
+                         :effects.target/melee-damage cdq.effects.target.melee-damage/info-text
+                         :effects.target/spiderweb cdq.effects.target.spiderweb/info-text
+                         :effects.target/stun cdq.effects.target.stun/info-text
+                         :effects/spawn cdq.effects.spawn/info-text
+                         :effects/target-all cdq.effects.target-all/info-text
+                         :entity/delete-after-duration cdq.entity.delete-after-duration/info-text
+                         :entity/faction cdq.entity.faction/info-text
+                         :entity/fsm cdq.entity.fsm/info-text
+                         :entity/modifiers cdq.entity.modifiers/info-text
+                         :entity/skills cdq.entity.skills/info-text
+                         :entity/species cdq.entity.species/info-text
+                         :entity/temp-modifier cdq.entity.temp-modifier/info-text
+                         :projectile/piercing? cdq.projectile.piercing/info-text
+                         :property/pretty-name cdq.property.pretty-name/info-text
+                         :skill/action-time cdq.skill.action-time/info-text
+                         :skill/action-time-modifier-key cdq.skill.action-time-modifier-key/info-text
+                         :skill/cooldown cdq.skill.cooldown/info-text
+                         :skill/cost cdq.skill.cost/info-text
+                         :maxrange cdq.maxrange/info-text}}
 
 :ctx/txs-fn-map {:sym-format "cdq.tx.%s/do!"
                  :ks [:tx/reset-stage
@@ -432,4 +432,5 @@
                     :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
                     }
+}
 }
