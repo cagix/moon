@@ -19,8 +19,7 @@
     widget))
 
 (defn malli-form [[_ ks] schemas]
-  (m/create-map-schema ks (fn [k]
-                            (schema/malli-form (get schemas k) schemas))))
+  (schema/create-map-schema schemas ks))
 
 (defn- component-row [editor-widget k schema schemas table]
   (helper/component-row

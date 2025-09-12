@@ -1,16 +1,12 @@
 (ns cdq.ctx.db
-  (:require [cdq.malli :as m]
-            [cdq.schema :as schema]
+  (:require [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
 (defn- validate-property [schemas property]
-  (-> (get schemas (property/type property))
-      (schema/malli-form schemas)
-      m/schema
-      (m/validate-humanize property)))
+  (schema/validate schemas (property/type property) property))
 
 (defn- validate-properties! [schemas properties]
   (assert (or (empty? properties)
