@@ -1,10 +1,11 @@
 (ns clojure.gdx.scene2d.group
   (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.actor.opts :as opts])
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn add! [group actor-or-decl]
-  (Group/.addActor group (actor/build? actor-or-decl)))
+  (Group/.addActor group (actor.decl/build? actor-or-decl)))
 
 (defn find-actor [^Group group name]
   (.findActor group name))

@@ -6,6 +6,7 @@
             [cdq.malli :as m]
             [clojure.order :as order]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]
@@ -14,7 +15,7 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn- build-widget [ctx schema k v]
-  (let [widget (actor/build? (schema/create schema v ctx))]
+  (let [widget (actor.decl/build? (schema/create schema v ctx))]
     ; FIXME assert no user object !
     (actor/set-user-object! widget [k v])
     widget))

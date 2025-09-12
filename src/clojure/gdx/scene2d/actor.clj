@@ -46,14 +46,3 @@
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
-
-(defmulti build :actor/type)
-
-(defn build? ^Actor [actor-declaration]
-  (cond
-   (instance? Actor actor-declaration) actor-declaration
-   (map? actor-declaration) (build actor-declaration) ; TODO build just returned the map -> post assertion instance? Actor
-   (nil? actor-declaration) nil ; TODO why nil
-   :else (throw (ex-info "Cannot find constructor"
-                         {:instance-actor? (instance? Actor actor-declaration)
-                          :map? (map? actor-declaration)}))))

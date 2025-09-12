@@ -1,5 +1,6 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.actor.opts :as opts]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage])
@@ -53,5 +54,5 @@
               (try-draw this f))))
     (opts/set-actor-opts! opts)))
 
-(defmethod actor/build :actor.type/actor [opts] (actor opts))
-(defmethod actor/build :actor.type/group [opts] (group opts))
+(defmethod actor.decl/build :actor.type/actor [opts] (actor opts))
+(defmethod actor.decl/build :actor.type/group [opts] (group opts))
