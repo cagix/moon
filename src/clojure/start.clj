@@ -1,6 +1,5 @@
 (ns clojure.start
   (:require cdq.effect
-            cdq.ctx.db
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.object :as object]
@@ -46,82 +45,6 @@
 (defn return-identity [_ v _db]
   v)
 
-(defn convert-fn-map [fn-map]
-  (into {} (for [[proto-sym impl-sym] fn-map]
-             [proto-sym (requiring-resolve impl-sym)])))
-
-(def schema-fn-map
-  '{:s/animation {cdq.schema/malli-form cdq.schema.animation/malli-form
-                  cdq.schema/create-value clojure.start/return-identity
-                  cdq.schema/create cdq.schema.animation/create
-                  cdq.schema/value cdq.ui.editor.widget.default/value}
-
-    :s/boolean {cdq.schema/malli-form cdq.schema.boolean/malli-form
-                cdq.schema/create-value clojure.start/return-identity
-                cdq.schema/create cdq.schema.boolean/create
-                cdq.schema/value cdq.schema.boolean/value}
-
-    :s/enum {cdq.schema/malli-form cdq.schema.enum/malli-form
-             cdq.schema/create-value clojure.start/return-identity
-             cdq.schema/create cdq.schema.enum/create
-             cdq.schema/value cdq.schema.enum/value}
-
-    :s/image {cdq.schema/malli-form cdq.schema.image/malli-form
-              cdq.schema/create-value clojure.start/return-identity
-              cdq.schema/create cdq.schema.image/create
-              cdq.schema/value cdq.ui.editor.widget.default/value}
-
-    :s/map {cdq.schema/malli-form cdq.schema.map/malli-form
-            cdq.schema/create-value clojure.start/return-identity
-            cdq.schema/create cdq.schema.map/create
-            cdq.schema/value cdq.schema.map/value}
-
-    :s/number {cdq.schema/malli-form cdq.schema.number/malli-form
-               cdq.schema/create-value clojure.start/return-identity
-               cdq.schema/create cdq.ui.editor.widget.edn/create
-               cdq.schema/value cdq.ui.editor.widget.edn/value}
-
-    :s/one-to-many {cdq.schema/malli-form cdq.schema.one-to-many/malli-form
-                    cdq.schema/create-value cdq.schema.one-to-many/create-value
-                    cdq.schema/create cdq.schema.one-to-many/create
-                    cdq.schema/value cdq.schema.one-to-many/value}
-
-    :s/one-to-one {cdq.schema/malli-form cdq.schema.one-to-one/malli-form
-                   cdq.schema/create-value cdq.schema.one-to-one/create-value
-                   cdq.schema/create cdq.schema.one-to-one/create
-                   cdq.schema/value cdq.schema.one-to-one/value}
-
-    :s/qualified-keyword {cdq.schema/malli-form cdq.schema.qualified-keyword/malli-form
-                          cdq.schema/create-value clojure.start/return-identity
-                          cdq.schema/create cdq.ui.editor.widget.default/create
-                          cdq.schema/value cdq.ui.editor.widget.default/value}
-
-    :s/some {cdq.schema/malli-form cdq.schema.some/malli-form
-             cdq.schema/create-value clojure.start/return-identity
-             cdq.schema/create cdq.ui.editor.widget.default/create
-             cdq.schema/value cdq.ui.editor.widget.default/value}
-
-    :s/sound {cdq.schema/malli-form cdq.schema.sound/malli-form
-              cdq.schema/create-value clojure.start/return-identity
-              cdq.schema/create cdq.schema.sound/create
-              cdq.schema/value cdq.ui.editor.widget.default/value}
-
-    :s/string {cdq.schema/malli-form cdq.schema.string/malli-form
-               cdq.schema/create-value clojure.start/return-identity
-               cdq.schema/create cdq.schema.string/create
-               cdq.schema/value cdq.schema.string/value}
-
-    :s/val-max {cdq.schema/malli-form cdq.schema.val-max/malli-form
-                cdq.schema/create-value clojure.start/return-identity
-                cdq.schema/create cdq.ui.editor.widget.edn/create
-                cdq.schema/value cdq.ui.editor.widget.edn/value}
-
-    :s/vector {cdq.schema/malli-form cdq.schema.vector/malli-form
-               cdq.schema/create-value clojure.start/return-identity
-               cdq.schema/create cdq.ui.editor.widget.default/create
-               cdq.schema/value cdq.ui.editor.widget.default/value}
-    })
-
 (defn require-resolve-symbols [form]
   (walk/postwalk (fn [form]
                    (if (symbol? form)
@@ -132,9 +55,6 @@
                  form))
 
 (defn -main []
-  (.bindRoot #'cdq.ctx.db/schema-fn-map
-             (into {} (for [[k fn-map] schema-fn-map]
-                        [k (convert-fn-map fn-map)])))
   (.bindRoot #'cdq.effect/k->method-map (require-resolve-symbols effect-fn-map))
   (-> "clojure.start.edn"
       io/resource

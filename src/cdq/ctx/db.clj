@@ -15,12 +15,16 @@
   (doseq [property properties]
     (validate-property schemas property)))
 
-(declare schema-fn-map)
+(defn- convert-fn-map [fn-map]
+  (into {} (for [[proto-sym impl-sym] fn-map]
+             [proto-sym (requiring-resolve impl-sym)])))
 
 (defn create
   [{:keys [schemas
            properties]}]
-  (let [schemas (update-vals (-> schemas io/resource slurp edn/read-string)
+  (let [schema-fn-map (into {} (for [[k fn-map] (-> "schema_fn_map.edn" io/resource slurp edn/read-string)]
+                                 [k (convert-fn-map fn-map)]))
+        schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
                                (with-meta schema (get schema-fn-map k))))
         properties-file (io/resource properties)
