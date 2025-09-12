@@ -30,7 +30,7 @@
   (.setVisible actor visible?))
 
 (defn set-touchable! [^Actor actor touchable]
-  (.setTouchable actor touchable))
+  (.setTouchable actor (touchable/k->value touchable)))
 
 (defn remove! [^Actor actor]
   (.remove actor))
@@ -46,36 +46,29 @@
 (defn hit [actor [x y]]
   (.hit actor x y true))
 
-(defn set-opts!
-  [^Actor actor
-   {:keys [id
-           name
-           user-object
-           visible?
-           center-position
-           position] :as opts}]
-  (assert (map? opts)
-          (str "opts should be a map, given " (pr-str opts)))
-  (when id
-    (set-user-object! actor id))
-  (when name
-    (.setName actor name))
-  (when user-object
-    (set-user-object! actor user-object))
-  (when (contains? opts :visible?)
-    (set-visible! actor visible?))
-  (when-let [[x y] center-position]
-    (.setPosition actor
-                  (- x (/ (.getWidth  actor) 2))
-                  (- y (/ (.getHeight actor) 2))))
-  (when-let [[x y] position]
-    (.setPosition actor x y))
-  (when-let [touchable (:actor/touchable opts)]
-    (set-touchable! actor (touchable/k->value touchable)))
-  (when-let [f (:click-listener opts)]
-    (.addListener actor (listener/click
-                         (fn [event x y]
-                           (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
+(def fn-map
+  {:id set-user-object!
+   :name (fn [actor name]
+           (Actor/.setName actor name))
+   :user-object set-user-object!
+   :visible? set-visible!
+   :position (fn [actor [x y]]
+               (Actor/.setPosition actor x y))
+   :center-position (fn [actor [x y]]
+                      (.setPosition actor
+                                    (- x (/ (.getWidth  actor) 2))
+                                    (- y (/ (.getHeight actor) 2))))
+   :actor/touchable set-touchable!
+   :click-listener (fn [actor f]
+                     (.addListener actor (listener/click
+                                          (fn [event x y]
+                                            (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))})
+
+(defn set-opts! [actor opts]
+  (doseq [[k v] opts
+          :let [f (get fn-map k)]
+          :when f]
+    (f actor v))
   actor)
 
 (defn toggle-visible! [actor]
