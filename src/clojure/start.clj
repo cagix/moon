@@ -1,7 +1,9 @@
 (ns clojure.start
   (:require cdq.effect
             cdq.ctx.graphics
+            cdq.ctx.stage
             cdq.gdx.graphics
+            cdq.gdx.stage
             cdq.ctx.db
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -26,6 +28,10 @@
   [com.badlogic.gdx.scenes.scene2d.Stage
    'clojure.gdx.scene2d.stage
    clojure.scene2d.stage/Stage]
+
+  [com.badlogic.gdx.scenes.scene2d.Stage
+   'cdq.gdx.stage
+   cdq.ctx.stage/Stage]
 
   [cdq.gdx.graphics.RGraphics
    'cdq.gdx.graphics
