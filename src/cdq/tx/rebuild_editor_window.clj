@@ -1,5 +1,6 @@
 (ns cdq.tx.rebuild-editor-window
   (:require [cdq.schema :as schema]
+            cdq.schema.map
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]))
 
@@ -13,6 +14,6 @@
                              :scroll-pane
                              (group/find-actor "scroll-pane-table")
                              :map-widget)
-        property (schema/value [:s/map] map-widget-table (:schemas db))]
+        property (cdq.schema.map/value nil map-widget-table (:schemas db))] ; FIXME
     (actor/remove! window)
     [[:tx/open-property-editor property]]))

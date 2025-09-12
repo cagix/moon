@@ -1,12 +1,12 @@
 (ns cdq.schema.animation
-  (:require [cdq.schema :as schema]
+  (:require [cdq.schemas :as schemas]
             [cdq.gdx.graphics :as graphics]))
 
 (defn malli-form [_ schemas]
-  (schema/malli-form [:s/map [:animation/frames
+  (schemas/create-map-schema schemas
+                             [:animation/frames
                               :animation/frame-duration
-                              :animation/looping?]]
-                     schemas))
+                              :animation/looping?]))
 
 (defn create [_ animation {:keys [ctx/graphics]}]
   {:actor/type :actor.type/table

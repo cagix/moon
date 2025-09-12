@@ -14,10 +14,14 @@
   (doseq [property properties]
     (validate-property schemas property)))
 
+(declare schema-fn-map)
+
 (defn create
   [{:keys [schemas
            properties]}]
-  (let [schemas (-> schemas io/resource slurp edn/read-string)
+  (let [schemas (update-vals (-> schemas io/resource slurp edn/read-string)
+                             (fn [[k :as schema]]
+                               (with-meta schema (get schema-fn-map k))))
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
     (validate-properties! schemas properties)
