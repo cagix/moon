@@ -2,7 +2,7 @@
   (:require [cdq.schema :as schema]
             [cdq.gdx.graphics :as graphics]))
 
-(defmethod schema/malli-form :s/animation [_ schemas]
+(defn malli-form [_ schemas]
   (schema/malli-form [:s/map [:animation/frames
                               :animation/frame-duration
                               :animation/looping?]]

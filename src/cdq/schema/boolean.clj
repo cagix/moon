@@ -1,8 +1,7 @@
 (ns cdq.schema.boolean
-  (:require [cdq.schema :as schema]
-            [clojure.vis-ui.check-box :as check-box]))
+  (:require [clojure.vis-ui.check-box :as check-box]))
 
-(defmethod schema/malli-form :s/boolean [[_ & params] _schemas]
+(defn malli-form [[_ & params] _schemas]
   :boolean)
 
 (defn create [_ checked? _ctx]

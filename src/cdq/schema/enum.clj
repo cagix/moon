@@ -1,10 +1,9 @@
 (ns cdq.schema.enum
-  (:require [cdq.schema :as schema]
-            [cdq.utils :as utils]
+  (:require [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.vis-ui.select-box :as select-box]))
 
-(defmethod schema/malli-form :s/enum [[_ & params] _schemas]
+(defn malli-form [[_ & params] _schemas]
   (apply vector :enum params))
 
 (defn create [schema v _ctx]

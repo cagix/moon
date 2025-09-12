@@ -3,7 +3,6 @@
             [cdq.editor :as editor]
             [cdq.gdx.graphics :as graphics]
             [cdq.editor.property :as property]
-            [cdq.schema :as schema]
             [cdq.property]
             [cdq.utils :as utils]
             [clojure.gdx.scenes.scene2d.actor :as actor]
@@ -14,10 +13,10 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
-(defmethod schema/malli-form :s/one-to-many [[_ property-type] _schemas]
+(defn malli-form [[_ property-type] _schemas]
   [:set [:qualified-keyword {:namespace (cdq.property/type->id-namespace property-type)}]])
 
-(defmethod schema/create-value :s/one-to-many [_ property-ids db]
+(defn create-value [_ property-ids db]
   (set (map (partial db/build db) property-ids)))
 
 (defn- add-one-to-many-rows

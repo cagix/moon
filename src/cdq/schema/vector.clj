@@ -1,5 +1,4 @@
-(ns cdq.schema.vector
-  (:require [cdq.schema :as schema]))
+(ns cdq.schema.vector)
 
-(defmethod schema/malli-form :s/vector [[_ & params] _schemas]
+(defn malli-form [[_ & params] _schemas]
   (apply vector :vector params))

@@ -7,11 +7,25 @@
   (assert (vector? schema))
   (schema 0))
 
-(defmulti create-value (fn [schema _v _db]
-                         (get-type schema)))
+(declare k->methods)
 
-(defmethod create-value :default [_schema v _db]
-  v)
+;; API
+
+(defn malli-form [schema schemas]
+  ((:malli-form (k->methods (get-type schema))) schema schemas))
+
+(defn create-value [schema v db]
+  (if-let [f (:create-value (k->methods (get-type schema)))]
+    (f schema v db)
+    v))
+
+(defn create [schema v ctx]
+  ((:create (k->methods (get-type schema))) schema v ctx))
+
+(defn value [schema widget schemas]
+  ((:value (k->methods (get-type schema))) schema widget schemas))
+
+;;
 
 (defn build-values [schemas property db]
   (utils/apply-kvs property
@@ -26,17 +40,6 @@
                        (try (create-value schema v db)
                             (catch Throwable t
                               (throw (ex-info " " {:k k :v v} t))))))))
-
-(defmulti malli-form (fn [schema _schemas]
-                       (get-type schema)))
-
-(declare k->methods)
-
-(defn create [schema v ctx]
-  ((:create (k->methods (get-type schema))) schema v ctx))
-
-(defn value [schema widget schemas]
-  ((:value (k->methods (get-type schema))) schema widget schemas))
 
 (defn build [ctx schema k v]
   (let [widget (actor/build? (create schema v ctx))]

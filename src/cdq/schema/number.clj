@@ -1,7 +1,6 @@
-(ns cdq.schema.number
-  (:require [cdq.schema :as schema]))
+(ns cdq.schema.number)
 
-(defmethod schema/malli-form :s/number [[_ predicate] _schemas]
+(defn malli-form [[_ predicate] _schemas]
   (case predicate
     :int     int?
     :nat-int nat-int?

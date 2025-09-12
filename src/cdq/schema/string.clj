@@ -1,8 +1,7 @@
 (ns cdq.schema.string
-  (:require [cdq.schema :as schema]
-            [clojure.vis-ui.text-field :as text-field]))
+  (:require [clojure.vis-ui.text-field :as text-field]))
 
-(defmethod schema/malli-form :s/string [_ _schemas]
+(defn malli-form [_ _schemas]
   :string)
 
 (defn create [schema  v _ctx]

@@ -12,7 +12,7 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
-(defmethod schema/malli-form :s/map [[_ ks] schemas]
+(defn malli-form [[_ ks] schemas]
   (m/create-map-schema ks (fn [k]
                             (schema/malli-form (get schemas k) schemas))))
 

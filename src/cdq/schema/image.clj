@@ -2,7 +2,7 @@
   (:require [cdq.gdx.graphics :as graphics]
             [cdq.schema :as schema]))
 
-(defmethod schema/malli-form :s/image [_ schemas]
+(defn malli-form [_ schemas]
   (schema/malli-form [:s/map [:image/file
                               [:image/bounds {:optional true}]]]
                      schemas))

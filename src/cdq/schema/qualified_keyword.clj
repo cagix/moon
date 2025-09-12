@@ -1,5 +1,4 @@
-(ns cdq.schema.qualified-keyword
-  (:require [cdq.schema :as schema]))
+(ns cdq.schema.qualified-keyword)
 
-(defmethod schema/malli-form :s/qualified-keyword [[_ & params] _schemas]
+(defn malli-form [[_ & params] _schemas]
   (apply vector :qualified-keyword params))

@@ -1,5 +1,4 @@
-(ns cdq.schema.some
-  (:require [cdq.schema :as schema]))
+(ns cdq.schema.some)
 
-(defmethod schema/malli-form :s/some [[_ & params] _schemas]
+(defn malli-form [[_ & params] _schemas]
   :some)

@@ -1,7 +1,6 @@
 (ns cdq.schema.sound
   (:require [cdq.audio :as audio]
             [cdq.stage]
-            [cdq.schema :as schema]
             [cdq.ui.widget]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -10,7 +9,7 @@
             [clojure.gdx.scenes.scene2d.ui.window :as window]
             [clojure.vis-ui.widget :as widget]))
 
-(defmethod schema/malli-form :s/sound [_ _schemas]
+(defn malli-form [_ _schemas]
   :string)
 
 (declare sound-columns) ; < -- rebuilding itself ....
