@@ -1,4 +1,5 @@
-(ns cdq.editor.widgets)
+(ns cdq.editor.widgets
+  (:require [cdq.walk :as walk]))
 
 (def k->methods*
   '{:s/animation {:malli-form cdq.schema.animation/malli-form
@@ -60,7 +61,5 @@
                :value cdq.editor.widget.default/value}
     })
 
-(require 'cdq.effects)
-
 (def k->methods
-  (cdq.effects/walk-method-map k->methods*))
+  (walk/require-resolve-symbols k->methods*))

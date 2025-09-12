@@ -1,4 +1,5 @@
-(ns cdq.start.render-layers)
+(ns cdq.start.render-layers
+  (:require [cdq.walk :as walk]))
 
 (def render-layers
   '[{:entity/mouseover? cdq.entity.mouseover/draw
@@ -14,7 +15,5 @@
     {:creature/stats cdq.entity.stats/draw
      :active-skill cdq.entity.state.active-skill/draw}])
 
-(require 'cdq.effects)
-
 (defn do! [ctx]
-  (assoc ctx :ctx/render-layers (cdq.effects/walk-method-map render-layers)))
+  (assoc ctx :ctx/render-layers (walk/require-resolve-symbols render-layers)))

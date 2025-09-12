@@ -1,5 +1,5 @@
 (ns cdq.start.entity-states
-  (:require [cdq.effects]))
+  (:require [cdq.walk :as walk]))
 
 (defn do! [ctx]
-  (update ctx :ctx/entity-states cdq.effects/walk-method-map))
+  (update ctx :ctx/entity-states walk/require-resolve-symbols))

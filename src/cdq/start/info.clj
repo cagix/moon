@@ -1,5 +1,5 @@
 (ns cdq.start.info
-  (:require cdq.effects))
+  (:require [cdq.walk :as walk]))
 
 (defn do! [ctx]
-  (update ctx :ctx/info cdq.effects/walk-method-map))
+  (update ctx :ctx/info walk/require-resolve-symbols))

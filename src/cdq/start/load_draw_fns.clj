@@ -1,5 +1,5 @@
 (ns cdq.start.load-draw-fns
-  (:require [cdq.effects]))
+  (:require [cdq.walk :as walk]))
 
 (defn do! [ctx]
-  (update ctx :ctx/draw-fns cdq.effects/walk-method-map))
+  (update ctx :ctx/draw-fns walk/require-resolve-symbols))

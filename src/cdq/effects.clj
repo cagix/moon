@@ -1,4 +1,5 @@
-(ns cdq.effects)
+(ns cdq.effects
+  (:require [cdq.walk :as walk]))
 
 (def method-map*
   '{:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?
@@ -36,16 +37,7 @@
     :effects.target/stun {:applicable? cdq.effects.target.stun/applicable?
                           :handle      cdq.effects.target.stun/handle}})
 
-(require '[clojure.walk :as walk])
 
-(defn walk-method-map [method-map]
-  (walk/postwalk (fn [form]
-                   (if (symbol? form)
-                     (let [var (requiring-resolve form)]
-                       (assert var form)
-                       var)
-                     form))
-                 method-map))
 
 (def method-map
-  (walk-method-map method-map*))
+  (walk/require-resolve-symbols method-map*))
