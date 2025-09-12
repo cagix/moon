@@ -1,9 +1,14 @@
 (ns cdq.entity.animation
-  (:require [cdq.animation :as animation]
-            [cdq.entity.image :as image]))
+  (:require [cdq.entity.image :as image]))
 
-(defrecord Animation [frames frame-duration looping? cnt maxcnt]
-  animation/Animation
+(defprotocol PAnimation
+  (tick [_ delta])
+  (restart [_])
+  (stopped? [_])
+  (current-frame [_]))
+
+(defrecord RAnimation [frames frame-duration looping? cnt maxcnt]
+  PAnimation
   (tick [this delta]
     (let [maxcnt (float maxcnt)
           newcnt (+ (float cnt) (float delta))]
@@ -25,7 +30,7 @@
   [{:keys [animation/frames
            animation/frame-duration
            animation/looping?]}]
-  (map->Animation
+  (map->RAnimation
    {:frames (vec frames)
     :frame-duration frame-duration
     :looping? looping?
@@ -36,9 +41,9 @@
   (create-animation v))
 
 (defn tick! [animation eid {:keys [ctx/delta-time]}]
-  [[:tx/assoc eid :entity/animation (animation/tick animation delta-time)]])
+  [[:tx/assoc eid :entity/animation (tick animation delta-time)]])
 
 (defn draw [animation entity ctx]
-  (image/draw (animation/current-frame animation)
+  (image/draw (current-frame animation)
               entity
               ctx))

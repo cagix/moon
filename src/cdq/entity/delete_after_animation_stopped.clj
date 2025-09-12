@@ -1,5 +1,5 @@
 (ns cdq.entity.delete-after-animation-stopped
-  (:require [cdq.animation :as animation]))
+  (:require [cdq.entity.animation :as animation]))
 
 (defn create! [_ eid _ctx]
   (-> @eid :entity/animation :looping? not assert)
