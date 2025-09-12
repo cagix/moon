@@ -7,16 +7,16 @@
             [clojure.walk :as walk]
             clojure.provide
             clojure.scene2d.stage
-            clojure.scene2d.input-event)
+            clojure.scene2d.event)
   (:gen-class))
 
 (clojure.provide/do!
  [[com.badlogic.gdx.scenes.scene2d.Stage
    'clojure.gdx.scene2d.stage
    clojure.scene2d.stage/Stage]
-  [com.badlogic.gdx.scenes.scene2d.InputEvent
-   'clojure.gdx.scene2d.input-event
-   clojure.scene2d.input-event/InputEvent]
+  [com.badlogic.gdx.scenes.scene2d.Event
+   'clojure.gdx.scene2d.event
+   clojure.scene2d.event/Event]
   ])
 
 (def effect-fn-map

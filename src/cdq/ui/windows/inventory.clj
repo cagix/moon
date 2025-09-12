@@ -4,7 +4,7 @@
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.image :as image]
-            [clojure.gdx.scene2d.utils :as utils]
+            [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
@@ -17,7 +17,7 @@
            slot->texture-region]}]
   (let [cell-size 48
         slot->drawable (fn [slot]
-                         (utils/drawable (slot->texture-region slot)
+                         (drawable/create (slot->texture-region slot)
                                          :width cell-size
                                          :height cell-size
                                          :tint-color [1 1 1 0.4]))
@@ -85,7 +85,7 @@
   (let [cell-widget (get (::table inventory-window) cell)
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
-        drawable (utils/drawable texture-region :width cell-size :height cell-size)]
+        drawable (drawable/create texture-region :width cell-size :height cell-size)]
     (image/set-drawable! image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 

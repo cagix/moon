@@ -5,6 +5,8 @@
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils :as utils]
+            [clojure.gdx.scene2d.utils.drawable :as drawable]
+            [clojure.scene2d.event :as event]
             [clojure.vis-ui.tooltip :as tooltip])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -78,12 +80,14 @@
     :as opts}]
   (let [scale (or scale 1)
         [w h] (texture-region/dimensions texture-region)
-        drawable (utils/drawable texture-region
-                                 :width  (* scale w)
-                                 :height (* scale h))
+        drawable (drawable/create texture-region
+                                  :width  (* scale w)
+                                  :height (* scale h))
         image-button (VisImageButton. ^Drawable drawable)]
     (when on-clicked
-      (.addListener image-button (utils/change-listener on-clicked)))
+      (.addListener image-button (utils/change-listener
+                                  (fn [event actor]
+                                    (on-clicked actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
       (tooltip/add! image-button tooltip))
     (table/set-opts! image-button opts)))
@@ -99,7 +103,9 @@
             on-clicked]
      :as opts}]
    (let [actor (doto (VisTextButton. (str text))
-                 (.addListener (utils/change-listener on-clicked))
+                 (.addListener (utils/change-listener
+                                (fn [event actor]
+                                  (on-clicked actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event))))))
                  (table/set-opts! opts))]
      (when-let [tooltip (:tooltip opts)]
        (tooltip/add! actor tooltip))

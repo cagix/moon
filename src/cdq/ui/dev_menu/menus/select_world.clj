@@ -4,4 +4,4 @@
   (for [world-fn world-fns]
     {:label (str "Start " (first world-fn))
      :on-click (fn [_actor ctx]
-                 ((requiring-resolve reset-game-fn) ctx world-fn))}))
+                 (reset-game-fn ctx world-fn))}))

@@ -1,5 +1,6 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [clojure.gdx.scene2d.utils :as utils])
+  (:require [clojure.scene2d.event :as event]
+            [clojure.gdx.scene2d.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)
            (com.badlogic.gdx.math Vector2)))
@@ -69,7 +70,9 @@
   (when-let [touchable (:actor/touchable opts)]
     (set-touchable! actor touchable))
   (when-let [f (:click-listener opts)]
-    (.addListener actor (utils/click-listener f)))
+    (.addListener actor (utils/click-listener
+                         (fn [event x y]
+                           (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
   actor)
 
 (defn toggle-visible! [actor]
