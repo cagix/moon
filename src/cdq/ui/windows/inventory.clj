@@ -1,8 +1,8 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
-            [cdq.ctx.stage :as stage]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils :as utils]
             [clojure.vis-ui.tooltip :as tooltip]
@@ -57,8 +57,8 @@
                     :id id
                     :visible? visible?
                     :pack? true
-                    :position [(stage/viewport-width  stage)
-                               (stage/viewport-height stage)]
+                    :position [(:viewport/width  (stage/viewport stage))
+                               (:viewport/height (stage/viewport stage))]
                     :rows [[{:actor {:id ::table
                                      :actor/type :actor.type/table
                                      :rows (concat [[nil nil

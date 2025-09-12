@@ -51,7 +51,6 @@
                           cdq.start.os-settings/do!
                           cdq.start.txs/do!
                           cdq.start.extend-scene2d/do!
-                          cdq.start.stage-impl/do!
                           cdq.start.require-syms/do!
                           cdq.start.lwjgl/do!
                           ]
