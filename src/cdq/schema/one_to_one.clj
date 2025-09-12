@@ -5,7 +5,7 @@
             [cdq.ui.editor.property :as property]
             [cdq.property]
             [cdq.string :as string]
-            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]

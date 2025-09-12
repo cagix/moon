@@ -1,6 +1,6 @@
 (ns cdq.tx.show-error-window
   (:require [cdq.string :as string]
-            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]
             [clojure.repl]))

@@ -1,5 +1,5 @@
 (ns cdq.ui.widget
-  (:require [clojure.gdx.scene2d.actor :as actor]
+  (:require [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui] ; load defmethods

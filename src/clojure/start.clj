@@ -6,17 +6,24 @@
             [clojure.object :as object]
             [clojure.walk :as walk]
             clojure.provide
-            clojure.scene2d.stage
-            clojure.scene2d.event)
+            clojure.scene2d.actor
+            clojure.scene2d.event
+            clojure.scene2d.stage)
   (:gen-class))
 
 (clojure.provide/do!
- [[com.badlogic.gdx.scenes.scene2d.Stage
-   'clojure.gdx.scene2d.stage
-   clojure.scene2d.stage/Stage]
+ [
+  [com.badlogic.gdx.scenes.scene2d.Actor
+   'clojure.gdx.scene2d.actor
+   clojure.scene2d.actor/Actor]
+
   [com.badlogic.gdx.scenes.scene2d.Event
    'clojure.gdx.scene2d.event
    clojure.scene2d.event/Event]
+
+  [com.badlogic.gdx.scenes.scene2d.Stage
+   'clojure.gdx.scene2d.stage
+   clojure.scene2d.stage/Stage]
   ])
 
 (def effect-fn-map

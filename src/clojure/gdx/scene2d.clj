@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d
-  (:require [clojure.gdx.scene2d.actor :as actor]
+  (:require [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.actor.opts :as opts]
             [clojure.gdx.scene2d.group :as group]

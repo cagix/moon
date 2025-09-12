@@ -1,5 +1,5 @@
 (ns clojure.vis-ui.tooltip
-  (:require [clojure.gdx.scene2d.actor :as actor]
+  (:require [clojure.scene2d.actor :as actor]
             [clojure.gdx.utils.align :as align])
   (:import (com.kotcrab.vis.ui.widget Tooltip
                                       VisLabel)))

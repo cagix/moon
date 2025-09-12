@@ -43,6 +43,3 @@
 
 (defn hit [actor [x y]]
   (.hit actor x y true))
-
-(defn toggle-visible! [actor]
-  (set-visible! actor (not (visible? actor))))

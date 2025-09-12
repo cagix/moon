@@ -1,22 +1,26 @@
 (ns clojure.gdx.scene2d.actor.opts
-  (:require [clojure.gdx.scene2d.actor :as actor]
+  (:require [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.scene2d.event :as event])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def fn-map
-  {:id actor/set-user-object!
+  {:id (fn [actor object]
+         (actor/set-user-object! actor object))
    :name (fn [actor name]
            (Actor/.setName actor name))
-   :user-object actor/set-user-object!
-   :visible? actor/set-visible!
+   :user-object (fn [actor object]
+                  (actor/set-user-object! actor object))
+   :visible? (fn [actor bool]
+               (actor/set-visible! actor bool))
    :position (fn [actor [x y]]
                (Actor/.setPosition actor x y))
    :center-position (fn [actor [x y]]
                       (.setPosition actor
                                     (- x (/ (.getWidth  actor) 2))
                                     (- y (/ (.getHeight actor) 2))))
-   :actor/touchable actor/set-touchable!
+   :actor/touchable (fn [actor touchable]
+                      (actor/set-touchable! actor touchable))
    :click-listener (fn [actor f]
                      (.addListener actor (listener/click
                                           (fn [event x y]

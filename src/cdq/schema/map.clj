@@ -5,7 +5,7 @@
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [clojure.order :as order]
-            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]

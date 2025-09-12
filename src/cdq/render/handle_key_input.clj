@@ -2,7 +2,7 @@
   (:require [cdq.ctx.stage]
             [cdq.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]))
 
 (def ^:private close-windows-key  :escape)
