@@ -1,6 +1,7 @@
 (ns cdq.entity.stats
   (:require [cdq.stats :as stats]
             [cdq.val-max :as val-max]
+            [clojure.gdx.graphics.color :as color]
             [clojure.string :as str]))
 
 (def ^:private hpbar-colors
@@ -26,7 +27,7 @@
           y (+ y (/ height 2))
           height (* 5          world-unit-scale)
           border (* borders-px world-unit-scale)]
-      [[:draw/filled-rectangle x y width height :black]
+      [[:draw/filled-rectangle x y width height color/black]
        [:draw/filled-rectangle
         (+ x border)
         (+ y border)

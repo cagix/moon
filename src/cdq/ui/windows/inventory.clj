@@ -24,7 +24,7 @@
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
-                         [[:draw/rectangle x y cell-size cell-size :gray]
+                         [[:draw/rectangle x y cell-size cell-size [0.5 0.5 0.5 1]]
                           (when (and mouseover?
                                      (= :player-item-on-cursor (:state (:entity/fsm player-entity))))
                             (let [item (:entity/item-on-cursor player-entity)

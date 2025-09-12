@@ -1,6 +1,6 @@
 (ns clojure.gdx.utils.screen
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils ScreenUtils)))
+  (:require [clojure.gdx.graphics.color :as color])
+  (:import (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn clear! []
-  (ScreenUtils/clear Color/BLACK))
+  (ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK))

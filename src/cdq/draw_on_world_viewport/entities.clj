@@ -3,7 +3,8 @@
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
             [cdq.utils :as utils]
-            [cdq.ctx.world :as world]))
+            [cdq.ctx.world :as world]
+            [clojure.gdx.graphics.color :as color]))
 
 (def ^:dbg-flag show-body-bounds? false)
 
@@ -18,14 +19,17 @@
    entity render-layer]
   (try
    (when show-body-bounds?
-     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) (if (:body/collides? (:entity/body entity)) :white :gray))))
+     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity)
+                                                      (if (:body/collides? (:entity/body entity))
+                                                        color/white
+                                                        color/gray))))
    ; not doseq k v but doseq render-layer-components ...
    (doseq [[k v] entity
            :let [draw-fn (get render-layer k)]
            :when draw-fn]
      (graphics/handle-draws! graphics (draw-fn v entity ctx)))
    (catch Throwable t
-     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) :red))
+     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
      (stacktrace/pretty-print t))))
 
 (defn do!

@@ -1,12 +1,12 @@
 (ns clojure.earlygrey.shape-drawer
-  (:import (com.badlogic.gdx.graphics Color)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+  (:require [clojure.gdx.graphics.color :as color])
+  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
 (defn set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer ^Color color))
+  (ShapeDrawer/.setColor shape-drawer (color/->obj color)))
 
 (defn with-line-width [^ShapeDrawer this width draw-fn]
   (let [old-line-width (.getDefaultLineWidth this)]
