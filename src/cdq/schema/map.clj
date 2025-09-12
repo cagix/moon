@@ -1,6 +1,7 @@
 (ns cdq.schema.map
   (:require [cdq.ctx :as ctx]
             [cdq.schema :as schema]
+            [cdq.schemas :as schemas]
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [cdq.utils :as utils]
@@ -19,7 +20,7 @@
     widget))
 
 (defn malli-form [[_ ks] schemas]
-  (schema/create-map-schema schemas ks))
+  (schemas/create-map-schema schemas ks))
 
 (defn- component-row [editor-widget k schema schemas table]
   (helper/component-row
@@ -51,7 +52,7 @@
                               (table/add-rows! map-widget-table [(component-row (build-widget ctx
                                                                                               (get schemas k)
                                                                                               k
-                                                                                              (schema/default-value schemas k))
+                                                                                              (schemas/default-value schemas k))
                                                                                 k
                                                                                 schema
                                                                                 schemas
