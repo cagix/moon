@@ -1,5 +1,4 @@
-(ns cdq.effects.target.damage
-  (:require [cdq.damage :as damage]))
+(ns cdq.effects.target.damage)
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
@@ -10,8 +9,8 @@
               _ctx]
   [[:tx/deal-damage source target damage]])
 
-(defn info-text [[_ damage] _ctx]
-  (damage/info-text damage)
+(defn info-text [[_ {[min max] :damage/min-max}] _ctx]
+  (str min "-" max " damage")
   #_(if source
       (let [modified (stats/damage @source damage)]
         (if (= damage modified)
