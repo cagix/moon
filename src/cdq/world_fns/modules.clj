@@ -1,7 +1,7 @@
 (ns cdq.world-fns.modules
-  (:require [cdq.area-level-grid :as area-level-grid]
-            [cdq.grid2d :as g2d]
-            [cdq.level.helper :as helper]
+  (:require [cdq.grid2d :as g2d]
+            [cdq.world-fns.helper :as helper]
+            [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.module :as module]
             [cdq.world-fns.creature-tiles :as creature-tiles]
             [cdq.world-fns.creature-layer :as creature-layer]

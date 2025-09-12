@@ -1,4 +1,4 @@
-(ns cdq.area-level-grid
+(ns cdq.world-fns.area-level-grid
   (:require [cdq.grid2d :as g2d]))
 
 ; can adjust:

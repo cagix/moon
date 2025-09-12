@@ -1,4 +1,4 @@
-(ns cdq.level.nads
+(ns cdq.world-fns.nads
   (:require [cdq.grid2d :as g2d]
             [cdq.utils :refer [assoc-ks]]))
 

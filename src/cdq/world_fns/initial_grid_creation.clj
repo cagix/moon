@@ -1,6 +1,6 @@
 (ns cdq.world-fns.initial-grid-creation
   (:require [cdq.grid2d :as g2d]
-            [cdq.level.caves :as caves]))
+            [cdq.world-fns.caves :as caves]))
 
 (defn do!
   [{:keys [size

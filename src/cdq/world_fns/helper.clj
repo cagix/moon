@@ -1,7 +1,7 @@
-(ns cdq.level.helper
+(ns cdq.world-fns.helper
   (:require [cdq.grid2d :as g2d]
-            [cdq.level.caves :as caves]
-            [cdq.level.nads :as nads]
+            [cdq.world-fns.caves :as caves]
+            [cdq.world-fns.nads :as nads]
             [cdq.utils :as utils]))
 
 (defn scale-grid [grid [w h]]
