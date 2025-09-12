@@ -15,7 +15,10 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn- build-widget [ctx schema k v]
-  (let [widget (actor.decl/build? (schema/create schema v ctx))]
+  (let [widget (schema/create schema v ctx)
+        widget (if (instance? com.badlogic.gdx.scenes.scene2d.Actor widget)
+                 widget
+                 (actor.decl/build widget))]
     ; FIXME assert no user object !
     (actor/set-user-object! widget [k v])
     widget))

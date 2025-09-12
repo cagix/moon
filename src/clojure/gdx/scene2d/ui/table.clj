@@ -5,7 +5,15 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn add! [table actor-or-decl]
-  (Table/.add table ^com.badlogic.gdx.scenes.scene2d.Actor (actor.decl/build? actor-or-decl)))
+  (Table/.add table
+              ^com.badlogic.gdx.scenes.scene2d.Actor
+              (cond
+               (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
+               actor-or-decl
+               (nil? actor-or-decl)
+               nil
+               :else
+               (actor.decl/build actor-or-decl))))
 
 (def cells Table/.getCells)
 

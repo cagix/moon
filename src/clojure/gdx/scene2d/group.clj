@@ -5,7 +5,9 @@
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn add! [group actor-or-decl]
-  (Group/.addActor group (actor.decl/build? actor-or-decl)))
+  (Group/.addActor group (if (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
+                           actor-or-decl
+                           (actor.decl/build actor-or-decl))))
 
 (defn find-actor [^Group group name]
   (.findActor group name))
