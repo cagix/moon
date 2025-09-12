@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.controls :as controls]
+  (:require [cdq.ctx.input :as controls]
             [cdq.inventory :as inventory]
             [cdq.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
