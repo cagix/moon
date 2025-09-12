@@ -1,5 +1,5 @@
 (ns cdq.schema.one-to-one
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx.db :as db]
             [cdq.editor :as editor]
             [cdq.gdx.graphics :as graphics]
             [cdq.ui.editor.property :as property]

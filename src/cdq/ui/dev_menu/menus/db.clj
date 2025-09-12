@@ -1,6 +1,6 @@
 (ns cdq.ui.dev-menu.menus.db
   (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [clojure.string :as str]))
 
 (defn create [{:keys [ctx/db]} _]

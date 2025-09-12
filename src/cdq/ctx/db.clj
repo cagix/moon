@@ -1,4 +1,4 @@
-(ns cdq.db
+(ns cdq.ctx.db
   (:require [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.property :as property]

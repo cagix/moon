@@ -1,6 +1,6 @@
 (ns cdq.tx.open-editor-overview
   (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [cdq.editor :as editor]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.table :as table]

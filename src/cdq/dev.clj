@@ -1,7 +1,7 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.db :as db]
+            [cdq.ctx.db :as db]
             [cdq.dev.app-values]
             [cdq.entity :as entity]
             [clojure.gdx :as gdx]))
