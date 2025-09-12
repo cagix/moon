@@ -1,7 +1,6 @@
 (ns cdq.schema
   (:require [cdq.malli :as m]
-            [cdq.utils :as utils]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+            [cdq.utils :as utils]))
 
 (defn- get-type [schema]
   (assert (vector? schema))
@@ -33,12 +32,6 @@
                        (try (create-value schema v db)
                             (catch Throwable t
                               (throw (ex-info " " {:k k :v v} t))))))))
-
-(defn build [ctx schema k v]
-  (let [widget (actor/build? (create schema v ctx))]
-    ; FIXME assert no user object !
-    (actor/set-user-object! widget [k v])
-    widget))
 
 (defn default-value [schemas k]
   (let [schema (utils/safe-get schemas k)]

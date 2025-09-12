@@ -12,6 +12,12 @@
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
 
+(defn- build-widget [ctx schema k v]
+  (let [widget (actor/build? (schema/create schema v ctx))]
+    ; FIXME assert no user object !
+    (actor/set-user-object! widget [k v])
+    widget))
+
 (defn malli-form [[_ ks] schemas]
   (m/create-map-schema ks (fn [k]
                             (schema/malli-form (get schemas k) schemas))))
@@ -43,7 +49,7 @@
        [(widget/text-button (name k)
                             (fn [_actor ctx]
                               (.remove window)
-                              (table/add-rows! map-widget-table [(component-row (schema/build ctx
+                              (table/add-rows! map-widget-table [(component-row (build-widget ctx
                                                                                               (get schemas k)
                                                                                               k
                                                                                               (schema/default-value schemas k))
@@ -79,7 +85,7 @@
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]
-                                           (component-row (schema/build ctx (get (:schemas db) k) k v)
+                                           (component-row (build-widget ctx (get (:schemas db) k) k v)
                                                           k
                                                           schema
                                                           (:schemas db)
