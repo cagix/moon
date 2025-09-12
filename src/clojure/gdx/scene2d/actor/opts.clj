@@ -1,6 +1,6 @@
 (ns clojure.gdx.scene2d.actor.opts
-  (:require [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.utils.listener :as listener]
+  (:require [clojure.gdx.scene2d.utils.listener :as listener]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.event :as event])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
