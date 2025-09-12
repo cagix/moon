@@ -1,8 +1,8 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [clojure.scene2d.event :as event]
-            [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.gdx.scene2d.utils :as utils]
-            [clojure.gdx.math.vector2 :as vector2])
+  (:require [clojure.gdx.scene2d.touchable :as touchable]
+            [clojure.gdx.scene2d.utils.listener :as listener]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.scene2d.event :as event])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn get-stage [^Actor actor]
@@ -73,7 +73,7 @@
   (when-let [touchable (:actor/touchable opts)]
     (set-touchable! actor (touchable/k->value touchable)))
   (when-let [f (:click-listener opts)]
-    (.addListener actor (utils/click-listener
+    (.addListener actor (listener/click
                          (fn [event x y]
                            (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
   actor)

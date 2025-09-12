@@ -2,7 +2,7 @@
   (:require [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.label :as label]
-            [clojure.gdx.scene2d.utils :as utils]
+            [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.scene2d.event :as event]
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
@@ -39,7 +39,7 @@
   (let [app-menu (menu/create label)]
     (doseq [{:keys [label on-click]} items]
       (popup-menu/add-item! app-menu (doto (menu-item/create label)
-                                       (.addListener (utils/change-listener
+                                       (.addListener (listener/change
                                                       (fn [event actor]
                                                         (when on-click
                                                           (on-click actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event))))))))))

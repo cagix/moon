@@ -1,13 +1,13 @@
-(ns clojure.gdx.scene2d.utils
+(ns clojure.gdx.scene2d.utils.listener
   (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
                                                   ClickListener)))
 
-(defn change-listener [f]
+(defn change [f]
   (proxy [ChangeListener] []
     (changed [event actor]
       (f event actor))))
 
-(defn click-listener [f]
+(defn click [f]
   (proxy [ClickListener] []
     (clicked [event x y]
       (f event x y))))

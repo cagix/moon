@@ -4,8 +4,8 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.utils :as utils]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
+            [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.scene2d.event :as event]
             [clojure.vis-ui.tooltip :as tooltip])
   (:import (com.badlogic.gdx.graphics Texture)
@@ -85,7 +85,7 @@
                                   :height (* scale h))
         image-button (VisImageButton. ^Drawable drawable)]
     (when on-clicked
-      (.addListener image-button (utils/change-listener
+      (.addListener image-button (listener/change
                                   (fn [event actor]
                                     (on-clicked actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
@@ -103,7 +103,7 @@
             on-clicked]
      :as opts}]
    (let [actor (doto (VisTextButton. (str text))
-                 (.addListener (utils/change-listener
+                 (.addListener (listener/change
                                 (fn [event actor]
                                   (on-clicked actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event))))))
                  (table/set-opts! opts))]
