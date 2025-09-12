@@ -272,3 +272,6 @@
     (if bounds
       (texture/region texture bounds)
       (texture/region texture))))
+
+(defn clear! [{:keys [ctx/graphics]} color]
+  (graphics/clear! graphics color))

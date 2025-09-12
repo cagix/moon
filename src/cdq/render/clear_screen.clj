@@ -1,7 +1,7 @@
 (ns cdq.render.clear-screen
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.utils.screen :as screen]))
+  (:require [cdq.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.color :as color]))
 
 (defn do!
-  [_ctx]
-  (screen/clear! color/black))
+  [{:keys [ctx/graphics]}]
+  (graphics/clear! graphics color/black))

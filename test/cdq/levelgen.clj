@@ -8,6 +8,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             clojure.lwjgl.system.configuration
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.texture :as texture]
@@ -18,7 +19,6 @@
             [clojure.gdx.scenes.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
-            [clojure.gdx.utils.screen :as screen]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]))
@@ -174,7 +174,7 @@
   (stage/draw! stage))
 
 (defn render! []
-  (screen/clear! color/black)
+  (graphics/clear! (gdx/graphics) color/black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
