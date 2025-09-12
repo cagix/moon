@@ -1,42 +1,11 @@
 (ns clojure.start
   (:require cdq.effect
-            cdq.ctx.graphics
-            cdq.ctx.stage
-            cdq.gdx.graphics
-            cdq.gdx.stage
             cdq.ctx.db
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.object :as object]
-            [clojure.walk :as walk]
-            clojure.provide
-            clojure.scene2d.actor
-            clojure.scene2d.event
-            clojure.scene2d.stage)
+            [clojure.walk :as walk])
   (:gen-class))
-
-(clojure.provide/do!
- [
-  [com.badlogic.gdx.scenes.scene2d.Actor
-   'clojure.gdx.scene2d.actor
-   clojure.scene2d.actor/Actor]
-
-  [com.badlogic.gdx.scenes.scene2d.Event
-   'clojure.gdx.scene2d.event
-   clojure.scene2d.event/Event]
-
-  [com.badlogic.gdx.scenes.scene2d.Stage
-   'clojure.gdx.scene2d.stage
-   clojure.scene2d.stage/Stage]
-
-  [com.badlogic.gdx.scenes.scene2d.Stage
-   'cdq.gdx.stage
-   cdq.ctx.stage/Stage]
-
-  [cdq.gdx.graphics.RGraphics
-   'cdq.gdx.graphics
-   cdq.ctx.graphics/Graphics]
-  ])
 
 (def effect-fn-map
   '{:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?
