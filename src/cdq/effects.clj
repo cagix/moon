@@ -37,7 +37,5 @@
     :effects.target/stun {:applicable? cdq.effects.target.stun/applicable?
                           :handle      cdq.effects.target.stun/handle}})
 
-
-
 (def method-map
   (walk/require-resolve-symbols method-map*))

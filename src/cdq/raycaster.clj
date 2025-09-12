@@ -1,6 +1,6 @@
 (ns cdq.raycaster
   (:require [cdq.math.raycaster :as raycaster]
-            [cdq.path-rays :as path-rays]))
+            [cdq.math.path-rays :as path-rays]))
 
 (defn path-blocked? [raycaster start target path-w]
   (let [[start1,target1,start2,target2] (path-rays/create-double-ray-endpositions start target path-w)]

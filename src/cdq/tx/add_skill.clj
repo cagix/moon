@@ -1,5 +1,5 @@
 (ns cdq.tx.add-skill
-  (:require [cdq.skills :as skills]))
+  (:require [cdq.entity.skills :as skills]))
 
 (defn do! [_ctx eid skill]
   (swap! eid update :entity/skills skills/add-skill skill)

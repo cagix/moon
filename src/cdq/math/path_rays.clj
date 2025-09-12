@@ -1,4 +1,4 @@
-(ns cdq.path-rays
+(ns cdq.math.path-rays
   (:require [cdq.gdx.math.vector2 :as v]))
 
 (defn create-double-ray-endpositions

@@ -1,7 +1,7 @@
 (ns cdq.tx.open-editor-overview
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
-            [cdq.editor :as editor]
+            [cdq.ui.editor.overview-table :as overview-table]
             [clojure.gdx.scenes.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.vis-ui.widget :as widget]))
@@ -16,7 +16,7 @@
                                           :close-button? true
                                           :center? true
                                           :close-on-escape? true})
-                      (table/add! (editor/overview-table ctx
+                      (table/add! (overview-table/create ctx
                                                          property-type
                                                          (fn [id ctx]
                                                            (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]]))))
