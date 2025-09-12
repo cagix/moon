@@ -1,5 +1,5 @@
 (ns cdq.tx.move-entity
-  (:require [cdq.content-grid :as content-grid]
+  (:require [cdq.world.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.gdx.math.vector2 :as v]))
 

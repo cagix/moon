@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.content-grid :as content-grid]
+  (:require [cdq.world.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.malli :as m]
             [qrecord.core :as q]))

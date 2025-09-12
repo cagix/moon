@@ -1,6 +1,6 @@
 (ns cdq.render.remove-destroyed-entities
   (:require [cdq.ctx :as ctx]
-            [cdq.content-grid :as content-grid]
+            [cdq.world.content-grid :as content-grid]
             [cdq.grid :as grid]))
 
 (def destroy-components

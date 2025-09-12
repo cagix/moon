@@ -1,9 +1,9 @@
 (ns cdq.create.world
-  (:require [cdq.content-grid :as content-grid]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.grid :as grid]
             [cdq.utils :as utils]
+            [cdq.world.content-grid :as content-grid]
             [cdq.world.explored-tile-corners :as explored-tile-corners]
             [cdq.world.raycaster :as raycaster]
             [clojure.gdx.maps.tiled :as tiled]))
