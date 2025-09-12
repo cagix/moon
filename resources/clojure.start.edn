@@ -1,6 +1,5 @@
 {:functions [
              cdq.start.read-schema/do!
-             cdq.start.bind-roots/do!
              cdq.start.context-record/do!
              cdq.start.register-self/do!
              cdq.start.fsms/do!
@@ -9,7 +8,6 @@
              cdq.start.os-settings/do!
              cdq.start.txs/do!
              cdq.start.extend-scene2d/do!
-             cdq.start.require-syms/do!
              cdq.start.lwjgl/do!
              ]
  :object
@@ -55,14 +53,6 @@
                 ]
 
    :ctx/config {
-                :cdq.start.bind-roots {
-                                       cdq.schema/k->methods
-                                       cdq.schema-impl/k->methods
-
-                                       cdq.effect/k->method-map
-                                       cdq.effects/method-map
-                                       }
-
                 :cdq.start.register-self cdq.application/state
 
                 :cdq.start.os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
@@ -432,5 +422,18 @@
                     :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
                     }
+
+:ctx/render-layers [{:entity/mouseover? cdq.entity.mouseover/draw
+                     :stunned cdq.entity.state.stunned/draw
+                     :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
+                    {:entity/clickable cdq.entity.clickable/draw
+                     :entity/animation cdq.entity.animation/draw
+                     :entity/image cdq.entity.image/draw
+                     :entity/line-render cdq.entity.line-render/draw}
+                    {:npc-sleeping cdq.entity.state.npc-sleeping/draw
+                     :entity/temp-modifier cdq.entity.temp-modifier/draw
+                     :entity/string-effect cdq.entity.string-effect/draw}
+                    {:creature/stats cdq.entity.stats/draw
+                     :active-skill cdq.entity.state.active-skill/draw}]
 }
 }

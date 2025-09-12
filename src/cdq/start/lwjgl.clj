@@ -13,13 +13,13 @@
                 config]} (:cdq.start.lwjgl config)]
     (lwjgl/start-application!
      {:create! (fn []
-                 (swap! application-state (requiring-resolve create)))
+                 (swap! application-state create))
       :dispose! (fn []
-                  (swap! application-state (requiring-resolve dispose)))
+                  (swap! application-state dispose))
       :render! (fn []
-                 (swap! application-state (requiring-resolve render)))
+                 (swap! application-state render))
       :resize! (fn [width height]
-                 (swap! application-state (requiring-resolve resize) width height))
+                 (swap! application-state resize width height))
       :pause! (fn [])
       :resume! (fn [])}
      config)))

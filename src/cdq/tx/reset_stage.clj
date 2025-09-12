@@ -9,7 +9,7 @@
   (stage/clear! stage)
   (let [config (:cdq.application.reset-game-state config)
         actors (map #(let [[f params] %]
-                       ((requiring-resolve f) ctx params))
+                       (f ctx params))
                     (:create-ui-actors config))]
     (doseq [actor actors]
       (stage/add! stage (actor/build actor))))

@@ -10,4 +10,4 @@
    graphics
    (fn []
      (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
-       (graphics/handle-draws! graphics ((requiring-resolve f) ctx))))))
+       (graphics/handle-draws! graphics (f ctx))))))

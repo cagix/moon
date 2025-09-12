@@ -10,7 +10,7 @@
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]
-  ((requiring-resolve f)
+  (f
    (assoc params
           :creature-properties creature-properties
           :graphics graphics)))

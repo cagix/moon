@@ -18,7 +18,7 @@
   (menu/create
    {:menus (for [menu menus]
              (update menu :items (fn [[f params]]
-                                   ((requiring-resolve f) ctx params))))
+                                   (f ctx params))))
     :update-labels (let [textures (:ctx/textures graphics)
                          ->texture (fn [path]
                                      (assert (contains? textures path))
