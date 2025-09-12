@@ -1,8 +1,6 @@
 (ns clojure.gdx.scene2d.actor
   (:require [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.gdx.scene2d.utils.listener :as listener]
-            [clojure.gdx.math.vector2 :as vector2]
-            [clojure.scene2d.event :as event])
+            [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn get-stage [^Actor actor]
@@ -45,31 +43,6 @@
 
 (defn hit [actor [x y]]
   (.hit actor x y true))
-
-(def fn-map
-  {:id set-user-object!
-   :name (fn [actor name]
-           (Actor/.setName actor name))
-   :user-object set-user-object!
-   :visible? set-visible!
-   :position (fn [actor [x y]]
-               (Actor/.setPosition actor x y))
-   :center-position (fn [actor [x y]]
-                      (.setPosition actor
-                                    (- x (/ (.getWidth  actor) 2))
-                                    (- y (/ (.getHeight actor) 2))))
-   :actor/touchable set-touchable!
-   :click-listener (fn [actor f]
-                     (.addListener actor (listener/click
-                                          (fn [event x y]
-                                            (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))})
-
-(defn set-opts! [actor opts]
-  (doseq [[k v] opts
-          :let [f (get fn-map k)]
-          :when f]
-    (f actor v))
-  actor)
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))

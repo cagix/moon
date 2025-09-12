@@ -1,5 +1,6 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.actor.opts :as opts]
             [clojure.gdx.scene2d.group :as group]
             [clojure.scene2d.stage :as stage])
   (:import (clojure.lang ILookup)
@@ -50,7 +51,7 @@
           (draw [_batch _parent-alpha]
             (when-let [f (:draw opts)]
               (try-draw this f))))
-    (actor/set-opts! opts)))
+    (opts/set-actor-opts! opts)))
 
 (defmethod actor/build :actor.type/actor [opts] (actor opts))
 (defmethod actor/build :actor.type/group [opts] (group opts))
