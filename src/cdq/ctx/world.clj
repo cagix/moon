@@ -1,4 +1,4 @@
-(ns cdq.world
+(ns cdq.ctx.world
   (:require [clojure.gdx.utils.disposable :as disposable]))
 
 (def active-eids :ctx/active-entities)

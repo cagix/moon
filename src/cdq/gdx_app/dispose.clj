@@ -1,6 +1,6 @@
 (ns cdq.gdx-app.dispose
   (:require [cdq.gdx.graphics :as graphics]
-            [cdq.world :as world]
+            [cdq.ctx.world :as world]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.vis-ui :as vis-ui]))
 

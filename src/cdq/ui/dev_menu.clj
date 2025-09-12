@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.create.world]
             [cdq.ui.menu :as menu]
-            [cdq.world :as world]))
+            [cdq.ctx.world :as world]))
 
 (defn help-items [_ctx _params]
   [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}])

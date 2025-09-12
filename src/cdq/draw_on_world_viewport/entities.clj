@@ -3,7 +3,7 @@
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
             [cdq.utils :as utils]
-            [cdq.world :as world]))
+            [cdq.ctx.world :as world]))
 
 (def ^:dbg-flag show-body-bounds? false)
 
