@@ -1,4 +1,4 @@
-(ns cdq.audio
+(ns cdq.ctx.audio
   (:require [clojure.gdx.audio :as audio]
             [clojure.gdx.audio.sound :as sound]))
 

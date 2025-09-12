@@ -1,5 +1,5 @@
 (ns cdq.create.audio
-  (:require [cdq.audio :as audio]
+  (:require [cdq.ctx.audio :as audio]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.files :as files]

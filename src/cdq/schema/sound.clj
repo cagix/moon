@@ -1,5 +1,5 @@
 (ns cdq.schema.sound
-  (:require [cdq.audio :as audio]
+  (:require [cdq.ctx.audio :as audio]
             [cdq.stage]
             [cdq.ui.widget]
             [clojure.gdx.scenes.scene2d.actor :as actor]
