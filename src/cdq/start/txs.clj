@@ -1,23 +1,11 @@
 (ns cdq.start.txs
   (:require [cdq.ctx]))
 
-(defn- valid-tx? [transaction]
-  (vector? transaction))
-
-(defn- do!*
+(defn- handle-tx!
   [{:keys [ctx/txs-fn-map]
     :as ctx}
-   {k 0 :as component}]
-  (let [f (get txs-fn-map k)]
-    (assert f (pr-str k))
-    (apply f ctx (rest component))))
-
-(defn- handle-tx! [ctx tx]
-  (assert (valid-tx? tx) (pr-str tx))
-  (try
-   (do!* ctx tx)
-   (catch Throwable t
-     (throw (ex-info "Error handling transaction" {:transaction tx} t)))))
+   {k 0 :as tx}]
+  (apply (get txs-fn-map k) ctx (rest tx)))
 
 (defn- create-fn-map [{:keys [ks sym-format]}]
   (into {}
@@ -38,7 +26,11 @@
         (if (seq txs)
           (let [tx (first txs)]
             (if tx
-              (let [new-txs (handle-tx! ctx tx)]
+              (let [_ (assert (vector? tx))
+                    new-txs (try
+                             (handle-tx! ctx tx)
+                             (catch Throwable t
+                               (throw (ex-info "Error handling transaction" {:transaction tx} t))))]
                 (recur ctx
                        (concat (or new-txs []) (rest txs))
                        (conj handled tx)))
