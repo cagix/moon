@@ -1,5 +1,5 @@
 (ns cdq.ui.dev-menu.update-labels.elapsed-time
-  (:require [cdq.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 (defn create [icon]
   {:label "elapsed-time"

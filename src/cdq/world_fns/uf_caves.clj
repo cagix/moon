@@ -1,5 +1,5 @@
 (ns cdq.world-fns.uf-caves
-  (:require [cdq.utils :as utils]
+  (:require [clojure.utils :as utils]
             [cdq.world-fns.creature-tiles :as creature-tiles]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.maps.tiled :as tiled]))

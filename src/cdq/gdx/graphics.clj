@@ -1,6 +1,5 @@
 (ns cdq.gdx.graphics
-  (:require [cdq.utils :as utils]
-            [clojure.earlygrey.shape-drawer :as sd]
+  (:require [clojure.earlygrey.shape-drawer :as sd]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.colors :as colors]
@@ -14,7 +13,8 @@
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.graphics.color :as color]))
+            [clojure.graphics.color :as color]
+            [clojure.utils :as utils]))
 
 (defrecord RGraphics [])
 

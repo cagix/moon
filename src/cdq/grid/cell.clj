@@ -1,5 +1,5 @@
 (ns cdq.grid.cell
-  (:require [cdq.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 (defprotocol Cell
   (blocked? [_ z-order])

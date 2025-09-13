@@ -1,7 +1,7 @@
 (ns cdq.entity.temp-modifier
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 ; TODO draw opacity as of counter ratio?
 (defn draw [_ entity _ctx]

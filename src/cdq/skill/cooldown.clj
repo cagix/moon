@@ -1,5 +1,5 @@
 (ns cdq.skill.cooldown
-  (:require [cdq.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 (defn info-text [[_ v] _ctx]
   (when-not (zero? v)

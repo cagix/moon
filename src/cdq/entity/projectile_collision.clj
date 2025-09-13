@@ -3,7 +3,7 @@
             [cdq.grid2d :as g2d]
             [cdq.world.grid :as grid]
             [cdq.grid.cell :as cell]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [cdq.gdx.math.geom :as geom]))
 
 (defn create [v _ctx]

@@ -2,7 +2,7 @@
   (:require [cdq.ctx.graphics :as graphics]
             [cdq.raycaster :as raycaster]
             [cdq.stacktrace :as stacktrace]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [cdq.ctx.world :as world]
             [clojure.graphics.color :as color]))
 

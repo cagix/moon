@@ -1,5 +1,5 @@
 (ns cdq.effects.target.stun
-  (:require [cdq.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target

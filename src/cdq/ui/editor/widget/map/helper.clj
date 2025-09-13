@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.map.helper
   (:require [cdq.ctx :as ctx]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.vis-ui.separator :as separator]))

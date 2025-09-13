@@ -1,5 +1,5 @@
 (ns cdq.gdx.math.vector2
-  (:require [cdq.utils :as utils])
+  (:require [clojure.utils :as utils])
   (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- ->java

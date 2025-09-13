@@ -1,7 +1,7 @@
 (ns cdq.schemas
   (:require [cdq.malli :as m]
             [cdq.schema :as schema]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn build-values [schemas property db]
   (utils/apply-kvs property

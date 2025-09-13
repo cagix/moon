@@ -2,7 +2,7 @@
   (:require [cdq.grid2d :as g2d]
             [cdq.world-fns.caves :as caves]
             [cdq.world-fns.nads :as nads]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)

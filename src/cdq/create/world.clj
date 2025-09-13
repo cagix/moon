@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
             [cdq.world.grid :as grid]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.explored-tile-corners :as explored-tile-corners]
             [cdq.world.raycaster :as raycaster]

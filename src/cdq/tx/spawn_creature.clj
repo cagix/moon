@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-creature
-  (:require [cdq.utils :as utils]))
+  (:require [clojure.utils :as utils]))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)

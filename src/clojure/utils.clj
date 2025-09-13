@@ -1,4 +1,4 @@
-(ns cdq.utils)
+(ns clojure.utils)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

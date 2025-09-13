@@ -1,7 +1,7 @@
 (ns cdq.db
   (:require [cdq.schemas :as schemas]
             [cdq.property :as property]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]))

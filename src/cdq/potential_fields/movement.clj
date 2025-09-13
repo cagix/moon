@@ -5,7 +5,7 @@
             [cdq.world.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.position :as position]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [cdq.gdx.math.geom :as geom]
             [cdq.gdx.math.vector2 :as v]))
 

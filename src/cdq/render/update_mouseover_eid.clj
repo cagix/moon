@@ -1,7 +1,7 @@
 (ns cdq.render.update-mouseover-eid
   (:require [cdq.world.grid :as grid]
             [cdq.raycaster :as raycaster]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn do!
   [{:keys [ctx/mouseover-actor
