@@ -70,3 +70,9 @@
       stage/root
       (group/find-actor "player-message")
       (cdq.ui.message/show! message)))
+
+(defn toggle-entity-info-window! [stage]
+  (-> stage :windows :entity-info-window actor/toggle-visible!))
+
+(defn close-all-windows! [stage]
+  (run! #(actor/set-visible! % false) (group/children (:windows stage))))

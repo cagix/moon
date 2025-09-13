@@ -10,4 +10,6 @@
   (remove-item! [stage inventory-cell])
   (add-skill! [stage skill-properties])
   (remove-skill! [stage skill-id])
-  (show-text-message! [stage message]))
+  (show-text-message! [stage message])
+  (toggle-entity-info-window! [_])
+  (close-all-windows! [_]))
