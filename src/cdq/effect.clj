@@ -1,9 +1,15 @@
 (ns cdq.effect)
 
-; protocol
+(comment
+ (defprotocol Effect
+   (fooz [_ effect-ctx]))
 
-; extend-type clojure.lang.PersistentVector ?
-; and then [k] -> etc.
+ (extend-type clojure.lang.PersistentVector
+   Effect
+   (fooz [[k] effect-ctx]
+     (str "dispatching on k internally")))
+
+ (fooz [:effect/bar 123] {}))
 
 (declare k->method-map)
 
