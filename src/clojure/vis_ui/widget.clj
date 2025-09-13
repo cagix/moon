@@ -68,7 +68,7 @@
   (check-box opts))
 
 (defn table [opts]
-  (-> (scene2d/proxy-group VisTable [])
+  (-> (VisTable.)
       (table/set-opts! opts)))
 
 (defmethod actor.decl/build :actor.type/table [opts]
@@ -122,7 +122,7 @@
            center?
            close-on-escape?]
     :as opts}]
-  (let [window (doto (scene2d/proxy-group VisWindow [^String title true]) ; true = showWindowBorder
+  (let [window (doto (VisWindow. ^String title true) ; true = showWindowBorder
                  (.setModal (boolean modal?)))]
     (when close-button?    (.addCloseButton window))
     (when center?          (.centerWindow   window))

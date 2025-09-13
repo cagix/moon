@@ -1,32 +1,17 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
-            [clojure.gdx.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage])
-  (:import (clojure.lang ILookup)
-           (clojure.gdx.scene2d Stage)
+            [clojure.gdx.scene2d.group :as group])
+  (:import (clojure.gdx.scene2d Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
-(defmacro proxy-group
-  "For actors inheriting from Group, implements `clojure.lang.ILookup` (`get`)
-  via [find-actor-with-id]."
-  [class args]
-  `(proxy [~class ILookup] ~args
-     (valAt
-       ([id#]
-        (group/find-actor-with-id ~'this id#))
-       ([id# not-found#]
-        (or (group/find-actor-with-id ~'this id#) not-found#)))))
-
 (defn group [opts]
-  (doto (proxy-group Group [])
+  (doto (Group.)
     (group/set-opts! opts)))
 
 (defn stage [viewport batch]
-  (proxy [Stage ILookup] [viewport batch (atom nil)]
-    (valAt [id]
-      (group/find-actor-with-id (stage/root this) id))))
+  (Stage. viewport batch (atom nil)))
 
 ; actor was removed -> stage nil -> context nil -> error on text-buttons/etc.
 (defn try-act [actor delta f]

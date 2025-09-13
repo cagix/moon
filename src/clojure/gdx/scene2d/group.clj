@@ -15,14 +15,6 @@
 (defn children [^Group group]
   (.getChildren group))
 
-(defn find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep actor/user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (actor/user-object %)) actors))))
-
 (defn set-opts! [group opts]
   (run! (fn [actor-or-decl]
           (add! group (if (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)

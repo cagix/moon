@@ -8,7 +8,7 @@
                                                Widget)))
 
 (defn horizontal-group [{:keys [space pad] :as opts}]
-  (let [group (scene2d/proxy-group HorizontalGroup [])]
+  (let [group (HorizontalGroup.)]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     (group/set-opts! group opts)))
@@ -17,7 +17,7 @@
   (horizontal-group opts))
 
 (defn stack [opts]
-  (doto (scene2d/proxy-group Stack [])
+  (doto (Stack.)
     (widget-group/set-opts! opts)))
 
 (defmethod actor.decl/build :actor.type/stack [opts]
