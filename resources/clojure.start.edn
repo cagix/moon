@@ -14,6 +14,7 @@
  :object
  {
    :ctx/schema [:map {:closed true}
+                [:ctx/gdx :some]
                 [:ctx/txs-fn-map :some]
                 [:ctx/entity-states :some]
                 [:ctx/active-entities :some]

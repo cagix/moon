@@ -3,11 +3,10 @@
             [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
             [cdq.dev.app-values]
-            [cdq.entity :as entity]
-            [clojure.gdx :as gdx]))
+            [cdq.entity :as entity]))
 
 (defn post-runnable! [f]
-  (gdx/post-runnable! (fn [] (f @application/state))))
+  (.postRunnable com.badlogic.gdx.Gdx/app (fn [] (f @application/state))))
 
 (comment
 

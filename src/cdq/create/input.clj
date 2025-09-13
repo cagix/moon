@@ -1,5 +1,4 @@
-(ns cdq.create.input
-  (:require [clojure.gdx :as gdx]))
+(ns cdq.create.input)
 
 (defn do! [ctx]
-  (assoc ctx :ctx/input (gdx/input)))
+  (assoc ctx :ctx/input (:clojure.gdx/input (:ctx/gdx ctx))))

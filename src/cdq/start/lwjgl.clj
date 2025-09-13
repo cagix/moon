@@ -12,8 +12,8 @@
                 resize
                 config]} (:cdq.start.lwjgl config)]
     (lwjgl/start-application!
-     {:create! (fn []
-                 (swap! application-state create))
+     {:create! (fn [gdx]
+                 (swap! application-state create gdx))
       :dispose! (fn []
                   (swap! application-state dispose))
       :render! (fn []

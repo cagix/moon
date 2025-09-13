@@ -1,5 +1,4 @@
-(ns cdq.create.files
-  (:require [clojure.gdx :as gdx]))
+(ns cdq.create.files)
 
 (defn do! [ctx]
-  (assoc ctx :ctx/files (gdx/files)))
+  (assoc ctx :ctx/files (:clojure.gdx/files (:ctx/gdx ctx))))

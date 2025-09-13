@@ -1,12 +1,11 @@
+; TODO breaks because creature tiles uses internal cdq.ctx.graphics !
 (ns cdq.levelgen
-  (:require [cdq.db]
-            [cdq.ctx.db :as db]
+  (:require [cdq.db :as db]
             [cdq.gdx-app.resize]
             [cdq.files :as files]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
-            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             clojure.lwjgl.system.configuration
             [clojure.gdx.graphics :as graphics]
@@ -95,10 +94,11 @@
 
 (defrecord Context [])
 
-(defn create! []
+(defn create! [{:keys [clojure.gdx/files
+                       clojure.gdx/input
+                       clojure.gdx/graphics]}]
   (vis-ui/load! {:skin-scale :x1})
-  (let [input (gdx/input)
-        ctx (map->Context {:ctx/input input})
+  (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
         stage (scene2d/stage ui-viewport sprite-batch)
@@ -116,9 +116,10 @@
                                                             :world-width world-width
                                                             :world-height world-height)))
         ctx (assoc ctx
+                   :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path file-handle] (files/search (gdx/files)
+                   :ctx/textures (into {} (for [[path file-handle] (files/search files
                                                                                  {:folder "resources/"
                                                                                   :extensions #{"png" "bmp"}})]
                                             [path (texture/from-file file-handle)]))
@@ -175,7 +176,7 @@
   (stage/draw! stage))
 
 (defn render! []
-  (graphics/clear! (gdx/graphics) color/black)
+  (graphics/clear! (:ctx/graphics @state) color/black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
