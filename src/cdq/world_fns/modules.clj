@@ -21,24 +21,30 @@
            ]}]
   (let [
         start-position (mapv * start scale)
+
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
+
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
+
         spawn-positions (helper/flood-fill scaled-grid start-position can-spawn?)
         ;_ (println "scaled grid with filled nil: '?' \n")
         ;_ (printgrid (reduce #(assoc %1 %2 nil) scaled-grid spawn-positions))
         ;_ (println "\n")
-        {:keys [steps area-level-grid]} (area-level-grid/create
-                                         :grid grid
-                                         :start start
-                                         :max-level max-area-level
-                                         :walk-on #{:ground :transition})
+
+        {:keys [_steps area-level-grid]} (area-level-grid/create
+                                          :grid grid
+                                          :start start
+                                          :max-level max-area-level
+                                          :walk-on #{:ground :transition})
         ;_ (printgrid area-level-grid)
         _ (assert (or
                    (= (set (concat [max-area-level] (range max-area-level)))
                       (set (g2d/cells area-level-grid)))
                    (= (set (concat [:wall max-area-level] (range max-area-level)))
                       (set (g2d/cells area-level-grid)))))
+
         scaled-area-level-grid (helper/scale-grid area-level-grid scale)
+
         get-free-position-in-area-level (fn [area-level]
                                           (rand-nth
                                            (filter
@@ -49,6 +55,8 @@
                                                                           p
                                                                           "id"))))
                                             spawn-positions)))
+
+
         creatures (for [position spawn-positions
                         :let [area-level (get scaled-area-level-grid position)
                               creatures (filter #(= area-level (:creature/level %))
@@ -100,10 +108,13 @@
 (defn- create-scaled-grid [w]
   (assoc w :scaled-grid (helper/scale-grid (:grid w) (:scale w))))
 
+(defn- add-scale [w]
+  (assoc w :scale module/modules-scale))
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
-      (assoc :scale module/modules-scale)
+      add-scale
       assert-max-area-level
       prepare-creature-properties
       create-initial-grid
