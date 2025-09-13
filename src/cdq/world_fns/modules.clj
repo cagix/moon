@@ -8,7 +8,7 @@
             [clojure.gdx.maps.tiled :as tiled]))
 
 (defn- generate-modules
-  [{:keys [world/map-size
+  [{:keys [
            world/max-area-level
            world/spawn-rate
            creature-properties
@@ -16,13 +16,9 @@
            start
            scale
            scaled-grid
+           tiled-map
            ]}]
   (let [
-        tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
-                                       scaled-grid
-                                       grid
-                                       (filter #(= :ground     (get grid %)) (g2d/posis grid))
-                                       (filter #(= :transition (get grid %)) (g2d/posis grid)))
         start-position (mapv * start scale)
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
@@ -103,6 +99,16 @@
 (defn- create-scaled-grid [w]
   (assoc w :scaled-grid (helper/scale-grid (:grid w) (:scale w))))
 
+(defn- create-tiled-map
+  [{:keys [scaled-grid
+           grid]
+    :as w}]
+  (assoc w :tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
+                                           scaled-grid
+                                           grid
+                                           (filter #(= :ground     (get grid %)) (g2d/posis grid))
+                                           (filter #(= :transition (get grid %)) (g2d/posis grid)))))
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
@@ -114,4 +120,5 @@
       assoc-transition-tiles
       print-grid!
       create-scaled-grid
+      create-tiled-map
       generate-modules))
