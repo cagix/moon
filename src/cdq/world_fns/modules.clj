@@ -13,10 +13,11 @@
            world/spawn-rate
            creature-properties
            grid
-           start]}]
+           start
+           scale
+           scaled-grid
+           ]}]
   (let [
-        scale module/modules-scale
-        scaled-grid (helper/scale-grid grid scale)
         tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
                                        scaled-grid
                                        grid
@@ -99,13 +100,18 @@
             (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
     (assoc world-fn-ctx :grid grid)))
 
+(defn- create-scaled-grid [w]
+  (assoc w :scaled-grid (helper/scale-grid (:grid w) (:scale w))))
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
+      (assoc :scale module/modules-scale)
       assert-max-area-level
       prepare-creature-properties
       create-initial-grid
       print-grid!
       assoc-transition-tiles
       print-grid!
+      create-scaled-grid
       generate-modules))
