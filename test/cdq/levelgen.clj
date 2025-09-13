@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.db]
+            [cdq.ctx.db :as db]
             [cdq.gdx-app.resize]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -105,8 +106,8 @@
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
-        ctx (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
-                                           :properties "properties.edn"}))
+        ctx (assoc ctx :ctx/db (cdq.db/create {:schemas "schema.edn"
+                                               :properties "properties.edn"}))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (viewport/fit world-width

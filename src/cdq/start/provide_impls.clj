@@ -3,9 +3,16 @@
 
 (require 'cdq.gdx.graphics)
 
+(require 'cdq.db)
+
 (defn do! [ctx]
   (clojure.provide/do!
    [
+
+    [cdq.db.DB
+     'cdq.db
+     @(requiring-resolve 'cdq.ctx.db/DB)]
+
     [com.badlogic.gdx.scenes.scene2d.Actor
      'clojure.gdx.scene2d.actor
      @(requiring-resolve 'clojure.scene2d.actor/Actor)]
