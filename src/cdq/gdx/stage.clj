@@ -64,6 +64,11 @@
       :action-bar
       (action-bar/remove-skill! skill-id)))
 
+(defn action-bar-selected-skill [stage]
+  (-> stage
+      :action-bar
+      action-bar/selected-skill))
+
 (defn show-text-message!
   [stage message]
   (-> stage

@@ -12,4 +12,5 @@
   (remove-skill! [stage skill-id])
   (show-text-message! [stage message])
   (toggle-entity-info-window! [_])
-  (close-all-windows! [_]))
+  (close-all-windows! [_])
+  (action-bar-selected-skill [_]))
