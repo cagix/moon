@@ -5,6 +5,7 @@
             [cdq.world-fns.module :as module]
             [cdq.world-fns.creature-tiles :as creature-tiles]
             [cdq.world-fns.creature-layer :as creature-layer]
+            [cdq.world-fns.modules.place-modules]
             [clojure.gdx.maps.tiled :as tiled]))
 
 (defn- generate-modules
@@ -99,16 +100,6 @@
 (defn- create-scaled-grid [w]
   (assoc w :scaled-grid (helper/scale-grid (:grid w) (:scale w))))
 
-(defn- create-tiled-map
-  [{:keys [scaled-grid
-           grid]
-    :as w}]
-  (assoc w :tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
-                                           scaled-grid
-                                           grid
-                                           (filter #(= :ground     (get grid %)) (g2d/posis grid))
-                                           (filter #(= :transition (get grid %)) (g2d/posis grid)))))
-
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
@@ -120,5 +111,5 @@
       assoc-transition-tiles
       print-grid!
       create-scaled-grid
-      create-tiled-map
+      cdq.world-fns.modules.place-modules/do!
       generate-modules))
