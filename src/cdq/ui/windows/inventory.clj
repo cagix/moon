@@ -13,7 +13,7 @@
    {:keys [title
            user-object
            visible?
-           clicked-cell-fn
+           clicked-cell-listener
            slot->texture-region]}]
   (let [cell-size 48
         slot->drawable (fn [slot]
@@ -48,7 +48,7 @@
                    {:actor {:actor/type :actor.type/stack
                             :name "inventory-cell"
                             :user-object cell
-                            :click-listener (clicked-cell-fn cell)
+                            :actor/listener (clicked-cell-listener cell)
                             :actors [(draw-rect-actor)
                                      (widget/image background-drawable
                                                    {:name "image-widget"

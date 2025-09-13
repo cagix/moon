@@ -3,7 +3,10 @@
             [cdq.ctx.graphics :as graphics]
             [cdq.info :as info]
             cdq.ui.windows.entity-info
-            cdq.ui.windows.inventory))
+            cdq.ui.windows.inventory
+            [clojure.gdx.scene2d.utils.listener :as listener]
+            [clojure.scene2d.event :as event]
+            ))
 
 (comment
 
@@ -61,13 +64,15 @@
      {:title "Inventory"
       :user-object :inventory-window
       :visible? false
-      :clicked-cell-fn (fn [cell]
-                         (fn [{:keys [ctx/entity-states
-                                      ctx/player-eid] :as ctx}]
-                           (ctx/handle-txs!
-                            ctx
-                            (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @player-eid)))]
-                              (f player-eid cell)))))
+      :clicked-cell-listener (fn [cell]
+                               (listener/click
+                                (fn [event _x _y]
+                                  (let [{:keys [ctx/entity-states
+                                                ctx/player-eid] :as ctx} @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event))]
+                                    (ctx/handle-txs!
+                                     ctx
+                                     (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @player-eid)))]
+                                       (f player-eid cell)))))))
       :slot->texture-region slot->texture-region
       })))
 

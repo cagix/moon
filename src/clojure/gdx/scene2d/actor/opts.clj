@@ -1,7 +1,5 @@
 (ns clojure.gdx.scene2d.actor.opts
-  (:require [clojure.gdx.scene2d.utils.listener :as listener]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.event :as event]))
+  (:require [clojure.scene2d.actor :as actor]))
 
 (def fn-map
   {
@@ -19,10 +17,8 @@
                                            (- y (/ (actor/get-height actor) 2))))
    :actor/touchable (fn [actor touchable]
                       (actor/set-touchable! actor touchable))
-   :click-listener (fn [actor f]
-                     (actor/add-listener! actor (listener/click
-                                                 (fn [event x y]
-                                                   (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
+   :actor/listener (fn [actor listener]
+                     (actor/add-listener! actor listener))
    })
 
 (defn set-actor-opts! [actor opts]
