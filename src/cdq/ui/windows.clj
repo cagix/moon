@@ -62,7 +62,6 @@
                                                             :image/bounds bounds})))
          ]
      {:title "Inventory"
-      :actor/user-object :inventory-window
       :actor/visible? false
       :clicked-cell-listener (fn [cell]
                                (listener/click

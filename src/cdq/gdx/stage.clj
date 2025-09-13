@@ -18,13 +18,13 @@
 (defn inventory-window-visible? [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      :inventory-window
+      (group/find-actor "cdq.ui.windows.inventory")
       actor/visible?))
 
 (defn toggle-inventory-visible! [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      :inventory-window
+      (group/find-actor "cdq.ui.windows.inventory")
       actor/toggle-visible!))
 
 ; no window movable type cursor appears here like in player idle
@@ -53,14 +53,14 @@
   [stage cell item-properties]
   (-> stage
       (stage-find "cdq.ui.windows")
-      :inventory-window
+      (group/find-actor "cdq.ui.windows.inventory")
       (inventory-window/set-item! cell item-properties)))
 
 (defn remove-item!
   [stage inventory-cell]
   (-> stage
       (stage-find "cdq.ui.windows")
-      :inventory-window
+      (group/find-actor "cdq.ui.windows.inventory")
       (inventory-window/remove-item! inventory-cell)))
 
 (defn add-skill!

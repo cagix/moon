@@ -11,7 +11,6 @@
 (defn create
   [{:keys [ctx/stage]}
    {:keys [title
-           actor/user-object
            actor/visible?
            clicked-cell-listener
            slot->texture-region]}]
@@ -55,7 +54,7 @@
                                                           :actor/user-object {:background-drawable background-drawable
                                                                               :cell-size cell-size}})]}}))]
     (widget/window {:title title
-                    :actor/user-object user-object
+                    :actor/name "cdq.ui.windows.inventory"
                     :actor/visible? visible?
                     :pack? true
                     :actor/position [(:viewport/width  (stage/viewport stage))
