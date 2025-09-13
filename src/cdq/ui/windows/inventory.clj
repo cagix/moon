@@ -81,10 +81,14 @@
                                                        (->cell :inventory.slot/bag :position [x y]))))}
                              :pad 4}]]})))
 
+(defn- find-cell [group cell]
+  (first (filter #(= (actor/user-object % ) cell)
+                 (group/children group))))
+
 (defn- window->cell [inventory-window cell]
   (-> inventory-window
       (group/find-actor "inventory-cell-table")
-      (get cell)))
+      (find-cell cell)))
 
 (defn set-item! [inventory-window cell {:keys [texture-region tooltip-text]}]
   (let [cell-widget (window->cell inventory-window cell)
