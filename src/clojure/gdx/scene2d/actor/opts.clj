@@ -20,9 +20,10 @@
    :actor/touchable (fn [actor touchable]
                       (actor/set-touchable! actor touchable))
    :click-listener (fn [actor f]
-                     (.addListener actor (listener/click
-                                          (fn [event x y]
-                                            (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))})
+                     (actor/add-listener! actor (listener/click
+                                                 (fn [event x y]
+                                                   (f @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event)))))))
+   })
 
 (defn set-actor-opts! [actor opts]
   (doseq [[k v] opts

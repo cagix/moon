@@ -55,3 +55,6 @@
 
 (defn get-height [actor]
   (Actor/.getHeight actor))
+
+(defn add-listener! [actor listener]
+  (.addListener actor listener))

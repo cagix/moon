@@ -17,7 +17,8 @@
   (remove! [actor])
   (parent [actor])
   (stage->local-coordinates [actor position])
-  (hit [actor [x y]]))
+  (hit [actor [x y]])
+  (add-listener! [actor listener]))
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
