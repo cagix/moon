@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx.stage :as stage]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.vis-ui.widget :as widget]))
 
 (defn create [{:keys [ctx/stage]}

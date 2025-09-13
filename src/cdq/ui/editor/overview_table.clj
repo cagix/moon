@@ -14,14 +14,14 @@
                          tooltip
                          extra-info-text]} row]
              {:actor {:actor/type :actor.type/stack
-                      :actors [{:actor/type :actor.type/image-button
-                                :drawable/texture-region texture-region
-                                :on-clicked on-clicked
-                                :drawable/scale image-scale
-                                :tooltip tooltip}
-                               {:actor/type :actor.type/label
-                                :label/text extra-info-text
-                                :actor/touchable :disabled}]}}))})
+                      :group/actors [{:actor/type :actor.type/image-button
+                                      :drawable/texture-region texture-region
+                                      :on-clicked on-clicked
+                                      :drawable/scale image-scale
+                                      :tooltip tooltip}
+                                     {:actor/type :actor.type/label
+                                      :label/text extra-info-text
+                                      :actor/touchable :disabled}]}}))})
 
 (defn create
   [{:keys [ctx/db

@@ -3,6 +3,8 @@
             [clojure.gdx.scene2d.actor.decl :as actor.decl])
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
+; Options can do it but here not
+; as if we do group/add! we are still in scene2d territory working with those objects
 (defn add! [group actor-or-decl]
   (Group/.addActor group (if (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
                            actor-or-decl
@@ -26,5 +28,5 @@
     (first (filter #(= id (actor/user-object %)) actors))))
 
 (defn set-opts! [group opts]
-  (run! (partial add! group) (:actors opts))
+  (run! (partial add! group) (:group/actors opts))
   (actor/set-opts! group opts))

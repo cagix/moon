@@ -79,7 +79,7 @@
 (defn create [ctx _]
   {:actor/type :actor.type/group
    :actor/user-object :windows
-   :actors [(cdq.ui.windows.entity-info/create ctx {:y 0
-                                                    :->label-text ->label-text
-                                                    }) ; graphics only
-            (create-inventory ctx)]})
+   :group/actors [(cdq.ui.windows.entity-info/create ctx {:y 0
+                                                          :->label-text ->label-text
+                                                          }) ; graphics only
+                  (create-inventory ctx)]})

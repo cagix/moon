@@ -3,7 +3,7 @@
             [cdq.ctx.stage]
             [cdq.ui.widget]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.window :as window]

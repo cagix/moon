@@ -53,9 +53,9 @@
         rows [[(widget/scroll-pane-cell scroll-pane-height
                                         scroll-pane-rows)]]
         actor (editor-window/create {:rows rows
-                                     :actors actors})]
+                                     :group/actors actors})]
     (editor-window/create {:rows rows
-                           :actors actors})))
+                           :group/actors actors})))
 
 (defn do!
   [{:keys [ctx/application-state

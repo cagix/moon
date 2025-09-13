@@ -9,7 +9,7 @@
    :close-button? true
    :center? true
    :close-on-escape? true
-   :actors actors
+   :group/actors actors
    :rows rows
    :cell-defaults {:pad 5}
    :pack? true})

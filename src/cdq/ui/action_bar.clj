@@ -1,6 +1,6 @@
 (ns cdq.ui.action-bar
   (:require [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
@@ -11,10 +11,10 @@
                     :pad 2
                     :space 2
                     :actor/user-object :horizontal-group
-                    :actors [{:actor/type :actor.type/actor
-                              :actor/name "button-group-container"
-                              :actor/user-object (button-group/create {:max-check-count 1
-                                                                       :min-check-count 0})}]}
+                    :group/actors [{:actor/type :actor.type/actor
+                                    :actor/name "button-group-container"
+                                    :actor/user-object (button-group/create {:max-check-count 1
+                                                                             :min-check-count 0})}]}
             :expand? true
             :bottom? true}]]
    :actor/user-object :action-bar

@@ -7,7 +7,7 @@
             [clojure.order :as order]
             [clojure.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.set :as set]

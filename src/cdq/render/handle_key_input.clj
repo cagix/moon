@@ -3,7 +3,7 @@
             [cdq.ctx.graphics :as graphics]
             [clojure.gdx.input :as input]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]))
+            [clojure.scene2d.group :as group]))
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)

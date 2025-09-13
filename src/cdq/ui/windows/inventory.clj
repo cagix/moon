@@ -1,7 +1,7 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
@@ -49,11 +49,11 @@
                             :actor/name "inventory-cell"
                             :actor/user-object cell
                             :actor/listener (clicked-cell-listener cell)
-                            :actors [(draw-rect-actor)
-                                     (widget/image background-drawable
-                                                   {:actor/name "image-widget"
-                                                    :actor/user-object {:background-drawable background-drawable
-                                                                        :cell-size cell-size}})]}}))]
+                            :group/actors [(draw-rect-actor)
+                                           (widget/image background-drawable
+                                                         {:actor/name "image-widget"
+                                                          :actor/user-object {:background-drawable background-drawable
+                                                                              :cell-size cell-size}})]}}))]
     (widget/window {:title title
                     :actor/user-object user-object
                     :actor/visible? visible?

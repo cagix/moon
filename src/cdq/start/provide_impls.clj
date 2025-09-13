@@ -10,6 +10,10 @@
      'clojure.gdx.scene2d.actor
      @(requiring-resolve 'clojure.scene2d.actor/Actor)]
 
+    [com.badlogic.gdx.scenes.scene2d.Group
+     'clojure.gdx.scene2d.group
+     @(requiring-resolve 'clojure.scene2d.group/Group)]
+
     [com.badlogic.gdx.scenes.scene2d.Event
      'clojure.gdx.scene2d.event
      @(requiring-resolve 'clojure.scene2d.event/Event)]

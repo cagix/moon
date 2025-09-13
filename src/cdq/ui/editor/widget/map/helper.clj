@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.utils :as utils]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.vis-ui.separator :as separator]))
 
 (defn k->label-text [k]
