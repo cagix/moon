@@ -8,7 +8,7 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.window :as window]
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))

@@ -3,7 +3,7 @@
             [cdq.ctx.db :as db]
             [cdq.ui.editor.overview-table :as overview-table]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.vis-ui.widget :as widget]))
 
 (defn do!

@@ -29,6 +29,10 @@
     [cdq.gdx.graphics.RGraphics
      'cdq.gdx.graphics
      @(requiring-resolve 'cdq.ctx.graphics/Graphics)]
+
+    [com.badlogic.gdx.scenes.scene2d.ui.Table
+     'clojure.gdx.scene2d.ui.table
+     @(requiring-resolve 'clojure.scene2d.ui.table/Table)]
     ])
   ctx)
 

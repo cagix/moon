@@ -1,7 +1,7 @@
 (ns cdq.ui.menu
   (:require [clojure.scene2d.group :as group]
             [clojure.gdx.scene2d :as scene2d]
-            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.label :as label]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.scene2d.event :as event]

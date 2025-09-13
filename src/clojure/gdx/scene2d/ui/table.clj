@@ -19,9 +19,6 @@
 (def cells Table/.getCells)
 
 (defn add-rows!
-  "rows is a seq of seqs of columns.
-  Elements are actors or nil (for just adding empty cells ) or a map of
-  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
   [table rows]
   (doseq [row rows]
     (doseq [props-or-actor row]

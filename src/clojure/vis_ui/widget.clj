@@ -2,7 +2,7 @@
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scene2d :as scene2d]
             [clojure.gdx.scene2d.ui.widget :as widget]
-            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.scene2d.event :as event]
