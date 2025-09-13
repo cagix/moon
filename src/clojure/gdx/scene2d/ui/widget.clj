@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.ui.widget
-  (:require [clojure.gdx.scene2d.actor.opts :as opts]))
+  (:require [clojure.gdx.scene2d.actor :as actor]))
 
 (defn set-opts! [widget opts]
-  (opts/set-actor-opts! widget opts))
+  (actor/set-opts! widget opts))

@@ -58,3 +58,27 @@
 
 (defn add-listener! [actor listener]
   (.addListener actor listener))
+
+(def ^:private opts-fn-map
+  {
+   :actor/name set-name!
+   :actor/user-object set-user-object!
+   :actor/visible?  set-visible!
+   :actor/touchable set-touchable!
+   :actor/listener add-listener!
+   :actor/position
+   (fn [actor [x y]]
+     (set-position! actor x y))
+   :actor/center-position
+   (fn [actor [x y]]
+     (set-position! actor
+                    (- x (/ (get-width  actor) 2))
+                    (- y (/ (get-height actor) 2))))
+   })
+
+(defn set-opts! [actor opts]
+  (doseq [[k v] opts
+          :let [f (get opts-fn-map k)]
+          :when f]
+    (f actor v))
+  actor)
