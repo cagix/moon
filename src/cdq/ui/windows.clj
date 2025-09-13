@@ -59,7 +59,7 @@
                                                             :image/bounds bounds})))
          ]
      {:title "Inventory"
-      :id :inventory-window
+      :user-object :inventory-window
       :visible? false
       :clicked-cell-fn (fn [cell]
                          (fn [{:keys [ctx/entity-states
@@ -73,7 +73,7 @@
 
 (defn create [ctx _]
   {:actor/type :actor.type/group
-   :id :windows
+   :user-object :windows
    :actors [(cdq.ui.windows.entity-info/create ctx {:y 0
                                                     :->label-text ->label-text
                                                     }) ; graphics only

@@ -32,7 +32,7 @@
                                                           (fn [_actor _ctx]
                                                             (actor/remove! (::modal stage))
                                                             (on-click)))]]
-                              :id ::modal
+                              :user-object ::modal
                               :modal? true
                               :center-position [(/ (:viewport/width  ui-viewport) 2)
                                                 (* (:viewport/height ui-viewport) (/ 3 4))]

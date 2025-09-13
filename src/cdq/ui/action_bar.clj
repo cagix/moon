@@ -5,7 +5,7 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
-(defn create [_ctx {:keys [id]}]
+(defn create [_ctx {:keys [user-object]}]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
@@ -17,7 +17,7 @@
                                                                  :min-check-count 0})}]}
             :expand? true
             :bottom? true}]]
-   :id id
+   :user-object user-object
    :cell-defaults {:pad 2}
    :fill-parent? true})
 

@@ -10,7 +10,7 @@
                   y]
         label (widget/label {:label/text ""})
         window (widget/window {:title "Info"
-                               :id :entity-info-window
+                               :user-object :entity-info-window
                                :visible? false
                                :position position
                                :rows [[{:actor label :expand? true}]]})]

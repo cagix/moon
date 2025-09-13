@@ -49,7 +49,7 @@
          (let [property (db/get-raw db property-id)
                texture-region (graphics/texture-region graphics (property/image property))
                image-widget (widget/image texture-region
-                                          {:id property-id})]
+                                          {:user-object property-id})]
            (tooltip/add! image-widget (string/pprint-to-str property))
            image-widget))]
       [(when property-id

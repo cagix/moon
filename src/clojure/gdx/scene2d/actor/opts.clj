@@ -5,8 +5,7 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def fn-map
-  {:id (fn [actor object]
-         (actor/set-user-object! actor object))
+  {
    :name (fn [actor name]
            (Actor/.setName actor name))
    :user-object (fn [actor object]

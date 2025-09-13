@@ -11,7 +11,7 @@
 (defn create
   [{:keys [ctx/stage]}
    {:keys [title
-           id
+           user-object
            visible?
            clicked-cell-fn
            slot->texture-region]}]
@@ -55,12 +55,12 @@
                                                     :user-object {:background-drawable background-drawable
                                                                   :cell-size cell-size}})]}}))]
     (widget/window {:title title
-                    :id id
+                    :user-object user-object
                     :visible? visible?
                     :pack? true
                     :position [(:viewport/width  (stage/viewport stage))
                                (:viewport/height (stage/viewport stage))]
-                    :rows [[{:actor {:id ::table
+                    :rows [[{:actor {:user-object ::table
                                      :actor/type :actor.type/table
                                      :rows (concat [[nil nil
                                                      (->cell :inventory.slot/helm)

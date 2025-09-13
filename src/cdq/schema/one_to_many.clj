@@ -47,7 +47,7 @@
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
               texture-region (graphics/texture-region graphics (property/image property))
-              image-widget (widget/image texture-region {:id property-id})]
+              image-widget (widget/image texture-region {:user-object property-id})]
           (tooltip/add! image-widget (string/pprint-to-str property))))
       (for [id property-ids]
         (widget/text-button "-"
