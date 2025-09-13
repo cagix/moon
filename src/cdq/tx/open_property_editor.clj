@@ -51,9 +51,7 @@
                           [{:actor save-button :center? true}
                            {:actor delete-button :center? true}]]
         rows [[(widget/scroll-pane-cell scroll-pane-height
-                                        scroll-pane-rows)]]
-        actor (editor-window/create {:rows rows
-                                     :group/actors actors})]
+                                        scroll-pane-rows)]]]
     (editor-window/create {:rows rows
                            :group/actors actors})))
 
