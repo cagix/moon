@@ -11,12 +11,10 @@
   [{:keys [world/map-size
            world/max-area-level
            world/spawn-rate
-           creature-properties]}]
-  (assert (<= max-area-level map-size))
-  (let [{:keys [start grid]} (helper/cave-grid :size map-size)
-        ;_ (printgrid grid)
-        ;_ (println " - ")
-        grid (reduce #(assoc %1 %2 :transition) grid (helper/adjacent-wall-positions grid))
+           creature-properties
+           grid
+           start]}]
+  (let [grid (reduce #(assoc %1 %2 :transition) grid (helper/adjacent-wall-positions grid))
         ;_ (printgrid grid)
         ;_ (println " - ")
         _ (assert (or
@@ -78,8 +76,29 @@
     :as world-fn-ctx}]
   (update world-fn-ctx :creature-properties creature-tiles/prepare graphics))
 
+(defn- assert-max-area-level
+  [{:keys [world/map-size
+           world/max-area-level]
+    :as world-fn-ctx}]
+  (assert (<= max-area-level map-size))
+  world-fn-ctx)
+
+(defn- create-initial-grid
+  [{:keys [world/map-size]
+    :as world-fn-ctx}]
+  (let [{:keys [start grid]} (helper/cave-grid :size map-size)]
+    (assoc world-fn-ctx :start start :grid grid)))
+
+(defn- print-grid! [{:keys [grid] :as world-fn-ctx}]
+  (helper/printgrid grid)
+  (println " - ")
+  world-fn-ctx)
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
+      assert-max-area-level
       prepare-creature-properties
+      create-initial-grid
+      print-grid!
       generate-modules))
