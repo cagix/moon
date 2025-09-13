@@ -14,13 +14,7 @@
            creature-properties
            grid
            start]}]
-  (let [grid (reduce #(assoc %1 %2 :transition) grid (helper/adjacent-wall-positions grid))
-        ;_ (printgrid grid)
-        ;_ (println " - ")
-        _ (assert (or
-                   (= #{:wall :ground :transition} (set (g2d/cells grid)))
-                   (= #{:ground :transition} (set (g2d/cells grid))))
-                  (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
+  (let [
         scale module/modules-scale
         scaled-grid (helper/scale-grid grid scale)
         tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
@@ -94,11 +88,24 @@
   (println " - ")
   world-fn-ctx)
 
+(defn- assoc-transition-tiles
+  [{:keys [grid] :as world-fn-ctx}]
+  (let [grid (reduce #(assoc %1 %2 :transition)
+                     grid
+                     (helper/adjacent-wall-positions grid))]
+    (assert (or
+             (= #{:wall :ground :transition} (set (g2d/cells grid)))
+             (= #{:ground :transition} (set (g2d/cells grid))))
+            (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
+    (assoc world-fn-ctx :grid grid)))
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
       assert-max-area-level
       prepare-creature-properties
       create-initial-grid
+      print-grid!
+      assoc-transition-tiles
       print-grid!
       generate-modules))
