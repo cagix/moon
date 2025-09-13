@@ -7,14 +7,25 @@
             [clojure.scene2d.stage :as stage]
             [clojure.vis-ui.widget :as widget]))
 
+(defn- stage-find [stage k]
+  (-> stage
+      stage/root
+      (group/find-actor k)))
+
 (defn viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
 (defn viewport-height [stage] (:viewport/height (stage/viewport stage)))
 
 (defn inventory-window-visible? [stage]
-  (-> stage :windows :inventory-window actor/visible?))
+  (-> stage
+      (stage-find "cdq.ui.windows")
+      :inventory-window
+      actor/visible?))
 
 (defn toggle-inventory-visible! [stage]
-  (-> stage :windows :inventory-window actor/toggle-visible!))
+  (-> stage
+      (stage-find "cdq.ui.windows")
+      :inventory-window
+      actor/toggle-visible!))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -41,14 +52,14 @@
 (defn set-item!
   [stage cell item-properties]
   (-> stage
-      :windows
+      (stage-find "cdq.ui.windows")
       :inventory-window
       (inventory-window/set-item! cell item-properties)))
 
 (defn remove-item!
   [stage inventory-cell]
   (-> stage
-      :windows
+      (stage-find "cdq.ui.windows")
       :inventory-window
       (inventory-window/remove-item! inventory-cell)))
 
@@ -77,7 +88,12 @@
       (cdq.ui.message/show! message)))
 
 (defn toggle-entity-info-window! [stage]
-  (-> stage :windows :entity-info-window actor/toggle-visible!))
+  (-> stage
+      (stage-find "cdq.ui.windows")
+      :entity-info-window
+      actor/toggle-visible!))
 
 (defn close-all-windows! [stage]
-  (run! #(actor/set-visible! % false) (group/children (:windows stage))))
+  (->> (stage-find stage "cdq.ui.windows")
+       group/children
+       (run! #(actor/set-visible! % false))))

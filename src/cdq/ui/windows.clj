@@ -78,7 +78,7 @@
 
 (defn create [ctx _]
   {:actor/type :actor.type/group
-   :actor/user-object :windows
+   :actor/name "cdq.ui.windows"
    :group/actors [(cdq.ui.windows.entity-info/create ctx {:y 0
                                                           :->label-text ->label-text
                                                           }) ; graphics only
