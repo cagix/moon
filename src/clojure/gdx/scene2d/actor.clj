@@ -43,3 +43,15 @@
 
 (defn hit [actor [x y]]
   (.hit actor x y true))
+
+(defn set-name! [actor name]
+  (Actor/.setName actor name))
+
+(defn set-position! [actor x y]
+  (Actor/.setPosition actor x y))
+
+(defn get-width [actor]
+  (Actor/.getWidth actor))
+
+(defn get-height [actor]
+  (Actor/.getHeight actor))
