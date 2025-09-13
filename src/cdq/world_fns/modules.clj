@@ -10,8 +10,8 @@
 (defn- generate-modules
   [{:keys [world/map-size
            world/max-area-level
-           world/spawn-rate]}
-   creature-properties]
+           world/spawn-rate
+           creature-properties]}]
   (assert (<= max-area-level map-size))
   (let [{:keys [start grid]} (helper/cave-grid :size map-size)
         ;_ (printgrid grid)
@@ -72,9 +72,14 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defn create
+(defn- prepare-creature-properties
   [{:keys [creature-properties
            graphics]
-    :as params}]
-  (generate-modules params
-                    (creature-tiles/prepare creature-properties graphics)))
+    :as world-fn-ctx}]
+  (update world-fn-ctx :creature-properties creature-tiles/prepare graphics))
+
+(defn create
+  [world-fn-ctx]
+  (-> world-fn-ctx
+      prepare-creature-properties
+      generate-modules))
