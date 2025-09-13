@@ -7,8 +7,8 @@
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
             [clojure.gdx.input :as input]
+            [clojure.gdx.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.window :as window]))
 
@@ -69,5 +69,5 @@
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]
-    (stage/add! stage (actor.decl/build actor)))
+    (stage/add! stage (scene2d/build actor)))
   nil)

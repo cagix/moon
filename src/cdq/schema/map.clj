@@ -5,11 +5,11 @@
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [clojure.order :as order]
+            [clojure.gdx.scene2d :as scene2d]
+            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]
             [clojure.vis-ui.widget :as widget]))
@@ -18,7 +18,7 @@
   (let [widget (schema/create schema v ctx)
         widget (if (instance? com.badlogic.gdx.scenes.scene2d.Actor widget)
                  widget
-                 (actor.decl/build widget))]
+                 (scene2d/build widget))]
     ; FIXME assert no user object !
     (actor/set-user-object! widget [k v])
     widget))

@@ -1,5 +1,5 @@
 (ns cdq.tx.reset-stage
-  (:require [clojure.gdx.scene2d.actor.decl :as actor.decl]
+  (:require [clojure.gdx.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]))
 
 (defn do!
@@ -12,5 +12,5 @@
                        (f ctx params))
                     (:create-ui-actors config))]
     (doseq [actor actors]
-      (stage/add! stage (actor.decl/build actor))))
+      (stage/add! stage (scene2d/build actor))))
   nil)

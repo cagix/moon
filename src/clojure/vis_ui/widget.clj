@@ -1,7 +1,6 @@
 (ns clojure.vis-ui.widget
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scene2d :as scene2d]
-            [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
@@ -31,14 +30,14 @@
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
 
-(defmethod actor.decl/build :actor.type/select-box [opts]
+(defmethod scene2d/build :actor.type/select-box [opts]
   (select-box opts))
 
 (defn label [{:keys [label/text] :as opts}]
   (doto (VisLabel. ^CharSequence text)
-    (actor.decl/set-actor-opts! opts)))
+    (scene2d/set-actor-opts! opts)))
 
-(defmethod actor.decl/build :actor.type/label [opts]
+(defmethod scene2d/build :actor.type/label [opts]
   (label opts))
 
 (defn text-field
@@ -50,7 +49,7 @@
       (tooltip/add! actor tooltip))
     actor))
 
-(defmethod actor.decl/build :actor.type/text-field [opts]
+(defmethod scene2d/build :actor.type/text-field [opts]
   (text-field opts))
 
 (defn check-box
@@ -63,14 +62,14 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(defmethod actor.decl/build :actor.type/check-box [opts]
+(defmethod scene2d/build :actor.type/check-box [opts]
   (check-box opts))
 
 (defn table [opts]
   (-> (VisTable.)
       (table/set-opts! opts)))
 
-(defmethod actor.decl/build :actor.type/table [opts]
+(defmethod scene2d/build :actor.type/table [opts]
   (table opts))
 
 (defn image-button
@@ -92,7 +91,7 @@
       (tooltip/add! image-button tooltip))
     (table/set-opts! image-button opts)))
 
-(defmethod actor.decl/build :actor.type/image-button [opts]
+(defmethod scene2d/build :actor.type/image-button [opts]
   (image-button opts))
 
 (defn text-button
@@ -111,7 +110,7 @@
        (tooltip/add! actor tooltip))
      actor)))
 
-(defmethod actor.decl/build :actor.type/text-button [opts]
+(defmethod scene2d/build :actor.type/text-button [opts]
   (text-button opts))
 
 (defn window
@@ -128,7 +127,7 @@
     (when close-on-escape? (.closeOnEscape  window))
     (table/set-opts! window opts)))
 
-(defmethod actor.decl/build :actor.type/window [opts]
+(defmethod scene2d/build :actor.type/window [opts]
   (window opts))
 
 (defmulti ^:private image* type)

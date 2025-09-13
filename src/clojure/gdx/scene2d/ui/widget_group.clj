@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.ui.widget-group
-  (:require [clojure.gdx.scene2d.actor.decl :as actor.decl])
+  (:require [clojure.gdx.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d.ui WidgetGroup)))
 
 (defn set-opts!
@@ -9,7 +9,7 @@
   (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
   (when pack?
     (.pack widget-group))
-  (actor.decl/set-group-opts! widget-group opts))
+  (scene2d/set-group-opts! widget-group opts))
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
