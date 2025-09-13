@@ -3,22 +3,35 @@
 
 (def fn-map
   {
-   :name (fn [actor name]
-           (actor/set-name! actor name))
-   :user-object (fn [actor object]
-                  (actor/set-user-object! actor object))
-   :visible? (fn [actor bool]
-               (actor/set-visible! actor bool))
-   :position (fn [actor [x y]]
-               (actor/set-position! actor x y))
-   :center-position (fn [actor [x y]]
-                      (actor/set-position! actor
-                                           (- x (/ (actor/get-width  actor) 2))
-                                           (- y (/ (actor/get-height actor) 2))))
-   :actor/touchable (fn [actor touchable]
-                      (actor/set-touchable! actor touchable))
-   :actor/listener (fn [actor listener]
-                     (actor/add-listener! actor listener))
+   :actor/name
+   (fn [actor name]
+     (actor/set-name! actor name))
+
+   :actor/user-object
+   (fn [actor object]
+     (actor/set-user-object! actor object))
+
+   :actor/visible?
+   (fn [actor bool]
+     (actor/set-visible! actor (boolean bool)))
+
+   :actor/position
+   (fn [actor [x y]]
+     (actor/set-position! actor x y))
+
+   :actor/center-position
+   (fn [actor [x y]]
+     (actor/set-position! actor
+                          (- x (/ (actor/get-width  actor) 2))
+                          (- y (/ (actor/get-height actor) 2))))
+
+   :actor/touchable
+   (fn [actor touchable]
+     (actor/set-touchable! actor touchable))
+
+   :actor/listener
+   (fn [actor listener]
+     (actor/add-listener! actor listener))
    })
 
 (defn set-actor-opts! [actor opts]

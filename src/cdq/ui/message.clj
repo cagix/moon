@@ -25,8 +25,8 @@
               (swap! state update :counter + delta)
               (when (>= (:counter @state) duration-seconds)
                 (reset! state nil)))))
-   :name name
-   :user-object (atom nil)})
+   :actor/name name
+   :actor/user-object (atom nil)})
 
 (defn show! [message-actor text]
   (actor/set-user-object! message-actor (atom {:text text

@@ -11,8 +11,8 @@
 (defn create
   [{:keys [ctx/stage]}
    {:keys [title
-           user-object
-           visible?
+           actor/user-object
+           actor/visible?
            clicked-cell-listener
            slot->texture-region]}]
   (let [cell-size 48
@@ -46,21 +46,21 @@
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
                    {:actor {:actor/type :actor.type/stack
-                            :name "inventory-cell"
-                            :user-object cell
+                            :actor/name "inventory-cell"
+                            :actor/user-object cell
                             :actor/listener (clicked-cell-listener cell)
                             :actors [(draw-rect-actor)
                                      (widget/image background-drawable
-                                                   {:name "image-widget"
-                                                    :user-object {:background-drawable background-drawable
-                                                                  :cell-size cell-size}})]}}))]
+                                                   {:actor/name "image-widget"
+                                                    :actor/user-object {:background-drawable background-drawable
+                                                                        :cell-size cell-size}})]}}))]
     (widget/window {:title title
-                    :user-object user-object
-                    :visible? visible?
+                    :actor/user-object user-object
+                    :actor/visible? visible?
                     :pack? true
-                    :position [(:viewport/width  (stage/viewport stage))
-                               (:viewport/height (stage/viewport stage))]
-                    :rows [[{:actor {:user-object ::table
+                    :actor/position [(:viewport/width  (stage/viewport stage))
+                                     (:viewport/height (stage/viewport stage))]
+                    :rows [[{:actor {:actor/user-object ::table
                                      :actor/type :actor.type/table
                                      :rows (concat [[nil nil
                                                      (->cell :inventory.slot/helm)

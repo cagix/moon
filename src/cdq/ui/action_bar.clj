@@ -5,19 +5,19 @@
             [clojure.vis-ui.tooltip :as tooltip]
             [clojure.vis-ui.widget :as widget]))
 
-(defn create [_ctx {:keys [user-object]}]
+(defn create [_ctx _]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
                     :space 2
-                    :user-object :horizontal-group
+                    :actor/user-object :horizontal-group
                     :actors [{:actor/type :actor.type/actor
-                              :name "button-group-container"
-                              :user-object (button-group/create {:max-check-count 1
-                                                                 :min-check-count 0})}]}
+                              :actor/name "button-group-container"
+                              :actor/user-object (button-group/create {:max-check-count 1
+                                                                       :min-check-count 0})}]}
             :expand? true
             :bottom? true}]]
-   :user-object user-object
+   :actor/user-object :action-bar
    :cell-defaults {:pad 2}
    :fill-parent? true})
 

@@ -85,7 +85,7 @@
   (let [k-sort-order (:property-k-sort-order (:cdq.ui.editor.widget.map config))
         table (widget/table
                {:cell-defaults {:pad 5}
-                :user-object :map-widget})
+                :actor/user-object :map-widget})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [[k v]]

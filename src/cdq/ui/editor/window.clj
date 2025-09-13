@@ -4,7 +4,7 @@
   [{:keys [actors rows]}]
   {:actor/type :actor.type/window
    :title "[SKY]Property[]"
-   :user-object :property-editor-window
+   :actor/user-object :property-editor-window
    :modal? true
    :close-button? true
    :center? true

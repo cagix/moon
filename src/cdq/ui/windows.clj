@@ -62,8 +62,8 @@
                                                             :image/bounds bounds})))
          ]
      {:title "Inventory"
-      :user-object :inventory-window
-      :visible? false
+      :actor/user-object :inventory-window
+      :actor/visible? false
       :clicked-cell-listener (fn [cell]
                                (listener/click
                                 (fn [event _x _y]
@@ -78,7 +78,7 @@
 
 (defn create [ctx _]
   {:actor/type :actor.type/group
-   :user-object :windows
+   :actor/user-object :windows
    :actors [(cdq.ui.windows.entity-info/create ctx {:y 0
                                                     :->label-text ->label-text
                                                     }) ; graphics only

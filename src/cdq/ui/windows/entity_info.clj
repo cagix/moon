@@ -10,9 +10,9 @@
                   y]
         label (widget/label {:label/text ""})
         window (widget/window {:title "Info"
-                               :user-object :entity-info-window
-                               :visible? false
-                               :position position
+                               :actor/user-object :entity-info-window
+                               :actor/visible? false
+                               :actor/position position
                                :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.

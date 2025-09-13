@@ -8,7 +8,7 @@
 
 (defn scroll-pane-cell [viewport-height rows]
   (let [table (widget/table {:rows rows
-                             :name "scroll-pane-table"
+                             :actor/name "scroll-pane-table"
                              :cell-defaults {:pad 5}
                              :pack? true})]
     {:actor (doto (scroll-pane/create table)

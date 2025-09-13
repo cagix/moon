@@ -169,7 +169,7 @@
                                                                       :items [cdq.ui.dev-menu.menus.db/create]}
                                                                      {:label "Ctx Data"
                                                                       :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
-                                    [cdq.ui.action-bar/create {:user-object :action-bar}]
+                                    [cdq.ui.action-bar/create {}]
                                     [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
                                                                 :rahmenw 150
                                                                 :rahmenh 26
