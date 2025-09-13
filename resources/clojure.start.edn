@@ -9,6 +9,7 @@
              cdq.start.os-settings/do!
              cdq.start.txs/do!
              cdq.start.extend-scene2d/do!
+             cdq.start.load-effects/do!
              cdq.start.lwjgl/do!
              ]
  :object
