@@ -1,14 +1,13 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.actor.decl :as actor.decl]
-            [clojure.gdx.scene2d.group :as group])
+            [clojure.gdx.scene2d.actor.decl :as actor.decl])
   (:import (clojure.gdx.scene2d Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
 (defn group [opts]
   (doto (Group.)
-    (group/set-opts! opts)))
+    (actor.decl/set-group-opts! opts)))
 
 (defn stage [viewport batch]
   (Stage. viewport batch (atom nil)))
@@ -36,7 +35,7 @@
           (draw [_batch _parent-alpha]
             (when-let [f (:draw opts)]
               (try-draw this f))))
-    (actor/set-opts! opts)))
+    (actor.decl/set-actor-opts! opts)))
 
 (defmethod actor.decl/build :actor.type/actor [opts] (actor opts))
 (defmethod actor.decl/build :actor.type/group [opts] (group opts))

@@ -1,7 +1,6 @@
 (ns clojure.vis-ui.widget
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scene2d :as scene2d]
-            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.actor.decl :as actor.decl]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.ui.table :as table]
@@ -37,7 +36,7 @@
 
 (defn label [{:keys [label/text] :as opts}]
   (doto (VisLabel. ^CharSequence text)
-    (actor/set-opts! opts)))
+    (actor.decl/set-actor-opts! opts)))
 
 (defmethod actor.decl/build :actor.type/label [opts]
   (label opts))
