@@ -1,5 +1,7 @@
 (ns cdq.levelgen
-  (:require cdq.start.provide-impls
+  (:require cdq.gdx.graphics
+            cdq.ctx.graphics
+            cdq.start.provide-impls
             [cdq.db :as db]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -60,12 +62,6 @@
                                            :bottom [0 0])))
 
 (def tile-size 48)
-
-; graphics has to implement
-; cdq.ctx.graphics/texture-region graphics image
-
-(require 'cdq.ctx.graphics)
-(require 'cdq.gdx.graphics)
 
 (defrecord Graphics []
   cdq.ctx.graphics/Graphics
