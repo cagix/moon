@@ -60,7 +60,7 @@
                     :pack? true
                     :actor/position [(:viewport/width  (stage/viewport stage))
                                      (:viewport/height (stage/viewport stage))]
-                    :rows [[{:actor {:actor/user-object ::table
+                    :rows [[{:actor {:actor/name "inventory-cell-table"
                                      :actor/type :actor.type/table
                                      :rows (concat [[nil nil
                                                      (->cell :inventory.slot/helm)
@@ -82,8 +82,13 @@
                                                        (->cell :inventory.slot/bag :position [x y]))))}
                              :pad 4}]]})))
 
+(defn- window->cell [inventory-window cell]
+  (-> inventory-window
+      (group/find-actor "inventory-cell-table")
+      (get cell)))
+
 (defn set-item! [inventory-window cell {:keys [texture-region tooltip-text]}]
-  (let [cell-widget (get (::table inventory-window) cell)
+  (let [cell-widget (window->cell inventory-window cell)
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (drawable/create texture-region :width cell-size :height cell-size)]
@@ -91,7 +96,7 @@
     (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
-  (let [cell-widget (get (::table inventory-window) cell)
+  (let [cell-widget (window->cell inventory-window cell)
         image-widget (group/find-actor cell-widget "image-widget")]
     (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))
