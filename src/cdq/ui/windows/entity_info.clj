@@ -11,7 +11,7 @@
                   y]
         label (widget/label {:label/text ""})
         window (widget/window {:title "Info"
-                               :actor/user-object :entity-info-window
+                               :actor/name "cdq.ui.windows.entity-info"
                                :actor/visible? false
                                :actor/position position
                                :rows [[{:actor label :expand? true}]]})]

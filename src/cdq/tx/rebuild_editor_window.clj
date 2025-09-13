@@ -2,18 +2,20 @@
   (:require [cdq.schema :as schema]
             cdq.schema.map
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]))
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/application-state
-           ctx/db
+  [{:keys [ctx/db
            ctx/stage]
     :as ctx}]
-  (let [window (:property-editor-window stage)
+  (let [window (-> stage
+                   stage/root
+                   (group/find-actor "cdq.ui.editor.window"))
         map-widget-table (-> window
                              :scroll-pane
                              (group/find-actor "scroll-pane-table")
-                             :map-widget)
+                             (group/find-actor "cdq.schema.map.ui.widget"))
         property (cdq.schema.map/value nil map-widget-table (:schemas db))] ; FIXME
     (actor/remove! window)
     [[:tx/open-property-editor property]]))

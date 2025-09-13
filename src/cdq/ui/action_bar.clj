@@ -10,19 +10,19 @@
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
                     :space 2
-                    :actor/user-object :horizontal-group
+                    :actor/name "cdq.ui.action-bar.horizontal-group"
                     :group/actors [{:actor/type :actor.type/actor
                                     :actor/name "button-group-container"
                                     :actor/user-object (button-group/create {:max-check-count 1
                                                                              :min-check-count 0})}]}
             :expand? true
             :bottom? true}]]
-   :actor/user-object :action-bar
+   :actor/name "cdq.ui.action-bar"
    :cell-defaults {:pad 2}
    :fill-parent? true})
 
 (defn- get-data [action-bar]
-  (let [group (:horizontal-group action-bar)]
+  (let [group (group/find-actor action-bar "cdq.ui.action-bar.horizontal-group")]
     {:horizontal-group group
      :button-group (actor/user-object (group/find-actor group "button-group-container"))}))
 

@@ -4,7 +4,7 @@
   [{:keys [actors rows]}]
   {:actor/type :actor.type/window
    :title "[SKY]Property[]"
-   :actor/user-object :property-editor-window
+   :actor/name "cdq.ui.editor.window"
    :modal? true
    :close-button? true
    :center? true

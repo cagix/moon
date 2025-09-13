@@ -34,16 +34,20 @@
 (defn show-modal-window! [stage
                           ui-viewport
                           {:keys [title text button-text on-click]}]
-  (assert (not (::modal stage)))
+  (assert (not (-> stage
+                   stage/root
+                   (group/find-actor "cdq.ui.modal-window"))))
   (stage/add! stage
               (widget/window {:title title
                               :rows [[{:actor {:actor/type :actor.type/label
                                                :label/text text}}]
                                      [(widget/text-button button-text
                                                           (fn [_actor _ctx]
-                                                            (actor/remove! (::modal stage))
+                                                            (actor/remove! (-> stage
+                                                                               stage/root
+                                                                               (group/find-actor "cdq.ui.modal-window")))
                                                             (on-click)))]]
-                              :actor/user-object ::modal
+                              :actor/name "cdq.ui.modal-window"
                               :modal? true
                               :actor/center-position [(/ (:viewport/width  ui-viewport) 2)
                                                       (* (:viewport/height ui-viewport) (/ 3 4))]
@@ -66,18 +70,21 @@
 (defn add-skill!
   [stage skill-properties]
   (-> stage
-      :action-bar
+      stage/root
+      (group/find-actor "cdq.ui.action-bar")
       (action-bar/add-skill! skill-properties)))
 
 (defn remove-skill!
   [stage skill-id]
   (-> stage
-      :action-bar
+      stage/root
+      (group/find-actor "cdq.ui.action-bar")
       (action-bar/remove-skill! skill-id)))
 
 (defn action-bar-selected-skill [stage]
   (-> stage
-      :action-bar
+      stage/root
+      (group/find-actor "cdq.ui.action-bar")
       action-bar/selected-skill))
 
 (defn show-text-message!
@@ -90,7 +97,7 @@
 (defn toggle-entity-info-window! [stage]
   (-> stage
       (stage-find "cdq.ui.windows")
-      :entity-info-window
+      (group/find-actor "cdq.ui.windows.entity-info")
       actor/toggle-visible!))
 
 (defn close-all-windows! [stage]
