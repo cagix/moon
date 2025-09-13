@@ -42,5 +42,3 @@
      @(requiring-resolve 'clojure.scene2d.ui.table/Table)]
     ])
   ctx)
-
-

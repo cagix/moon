@@ -1,7 +1,6 @@
-; TODO breaks because creature tiles uses internal cdq.ctx.graphics !
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
-            [cdq.gdx-app.resize]
+  (:require cdq.start.provide-impls
+            [cdq.db :as db]
             [cdq.files :as files]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
@@ -22,6 +21,8 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.vis-ui.widget :as widget]
             [clojure.graphics.color :as color]))
+
+(cdq.start.provide-impls/do! nil)
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -60,11 +61,20 @@
 
 (def tile-size 48)
 
+; graphics has to implement
+; cdq.ctx.graphics/texture-region graphics image
 
+(require 'cdq.ctx.graphics)
+(require 'cdq.gdx.graphics)
 
-; when generating modules - I dispose right ? static tiled map tiles maybe not thrown?
-;                java.lang.OutOfMemoryError: Java heap space
-; com.badlogic.gdx.utils.GdxRuntimeException: java.lang.OutOfMemoryError: Java heap space
+(defrecord Graphics []
+  cdq.ctx.graphics/Graphics
+  (texture-region [this image]
+    (cdq.gdx.graphics/texture-region this image)))
+
+(defn- make->Graphics [textures]
+  (assoc (map->Graphics {})
+         :ctx/textures textures))
 
 (defn- generate-level [{:keys [ctx/db
                                ctx/textures
@@ -74,7 +84,7 @@
   (let [level (let [[f params] level-fn]
                 (f (assoc params
                           :creature-properties (db/all-raw db :properties/creatures)
-                          :graphics {:ctx/textures textures})))
+                          :graphics (make->Graphics textures))))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
@@ -183,7 +193,7 @@
   (render-stage @state))
 
 (defn resize! [width height]
-  (cdq.gdx-app.resize/do! @state width height))
+  (cdq.gdx.graphics/update-viewports! @state width height))
 
 (defn -main []
   (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")

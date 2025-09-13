@@ -1,5 +1,10 @@
 (ns cdq.effect)
 
+; protocol
+
+; extend-type clojure.lang.PersistentVector ?
+; and then [k] -> etc.
+
 (declare k->method-map)
 
 (defn applicable? [{k 0 :as component} effect-ctx]
@@ -17,6 +22,8 @@
   (if-let [f (:render (k->method-map k))]
     (f component effect-ctx ctx)
     nil))
+
+; TODO this doesnt go here
 
 (defn filter-applicable? [effect-ctx effect]
   (filter #(applicable? % effect-ctx) effect))
