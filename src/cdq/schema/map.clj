@@ -2,13 +2,13 @@
   (:require [cdq.ctx :as ctx]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
+            [cdq.ui.editor.window :as editor-window]
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [clojure.order :as order]
             [clojure.gdx.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]
@@ -114,8 +114,5 @@
              component-rows))
     table))
 
-(defn value [_  table schemas]
-  (into {}
-        (for [widget (filter (comp vector? actor/user-object) (group/children table))
-              :let [[k _] (actor/user-object widget)]]
-          [k (schema/value (get schemas k) widget schemas)])))
+(defn value [_ table schemas]
+  (editor-window/map-widget-property-values table schemas))

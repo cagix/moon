@@ -12,7 +12,7 @@
                              :cell-defaults {:pad 5}
                              :pack? true})]
     {:actor (doto (scroll-pane/create table)
-              (actor/set-user-object! :scroll-pane))
+              (actor/set-name! "cdq.ui.widget.scroll-pane-table"))
      :width  (+ (.getWidth table) 50)
      :height (min (- viewport-height 50)
                   (.getHeight table))}))
