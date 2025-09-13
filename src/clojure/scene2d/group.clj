@@ -1,7 +1,7 @@
 (ns clojure.scene2d.group)
 
 (defprotocol Group
-  (add! [group actor-or-decl])
+  (add! [group actor])
   (find-actor [group name])
   (clear-children! [group])
   (children [group]))
