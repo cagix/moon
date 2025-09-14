@@ -1,7 +1,7 @@
 (ns cdq.ui.widget
   (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d :as scene2d]
+            [clojure.scene2d :as scene2d]
             [clojure.gdx.scene2d.ui] ; load defmethods
             [clojure.vis-ui.scroll-pane :as scroll-pane]
             [clojure.vis-ui.widget :as widget]))

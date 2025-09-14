@@ -1,5 +1,5 @@
 (ns cdq.tx.reset-stage
-  (:require [clojure.gdx.scene2d :as scene2d]
+  (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]))
 
 (defn do!

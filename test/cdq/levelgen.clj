@@ -2,6 +2,7 @@
   (:require cdq.gdx.graphics
             cdq.ctx.graphics
             cdq.start.provide-impls
+            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [cdq.db :as db]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -16,7 +17,6 @@
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
-            [clojure.gdx.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
@@ -107,7 +107,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (scene2d/stage ui-viewport sprite-batch)
+        stage (ctx-stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -177,7 +177,7 @@
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render-stage [{:keys [ctx/stage] :as ctx}]
-  (reset! (.ctx ^clojure.gdx.scene2d.Stage stage) ctx)
+  (ctx-stage/set-ctx! stage ctx)
   (stage/act! stage)
   (stage/draw! stage))
 

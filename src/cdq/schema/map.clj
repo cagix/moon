@@ -6,7 +6,7 @@
             [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.malli :as m]
             [clojure.order :as order]
-            [clojure.gdx.scene2d :as scene2d]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]

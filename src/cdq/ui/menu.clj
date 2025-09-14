@@ -1,6 +1,7 @@
 (ns cdq.ui.menu
   (:require [clojure.scene2d.group :as group]
             [clojure.gdx.scene2d :as scene2d]
+            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.label :as label]
             [clojure.gdx.scene2d.utils.listener :as listener]
@@ -42,7 +43,7 @@
                                        (.addListener (listener/change
                                                       (fn [event actor]
                                                         (when on-click
-                                                          (on-click actor @(.ctx ^clojure.gdx.scene2d.Stage (event/stage event))))))))))
+                                                          (on-click actor (ctx-stage/get-ctx (event/stage event))))))))))
     (menu-bar/add-menu! menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]
