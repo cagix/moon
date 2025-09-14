@@ -7,15 +7,14 @@
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn- try-act [actor delta f]
-  (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (ctx-stage/get-ctx stage))]
-    (f actor delta ctx)))
+  (when-let [stage (actor/get-stage actor)]
+    (f actor delta (ctx-stage/get-ctx stage))))
 
 (defn try-draw [actor f]
-  (when-let [ctx (when-let [stage (actor/get-stage actor)]
-                   (ctx-stage/get-ctx stage))]
-    (graphics/handle-draws! (:ctx/graphics ctx)
-                            (f actor ctx))))
+  (when-let [stage (actor/get-stage actor)]
+    (let [ctx (ctx-stage/get-ctx stage)]
+      (graphics/handle-draws! (:ctx/graphics ctx)
+                              (f actor ctx)))))
 
 (defn- actor
   [{:keys [act draw]
