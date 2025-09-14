@@ -3,8 +3,8 @@
             [cdq.world-fns.helper :as helper]))
 
 (def modules-file "maps/modules.tmx")
-(def modules-width  32)
-(def modules-height 20)
+(def ^:private modules-width  32)
+(def ^:private modules-height 20)
 (def modules-scale [modules-width modules-height])
 
 (def ^:private number-modules-x 8)
