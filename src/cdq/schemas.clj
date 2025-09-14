@@ -18,9 +18,11 @@
   (let [schema (utils/safe-get schemas k)]
     (cond
      ;(#{:s/one-to-one :s/one-to-many} (get-type schema)) nil
-     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
-     :else (m/generate (schema/malli-form schema schemas)
-                       {:size 3}))))
+     (#{:s/map} (schema 0)) {} ; cannot have empty for required keys, then no Add Component button
+     :else nil
+     ;:else (m/generate (schema/malli-form schema schemas) {:size 3})
+
+     )))
 
 (defn validate [schemas k value]
   (-> (get schemas k)
