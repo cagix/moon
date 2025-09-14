@@ -40,11 +40,10 @@
                               actor-or-decl
                               (scene2d/build actor-or-decl))))
         (:group/actors opts))
-  group)
+  (actor/set-opts! group opts))
 
 (defn- group [opts]
   (doto (Group.)
-    (set-group-opts! opts)
-    (actor/set-opts! opts)))
+    (set-group-opts! opts)))
 
 (defmethod scene2d/build :actor.type/group [opts] (group opts))
