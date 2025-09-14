@@ -4,10 +4,12 @@
             [clojure.gdx.maps.tiled :as tiled]))
 
 (defn do!
-  [{:keys [scaled-grid
+  [{:keys [scale
+           scaled-grid
            grid]
     :as w}]
   (assoc w :tiled-map (module/place-module (tiled/tmx-tiled-map "maps/modules.tmx")
+                                           scale
                                            scaled-grid
                                            grid
                                            (filter #(= :ground     (get grid %)) (g2d/posis grid))

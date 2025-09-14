@@ -2,10 +2,6 @@
   (:require [cdq.world-fns.grid-to-tiled-map :as grid-to-tiled-map]
             [cdq.world-fns.helper :as helper]))
 
-(def ^:private modules-width  32)
-(def ^:private modules-height 20)
-(def modules-scale [modules-width modules-height])
-
 (def ^:private number-modules-x 8)
 (def ^:private number-modules-y 4)
 (def ^:private module-offset-tiles 1)
@@ -61,11 +57,13 @@
             offsets)))
 
 (defn place-module [modules-tiled-map
+                    modules-scale
                     scaled-grid
                     unscaled-grid
                     unscaled-floor-positions
                     unscaled-transition-positions]
-  (let [_ (assert (and (= (:tiled-map/width modules-tiled-map)
+  (let [[modules-width modules-height] modules-scale
+        _ (assert (and (= (:tiled-map/width modules-tiled-map)
                           (* number-modules-x (+ modules-width module-offset-tiles)))
                        (= (:tiled-map/height modules-tiled-map)
                           (* number-modules-y (+ modules-height module-offset-tiles)))))

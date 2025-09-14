@@ -1,5 +1,4 @@
-(ns cdq.world-fns.modules.add-scale
-  (:require [cdq.world-fns.module :as module]))
+(ns cdq.world-fns.modules.add-scale)
 
 (defn do! [w]
-  (assoc w :scale module/modules-scale))
+  (assoc w :scale [32 20]))
