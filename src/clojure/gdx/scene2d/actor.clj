@@ -78,3 +78,14 @@
             :when f]
       (f actor v))
     actor))
+
+(defn create
+  [{:keys [actor/act
+           actor/draw]
+    :as opts}]
+  (doto (proxy [Actor] []
+          (act [delta] ; TODO call proxy super required ?-> fixes tooltips in pure scene2d?
+            (act this delta))
+          (draw [batch parent-alpha]
+            (draw this batch parent-alpha)))
+    (set-opts! opts)))
