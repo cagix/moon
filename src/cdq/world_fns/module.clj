@@ -16,7 +16,9 @@
 (def ^:private floor-modules-row-height 4)
 (def ^:private floor-idxvalue 0)
 
-(defn- module-index->tiled-map-positions [[module-x module-y]]
+(defn- module-index->tiled-map-positions
+  [[module-x module-y]
+   [modules-width modules-height]]
   (let [start-x (* module-x (+ modules-width  module-offset-tiles))
         start-y (* module-y (+ modules-height module-offset-tiles))]
     (for [x (range start-x (+ start-x modules-width))
@@ -42,7 +44,8 @@
         tiled-map-positions (module-index->tiled-map-positions
                              (if transition?
                                (transition-idxvalue->module-index idxvalue)
-                               (floor->module-index)))
+                               (floor->module-index))
+                             modules-scale)
         offsets (for [x (range modules-width)
                       y (range modules-height)]
                   [x y])
