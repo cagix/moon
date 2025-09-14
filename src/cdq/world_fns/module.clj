@@ -2,7 +2,6 @@
   (:require [cdq.world-fns.grid-to-tiled-map :as grid-to-tiled-map]
             [cdq.world-fns.helper :as helper]))
 
-(def modules-file "maps/modules.tmx")
 (def ^:private modules-width  32)
 (def ^:private modules-height 20)
 (def modules-scale [modules-width modules-height])

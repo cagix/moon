@@ -7,7 +7,7 @@
   [{:keys [scaled-grid
            grid]
     :as w}]
-  (assoc w :tiled-map (module/place-module (tiled/tmx-tiled-map module/modules-file)
+  (assoc w :tiled-map (module/place-module (tiled/tmx-tiled-map "maps/modules.tmx")
                                            scaled-grid
                                            grid
                                            (filter #(= :ground     (get grid %)) (g2d/posis grid))
