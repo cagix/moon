@@ -18,9 +18,10 @@
            scale
            scaled-grid
            tiled-map
+           start-position
            ]}]
   (let [
-        start-position (mapv * start scale)
+
 
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
 
@@ -111,6 +112,9 @@
 (defn- add-scale [w]
   (assoc w :scale module/modules-scale))
 
+(defn- calculate-start-position [{:keys [start scale] :as w}]
+  (assoc w :start-position (mapv * start scale)))
+
 (defn create
   [world-fn-ctx]
   (-> world-fn-ctx
@@ -123,4 +127,5 @@
       print-grid!
       create-scaled-grid
       cdq.world-fns.modules.place-modules/do!
+      calculate-start-position
       generate-modules))
