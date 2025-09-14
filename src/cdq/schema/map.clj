@@ -11,8 +11,7 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.set :as set]
-            [clojure.vis-ui.separator :as separator]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.vis-ui.separator :as separator]))
 
 (defn- build-widget [ctx schema k v]
   (let [widget (schema/create schema v ctx)
@@ -39,7 +38,8 @@
                                    schema
                                    map-widget-table]
   (let [schemas (:schemas db)
-        window (widget/window {:title "Choose"
+        window (scene2d/build {:actor/type :actor.type/window
+                               :title "Choose"
                                :modal? true
                                :close-button? true
                                :center? true
@@ -50,18 +50,19 @@
     (table/add-rows!
      window
      (for [k remaining-ks]
-       [(widget/text-button (name k)
-                            (fn [_actor ctx]
-                              (.remove window)
-                              (table/add-rows! map-widget-table [(component-row (build-widget ctx
-                                                                                              (get schemas k)
-                                                                                              k
-                                                                                              (schemas/default-value schemas k))
-                                                                                k
-                                                                                schema
-                                                                                schemas
-                                                                                map-widget-table)])
-                              (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]])))]))
+       [{:actor {:actor/type :actor.type/text-button
+                 :text (name k)
+                 :on-clicked (fn [_actor ctx]
+                               (.remove window)
+                               (table/add-rows! map-widget-table [(component-row (build-widget ctx
+                                                                                               (get schemas k)
+                                                                                               k
+                                                                                               (schemas/default-value schemas k))
+                                                                                 k
+                                                                                 schema
+                                                                                 schemas
+                                                                                 map-widget-table)])
+                               (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
     (.pack window)
     (stage/add! stage window)))
 
@@ -83,8 +84,9 @@
    {:keys [ctx/db
            ctx/config] :as ctx}]
   (let [k-sort-order (:property-k-sort-order (:cdq.ui.editor.widget.map config))
-        table (widget/table
-               {:cell-defaults {:pad 5}
+        table (scene2d/build
+               {:actor/type :actor.type/table
+                :cell-defaults {:pad 5}
                 :actor/name "cdq.schema.map.ui.widget"})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
@@ -100,9 +102,10 @@
     (table/add-rows!
      table
      (concat [(when opt?
-                [{:actor (widget/text-button "Add component"
-                                             (fn [_actor ctx]
-                                               (open-add-component-window! ctx schema table)))
+                [{:actor {:actor/type :actor.type/text-button
+                          :text "Add component"
+                          :on-clicked (fn [_actor ctx]
+                                        (open-add-component-window! ctx schema table))}
                   :colspan colspan}])]
              [(when opt?
                 [{:actor (separator/horizontal)

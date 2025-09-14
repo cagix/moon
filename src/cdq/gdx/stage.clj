@@ -2,10 +2,10 @@
   (:require [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.scene2d.stage :as stage]))
 
 (defn- stage-find [stage k]
   (-> stage
@@ -38,20 +38,23 @@
                    stage/root
                    (group/find-actor "cdq.ui.modal-window"))))
   (stage/add! stage
-              (widget/window {:title title
-                              :rows [[{:actor {:actor/type :actor.type/label
-                                               :label/text text}}]
-                                     [(widget/text-button button-text
-                                                          (fn [_actor _ctx]
-                                                            (actor/remove! (-> stage
-                                                                               stage/root
-                                                                               (group/find-actor "cdq.ui.modal-window")))
-                                                            (on-click)))]]
-                              :actor/name "cdq.ui.modal-window"
-                              :modal? true
-                              :actor/center-position [(/ (:viewport/width  ui-viewport) 2)
-                                                      (* (:viewport/height ui-viewport) (/ 3 4))]
-                              :pack? true})))
+              (scene2d/build
+               {:actor/type :actor.type/window
+                :title title
+                :rows [[{:actor {:actor/type :actor.type/label
+                                 :label/text text}}]
+                       [{:actor/type :actor.type/text-button
+                         :text button-text
+                         :on-clicked (fn [_actor _ctx]
+                                       (actor/remove! (-> stage
+                                                          stage/root
+                                                          (group/find-actor "cdq.ui.modal-window")))
+                                       (on-click))}]]
+                :actor/name "cdq.ui.modal-window"
+                :modal? true
+                :actor/center-position [(/ (:viewport/width  ui-viewport) 2)
+                                        (* (:viewport/height ui-viewport) (/ 3 4))]
+                :pack? true})))
 
 (defn set-item!
   [stage cell item-properties]
