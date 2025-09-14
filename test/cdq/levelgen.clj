@@ -17,11 +17,11 @@
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
-            [clojure.vis-ui.widget :as widget]
             [clojure.graphics.color :as color]))
 
 (cdq.start.provide-impls/do! nil)
@@ -90,13 +90,15 @@
 (def state (atom nil))
 
 (defn- edit-window []
-  (widget/window {:title "Edit"
-                  :cell-defaults {:pad 10}
-                  :rows (for [level-fn level-fns]
-                          [(widget/text-button (str "Generate " (first level-fn))
-                                               (fn [_actor _ctx]
-                                                 (swap! state (fn [ctx] (generate-level ctx level-fn)))))])
-                  :pack? true}))
+  {:actor/type :actor.type/window
+   :title "Edit"
+   :cell-defaults {:pad 10}
+   :rows (for [level-fn level-fns]
+           [{:actor {:actor/type :actor.type/text-button
+                     :text (str "Generate " (first level-fn))
+                     :on-clicked (fn [_actor _ctx]
+                                   (swap! state (fn [ctx] (generate-level ctx level-fn))))}}])
+   :pack? true})
 
 (defrecord Context [])
 
@@ -136,7 +138,7 @@
                    :ctx/sprite-batch sprite-batch
                    :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale sprite-batch))
         ctx (generate-level ctx initial-level-fn)]
-    (stage/add! (:ctx/stage ctx) (edit-window))
+    (stage/add! (:ctx/stage ctx) (scene2d/build (edit-window)))
     (reset! state ctx)))
 
 (defn dispose! []

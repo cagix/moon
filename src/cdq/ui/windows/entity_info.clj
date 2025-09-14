@@ -1,16 +1,17 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx.stage :as stage]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.group :as group]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.scene2d.group :as group]))
 
 (defn create [{:keys [ctx/stage]}
               {:keys [y
                       ->label-text]}]
   (let [position [(stage/viewport-width stage)
                   y]
-        label (widget/label {:label/text ""})
-        window (widget/window {:title "Info"
+        label (scene2d/build {:actor/type :actor.type/label
+                              :label/text ""})
+        window (scene2d/build {:actor/type :actor.type/window
+                               :title "Info"
                                :actor/name "cdq.ui.windows.entity-info"
                                :actor/visible? false
                                :actor/position position

@@ -1,12 +1,12 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.inventory :as inventory]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
-            [clojure.vis-ui.tooltip :as tooltip]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.vis-ui.tooltip :as tooltip]))
 
 (defn create
   [{:keys [ctx/stage]}
@@ -49,37 +49,40 @@
                             :actor/user-object cell
                             :actor/listener (clicked-cell-listener cell)
                             :group/actors [(draw-rect-actor)
-                                           (widget/image background-drawable
-                                                         {:actor/name "image-widget"
-                                                          :actor/user-object {:background-drawable background-drawable
-                                                                              :cell-size cell-size}})]}}))]
-    (widget/window {:title title
-                    :actor/name "cdq.ui.windows.inventory"
-                    :actor/visible? visible?
-                    :pack? true
-                    :actor/position [(:viewport/width  (stage/viewport stage))
-                                     (:viewport/height (stage/viewport stage))]
-                    :rows [[{:actor {:actor/name "inventory-cell-table"
-                                     :actor/type :actor.type/table
-                                     :rows (concat [[nil nil
-                                                     (->cell :inventory.slot/helm)
-                                                     (->cell :inventory.slot/necklace)]
-                                                    [nil
-                                                     (->cell :inventory.slot/weapon)
-                                                     (->cell :inventory.slot/chest)
-                                                     (->cell :inventory.slot/cloak)
-                                                     (->cell :inventory.slot/shield)]
-                                                    [nil nil
-                                                     (->cell :inventory.slot/leg)]
-                                                    [nil
-                                                     (->cell :inventory.slot/glove)
-                                                     (->cell :inventory.slot/rings :position [0 0])
-                                                     (->cell :inventory.slot/rings :position [1 0])
-                                                     (->cell :inventory.slot/boot)]]
-                                                   (for [y (range 4)]
-                                                     (for [x (range 6)]
-                                                       (->cell :inventory.slot/bag :position [x y]))))}
-                             :pad 4}]]})))
+                                           {:actor/type :actor.type/image
+                                            :image/object background-drawable
+                                            :actor/name "image-widget"
+                                            :actor/user-object {:background-drawable background-drawable
+                                                                :cell-size cell-size}}]}}))]
+    (scene2d/build
+     {:actor/type :actor.type/window
+      :title title
+      :actor/name "cdq.ui.windows.inventory"
+      :actor/visible? visible?
+      :pack? true
+      :actor/position [(:viewport/width  (stage/viewport stage))
+                       (:viewport/height (stage/viewport stage))]
+      :rows [[{:actor {:actor/name "inventory-cell-table"
+                       :actor/type :actor.type/table
+                       :rows (concat [[nil nil
+                                       (->cell :inventory.slot/helm)
+                                       (->cell :inventory.slot/necklace)]
+                                      [nil
+                                       (->cell :inventory.slot/weapon)
+                                       (->cell :inventory.slot/chest)
+                                       (->cell :inventory.slot/cloak)
+                                       (->cell :inventory.slot/shield)]
+                                      [nil nil
+                                       (->cell :inventory.slot/leg)]
+                                      [nil
+                                       (->cell :inventory.slot/glove)
+                                       (->cell :inventory.slot/rings :position [0 0])
+                                       (->cell :inventory.slot/rings :position [1 0])
+                                       (->cell :inventory.slot/boot)]]
+                                     (for [y (range 4)]
+                                       (for [x (range 6)]
+                                         (->cell :inventory.slot/bag :position [x y]))))}
+               :pad 4}]]})))
 
 (defn- find-cell [group cell]
   (first (filter #(= (actor/user-object % ) cell)

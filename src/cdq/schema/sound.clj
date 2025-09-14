@@ -2,12 +2,12 @@
   (:require [cdq.ctx.audio :as audio]
             [cdq.ctx.stage]
             [cdq.ui.widget]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.ui.window :as window]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.gdx.scene2d.ui.window :as window]))
 
 (defn malli-form [_ _schemas]
   :string)
@@ -37,20 +37,30 @@
                 (cdq.ui.widget/scroll-pane-window
                  (cdq.ctx.stage/viewport-width stage)
                  (for [sound-name (audio/all-sounds audio)]
-                   [(widget/text-button sound-name (rebuild! table sound-name))
-                    (widget/text-button "play!"
-                                        (fn [_actor {:keys [ctx/audio]}]
-                                          (audio/play-sound! audio sound-name)))])))))
+                   [{:actor {:actor/type :actor.type/text-button
+                             :text sound-name
+                             :on-clicked (rebuild! table sound-name)}}
+                    {:actor {:actor/type :actor.type/text-button
+                             :text "play!"
+                             :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                           (audio/play-sound! audio sound-name))}}])))))
 
 (defn- sound-columns [table sound-name]
-  [(widget/text-button sound-name (open-select-sounds-handler table))
-   (widget/text-button "play!"
-                       (fn [_actor {:keys [ctx/audio]}]
-                         (audio/play-sound! audio sound-name)))])
+  [{:actor {:actor/type :actor.type/text-button
+            :text sound-name
+            :on-clicked (open-select-sounds-handler table)}}
+   {:actor {:actor/type :actor.type/text-button
+            :text "play!"
+            :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                          (audio/play-sound! audio sound-name))}}])
 
 (defn create [_  sound-name _ctx]
-  (let [table (widget/table {:cell-defaults {:pad 5}})]
+  (let [table (scene2d/build
+               {:actor/type :actor.type/table
+                :cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (sound-columns table sound-name)
-                              [(widget/text-button "No sound" (open-select-sounds-handler table))])])
+                              [{:actor {:actor/type :actor.type/text-button
+                                        :text "No sound"
+                                        :on-clicked (open-select-sounds-handler table)}}])])
     table))

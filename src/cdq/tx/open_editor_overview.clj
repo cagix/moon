@@ -2,22 +2,24 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
             [cdq.ui.editor.overview-table :as overview-table]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/db
            ctx/stage]
     :as ctx}
    property-type]
-  (stage/add! stage (doto (widget/window {:title "Edit"
-                                          :modal? true
-                                          :close-button? true
-                                          :center? true
-                                          :close-on-escape? true})
-                      (table/add! (overview-table/create ctx
-                                                         property-type
-                                                         (fn [id ctx]
-                                                           (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]]))))
-                      (.pack))))
+  (stage/add! stage (scene2d/build
+                     {:actor/type :actor.type/window
+                      :title "Edit"
+                      :modal? true
+                      :close-button? true
+                      :center? true
+                      :close-on-escape? true
+                      :pack? true
+                      :rows (overview-table/create ctx
+                                                   property-type
+                                                   (fn [id ctx]
+                                                     (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]])))
+                      })))

@@ -44,7 +44,7 @@
                                     clicked-id-fn (fn [id ctx]
                                                     (.remove window)
                                                     (redo-rows ctx (conj property-ids id)))]
-                                (table/add! window (overview-table/create ctx property-type clicked-id-fn))
+                                (table/add-rows! window (overview-table/create ctx property-type clicked-id-fn))
                                 (.pack window)
                                 (stage/add! stage window)))}}]
       (for [property-id property-ids]

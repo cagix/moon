@@ -5,13 +5,17 @@
   (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- build? [actor-or-decl]
-  (cond
-   (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
-   actor-or-decl
-   (nil? actor-or-decl)
-   nil
-   :else
-   (scene2d/build actor-or-decl)))
+  (try (cond
+        (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
+        actor-or-decl
+        (nil? actor-or-decl)
+        nil
+        :else
+        (scene2d/build actor-or-decl))
+       (catch Throwable t
+         (throw (ex-info ""
+                         {:actor-or-decl actor-or-decl}
+                         t)))))
 
 (defn add! [table actor-or-decl]
   (Table/.add table ^com.badlogic.gdx.scenes.scene2d.Actor (build? actor-or-decl)))

@@ -1,16 +1,15 @@
 (ns cdq.ui.menu
-  (:require [clojure.scene2d.group :as group]
-            [clojure.scene2d :as scene2d]
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.ui.label :as label]
-            [clojure.gdx.scene2d.utils.listener :as listener]
+  (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.event :as event]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
+            [clojure.gdx.scene2d.utils.listener :as listener]
+            [clojure.gdx.scene2d.ui.label :as label]
             [clojure.vis-ui.menu :as menu]
             [clojure.vis-ui.menu-bar :as menu-bar]
             [clojure.vis-ui.menu-item :as menu-item]
-            [clojure.vis-ui.popup-menu :as popup-menu]
-            [clojure.vis-ui.widget :as widget]))
+            [clojure.vis-ui.popup-menu :as popup-menu]))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
@@ -19,13 +18,18 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (widget/image icon {})
-         label (widget/label {:label/text ""})
-         sub-table (widget/table {:rows [[icon label]]})]
+   (let [label (scene2d/build {:actor/type :actor.type/label
+                               :label/text ""})
+         sub-table (scene2d/build
+                    {:actor/type :actor.type/table
+                     :rows [[{:actor {:actor/type :actor.type/image
+                                      :image/object icon}}
+                             label]]})]
      (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (.right (table/add! table sub-table)))))
   ([table text-fn]
-   (let [label (widget/label {:label/text ""})]
+   (let [label (scene2d/build {:actor/type :actor.type/label
+                               :label/text ""})]
      (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (.right (table/add! table label))))))
 
