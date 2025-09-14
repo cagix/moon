@@ -1,6 +1,6 @@
 (ns cdq.ui.menu
   (:require [clojure.scene2d.group :as group]
-            [clojure.gdx.scene2d :as scene2d]
+            [clojure.scene2d :as scene2d]
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.label :as label]
@@ -13,7 +13,8 @@
             [clojure.vis-ui.widget :as widget]))
 
 (defn- set-label-text-actor [label text-fn]
-  {:act (fn [_this _delta ctx]
+  {:actor/type :actor.type/actor
+   :act (fn [_this _delta ctx]
           (label/set-text! label (text-fn ctx)))})
 
 (defn- add-upd-label!
@@ -21,11 +22,11 @@
    (let [icon (widget/image icon {})
          label (widget/label {:label/text ""})
          sub-table (widget/table {:rows [[icon label]]})]
-     (group/add! table (scene2d/actor (set-label-text-actor label text-fn)))
+     (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (.right (table/add! table sub-table)))))
   ([table text-fn]
    (let [label (widget/label {:label/text ""})]
-     (group/add! table (scene2d/actor (set-label-text-actor label text-fn)))
+     (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]

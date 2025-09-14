@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx.stage :as stage]
-            [clojure.gdx.scene2d :as scene2d]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.group :as group]
             [clojure.vis-ui.widget :as widget]))
 
@@ -17,8 +17,9 @@
                                :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (group/add! window (scene2d/actor
-                        {:act (fn [_this _delta {:keys [ctx/mouseover-eid]
+    (group/add! window (scene2d/build
+                        {:actor/type :actor.type/actor
+                         :act (fn [_this _delta {:keys [ctx/mouseover-eid]
                                                  :as ctx}]
                                 (.setText label (str (if-let [eid mouseover-eid]
                                                        (->label-text @eid ctx)
