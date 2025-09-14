@@ -34,11 +34,13 @@
       transition-modules-offset-x)
    (int (/ idxvalue transition-modules-row-height))])
 
-(defn- place-module* [scaled-grid
+(defn- place-module* [modules-scale
+                      scaled-grid
                       unscaled-position
                       & {:keys [transition?
                                 transition-neighbor?]}]
-  (let [idxvalue (if transition?
+  (let [[modules-width modules-height] modules-scale
+        idxvalue (if transition?
                    (helper/transition-idx-value unscaled-position transition-neighbor?)
                    floor-idxvalue)
         tiled-map-positions (module-index->tiled-map-positions
@@ -68,13 +70,19 @@
                        (= (:tiled-map/height modules-tiled-map)
                           (* number-modules-y (+ modules-height module-offset-tiles)))))
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
-                              (place-module* scaled-grid unscaled-position :transition? false))
+                              (place-module* modules-scale
+                                             scaled-grid
+                                             unscaled-position
+                                             :transition? false))
                             scaled-grid
                             unscaled-floor-positions)
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
-                              (place-module* scaled-grid unscaled-position :transition? true
-                                            :transition-neighbor? #(#{:transition :wall}
-                                                                    (get unscaled-grid %))))
+                              (place-module* modules-scale
+                                             scaled-grid
+                                             unscaled-position
+                                             :transition? true
+                                             :transition-neighbor? #(#{:transition :wall}
+                                                                     (get unscaled-grid %))))
                             scaled-grid
                             unscaled-transition-positions)]
     (grid-to-tiled-map/grid->tiled-map modules-tiled-map scaled-grid)))
