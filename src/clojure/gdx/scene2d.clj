@@ -1,5 +1,6 @@
 (ns clojure.gdx.scene2d
-  (:require [clojure.scene2d :as scene2d]
+  (:require [cdq.ctx.graphics :as graphics]
+            [clojure.scene2d :as scene2d]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage])
@@ -12,13 +13,11 @@
                    (ctx-stage/get-ctx stage))]
     (f actor delta ctx)))
 
-(defprotocol Context
-  (handle-draws! [_ draws]))
-
 (defn try-draw [actor f]
   (when-let [ctx (when-let [stage (actor/get-stage actor)]
                    (ctx-stage/get-ctx stage))]
-    (handle-draws! ctx (f actor ctx))))
+    (graphics/handle-draws! (:ctx/graphics ctx)
+                            (f actor ctx))))
 
 ; TODO have to call proxy super (fixes tooltips in pure scene2d?)
 (defn actor [opts]
