@@ -157,3 +157,7 @@
     (when fill-parent?
       (.setFillParent image true))
     (widget/set-opts! image opts)))
+
+(defmethod scene2d/build :actor.type/image [opts]
+  (image (:image/object opts)
+         opts))
