@@ -1,10 +1,10 @@
 (ns cdq.draw-on-world-viewport.entities
-  (:require [cdq.ctx.graphics :as graphics]
-            [cdq.raycaster :as raycaster]
-            [cdq.stacktrace :as stacktrace]
-            [clojure.utils :as utils]
+  (:require [cdq.ctx :as ctx]
+            [cdq.ctx.graphics :as graphics]
             [cdq.ctx.world :as world]
-            [clojure.graphics.color :as color]))
+            [cdq.raycaster :as raycaster]
+            [clojure.graphics.color :as color]
+            [clojure.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)
 
@@ -17,20 +17,20 @@
   [{:keys [ctx/graphics]
     :as ctx}
    entity render-layer]
-  (try
-   (when show-body-bounds?
-     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity)
-                                                      (if (:body/collides? (:entity/body entity))
-                                                        color/white
-                                                        color/gray))))
-   ; not doseq k v but doseq render-layer-components ...
-   (doseq [[k v] entity
-           :let [draw-fn (get render-layer k)]
-           :when draw-fn]
-     (graphics/handle-draws! graphics (draw-fn v entity ctx)))
-   (catch Throwable t
-     (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
-     (stacktrace/pretty-print t))))
+  (try (do
+        (when show-body-bounds?
+          (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity)
+                                                           (if (:body/collides? (:entity/body entity))
+                                                             color/white
+                                                             color/gray))))
+        (doseq [[k v] entity
+                :let [draw-fn (get render-layer k)]
+                :when draw-fn]
+          (graphics/handle-draws! graphics (draw-fn v entity ctx))))
+       (catch Throwable t
+         (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
+         (ctx/handle-txs! ctx
+                          [[:tx/print-stacktrace t]]))))
 
 (defn do!
   [{:keys [ctx/player-eid
