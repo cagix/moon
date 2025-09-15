@@ -98,10 +98,13 @@
                     :z-order/flying
                     :z-order/effect]})
 
+(defrecord World [])
+
 (defn do! [ctx]
   (assoc ctx
          :ctx/world
-         (merge config
+         (merge (map->World {})
+                config
                 {:world/max-delta    (:world/max-delta    config)
                  :world/minimum-size (:world/minimum-size config)
                  :world/z-orders     (:world/z-orders     config)

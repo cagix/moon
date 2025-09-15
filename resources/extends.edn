@@ -1,4 +1,8 @@
 [
+ [cdq.create.world_config.World
+  cdq.world
+  cdq.ctx.world/World]
+
  [cdq.db.DB
   cdq.db
   cdq.ctx.db/DB]

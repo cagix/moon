@@ -1,11 +1,10 @@
 (ns cdq.entity.state.npc-idle
-  (:require [cdq.effect :as effect]
+  (:require [cdq.ctx.world :as world]
+            [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.world.grid :as grid]
-            [cdq.ctx.world :as world]
             [cdq.skill :as skill]
-            [cdq.potential-fields.movement :as potential-fields.movement]))
+            [cdq.world.grid :as grid]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity
@@ -36,5 +35,5 @@
   (let [effect-ctx (npc-effect-ctx world eid)]
     (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
-      [[:tx/event eid :movement-direction (or (potential-fields.movement/find-direction (:world/grid world) eid)
+      [[:tx/event eid :movement-direction (or (world/find-movement-direction world eid)
                                               [0 0])]])))
