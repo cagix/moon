@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.application]
-            [cdq.ctx.db :as db]
+  (:require [cdq.ctx.db :as db]
             [cdq.ctx.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.string :as string]))
@@ -22,14 +21,15 @@
                                :actor/touchable :disabled}]}})))
 
 (defn create
-  [{:keys [ctx/db
+  [{:keys [ctx/config
+           ctx/db
            ctx/graphics]}
    property-type
    clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
-                image-scale]} (cdq.application/property-overview property-type)]
+                image-scale]} (get-in config [:cdq.ui.editor.overview-table property-type])]
     (->> (db/all-raw db property-type)
          (sort-by sort-by-fn)
          (map (fn [property]
