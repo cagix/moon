@@ -65,36 +65,30 @@
             [cdq.start.load-effects/do! "effects_fn_map.edn"]
             [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                               [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
-            [cdq.start.lwjgl/do! {
-                                  :config {:title "Cyber Dungeon Quest"
+            [cdq.start.lwjgl/do! {:config {:title "Cyber Dungeon Quest"
                                            :windowed-mode {:width 1440 :height 900}
                                            :foreground-fps 60}
                                   :listener [cdq.application.listener/create
-                                             {
-                                              :create  cdq.gdx-app.create/do!
+                                             {:create  [cdq.gdx-app.create/do! [
+                                                                                cdq.create.input/do!
+                                                                                cdq.create.vis-ui/do!
+                                                                                cdq.create.graphics/do!
+                                                                                cdq.create.stage/do!
+                                                                                cdq.create.set-input-processor/do!
+                                                                                cdq.create.audio/do!
+                                                                                cdq.create.dissoc-gdx/do!
+                                                                                cdq.create.reset-stage/do!
+                                                                                cdq.create.world/do!
+                                                                                ]]
                                               :render  cdq.gdx-app.render/do!
                                               :dispose cdq.gdx-app.dispose/do!
                                               :resize  cdq.gdx-app.resize/do!
-                                              :atom-var cdq.application/state
-                                              }]
-
-                                  }]
+                                              :atom-var cdq.application/state}]}
+             ]
             ]
  :object
  {
    :ctx/config {
-                :cdq.gdx-app.create [
-                                     cdq.create.input/do!
-                                     cdq.create.vis-ui/do!
-                                     cdq.create.graphics/do!
-                                     cdq.create.stage/do!
-                                     cdq.create.set-input-processor/do!
-                                     cdq.create.audio/do!
-                                     cdq.create.dissoc-gdx/do!
-                                     cdq.create.reset-stage/do!
-                                     cdq.create.world/do!
-                                     ]
-
                 :cdq.create.world {
                                    :starting-world [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                               :start-position [32 71]}]
