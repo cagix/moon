@@ -25,7 +25,6 @@
                 [:ctx/delta-time :some]
                 [:ctx/entity-ids :some]
                 [:ctx/graphics :some]
-                [:ctx/id-counter :some]
                 [:ctx/info :some]
                 [:ctx/input :some]
                 [:ctx/max-delta :some]

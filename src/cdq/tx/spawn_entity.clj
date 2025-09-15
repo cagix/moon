@@ -7,7 +7,7 @@
 (q/defrecord Entity [entity/body])
 
 (defn do!
-  [{:keys [ctx/id-counter
+  [{:keys [
            ctx/entity-ids
            ctx/entity-components
            ctx/spawn-entity-schema
@@ -16,7 +16,9 @@
    entity]
   (m/validate-humanize spawn-entity-schema entity)
   (let [{:keys [world/content-grid
-                world/grid]} world
+                world/grid
+                world/id-counter
+                ]} world
         build-component (fn [[k v]]
                           (if-let [create (k (:create entity-components))]
                             (create v ctx)
