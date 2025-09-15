@@ -4,7 +4,7 @@
           [cdq.create.graphics/do! #edn/resource "graphics.edn"]
           [cdq.create.stage/do!]
           [cdq.create.set-input-processor/do!]
-          [cdq.create.audio/do! {:sound-names "sounds.edn"
+          [cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                  :path-format "sounds/%s.wav"}]
           [clojure.core/dissoc :ctx/gdx]
           [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
