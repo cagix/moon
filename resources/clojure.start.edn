@@ -71,8 +71,8 @@
                                   :listener [cdq.application.listener/create
                                              {:create [[cdq.create.assoc-gdx/do!]
                                                        [cdq.create.input/do!]
-                                                       [cdq.create.vis-ui/do!]
-                                                       [cdq.create.graphics/do!]
+                                                       [cdq.create.vis-ui/do! {:skin-scale :x1}]
+                                                       [cdq.create.graphics/do! "graphics.edn"]
                                                        [cdq.create.stage/do!]
                                                        [cdq.create.set-input-processor/do!]
                                                        [cdq.create.audio/do!]
@@ -117,65 +117,6 @@
 
                 :cdq.audio/config {:sound-names "sounds.edn"
                                    :path-format "sounds/%s.wav"}
-
-                :after-gdx-create {:tile-size 48
-                                   :ui-viewport {:width 1440
-                                                 :height 900}
-                                   :world-viewport {:width 1440
-                                                    :height 900}
-                                   :texture-folder {:folder "resources/"
-                                                    :extensions #{"png" "bmp"}}
-                                   :default-font {:path "exocet/films.EXL_____.ttf"
-                                                  :params {:size 16
-                                                           :quality-scaling 2
-                                                           :enable-markup? true
-                                                           :use-integer-positions? false}}
-                                   :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-                                   :cursors {:path-format "cursors/%s.png"
-                                             :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                    :cursors/black-x               ["black_x"      [0   0]]
-                                                    :cursors/default               ["default"      [0   0]]
-                                                    :cursors/denied                ["denied"       [16 16]]
-                                                    :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                    :cursors/hand-grab             ["hand003"      [4  16]]
-                                                    :cursors/move-window           ["move002"      [16 16]]
-                                                    :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                    :cursors/over-button           ["hand002"      [0   0]]
-                                                    :cursors/sandclock             ["sandclock"    [16 16]]
-                                                    :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                    :cursors/use-skill             ["pointer004"   [0   0]]
-                                                    :cursors/walking               ["walking"      [16 16]]}}
-                                   :draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
-                                              :draw/grid             cdq.draw.grid/do!
-                                              :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
-                                              :draw/text             cdq.gdx.graphics/draw-text!
-                                              :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
-                                              :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
-                                              :draw/circle           cdq.gdx.graphics/draw-circle!
-                                              :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
-                                              :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
-                                              :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
-                                              :draw/arc              cdq.gdx.graphics/draw-arc!
-                                              :draw/sector           cdq.gdx.graphics/draw-sector!
-                                              :draw/line             cdq.gdx.graphics/draw-line!}
-
-
-                                   :graphics/entity-render-layers [{:entity/mouseover? cdq.entity.mouseover/draw
-                                                                    :stunned cdq.entity.state.stunned/draw
-                                                                    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
-                                                                   {:entity/clickable cdq.entity.clickable/draw
-                                                                    :entity/animation cdq.entity.animation/draw
-                                                                    :entity/image cdq.entity.image/draw
-                                                                    :entity/line-render cdq.entity.line-render/draw}
-                                                                   {:npc-sleeping cdq.entity.state.npc-sleeping/draw
-                                                                    :entity/temp-modifier cdq.entity.temp-modifier/draw
-                                                                    :entity/string-effect cdq.entity.string-effect/draw}
-                                                                   {:creature/stats cdq.entity.stats/draw
-                                                                    :active-skill cdq.entity.state.active-skill/draw}]
-                                   }
-
-                :cdq.vis-ui {:skin-scale :x1}
 
                 :cdq.application.reset-game-state
                 {

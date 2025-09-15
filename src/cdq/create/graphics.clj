@@ -1,7 +1,10 @@
 (ns cdq.create.graphics
   (:require [cdq.files]
             [cdq.gdx.graphics]
-            [clojure.gdx.files :as files]))
+            [clojure.gdx.files :as files]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.symbol :as symbol]))
 
 (defn graphics-config
   [files {:keys [colors
@@ -23,15 +26,21 @@
    :world-viewport world-viewport
    :textures-to-load (cdq.files/search files texture-folder)})
 
-(defn do! [{:keys [ctx/config
-                   ctx/gdx]
-            :as ctx}]
+(defn do!
+  [{:keys [ctx/gdx]
+    :as ctx}
+   config]
   (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
                                          clojure.gdx/graphics]} gdx
-                                 draw-fns (:draw-fns (:after-gdx-create config))
+                                 config (-> config
+                                            io/resource
+                                            slurp
+                                            edn/read-string
+                                            symbol/require-resolve-symbols)
+                                 draw-fns (:draw-fns config)
                                  graphics (cdq.gdx.graphics/create graphics
                                                                    (graphics-config files
-                                                                                    (:after-gdx-create config)))]
+                                                                                    config))]
                              (extend-type (class graphics)
                                cdq.ctx.graphics/DrawHandler
                                (handle-draws! [graphics draws]
@@ -39,5 +48,4 @@
                                          :when component]
                                    (apply (draw-fns k) graphics (rest component)))))
                              (assoc graphics
-                                    :graphics/entity-render-layers (:graphics/entity-render-layers (:after-gdx-create config))
-                                    ))))
+                                    :graphics/entity-render-layers (:graphics/entity-render-layers config)))))
