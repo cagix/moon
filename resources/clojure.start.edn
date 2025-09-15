@@ -30,7 +30,6 @@
                 [:ctx/info :some]
                 [:ctx/input :some]
                 [:ctx/max-delta :some]
-                [:ctx/max-speed :some]
                 [:ctx/minimum-size :some]
                 [:ctx/mouseover-eid :any]
                 [:ctx/paused? :any]

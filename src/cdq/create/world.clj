@@ -41,6 +41,8 @@
                                                                                       (:tiled-map/height tiled-map))
                            :world/raycaster (raycaster/create grid)
                            :world/elapsed-time 0
+                           :world/max-speed (/ (:ctx/minimum-size ctx)
+                                               (:ctx/max-delta ctx))
                            })))
 
 (defn- build-world
@@ -48,8 +50,6 @@
     :as ctx}]
   (merge ctx
            {
-            :ctx/max-speed (/ (:ctx/minimum-size ctx)
-                              (:ctx/max-delta ctx))
             :ctx/potential-field-cache (atom nil)
             :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
             :ctx/id-counter (atom 0)
