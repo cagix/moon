@@ -6,6 +6,7 @@
                                         [:ctx/db :some]
                                         [:ctx/graphics :some]
                                         [:ctx/input :some]
+                                        [:ctx/controls :some]
                                         [:ctx/stage :some]
                                         [:ctx/ui-actors :some]
                                         [:ctx/world :some]
@@ -66,6 +67,10 @@
             [cdq.start.load-entity-states/do! "entity_states.edn"]
             [cdq.start.load-effects/do! "effects_fn_map.edn"]
             [cdq.start.load-info/do! "info.edn"]
+            [cdq.start.assoc-controls/do! {:zoom-in :minus
+                                           :zoom-out :equals
+                                           :unpause-once :p
+                                           :unpause-continously :space}]
             [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                               [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
             [cdq.start.lwjgl/do! {:config {:title "Cyber Dungeon Quest"
@@ -120,11 +125,6 @@
  :object
  {
    :ctx/config {
-                :controls {:zoom-in :minus
-                           :zoom-out :equals
-                           :unpause-once :p
-                           :unpause-continously :space}
-
                 :cdq.ui.editor.overview-table {
                                                :properties/audiovisuals {:columns 10
                                                                          :image-scale 2
