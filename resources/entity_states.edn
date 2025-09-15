@@ -30,4 +30,6 @@
 
  :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
+
+ :draw-gui-view {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}
  }

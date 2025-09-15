@@ -4,10 +4,7 @@
             [cdq.gdx.math.vector2 :as v]
             [clojure.gdx.input :as input]))
 
-(defn create [_eid item _ctx]
-  {:item item})
-
-(defn world-item? [mouseover-actor]
+(defn- world-item? [mouseover-actor]
   (not mouseover-actor))
 
 ; It is possible to put items out of sight, losing them.
@@ -19,11 +16,14 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [world-mouse-position entity]
+(defn- item-place-position [world-mouse-position entity]
   (placement-point (:body/position (:entity/body entity))
                    world-mouse-position
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
+
+(defn create [_eid item _ctx]
+  {:item item})
 
 (defn draw
   [{:keys [item]}
@@ -91,3 +91,14 @@
       [:tx/set-item eid cell item-on-cursor]
       [:tx/event eid :dropped-item]
       [:tx/event eid :pickup-item item-in-cell]])))
+
+(defn draw-gui-view
+  [eid
+   {:keys [ctx/graphics
+           ctx/mouseover-actor
+           ctx/ui-mouse-position]}]
+  (when (not (world-item? mouseover-actor))
+    [[:draw/texture-region
+      (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
+      ui-mouse-position
+      {:center? true}]]))

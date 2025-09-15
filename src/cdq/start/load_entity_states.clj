@@ -32,5 +32,9 @@
      :clicked-inventory-cell (fn [[k v] eid cell]
                                (when-let [f (k (:clicked-inventory-cell fn->k->var))]
                                  (f eid cell)))
+
+     :draw-gui-view (fn [[k] eid ctx]
+                      (when-let [f (k (:draw-gui-view fn->k->var))]
+                        (f eid ctx)))
      })
   ctx)
