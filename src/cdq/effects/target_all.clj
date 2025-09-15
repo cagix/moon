@@ -1,13 +1,13 @@
 (ns cdq.effects.target-all
-  (:require [cdq.raycaster :as raycaster]))
+  (:require [cdq.ctx.world :as world]))
 
 (defn- affected-targets
   [active-entities
-   raycaster
+   world
    entity]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(raycaster/line-of-sight? raycaster entity @%))
+       (filter #(world/line-of-sight? world entity @%))
        (remove #(:entity/player? @%))))
 
 (comment
@@ -35,11 +35,10 @@
   [[_ {:keys [entity-effects]}]
    {:keys [effect/source]}
    {:keys [ctx/world]}]
-  (let [{:keys [world/active-entities
-                world/raycaster]} world
+  (let [{:keys [world/active-entities]} world
         source* @source]
     (apply concat
-           (for [target (affected-targets active-entities raycaster source*)]
+           (for [target (affected-targets active-entities world source*)]
              [[:tx/spawn-line
                {:start (:body/position (:entity/body source*)) #_(start-point source* target*)
                 :end (:body/position (:entity/body @target))
@@ -55,10 +54,9 @@
   [_
    {:keys [effect/source]}
    {:keys [ctx/world]}]
-  (let [{:keys [world/active-entities
-                world/raycaster]} world
+  (let [{:keys [world/active-entities]} world
         source* @source]
-    (for [target* (map deref (affected-targets active-entities raycaster source*))]
+    (for [target* (map deref (affected-targets active-entities world source*))]
       [:draw/line
        (:body/position (:entity/body source*)) #_(start-point source* target*)
        (:body/position (:entity/body target*))

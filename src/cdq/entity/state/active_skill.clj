@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.ctx.graphics :as graphics]
-            [cdq.raycaster :as raycaster]
+            [cdq.ctx.world :as world]
             [cdq.stats :as stats]
             [cdq.timer :as timer]))
 
@@ -22,10 +22,10 @@
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."
-  [raycaster {:keys [effect/source effect/target] :as effect-ctx}]
+  [world {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (raycaster/line-of-sight? raycaster @source @target))
+           (world/line-of-sight? world @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -57,7 +57,7 @@
              eid
              {:keys [ctx/world]}]
   (cond
-   (not (effect/some-applicable? (update-effect-ctx (:world/raycaster world) effect-ctx) ; TODO how 2 test
+   (not (effect/some-applicable? (update-effect-ctx world effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
    [[:tx/event eid :action-done]
     ; TODO some sound ?

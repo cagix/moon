@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]
             [cdq.world.grid :as grid]
-            [cdq.raycaster :as raycaster]
+            [cdq.ctx.world :as world]
             [cdq.skill :as skill]
             [cdq.potential-fields.movement :as potential-fields.movement]))
 
@@ -18,13 +18,13 @@
        first))
 
 (defn- npc-effect-ctx
-  [{:keys [world/grid
-           world/raycaster]}
+  [{:keys [world/grid]
+    :as world}
    eid]
   (let [entity @eid
         target (grid/nearest-enemy grid entity)
         target (when (and target
-                          (raycaster/line-of-sight? raycaster entity @target))
+                          (world/line-of-sight? world entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

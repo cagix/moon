@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.graphics :as graphics]
             [cdq.ctx.world :as world]
-            [cdq.raycaster :as raycaster]
             [clojure.graphics.color :as color]
             [clojure.utils :as utils]))
 
@@ -39,10 +38,9 @@
   (let [entities (map deref (world/active-eids world))
         player @(:world/player-eid world)
         render-layers (:graphics/entity-render-layers graphics)
-        {:keys [world/raycaster]} world
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
-                           (raycaster/line-of-sight? raycaster player entity)))]
+                           (world/line-of-sight? world player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
