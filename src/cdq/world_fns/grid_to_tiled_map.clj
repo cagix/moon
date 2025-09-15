@@ -1,6 +1,7 @@
 (ns cdq.world-fns.grid-to-tiled-map
   (:require [cdq.grid2d :as g2d]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]))
 
 (defn grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
@@ -19,4 +20,4 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (tiled/copy-tile tile)])))})}))
+                            [position (static-tiled-map-tile/copy tile)])))})}))

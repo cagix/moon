@@ -1,9 +1,7 @@
 (ns clojure.gdx.maps.tiled
   (:require [clojure.gdx.maps.properties :as properties]
             [clojure.gdx.maps.tiled.layer :as layer])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-           (com.badlogic.gdx.maps.tiled TiledMap
+  (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
 
@@ -25,24 +23,6 @@
                              :tiles tiles})]
     (.add (.getLayers tiled-map) layer))
   nil)
-
-(def copy-tile
-  "Memoized function. Copies the given [[static-tiled-map-tile]].
-
-  Tiles are usually shared by multiple cells, see: https://libgdx.com/wiki/graphics/2d/tile-maps#cells"
-  (memoize
-   (fn [^StaticTiledMapTile tile]
-     (assert tile)
-     (StaticTiledMapTile. tile))))
-
-(defn static-tiled-map-tile
-  "Creates a `StaticTiledMapTile` with the given `texture-region` and property."
-  [texture-region property-name property-value]
-  {:pre [texture-region
-         (string? property-name)]}
-  (let [tile (StaticTiledMapTile. ^TextureRegion texture-region)]
-    (.put (.getProperties tile) property-name property-value)
-    tile))
 
 (defprotocol HasMapProperties
   (get-property [_ k])
