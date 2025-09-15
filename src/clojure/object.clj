@@ -1,9 +1,8 @@
 (ns clojure.object)
 
 (defn pipeline
-  ([opts]
-   (pipeline (:object opts)
-             (:pipeline opts)))
+  ([pipeline*]
+   (pipeline {} pipeline*))
   ([object pipeline]
    (reduce (fn [object [f & params]]
              (apply f object params))
