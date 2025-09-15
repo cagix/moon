@@ -1,0 +1,25 @@
+[
+ [com.badlogic.gdx.scenes.scene2d.Actor
+  clojure.gdx.scene2d.actor
+  clojure.scene2d.actor/Actor]
+
+ [com.badlogic.gdx.scenes.scene2d.Group
+  clojure.gdx.scene2d.group
+  clojure.scene2d.group/Group]
+
+ [com.badlogic.gdx.scenes.scene2d.Event
+  clojure.gdx.scene2d.event
+  clojure.scene2d.event/Event]
+
+ [com.badlogic.gdx.scenes.scene2d.Stage
+  clojure.gdx.scene2d.stage
+  clojure.scene2d.stage/Stage]
+
+ [com.badlogic.gdx.scenes.scene2d.Stage
+  cdq.gdx.stage
+  cdq.ctx.stage/Stage]
+
+ [com.badlogic.gdx.scenes.scene2d.ui.Table
+  clojure.gdx.scene2d.ui.table
+  clojure.scene2d.ui.table/Table]
+ ]
