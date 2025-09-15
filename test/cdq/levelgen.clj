@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require clojure.vis-ui.widget
+  (:require clojure.gdx
+            clojure.vis-ui.widget
             cdq.gdx.graphics
             cdq.ctx.graphics
             clojure.extends
@@ -103,11 +104,12 @@
 
 (defrecord Context [])
 
-(defn create! [{:keys [clojure.gdx/files
-                       clojure.gdx/input
-                       clojure.gdx/graphics]}]
+(defn create! []
   (vis-ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/input input})
+  (let [{:keys [clojure.gdx/files
+                clojure.gdx/input
+                clojure.gdx/graphics]} (clojure.gdx/state)
+        ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
         stage (ctx-stage/create ui-viewport sprite-batch)

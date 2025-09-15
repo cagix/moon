@@ -69,7 +69,8 @@
                                            :windowed-mode {:width 1440 :height 900}
                                            :foreground-fps 60}
                                   :listener [cdq.application.listener/create
-                                             {:create [[cdq.create.input/do!]
+                                             {:create [[cdq.create.assoc-gdx/do!]
+                                                       [cdq.create.input/do!]
                                                        [cdq.create.vis-ui/do!]
                                                        [cdq.create.graphics/do!]
                                                        [cdq.create.stage/do!]

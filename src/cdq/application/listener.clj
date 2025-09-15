@@ -8,10 +8,8 @@
            resize
            atom-var]}]
   (let [state @atom-var]
-    {:create! (fn [gdx]
-                (swap! state (fn [ctx]
-                               (object/pipeline {:object (assoc ctx :ctx/gdx gdx)
-                                                 :pipeline create}))))
+    {:create! (fn []
+                (swap! state object/pipeline create))
      :dispose! (fn []
                  (swap! state dispose))
      :render! (fn []
