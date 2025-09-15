@@ -1,48 +1,116 @@
-{:functions [
-             cdq.start.provide-impls/do!
-             cdq.start.read-schema/do!
-             cdq.start.context-record/do!
-             cdq.start.register-self/do!
-             cdq.start.db/do!
-             cdq.start.txs/do!
-             cdq.start.load-effects/do!
-             cdq.start.os-settings/do!
-             cdq.start.lwjgl/do!
-             ]
+{:pipeline [
+            [cdq.start.provide-impls/do! [
+                                          [cdq.db.DB
+                                           cdq.db
+                                           cdq.ctx.db/DB]
+
+                                          [com.badlogic.gdx.scenes.scene2d.Actor
+                                           clojure.gdx.scene2d.actor
+                                           clojure.scene2d.actor/Actor]
+
+                                          [com.badlogic.gdx.scenes.scene2d.Group
+                                           clojure.gdx.scene2d.group
+                                           clojure.scene2d.group/Group]
+
+                                          [com.badlogic.gdx.scenes.scene2d.Event
+                                           clojure.gdx.scene2d.event
+                                           clojure.scene2d.event/Event]
+
+                                          [com.badlogic.gdx.scenes.scene2d.Stage
+                                           clojure.gdx.scene2d.stage
+                                           clojure.scene2d.stage/Stage]
+
+                                          [com.badlogic.gdx.scenes.scene2d.Stage
+                                           cdq.gdx.stage
+                                           cdq.ctx.stage/Stage]
+
+                                          [cdq.gdx.graphics.RGraphics
+                                           cdq.gdx.graphics
+                                           cdq.ctx.graphics/Graphics]
+
+                                          [com.badlogic.gdx.scenes.scene2d.ui.Table
+                                           clojure.gdx.scene2d.ui.table
+                                           clojure.scene2d.ui.table/Table]
+                                          ]]
+            [cdq.start.read-schema/do! [:map {:closed true}
+                                        [:ctx/audio :some]
+                                        [:ctx/config :some]
+                                        [:ctx/db :some]
+                                        [:ctx/graphics :some]
+                                        [:ctx/input :some]
+                                        [:ctx/stage :some]
+                                        [:ctx/world :some]
+
+                                        ; protocols
+                                        [:ctx/entity-states :some] ; how can the protocol have a 'create-value' fn ?
+                                        [:ctx/info :some] ; extend over entity=IPersistentMap itself?
+                                        ;
+
+                                        ; frame / world / dissoc ?
+                                        [:ctx/mouseover-eid :any]
+                                        [:ctx/paused? :any]
+                                        [:ctx/interaction-state :some]
+                                        ;
+
+                                        ; ctx/app ?
+                                        [:ctx/schema :some]
+                                        [:ctx/application-state :some]
+                                        ;
+                                        ]]
+            [cdq.start.context-record/do!]
+            [cdq.start.register-self/do! cdq.application/state]
+            [cdq.start.db/do! {:schemas "schema.edn"
+                               :properties "properties.edn"}]
+            [cdq.start.txs/do! {:sym-format "cdq.tx.%s/do!"
+                                :ks [:tx/reset-stage
+                                     :tx/rebuild-editor-window
+                                     :tx/assoc
+                                     :tx/assoc-in
+                                     :tx/dissoc
+                                     :tx/effect
+                                     :tx/mark-destroyed
+                                     :tx/mod-add
+                                     :tx/mod-remove
+                                     :tx/pay-mana-cost
+                                     :tx/pickup-item
+                                     :tx/print-stacktrace
+                                     :tx/show-error-window
+                                     :tx/set-cooldown
+                                     :tx/add-text-effect
+                                     :tx/add-skill
+                                     :tx/player-add-skill
+                                     :tx/set-item
+                                     :tx/remove-item
+                                     :tx/player-set-item
+                                     :tx/player-remove-item
+                                     :tx/event
+                                     :tx/toggle-inventory-visible
+                                     :tx/show-message
+                                     :tx/show-modal
+                                     :tx/sound
+                                     :tx/state-exit
+                                     :tx/state-enter
+                                     :tx/audiovisual
+                                     :tx/spawn-alert
+                                     :tx/spawn-line
+                                     :tx/deal-damage
+                                     :tx/move-entity
+                                     :tx/open-editor-overview
+                                     :tx/open-property-editor
+                                     :tx/spawn-projectile
+                                     :tx/spawn-effect
+                                     :tx/spawn-item
+                                     :tx/spawn-creature
+                                     :tx/spawn-entity
+                                     :tx/update-potential-fields]}]
+            [cdq.start.load-effects/do! "effects_fn_map.edn"]
+            [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                                              [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
+            [cdq.start.lwjgl/do!]
+            ]
  :object
  {
-   :ctx/schema [:map {:closed true}
-                [:ctx/audio :some]
-                [:ctx/config :some]
-                [:ctx/db :some]
-                [:ctx/graphics :some]
-                [:ctx/input :some]
-                [:ctx/stage :some]
-                [:ctx/world :some]
-
-                ; protocols
-                [:ctx/entity-states :some] ; how can the protocol have a 'create-value' fn ?
-                [:ctx/info :some] ; extend over entity=IPersistentMap itself?
-                ;
-
-                ; frame / world / dissoc ?
-                [:ctx/mouseover-eid :any]
-                [:ctx/paused? :any]
-                [:ctx/interaction-state :some]
-                ;
-
-                ; ctx/app ?
-                [:ctx/schema :some]
-                [:ctx/application-state :some]
-                ;
-                ]
-
    :ctx/config {
-                :cdq.start.register-self cdq.application/state
-
-                :cdq.start.os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                                              [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
-
                 :cdq.start.lwjgl {
                                   :create  cdq.gdx-app.create/do!
                                   :render  cdq.gdx-app.render/do!
@@ -309,49 +377,6 @@
                                                                    :skill/cost
                                                                    :skill/cooldown]
                                            }
-
-                :txs-fn-map {:sym-format "cdq.tx.%s/do!"
-                             :ks [:tx/reset-stage
-                                  :tx/rebuild-editor-window
-                                  :tx/assoc
-                                  :tx/assoc-in
-                                  :tx/dissoc
-                                  :tx/effect
-                                  :tx/mark-destroyed
-                                  :tx/mod-add
-                                  :tx/mod-remove
-                                  :tx/pay-mana-cost
-                                  :tx/pickup-item
-                                  :tx/print-stacktrace
-                                  :tx/show-error-window
-                                  :tx/set-cooldown
-                                  :tx/add-text-effect
-                                  :tx/add-skill
-                                  :tx/player-add-skill
-                                  :tx/set-item
-                                  :tx/remove-item
-                                  :tx/player-set-item
-                                  :tx/player-remove-item
-                                  :tx/event
-                                  :tx/toggle-inventory-visible
-                                  :tx/show-message
-                                  :tx/show-modal
-                                  :tx/sound
-                                  :tx/state-exit
-                                  :tx/state-enter
-                                  :tx/audiovisual
-                                  :tx/spawn-alert
-                                  :tx/spawn-line
-                                  :tx/deal-damage
-                                  :tx/move-entity
-                                  :tx/open-editor-overview
-                                  :tx/open-property-editor
-                                  :tx/spawn-projectile
-                                  :tx/spawn-effect
-                                  :tx/spawn-item
-                                  :tx/spawn-creature
-                                  :tx/spawn-entity
-                                  :tx/update-potential-fields]}
 
                 }
    :ctx/mouseover-eid nil

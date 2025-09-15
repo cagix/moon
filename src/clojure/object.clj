@@ -1,11 +1,7 @@
 (ns clojure.object)
 
-(defn pipeline
-  ([object functions]
-   (reduce (fn [object f]
-             (f object))
-           object
-           functions))
-
-  ([{:keys [object functions]}]
-   (pipeline object functions)))
+(defn pipeline [{:keys [object pipeline]}]
+  (reduce (fn [object [f & params]]
+            (apply f object params))
+          object
+          pipeline))

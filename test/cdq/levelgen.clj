@@ -24,7 +24,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(cdq.start.provide-impls/do! nil)
+;(cdq.start.provide-impls/do! nil)
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48

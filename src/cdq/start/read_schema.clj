@@ -2,5 +2,5 @@
   (:require [cdq.malli :as m]))
 
 (defn do!
-  [ctx]
-  (update ctx :ctx/schema m/schema))
+  [ctx schema-form]
+  (assoc ctx :ctx/schema (m/schema schema-form)))

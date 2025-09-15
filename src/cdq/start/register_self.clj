@@ -1,4 +1,4 @@
 (ns cdq.start.register-self)
 
-(defn do! [ctx]
-  (assoc ctx :ctx/application-state @(:cdq.start.register-self (:ctx/config ctx))))
+(defn do! [ctx avar]
+  (assoc ctx :ctx/application-state @avar))

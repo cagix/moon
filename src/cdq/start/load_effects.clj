@@ -6,8 +6,8 @@
   (:import (clojure.lang MapEntry
                          PersistentVector)))
 
-(defn do! [ctx]
-  (let [k->fn (-> "effects_fn_map.edn"
+(defn do! [ctx edn-resource]
+  (let [k->fn (-> edn-resource
                   io/resource
                   slurp
                   edn/read-string
