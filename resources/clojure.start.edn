@@ -9,7 +9,6 @@
                                         [:ctx/stage :some]
                                         [:ctx/ui-actors :some]
                                         [:ctx/world :some]
-                                        [:ctx/entity-states :some]
                                         [:ctx/info :some]
                                         [:ctx/mouseover-eid :any]
                                         [:ctx/paused? :any]
@@ -63,6 +62,7 @@
                                      :tx/spawn-creature
                                      :tx/spawn-entity
                                      :tx/update-potential-fields]}]
+            [cdq.start.load-entity-states/do! "entity_states.edn"]
             [cdq.start.load-effects/do! "effects_fn_map.edn"]
             [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                               [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
@@ -279,40 +279,5 @@
                          :skill/cooldown cdq.skill.cooldown/info-text
                          :skill/cost cdq.skill.cost/info-text
                          :maxrange cdq.maxrange/info-text}}
-
-
-:ctx/entity-states {
-                    :create {:active-skill cdq.entity.state.active-skill/create
-                             :npc-moving cdq.entity.state.npc-moving/create
-                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
-                             :player-moving cdq.entity.state.player-moving/create
-                             :stunned cdq.entity.state.stunned/create}
-
-                    :enter {:npc-dead              cdq.entity.state.npc-dead/enter
-                            :npc-moving            cdq.entity.state.npc-moving/enter
-                            :player-dead           cdq.entity.state.player-dead/enter
-                            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
-                            :player-moving         cdq.entity.state.player-moving/enter
-                            :active-skill          cdq.entity.state.active-skill/enter}
-
-                    :exit {:npc-moving            cdq.entity.state.npc-moving/exit
-                           :npc-sleeping          cdq.entity.state.npc-sleeping/exit
-                           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-                           :player-moving         cdq.entity.state.player-moving/exit}
-
-                    :cursor {:active-skill :cursors/sandclock
-                             :player-dead :cursors/black-x
-                             :player-idle cdq.entity.state.player-idle/cursor
-                             :player-item-on-cursor :cursors/hand-grab
-                             :player-moving :cursors/walking
-                             :stunned :cursors/denied}
-
-                    :handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
-                                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-                                   :player-moving         cdq.entity.state.player-moving/handle-input}
-
-                    :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-                                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
-                    }
 }
 }

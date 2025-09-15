@@ -2,6 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.graphics :as graphics]
             [cdq.info :as info]
+            [cdq.entity.state :as state]
             cdq.ui.windows.entity-info
             cdq.ui.windows.inventory
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
@@ -67,12 +68,14 @@
       :clicked-cell-listener (fn [cell]
                                (listener/click
                                 (fn [event _x _y]
-                                  (let [{:keys [ctx/entity-states
-                                                ctx/world] :as ctx} (ctx-stage/get-ctx (event/stage event))]
-                                    (ctx/handle-txs!
-                                     ctx
-                                     (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @(:world/player-eid world))))]
-                                       (f (:world/player-eid world) cell)))))))
+                                  (let [{:keys [ctx/world] :as ctx} (ctx-stage/get-ctx (event/stage event))
+                                        eid (:world/player-eid world)
+                                        entity @eid
+                                        state-k (:state (:entity/fsm entity))
+                                        txs (state/clicked-inventory-cell [state-k (state-k entity)]
+                                                                          eid
+                                                                          cell)]
+                                    (ctx/handle-txs! ctx txs)))))
       :slot->texture-region slot->texture-region
       })))
 

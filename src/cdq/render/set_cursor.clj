@@ -1,15 +1,16 @@
 (ns cdq.render.set-cursor
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.ctx.graphics :as graphics]
+            [cdq.entity.state :as state]))
 
 (defn do!
-  [{:keys [ctx/entity-states
-           ctx/graphics
+  [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (graphics/set-cursor! graphics
-                        (let [player-eid (:world/player-eid world)
-                              ->cursor ((:cursor entity-states) (:state (:entity/fsm @player-eid)))]
-                          (if (keyword? ->cursor)
-                            ->cursor
-                            (->cursor player-eid ctx))))
+  (let [eid (:world/player-eid world)
+        entity @eid
+        state-k (:state (:entity/fsm entity))
+        cursor-key (state/cursor [state-k (state-k entity)]
+                                 eid
+                                 ctx)]
+    (graphics/set-cursor! graphics cursor-key))
   ctx)

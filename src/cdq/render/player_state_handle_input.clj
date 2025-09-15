@@ -1,13 +1,15 @@
 (ns cdq.render.player-state-handle-input
-  (:require [cdq.ctx :as ctx]))
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity.state :as state]))
 
 (defn do!
-  [{:keys [ctx/entity-states
-           ctx/world]
+  [{:keys [ctx/world]
     :as ctx}]
-  (let [handle-input ((:handle-input entity-states) (:state (:entity/fsm @(:world/player-eid world))))
-        txs (if handle-input
-              (handle-input (:world/player-eid world) ctx)
-              nil)]
+  (let [eid (:world/player-eid world)
+        entity @eid
+        state-k (:state (:entity/fsm entity))
+        txs (state/handle-input [state-k (state-k entity)]
+                                eid
+                                ctx)]
     (ctx/handle-txs! ctx txs))
   ctx)

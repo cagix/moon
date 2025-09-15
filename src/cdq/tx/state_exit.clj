@@ -1,9 +1,6 @@
-(ns cdq.tx.state-exit)
+(ns cdq.tx.state-exit
+  (:require [cdq.entity.state :as state]))
 
 (defn do!
-  [{:keys [ctx/entity-states]
-    :as ctx}
-   eid
-   [state-k state-v]]
-  (when-let [f (state-k (:exit entity-states))]
-    (f state-v eid ctx)))
+  [ctx eid [state-k state-v]]
+  (state/exit [state-k state-v] eid ctx))

@@ -14,7 +14,7 @@
      (when-not (= old-state-k new-state-k)
        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                              [k (k @eid)])
-             new-state-obj [new-state-k (state/create ctx new-state-k eid params)]]
+             new-state-obj [new-state-k (state/create [new-state-k params] eid ctx)]]
          [[:tx/assoc eid :entity/fsm new-fsm]
           [:tx/assoc eid new-state-k (new-state-obj 1)]
           [:tx/dissoc eid old-state-k]
