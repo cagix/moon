@@ -12,22 +12,32 @@
  :object
  {
    :ctx/schema [:map {:closed true}
-                [:ctx/entity-states :some]
                 [:ctx/audio :some]
-                [:ctx/draw-fns :some]
                 [:ctx/config :some]
                 [:ctx/db :some]
                 [:ctx/graphics :some]
-                [:ctx/info :some]
                 [:ctx/input :some]
+                [:ctx/stage :some]
+                [:ctx/world :some]
+
+                ; protocols
+                [:ctx/entity-states :some]
+                [:ctx/draw-fns :some]
+                [:ctx/info :some]
+                [:ctx/render-layers :some]
+                ;
+
+                ; frame / world / dissoc ?
                 [:ctx/mouseover-eid :any]
                 [:ctx/paused? :any]
-                [:ctx/render-layers :some]
-                [:ctx/schema :some]
-                [:ctx/stage :some]
                 [:ctx/interaction-state :some]
+                ;
+
+                ; ctx/app ?
+                [:ctx/schema :some]
                 [:ctx/application-state :some]
-                [:ctx/world :some]]
+                ;
+                ]
 
    :ctx/config {
                 :cdq.start.register-self cdq.application/state
