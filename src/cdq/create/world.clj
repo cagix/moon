@@ -1,12 +1,40 @@
 (ns cdq.create.world
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
-            [cdq.world.grid :as grid]
-            [clojure.utils :as utils]
+            [cdq.malli :as m]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.explored-tile-corners :as explored-tile-corners]
+            [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.utils :as utils]))
+
+(def ^:private components-schema
+  (m/schema [:map {:closed true}
+             [:entity/body :some]
+             [:entity/image {:optional true} :some]
+             [:entity/animation {:optional true} :some]
+             [:entity/delete-after-animation-stopped? {:optional true} :some]
+             [:entity/alert-friendlies-after-duration {:optional true} :some]
+             [:entity/line-render {:optional true} :some]
+             [:entity/delete-after-duration {:optional true} :some]
+             [:entity/destroy-audiovisual {:optional true} :some]
+             [:entity/fsm {:optional true} :some]
+             [:entity/player? {:optional true} :some]
+             [:entity/free-skill-points {:optional true} :some]
+             [:entity/click-distance-tiles {:optional true} :some]
+             [:entity/clickable {:optional true} :some]
+             [:property/id {:optional true} :some]
+             [:property/pretty-name {:optional true} :some]
+             [:creature/level {:optional true} :some]
+             [:entity/faction {:optional true} :some]
+             [:entity/species {:optional true} :some]
+             [:entity/movement {:optional true} :some]
+             [:entity/skills {:optional true} :some]
+             [:creature/stats {:optional true} :some]
+             [:entity/inventory    {:optional true} :some]
+             [:entity/item {:optional true} :some]
+             [:entity/projectile-collision {:optional true} :some]]))
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]
@@ -51,6 +79,7 @@
                            :world/id-counter (atom 0)
                            :world/entity-ids (atom {})
                            :world/render-z-order (utils/define-order (:world/z-orders (:world config)))
+                           :world/spawn-entity-schema components-schema
                            })))
 
 (defn- spawn-player!
