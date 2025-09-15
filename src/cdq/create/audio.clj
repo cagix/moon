@@ -4,16 +4,19 @@
             [clojure.gdx.files :as files]
             [clojure.java.io :as io]))
 
-(defn do! [ctx]
-  (assoc ctx :ctx/audio (let [audio (:clojure.gdx/audio (:ctx/gdx ctx))
+(defn do! [{:keys [ctx/config
+                   ctx/files
+                   ctx/gdx]
+            :as ctx}]
+  (assoc ctx :ctx/audio (let [audio (:clojure.gdx/audio gdx)
                               {:keys [sound-names
-                                      path-format]} (:cdq.audio/config (:ctx/config ctx))
+                                      path-format]} (:cdq.audio/config config)
                               sound-name->file-handle (->> sound-names
                                                            io/resource
                                                            slurp
                                                            edn/read-string
                                                            (map (fn [sound-name]
                                                                   [sound-name
-                                                                   (files/internal (:ctx/files ctx)
+                                                                   (files/internal files
                                                                                    (format path-format sound-name))])))]
                           (audio/create audio sound-name->file-handle))))

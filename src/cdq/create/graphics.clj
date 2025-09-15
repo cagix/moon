@@ -23,8 +23,12 @@
    :world-viewport world-viewport
    :textures-to-load (cdq.files/search files texture-folder)})
 
-(defn do! [ctx]
-  (assoc ctx :ctx/graphics (assoc (cdq.gdx.graphics/create (:clojure.gdx/graphics (:ctx/gdx ctx))
-                                                           (graphics-config (:ctx/files ctx)
-                                                                            (:after-gdx-create (:ctx/config ctx))))
-                                  :ctx/draw-fns (:ctx/draw-fns ctx))))
+(defn do! [{:keys [ctx/config
+                   ctx/draw-fns
+                   ctx/files
+                   ctx/gdx]
+            :as ctx}]
+  (assoc ctx :ctx/graphics (assoc (cdq.gdx.graphics/create (:clojure.gdx/graphics gdx)
+                                                           (graphics-config files
+                                                                            (:after-gdx-create config)))
+                                  :ctx/draw-fns draw-fns)))
