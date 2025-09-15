@@ -4,7 +4,6 @@
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.maps.tiled TiledMap
-                                        TiledMapTileLayer
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
 
@@ -76,35 +75,6 @@
                   If there is no cell at this position in the layer returns `:no-cell`.
                   If the property value is undefined returns `:undefined`."))
 
-(defn- reify-tiled-layer [^TiledMapTileLayer this]
-  (reify
-    HasMapProperties
-    (get-property [_ k]
-      (.get (.getProperties this) k))
-    (map-properties [_]
-      (properties/->clj (.getProperties this)))
-
-    TMapLayer
-    (set-visible! [_ boolean]
-      (.setVisible this boolean))
-
-    (visible? [_]
-      (.isVisible this))
-
-    (layer-name [_]
-      (.getName this))
-
-    (tile-at [_ [x y]]
-      (when-let [cell (.getCell this x y)]
-        (.getTile cell)))
-
-    (property-value [_ [x y] property-key]
-      (if-let [cell (.getCell this x y)]
-        (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
-          value
-          :undefined)
-        :no-cell))))
-
 (defn- reify-tiled-map [^TiledMap this]
   (reify
     Disposable
@@ -126,7 +96,7 @@
 
     TMap
     (layers [_]
-      (map reify-tiled-layer (.getLayers this)))
+      (.getLayers this))
 
     (layer-index [_ layer]
       (let [idx (.getIndex (.getLayers this) ^String (layer-name layer))]
@@ -134,7 +104,7 @@
           idx)))
 
     (get-layer [_ layer-name]
-      (reify-tiled-layer (.get (.getLayers this) ^String layer-name)))
+      (.get (.getLayers this) ^String layer-name))
 
     (add-layer! [_ layer-declaration]
       (tm-add-layer! this layer-declaration))))

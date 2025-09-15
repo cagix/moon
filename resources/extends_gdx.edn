@@ -22,4 +22,11 @@
  [com.badlogic.gdx.scenes.scene2d.ui.Table
   clojure.gdx.scene2d.ui.table
   clojure.scene2d.ui.table/Table]
+
+ [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+  clojure.gdx.maps.tiled.layer
+  clojure.gdx.maps.tiled/HasMapProperties]
+ [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+  clojure.gdx.maps.tiled.layer
+  clojure.gdx.maps.tiled/TMapLayer]
  ]
