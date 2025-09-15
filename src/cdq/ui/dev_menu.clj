@@ -5,6 +5,10 @@
             [cdq.ctx.world :as world]))
 
 (defn help-items [_ctx _params]
+  ; FIXME
+  ; FIXME
+  ; FIXME
+  ; hardcoded !
   [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}])
 
 (defn reset-game-fn

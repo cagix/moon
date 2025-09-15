@@ -15,9 +15,12 @@
           :creature-properties creature-properties
           :graphics graphics)))
 
-(defn- assoc-ctx-world
-  [ctx {:keys [tiled-map
-               start-position]}]
+(defn- create-tiled-map
+  [ctx world-fn]
+  (let [{:keys [tiled-map
+                start-position]} (call-world-fn world-fn
+                                                (db/all-raw db :properties/creatures)
+                                                graphics)])
   (assoc ctx :ctx/world {:world/tiled-map tiled-map
                          :world/start-position start-position}))
 
@@ -85,9 +88,7 @@
      :as ctx}
     world-fn]
    (-> ctx
-       (assoc-ctx-world (call-world-fn world-fn
-                                       (db/all-raw db :properties/creatures)
-                                       graphics))
+       (create-tiled-map world-fn)
        build-world
        spawn-player!
        spawn-enemies!)))
