@@ -4,10 +4,10 @@
             [cdq.gdx.math.vector2 :as v]))
 
 (defn do!
-  [{:keys [ctx/content-grid
-           ctx/grid]}
+  [{:keys [ctx/grid
+           ctx/world]}
    eid body direction rotate-in-movement-direction?]
-  (content-grid/position-changed! content-grid eid)
+  (content-grid/position-changed! (:world/content-grid world) eid)
   (grid/remove-from-touched-cells! grid eid)
   (grid/set-touched-cells! grid eid)
   (when (:body/collides? (:entity/body @eid))

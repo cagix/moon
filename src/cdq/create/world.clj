@@ -16,7 +16,8 @@
           :graphics graphics)))
 
 (defn- create-tiled-map
-  [{:keys [ctx/db
+  [{:keys [ctx/config
+           ctx/db
            ctx/graphics]
     :as ctx}
    world-fn]
@@ -25,7 +26,10 @@
                                                 (db/all-raw db :properties/creatures)
                                                 graphics)]
     (assoc ctx :ctx/world {:world/tiled-map tiled-map
-                           :world/start-position start-position})))
+                           :world/start-position start-position
+                           :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
+                                                                    (:tiled-map/height tiled-map)
+                                                                    (:content-grid-cell-size (:world config)))})))
 
 (defn- build-world
   [{:keys [ctx/config
@@ -40,9 +44,6 @@
                                     "air"  :air
                                     "all"  :all))]
            {:ctx/grid grid
-            :ctx/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                   (:tiled-map/height tiled-map)
-                                                   (:content-grid-cell-size (:world config)))
             :ctx/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
                                                                      (:tiled-map/height tiled-map))
             :ctx/raycaster (raycaster/create grid)

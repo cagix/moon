@@ -21,7 +21,6 @@
                 [:ctx/audio :some]
                 [:ctx/draw-fns :some]
                 [:ctx/config :some]
-                [:ctx/content-grid :some]
                 [:ctx/db :some]
                 [:ctx/delta-time :some]
                 [:ctx/elapsed-time :some]

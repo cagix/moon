@@ -11,8 +11,8 @@
            ctx/entity-ids
            ctx/entity-components
            ctx/spawn-entity-schema
-           ctx/content-grid
-           ctx/grid]
+           ctx/grid
+           ctx/world]
     :as ctx}
    entity]
   (m/validate-humanize spawn-entity-schema entity)
@@ -31,7 +31,7 @@
     (let [id (:entity/id @eid)]
       (assert (number? id))
       (swap! entity-ids assoc id eid))
-    (content-grid/add-entity! content-grid eid)
+    (content-grid/add-entity! (:world/content-grid world) eid)
     ; https://github.com/damn/core/issues/58
     ;(assert (valid-position? grid @eid))
     (grid/set-touched-cells! grid eid)
