@@ -41,13 +41,16 @@
                                                                                       (:tiled-map/height tiled-map))
                            :world/raycaster (raycaster/create grid)
                            :world/elapsed-time 0
-                           :world/max-speed (/ (:ctx/minimum-size ctx)
-                                               (:ctx/max-delta ctx))
+                           :world/max-delta    (:world/max-delta    (:world config))
+                           :world/minimum-size (:world/minimum-size (:world config))
+                           :world/z-orders     (:world/z-orders     (:world config))
+                           :world/max-speed (/ (:world/minimum-size (:world config))
+                                               (:world/max-delta    (:world config)))
                            :world/potential-field-cache (atom nil)
                            :world/factions-iterations (:potential-field-factions-iterations (:world config))
                            :world/id-counter (atom 0)
                            :world/entity-ids (atom {})
-                           :world/render-z-order (utils/define-order (:ctx/z-orders ctx))
+                           :world/render-z-order (utils/define-order (:world/z-orders (:world config)))
                            })))
 
 (defn- spawn-player!

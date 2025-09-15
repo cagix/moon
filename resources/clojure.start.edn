@@ -26,15 +26,12 @@
                 [:ctx/graphics :some]
                 [:ctx/info :some]
                 [:ctx/input :some]
-                [:ctx/max-delta :some]
-                [:ctx/minimum-size :some]
                 [:ctx/mouseover-eid :any]
                 [:ctx/paused? :any]
                 [:ctx/player-eid :some]
                 [:ctx/render-layers :some]
                 [:ctx/schema :some]
                 [:ctx/stage :some]
-                [:ctx/z-orders :some]
                 [:ctx/interaction-state :some]
                 [:ctx/application-state :some]
                 [:ctx/fsms :some]
@@ -198,7 +195,14 @@
                                                      :entity/click-distance-tiles 1.5}}
                 :world {:content-grid-cell-size 16
                         :potential-field-factions-iterations {:good 15
-                                                              :evil 5}}
+                                                              :evil 5}
+                        :world/max-delta 0.04
+                        :world/minimum-size 0.39
+                        :world/z-orders [:z-order/on-ground
+                                         :z-order/ground
+                                         :z-order/flying
+                                         :z-order/effect]
+                        }
                 :effect-body-props {:width 0.5
                                     :height 0.5
                                     :z-order :z-order/effect}
@@ -256,12 +260,6 @@
    :ctx/active-entities 1
    :ctx/interaction-state :yes
 
-   :ctx/max-delta 0.04
-   :ctx/minimum-size 0.39
-   :ctx/z-orders [:z-order/on-ground
-                  :z-order/ground
-                  :z-order/flying
-                  :z-order/effect]
 
    :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
                   :draw/grid             cdq.draw.grid/do!
