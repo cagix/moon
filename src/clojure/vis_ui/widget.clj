@@ -161,3 +161,6 @@
 (defmethod scene2d/build :actor.type/image [opts]
   (image (:image/object opts)
          opts))
+
+(defn load! [ctx]
+  ctx)

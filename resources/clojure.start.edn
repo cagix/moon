@@ -1,4 +1,5 @@
 [
+ [clojure.vis-ui.widget/load!]
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
  [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
  [clojure.decl/assoc* :ctx/schema (cdq.malli/schema [:map {:closed true}
