@@ -2,9 +2,9 @@
   (:require [cdq.ctx :as ctx]))
 
 (defn- tick-component!
-  [k v eid {:keys [ctx/entity-components]
+  [k v eid {:keys [ctx/world]
             :as ctx}]
-  (when-let [f ((:tick entity-components) k)]
+  (when-let [f ((:tick (:world/entity-components world)) k)]
     (f v eid ctx)))
 
 (defn- tick-entity! [ctx eid]

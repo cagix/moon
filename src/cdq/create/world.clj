@@ -135,6 +135,7 @@
                            :world/spawn-entity-schema components-schema
                            :world/fsms {:fsms/player player-fsm
                                         :fsms/npc npc-fsm}
+                           :world/entity-components (:world/entity-components (:world config))
                            })))
 
 (defn- spawn-player!

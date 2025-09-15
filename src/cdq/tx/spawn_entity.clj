@@ -7,11 +7,11 @@
 (q/defrecord Entity [entity/body])
 
 (defn do!
-  [{:keys [ctx/entity-components
-           ctx/world]
+  [{:keys [ctx/world]
     :as ctx}
    entity]
   (let [{:keys [world/content-grid
+                world/entity-components
                 world/entity-ids
                 world/grid
                 world/id-counter
