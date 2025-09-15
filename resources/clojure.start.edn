@@ -12,7 +12,6 @@
  :object
  {
    :ctx/schema [:map {:closed true}
-                [:ctx/txs-fn-map :some]
                 [:ctx/entity-states :some]
                 [:ctx/audio :some]
                 [:ctx/draw-fns :some]
@@ -274,6 +273,50 @@
                                                                    :skill/cost
                                                                    :skill/cooldown]
                                            }
+
+                :txs-fn-map {:sym-format "cdq.tx.%s/do!"
+                             :ks [:tx/reset-stage
+                                  :tx/rebuild-editor-window
+                                  :tx/assoc
+                                  :tx/assoc-in
+                                  :tx/dissoc
+                                  :tx/effect
+                                  :tx/mark-destroyed
+                                  :tx/mod-add
+                                  :tx/mod-remove
+                                  :tx/pay-mana-cost
+                                  :tx/pickup-item
+                                  :tx/print-stacktrace
+                                  :tx/show-error-window
+                                  :tx/set-cooldown
+                                  :tx/add-text-effect
+                                  :tx/add-skill
+                                  :tx/player-add-skill
+                                  :tx/set-item
+                                  :tx/remove-item
+                                  :tx/player-set-item
+                                  :tx/player-remove-item
+                                  :tx/event
+                                  :tx/toggle-inventory-visible
+                                  :tx/show-message
+                                  :tx/show-modal
+                                  :tx/sound
+                                  :tx/state-exit
+                                  :tx/state-enter
+                                  :tx/audiovisual
+                                  :tx/spawn-alert
+                                  :tx/spawn-line
+                                  :tx/deal-damage
+                                  :tx/move-entity
+                                  :tx/open-editor-overview
+                                  :tx/open-property-editor
+                                  :tx/spawn-projectile
+                                  :tx/spawn-effect
+                                  :tx/spawn-item
+                                  :tx/spawn-creature
+                                  :tx/spawn-entity
+                                  :tx/update-potential-fields]}
+
                 }
    :ctx/mouseover-eid nil
    :ctx/paused? nil
@@ -344,49 +387,6 @@
                          :skill/cooldown cdq.skill.cooldown/info-text
                          :skill/cost cdq.skill.cost/info-text
                          :maxrange cdq.maxrange/info-text}}
-
-:ctx/txs-fn-map {:sym-format "cdq.tx.%s/do!"
-                 :ks [:tx/reset-stage
-                      :tx/rebuild-editor-window
-                      :tx/assoc
-                      :tx/assoc-in
-                      :tx/dissoc
-                      :tx/effect
-                      :tx/mark-destroyed
-                      :tx/mod-add
-                      :tx/mod-remove
-                      :tx/pay-mana-cost
-                      :tx/pickup-item
-                      :tx/print-stacktrace
-                      :tx/show-error-window
-                      :tx/set-cooldown
-                      :tx/add-text-effect
-                      :tx/add-skill
-                      :tx/player-add-skill
-                      :tx/set-item
-                      :tx/remove-item
-                      :tx/player-set-item
-                      :tx/player-remove-item
-                      :tx/event
-                      :tx/toggle-inventory-visible
-                      :tx/show-message
-                      :tx/show-modal
-                      :tx/sound
-                      :tx/state-exit
-                      :tx/state-enter
-                      :tx/audiovisual
-                      :tx/spawn-alert
-                      :tx/spawn-line
-                      :tx/deal-damage
-                      :tx/move-entity
-                      :tx/open-editor-overview
-                      :tx/open-property-editor
-                      :tx/spawn-projectile
-                      :tx/spawn-effect
-                      :tx/spawn-item
-                      :tx/spawn-creature
-                      :tx/spawn-entity
-                      :tx/update-potential-fields]}
 
 
 :ctx/entity-states {
