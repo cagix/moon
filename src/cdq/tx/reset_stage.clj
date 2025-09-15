@@ -1,16 +1,22 @@
 (ns cdq.tx.reset-stage
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]))
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]
+            [clojure.symbol :as symbol]))
 
 (defn do!
-  [{:keys [ctx/config
-           ctx/stage]
+  [{:keys [ctx/stage
+           ctx/ui-actors]
     :as ctx}]
   (stage/clear! stage)
-  (let [config (:cdq.application.reset-game-state config)
-        actors (map #(let [[f params] %]
+  (let [actors (map #(let [[f params] %]
                        (f ctx params))
-                    (:create-ui-actors config))]
+                    (-> ui-actors
+                        io/resource
+                        slurp
+                        edn/read-string
+                        symbol/require-resolve-symbols))]
     (doseq [actor actors]
       (stage/add! stage (scene2d/build actor))))
   nil)
