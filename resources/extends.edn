@@ -7,7 +7,7 @@
   cdq.db
   cdq.ctx.db/DB]
 
- [cdq.gdx.graphics.RGraphics
+ [cdq.create.graphics.RGraphics
   cdq.gdx.graphics
   cdq.ctx.graphics/Graphics]
  ]
