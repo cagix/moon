@@ -4,15 +4,14 @@
             [cdq.render.draw-world-map.tile-color-setter :as tile-color-setter]))
 
 (defn do!
-  [{:keys [ctx/explored-tile-corners
-           ctx/graphics
+  [{:keys [ctx/graphics
            ctx/raycaster
            ctx/world]}]
   (graphics/draw-tiled-map! graphics
                             (:world/tiled-map world)
                             (tile-color-setter/create
                              {:ray-blocked? (partial raycaster/blocked? raycaster)
-                              :explored-tile-corners explored-tile-corners
+                              :explored-tile-corners (:world/explored-tile-corners world)
                               :light-position (graphics/camera-position graphics)
                               :see-all-tiles? false
                               :explored-tile-color  [0.5 0.5 0.5 1]

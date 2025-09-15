@@ -36,17 +36,17 @@
                            :world/grid grid
                            :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                                     (:tiled-map/height tiled-map)
-                                                                    (:content-grid-cell-size (:world config)))})))
+                                                                    (:content-grid-cell-size (:world config)))
+                           :world/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
+                                                                                      (:tiled-map/height tiled-map))
+                           })))
 
 (defn- build-world
   [{:keys [ctx/config
            ctx/world]
     :as ctx}]
   (merge ctx
-         (let [tiled-map (:world/tiled-map world)]
-           {:ctx/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
-                                                                     (:tiled-map/height tiled-map))
-            :ctx/raycaster (raycaster/create (:world/grid world))
+           {:ctx/raycaster (raycaster/create (:world/grid world))
             :ctx/elapsed-time 0
             :ctx/max-speed (/ (:ctx/minimum-size ctx)
                               (:ctx/max-delta ctx))
@@ -54,7 +54,7 @@
             :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
             :ctx/id-counter (atom 0)
             :ctx/entity-ids (atom {})
-            :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))})))
+            :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))}))
 
 (defn- spawn-player!
   [{:keys [ctx/config
