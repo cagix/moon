@@ -141,7 +141,6 @@
                            :world/spawn-entity-schema components-schema
                            :world/fsms {:fsms/player player-fsm
                                         :fsms/npc npc-fsm}
-                           :world/entity-components (:world/entity-components (:world (:ctx/config ctx)))
                            :world/enemy-components {:entity/fsm {:fsm :fsms/npc
                                                                  :initial-state :npc-sleeping}
                                                     :entity/faction :evil}

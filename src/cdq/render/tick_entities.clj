@@ -1,16 +1,11 @@
 (ns cdq.render.tick-entities
-  (:require [cdq.ctx :as ctx]))
-
-(defn- tick-component!
-  [k v eid {:keys [ctx/world]
-            :as ctx}]
-  (when-let [f ((:tick (:world/entity-components world)) k)]
-    (f v eid ctx)))
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity]))
 
 (defn- tick-entity! [ctx eid]
   (doseq [k (keys @eid)]
     (try (when-let [v (k @eid)]
-           (ctx/handle-txs! ctx (tick-component! k v eid ctx)))
+           (ctx/handle-txs! ctx (entity/tick [k v] eid ctx)))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k

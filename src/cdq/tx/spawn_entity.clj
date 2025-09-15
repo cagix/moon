@@ -1,5 +1,6 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.world.content-grid :as content-grid]
+  (:require [cdq.entity :as entity]
+            [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.malli :as m]
             [qrecord.core :as q]))
@@ -11,19 +12,14 @@
     :as ctx}
    entity]
   (let [{:keys [world/content-grid
-                world/entity-components
                 world/entity-ids
                 world/grid
                 world/id-counter
                 world/spawn-entity-schema
                 ]} world
         _ (m/validate-humanize spawn-entity-schema entity)
-        build-component (fn [[k v]]
-                          (if-let [create (k (:create entity-components))]
-                            (create v ctx)
-                            v))
         entity (reduce (fn [m [k v]]
-                         (assoc m k (build-component [k v])))
+                         (assoc m k (entity/create [k v] ctx)))
                        {}
                        entity)
         _ (assert (and (not (contains? entity :entity/id))))
@@ -39,7 +35,4 @@
     (grid/set-touched-cells! grid eid)
     (when (:body/collides? (:entity/body @eid))
       (grid/set-occupied-cells! grid eid))
-    (mapcat (fn [[k v]]
-              (when-let [create! (k (:create! entity-components))]
-                (create! v eid ctx)))
-            @eid)))
+    (mapcat #(entity/create! % eid ctx) @eid)))
