@@ -1,5 +1,5 @@
 {:pipeline [
-            [cdq.start.provide-impls/do! "extends.edn"]
+            [clojure.extends/ns-impls "extends.edn"]
             [cdq.start.read-schema/do! [:map {:closed true}
                                         [:ctx/audio :some]
                                         [:ctx/config :some]

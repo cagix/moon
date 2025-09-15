@@ -2,7 +2,7 @@
   (:require clojure.vis-ui.widget
             cdq.gdx.graphics
             cdq.ctx.graphics
-            cdq.start.provide-impls
+            clojure.extends
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [cdq.db :as db]
             [cdq.files :as files]
@@ -25,7 +25,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(cdq.start.provide-impls/do! nil "extends.edn")
+(clojure.extends/ns-impls nil "extends.edn")
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
