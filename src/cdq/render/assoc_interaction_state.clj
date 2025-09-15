@@ -29,9 +29,9 @@
 ; game without ifs
 (defn- interaction-state
   [{:keys [ctx/mouseover-actor
-           ctx/mouseover-eid
            ctx/stage
            ctx/world-mouse-position]}
+   mouseover-eid
    player-eid]
   (cond
    mouseover-actor
@@ -56,4 +56,5 @@
 
 (defn do! [ctx]
   (assoc ctx :ctx/interaction-state (interaction-state ctx
+                                                       (:world/mouseover-eid (:ctx/world ctx))
                                                        (:world/player-eid (:ctx/world ctx)))))

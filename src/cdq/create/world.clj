@@ -161,6 +161,7 @@
                                                      :height 0.5
                                                      :z-order :z-order/effect}
                            :world/paused? false
+                           :world/mouseover-eid nil
                            })))
 
 (defn- spawn-player!

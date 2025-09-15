@@ -8,10 +8,9 @@
 
 (defn- open-debug-data-window!
   [{:keys [ctx/stage
-           ctx/mouseover-eid
            ctx/world
            ctx/world-mouse-position]}]
-  (let [data (or (and mouseover-eid @mouseover-eid)
+  (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
                  @((:world/grid world) (mapv int world-mouse-position)))]
     (stage/add! stage (widget/data-viewer
                        {:title "Data View"

@@ -5,12 +5,12 @@
 
 (defn do!
   [{:keys [ctx/mouseover-actor
-           ctx/mouseover-eid
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
   (let [{:keys [world/grid
                 world/raycaster
+                world/mouseover-eid
                 world/player-eid]} world
         new-eid (if mouseover-actor
                   nil
@@ -26,4 +26,4 @@
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc ctx :ctx/mouseover-eid new-eid)))
+    (assoc-in ctx [:ctx/world :world/mouseover-eid] new-eid)))

@@ -1,6 +1,11 @@
 {:pipeline [
             [clojure.extends/ns-impls "extends.edn"]
             [cdq.start.assoc-editor/do! "editor.edn"]
+
+            ; TODO there are more keys
+            ; ctx/mouseover-actor
+            ; ctx/world-mouse-position
+            ; -> make 1 schema so I can see what is there
             [cdq.start.read-schema/do! [:map {:closed true}
                                         [:ctx/audio :some]
                                         [:ctx/editor :some]
@@ -12,7 +17,6 @@
                                         [:ctx/ui-actors :some]
                                         [:ctx/world :some]
                                         [:ctx/info :some]
-                                        [:ctx/mouseover-eid :any]
                                         [:ctx/schema :some]
                                         [:ctx/application-state :some]
                                         ]]
@@ -123,6 +127,5 @@
             ]
  :object
  {
-  :ctx/mouseover-eid nil
   }
 }

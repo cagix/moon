@@ -20,9 +20,9 @@
     ; => fix size somehow.
     (group/add! window (scene2d/build
                         {:actor/type :actor.type/actor
-                         :act (fn [_this _delta {:keys [ctx/mouseover-eid]
+                         :act (fn [_this _delta {:keys [ctx/world]
                                                  :as ctx}]
-                                (.setText label (str (if-let [eid mouseover-eid]
+                                (.setText label (str (if-let [eid (:world/mouseover-eid world)]
                                                        (->label-text @eid ctx)
                                                        "")))
                                 (.pack window))}))
