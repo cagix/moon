@@ -1,14 +1,17 @@
 (ns clojure.provide)
 
 (defn do! [impls]
-  (doseq [[atype implementation-ns-str protocol] impls]
-    (try (let [method-map (update-vals (:sigs protocol)
+  (doseq [[atype-sym implementation-ns-sym protocol-sym] impls]
+    (try (let [atype (eval atype-sym)
+               _ (assert (class atype))
+               protocol @(requiring-resolve protocol-sym)
+               method-map (update-vals (:sigs protocol)
                                        (fn [{:keys [name]}]
-                                         (requiring-resolve (symbol (str implementation-ns-str "/" name)))))]
+                                         (requiring-resolve (symbol (str implementation-ns-sym "/" name)))))]
            (extend atype protocol method-map))
          (catch Throwable t
            (throw (ex-info "Cant extend"
-                           {:atype atype
-                            :implementation-ns implementation-ns-str
-                            :protocol protocol}
+                           {:atype-sym atype-sym
+                            :implementation-ns-sym implementation-ns-sym
+                            :protocol-sym protocol-sym}
                            t))))))
