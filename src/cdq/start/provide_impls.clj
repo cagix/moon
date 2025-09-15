@@ -1,22 +1,6 @@
 (ns cdq.start.provide-impls
   (:require clojure.provide))
 
-(defn java-class? [s]
-  (boolean (re-matches #".*\.[A-Z][A-Za-z0-9_]*" s)))
-
-(comment
- (= (java-class? "cdq.db.DB")
-    true)
- (= (java-class? "cdq.db/DB")
-    false)
- (= (java-class? "cdq.db")
-    false)
-
- )
-
-(require 'cdq.gdx.graphics)
-(require 'cdq.db)
-
 (defn do! [ctx]
   (clojure.provide/do!
    '[
