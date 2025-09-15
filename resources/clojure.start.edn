@@ -120,10 +120,6 @@
  :object
  {
    :ctx/config {
-                :effect-body-props {:width 0.5
-                                    :height 0.5
-                                    :z-order :z-order/effect}
-
                 :controls {:zoom-in :minus
                            :zoom-out :equals
                            :unpause-once :p
