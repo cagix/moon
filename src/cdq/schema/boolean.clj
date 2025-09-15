@@ -4,6 +4,9 @@
 (defn malli-form [[_ & params] _schemas]
   :boolean)
 
+(defn create-value [_ v _db]
+  v)
+
 (defn create [_ checked? _ctx]
   (assert (boolean? checked?))
   {:actor/type :actor.type/check-box

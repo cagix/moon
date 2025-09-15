@@ -5,9 +5,6 @@
             [clojure.symbol :as symbol])
   (:gen-class))
 
-(defn return-identity [_ v _db]
-  v)
-
 (defn -main []
   (-> "clojure.start.edn"
       io/resource

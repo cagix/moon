@@ -6,6 +6,9 @@
 (defn malli-form [[_ & params] _schemas]
   (apply vector :enum params))
 
+(defn create-value [_ v _db]
+  v)
+
 (defn create [schema v _ctx]
   {:actor/type :actor.type/select-box
    :items (map string/->edn-str (rest schema))

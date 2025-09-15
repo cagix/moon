@@ -7,6 +7,9 @@
                              [:image/file
                               [:image/bounds {:optional true}]]))
 
+(defn create-value [_ v _db]
+  v)
+
 (defn create [schema  image {:keys [ctx/graphics]}]
   {:actor/type :actor.type/image-button
    :drawable/texture-region (graphics/texture-region graphics image)

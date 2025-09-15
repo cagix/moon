@@ -6,13 +6,9 @@
 (defn build-values [schemas property db]
   (utils/apply-kvs property
                    (fn [k v]
-                     (let [schema (get schemas k)
-                           v (if (map? v)
-                               (build-values schemas v db)
-                               v)]
-                       (try (schema/create-value schema v db)
-                            (catch Throwable t
-                              (throw (ex-info " " {:k k :v v} t))))))))
+                     (try (schema/create-value (get schemas k) v db)
+                          (catch Throwable t
+                            (throw (ex-info " " {:k k :v v} t)))))))
 
 (defn default-value [schemas k]
   (let [schema (utils/safe-get schemas k)]

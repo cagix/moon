@@ -8,6 +8,9 @@
                               :animation/frame-duration
                               :animation/looping?]))
 
+(defn create-value [_ v _db]
+  v)
+
 (defn create [_ animation {:keys [ctx/graphics]}]
   {:actor/type :actor.type/table
    :rows [(for [image (:animation/frames animation)]

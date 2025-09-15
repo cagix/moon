@@ -12,6 +12,9 @@
 (defn malli-form [_ _schemas]
   :string)
 
+(defn create-value [_ v _db]
+  v)
+
 (declare sound-columns) ; < -- rebuilding itself ....
 
 (defn- rebuild! [table sound-name]

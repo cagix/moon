@@ -7,3 +7,6 @@
     :any     number?
     :pos     pos?
     :pos-int pos-int?))
+
+(defn create-value [_ v _db]
+  v)

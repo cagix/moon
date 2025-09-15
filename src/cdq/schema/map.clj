@@ -13,6 +13,12 @@
             [clojure.set :as set]
             [clojure.vis-ui.separator :as separator]))
 
+(defn malli-form [[_ ks] schemas]
+  (schemas/create-map-schema schemas ks))
+
+(defn create-value [_ v db]
+  (schemas/build-values (:schemas db) v db))
+
 (defn- build-widget [ctx schema k v]
   (let [widget (schema/create schema v ctx)
         widget (if (instance? com.badlogic.gdx.scenes.scene2d.Actor widget)
@@ -21,9 +27,6 @@
     ; FIXME assert no user object !
     (actor/set-user-object! widget [k v])
     widget))
-
-(defn malli-form [[_ ks] schemas]
-  (schemas/create-map-schema schemas ks))
 
 (defn- component-row [editor-widget k schema schemas table]
   (helper/component-row
