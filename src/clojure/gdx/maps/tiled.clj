@@ -46,8 +46,8 @@
     tile))
 
 (defprotocol HasMapProperties
-  (map-properties [_]
-                  "Returns the map-properties of the given tiled-map or tiled-map-layer as clojure map."))
+  (get-property [_ k])
+  (map-properties [_]))
 
 (defprotocol TMap
   (layers [tiled-map]
@@ -78,11 +78,9 @@
 
 (defn- reify-tiled-layer [^TiledMapTileLayer this]
   (reify
-    clojure.lang.ILookup
-    (valAt [_ key]
-      (.get (.getProperties this) key))
-
     HasMapProperties
+    (get-property [_ k]
+      (.get (.getProperties this) k))
     (map-properties [_]
       (properties/->clj (.getProperties this)))
 
@@ -121,6 +119,8 @@
         :tiled-map/height (.get (.getProperties this) "height")))
 
     HasMapProperties
+    (get-property [_ k]
+      (.get (.getProperties this) key))
     (map-properties [_]
       (properties/->clj (.getProperties this)))
 
@@ -189,7 +189,7 @@
   (->> tiled-map
        layers
        reverse
-       (filter #(get % "movement-properties"))))
+       (filter #(get-property % "movement-properties"))))
 
 (defn movement-properties [tiled-map position]
   (for [layer (movement-property-layers tiled-map)]
