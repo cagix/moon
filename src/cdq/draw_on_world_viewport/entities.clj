@@ -36,7 +36,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (let [entities (map deref (world/active-eids ctx))
+  (let [entities (map deref (world/active-eids world))
         player @(:world/player-eid world)
         render-layers (:graphics/entity-render-layers graphics)
         {:keys [world/raycaster]} world
