@@ -9,6 +9,7 @@
           [clojure.core/dissoc :ctx/gdx]
           [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
           [cdq.create.reset-stage/do!]
+          [cdq.create.world-config/do!]
           [cdq.create.world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                            :start-position [32 71]}]]]
  :render  [[cdq.render.validate/do!]
