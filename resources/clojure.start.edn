@@ -1,6 +1,6 @@
 [
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
- [cdq.start.assoc-editor/do! #edn/resource "editor.edn"]
+ [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
  [cdq.start.read-schema/do! [:map {:closed true}
                              [:ctx/audio :some]
                              [:ctx/editor :some]
@@ -63,11 +63,11 @@
  [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
  [cdq.start.load-entity-states/do! #edn/resource "entity_states.edn"]
  [cdq.start.load-effects/do! #edn/resource "effects_fn_map.edn"]
- [cdq.start.load-info/do! #edn/resource "info.edn"]
- [cdq.start.assoc-controls/do! {:zoom-in :minus
-                                :zoom-out :equals
-                                :unpause-once :p
-                                :unpause-continously :space}]
+ [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
+ [clojure.core/assoc :ctx/controls {:zoom-in :minus
+                                    :zoom-out :equals
+                                    :unpause-once :p
+                                    :unpause-continously :space}]
  [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                    [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
  [cdq.start.lwjgl/do! {:config {:title "Cyber Dungeon Quest"
@@ -82,8 +82,8 @@
                                             [cdq.create.set-input-processor/do!]
                                             [cdq.create.audio/do! {:sound-names "sounds.edn"
                                                                    :path-format "sounds/%s.wav"}]
-                                            [cdq.create.dissoc-gdx/do!]
-                                            [cdq.create.assoc-ui-actors/do! #edn/resource "ui_actors.edn"]
+                                            [clojure.core/dissoc :ctx/gdx]
+                                            [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
                                             [cdq.create.reset-stage/do!]
                                             [cdq.create.world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                                              :start-position [32 71]}]]]
@@ -112,7 +112,11 @@
                                              [cdq.render.tick-entities/do!]
                                              [cdq.render.remove-destroyed-entities/do!] ; do not pause as pickup item should be destroyed
                                              [cdq.render.handle-key-input/do!]
-                                             [cdq.render.dissoc-frame-keys/do!]
+                                             [clojure.core/dissoc
+                                              :ctx/mouseover-actor
+                                              :ctx/ui-mouse-position
+                                              :ctx/world-mouse-position
+                                              :ctx/interaction-state]
                                              [cdq.render.validate/do!]]
                                    :dispose cdq.gdx-app.dispose/do!
                                    :resize  cdq.gdx-app.resize/do!
