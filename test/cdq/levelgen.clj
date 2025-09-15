@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require cdq.gdx.graphics
+  (:require clojure.vis-ui.widget
+            cdq.gdx.graphics
             cdq.ctx.graphics
             cdq.start.provide-impls
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
@@ -24,7 +25,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-;(cdq.start.provide-impls/do! nil)
+(cdq.start.provide-impls/do! nil "extends.edn")
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
