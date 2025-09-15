@@ -17,7 +17,8 @@
                                             :reset-game-fn cdq.ui.dev-menu/reset-game-fn}
                                            ]}
                                   {:label "Help"
-                                   :items [cdq.ui.dev-menu/help-items]}
+                                   :items [cdq.ui.dev-menu.menus.help/create-items
+                                           "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"]}
                                   {:label "Editor"
                                    :items [cdq.ui.dev-menu.menus.db/create]}
                                   {:label "Ctx Data"

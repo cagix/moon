@@ -4,13 +4,6 @@
             [cdq.ui.menu :as menu]
             [cdq.ctx.world :as world]))
 
-(defn help-items [_ctx _params]
-  ; FIXME
-  ; FIXME
-  ; FIXME
-  ; hardcoded !
-  [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}])
-
 (defn reset-game-fn
   [{:keys [ctx/application-state] :as ctx} world-fn]
   (ctx/handle-txs! ctx [[:tx/reset-stage]])
@@ -18,7 +11,9 @@
   (swap! application-state cdq.create.world/do! world-fn))
 
 (defn create
-  [{:keys [ctx/graphics] :as ctx} {:keys [menus]}]
+  [{:keys [ctx/graphics]
+    :as ctx}
+   {:keys [menus]}]
   (menu/create
    {:menus (for [menu menus]
              (update menu :items (fn [[f params]]
