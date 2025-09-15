@@ -5,7 +5,6 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics.color :as color]
@@ -86,23 +85,6 @@
               radius
               (utils/degree->radians start-angle)
               (utils/degree->radians degree)))
-
-(defn draw-text!
-  [{:keys [ctx/batch
-           ctx/unit-scale
-           ctx/default-font]}
-   {:keys [font scale x y text h-align up?]}]
-  (bitmap-font/draw! (or font default-font)
-                     batch
-                     {:scale (* (float @unit-scale)
-                                (float (or scale 1)))
-                      :text text
-                      :x x
-                      :y y
-                      :up? up?
-                      :h-align h-align
-                      :target-width 0
-                      :wrap? false}))
 
 (defn with-line-width
   [{:keys [ctx/shape-drawer]} width f]

@@ -30,7 +30,7 @@
  :draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
             :draw/grid             cdq.draw.grid/do!
             :draw/texture-region   cdq.draw.texture-region/do!
-            :draw/text             cdq.gdx.graphics/draw-text!
+            :draw/text             cdq.draw.text/do!
             :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
             :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
             :draw/circle           cdq.gdx.graphics/draw-circle!
