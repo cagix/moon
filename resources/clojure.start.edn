@@ -20,7 +20,6 @@
                 [:ctx/draw-fns :some]
                 [:ctx/config :some]
                 [:ctx/db :some]
-                [:ctx/delta-time :some]
                 [:ctx/graphics :some]
                 [:ctx/info :some]
                 [:ctx/input :some]
@@ -253,7 +252,6 @@
                 }
    :ctx/mouseover-eid nil
    :ctx/paused? nil
-   :ctx/delta-time 2
    :ctx/interaction-state :yes
 
    :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!

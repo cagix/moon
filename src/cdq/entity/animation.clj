@@ -40,8 +40,8 @@
 (defn create [v _ctx]
   (create-animation v))
 
-(defn tick! [animation eid {:keys [ctx/delta-time]}]
-  [[:tx/assoc eid :entity/animation (tick animation delta-time)]])
+(defn tick! [animation eid {:keys [ctx/world]}]
+  [[:tx/assoc eid :entity/animation (tick animation (:world/delta-time world))]])
 
 (defn draw [animation entity ctx]
   (image/draw (current-frame animation)
