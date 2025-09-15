@@ -44,6 +44,7 @@
                            :world/max-speed (/ (:ctx/minimum-size ctx)
                                                (:ctx/max-delta ctx))
                            :world/potential-field-cache (atom nil)
+                           :world/factions-iterations (:potential-field-factions-iterations (:world config))
                            })))
 
 (defn- build-world
@@ -51,7 +52,6 @@
     :as ctx}]
   (merge ctx
            {
-            :ctx/factions-iterations (:potential-field-factions-iterations (:world config))
             :ctx/id-counter (atom 0)
             :ctx/entity-ids (atom {})
             :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))}))

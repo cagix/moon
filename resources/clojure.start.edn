@@ -24,7 +24,6 @@
                 [:ctx/db :some]
                 [:ctx/delta-time :some]
                 [:ctx/entity-ids :some]
-                [:ctx/factions-iterations :some]
                 [:ctx/graphics :some]
                 [:ctx/id-counter :some]
                 [:ctx/info :some]

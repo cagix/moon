@@ -7,8 +7,7 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/world
-           ctx/factions-iterations]}]
+           ctx/world]}]
   (apply concat
          (for [[x y] (graphics/visible-tiles graphics)
                :let [cell ((:world/grid world) [x y])]
@@ -21,5 +20,5 @@
             (when-let [faction show-potential-field-colors?]
               (let [{:keys [distance]} (faction cell*)]
                 (when distance
-                  (let [ratio (/ distance (factions-iterations faction))]
+                  (let [ratio (/ distance ((:world/factions-iterations world) faction))]
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
