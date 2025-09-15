@@ -23,7 +23,6 @@
                 [:ctx/config :some]
                 [:ctx/db :some]
                 [:ctx/delta-time :some]
-                [:ctx/entity-ids :some]
                 [:ctx/graphics :some]
                 [:ctx/info :some]
                 [:ctx/input :some]

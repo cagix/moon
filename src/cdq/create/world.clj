@@ -46,6 +46,7 @@
                            :world/potential-field-cache (atom nil)
                            :world/factions-iterations (:potential-field-factions-iterations (:world config))
                            :world/id-counter (atom 0)
+                           :world/entity-ids (atom {})
                            })))
 
 (defn- build-world
@@ -53,13 +54,11 @@
     :as ctx}]
   (merge ctx
            {
-            :ctx/entity-ids (atom {})
             :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))}))
 
 (defn- spawn-player!
   [{:keys [ctx/config
            ctx/db
-           ctx/entity-ids
            ctx/world]
     :as ctx}]
   (ctx/handle-txs! ctx
@@ -68,7 +67,7 @@
                                           {:position (utils/tile->middle (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
-  (let [eid (get @entity-ids 1)]
+  (let [eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @eid))
     (assoc ctx :ctx/player-eid eid)))
 

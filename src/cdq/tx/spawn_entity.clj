@@ -8,7 +8,6 @@
 
 (defn do!
   [{:keys [
-           ctx/entity-ids
            ctx/entity-components
            ctx/spawn-entity-schema
            ctx/world]
@@ -16,6 +15,7 @@
    entity]
   (m/validate-humanize spawn-entity-schema entity)
   (let [{:keys [world/content-grid
+                world/entity-ids
                 world/grid
                 world/id-counter
                 ]} world
