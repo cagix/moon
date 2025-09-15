@@ -1,23 +1,24 @@
 [
+ ; TODO MORE EXTENDS CALL AVAILABLE WITH APERSISTENTVECTOR
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
  [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
- [cdq.start.read-schema/do! [:map {:closed true}
-                             [:ctx/audio :some]
-                             [:ctx/editor :some]
-                             [:ctx/db :some]
-                             [:ctx/graphics :some]
-                             [:ctx/input :some]
-                             [:ctx/controls :some]
-                             [:ctx/stage :some]
-                             [:ctx/ui-actors :some]
-                             [:ctx/world :some]
-                             [:ctx/info :some]
-                             [:ctx/schema :some]
-                             [:ctx/application-state :some]]]
+ [clojure.decl/assoc* :ctx/schema (cdq.malli/schema [:map {:closed true}
+                                                     [:ctx/audio :some]
+                                                     [:ctx/editor :some]
+                                                     [:ctx/db :some]
+                                                     [:ctx/graphics :some]
+                                                     [:ctx/input :some]
+                                                     [:ctx/controls :some]
+                                                     [:ctx/stage :some]
+                                                     [:ctx/ui-actors :some]
+                                                     [:ctx/world :some]
+                                                     [:ctx/info :some]
+                                                     [:ctx/schema :some]
+                                                     [:ctx/application-state :some]])]
  [cdq.start.context-record/do!]
- [cdq.start.register-self/do! cdq.application/state]
- [cdq.start.db/do! {:schemas "schema.edn"
-                    :properties "properties.edn"}]
+ [clojure.decl/assoc* :ctx/application-state (clojure.core/deref cdq.application/state)]
+ [clojure.decl/assoc* :ctx/db (cdq.db/create {:schemas "schema.edn"
+                                              :properties "properties.edn"})]
  [cdq.start.txs/do! {:sym-format "cdq.tx.%s/do!"
                      :ks [:tx/reset-stage
                           :tx/rebuild-editor-window
@@ -74,7 +75,7 @@
                                 :windowed-mode {:width 1440 :height 900}
                                 :foreground-fps 60}
                        :listener [cdq.application.listener/create
-                                  {:create [[cdq.create.assoc-gdx/do!]
+                                  {:create [[clojure.decl/assoc* :ctx/gdx (clojure.gdx/state)]
                                             [cdq.create.input/do!]
                                             [cdq.create.vis-ui/do! {:skin-scale :x1}]
                                             [cdq.create.graphics/do! #edn/resource "graphics.edn"]
