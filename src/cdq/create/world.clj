@@ -5,7 +5,7 @@
             [cdq.world.explored-tile-corners :as explored-tile-corners]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
-            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.tiled :as tiled]
             [clojure.utils :as utils]))
 
 ; TODO schema

@@ -1,6 +1,6 @@
 (ns cdq.world-fns.creature-layer
-  (:require [clojure.gdx.maps.tiled :as tiled]
-            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]))
+  (:require [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]
+            [clojure.tiled :as tiled]))
 
 ; out of memory error -> each texture region is a new object
 ; so either memoize on id or property/image already calculated !? idk

@@ -3,7 +3,8 @@
             [cdq.rand :as rand]
             [cdq.world-fns.helper :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [clojure.gdx.maps.tiled :as tiled]))
+            [clojure.gdx.maps.tiled]
+            [clojure.tiled]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
@@ -81,7 +82,7 @@
 
         ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
         position->tile (position->tile-fn grid)
-        tiled-map (tiled/create-tiled-map
+        tiled-map (clojure.gdx.maps.tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
                                  "height" (g2d/height grid)
                                  "tilewidth"  tile-size
@@ -94,7 +95,7 @@
         ; -
 
         ; - calculate spawn positions -
-        can-spawn? #(= "all" (tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (clojure.tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
         creatures (filter #(= level (:creature/level %)) creature-properties)

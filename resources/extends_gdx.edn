@@ -25,8 +25,8 @@
 
  [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
   clojure.gdx.maps.tiled.layer
-  clojure.gdx.maps.tiled/HasMapProperties]
+  clojure.tiled/HasMapProperties]
  [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
   clojure.gdx.maps.tiled.layer
-  clojure.gdx.maps.tiled/TMapLayer]
+  clojure.tiled/TMapLayer]
  ]

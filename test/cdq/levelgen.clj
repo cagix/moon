@@ -19,7 +19,7 @@
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
-            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.tiled :as tiled]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
