@@ -1,21 +1,12 @@
 (ns clojure.gdx.maps.tiled
+  (:require [clojure.gdx.maps.properties :as properties])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.maps MapProperties)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
-
-(defn- add-props! [^MapProperties mp properties]
-  (doseq [[k v] properties]
-    (assert (string? k))
-    (.put mp k v)))
-
-(defn- props->clj-map [^MapProperties mp]
-  (zipmap (.getKeys   mp)
-          (.getValues mp)))
 
 (defn- create-layer
   [{:keys [width
@@ -52,8 +43,7 @@
                              :tileheight (.get props "tileheight")
                              :name name
                              :visible? visible?
-                             :map-properties (doto (MapProperties.)
-                                               (add-props! properties))
+                             :map-properties (properties/create properties)
                              :tiles tiles})]
     (.add (.getLayers tiled-map) layer))
   nil)
@@ -115,7 +105,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (props->clj-map (.getProperties this)))
+      (properties/->clj (.getProperties this)))
 
     TMapLayer
     (set-visible! [_ boolean]
@@ -153,7 +143,7 @@
 
     HasMapProperties
     (map-properties [_]
-      (props->clj-map (.getProperties this)))
+      (properties/->clj (.getProperties this)))
 
     TMap
     (layers [_]
@@ -181,7 +171,7 @@
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (TiledMap.)]
-    (add-props! (.getProperties tiled-map) properties)
+    (properties/add! (.getProperties tiled-map) properties)
     (doseq [layer layers]
       (tm-add-layer! tiled-map layer))
     (reify-tiled-map tiled-map)))
