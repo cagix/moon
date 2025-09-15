@@ -95,8 +95,7 @@
           :graphics graphics)))
 
 (defn- create-tiled-map
-  [{:keys [ctx/config
-           ctx/db
+  [{:keys [ctx/db
            ctx/graphics]
     :as ctx}
    world-fn]
@@ -109,41 +108,60 @@
                           #(case (tiled/movement-property tiled-map %)
                              "none" :none
                              "air"  :air
-                             "all"  :all))]
+                             "all"  :all))
+        config {:content-grid-cell-size 16
+                :potential-field-factions-iterations {:good 15
+                                                      :evil 5}
+                :world/max-delta 0.04
+                :world/minimum-size 0.39
+                :world/z-orders [:z-order/on-ground
+                                 :z-order/ground
+                                 :z-order/flying
+                                 :z-order/effect]}]
     (assoc ctx :ctx/world {:world/tiled-map tiled-map
                            :world/start-position start-position
                            :world/grid grid
                            :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                                     (:tiled-map/height tiled-map)
-                                                                    (:content-grid-cell-size (:world config)))
+                                                                    (:content-grid-cell-size config))
                            :world/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
                                                                                       (:tiled-map/height tiled-map))
                            :world/raycaster (raycaster/create grid)
                            :world/elapsed-time 0
-                           :world/max-delta    (:world/max-delta    (:world config))
-                           :world/minimum-size (:world/minimum-size (:world config))
-                           :world/z-orders     (:world/z-orders     (:world config))
-                           :world/max-speed (/ (:world/minimum-size (:world config))
-                                               (:world/max-delta    (:world config)))
+                           :world/max-delta    (:world/max-delta    config)
+                           :world/minimum-size (:world/minimum-size config)
+                           :world/z-orders     (:world/z-orders     config)
+                           :world/max-speed (/ (:world/minimum-size config)
+                                               (:world/max-delta    config))
                            :world/potential-field-cache (atom nil)
-                           :world/factions-iterations (:potential-field-factions-iterations (:world config))
+                           :world/factions-iterations (:potential-field-factions-iterations config)
                            :world/id-counter (atom 0)
                            :world/entity-ids (atom {})
-                           :world/render-z-order (utils/define-order (:world/z-orders (:world config)))
+                           :world/render-z-order (utils/define-order (:world/z-orders config))
                            :world/spawn-entity-schema components-schema
                            :world/fsms {:fsms/player player-fsm
                                         :fsms/npc npc-fsm}
-                           :world/entity-components (:world/entity-components (:world config))
+                           :world/entity-components (:world/entity-components (:world (:ctx/config ctx)))
+                           :world/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                                                 :initial-state :npc-sleeping}
+                                                    :entity/faction :evil}
+                           :world/player-components {:creature-id :creatures/vampire
+                                                     :components {:entity/fsm {:fsm :fsms/player
+                                                                               :initial-state :player-idle}
+                                                                  :entity/faction :good
+                                                                  :entity/player? true
+                                                                  :entity/free-skill-points 3
+                                                                  :entity/clickable {:type :clickable/player}
+                                                                  :entity/click-distance-tiles 1.5}}
                            })))
 
 (defn- spawn-player!
-  [{:keys [ctx/config
-           ctx/db
+  [{:keys [ctx/db
            ctx/world]
     :as ctx}]
   (ctx/handle-txs! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
-                                                      components]} (:cdq.game/player-props config)]
+                                                      components]} (:world/player-components world)]
                                           {:position (utils/tile->middle (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
@@ -152,15 +170,14 @@
     (assoc-in ctx [:ctx/world :world/player-eid] eid)))
 
 (defn- spawn-enemies!
-  [{:keys [ctx/config
-           ctx/db
+  [{:keys [ctx/db
            ctx/world]
     :as ctx}]
   (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world) "creatures" "id")]
     (ctx/handle-txs! ctx
                      [[:tx/spawn-creature {:position (utils/tile->middle position)
                                            :creature-property (db/build db (keyword creature-id))
-                                           :components (:cdq.game/enemy-components config)}]]))
+                                           :components (:world/enemy-components world)}]]))
   ctx)
 
 (defn do!

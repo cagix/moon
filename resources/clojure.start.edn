@@ -119,27 +119,7 @@
  :object
  {
    :ctx/config {
-                :cdq.game/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                         :initial-state :npc-sleeping}
-                                            :entity/faction :evil}
-                :cdq.game/player-props {:creature-id :creatures/vampire
-                                        :components {:entity/fsm {:fsm :fsms/player
-                                                                  :initial-state :player-idle}
-                                                     :entity/faction :good
-                                                     :entity/player? true
-                                                     :entity/free-skill-points 3
-                                                     :entity/clickable {:type :clickable/player}
-                                                     :entity/click-distance-tiles 1.5}}
-                :world {:content-grid-cell-size 16
-                        :potential-field-factions-iterations {:good 15
-                                                              :evil 5}
-                        :world/max-delta 0.04
-                        :world/minimum-size 0.39
-                        :world/z-orders [:z-order/on-ground
-                                         :z-order/ground
-                                         :z-order/flying
-                                         :z-order/effect]
-
+                :world {
                         :world/entity-components {
                                                   :tick {
                                                          :entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick!
