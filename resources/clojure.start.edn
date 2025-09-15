@@ -25,7 +25,6 @@
                 [:ctx/input :some]
                 [:ctx/mouseover-eid :any]
                 [:ctx/paused? :any]
-                [:ctx/player-eid :some]
                 [:ctx/render-layers :some]
                 [:ctx/schema :some]
                 [:ctx/stage :some]

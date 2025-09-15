@@ -68,11 +68,11 @@
                                (listener/click
                                 (fn [event _x _y]
                                   (let [{:keys [ctx/entity-states
-                                                ctx/player-eid] :as ctx} (ctx-stage/get-ctx (event/stage event))]
+                                                ctx/world] :as ctx} (ctx-stage/get-ctx (event/stage event))]
                                     (ctx/handle-txs!
                                      ctx
-                                     (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @player-eid)))]
-                                       (f player-eid cell)))))))
+                                     (when-let [f ((:clicked-inventory-cell entity-states) (:state (:entity/fsm @(:world/player-eid world))))]
+                                       (f (:world/player-eid world) cell)))))))
       :slot->texture-region slot->texture-region
       })))
 

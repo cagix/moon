@@ -43,6 +43,8 @@
           :creature-properties creature-properties
           :graphics graphics)))
 
+; TODO make schema
+; later added: world/delta-time, active-entities, ?
 (defn- create-tiled-map
   [{:keys [ctx/config
            ctx/db
@@ -95,7 +97,7 @@
                                            :components components})]])
   (let [eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @eid))
-    (assoc ctx :ctx/player-eid eid)))
+    (assoc-in ctx [:ctx/world :world/player-eid] eid)))
 
 (defn- spawn-enemies!
   [{:keys [ctx/config

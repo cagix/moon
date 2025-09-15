@@ -16,7 +16,8 @@
 
 (defn create [_ctx _params]
   {:actor/type :actor.type/actor
-   :draw (fn [_this {:keys [ctx/player-eid]
+   :draw (fn [_this {:keys [ctx/world]
                      :as ctx}]
-           (when-let [f (state->draw-gui-view (:state (:entity/fsm @player-eid)))]
-             (f player-eid ctx)))})
+           (let [player-eid (:world/player-eid world)]
+             (when-let [f (state->draw-gui-view (:state (:entity/fsm @player-eid)))]
+               (f player-eid ctx))))})

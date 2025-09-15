@@ -4,10 +4,11 @@
 (defn do!
   [{:keys [ctx/entity-states
            ctx/graphics
-           ctx/player-eid]
+           ctx/world]
     :as ctx}]
   (graphics/set-cursor! graphics
-                        (let [->cursor ((:cursor entity-states) (:state (:entity/fsm @player-eid)))]
+                        (let [player-eid (:world/player-eid world)
+                              ->cursor ((:cursor entity-states) (:state (:entity/fsm @player-eid)))]
                           (if (keyword? ->cursor)
                             ->cursor
                             (->cursor player-eid ctx)))))

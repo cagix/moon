@@ -31,8 +31,8 @@
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
            ctx/stage
-           ctx/world-mouse-position
-           ctx/player-eid]}]
+           ctx/world-mouse-position]}
+   player-eid]
   (cond
    mouseover-actor
    [:interaction-state/mouseover-actor mouseover-actor]
@@ -55,4 +55,5 @@
      [:interaction-state/no-skill-selected])))
 
 (defn do! [ctx]
-  (assoc ctx :ctx/interaction-state (interaction-state ctx)))
+  (assoc ctx :ctx/interaction-state (interaction-state ctx
+                                                       (:world/player-eid (:ctx/world ctx)))))

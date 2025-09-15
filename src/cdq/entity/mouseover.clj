@@ -12,8 +12,8 @@
   [_
    {:keys [entity/body
            entity/faction]}
-   {:keys [ctx/player-eid]}]
-  (let [player @player-eid]
+   {:keys [ctx/world]}]
+  (let [player @(:world/player-eid world)]
     [[:draw/with-line-width mouseover-ellipse-width
       [[:draw/ellipse
         (:body/position body)

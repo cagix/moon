@@ -34,8 +34,8 @@
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
                            :draw (fn [actor {:keys [ctx/ui-mouse-position
-                                                    ctx/player-eid]}]
-                                   (draw-cell-rect @player-eid
+                                                    ctx/world]}]
+                                   (draw-cell-rect @(:world/player-eid world)
                                                    (actor/get-x actor)
                                                    (actor/get-y actor)
                                                    (actor/hit actor

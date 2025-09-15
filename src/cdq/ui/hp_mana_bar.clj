@@ -33,8 +33,8 @@
                                           :x (+ x 75)
                                           :y (+ y 2)
                                           :up? true}]])
-        create-draws (fn [{:keys [ctx/player-eid]}]
-                       (let [stats (:creature/stats @player-eid)
+        create-draws (fn [{:keys [ctx/world]}]
+                       (let [stats (:creature/stats @(:world/player-eid world))
                              x (- x (/ rahmenw 2))]
                          (concat
                           (render-hpmana-bar x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")

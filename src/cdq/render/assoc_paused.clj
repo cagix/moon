@@ -13,13 +13,13 @@
 
 (defn do!
   [{:keys [ctx/input
-           ctx/player-eid
-           ctx/config]
+           ctx/config
+           ctx/world]
     :as ctx}]
   (assoc ctx :ctx/paused?
          (let [controls (:controls config)]
            (or #_error
                (and pausing?
-                    (state->pause-game? (:state (:entity/fsm @player-eid)))
+                    (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
                     (not (or (input/key-just-pressed? input (:unpause-once controls))
                              (input/key-pressed?      input (:unpause-continously controls)))))))))

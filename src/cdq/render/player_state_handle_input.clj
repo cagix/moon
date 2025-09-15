@@ -3,11 +3,11 @@
 
 (defn do!
   [{:keys [ctx/entity-states
-           ctx/player-eid]
+           ctx/world]
     :as ctx}]
-  (let [handle-input ((:handle-input entity-states) (:state (:entity/fsm @player-eid)))
+  (let [handle-input ((:handle-input entity-states) (:state (:entity/fsm @(:world/player-eid world))))
         txs (if handle-input
-              (handle-input player-eid ctx)
+              (handle-input (:world/player-eid world) ctx)
               nil)]
     (ctx/handle-txs! ctx txs))
   nil)

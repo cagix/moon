@@ -6,12 +6,12 @@
 (defn do!
   [{:keys [ctx/mouseover-actor
            ctx/mouseover-eid
-           ctx/player-eid
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
   (let [{:keys [world/grid
-                world/raycaster]} world
+                world/raycaster
+                world/player-eid]} world
         new-eid (if mouseover-actor
                   nil
                   (let [player @player-eid
