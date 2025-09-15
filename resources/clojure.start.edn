@@ -49,13 +49,11 @@
 
                 :cdq.gdx-app.create [
                                      cdq.create.input/do!
-                                     cdq.create.files/do!
                                      cdq.create.vis-ui/do!
                                      cdq.create.graphics/do!
                                      cdq.create.stage/do!
                                      cdq.create.set-input-processor/do!
                                      cdq.create.audio/do!
-                                     cdq.create.remove-files/do!
                                      cdq.create.reset-stage/do!
                                      cdq.create.world/do!
                                      ]

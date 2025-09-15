@@ -25,10 +25,11 @@
 
 (defn do! [{:keys [ctx/config
                    ctx/draw-fns
-                   ctx/files
                    ctx/gdx]
             :as ctx}]
-  (assoc ctx :ctx/graphics (assoc (cdq.gdx.graphics/create (:clojure.gdx/graphics gdx)
-                                                           (graphics-config files
-                                                                            (:after-gdx-create config)))
-                                  :ctx/draw-fns draw-fns)))
+  (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
+                                         clojure.gdx/graphics]} gdx]
+                             (assoc (cdq.gdx.graphics/create graphics
+                                                             (graphics-config files
+                                                                              (:after-gdx-create config)))
+                                    :ctx/draw-fns draw-fns))))

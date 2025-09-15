@@ -5,10 +5,10 @@
             [clojure.java.io :as io]))
 
 (defn do! [{:keys [ctx/config
-                   ctx/files
                    ctx/gdx]
             :as ctx}]
-  (assoc ctx :ctx/audio (let [audio (:clojure.gdx/audio gdx)
+  (assoc ctx :ctx/audio (let [{:keys [clojure.gdx/audio
+                                      clojure.gdx/files]} gdx
                               {:keys [sound-names
                                       path-format]} (:cdq.audio/config config)
                               sound-name->file-handle (->> sound-names
