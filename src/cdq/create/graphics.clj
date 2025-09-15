@@ -24,12 +24,18 @@
    :textures-to-load (cdq.files/search files texture-folder)})
 
 (defn do! [{:keys [ctx/config
-                   ctx/draw-fns
                    ctx/gdx]
             :as ctx}]
   (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
-                                         clojure.gdx/graphics]} gdx]
-                             (assoc (cdq.gdx.graphics/create graphics
-                                                             (graphics-config files
-                                                                              (:after-gdx-create config)))
-                                    :ctx/draw-fns draw-fns))))
+                                         clojure.gdx/graphics]} gdx
+                                 draw-fns (:draw-fns (:after-gdx-create config))
+                                 graphics (cdq.gdx.graphics/create graphics
+                                                                   (graphics-config files
+                                                                                    (:after-gdx-create config)))]
+                             (extend-type (class graphics)
+                               cdq.ctx.graphics/DrawHandler
+                               (handle-draws! [graphics draws]
+                                 (doseq [{k 0 :as component} draws
+                                         :when component]
+                                   (apply (draw-fns k) graphics (rest component)))))
+                             graphics)))

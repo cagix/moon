@@ -22,7 +22,6 @@
 
                 ; protocols
                 [:ctx/entity-states :some]
-                [:ctx/draw-fns :some]
                 [:ctx/info :some]
                 [:ctx/render-layers :some]
                 ;
@@ -124,7 +123,21 @@
                                                     :cursors/sandclock             ["sandclock"    [16 16]]
                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
                                                     :cursors/use-skill             ["pointer004"   [0   0]]
-                                                    :cursors/walking               ["walking"      [16 16]]}}}
+                                                    :cursors/walking               ["walking"      [16 16]]}}
+                                   :draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
+                                              :draw/grid             cdq.draw.grid/do!
+                                              :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
+                                              :draw/text             cdq.gdx.graphics/draw-text!
+                                              :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
+                                              :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
+                                              :draw/circle           cdq.gdx.graphics/draw-circle!
+                                              :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
+                                              :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
+                                              :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
+                                              :draw/arc              cdq.gdx.graphics/draw-arc!
+                                              :draw/sector           cdq.gdx.graphics/draw-sector!
+                                              :draw/line             cdq.gdx.graphics/draw-line!}
+                                   }
 
                 :cdq.vis-ui {:skin-scale :x1}
 
@@ -332,19 +345,6 @@
    :ctx/paused? nil
    :ctx/interaction-state :yes
 
-   :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
-                  :draw/grid             cdq.draw.grid/do!
-                  :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
-                  :draw/text             cdq.gdx.graphics/draw-text!
-                  :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
-                  :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
-                  :draw/circle           cdq.gdx.graphics/draw-circle!
-                  :draw/filled-circle    cdq.gdx.graphics/draw-filled-circle!
-                  :draw/rectangle        cdq.gdx.graphics/draw-rectangle!
-                  :draw/filled-rectangle cdq.gdx.graphics/draw-filled-rectangle!
-                  :draw/arc              cdq.gdx.graphics/draw-arc!
-                  :draw/sector           cdq.gdx.graphics/draw-sector!
-                  :draw/line             cdq.gdx.graphics/draw-line!}
    :ctx/info {:k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
                           :maxrange "LIGHT_GRAY"

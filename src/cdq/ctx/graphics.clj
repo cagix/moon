@@ -1,12 +1,7 @@
 (ns cdq.ctx.graphics)
 
-(defn handle-draws!
-  [{:keys [ctx/draw-fns]
-    :as graphics}
-   draws]
-  (doseq [{k 0 :as component} draws
-          :when component]
-    (apply (draw-fns k) graphics (rest component))))
+(defprotocol DrawHandler
+  (handle-draws! [_ draws]))
 
 (defprotocol Graphics
   (dispose! [_])
