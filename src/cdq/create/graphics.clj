@@ -2,10 +2,7 @@
   (:require [cdq.ctx.graphics]
             [cdq.files]
             [cdq.gdx.graphics]
-            [clojure.gdx.files :as files]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.symbol :as symbol]))
+            [clojure.gdx.files :as files]))
 
 (defn graphics-config
   [files {:keys [colors
@@ -33,11 +30,6 @@
    config]
   (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
                                          clojure.gdx/graphics]} gdx
-                                 config (-> config
-                                            io/resource
-                                            slurp
-                                            edn/read-string
-                                            symbol/require-resolve-symbols)
                                  draw-fns (:draw-fns config)
                                  graphics (cdq.gdx.graphics/create graphics
                                                                    (graphics-config files

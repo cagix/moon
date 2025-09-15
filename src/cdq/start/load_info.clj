@@ -1,11 +1,4 @@
-(ns cdq.start.load-info
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.symbol :as symbol]))
+(ns cdq.start.load-info)
 
-(defn do! [ctx edn-resource]
-  (assoc ctx :ctx/info (-> edn-resource
-                           io/resource
-                           slurp
-                           edn/read-string
-                           symbol/require-resolve-symbols)))
+(defn do! [ctx config]
+  (assoc ctx :ctx/info config))

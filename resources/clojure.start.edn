@@ -1,6 +1,6 @@
 [
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
- [cdq.start.assoc-editor/do! "editor.edn"]
+ [cdq.start.assoc-editor/do! #edn/resource "editor.edn"]
  [cdq.start.read-schema/do! [:map {:closed true}
                              [:ctx/audio :some]
                              [:ctx/editor :some]
@@ -60,10 +60,10 @@
                           :tx/spawn-creature
                           :tx/spawn-entity
                           :tx/update-potential-fields]}]
- [cdq.start.load-entity-components/do! "entity_components.edn"]
- [cdq.start.load-entity-states/do! "entity_states.edn"]
- [cdq.start.load-effects/do! "effects_fn_map.edn"]
- [cdq.start.load-info/do! "info.edn"]
+ [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
+ [cdq.start.load-entity-states/do! #edn/resource "entity_states.edn"]
+ [cdq.start.load-effects/do! #edn/resource "effects_fn_map.edn"]
+ [cdq.start.load-info/do! #edn/resource "info.edn"]
  [cdq.start.assoc-controls/do! {:zoom-in :minus
                                 :zoom-out :equals
                                 :unpause-once :p
@@ -77,13 +77,13 @@
                                   {:create [[cdq.create.assoc-gdx/do!]
                                             [cdq.create.input/do!]
                                             [cdq.create.vis-ui/do! {:skin-scale :x1}]
-                                            [cdq.create.graphics/do! "graphics.edn"]
+                                            [cdq.create.graphics/do! #edn/resource "graphics.edn"]
                                             [cdq.create.stage/do!]
                                             [cdq.create.set-input-processor/do!]
                                             [cdq.create.audio/do! {:sound-names "sounds.edn"
                                                                    :path-format "sounds/%s.wav"}]
                                             [cdq.create.dissoc-gdx/do!]
-                                            [cdq.create.assoc-ui-actors/do! "ui_actors.edn"]
+                                            [cdq.create.assoc-ui-actors/do! #edn/resource "ui_actors.edn"]
                                             [cdq.create.reset-stage/do!]
                                             [cdq.create.world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                                              :start-position [32 71]}]]]

@@ -1,11 +1,4 @@
-(ns cdq.start.assoc-editor
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.symbol :as symbol]))
+(ns cdq.start.assoc-editor)
 
-(defn do! [ctx edn-resource]
-  (assoc ctx :ctx/editor (-> edn-resource
-                             io/resource
-                             slurp
-                             edn/read-string
-                             symbol/require-resolve-symbols)))
+(defn do! [ctx config]
+  (assoc ctx :ctx/editor config))
