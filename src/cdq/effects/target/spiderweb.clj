@@ -11,11 +11,12 @@
   ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
   (defn handle [_
                 {:keys [effect/target]}
-                {:keys [ctx/elapsed-time]}]
-    (when-not (:entity/temp-modifier @target)
-      [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
-                                                :counter (timer/create elapsed-time duration)}]
-       [:tx/mod-add target modifiers]])))
+                {:keys [ctx/world]}]
+    (let [{:keys [world/elapsed-time]} world]
+      (when-not (:entity/temp-modifier @target)
+        [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
+                                                  :counter (timer/create elapsed-time duration)}]
+         [:tx/mod-add target modifiers]]))))
 
 (defn info-text [_ _ctx]
   "Spiderweb slows 50% for 5 seconds.")

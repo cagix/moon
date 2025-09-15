@@ -11,13 +11,13 @@
      (or (stats/get-stat-value stats (:skill/action-time-modifier-key skill))
          1)))
 
-(defn create [eid [skill effect-ctx] {:keys [ctx/elapsed-time]}]
+(defn create [eid [skill effect-ctx] {:keys [ctx/world]}]
   {:skill skill
    :effect-ctx effect-ctx
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (timer/create elapsed-time))})
+                 (timer/create (:world/elapsed-time world)))})
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -55,8 +55,7 @@
 
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
-             {:keys [ctx/elapsed-time
-                     ctx/world]}]
+             {:keys [ctx/world]}]
   (cond
    (not (effect/some-applicable? (update-effect-ctx (:world/raycaster world) effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
@@ -64,21 +63,21 @@
     ; TODO some sound ?
     ]
 
-   (timer/stopped? elapsed-time counter)
+   (timer/stopped? (:world/elapsed-time world) counter)
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
 (defn draw
   [{:keys [skill effect-ctx counter]}
    entity
-   {:keys [ctx/elapsed-time
-           ctx/graphics]
+   {:keys [ctx/graphics
+           ctx/world]
     :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
     (concat (draw-skill-image (graphics/texture-region graphics image)
                               entity
                               (entity/position entity)
-                              (timer/ratio elapsed-time counter))
+                              (timer/ratio (:world/elapsed-time world) counter))
             (render-active-effect ctx
                                   effect-ctx ; TODO !!!
                                   ; !! FIXME !!

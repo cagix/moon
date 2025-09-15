@@ -40,13 +40,14 @@
                            :world/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
                                                                                       (:tiled-map/height tiled-map))
                            :world/raycaster (raycaster/create grid)
+                           :world/elapsed-time 0
                            })))
 
 (defn- build-world
   [{:keys [ctx/config]
     :as ctx}]
   (merge ctx
-           {:ctx/elapsed-time 0
+           {
             :ctx/max-speed (/ (:ctx/minimum-size ctx)
                               (:ctx/max-delta ctx))
             :ctx/potential-field-cache (atom nil)

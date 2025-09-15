@@ -6,9 +6,8 @@
 (defn tick!
   [{:keys [counter faction]}
    eid
-   {:keys [ctx/elapsed-time
-           ctx/world]}]
-  (when (timer/stopped? elapsed-time counter)
+   {:keys [ctx/world]}]
+  (when (timer/stopped? (:world/elapsed-time world) counter)
     (cons [:tx/mark-destroyed eid]
           (for [friendly-eid (->> {:position (entity/position @eid)
                                    :radius 4}

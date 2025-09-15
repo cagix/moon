@@ -2,9 +2,9 @@
   (:require [cdq.timer :as timer]))
 
 (defn do!
-  [{:keys [ctx/elapsed-time]}
+  [{:keys [ctx/world]}
    eid skill]
   (swap! eid assoc-in
          [:entity/skills (:property/id skill) :skill/cooling-down?]
-         (timer/create elapsed-time (:skill/cooldown skill)))
+         (timer/create (:world/elapsed-time world) (:skill/cooldown skill)))
   nil)

@@ -10,10 +10,10 @@
 (defn tick!
   [{:keys [modifiers counter]}
    eid
-   {:keys [ctx/elapsed-time]}]
-  (when (timer/stopped? elapsed-time counter)
+   {:keys [ctx/world]}]
+  (when (timer/stopped? (:world/elapsed-time world) counter)
     [[:tx/dissoc eid :entity/temp-modifier]
      [:tx/mod-remove eid modifiers]]))
 
-(defn info-text [[_ {:keys [counter]}] {:keys [ctx/elapsed-time]}]
-  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+(defn info-text [[_ {:keys [counter]}] {:keys [ctx/world]}]
+  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))

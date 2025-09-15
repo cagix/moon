@@ -7,10 +7,10 @@
         (for [skill skills]
           [:tx/add-skill eid skill])))
 
-(defn tick! [skills eid {:keys [ctx/elapsed-time]}]
+(defn tick! [skills eid {:keys [ctx/world]}]
   (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
         :when (and cooling-down?
-                   (timer/stopped? elapsed-time cooling-down?))]
+                   (timer/stopped? (:world/elapsed-time world) cooling-down?))]
     [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
 
 (defn info-text [[_ skills] _ctx]

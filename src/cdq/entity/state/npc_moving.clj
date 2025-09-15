@@ -4,14 +4,14 @@
 
 (def reaction-time-multiplier 0.016)
 
-(defn create [eid movement-vector {:keys [ctx/elapsed-time]}]
+(defn create [eid movement-vector {:keys [ctx/world]}]
   {:movement-vector movement-vector
-   :timer (timer/create elapsed-time
+   :timer (timer/create (:world/elapsed-time world)
                         (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
                            reaction-time-multiplier))})
 
-(defn tick! [{:keys [timer]} eid {:keys [ctx/elapsed-time]}]
-  (when (timer/stopped? elapsed-time timer)
+(defn tick! [{:keys [timer]} eid {:keys [ctx/world]}]
+  (when (timer/stopped? (:world/elapsed-time world) timer)
     [[:tx/event eid :timer-finished]]))
 
 (defn enter [{:keys [movement-vector]} eid]
