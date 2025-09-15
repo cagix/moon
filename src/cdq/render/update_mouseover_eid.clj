@@ -8,15 +8,16 @@
            ctx/mouseover-eid
            ctx/player-eid
            ctx/render-z-order
-           ctx/raycaster
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
-  (let [new-eid (if mouseover-actor
+  (let [{:keys [world/grid
+                world/raycaster]} world
+        new-eid (if mouseover-actor
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
-                                     (grid/point->entities (:world/grid world) world-mouse-position))]
+                                     (grid/point->entities grid world-mouse-position))]
                     (->> render-z-order
                          (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
                          reverse

@@ -39,15 +39,14 @@
                                                                     (:content-grid-cell-size (:world config)))
                            :world/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
                                                                                       (:tiled-map/height tiled-map))
+                           :world/raycaster (raycaster/create grid)
                            })))
 
 (defn- build-world
-  [{:keys [ctx/config
-           ctx/world]
+  [{:keys [ctx/config]
     :as ctx}]
   (merge ctx
-           {:ctx/raycaster (raycaster/create (:world/grid world))
-            :ctx/elapsed-time 0
+           {:ctx/elapsed-time 0
             :ctx/max-speed (/ (:ctx/minimum-size ctx)
                               (:ctx/max-delta ctx))
             :ctx/potential-field-cache (atom nil)

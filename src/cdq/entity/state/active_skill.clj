@@ -56,9 +56,9 @@
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
              {:keys [ctx/elapsed-time
-                     ctx/raycaster]}]
+                     ctx/world]}]
   (cond
-   (not (effect/some-applicable? (update-effect-ctx raycaster effect-ctx) ; TODO how 2 test
+   (not (effect/some-applicable? (update-effect-ctx (:world/raycaster world) effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
    [[:tx/event eid :action-done]
     ; TODO some sound ?

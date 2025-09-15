@@ -5,12 +5,11 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/raycaster
            ctx/world]}]
   (graphics/draw-tiled-map! graphics
                             (:world/tiled-map world)
                             (tile-color-setter/create
-                             {:ray-blocked? (partial raycaster/blocked? raycaster)
+                             {:ray-blocked? (partial raycaster/blocked? (:world/raycaster world))
                               :explored-tile-corners (:world/explored-tile-corners world)
                               :light-position (graphics/camera-position graphics)
                               :see-all-tiles? false

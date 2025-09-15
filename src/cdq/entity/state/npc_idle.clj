@@ -18,11 +18,11 @@
        first))
 
 (defn- npc-effect-ctx
-  [{:keys [ctx/raycaster
-           ctx/world]}
+  [{:keys [world/grid
+           world/raycaster]}
    eid]
   (let [entity @eid
-        target (grid/nearest-enemy (:world/grid world) entity)
+        target (grid/nearest-enemy grid entity)
         target (when (and target
                           (raycaster/line-of-sight? raycaster entity @target))
                  target)]
@@ -33,7 +33,7 @@
                                              (entity/position @target)))}))
 
 (defn tick! [_ eid {:keys [ctx/world] :as ctx}]
-  (let [effect-ctx (npc-effect-ctx ctx eid)]
+  (let [effect-ctx (npc-effect-ctx world eid)]
     (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
       [[:tx/event eid :movement-direction (or (potential-fields.movement/find-direction (:world/grid world) eid)

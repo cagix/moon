@@ -35,8 +35,9 @@
   [[_ {:keys [entity-effects]}]
    {:keys [effect/source]}
    {:keys [ctx/active-entities
-           ctx/raycaster]}]
-  (let [source* @source]
+           ctx/world]}]
+  (let [{:keys [world/raycaster]} world
+        source* @source]
     (apply concat
            (for [target (affected-targets active-entities raycaster source*)]
              [[:tx/spawn-line
@@ -54,8 +55,9 @@
   [_
    {:keys [effect/source]}
    {:keys [ctx/active-entities
-           ctx/raycaster]}]
-  (let [source* @source]
+           ctx/world]}]
+  (let [{:keys [world/raycaster]} world
+        source* @source]
     (for [target* (map deref (affected-targets active-entities raycaster source*))]
       [:draw/line
        (:body/position (:entity/body source*)) #_(start-point source* target*)

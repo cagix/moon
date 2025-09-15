@@ -36,10 +36,11 @@
   [{:keys [ctx/player-eid
            ctx/render-layers
            ctx/render-z-order
-           ctx/raycaster]
+           ctx/world]
     :as ctx}]
   (let [entities (map deref (world/active-eids ctx))
         player @player-eid
+        {:keys [world/raycaster]} world
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (raycaster/line-of-sight? raycaster player entity)))]
