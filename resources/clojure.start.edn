@@ -1,6 +1,4 @@
 [
- ; TODO get it under 42 lines on one screen
- ; TODO MORE EXTENDS CALL AVAILABLE WITH APERSISTENTVECTOR
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
  [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
  [clojure.decl/assoc* :ctx/schema (cdq.malli/schema [:map {:closed true}
