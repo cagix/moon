@@ -29,8 +29,7 @@
                 [:ctx/stage :some]
                 [:ctx/interaction-state :some]
                 [:ctx/application-state :some]
-                [:ctx/world :some]
-                ]
+                [:ctx/world :some]]
 
    :ctx/config {
                 :cdq.start.register-self cdq.application/state
