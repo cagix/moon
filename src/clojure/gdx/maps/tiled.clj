@@ -1,33 +1,12 @@
 (ns clojure.gdx.maps.tiled
-  (:require [clojure.gdx.maps.properties :as properties])
+  (:require [clojure.gdx.maps.properties :as properties]
+            [clojure.gdx.maps.tiled.layer :as layer])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
-                                        TiledMapTileLayer$Cell
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))
-
-(defn- create-layer
-  [{:keys [width
-           height
-           tilewidth
-           tileheight
-           name
-           visible?
-           map-properties
-           tiles]}]
-  {:pre [(string? name)
-         (boolean? visible?)]}
-  (let [layer (doto (TiledMapTileLayer. width height tilewidth tileheight)
-                (.setName name)
-                (.setVisible visible?))]
-    (.putAll (.getProperties layer) map-properties)
-    (doseq [[[x y] tiled-map-tile] tiles
-            :when tiled-map-tile]
-      (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
-                            (.setTile tiled-map-tile))))
-    layer))
 
 (defn- tm-add-layer!
   "Returns nil."
@@ -37,7 +16,7 @@
            properties
            tiles]}]
   (let [props (.getProperties tiled-map)
-        layer (create-layer {:width      (.get props "width")
+        layer (layer/create {:width      (.get props "width")
                              :height     (.get props "height")
                              :tilewidth  (.get props "tilewidth")
                              :tileheight (.get props "tileheight")
