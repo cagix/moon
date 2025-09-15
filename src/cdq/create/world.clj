@@ -16,13 +16,16 @@
           :graphics graphics)))
 
 (defn- create-tiled-map
-  [ctx world-fn]
+  [{:keys [ctx/db
+           ctx/graphics]
+    :as ctx}
+   world-fn]
   (let [{:keys [tiled-map
                 start-position]} (call-world-fn world-fn
                                                 (db/all-raw db :properties/creatures)
-                                                graphics)])
-  (assoc ctx :ctx/world {:world/tiled-map tiled-map
-                         :world/start-position start-position}))
+                                                graphics)]
+    (assoc ctx :ctx/world {:world/tiled-map tiled-map
+                           :world/start-position start-position})))
 
 (defn- build-world
   [{:keys [ctx/config
@@ -83,10 +86,7 @@
 (defn do!
   ([ctx]
    (do! ctx (:starting-world (:cdq.create.world (:ctx/config ctx)))))
-  ([{:keys [ctx/db
-            ctx/graphics]
-     :as ctx}
-    world-fn]
+  ([ctx world-fn]
    (-> ctx
        (create-tiled-map world-fn)
        build-world
