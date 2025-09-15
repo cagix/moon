@@ -14,7 +14,6 @@
                                         [:ctx/info :some]
                                         [:ctx/mouseover-eid :any]
                                         [:ctx/paused? :any]
-                                        [:ctx/interaction-state :some]
                                         [:ctx/schema :some]
                                         [:ctx/application-state :some]
                                         ]]
@@ -116,7 +115,7 @@
                                                         [cdq.render.tick-entities/do!]
                                                         [cdq.render.remove-destroyed-entities/do!] ; do not pause as pickup item should be destroyed
                                                         [cdq.render.handle-key-input/do!]
-                                                        [cdq.render.dissoc-mouseover-keys/do!]
+                                                        [cdq.render.dissoc-frame-keys/do!]
                                                         [cdq.render.validate/do!]]
                                               :dispose cdq.gdx-app.dispose/do!
                                               :resize  cdq.gdx-app.resize/do!
@@ -127,6 +126,5 @@
  {
   :ctx/mouseover-eid nil
   :ctx/paused? nil
-  :ctx/interaction-state :yes
   }
 }
