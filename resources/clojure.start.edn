@@ -69,17 +69,15 @@
                                            :windowed-mode {:width 1440 :height 900}
                                            :foreground-fps 60}
                                   :listener [cdq.application.listener/create
-                                             {:create  [cdq.gdx-app.create/do! [
-                                                                                cdq.create.input/do!
-                                                                                cdq.create.vis-ui/do!
-                                                                                cdq.create.graphics/do!
-                                                                                cdq.create.stage/do!
-                                                                                cdq.create.set-input-processor/do!
-                                                                                cdq.create.audio/do!
-                                                                                cdq.create.dissoc-gdx/do!
-                                                                                cdq.create.reset-stage/do!
-                                                                                cdq.create.world/do!
-                                                                                ]]
+                                             {:create [[cdq.create.input/do!]
+                                                       [cdq.create.vis-ui/do!]
+                                                       [cdq.create.graphics/do!]
+                                                       [cdq.create.stage/do!]
+                                                       [cdq.create.set-input-processor/do!]
+                                                       [cdq.create.audio/do!]
+                                                       [cdq.create.dissoc-gdx/do!]
+                                                       [cdq.create.reset-stage/do!]
+                                                       [cdq.create.world/do!]]
                                               :render  cdq.gdx-app.render/do!
                                               :dispose cdq.gdx-app.dispose/do!
                                               :resize  cdq.gdx-app.resize/do!
