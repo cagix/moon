@@ -3,7 +3,7 @@
 
 (defn do!
   [ctx]
-  (if (:ctx/paused? ctx)
+  (if (:world/paused? (:ctx/world ctx))
     ctx
     (do
      (ctx/handle-txs! ctx [[:tx/update-potential-fields]])

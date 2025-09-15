@@ -2,4 +2,4 @@
 
 (def item
   {:label "paused?"
-   :update-fn :ctx/paused?})
+   :update-fn (comp :world/paused? :ctx/world)})

@@ -5,7 +5,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (if (:ctx/paused? ctx)
+  (if (:world/paused? (:ctx/world ctx))
     ctx
     (let [delta-ms (min (graphics/delta-time graphics) (:world/max-delta world))]
       (-> ctx

@@ -13,7 +13,6 @@
                                         [:ctx/world :some]
                                         [:ctx/info :some]
                                         [:ctx/mouseover-eid :any]
-                                        [:ctx/paused? :any]
                                         [:ctx/schema :some]
                                         [:ctx/application-state :some]
                                         ]]
@@ -125,6 +124,5 @@
  :object
  {
   :ctx/mouseover-eid nil
-  :ctx/paused? nil
   }
 }

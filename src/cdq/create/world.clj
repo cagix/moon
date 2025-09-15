@@ -10,6 +10,11 @@
             [clojure.utils :as utils]
             [reduce-fsm :as fsm]))
 
+; TODO schema
+; world/paused?
+; etc.  ? added later, delta-time ?
+; player-eid ?
+
 (def ^:private npc-fsm
   (fsm/fsm-inc
    [[:npc-sleeping
@@ -155,6 +160,7 @@
                            :world/effect-body-props {:width 0.5
                                                      :height 0.5
                                                      :z-order :z-order/effect}
+                           :world/paused? false
                            })))
 
 (defn- spawn-player!
