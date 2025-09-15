@@ -6,7 +6,6 @@
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics.color :as color]
@@ -23,32 +22,6 @@
   (disposable/dispose! default-font)
   (disposable/dispose! shape-drawer-texture)
   (run! disposable/dispose! (vals textures)))
-
-(defn draw-texture-region!
-  [{:keys [ctx/batch
-           ctx/unit-scale
-           ctx/world-unit-scale]}
-   texture-region
-   [x y]
-   & {:keys [center? rotation]}]
-  (let [[w h] (let [dimensions (texture-region/dimensions texture-region)]
-                (if (= @unit-scale 1)
-                  dimensions
-                  (mapv (comp float (partial * world-unit-scale))
-                        dimensions)))]
-    (if center?
-      (batch/draw! batch
-                   texture-region
-                   (- (float x) (/ (float w) 2))
-                   (- (float y) (/ (float h) 2))
-                   [w h]
-                   (or rotation 0))
-      (batch/draw! batch
-                   texture-region
-                   x
-                   y
-                   [w h]
-                   0))))
 
 (defn draw-arc!
   [{:keys [ctx/shape-drawer]}

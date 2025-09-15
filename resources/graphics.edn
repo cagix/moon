@@ -29,7 +29,7 @@
                   :cursors/walking               ["walking"      [16 16]]}}
  :draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
             :draw/grid             cdq.draw.grid/do!
-            :draw/texture-region   cdq.gdx.graphics/draw-texture-region!
+            :draw/texture-region   cdq.draw.texture-region/do!
             :draw/text             cdq.gdx.graphics/draw-text!
             :draw/ellipse          cdq.gdx.graphics/draw-ellipse!
             :draw/filled-ellipse   cdq.gdx.graphics/draw-filled-ellipse!
