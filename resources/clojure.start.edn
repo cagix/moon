@@ -34,7 +34,6 @@
                 [:ctx/mouseover-eid :any]
                 [:ctx/paused? :any]
                 [:ctx/player-eid :some]
-                [:ctx/potential-field-cache :some]
                 [:ctx/render-layers :some]
                 [:ctx/render-z-order :some]
                 [:ctx/schema :some]
