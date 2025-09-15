@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require clojure.gdx
+  (:require [clojure.config :as config]
+            clojure.gdx
             clojure.vis-ui.widget
             cdq.gdx.graphics
             cdq.ctx.graphics
@@ -26,7 +27,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(clojure.extends/ns-impls nil "extends.edn")
+(clojure.extends/ns-impls nil (config/edn-resource "extends.edn"))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48

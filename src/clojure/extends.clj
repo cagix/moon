@@ -1,14 +1,7 @@
-(ns clojure.extends
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.symbol :as symbol]))
+(ns clojure.extends)
 
 (defn ns-impls [ctx impls]
-  (doseq [[atype-sym implementation-ns-sym protocol-var] (-> impls
-                                                             io/resource
-                                                             slurp
-                                                             edn/read-string
-                                                             symbol/require-resolve-symbols)]
+  (doseq [[atype-sym implementation-ns-sym protocol-var] impls]
     (try (let [atype (eval atype-sym)
                _ (assert (class atype))
                protocol @protocol-var
