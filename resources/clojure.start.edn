@@ -66,13 +66,18 @@
             [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                               [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
             [cdq.start.lwjgl/do! {
-                                  :create  cdq.gdx-app.create/do!
-                                  :render  cdq.gdx-app.render/do!
-                                  :dispose cdq.gdx-app.dispose/do!
-                                  :resize  cdq.gdx-app.resize/do!
                                   :config {:title "Cyber Dungeon Quest"
                                            :windowed-mode {:width 1440 :height 900}
                                            :foreground-fps 60}
+                                  :listener [cdq.application.listener/create
+                                             {
+                                              :create  cdq.gdx-app.create/do!
+                                              :render  cdq.gdx-app.render/do!
+                                              :dispose cdq.gdx-app.dispose/do!
+                                              :resize  cdq.gdx-app.resize/do!
+                                              :atom-var cdq.application/state
+                                              }]
+
                                   }]
             ]
  :object
