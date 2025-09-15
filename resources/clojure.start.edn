@@ -3,7 +3,6 @@
              cdq.start.read-schema/do!
              cdq.start.context-record/do!
              cdq.start.register-self/do!
-             cdq.start.fsms/do!
              cdq.start.db/do!
              cdq.start.os-settings/do!
              cdq.start.txs/do!
@@ -30,7 +29,6 @@
                 [:ctx/stage :some]
                 [:ctx/interaction-state :some]
                 [:ctx/application-state :some]
-                [:ctx/fsms :some]
                 [:ctx/entity-components :some]
                 [:ctx/world :some]
                 ]

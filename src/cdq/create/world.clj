@@ -7,7 +7,58 @@
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
             [clojure.gdx.maps.tiled :as tiled]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [reduce-fsm :as fsm]))
+
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
 
 (def ^:private components-schema
   (m/schema [:map {:closed true}
@@ -82,6 +133,8 @@
                            :world/entity-ids (atom {})
                            :world/render-z-order (utils/define-order (:world/z-orders (:world config)))
                            :world/spawn-entity-schema components-schema
+                           :world/fsms {:fsms/player player-fsm
+                                        :fsms/npc npc-fsm}
                            })))
 
 (defn- spawn-player!
