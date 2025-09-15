@@ -5,7 +5,6 @@
     (try (let [method-map (update-vals (:sigs protocol)
                                        (fn [{:keys [name]}]
                                          (requiring-resolve (symbol (str implementation-ns-str "/" name)))))]
-           (clojure.pprint/pprint method-map)
            (extend atype protocol method-map))
          (catch Throwable t
            (throw (ex-info "Cant extend"
