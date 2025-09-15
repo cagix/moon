@@ -8,22 +8,13 @@
                                         [:ctx/input :some]
                                         [:ctx/stage :some]
                                         [:ctx/world :some]
-
-                                        ; protocols
-                                        [:ctx/entity-states :some] ; how can the protocol have a 'create-value' fn ?
-                                        [:ctx/info :some] ; extend over entity=IPersistentMap itself?
-                                        ;
-
-                                        ; frame / world / dissoc ?
+                                        [:ctx/entity-states :some]
+                                        [:ctx/info :some]
                                         [:ctx/mouseover-eid :any]
                                         [:ctx/paused? :any]
                                         [:ctx/interaction-state :some]
-                                        ;
-
-                                        ; ctx/app ?
                                         [:ctx/schema :some]
                                         [:ctx/application-state :some]
-                                        ;
                                         ]]
             [cdq.start.context-record/do!]
             [cdq.start.register-self/do! cdq.application/state]
