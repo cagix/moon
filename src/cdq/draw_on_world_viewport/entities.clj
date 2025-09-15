@@ -35,7 +35,6 @@
 (defn do!
   [{:keys [ctx/player-eid
            ctx/render-layers
-           ctx/render-z-order
            ctx/world]
     :as ctx}]
   (let [entities (map deref (world/active-eids ctx))
@@ -46,7 +45,7 @@
                            (raycaster/line-of-sight? raycaster player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
-                                                    render-z-order)
+                                                    (:world/render-z-order world))
             render-layer render-layers
             entity entities
             :when (should-draw? entity z-order)]

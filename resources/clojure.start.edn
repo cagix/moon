@@ -32,7 +32,6 @@
                 [:ctx/paused? :any]
                 [:ctx/player-eid :some]
                 [:ctx/render-layers :some]
-                [:ctx/render-z-order :some]
                 [:ctx/schema :some]
                 [:ctx/stage :some]
                 [:ctx/z-orders :some]

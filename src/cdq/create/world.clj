@@ -47,14 +47,8 @@
                            :world/factions-iterations (:potential-field-factions-iterations (:world config))
                            :world/id-counter (atom 0)
                            :world/entity-ids (atom {})
+                           :world/render-z-order (utils/define-order (:ctx/z-orders ctx))
                            })))
-
-(defn- build-world
-  [{:keys [ctx/config]
-    :as ctx}]
-  (merge ctx
-           {
-            :ctx/render-z-order (utils/define-order (:ctx/z-orders ctx))}))
 
 (defn- spawn-player!
   [{:keys [ctx/config
@@ -89,6 +83,5 @@
   ([ctx world-fn]
    (-> ctx
        (create-tiled-map world-fn)
-       build-world
        spawn-player!
        spawn-enemies!)))
