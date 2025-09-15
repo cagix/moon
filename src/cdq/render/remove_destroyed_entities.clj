@@ -12,7 +12,7 @@
 
 (defn do!
   [{:keys [ctx/entity-ids
-           ctx/grid]
+           ctx/world]
     :as ctx}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
@@ -20,9 +20,9 @@
       (assert (contains? @entity-ids id))
       (swap! entity-ids dissoc id))
     (content-grid/remove-entity! eid)
-    (grid/remove-from-touched-cells! grid eid)
+    (grid/remove-from-touched-cells! (:world/grid world) eid)
     (when (:body/collides? (:entity/body @eid))
-      (grid/remove-from-occupied-cells! grid eid))
+      (grid/remove-from-occupied-cells! (:world/grid world) eid))
     (ctx/handle-txs! ctx
                      (mapcat (fn [[k v]]
                                (when-let [destroy! (:destroy! (k destroy-components))]

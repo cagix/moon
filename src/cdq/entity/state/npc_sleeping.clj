@@ -10,9 +10,9 @@
                   :y (+ y (/ (:body/height body) 2))
                   :up? true}]]))
 
-(defn tick! [_ eid {:keys [ctx/grid]}]
+(defn tick! [_ eid {:keys [ctx/world]}]
   (let [entity @eid]
-    (when-let [distance (grid/nearest-enemy-distance grid entity)]
+    (when-let [distance (grid/nearest-enemy-distance (:world/grid world) entity)]
       (when (<= distance (stats/get-stat-value (:creature/stats entity) :entity/aggro-range))
         [[:tx/event eid :alert]]))))
 

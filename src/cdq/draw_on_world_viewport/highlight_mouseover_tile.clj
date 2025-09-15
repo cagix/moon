@@ -1,10 +1,10 @@
 (ns cdq.draw-on-world-viewport.highlight-mouseover-tile)
 
 (defn do!
-  [{:keys [ctx/grid
+  [{:keys [ctx/world
            ctx/world-mouse-position]}]
   (let [[x y] (mapv int world-mouse-position)
-        cell (grid [x y])]
+        cell ((:world/grid world) [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
         (case (:movement @cell)

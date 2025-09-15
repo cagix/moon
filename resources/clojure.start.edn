@@ -28,7 +28,6 @@
                 [:ctx/explored-tile-corners :some]
                 [:ctx/factions-iterations :some]
                 [:ctx/graphics :some]
-                [:ctx/grid :some]
                 [:ctx/id-counter :some]
                 [:ctx/info :some]
                 [:ctx/input :some]

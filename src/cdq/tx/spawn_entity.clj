@@ -11,12 +11,13 @@
            ctx/entity-ids
            ctx/entity-components
            ctx/spawn-entity-schema
-           ctx/grid
            ctx/world]
     :as ctx}
    entity]
   (m/validate-humanize spawn-entity-schema entity)
-  (let [build-component (fn [[k v]]
+  (let [{:keys [world/content-grid
+                world/grid]} world
+        build-component (fn [[k v]]
                           (if-let [create (k (:create entity-components))]
                             (create v ctx)
                             v))
@@ -31,7 +32,7 @@
     (let [id (:entity/id @eid)]
       (assert (number? id))
       (swap! entity-ids assoc id eid))
-    (content-grid/add-entity! (:world/content-grid world) eid)
+    (content-grid/add-entity! content-grid eid)
     ; https://github.com/damn/core/issues/58
     ;(assert (valid-position? grid @eid))
     (grid/set-touched-cells! grid eid)

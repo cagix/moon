@@ -24,9 +24,16 @@
   (let [{:keys [tiled-map
                 start-position]} (call-world-fn world-fn
                                                 (db/all-raw db :properties/creatures)
-                                                graphics)]
+                                                graphics)
+        grid (grid/create (:tiled-map/width  tiled-map)
+                          (:tiled-map/height tiled-map)
+                          #(case (tiled/movement-property tiled-map %)
+                             "none" :none
+                             "air"  :air
+                             "all"  :all))]
     (assoc ctx :ctx/world {:world/tiled-map tiled-map
                            :world/start-position start-position
+                           :world/grid grid
                            :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
                                                                     (:tiled-map/height tiled-map)
                                                                     (:content-grid-cell-size (:world config)))})))
@@ -36,17 +43,10 @@
            ctx/world]
     :as ctx}]
   (merge ctx
-         (let [tiled-map (:world/tiled-map world)
-               grid (grid/create (:tiled-map/width  tiled-map)
-                                 (:tiled-map/height tiled-map)
-                                 #(case (tiled/movement-property tiled-map %)
-                                    "none" :none
-                                    "air"  :air
-                                    "all"  :all))]
-           {:ctx/grid grid
-            :ctx/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
+         (let [tiled-map (:world/tiled-map world)]
+           {:ctx/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
                                                                      (:tiled-map/height tiled-map))
-            :ctx/raycaster (raycaster/create grid)
+            :ctx/raycaster (raycaster/create (:world/grid world))
             :ctx/elapsed-time 0
             :ctx/max-speed (/ (:ctx/minimum-size ctx)
                               (:ctx/max-delta ctx))

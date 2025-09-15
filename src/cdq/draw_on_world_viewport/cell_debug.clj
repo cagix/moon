@@ -7,11 +7,11 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/grid
+           ctx/world
            ctx/factions-iterations]}]
   (apply concat
          (for [[x y] (graphics/visible-tiles graphics)
-               :let [cell (grid [x y])]
+               :let [cell ((:world/grid world) [x y])]
                :when cell
                :let [cell* @cell]]
            [(when (and show-cell-entities? (seq (:entities cell*)))
