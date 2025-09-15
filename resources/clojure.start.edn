@@ -16,7 +16,6 @@
                 [:ctx/gdx :some]
                 [:ctx/txs-fn-map :some]
                 [:ctx/entity-states :some]
-                [:ctx/active-entities :some]
                 [:ctx/audio :some]
                 [:ctx/draw-fns :some]
                 [:ctx/config :some]
@@ -255,9 +254,7 @@
    :ctx/mouseover-eid nil
    :ctx/paused? nil
    :ctx/delta-time 2
-   :ctx/active-entities 1
    :ctx/interaction-state :yes
-
 
    :ctx/draw-fns {:draw/with-line-width  cdq.draw.with-line-width/do!
                   :draw/grid             cdq.draw.grid/do!

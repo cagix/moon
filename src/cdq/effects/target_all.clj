@@ -34,9 +34,9 @@
 (defn handle
   [[_ {:keys [entity-effects]}]
    {:keys [effect/source]}
-   {:keys [ctx/active-entities
-           ctx/world]}]
-  (let [{:keys [world/raycaster]} world
+   {:keys [ctx/world]}]
+  (let [{:keys [world/active-entities
+                world/raycaster]} world
         source* @source]
     (apply concat
            (for [target (affected-targets active-entities raycaster source*)]
@@ -54,9 +54,9 @@
 (defn render
   [_
    {:keys [effect/source]}
-   {:keys [ctx/active-entities
-           ctx/world]}]
-  (let [{:keys [world/raycaster]} world
+   {:keys [ctx/world]}]
+  (let [{:keys [world/active-entities
+                world/raycaster]} world
         source* @source]
     (for [target* (map deref (affected-targets active-entities raycaster source*))]
       [:draw/line

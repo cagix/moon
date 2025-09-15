@@ -5,6 +5,6 @@
   [{:keys [ctx/player-eid
            ctx/world]
     :as ctx}]
-  (assoc ctx :ctx/active-entities
-         (content-grid/active-entities (:world/content-grid world)
-                                       @player-eid)))
+  (assoc-in ctx [:ctx/world :world/active-entities]
+            (content-grid/active-entities (:world/content-grid world)
+                                          @player-eid)))

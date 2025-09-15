@@ -18,9 +18,9 @@
                            t))))))
 
 (defn- tick-entities!
-  [{:keys [ctx/active-entities]
+  [{:keys [ctx/world]
     :as ctx}]
-  (doseq [eid active-entities]
+  (doseq [eid (:world/active-entities world)]
     (tick-entity! ctx eid)))
 
 (defn- do!*
