@@ -10,4 +10,4 @@
               (handle-input (:world/player-eid world) ctx)
               nil)]
     (ctx/handle-txs! ctx txs))
-  nil)
+  ctx)

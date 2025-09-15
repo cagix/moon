@@ -5,7 +5,8 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/world]}]
+           ctx/world]
+    :as ctx}]
   (graphics/draw-tiled-map! graphics
                             (:world/tiled-map world)
                             (tile-color-setter/create
@@ -15,4 +16,5 @@
                               :see-all-tiles? false
                               :explored-tile-color  [0.5 0.5 0.5 1]
                               :visible-tile-color   [1 1 1 1]
-                              :invisible-tile-color [0 0 0 1]})))
+                              :invisible-tile-color [0 0 0 1]}))
+  ctx)

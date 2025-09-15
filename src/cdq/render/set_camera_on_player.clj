@@ -3,6 +3,8 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/world]}]
+           ctx/world]
+    :as ctx}]
   (graphics/set-camera-position! graphics
-                                 (:body/position (:entity/body @(:world/player-eid world)))))
+                                 (:body/position (:entity/body @(:world/player-eid world))))
+  ctx)

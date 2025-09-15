@@ -11,4 +11,5 @@
                               ->cursor ((:cursor entity-states) (:state (:entity/fsm @player-eid)))]
                           (if (keyword? ->cursor)
                             ->cursor
-                            (->cursor player-eid ctx)))))
+                            (->cursor player-eid ctx))))
+  ctx)

@@ -13,13 +13,7 @@
      :dispose! (fn []
                  (swap! state dispose))
      :render! (fn []
-                (swap! state (fn [ctx]
-                               (reduce (fn [ctx f]
-                                         (if-let [new-ctx (f ctx)]
-                                           new-ctx
-                                           ctx))
-                                       ctx
-                                       render))))
+                (swap! state object/pipeline render))
      :resize! (fn [width height]
                 (swap! state resize width height))
      :pause! (fn [])

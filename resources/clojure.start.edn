@@ -81,27 +81,27 @@
                                                        [cdq.create.reset-stage/do!]
                                                        [cdq.create.world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                                                         :start-position [32 71]}]]]
-                                              :render  [cdq.render.validate/do!
-                                                        cdq.render.update-mouse/do!
-                                                        cdq.render.update-mouseover-eid/do!
-                                                        cdq.render.check-open-debug/do!
-                                                        cdq.render.assoc-active-entities/do!
-                                                        cdq.render.set-camera-on-player/do!
-                                                        cdq.render.clear-screen/do!
-                                                        cdq.render.draw-world-map/do!
-                                                        cdq.render.draw-on-world-viewport/do!
-                                                        cdq.render.stage/do!
-                                                        cdq.render.assoc-interaction-state/do!
-                                                        cdq.render.set-cursor/do!
-                                                        cdq.render.player-state-handle-input/do!
-                                                        cdq.render.assoc-paused/do!
-                                                        cdq.render.update-time/do!
-                                                        cdq.render.update-potential-fields/do!
-                                                        cdq.render.tick-entities/do!
-                                                        cdq.render.remove-destroyed-entities/do! ; do not pause as pickup item should be destroyed
-                                                        cdq.render.handle-key-input/do!
-                                                        cdq.render.dissoc-mouseover-keys/do!
-                                                        cdq.render.validate/do!]
+                                              :render  [[cdq.render.validate/do!]
+                                                        [cdq.render.update-mouse/do!]
+                                                        [cdq.render.update-mouseover-eid/do!]
+                                                        [cdq.render.check-open-debug/do!]
+                                                        [cdq.render.assoc-active-entities/do!]
+                                                        [cdq.render.set-camera-on-player/do!]
+                                                        [cdq.render.clear-screen/do!]
+                                                        [cdq.render.draw-world-map/do!]
+                                                        [cdq.render.draw-on-world-viewport/do!]
+                                                        [cdq.render.stage/do!]
+                                                        [cdq.render.assoc-interaction-state/do!]
+                                                        [cdq.render.set-cursor/do!]
+                                                        [cdq.render.player-state-handle-input/do!]
+                                                        [cdq.render.assoc-paused/do!]
+                                                        [cdq.render.update-time/do!]
+                                                        [cdq.render.update-potential-fields/do!]
+                                                        [cdq.render.tick-entities/do!]
+                                                        [cdq.render.remove-destroyed-entities/do!] ; do not pause as pickup item should be destroyed
+                                                        [cdq.render.handle-key-input/do!]
+                                                        [cdq.render.dissoc-mouseover-keys/do!]
+                                                        [cdq.render.validate/do!]]
                                               :dispose cdq.gdx-app.dispose/do!
                                               :resize  cdq.gdx-app.resize/do!
                                               :atom-var cdq.application/state}]}

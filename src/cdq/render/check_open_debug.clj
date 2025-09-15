@@ -22,4 +22,5 @@
 (defn do!
   [{:keys [ctx/input] :as ctx}]
   (when (input/button-just-pressed? input :right)
-    (open-debug-data-window! ctx)))
+    (open-debug-data-window! ctx))
+  ctx)

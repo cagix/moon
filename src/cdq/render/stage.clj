@@ -7,4 +7,5 @@
     :as ctx}]
   (ctx-stage/set-ctx! stage ctx)
   (stage/act! stage)
-  (stage/draw! stage))
+  (stage/draw! stage)
+  ctx)

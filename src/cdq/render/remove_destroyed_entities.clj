@@ -28,4 +28,5 @@
                        (mapcat (fn [[k v]]
                                  (when-let [destroy! (:destroy! (k destroy-components))]
                                    (destroy! v eid ctx)))
-                               @eid)))))
+                               @eid))))
+  ctx)
