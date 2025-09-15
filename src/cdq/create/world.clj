@@ -100,7 +100,6 @@
            ctx/graphics]
     :as ctx}
    world-fn]
-  {:pre [db]}
   (let [{:keys [tiled-map
                 start-position]} (call-world-fn world-fn
                                                 (db/all-raw db :properties/creatures)
