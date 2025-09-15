@@ -4,9 +4,8 @@
             [cdq.ctx.db :as db]))
 
 (defn post-runnable! [f]
-  (com.badlogic.gdx.Application/.postRunnable
-   (:clojure.gdx/app (:ctx/gdx @application/state))
-   (fn [] (f @application/state))))
+  (.postRunnable com.badlogic.gdx.Gdx/app
+                 (fn [] (f @application/state))))
 
 (comment
  (post-runnable!

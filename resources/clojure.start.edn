@@ -12,7 +12,6 @@
  :object
  {
    :ctx/schema [:map {:closed true}
-                [:ctx/gdx :some]
                 [:ctx/txs-fn-map :some]
                 [:ctx/entity-states :some]
                 [:ctx/audio :some]
@@ -54,6 +53,7 @@
                                      cdq.create.stage/do!
                                      cdq.create.set-input-processor/do!
                                      cdq.create.audio/do!
+                                     cdq.create.dissoc-gdx/do!
                                      cdq.create.reset-stage/do!
                                      cdq.create.world/do!
                                      ]
