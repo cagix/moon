@@ -1,14 +1,5 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.ctx :as ctx]
-            [cdq.create.world]
-            [cdq.ui.menu :as menu]
-            [cdq.ctx.world :as world]))
-
-(defn reset-game-fn
-  [{:keys [ctx/application-state] :as ctx} world-fn]
-  (ctx/handle-txs! ctx [[:tx/reset-stage]])
-  (world/dispose! (:ctx/world ctx))
-  (swap! application-state cdq.create.world/do! world-fn))
+  (:require [cdq.ui.menu :as menu]))
 
 (defn create
   [{:keys [ctx/graphics]
