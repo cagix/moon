@@ -1,5 +1,6 @@
 (ns cdq.create.graphics
-  (:require [cdq.files]
+  (:require [cdq.ctx.graphics]
+            [cdq.files]
             [cdq.gdx.graphics]
             [clojure.gdx.files :as files]
             [clojure.edn :as edn]

@@ -94,14 +94,13 @@
           :creature-properties creature-properties
           :graphics graphics)))
 
-; TODO make schema
-; later added: world/delta-time, active-entities, ?
 (defn- create-tiled-map
   [{:keys [ctx/config
            ctx/db
            ctx/graphics]
     :as ctx}
    world-fn]
+  {:pre [db]}
   (let [{:keys [tiled-map
                 start-position]} (call-world-fn world-fn
                                                 (db/all-raw db :properties/creatures)
@@ -166,10 +165,8 @@
   ctx)
 
 (defn do!
-  ([ctx]
-   (do! ctx (:starting-world (:cdq.create.world (:ctx/config ctx)))))
-  ([ctx world-fn]
-   (-> ctx
-       (create-tiled-map world-fn)
-       spawn-player!
-       spawn-enemies!)))
+  [ctx world-fn]
+  (-> ctx
+      (create-tiled-map world-fn)
+      spawn-player!
+      spawn-enemies!))
