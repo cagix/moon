@@ -5,10 +5,11 @@
 (defn do!
   [{:keys [ctx/config
            ctx/graphics]
-    :as ctx}]
+    :as ctx}
+   draw-fns]
   (cdq.ctx.graphics/draw-on-world-viewport!
    graphics
    (fn []
-     (doseq [f (:draw-on-world-viewport (:cdq.render-pipeline config))]
+     (doseq [f draw-fns]
        (graphics/handle-draws! graphics (f ctx)))))
   ctx)
