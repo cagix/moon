@@ -19,10 +19,6 @@
                  [org.clojure/tools.namespace "1.3.0"]
                  ]
   :java-source-paths ["src"]
-  :resource-paths [
-                   "resources"
-                   "resources/edn"
-                   ]
   :aliases {
             "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.start/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
