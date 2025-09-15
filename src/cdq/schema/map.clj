@@ -85,8 +85,9 @@
   [schema
    m
    {:keys [ctx/db
-           ctx/config] :as ctx}]
-  (let [k-sort-order (:property-k-sort-order (:cdq.ui.editor.widget.map config))
+           ctx/editor]
+    :as ctx}]
+  (let [k-sort-order (:editor/property-k-sort-order editor)
         table (scene2d/build
                {:actor/type :actor.type/table
                 :cell-defaults {:pad 5}

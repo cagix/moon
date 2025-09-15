@@ -21,15 +21,15 @@
                                :actor/touchable :disabled}]}})))
 
 (defn create
-  [{:keys [ctx/config
-           ctx/db
+  [{:keys [ctx/db
+           ctx/editor
            ctx/graphics]}
    property-type
    clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
-                image-scale]} (get-in config [:cdq.ui.editor.overview-table property-type])]
+                image-scale]} (get (:editor/overview-table editor) property-type)]
     (->> (db/all-raw db property-type)
          (sort-by sort-by-fn)
          (map (fn [property]

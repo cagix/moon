@@ -3,8 +3,7 @@
             [cdq.ctx.graphics]))
 
 (defn do!
-  [{:keys [ctx/config
-           ctx/graphics]
+  [{:keys [ctx/graphics]
     :as ctx}
    draw-fns]
   (cdq.ctx.graphics/draw-on-world-viewport!
