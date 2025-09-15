@@ -3,4 +3,4 @@
   (:import (com.badlogic.gdx.utils SharedLibraryLoader)))
 
 (defn operating-system []
-  (os/value->k SharedLibraryLoader/os))
+  (os/->clj SharedLibraryLoader/os))
