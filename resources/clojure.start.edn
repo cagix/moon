@@ -21,9 +21,8 @@
                 [:ctx/world :some]
 
                 ; protocols
-                [:ctx/entity-states :some]
-                [:ctx/info :some]
-                [:ctx/render-layers :some]
+                [:ctx/entity-states :some] ; how can the protocol have a 'create-value' fn ?
+                [:ctx/info :some] ; extend over entity=IPersistentMap itself?
                 ;
 
                 ; frame / world / dissoc ?
@@ -137,6 +136,20 @@
                                               :draw/arc              cdq.gdx.graphics/draw-arc!
                                               :draw/sector           cdq.gdx.graphics/draw-sector!
                                               :draw/line             cdq.gdx.graphics/draw-line!}
+
+
+                                   :graphics/entity-render-layers [{:entity/mouseover? cdq.entity.mouseover/draw
+                                                                    :stunned cdq.entity.state.stunned/draw
+                                                                    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
+                                                                   {:entity/clickable cdq.entity.clickable/draw
+                                                                    :entity/animation cdq.entity.animation/draw
+                                                                    :entity/image cdq.entity.image/draw
+                                                                    :entity/line-render cdq.entity.line-render/draw}
+                                                                   {:npc-sleeping cdq.entity.state.npc-sleeping/draw
+                                                                    :entity/temp-modifier cdq.entity.temp-modifier/draw
+                                                                    :entity/string-effect cdq.entity.string-effect/draw}
+                                                                   {:creature/stats cdq.entity.stats/draw
+                                                                    :active-skill cdq.entity.state.active-skill/draw}]
                                    }
 
                 :cdq.vis-ui {:skin-scale :x1}
@@ -432,18 +445,5 @@
                     :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
                                              :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
                     }
-
-:ctx/render-layers [{:entity/mouseover? cdq.entity.mouseover/draw
-                     :stunned cdq.entity.state.stunned/draw
-                     :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
-                    {:entity/clickable cdq.entity.clickable/draw
-                     :entity/animation cdq.entity.animation/draw
-                     :entity/image cdq.entity.image/draw
-                     :entity/line-render cdq.entity.line-render/draw}
-                    {:npc-sleeping cdq.entity.state.npc-sleeping/draw
-                     :entity/temp-modifier cdq.entity.temp-modifier/draw
-                     :entity/string-effect cdq.entity.string-effect/draw}
-                    {:creature/stats cdq.entity.stats/draw
-                     :active-skill cdq.entity.state.active-skill/draw}]
 }
 }

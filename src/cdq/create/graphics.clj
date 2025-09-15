@@ -38,4 +38,6 @@
                                  (doseq [{k 0 :as component} draws
                                          :when component]
                                    (apply (draw-fns k) graphics (rest component)))))
-                             graphics)))
+                             (assoc graphics
+                                    :graphics/entity-render-layers (:graphics/entity-render-layers (:after-gdx-create config))
+                                    ))))

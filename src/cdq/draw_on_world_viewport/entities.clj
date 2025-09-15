@@ -33,11 +33,12 @@
                           [[:tx/print-stacktrace t]]))))
 
 (defn do!
-  [{:keys [ctx/render-layers
+  [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
   (let [entities (map deref (world/active-eids ctx))
         player @(:world/player-eid world)
+        render-layers (:graphics/entity-render-layers graphics)
         {:keys [world/raycaster]} world
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
