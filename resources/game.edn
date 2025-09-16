@@ -1,3 +1,0 @@
-[
- [clojure.gdx.backends.lwjgl/start! #edn/resource "listener.edn"]
- ]

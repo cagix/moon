@@ -1,5 +1,5 @@
 (ns cdq.levelgen
-  (:require [clojure.start :as start]
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl-app]
             clojure.gdx
             clojure.vis-ui.widget
             cdq.gdx.graphics
@@ -27,7 +27,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(clojure.extends/ns-impls nil (start/edn-resource "extends_gdx.edn"))
+(clojure.extends/ns-impls nil (lwjgl-app/edn-resource "extends_gdx.edn"))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48

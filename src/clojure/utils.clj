@@ -1,13 +1,10 @@
 (ns clojure.utils)
 
-(defn pipeline
-  ([pipeline*]
-   (pipeline {} pipeline*))
-  ([object pipeline]
-   (reduce (fn [object [f & params]]
-             (apply f object params))
-           object
-           pipeline)))
+(defn pipeline [object pipeline]
+  (reduce (fn [object [f & params]]
+            (apply f object params))
+          object
+          pipeline))
 
 (defn- index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
