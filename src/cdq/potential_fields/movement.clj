@@ -1,13 +1,13 @@
 (ns cdq.potential-fields.movement
-  (:require [cdq.grid.cell :as cell]
+  (:require [cdq.body :as body]
+            [cdq.grid.cell :as cell]
             [cdq.entity :as entity]
             [cdq.entity.faction :as faction]
             [cdq.world.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.position :as position]
-            [clojure.utils :as utils]
-            [cdq.gdx.math.geom :as geom]
-            [cdq.gdx.math.vector2 :as v]))
+            [cdq.gdx.math.vector2 :as v]
+            [clojure.utils :as utils]))
 
 (let [order (position/get-8-neighbours [0 0])]
   (def ^:private diagonal-check-indizes
@@ -87,7 +87,7 @@
                           own-cell)))}))))
 
 (defn- inside-cell? [grid entity cell]
-  (let [cells (g2d/get-cells grid (geom/body->touched-tiles (:entity/body entity)))]
+  (let [cells (g2d/get-cells grid (body/touched-tiles (:entity/body entity)))]
     (and (= 1 (count cells))
          (= cell (first cells)))))
 

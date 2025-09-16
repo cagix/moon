@@ -1,9 +1,8 @@
 (ns cdq.entity.projectile-collision
-  (:require [cdq.entity.body :as body]
-            [cdq.grid2d :as g2d]
-            [cdq.world.grid :as grid]
+  (:require [cdq.body :as body]
             [cdq.grid.cell :as cell]
-            [cdq.gdx.math.geom :as geom]))
+            [cdq.grid2d :as g2d]
+            [cdq.world.grid :as grid]))
 
 (defn create [v _ctx]
   (assoc v :already-hit-bodies #{}))
@@ -14,7 +13,7 @@
    {:keys [ctx/world]}]
   (let [grid (:world/grid world)
         entity @eid
-        cells* (map deref (g2d/get-cells grid (geom/body->touched-tiles (:entity/body entity))))
+        cells* (map deref (g2d/get-cells grid (body/touched-tiles (:entity/body entity))))
         hit-entity (first (filter #(and (not (contains? already-hit-bodies %))
                                         (not= (:entity/faction entity)
                                               (:entity/faction @%))

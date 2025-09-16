@@ -1,4 +1,8 @@
 [
+ [cdq.grid2d.VectorGrid
+  cdq.impl.grid
+  cdq.world.grid/Grid]
+
  [cdq.create.world_config.World
   cdq.world
   cdq.ctx.world/World]
