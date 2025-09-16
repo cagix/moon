@@ -1,4 +1,4 @@
-(ns cdq.world-fns.caves
+(ns cdq.grid2d.caves
   (:require [cdq.grid2d :as g2d]
             [cdq.rand :as rand]))
 

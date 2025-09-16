@@ -1,7 +1,7 @@
 (ns cdq.world-fns.modules.place-modules
   (:require [cdq.grid2d :as g2d]
             [cdq.world-fns.grid-to-tiled-map :as grid-to-tiled-map]
-            [cdq.world-fns.helper :as helper]
+            [cdq.grid2d.utils :as helper]
             [clojure.gdx.maps.tiled :as tiled]))
 
 (def ^:private number-modules-x 8)

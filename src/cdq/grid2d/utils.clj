@@ -1,7 +1,5 @@
-(ns cdq.world-fns.helper
-  (:require [cdq.grid2d :as g2d]
-            [cdq.world-fns.caves :as caves]
-            [cdq.world-fns.nads :as nads]))
+(ns cdq.grid2d.utils
+  (:require [cdq.grid2d :as g2d]))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)
@@ -63,14 +61,6 @@
                              position->transition?))
        (apply +)))
 
-; TODO generates 51,52. not max 50
-(defn cave-grid [& {:keys [size]}]
-  (let [{:keys [start grid]} (caves/create (java.util.Random.) size size :wide)
-        grid (nads/fix-nads grid)]
-    (assert (= #{:wall :ground} (set (g2d/cells grid))))
-    {:start start
-     :grid grid}))
-
 (defn adjacent-wall-positions [grid]
   (filter (fn [p] (and (= :wall (get grid p))
                        (some #(= :ground (get grid %))
@@ -90,19 +80,3 @@
              (concat filled next-positions)
              (g2d/assoc-ks grid next-positions nil))
       filled)))
-
-(comment
- (let [{:keys [start grid]} (cave-grid :size 15)
-       _ (println "BASE GRID:\n")
-       _ (printgrid grid)
-       ;_ (println)
-       ;_ (println "WITH START POSITION (0) :\n")
-       ;_ (printgrid (assoc grid start 0))
-       ;_ (println "\nwidth:  " (g2d/width  grid)
-       ;           "height: " (g2d/height grid)
-       ;           "start " start "\n")
-       ;_ (println (g2d/posis grid))
-       _ (println "\n\n")
-       filled (flood-fill grid start (fn [p] (= :ground (get grid p))))
-       _ (printgrid (reduce #(assoc %1 %2 nil) grid filled))])
- )

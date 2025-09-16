@@ -1,6 +1,6 @@
 (ns cdq.world-fns.modules.assoc-transitions
   (:require [cdq.grid2d :as g2d]
-            [cdq.world-fns.helper :as helper]))
+            [cdq.grid2d.utils :as helper]))
 
 (defn do!
   [{:keys [grid] :as world-fn-ctx}]

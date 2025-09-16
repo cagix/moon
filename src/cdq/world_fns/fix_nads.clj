@@ -1,6 +1,6 @@
 (ns cdq.world-fns.fix-nads
   (:require [cdq.grid2d :as g2d]
-            [cdq.world-fns.nads :as nads]))
+            [cdq.grid2d.nads :as nads]))
 
 (defn do!
   [{:keys [level/grid]

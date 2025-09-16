@@ -1,4 +1,4 @@
-(ns cdq.world-fns.nads
+(ns cdq.grid2d.nads
   (:require [cdq.grid2d :as g2d]))
 
 (comment

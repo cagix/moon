@@ -1,5 +1,5 @@
 (ns cdq.world-fns.modules.print-grid
-  (:require [cdq.world-fns.helper :as helper]))
+  (:require [cdq.grid2d.utils :as helper]))
 
 (defn do! [{:keys [grid] :as world-fn-ctx}]
   (helper/printgrid grid)
