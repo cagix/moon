@@ -1,6 +1,7 @@
 (ns clojure.gdx.scene2d
   (:require [cdq.ctx.graphics :as graphics]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage])
@@ -44,7 +45,7 @@
                               actor-or-decl
                               (scene2d/build actor-or-decl))))
         (:group/actors opts))
-  (actor/set-opts! group opts))
+  (clojure.scene2d.actor/set-opts! group opts))
 
 (defn- group [opts]
   (doto (Group.)

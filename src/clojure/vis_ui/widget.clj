@@ -1,7 +1,6 @@
 (ns clojure.vis-ui.widget
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.scene2d.ui.table :as table]
