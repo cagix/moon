@@ -59,7 +59,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
-	private Lwjgl3ApplicationConfiguration config;
+	public Lwjgl3ApplicationConfiguration config;
 	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	private Lwjgl3Audio audio;
@@ -78,7 +78,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private static Callback glDebugCallback;
 	private Sync sync;
 
-	static void initializeGlfw () {
+	public static void initializeGlfw () {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
@@ -121,10 +121,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
   }
 
 	public void start (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		initializeGlfw();
-		setApplicationLogger(new Lwjgl3ApplicationLogger());
-
-		this.config = config = Lwjgl3ApplicationConfiguration.copy(config);
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
 		Gdx.app = this;

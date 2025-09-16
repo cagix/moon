@@ -3,6 +3,7 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
+                                             Lwjgl3ApplicationLogger
                                              Lwjgl3WindowConfiguration)))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
@@ -51,8 +52,11 @@
 
 (defn start-application! [listener config]
   (let [application (Lwjgl3Application.)
-        config (create-config config)]
+        config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
     (gl-emulation-hook (.glEmulation config))
+    (Lwjgl3Application/initializeGlfw)
+    (.setApplicationLogger application (Lwjgl3ApplicationLogger.))
+    (set! (.config application) config)
     (.start application
             (create-listener listener)
             config)))
