@@ -35,7 +35,7 @@
 (defn- java-class? [s]
   (boolean (re-matches #".*\.[A-Z][A-Za-z0-9_]*" s)))
 
-(defn- require-resolve-symbols [form]
+(defn- require-resolve-symbols [form] ; FIXME extends remove ?
   (if (symbol? form)
     (if (java-class? (str form))
       form

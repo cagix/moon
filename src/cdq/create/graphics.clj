@@ -3,7 +3,7 @@
             [clojure.gdx.scene2d.ctx]
             [cdq.files]
             [clojure.earlygrey.shape-drawer :as sd]
-            [clojure.gdx.files :as files]
+            [clojure.files :as files]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.colors :as colors]
