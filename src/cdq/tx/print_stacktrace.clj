@@ -1,6 +1,10 @@
 (ns cdq.tx.print-stacktrace
-  (:require [cdq.stacktrace :as stacktrace]))
+  (:require [clj-commons.pretty.repl :as pretty-repl]))
+
+(def print-level 3)
+(def print-depth 24)
 
 (defn do! [_ctx throwable]
-  (stacktrace/pretty-print throwable)
+  (binding [*print-level* print-level]
+    (pretty-repl/pretty-pst throwable print-depth))
   nil)
