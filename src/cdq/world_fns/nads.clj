@@ -1,6 +1,5 @@
 (ns cdq.world-fns.nads
-  (:require [cdq.grid2d :as g2d]
-            [clojure.utils :refer [assoc-ks]]))
+  (:require [cdq.grid2d :as g2d]))
 
 (comment
   (def found (atom false))
@@ -77,7 +76,7 @@
         [cell1 cell2 cell3]))))
 
 (defn- mark-nads [grid nads label]
-  (assoc-ks grid (mapcat #(get-tiles-needing-fix-for-nad grid %) nads) label))
+  (g2d/assoc-ks grid (mapcat #(get-tiles-needing-fix-for-nad grid %) nads) label))
 
 (defn fix-nads [grid]
   (mark-nads grid (get-nads grid) :ground))

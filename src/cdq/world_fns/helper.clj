@@ -1,8 +1,7 @@
 (ns cdq.world-fns.helper
   (:require [cdq.grid2d :as g2d]
             [cdq.world-fns.caves :as caves]
-            [cdq.world-fns.nads :as nads]
-            [clojure.utils :as utils]))
+            [cdq.world-fns.nads :as nads]))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)
@@ -89,7 +88,7 @@
                       (mapcat g2d/get-8-neighbour-positions
                               next-positions)))
              (concat filled next-positions)
-             (utils/assoc-ks grid next-positions nil))
+             (g2d/assoc-ks grid next-positions nil))
       filled)))
 
 (comment

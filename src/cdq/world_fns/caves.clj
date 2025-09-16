@@ -1,7 +1,6 @@
 (ns cdq.world-fns.caves
   (:require [cdq.grid2d :as g2d]
-            [cdq.rand :as rand]
-            [clojure.utils :as utils]))
+            [cdq.rand :as rand]))
 
 ;Cave Algorithmus.
 ;http://properundead.com/2009/03/cave-generator.html
@@ -100,7 +99,7 @@
           (if (not-empty new-pos-seq)
             (recur new-pos-seq
                    (if (seq carve-posis)
-                     (utils/assoc-ks grid carve-posis :ground)
+                     (g2d/assoc-ks grid carve-posis :ground)
                      grid)
                    (+ cell-cnt (count carve-posis)))
             ; TODO here min-cells check ?

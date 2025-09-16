@@ -1,5 +1,10 @@
 (ns cdq.grid2d)
 
+(defn assoc-ks [m ks v]
+  (if (empty? ks)
+    m
+    (apply assoc m (interleave ks (repeat v)))))
+
 (defn get-cells [g2d int-positions]
   (into [] (keep g2d) int-positions))
 
