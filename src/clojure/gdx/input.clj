@@ -3,14 +3,14 @@
                              Input$Buttons
                              Input$Keys)))
 
-(def ^:private input.buttons-k->value
+(def ^:private buttons-k->value
   {:back    Input$Buttons/BACK
    :forward Input$Buttons/FORWARD
    :left    Input$Buttons/LEFT
    :middle  Input$Buttons/MIDDLE
    :right   Input$Buttons/RIGHT})
 
-(def ^:private input.keys-k->value
+(def ^:private keys-k->value
   {:a                   Input$Keys/A
    :alt-left            Input$Keys/ALT_LEFT
    :alt-right           Input$Keys/ALT_RIGHT
@@ -195,17 +195,17 @@
    :z                   Input$Keys/Z})
 
 (defn button-just-pressed? [^Input this button]
-  {:pre [(contains? input.buttons-k->value button)]}
-  (.isButtonJustPressed this (input.buttons/k->value button)))
+  {:pre [(contains? buttons-k->value button)]}
+  (.isButtonJustPressed this (buttons-k->value button)))
 
 (defn key-pressed? [^Input this key]
-  (assert (contains? input.keys-k->value key)
+  (assert (contains? keys-k->value key)
           (str "(pr-str key): "(pr-str key)))
-  (.isKeyPressed this (input.keys/k->value key)))
+  (.isKeyPressed this (keys-k->value key)))
 
 (defn key-just-pressed? [^Input this key]
-  {:pre [(contains? input.keys-k->value key)]}
-  (.isKeyJustPressed this (input.keys/k->value key)))
+  {:pre [(contains? keys-k->value key)]}
+  (.isKeyJustPressed this (keys-k->value key)))
 
 (defn set-processor! [^Input this input-processor]
   (.setInputProcessor this input-processor))
