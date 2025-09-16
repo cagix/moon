@@ -1,81 +1,86 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [clojure.scene2d.stage :as stage]
+  (:require [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ctx :as ctx]
             [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
-(defn get-stage [^Actor actor]
-  (.getStage actor))
+(extend-type Actor
+  clojure.scene2d.actor/Actor
+  (get-stage [actor]
+    (.getStage actor))
 
-(defn get-x [^Actor actor]
-  (.getX actor))
+  (get-x [actor]
+    (.getX actor))
 
-(defn get-y [^Actor actor]
-  (.getY actor))
+  (get-y [actor]
+    (.getY actor))
 
-(defn get-name [^Actor actor]
-  (.getName actor))
+  (get-name [actor]
+    (.getName actor))
 
-(defn user-object [^Actor actor]
-  (.getUserObject actor))
+  (user-object [actor]
+    (.getUserObject actor))
 
-(defn set-user-object! [^Actor actor object]
-  (.setUserObject actor object))
+  (set-user-object! [actor object]
+    (.setUserObject actor object))
 
-(defn visible? [^Actor actor]
-  (.isVisible actor))
+  (visible? [actor]
+    (.isVisible actor))
 
-(defn set-visible! [^Actor actor visible?]
-  (.setVisible actor visible?))
+  (set-visible! [actor visible?]
+    (.setVisible actor visible?))
 
-(defn set-touchable! [^Actor actor touchable]
-  (.setTouchable actor (touchable/k->value touchable)))
+  (set-touchable! [actor touchable]
+    (.setTouchable actor (touchable/k->value touchable)))
 
-(defn remove! [^Actor actor]
-  (.remove actor))
+  (remove! [actor]
+    (.remove actor))
 
-(defn parent [^Actor actor]
-  (.getParent actor))
+  (parent [actor]
+    (.getParent actor))
 
-(defn stage->local-coordinates [actor position]
-  (-> actor
-      (.stageToLocalCoordinates (vector2/->java position))
-      vector2/->clj))
+  (stage->local-coordinates [actor position]
+    (-> actor
+        (.stageToLocalCoordinates (vector2/->java position))
+        vector2/->clj))
 
-(defn hit [actor [x y]]
-  (.hit actor x y true))
+  (hit [actor [x y]]
+    (.hit actor x y true))
 
-(defn set-name! [actor name]
-  (Actor/.setName actor name))
+  (set-name! [actor name]
+    (.setName actor name))
 
-(defn set-position! [actor x y]
-  (Actor/.setPosition actor x y))
+  (set-position! [actor x y]
+    (.setPosition actor x y))
 
-(defn get-width [actor]
-  (Actor/.getWidth actor))
+  (get-width [actor]
+    (.getWidth actor))
 
-(defn get-height [actor]
-  (Actor/.getHeight actor))
+  (get-height [actor]
+    (.getHeight actor))
 
-(defn add-listener! [actor listener]
-  (.addListener actor listener))
+  (add-listener! [actor listener]
+    (.addListener actor listener)))
 
-(let [opts-fn-map {
-                   :actor/name set-name!
-                   :actor/user-object set-user-object!
-                   :actor/visible?  set-visible!
-                   :actor/touchable set-touchable!
-                   :actor/listener add-listener!
-                   :actor/position (fn [actor [x y]]
-                                     (set-position! actor x y))
-                   :actor/center-position (fn [actor [x y]]
-                                            (set-position! actor
-                                                           (- x (/ (get-width  actor) 2))
-                                                           (- y (/ (get-height actor) 2))))
-                   }]
-  (defn set-opts! [actor opts]
+(def ^:private opts-fn-map
+  {:actor/name actor/set-name!
+   :actor/user-object actor/set-user-object!
+   :actor/visible?  actor/set-visible!
+   :actor/touchable actor/set-touchable!
+   :actor/listener actor/add-listener!
+   :actor/position (fn [actor [x y]]
+                     (actor/set-position! actor x y))
+   :actor/center-position (fn [actor [x y]]
+                            (actor/set-position! actor
+                                                 (- x (/ (actor/get-width  actor) 2))
+                                                 (- y (/ (actor/get-height actor) 2))))})
+
+(extend-type Actor
+  clojure.scene2d.actor/Opts
+  (set-opts! [actor opts]
     (doseq [[k v] opts
             :let [f (get opts-fn-map k)]
             :when f]
@@ -91,10 +96,10 @@
             (act this delta))
           (draw [batch parent-alpha]
             (draw this batch parent-alpha)))
-    (set-opts! opts)))
+    (actor/set-opts! opts)))
 
 (defn- get-ctx [actor]
-  (when-let [stage (get-stage actor)]
+  (when-let [stage (actor/get-stage actor)]
     (stage/get-ctx stage)))
 
 (defn- try-act [actor delta f]

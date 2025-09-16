@@ -18,7 +18,9 @@
   (parent [actor])
   (stage->local-coordinates [actor position])
   (hit [actor [x y]])
-  (add-listener! [actor listener])
+  (add-listener! [actor listener]))
+
+(defprotocol Opts
   (set-opts! [_ opts]))
 
 (defn toggle-visible! [actor]
