@@ -1,5 +1,6 @@
 (ns cdq.impl.creature
-  (:require [cdq.creature :as creature]
+  (:require cdq.tx.spawn-entity
+            [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.stats :as modifiers]))
 
