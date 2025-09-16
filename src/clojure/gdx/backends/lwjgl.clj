@@ -2,6 +2,7 @@
   (:require [cdq.application :as application]
             [clojure.edn :as edn]
             [clojure.gdx.utils]
+            [clojure.scene2d.stage :as stage]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
             [clojure.walk :as walk])
@@ -149,7 +150,9 @@
                        :dispose! (fn []
                                    (swap! application/state dispose))
                        :render! (fn []
-                                  (swap! application/state utils/pipeline render))
+                                  (swap! application/state utils/pipeline render)
+                                  (stage/act!  (:ctx/stage @application/state))
+                                  (stage/draw! (:ctx/stage @application/state)))
                        :resize! (fn [width height]
                                   (swap! application/state resize width height))
                        :pause! (fn [])

@@ -2,16 +2,13 @@
   (:require clojure.scene2d.stage)
   (:import (clojure.gdx.scene2d Stage)))
 
-(defn create [viewport batch]
-  (Stage. viewport batch (atom nil)))
+(defn create [viewport batch state]
+  (Stage. viewport batch state))
 
 (extend-type clojure.gdx.scene2d.Stage
   clojure.scene2d.stage/Stage
   (get-ctx [stage]
     @(.ctx stage))
-
-  (set-ctx! [stage ctx]
-    (reset! (.ctx stage) ctx))
 
   (act! [stage]
     (.act stage))

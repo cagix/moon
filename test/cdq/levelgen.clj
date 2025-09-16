@@ -113,7 +113,7 @@
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (clojure.gdx.scene2d.stage/create ui-viewport sprite-batch)
+        stage (clojure.gdx.scene2d.stage/create ui-viewport sprite-batch state)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -182,17 +182,13 @@
   (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
-(defn render-stage [{:keys [ctx/stage] :as ctx}]
-  (stage/set-ctx! stage ctx)
-  (stage/act! stage)
-  (stage/draw! stage))
-
 (defn render! []
   (graphics/clear! (:ctx/graphics @state) color/black)
   (draw-tiled-map! @state)
   (camera-zoom-controls! @state)
   (camera-movement-controls! @state)
-  (render-stage @state))
+  (stage/act! (:ctx/stage @state))
+  (stage/draw! (:ctx/stage @state)))
 
 (defn resize! [width height]
   (cdq.gdx.graphics/update-viewports! @state width height))

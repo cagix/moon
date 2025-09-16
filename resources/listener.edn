@@ -17,9 +17,17 @@
                                                                [:ctx/ui-actors :some]
                                                                [:ctx/world :some]
                                                                [:ctx/info :some]
-                                                               [:ctx/schema :some]])]
+                                                               [:ctx/schema :some]
+                                                               [:ctx/mouseover-actor :any]
+                                                               [:ctx/ui-mouse-position :some]
+                                                               [:ctx/world-mouse-position :some]
+                                                               [:ctx/interaction-state :some]])]
           [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
-
+          [clojure.core/assoc
+           :ctx/mouseover-actor nil
+           :ctx/ui-mouse-position true
+           :ctx/world-mouse-position true
+           :ctx/interaction-state true]
           [clojure.decl/assoc* :ctx/db (cdq.db/create {:schemas "schema.edn"
                                                        :properties "properties.edn"})]
           [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
@@ -81,7 +89,6 @@
                                                    #_cdq.draw-on-world-viewport.geom-test/do!
                                                    cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
                                                    ]]
-           [cdq.render.stage/do!]
            [cdq.render.assoc-interaction-state/do!]
            [cdq.render.set-cursor/do!]
            [cdq.render.player-state-handle-input/do!]
@@ -91,11 +98,6 @@
            [cdq.render.tick-entities/do!]
            [cdq.render.remove-destroyed-entities/do!]
            [cdq.render.handle-key-input/do!]
-           [clojure.core/dissoc
-            :ctx/mouseover-actor
-            :ctx/ui-mouse-position
-            :ctx/world-mouse-position
-            :ctx/interaction-state]
            [cdq.render.validate/do!]]
  :dispose cdq.gdx-app.dispose/do!
  :resize  cdq.gdx-app.resize/do!

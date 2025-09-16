@@ -2,7 +2,6 @@
 
 (defprotocol Stage
   (get-ctx [_])
-  (set-ctx! [_ ctx])
   (act! [_])
   (draw! [_])
   (add! [_ actor])
