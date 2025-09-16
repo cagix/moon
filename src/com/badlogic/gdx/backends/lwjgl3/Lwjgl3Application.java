@@ -59,7 +59,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	public Lwjgl3ApplicationConfiguration config;
-	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
+	public final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	public Lwjgl3Audio audio;
 	public Files files;
@@ -103,7 +103,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	static void postLoadANGLE () {
+	public static void postLoadANGLE () {
 		try {
 			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
 			Method load = angleLoader.getMethod("postGlfwInit");
@@ -119,10 +119,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
   }
 
-	public void start (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		Lwjgl3Window window = createWindow(config, listener, 0);
-		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
-		windows.add(window);
+	public void start () {
 		try {
 			loop();
 			cleanupWindows();
@@ -403,7 +400,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 
-	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
+	public Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
 		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {

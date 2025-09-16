@@ -55,6 +55,11 @@
            Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
     (Lwjgl3Application/loadANGLE)))
 
+(defn- gl-emulation-hook-after-window [gl-emulation]
+  (when (= gl-emulation
+           Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
+    (Lwjgl3Application/postLoadANGLE)))
+
 (defn start-application! [listener config]
   (let [application (Lwjgl3Application.)
         listener (create-listener listener)
@@ -80,9 +85,10 @@
     (set! (.clipboard application) (Lwjgl3Clipboard.))
     (set! Gdx/net (.net application))
     (set! (.sync application) (Sync.))
-    (.start application
-            listener
-            config)))
+    (let [window (.createWindow application config listener 0)]
+      (gl-emulation-hook-after-window (.glEmulation config))
+      (.add (.windows application) window))
+    (.start application)))
 
 (defn start!
   [{:keys [ctx/application-state]
