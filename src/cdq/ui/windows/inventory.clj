@@ -1,14 +1,20 @@
 (ns cdq.ui.windows.inventory
-  (:require [cdq.inventory :as inventory]
+  (:require [cdq.ctx :as ctx]
+            [cdq.ctx.graphics :as graphics]
+            [cdq.entity.state :as state]
+            [cdq.inventory :as inventory]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
+            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
+            [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.vis-ui.tooltip :as tooltip]))
 
-(defn create
+(defn- create*
   [{:keys [ctx/stage]}
    {:keys [title
            actor/visible?
@@ -111,3 +117,45 @@
   (and (actor/parent actor)
        (= "inventory-cell" (actor/get-name (actor/parent actor)))
        (actor/user-object (actor/parent actor))))
+
+(defn create
+  [{:keys [ctx/graphics]
+    :as ctx}]
+  (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
+                                             :shield   1
+                                             :rings    2
+                                             :necklace 3
+                                             :helm     4
+                                             :cloak    5
+                                             :chest    6
+                                             :leg      7
+                                             :glove    8
+                                             :boot     9
+                                             :bag      10} ; transparent
+        slot->texture-region (fn [slot]
+                               (let [width  48
+                                     height 48
+                                     sprite-x 21
+                                     sprite-y (+ (slot->y-sprite-idx slot) 2)
+                                     bounds [(* sprite-x width)
+                                             (* sprite-y height)
+                                             width
+                                             height]]
+                                 (graphics/texture-region graphics
+                                                          {:image/file "images/items.png"
+                                                           :image/bounds bounds})))]
+    (create* ctx
+             {:title "Inventory"
+              :actor/visible? false
+              :clicked-cell-listener (fn [cell]
+                                       (listener/click
+                                        (fn [event _x _y]
+                                          (let [{:keys [ctx/world] :as ctx} (ctx-stage/get-ctx (event/stage event))
+                                                eid (:world/player-eid world)
+                                                entity @eid
+                                                state-k (:state (:entity/fsm entity))
+                                                txs (state/clicked-inventory-cell [state-k (state-k entity)]
+                                                                                  eid
+                                                                                  cell)]
+                                            (ctx/handle-txs! ctx txs)))))
+              :slot->texture-region slot->texture-region})))

@@ -1,13 +1,37 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.ctx.stage :as stage]
+            [cdq.info :as info]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.group :as group]))
 
-(defn create [{:keys [ctx/stage]}
-              {:keys [y
-                      ->label-text]}]
-  (let [position [(stage/viewport-width stage)
-                  y]
+(comment
+
+ ; items then have 2x pretty-name
+ #_(.setText (.getTitleLabel window)
+             (info-text [:property/pretty-name (:property/pretty-name entity)])
+             "Entity Info")
+ )
+
+(def disallowed-keys [:entity/skills
+                      #_:entity/fsm
+                      :entity/faction
+                      :active-skill])
+
+; TODO details how the text looks move to info
+; only for :
+; * skill
+; * entity -> all sub-types
+; * item
+; => can test separately !?
+
+(defn- ->label-text [entity ctx]
+  ; don't use select-keys as it loses Entity record type
+  (info/generate (:ctx/info ctx) (apply dissoc entity disallowed-keys) ctx))
+
+(defn create [{:keys [ctx/stage]}]
+  (let [y-position 0
+        position [(stage/viewport-width stage)
+                  y-position]
         label (scene2d/build {:actor/type :actor.type/label
                               :label/text ""})
         window (scene2d/build {:actor/type :actor.type/window
