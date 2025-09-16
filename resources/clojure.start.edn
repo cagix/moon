@@ -30,8 +30,8 @@
                                     :zoom-out :equals
                                     :unpause-once :p
                                     :unpause-continously :space}]
- [cdq.start.os-settings/do! {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                                   [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
+ [clojure.gdx.utils/dispatch-on-os {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                                          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
  [cdq.start.lwjgl/do! {:config {:title "Cyber Dungeon Quest"
                                 :windowed-mode {:width 1440 :height 900}
                                 :foreground-fps 60}
