@@ -1,5 +1,25 @@
 (ns clojure.utils)
 
+(defn pipeline
+  ([pipeline*]
+   (pipeline {} pipeline*))
+  ([object pipeline]
+   (reduce (fn [object [f & params]]
+             (apply f object params))
+           object
+           pipeline)))
+
+(defn- index-of [k ^clojure.lang.PersistentVector v]
+  (let [idx (.indexOf v k)]
+    (if (= -1 idx)
+      nil
+      idx)))
+
+(defn sort-by-k-order [k-order components]
+  (let [max-count (inc (count k-order))]
+    (sort-by (fn [[k _]] (or (index-of k k-order) max-count))
+             components)))
+
 (defn define-order [order-k-vector]
   (apply hash-map (interleave order-k-vector (range))))
 
@@ -10,10 +30,13 @@
   {:pre [(not-any? #(contains? m1 %) (keys m2))]}
   (merge m1 m2))
 
+(def float-rounding-error (double 0.000001)) ; FIXME clojure uses doubles?
+
+(defn nearly-equal? [^double x ^double y]
+  (<= (Math/abs (- x y)) float-rounding-error))
+
 (defn- approx-numbers [a b epsilon]
-  (<=
-   (Math/abs (float (- a b)))
-   epsilon))
+  (<= (Math/abs (float (- a b))) epsilon))
 
 (defn- round-n-decimals [^double x n]
   (let [z (Math/pow 10 n)]
@@ -63,8 +86,3 @@
    (< value min) min
    (> value max) max
    :else value))
-
-(def float-rounding-error (double 0.000001)) ; FIXME clojure uses doubles?
-
-(defn nearly-equal? [^double x ^double y]
-  (<= (Math/abs (- x y)) float-rounding-error))

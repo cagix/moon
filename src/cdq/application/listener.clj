@@ -1,5 +1,5 @@
 (ns cdq.application.listener
-  (:require [clojure.object :as object]))
+  (:require [clojure.utils :as utils]))
 
 (defn create
   [{:keys [create
@@ -9,11 +9,11 @@
            atom-var]}]
   (let [state @atom-var]
     {:create! (fn []
-                (swap! state object/pipeline create))
+                (swap! state utils/pipeline create))
      :dispose! (fn []
                  (swap! state dispose))
      :render! (fn []
-                (swap! state object/pipeline render))
+                (swap! state utils/pipeline render))
      :resize! (fn [width height]
                 (swap! state resize width height))
      :pause! (fn [])

@@ -1,7 +1,7 @@
 (ns clojure.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.object :as object]
+            [clojure.utils :as utils]
             [clojure.walk :as walk])
   (:gen-class))
 
@@ -29,4 +29,4 @@
 (defn -main [path]
   (-> path
       edn-resource
-      object/pipeline))
+      utils/pipeline))
