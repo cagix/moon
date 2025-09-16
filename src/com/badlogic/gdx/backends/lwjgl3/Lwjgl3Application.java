@@ -68,7 +68,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	public Lwjgl3Clipboard clipboard;
 	private int logLevel = LOG_INFO;
 	private ApplicationLogger applicationLogger;
-	private volatile boolean running = true;
+	public volatile boolean running = true;
 	private Array<Runnable> runnables = new Array<Runnable>();
 	private Array<Runnable> executedRunnables = new Array<Runnable>();
 	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
@@ -119,78 +119,75 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
   }
 
-	public void loop () {
-		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
-		while (running && windows.size > 0) {
-			// FIXME put it on a separate thread
-			audio.update();
+  public void loop (Array<Lwjgl3Window> closedWindows) {
+    // FIXME put it on a separate thread
+    audio.update();
 
-			boolean haveWindowsRendered = false;
-			closedWindows.clear();
-			int targetFramerate = -2;
-			for (Lwjgl3Window window : windows) {
-				if (currentWindow != window) {
-					window.makeCurrent();
-					currentWindow = window;
-				}
-				if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
-				synchronized (lifecycleListeners) {
-					haveWindowsRendered |= window.update();
-				}
-				if (window.shouldClose()) {
-					closedWindows.add(window);
-				}
-			}
-			GLFW.glfwPollEvents();
+    boolean haveWindowsRendered = false;
+    closedWindows.clear();
+    int targetFramerate = -2;
+    for (Lwjgl3Window window : windows) {
+      if (currentWindow != window) {
+        window.makeCurrent();
+        currentWindow = window;
+      }
+      if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
+      synchronized (lifecycleListeners) {
+        haveWindowsRendered |= window.update();
+      }
+      if (window.shouldClose()) {
+        closedWindows.add(window);
+      }
+    }
+    GLFW.glfwPollEvents();
 
-			boolean shouldRequestRendering;
-			synchronized (runnables) {
-				shouldRequestRendering = runnables.size > 0;
-				executedRunnables.clear();
-				executedRunnables.addAll(runnables);
-				runnables.clear();
-			}
-			for (Runnable runnable : executedRunnables) {
-				runnable.run();
-			}
-			if (shouldRequestRendering) {
-				// Must follow Runnables execution so changes done by Runnables are reflected
-				// in the following render.
-				for (Lwjgl3Window window : windows) {
-					if (!window.getGraphics().isContinuousRendering()) window.requestRendering();
-				}
-			}
+    boolean shouldRequestRendering;
+    synchronized (runnables) {
+      shouldRequestRendering = runnables.size > 0;
+      executedRunnables.clear();
+      executedRunnables.addAll(runnables);
+      runnables.clear();
+    }
+    for (Runnable runnable : executedRunnables) {
+      runnable.run();
+    }
+    if (shouldRequestRendering) {
+      // Must follow Runnables execution so changes done by Runnables are reflected
+      // in the following render.
+      for (Lwjgl3Window window : windows) {
+        if (!window.getGraphics().isContinuousRendering()) window.requestRendering();
+      }
+    }
 
-			for (Lwjgl3Window closedWindow : closedWindows) {
-				if (windows.size == 1) {
-					// Lifecycle listener methods have to be called before ApplicationListener methods. The
-					// application will be disposed when _all_ windows have been disposed, which is the case,
-					// when there is only 1 window left, which is in the process of being disposed.
-					for (int i = lifecycleListeners.size - 1; i >= 0; i--) {
-						LifecycleListener l = lifecycleListeners.get(i);
-						l.pause();
-						l.dispose();
-					}
-					lifecycleListeners.clear();
-				}
-				closedWindow.dispose();
+    for (Lwjgl3Window closedWindow : closedWindows) {
+      if (windows.size == 1) {
+        // Lifecycle listener methods have to be called before ApplicationListener methods. The
+        // application will be disposed when _all_ windows have been disposed, which is the case,
+        // when there is only 1 window left, which is in the process of being disposed.
+        for (int i = lifecycleListeners.size - 1; i >= 0; i--) {
+          LifecycleListener l = lifecycleListeners.get(i);
+          l.pause();
+          l.dispose();
+        }
+        lifecycleListeners.clear();
+      }
+      closedWindow.dispose();
 
-				windows.removeValue(closedWindow, false);
-			}
+      windows.removeValue(closedWindow, false);
+    }
 
-			if (!haveWindowsRendered) {
-				// Sleep a few milliseconds in case no rendering was requested
-				// with continuous rendering disabled.
-				try {
-					Thread.sleep(1000 / config.idleFPS);
-				} catch (InterruptedException e) {
-					// ignore
-				}
-			} else if (targetFramerate > 0) {
-				sync.sync(targetFramerate); // sleep as needed to meet the target framerate
-			}
-		}
-	}
+    if (!haveWindowsRendered) {
+      // Sleep a few milliseconds in case no rendering was requested
+      // with continuous rendering disabled.
+      try {
+        Thread.sleep(1000 / config.idleFPS);
+      } catch (InterruptedException e) {
+        // ignore
+      }
+    } else if (targetFramerate > 0) {
+      sync.sync(targetFramerate); // sleep as needed to meet the target framerate
+    }
+  }
 
 	public void cleanupWindows () {
 		synchronized (lifecycleListeners) {

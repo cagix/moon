@@ -9,7 +9,8 @@
                                              Lwjgl3Net
                                              Lwjgl3WindowConfiguration
                                              Sync)
-           (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)))
+           (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)
+           (com.badlogic.gdx.utils Array)))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
   (case k
@@ -89,7 +90,10 @@
       (gl-emulation-hook-after-window (.glEmulation config))
       (.add (.windows application) window))
     (try
-     (.loop application)
+     (let [closed-windows (Array.)]
+       (while (and (.running application)
+                   (> (.size (.windows application)) 0))
+         (.loop application closed-windows)))
      (.cleanupWindows application)
      (catch Throwable t
        (throw t)
