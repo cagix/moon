@@ -52,13 +52,16 @@
 
 (defn start-application! [listener config]
   (let [application (Lwjgl3Application.)
+        listener (create-listener listener)
         config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
     (gl-emulation-hook (.glEmulation config))
     (Lwjgl3Application/initializeGlfw)
     (.setApplicationLogger application (Lwjgl3ApplicationLogger.))
     (set! (.config application) config)
+    (when-not (.title config)
+      (set! (.title config) (.getSimpleName (class listener))))
     (.start application
-            (create-listener listener)
+            listener
             config)))
 
 (defn start!
