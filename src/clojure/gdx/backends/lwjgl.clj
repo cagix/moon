@@ -6,11 +6,32 @@
                                              Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3ApplicationLogger
                                              Lwjgl3Clipboard
+                                             Lwjgl3NativesLoader
                                              Lwjgl3Net
                                              Lwjgl3WindowConfiguration
                                              Sync)
            (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)
-           (com.badlogic.gdx.utils Array)))
+           (com.badlogic.gdx.utils Array
+                                   GdxRuntimeException
+                                   SharedLibraryLoader
+                                   Os)
+           (org.lwjgl.glfw GLFW)
+           (org.lwjgl.glfw GLFWErrorCallback)))
+
+(def error-callback)
+
+(defn initializeGlfw []
+  (when-not (bound? #'error-callback)
+    (Lwjgl3NativesLoader/load)
+    (.bindRoot #'error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream))
+    (GLFW/glfwSetErrorCallback error-callback)
+    (when (= SharedLibraryLoader/os Os/MacOsX)
+      (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
+                         GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))
+    (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
+                       GLFW/GLFW_FALSE)
+    (when-not (GLFW/glfwInit)
+      (throw (GdxRuntimeException. "Unable to initialize GLFW")))))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
   (case k
@@ -66,7 +87,7 @@
         listener (create-listener listener)
         config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
     (gl-emulation-hook (.glEmulation config))
-    (Lwjgl3Application/initializeGlfw)
+    (initializeGlfw)
     (.setApplicationLogger application (Lwjgl3ApplicationLogger.))
     (set! (.config application) config)
     (when-not (.title config)
@@ -93,7 +114,7 @@
      (let [closed-windows (Array.)]
        (while (and (.running application)
                    (> (.size (.windows application)) 0))
-         (.update audio) ; FIXME put it on a separate thread
+         (.update (.audio application)) ; FIXME put it on a separate thread
          (.loop application closed-windows)))
      (.cleanupWindows application)
      (catch Throwable t
@@ -104,7 +125,8 @@
       ; throw new GdxRuntimeException(t);
        )
      (finally
-      (println "CLEANUP")
+      (.free error-callback)
+      (.bindRoot #'error-callback nil)
       (.cleanup application)))))
 
 (defn start!

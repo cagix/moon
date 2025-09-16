@@ -29,7 +29,6 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 
 import com.badlogic.gdx.utils.*;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.AMDDebugOutput;
 import org.lwjgl.opengl.ARBDebugOutput;
 import org.lwjgl.opengl.GL;
@@ -72,24 +71,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private Array<Runnable> runnables = new Array<Runnable>();
 	private Array<Runnable> executedRunnables = new Array<Runnable>();
 	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	private static GLFWErrorCallback errorCallback;
 	private static GLVersion glVersion;
 	private static Callback glDebugCallback;
 	public Sync sync;
-
-	public static void initializeGlfw () {
-		if (errorCallback == null) {
-			Lwjgl3NativesLoader.load();
-			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
-			GLFW.glfwSetErrorCallback(errorCallback);
-			if (SharedLibraryLoader.os == Os.MacOsX)
-				GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
-			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
-			if (!GLFW.glfwInit()) {
-				throw new GdxRuntimeException("Unable to initialize GLFW");
-			}
-		}
-	}
 
 	public static void loadANGLE () {
 		try {
@@ -202,8 +186,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	public void cleanup () {
 		Lwjgl3Cursor.disposeSystemCursors();
 		audio.dispose();
-		errorCallback.free();
-		errorCallback = null;
 		if (glDebugCallback != null) {
 			glDebugCallback.free();
 			glDebugCallback = null;
