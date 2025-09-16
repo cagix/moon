@@ -9,10 +9,6 @@
 
 (defn set-group-opts! [group opts]
   (run! (fn [actor-or-decl]
-          ; remove if
-          ; inventory widget/image
-          ; inventory itself widget/window
-          ; cdq.ui.windows entity info window
           (group/add! group (if (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
                               actor-or-decl
                               (scene2d/build actor-or-decl))))
