@@ -3,6 +3,18 @@
   cdq.world
   cdq.ctx.world/World]
 
+ [cdq.create.world_config.World
+  cdq.world.resettable
+  cdq.ctx.world/Resettable]
+
+ [cdq.create.world_config.World
+  cdq.potential-fields.movement
+  cdq.ctx.world/MovementAI]
+
+ [cdq.create.world_config.World
+  cdq.world.raycaster
+  cdq.ctx.world/RayCaster]
+
  [cdq.db.DB
   cdq.db
   cdq.ctx.db/DB]

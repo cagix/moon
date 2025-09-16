@@ -5,7 +5,12 @@
 
 (defprotocol World
   (dispose! [_])
-  (active-eids [_])
-  (path-blocked? [_ start target path-w])
-  (line-of-sight? [_ source target])
+  (active-eids [_]))
+
+(defprotocol MovementAI
   (find-movement-direction [_ eid]))
+
+(defprotocol RayCaster
+  (ray-blocked? [_ start target])
+  (path-blocked? [_ start target path-w])
+  (line-of-sight? [_ source target]))
