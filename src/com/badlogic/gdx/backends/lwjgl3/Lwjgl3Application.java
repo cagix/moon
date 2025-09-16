@@ -62,10 +62,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	public Lwjgl3Audio audio;
-	private Files files;
-	private Net net;
+	public Files files;
+	public Net net;
 	private ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
-	private Lwjgl3Clipboard clipboard;
+	public Lwjgl3Clipboard clipboard;
 	private int logLevel = LOG_INFO;
 	private ApplicationLogger applicationLogger;
 	private volatile boolean running = true;
@@ -75,7 +75,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private static GLFWErrorCallback errorCallback;
 	private static GLVersion glVersion;
 	private static Callback glDebugCallback;
-	private Sync sync;
+	public Sync sync;
 
 	public static void initializeGlfw () {
 		if (errorCallback == null) {
@@ -120,12 +120,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
   }
 
 	public void start (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		this.files = Gdx.files = createFiles();
-		this.net = Gdx.net = new Lwjgl3Net(config);
-		this.clipboard = new Lwjgl3Clipboard();
-
-		this.sync = new Sync();
-
 		Lwjgl3Window window = createWindow(config, listener, 0);
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
 		windows.add(window);
@@ -394,7 +388,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return new DefaultLwjgl3Input(window);
 	}
 
-	protected Files createFiles () {
+	public Files createFiles () {
 		return new Lwjgl3Files();
 	}
 
