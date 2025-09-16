@@ -26,7 +26,7 @@
        (edn/read-string {:readers {'edn/resource edn-resource}})
        (walk/postwalk require-resolve-symbols)))
 
-(defn -main []
-  (-> "clojure.start.edn"
+(defn -main [path]
+  (-> path
       edn-resource
       object/pipeline))

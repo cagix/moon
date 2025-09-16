@@ -20,7 +20,7 @@
                  ]
   :java-source-paths ["src"]
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.start/-main))"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.start/-main) \"game.edn\")"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
