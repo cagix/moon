@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [clojure.gdx.backends.lwjgl :as lwjgl-app]
+  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
+            clojure.gdx.backends.lwjgl
             clojure.gdx
             clojure.vis-ui.widget
             cdq.gdx.graphics
@@ -27,7 +28,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(clojure.extends/ns-impls nil (lwjgl-app/edn-resource "extends_gdx.edn"))
+(clojure.extends/ns-impls nil (clojure.gdx.backends.lwjgl/edn-resource "extends_gdx.edn"))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -195,12 +196,13 @@
 
 (defn -main []
   (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-  (lwjgl/start-application! {:create! create!
-                             :dispose! dispose!
-                             :render! render!
-                             :resize! resize!
-                             :resume! (fn [])
-                             :pause! (fn [])}
-                            {:title "Levelgen test"
-                             :windowed-mode {:width 1440 :height 900}
-                             :foreground-fps 60}))
+  (lwjgl3/start-application!
+   {:create! create!
+    :dispose! dispose!
+    :render! render!
+    :resize! resize!
+    :resume! (fn [])
+    :pause! (fn [])}
+   {:title "Levelgen test"
+    :windowed-mode {:width 1440 :height 900}
+    :foreground-fps 60}))
