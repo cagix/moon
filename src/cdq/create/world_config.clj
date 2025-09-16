@@ -2,6 +2,7 @@
   (:require [cdq.ctx.world]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]
             [malli.core :as m]
@@ -117,6 +118,13 @@
                     :z-order/effect]})
 
 (defrecord World []
+  cdq.ctx.world/World
+  (dispose! [{:keys [world/tiled-map]}]
+    (disposable/dispose! tiled-map))
+
+  (active-eids [this]
+    (:world/active-entities this))
+
   cdq.ctx.world/Resettable
   (reset-state [world {:keys [tiled-map
                               start-position]}]
