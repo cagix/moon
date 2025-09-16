@@ -2,6 +2,7 @@
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
+                                             Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3WindowConfiguration)))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
@@ -43,11 +44,18 @@
     (resume [_]
       (resume!))))
 
+(defn- gl-emulation-hook [gl-emulation]
+  (when (= gl-emulation
+           Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
+    (Lwjgl3Application/loadANGLE)))
+
 (defn start-application! [listener config]
-  (let [application (Lwjgl3Application.)]
+  (let [application (Lwjgl3Application.)
+        config (create-config config)]
+    (gl-emulation-hook (.glEmulation config))
     (.start application
             (create-listener listener)
-            (create-config config))))
+            config)))
 
 (defn start!
   [{:keys [ctx/application-state]
