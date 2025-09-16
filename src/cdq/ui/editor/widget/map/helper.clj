@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.widget.map.helper
   (:require [cdq.ctx :as ctx]
-            [clojure.utils :as utils]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.vis-ui.separator :as separator]))
@@ -21,10 +20,10 @@
                               {:actor/type :actor.type/text-button
                                :text "-"
                                :on-clicked (fn [_actor ctx]
-                                             (actor/remove! (utils/find-first (fn [actor]
-                                                                                (and (actor/user-object actor)
-                                                                                     (= k ((actor/user-object actor) 0))))
-                                                                              (group/children table)))
+                                             (actor/remove! (first (filter (fn [actor]
+                                                                             (and (actor/user-object actor)
+                                                                                  (= k ((actor/user-object actor) 0))))
+                                                                           (group/children table))))
                                              (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))})
                      :left? true}
                     {:actor {:actor/type :actor.type/label

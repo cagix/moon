@@ -1,6 +1,5 @@
 (ns cdq.world-fns.uf-caves
-  (:require [clojure.utils :as utils]
-            [cdq.world-fns.creature-tiles :as creature-tiles]
+  (:require [cdq.world-fns.creature-tiles :as creature-tiles]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]))
 
@@ -19,7 +18,7 @@
            :cave-style cave-style
            :random (java.util.Random.)
            :level/tile-size tile-size
-           :level/create-tile (let [texture (utils/safe-get (:ctx/textures graphics) texture-path)]
+           :level/create-tile (let [texture (get (:ctx/textures graphics) texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}

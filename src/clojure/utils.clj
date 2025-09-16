@@ -1,14 +1,5 @@
 (ns clojure.utils)
 
-(defn safe-get [m k]
-  (let [result (get m k ::not-found)]
-    (if (= result ::not-found)
-      (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
-      result)))
-
-(defn tile->middle [position]
-  (mapv (partial + 0.5) position))
-
 (defn define-order [order-k-vector]
   (apply hash-map (interleave order-k-vector (range))))
 
@@ -39,15 +30,6 @@
   {:pre [(not-any? #(contains? m1 %) (keys m2))]}
   (merge m1 m2))
 
-(defn find-first
-  "Returns the first item of coll for which (pred item) returns logical true.
-  Consumes sequences up to the first match, will consume the entire sequence
-  and return nil if no match is found."
-  [pred coll]
-  (first (filter pred coll)))
-
-; libgdx fn is available:
-; (MathUtils/isEqual 1 (length v))
 (defn- approx-numbers [a b epsilon]
   (<=
    (Math/abs (float (- a b)))
@@ -97,23 +79,6 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
-
-(defn recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-; reduce-kv?
-(defn apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
 
 (def ^:private degrees-to-radians (float (/ Math/PI 180)))
 

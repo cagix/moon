@@ -1,8 +1,7 @@
 (ns cdq.world.resettable
   (:require [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
-            [clojure.tiled :as tiled]
-            [clojure.utils :as utils]))
+            [clojure.tiled :as tiled]))
 
 (defrecord RCell [position
                   middle
@@ -40,7 +39,7 @@
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position
-    :middle (utils/tile->middle position)
+    :middle (mapv (partial + 0.5) position)
     :movement movement
     :entities #{}
     :occupied #{}}))

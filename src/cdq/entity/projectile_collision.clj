@@ -3,7 +3,6 @@
             [cdq.grid2d :as g2d]
             [cdq.world.grid :as grid]
             [cdq.grid.cell :as cell]
-            [clojure.utils :as utils]
             [cdq.gdx.math.geom :as geom]))
 
 (defn create [v _ctx]
@@ -20,13 +19,13 @@
   (let [grid (:world/grid world)
         entity @eid
         cells* (map deref (g2d/get-cells grid (geom/body->touched-tiles (:entity/body entity)))) ; just use cached-touched -cells
-        hit-entity (utils/find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
-                                           (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
-                                                 (:entity/faction @%))
-                                           (:body/collides? (:entity/body @%))
-                                           (body/overlaps? (:entity/body entity)
-                                                           (:entity/body @%)))
-                                     (grid/cells->entities grid cells*))
+        hit-entity (first (filter #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
+                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
+                                              (:entity/faction @%))
+                                        (:body/collides? (:entity/body @%))
+                                        (body/overlaps? (:entity/body entity)
+                                                        (:entity/body @%)))
+                                  (grid/cells->entities grid cells*)))
         destroy? (or (and hit-entity (not piercing?))
                      (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]
     [(when destroy?

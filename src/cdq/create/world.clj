@@ -2,8 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.ctx.db :as db]
             [cdq.ctx.world :as world]
-            [clojure.tiled :as tiled]
-            [clojure.utils :as utils]))
+            [clojure.tiled :as tiled]))
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]
@@ -29,7 +28,7 @@
   (ctx/handle-txs! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
                                                       components]} (:world/player-components world)]
-                                          {:position (utils/tile->middle (:world/start-position world))
+                                          {:position (mapv (partial + 0.5) (:world/start-position world))
                                            :creature-property (db/build db creature-id)
                                            :components components})]])
   (let [eid (get @(:world/entity-ids world) 1)]
@@ -42,7 +41,7 @@
     :as ctx}]
   (doseq [[position creature-id] (tiled/positions-with-property (:world/tiled-map world) "creatures" "id")]
     (ctx/handle-txs! ctx
-                     [[:tx/spawn-creature {:position (utils/tile->middle position)
+                     [[:tx/spawn-creature {:position (mapv (partial + 0.5) position)
                                            :creature-property (db/build db (keyword creature-id))
                                            :components (:world/enemy-components world)}]]))
   ctx)

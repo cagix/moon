@@ -1,10 +1,17 @@
 (ns cdq.db
   (:require [cdq.schemas :as schemas]
             [cdq.property :as property]
-            [clojure.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]))
+
+(defn- recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
 
 (defn- validate-property [schemas property]
   (schemas/validate schemas (property/type property) property))
@@ -50,7 +57,7 @@
 (defn save-vals! [data-vals file]
   (->> data-vals
        (sort-by property/type)
-       (map utils/recur-sort-map)
+       (map recur-sort-map)
        doall
        (async-pprint-spit! file)))
 
@@ -83,7 +90,8 @@
     new-db))
 
 (defn get-raw [{:keys [data]} property-id]
-  (utils/safe-get data property-id))
+  {:pre [(contains? data property-id)]}
+  (get data property-id))
 
 (defn all-raw [{:keys [data]} property-type]
   (->> (vals data)
