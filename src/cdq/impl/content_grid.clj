@@ -1,6 +1,7 @@
 (ns cdq.impl.content-grid
   (:require [cdq.entity :as entity]
-            [cdq.grid2d :as g2d]))
+            [cdq.grid2d :as g2d]
+            [cdq.world.content-grid]))
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
@@ -13,20 +14,35 @@
       (when content-cell
         (swap! content-cell update :entities disj eid)))))
 
-(def add-entity! update-entity!)
+(defrecord ContentGrid []
+  cdq.world.content-grid/ContentGrid
+  (add-entity! [this eid]
+    (update-entity! this eid))
 
-(defn remove-entity! [_ eid]
-  (-> @eid
-      :cdq.content-grid/content-cell
-      (swap! update :entities disj eid)))
+  (remove-entity! [_ eid]
+    (-> @eid
+        :cdq.content-grid/content-cell
+        (swap! update :entities disj eid)))
 
-(def position-changed! update-entity!)
+  (position-changed! [this eid]
+    (update-entity! this eid))
 
-(defn active-entities [{:keys [grid]} center-entity]
-  (->> (let [idx (-> center-entity
-                     :cdq.content-grid/content-cell
-                     deref
-                     :idx)]
-         (cons idx (g2d/get-8-neighbour-positions idx)))
-       (keep grid)
-       (mapcat (comp :entities deref))))
+  (active-entities [{:keys [grid]} center-entity]
+    (->> (let [idx (-> center-entity
+                       :cdq.content-grid/content-cell
+                       deref
+                       :idx)]
+           (cons idx (g2d/get-8-neighbour-positions idx)))
+         (keep grid)
+         (mapcat (comp :entities deref)))))
+
+(defn create [width height cell-size]
+  (map->ContentGrid
+   {:grid (g2d/create-grid
+           (inc (int (/ width  cell-size)))
+           (inc (int (/ height cell-size)))
+           (fn [idx]
+             (atom {:idx idx,
+                    :entities #{}})))
+    :cell-w cell-size
+    :cell-h cell-size}))

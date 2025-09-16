@@ -50,19 +50,6 @@
                    (fn [position]
                      (atom (create-grid-cell position (cell-movement position))))))
 
-(defrecord ContentGrid [])
-
-(defn- create-content-grid [width height cell-size]
-  (map->ContentGrid
-   {:grid (g2d/create-grid
-           (inc (int (/ width  cell-size)))
-           (inc (int (/ height cell-size)))
-           (fn [idx]
-             (atom {:idx idx,
-                    :entities #{}})))
-    :cell-w cell-size
-    :cell-h cell-size}))
-
 (defn- create-explored-tile-corners [width height]
   (atom (g2d/create-grid width height (constantly false))))
 
@@ -87,7 +74,8 @@
                           #(case (tiled/movement-property tiled-map %)
                              "none" :none
                              "air"  :air
-                             "all"  :all))]
+                             "all"  :all))
+        create-content-grid (requiring-resolve 'cdq.impl.content-grid/create)]
     (assoc world
            :world/tiled-map tiled-map
            :world/start-position start-position

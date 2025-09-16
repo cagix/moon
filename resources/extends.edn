@@ -3,10 +3,6 @@
   cdq.impl.grid
   cdq.world.grid/Grid]
 
- [cdq.world.resettable.ContentGrid
-  cdq.impl.content-grid
-  cdq.world.content-grid/ContentGrid]
-
  [cdq.create.world_config.World
   cdq.world
   cdq.ctx.world/World]
