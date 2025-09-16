@@ -1,7 +1,7 @@
 (ns cdq.render.assoc-interaction-state
   (:require [cdq.ctx.stage :as stage]
+            [cdq.creature :as creature]
             [cdq.entity :as entity]
-            [cdq.skill :as skill]
             [cdq.gdx.math.vector2 :as v]))
 
 (defn- distance [a b]
@@ -48,7 +48,7 @@
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
            effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
-           state (skill/usable-state entity skill effect-ctx)]
+           state (creature/skill-usable-state entity skill effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
          [:interaction-state.skill/not-usable state]))
