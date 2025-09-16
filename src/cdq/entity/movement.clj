@@ -1,6 +1,7 @@
 (ns cdq.entity.movement
   (:require [cdq.gdx.math.vector2 :as v]
-            [cdq.world.grid :as grid]))
+            [cdq.world.grid :as grid]
+            [clojure.utils :as utils]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -34,7 +35,7 @@
   (assert (<= 0 speed (:world/max-speed world))
           (pr-str speed))
   (assert (or (zero? (v/length direction))
-              (v/nearly-normalised? direction))
+              (utils/nearly-equal? 1 (v/length direction)))
           (str "cannot understand direction: " (pr-str direction)))
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
