@@ -4,7 +4,7 @@
  :config {:title "Cyber Dungeon Quest"
           :windowed-mode {:width 1440 :height 900}
           :foreground-fps 60}
- :create [[clojure.decl/assoc* :ctx/gdx (clojure.gdx/state)]
+ :create [[clojure.decl/assoc* :ctx/gdx (com.badlogic.gdx/state)]
           [cdq.start.context-record/do!]
           [clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
                                                                [:ctx/audio :some]

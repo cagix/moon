@@ -1,7 +1,8 @@
 (ns cdq.levelgen
-  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
+  (:require [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
             clojure.gdx.backends.lwjgl
-            clojure.gdx
+
             clojure.vis-ui.widget
             cdq.gdx.graphics
             cdq.ctx.graphics
@@ -12,9 +13,8 @@
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
             clojure.lwjgl.system.configuration
-            [clojure.gdx.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
@@ -110,7 +110,7 @@
   (vis-ui/load! {:skin-scale :x1})
   (let [{:keys [clojure.gdx/files
                 clojure.gdx/input
-                clojure.gdx/graphics]} (clojure.gdx/state)
+                clojure.gdx/graphics]} (gdx/state)
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)

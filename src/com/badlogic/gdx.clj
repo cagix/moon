@@ -1,4 +1,4 @@
-(ns clojure.gdx
+(ns com.badlogic.gdx
   (:require clojure.audio
             clojure.audio.sound
             clojure.files
@@ -14,13 +14,15 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics GL20)))
 
+; TODO ApplicationListener
+; Initial :ctx/?
 (defn state []
   {
-   ::app      Gdx/app
-   ::audio    Gdx/audio
-   ::files    Gdx/files
-   ::graphics Gdx/graphics
-   ::input    Gdx/input
+   :clojure.gdx/app      Gdx/app
+   :clojure.gdx/audio    Gdx/audio
+   :clojure.gdx/files    Gdx/files
+   :clojure.gdx/graphics Gdx/graphics
+   :clojure.gdx/input    Gdx/input
    }
   )
 
