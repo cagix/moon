@@ -24,7 +24,6 @@
                                                        :properties "properties.edn"})]
           [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
           [cdq.start.txs/do! #edn/resource "txs.edn"]
-          [cdq.impl.creature/init!]
           [clojure.extends/ns-impls #edn/resource "extends.edn"]
           [clojure.extends/ns-impls #edn/resource "extends_gdx.edn"]
           [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
