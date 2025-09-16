@@ -1,4 +1,5 @@
 (ns clojure.gdx.backends.lwjgl
+  (:require [cdq.application :as application])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -130,11 +131,10 @@
       (.cleanup application)))))
 
 (defn start!
-  [{:keys [ctx/application-state]
-    :as ctx}
+  [ctx
    {:keys [listener
            config]}]
-  (reset! application-state ctx)
+  (reset! application/state ctx)
   (start-application! (let [[f params] listener]
                         (f params))
                       config))

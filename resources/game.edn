@@ -1,5 +1,4 @@
 [
- [clojure.decl/assoc* :ctx/application-state (clojure.core/deref cdq.application/state)]
  [clojure.gdx.utils/dispatch-on-os {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                           [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
  [clojure.gdx.backends.lwjgl/start! {:config {:title "Cyber Dungeon Quest"

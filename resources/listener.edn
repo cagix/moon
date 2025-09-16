@@ -11,8 +11,7 @@
                                                                [:ctx/ui-actors :some]
                                                                [:ctx/world :some]
                                                                [:ctx/info :some]
-                                                               [:ctx/schema :some]
-                                                               [:ctx/application-state :some]])]
+                                                               [:ctx/schema :some]])]
           [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
 
           [clojure.decl/assoc* :ctx/db (cdq.db/create {:schemas "schema.edn"
