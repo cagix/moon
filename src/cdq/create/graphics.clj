@@ -4,7 +4,7 @@
             [cdq.files]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.files :as files]
-            [clojure.gdx.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.pixmap :as pixmap]

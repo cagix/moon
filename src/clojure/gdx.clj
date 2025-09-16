@@ -2,18 +2,17 @@
   (:require clojure.audio
             clojure.audio.sound
             clojure.files
+            clojure.graphics
             clojure.input)
-  ; TODO
-  ; * File-Handle
-  ; * Graphics
-  ; * constructors ?
   (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
+                             Graphics
                              Input
                              Input$Buttons
                              Input$Keys)
-           (com.badlogic.gdx.audio Sound)))
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics GL20)))
 
 (defn state []
   {
@@ -39,6 +38,30 @@
   clojure.files/Files
   (internal [this path]
     (.internal this path)))
+
+(extend-type Graphics
+  clojure.graphics/Graphics
+  (delta-time [this]
+    (.getDeltaTime this))
+  (frames-per-second [this]
+    (.getFramesPerSecond this))
+  (set-cursor! [this cursor]
+    (.setCursor this cursor))
+  (cursor [this pixmap hotspot-x hotspot-y]
+    (.newCursor this pixmap hotspot-x hotspot-y))
+  (clear!
+    ([this [r g b a]]
+     (clojure.graphics/clear! this r g b a))
+    ([this r g b a]
+     (let [clear-depth? false
+           apply-antialiasing? false
+           gl20 (.getGL20 this)]
+       (GL20/.glClearColor gl20 r g b a)
+       (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
+                    clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
+                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat this)))
+                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
+         (GL20/.glClear gl20 mask))))))
 
 (def ^:private buttons-k->value
   {:back    Input$Buttons/BACK

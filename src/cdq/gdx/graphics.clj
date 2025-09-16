@@ -1,6 +1,6 @@
 (ns cdq.gdx.graphics
   (:require [clojure.earlygrey.shape-drawer :as sd]
-            [clojure.gdx.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
