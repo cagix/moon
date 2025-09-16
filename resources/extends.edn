@@ -8,10 +8,6 @@
   cdq.ctx.world/World]
 
  [cdq.create.world_config.World
-  cdq.world.resettable
-  cdq.ctx.world/Resettable]
-
- [cdq.create.world_config.World
   cdq.potential-fields.movement
   cdq.ctx.world/MovementAI]
 
