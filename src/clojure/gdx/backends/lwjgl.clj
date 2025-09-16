@@ -88,7 +88,19 @@
     (let [window (.createWindow application config listener 0)]
       (gl-emulation-hook-after-window (.glEmulation config))
       (.add (.windows application) window))
-    (.start application)))
+    (try
+     (.loop application)
+     (.cleanupWindows application)
+     (catch Throwable t
+       (throw t)
+      ; if (t instanceof RuntimeException)
+      ; throw (RuntimeException)t;
+      ; else
+      ; throw new GdxRuntimeException(t);
+       )
+     (finally
+      (println "CLEANUP")
+      (.cleanup application)))))
 
 (defn start!
   [{:keys [ctx/application-state]

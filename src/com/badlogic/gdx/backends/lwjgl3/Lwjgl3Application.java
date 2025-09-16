@@ -119,21 +119,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
   }
 
-	public void start () {
-		try {
-			loop();
-			cleanupWindows();
-		} catch (Throwable t) {
-			if (t instanceof RuntimeException)
-				throw (RuntimeException)t;
-			else
-				throw new GdxRuntimeException(t);
-		} finally {
-			cleanup();
-		}
-	}
-
-	protected void loop () {
+	public void loop () {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
 			// FIXME put it on a separate thread
@@ -206,7 +192,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	protected void cleanupWindows () {
+	public void cleanupWindows () {
 		synchronized (lifecycleListeners) {
 			for (LifecycleListener lifecycleListener : lifecycleListeners) {
 				lifecycleListener.pause();
@@ -219,7 +205,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		windows.clear();
 	}
 
-	protected void cleanup () {
+	public void cleanup () {
 		Lwjgl3Cursor.disposeSystemCursors();
 		audio.dispose();
 		errorCallback.free();
