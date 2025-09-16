@@ -1,6 +1,15 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.ui.menu :as menu]))
 
+(def config
+  '[[cdq.ui.dev-menu.update-labels.mouseover-entity-id/create "images/mouseover.png"]
+    [cdq.ui.dev-menu.update-labels.elapsed-time/create "images/clock.png"]
+    [cdq.ui.dev-menu.update-labels.paused/item]
+    [cdq.ui.dev-menu.update-labels.ui-mouse-position/item]
+    [cdq.ui.dev-menu.update-labels.world-mouse-position/item]
+    [cdq.ui.dev-menu.update-labels.zoom/create "images/zoom.png"]
+    [cdq.ui.dev-menu.update-labels.fps/create "images/fps.png"]])
+
 (defn create
   [{:keys [ctx/graphics]
     :as ctx}
@@ -13,10 +22,8 @@
                          ->texture (fn [path]
                                      (assert (contains? textures path))
                                      (get textures path))]
-                     [((requiring-resolve 'cdq.ui.dev-menu.update-labels.mouseover-entity-id/create) (->texture "images/mouseover.png"))
-                      ((requiring-resolve 'cdq.ui.dev-menu.update-labels.elapsed-time/create)        (->texture "images/clock.png"))
-                      @(requiring-resolve 'cdq.ui.dev-menu.update-labels.paused/item)
-                      @(requiring-resolve 'cdq.ui.dev-menu.update-labels.ui-mouse-position/item)
-                      @(requiring-resolve 'cdq.ui.dev-menu.update-labels.world-mouse-position/item)
-                      ((requiring-resolve 'cdq.ui.dev-menu.update-labels.zoom/create) (->texture "images/zoom.png"))
-                      ((requiring-resolve 'cdq.ui.dev-menu.update-labels.fps/create) (->texture "images/fps.png"))])}))
+                     (for [[sym icon] config
+                           :let [avar (requiring-resolve sym)]]
+                       (if icon
+                         (avar (->texture icon))
+                         @avar)))}))
