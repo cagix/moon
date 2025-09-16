@@ -32,8 +32,8 @@
                                     :unpause-continously :space}]
  [clojure.gdx.utils/dispatch-on-os {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                           [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
- [cdq.start.lwjgl/do! {:config {:title "Cyber Dungeon Quest"
-                                :windowed-mode {:width 1440 :height 900}
-                                :foreground-fps 60}
-                       :listener [cdq.application.listener/create #edn/resource "listener.edn"]}]
+ [clojure.gdx.backends.lwjgl/start! {:config {:title "Cyber Dungeon Quest"
+                                              :windowed-mode {:width 1440 :height 900}
+                                              :foreground-fps 60}
+                                     :listener [cdq.application.listener/create #edn/resource "listener.edn"]}]
  ]

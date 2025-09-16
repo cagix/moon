@@ -46,3 +46,13 @@
 (defn start-application! [listener config]
   (Lwjgl3Application. (create-listener listener)
                       (create-config config)))
+
+(defn start!
+  [{:keys [ctx/application-state]
+    :as ctx}
+   {:keys [listener
+           config]}]
+  (reset! application-state ctx)
+  (start-application! (let [[f params] listener]
+                        (f params))
+                      config))
