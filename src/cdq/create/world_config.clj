@@ -118,6 +118,11 @@
                     :z-order/effect]})
 
 (defrecord World []
+  cdq.ctx.world/MovementAI
+  (find-movement-direction [{:keys [world/grid
+                                    world/movement-ai]} eid]
+    (movement-ai grid eid))
+
   cdq.ctx.world/World
   (dispose! [{:keys [world/tiled-map]}]
     (disposable/dispose! tiled-map))
@@ -156,7 +161,8 @@
          :ctx/world
          (merge (map->World {})
                 config
-                {:world/max-delta    (:world/max-delta    config)
+                {:world/movement-ai (requiring-resolve 'cdq.potential-fields.movement/find-movement-direction)
+                 :world/max-delta    (:world/max-delta    config)
                  :world/minimum-size (:world/minimum-size config)
                  :world/z-orders     (:world/z-orders     config)
                  :world/max-speed (/ (:world/minimum-size config)

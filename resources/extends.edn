@@ -1,9 +1,5 @@
 [
  [cdq.create.world_config.World
-  cdq.potential-fields.movement
-  cdq.ctx.world/MovementAI]
-
- [cdq.create.world_config.World
   cdq.world.raycaster
   cdq.ctx.world/RayCaster]
 
