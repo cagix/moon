@@ -29,15 +29,11 @@
           [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
           [cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn"]
           [cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn"]
-
-          ;; input
           [clojure.core/assoc :ctx/controls {:zoom-in :minus
                                              :zoom-out :equals
                                              :unpause-once :p
                                              :unpause-continously :space}]
           [cdq.create.input/do!]
-          ;;
-
           [cdq.create.vis-ui/do! {:skin-scale :x1}]
           [cdq.create.graphics/do! #edn/resource "graphics.edn"]
           [cdq.create.stage/do!]
@@ -82,7 +78,7 @@
                                                    cdq.draw-on-world-viewport.tile-grid/do!
                                                    cdq.draw-on-world-viewport.cell-debug/do!
                                                    cdq.draw-on-world-viewport.entities/do!
-                                                   ;cdq.draw-on-world-viewport.geom-test/do!
+                                                   #_cdq.draw-on-world-viewport.geom-test/do!
                                                    cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
                                                    ]]
            [cdq.render.stage/do!]
@@ -93,7 +89,7 @@
            [cdq.render.update-time/do!]
            [cdq.render.update-potential-fields/do!]
            [cdq.render.tick-entities/do!]
-           [cdq.render.remove-destroyed-entities/do!] ; do not pause as pickup item should be destroyed
+           [cdq.render.remove-destroyed-entities/do!]
            [cdq.render.handle-key-input/do!]
            [clojure.core/dissoc
             :ctx/mouseover-actor
