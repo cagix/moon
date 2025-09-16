@@ -1,9 +1,12 @@
 (ns cdq.draw.with-line-width
   (:require [cdq.ctx.graphics :as graphics]
-            [cdq.gdx.graphics]))
+            [clojure.earlygrey.shape-drawer :as sd]))
 
 (defn do!
-  [graphics width draws]
-  (cdq.gdx.graphics/with-line-width graphics width
+  [{:keys [ctx/shape-drawer]
+    :as graphics}
+   width
+   draws]
+  (sd/with-line-width shape-drawer width
     (fn []
       (graphics/handle-draws! graphics draws))))

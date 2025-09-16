@@ -50,15 +50,18 @@
                    (fn [position]
                      (atom (create-grid-cell position (cell-movement position))))))
 
+(defrecord ContentGrid [])
+
 (defn- create-content-grid [width height cell-size]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size)))
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
+  (map->ContentGrid
+   {:grid (g2d/create-grid
+           (inc (int (/ width  cell-size)))
+           (inc (int (/ height cell-size)))
+           (fn [idx]
+             (atom {:idx idx,
+                    :entities #{}})))
+    :cell-w cell-size
+    :cell-h cell-size}))
 
 (defn- create-explored-tile-corners [width height]
   (atom (g2d/create-grid width height (constantly false))))
@@ -98,3 +101,6 @@
            :world/entity-ids (atom {})
            :world/paused? false
            :world/mouseover-eid nil)))
+
+(defn init! [ctx]
+  ctx)

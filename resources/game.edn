@@ -1,4 +1,5 @@
 [
+ [cdq.world.resettable/init!]
  [cdq.start.context-record/do!]
 
  [cdq.ui.menu/init! [[clojure.scene2d/build

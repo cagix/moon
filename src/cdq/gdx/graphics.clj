@@ -86,10 +86,6 @@
               (utils/degree->radians start-angle)
               (utils/degree->radians degree)))
 
-(defn with-line-width
-  [{:keys [ctx/shape-drawer]} width f]
-  (sd/with-line-width shape-drawer width f))
-
 (defn draw-on-world-viewport!
   [{:keys [ctx/batch
            ctx/shape-drawer
