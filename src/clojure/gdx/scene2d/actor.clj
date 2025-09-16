@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [clojure.gdx.scene2d.ctx :as ctx]
             [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.gdx.math.vector2 :as vector2])
@@ -93,15 +93,17 @@
             (draw this batch parent-alpha)))
     (set-opts! opts)))
 
-(defn- try-act [actor delta f]
+(defn- get-ctx [actor]
   (when-let [stage (get-stage actor)]
-    (f actor delta (ctx-stage/get-ctx stage))))
+    (ctx-stage/get-ctx stage)))
+
+(defn- try-act [actor delta f]
+  (when-let [ctx (get-ctx actor)]
+    (f actor delta ctx)))
 
 (defn- try-draw [actor f]
-  (when-let [stage (get-stage actor)]
-    (let [ctx (ctx-stage/get-ctx stage)]
-      (graphics/handle-draws! (:ctx/graphics ctx)
-                              (f actor ctx)))))
+  (when-let [ctx (get-ctx actor)]
+    (ctx/draw! ctx (f actor ctx))))
 
 (defn create
   [{:keys [act draw]
