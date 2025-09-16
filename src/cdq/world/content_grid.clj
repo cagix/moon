@@ -2,16 +2,6 @@
   (:require [cdq.entity :as entity]
             [cdq.grid2d :as g2d]))
 
-(defn create [width height cell-size]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size))) ; inc because corners
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
-
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
   (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
         [x y] (entity/position entity)

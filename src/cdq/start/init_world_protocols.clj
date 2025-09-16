@@ -1,6 +1,7 @@
 (ns cdq.start.init-world-protocols
   (:require [cdq.create.world-config]
-            [cdq.ctx.world]))
+            [cdq.ctx.world]
+            [cdq.world.resettable]))
 
 (defn do! [ctx]
   (extend-type cdq.create.world_config.World
