@@ -44,8 +44,10 @@
       (resume!))))
 
 (defn start-application! [listener config]
-  (Lwjgl3Application. (create-listener listener)
-                      (create-config config)))
+  (let [application (Lwjgl3Application.)]
+    (.start application
+            (create-listener listener)
+            (create-config config))))
 
 (defn start!
   [{:keys [ctx/application-state]
