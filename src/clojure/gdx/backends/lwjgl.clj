@@ -1,10 +1,12 @@
 (ns clojure.gdx.backends.lwjgl
-  (:import (com.badlogic.gdx ApplicationListener)
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3ApplicationLogger
-                                             Lwjgl3WindowConfiguration)))
+                                             Lwjgl3WindowConfiguration)
+           (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
   (case k
@@ -60,6 +62,15 @@
     (set! (.config application) config)
     (when-not (.title config)
       (set! (.title config) (.getSimpleName (class listener))))
+    (set! Gdx/app application)
+    (if (.disableAudio config)
+      (set! (.audio application) (MockAudio.))
+      (try
+       (set! (.audio application) (.createAudio application config))
+       (catch Throwable t
+         (.log application "Lwjgl3Application" "Couldn't initialize audio, disabling audio" t)
+         (set! (.audio application) (MockAudio.)))))
+    (set! Gdx/audio (.audio application))
     (.start application
             listener
             config)))

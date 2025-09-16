@@ -50,7 +50,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -62,7 +61,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	public Lwjgl3ApplicationConfiguration config;
 	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
-	private Lwjgl3Audio audio;
+	public Lwjgl3Audio audio;
 	private Files files;
 	private Net net;
 	private ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
@@ -121,18 +120,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
   }
 
 	public void start (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		Gdx.app = this;
-		if (!config.disableAudio) {
-			try {
-				this.audio = createAudio(config);
-			} catch (Throwable t) {
-				log("Lwjgl3Application", "Couldn't initialize audio, disabling audio", t);
-				this.audio = new MockAudio();
-			}
-		} else {
-			this.audio = new MockAudio();
-		}
-		Gdx.audio = audio;
 		this.files = Gdx.files = createFiles();
 		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
