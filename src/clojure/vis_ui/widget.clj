@@ -20,39 +20,9 @@
            (com.kotcrab.vis.ui.widget VisCheckBox
                                       VisImage
                                       VisImageButton
-                                      VisLabel
-                                      VisSelectBox
                                       VisTable
                                       VisTextButton
-                                      VisTextField
                                       VisWindow)))
-
-(defn select-box [{:keys [items selected]}]
-  (doto (VisSelectBox.)
-    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
-    (.setSelected selected)))
-
-(defmethod scene2d/build :actor.type/select-box [opts]
-  (select-box opts))
-
-(defn label [{:keys [label/text] :as opts}]
-  (doto (VisLabel. ^CharSequence text)
-    (actor/set-opts! opts)))
-
-(defmethod scene2d/build :actor.type/label [opts]
-  (label opts))
-
-(defn text-field
-  [{:keys [text-field/text]
-    :as opts}]
-  (let [actor (-> (VisTextField. (str text))
-                  (widget/set-opts! opts))]
-    (when-let [tooltip (:tooltip opts)]
-      (tooltip/add! actor tooltip))
-    actor))
-
-(defmethod scene2d/build :actor.type/text-field [opts]
-  (text-field opts))
 
 (defn check-box
   [{:keys [text on-clicked checked?]}]

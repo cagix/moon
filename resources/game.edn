@@ -3,7 +3,17 @@
 
  [cdq.ui.menu/init! [[clojure.scene2d/build
                       :actor.type/menu-bar
-                      clojure.gdx.scene2d.actor.menu-bar/create]]]
+                      clojure.gdx.scene2d.actor.menu-bar/create]
+                     [clojure.scene2d/build
+                      :actor.type/select-box
+                      clojure.vis-ui.select-box/create]
+                     [clojure.scene2d/build
+                      :actor.type/label
+                      clojure.vis-ui.label/create]
+                     [clojure.scene2d/build
+                      :actor.type/text-field
+                      clojure.vis-ui.text-field/create]
+                     ]]
  [clojure.vis-ui.widget/load!]
 
  [clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
