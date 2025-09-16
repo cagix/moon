@@ -1,24 +1,48 @@
 (ns clojure.gdx.backends.lwjgl
-  (:require [clojure.gdx.application :as application]
-            [clojure.gdx.backends.lwjgl.application.configuration :as config]
-            [clojure.gdx.backends.lwjgl.application.gl-debug-message-severity :as gl-debug-message-severity]
-            [clojure.gdx.backends.lwjgl.window.configuration :as window-config])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
+  (:import (com.badlogic.gdx ApplicationListener)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration
+                                             Lwjgl3WindowConfiguration)))
+
+(defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
+  (case k
+    :windowed-mode (.setWindowedMode object
+                                     (int (:width v))
+                                     (int (:height v)))
+    :title (.setTitle object (str v))))
+
+(defn- set-config-key! [^Lwjgl3ApplicationConfiguration object k v]
+  (case k
+    :foreground-fps (.setForegroundFPS object (int v))
+    (set-window-config-key! object k v)))
+
+(defn- create-config [config]
+  (let [obj (Lwjgl3ApplicationConfiguration.)]
+    (doseq [[k v] config]
+      (set-config-key! obj k v))
+    obj))
+
+(defn- create-listener
+  [{:keys [create!
+           dispose!
+           render!
+           resize!
+           pause!
+           resume!]}]
+  (reify ApplicationListener
+    (create [_]
+      (create!))
+    (dispose [_]
+      (dispose!))
+    (render [_]
+      (render!))
+    (resize [_ width height]
+      (resize! width height))
+    (pause [_]
+      (pause!))
+    (resume [_]
+      (resume!))))
 
 (defn start-application! [listener config]
-  (Lwjgl3Application. (application/listener listener)
-                      (config/create config)))
-
-(defn new-window! [application listener config]
-  (Lwjgl3Application/.newWindow application
-                                listener
-                                (window-config/create config)))
-
-(defn set-gl-debug-message-control! [severity enabled?]
-  (Lwjgl3Application/setGLDebugMessageControl (gl-debug-message-severity/k->value severity)
-                                              (boolean enabled?)))
-
-(def display-mode!                 config/display-mode!)
-(def display-modes!                config/display-modes!)
-(def primary-monitor!              config/primary-monitor!)
-(def monitors!                     config/monitors!)
+  (Lwjgl3Application. (create-listener listener)
+                      (create-config config)))
