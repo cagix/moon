@@ -22,7 +22,14 @@
                                   {:label "Editor"
                                    :items [cdq.ui.dev-menu.menus.db/create]}
                                   {:label "Ctx Data"
-                                   :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]}]
+                                   :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]
+                          :update-labels [[cdq.ui.dev-menu.update-labels.mouseover-entity-id/create "images/mouseover.png"]
+                                          [cdq.ui.dev-menu.update-labels.elapsed-time/create "images/clock.png"]
+                                          [cdq.ui.dev-menu.update-labels.paused/item]
+                                          [cdq.ui.dev-menu.update-labels.ui-mouse-position/item]
+                                          [cdq.ui.dev-menu.update-labels.world-mouse-position/item]
+                                          [cdq.ui.dev-menu.update-labels.zoom/create "images/zoom.png"]
+                                          [cdq.ui.dev-menu.update-labels.fps/create "images/fps.png"]]}]
  [cdq.ui.action-bar/create {}]
  [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
                              :rahmenw 150
