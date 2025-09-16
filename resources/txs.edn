@@ -1,6 +1,5 @@
 {:sym-format "cdq.tx.%s/do!"
  :ks [
-      :tx/reset-game-state
       :tx/reset-stage
       :tx/rebuild-editor-window
       :tx/assoc

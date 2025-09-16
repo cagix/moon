@@ -1,6 +1,7 @@
 [[cdq.ui.dev-menu/create {:menus [{:label "World"
                                    :items [cdq.ui.dev-menu.menus.select-world/create
-                                           {:world-fns [[cdq.world-fns.tmx/create
+                                           {:create-world cdq.create.world/do!
+                                            :world-fns [[cdq.world-fns.tmx/create
                                                          {:tmx-file "maps/vampire.tmx"
                                                           :start-position [32 71]}]
                                                         [cdq.world-fns.uf-caves/create
