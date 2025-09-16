@@ -1,4 +1,5 @@
-{:os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+{
+ :os-settings {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                      [clojure.java.awt/set-taskbar-icon! "icon.png"]]}
  :config {:title "Cyber Dungeon Quest"
           :windowed-mode {:width 1440 :height 900}
@@ -97,4 +98,4 @@
            [cdq.render.validate/do!]]
  :dispose cdq.gdx-app.dispose/do!
  :resize  cdq.gdx-app.resize/do!
- :atom-var cdq.application/state}
+ }
