@@ -46,6 +46,12 @@
                                  :path-format "sounds/%s.wav"}]
           [clojure.core/dissoc :ctx/gdx]
           [cdq.ui.menu/init! [[clojure.scene2d/build
+                               :actor.type/actor
+                               clojure.gdx.scene2d.actor/create]
+                              [clojure.scene2d/build
+                               :actor.type/widget
+                               clojure.gdx.scene2d.actor/create-widget]
+                              [clojure.scene2d/build
                                :actor.type/menu-bar
                                clojure.gdx.scene2d.actor.menu-bar/create]
                               [clojure.scene2d/build

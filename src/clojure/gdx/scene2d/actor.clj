@@ -1,7 +1,10 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [clojure.gdx.scene2d.touchable :as touchable]
+  (:require [cdq.ctx.graphics :as graphics]
+            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
+            [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.gdx.math.vector2 :as vector2])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
 (defn get-stage [^Actor actor]
   (.getStage actor))
@@ -79,7 +82,7 @@
       (f actor v))
     actor))
 
-(defn create
+(defn- create*
   [{:keys [actor/act
            actor/draw]
     :as opts}]
@@ -89,3 +92,31 @@
           (draw [batch parent-alpha]
             (draw this batch parent-alpha)))
     (set-opts! opts)))
+
+(defn- try-act [actor delta f]
+  (when-let [stage (get-stage actor)]
+    (f actor delta (ctx-stage/get-ctx stage))))
+
+(defn- try-draw [actor f]
+  (when-let [stage (get-stage actor)]
+    (let [ctx (ctx-stage/get-ctx stage)]
+      (graphics/handle-draws! (:ctx/graphics ctx)
+                              (f actor ctx)))))
+
+(defn create
+  [{:keys [act draw]
+    :as opts}]
+  (create*
+   (assoc opts
+          :actor/act (fn [actor delta]
+                       (when act
+                         (try-act actor delta act)))
+          :actor/draw (fn [actor _batch _parent-alpha]
+                        (when draw
+                          (try-draw actor draw))))))
+
+(defn create-widget [opts]
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (when-let [f (:draw opts)]
+        (try-draw this f)))))
