@@ -78,14 +78,12 @@
                                                  (- x (/ (actor/get-width  actor) 2))
                                                  (- y (/ (actor/get-height actor) 2))))})
 
-(extend-type Actor
-  clojure.scene2d.actor/Opts
-  (set-opts! [actor opts]
-    (doseq [[k v] opts
-            :let [f (get opts-fn-map k)]
-            :when f]
-      (f actor v))
-    actor))
+(defn set-opts! [actor opts]
+  (doseq [[k v] opts
+          :let [f (get opts-fn-map k)]
+          :when f]
+    (f actor v))
+  actor)
 
 (defn- create*
   [{:keys [actor/act
@@ -96,7 +94,7 @@
             (act this delta))
           (draw [batch parent-alpha]
             (draw this batch parent-alpha)))
-    (actor/set-opts! opts)))
+    (set-opts! opts)))
 
 (defn- get-ctx [actor]
   (when-let [stage (actor/get-stage actor)]

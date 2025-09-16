@@ -1,5 +1,5 @@
 (ns clojure.vis-ui.label
-  (:require [clojure.scene2d.actor :as actor])
+  (:require [clojure.gdx.scene2d.actor :as actor])
   (:import (com.kotcrab.vis.ui.widget VisLabel)))
 
 (defn create [{:keys [label/text] :as opts}]

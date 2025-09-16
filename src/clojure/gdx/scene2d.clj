@@ -1,6 +1,6 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup

@@ -20,8 +20,5 @@
   (hit [actor [x y]])
   (add-listener! [actor listener]))
 
-(defprotocol Opts
-  (set-opts! [_ opts]))
-
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
