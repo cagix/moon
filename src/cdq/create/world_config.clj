@@ -1,6 +1,6 @@
 (ns cdq.create.world-config
-  (:require [cdq.malli :as m]
-            [clojure.utils :as utils]
+  (:require [clojure.utils :as utils]
+            [malli.core :as m]
             [reduce-fsm :as fsm]))
 
 (comment

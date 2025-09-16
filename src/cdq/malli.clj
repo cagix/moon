@@ -3,17 +3,11 @@
             [malli.error :as me]
             [malli.generator :as mg]))
 
-(defn schema [form]
-  (m/schema form))
-
-(defn validate [schema value]
-  (m/validate schema value))
-
 (defn generate [form opts]
   (mg/generate form opts))
 
 (defn validate-humanize [schema value]
-  (when-not (validate schema value)
+  (when-not (m/validate schema value)
     (throw (ex-info (str (me/humanize (m/explain schema value)))
                     {:value value
                      :schema (m/form schema)}))))

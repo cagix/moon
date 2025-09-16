@@ -1,6 +1,7 @@
 (ns cdq.schemas
   (:require [cdq.malli :as m]
-            [cdq.schema :as schema]))
+            [cdq.schema :as schema]
+            malli.core))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -31,7 +32,7 @@
 (defn validate [schemas k value]
   (-> (get schemas k)
       (schema/malli-form schemas)
-      m/schema
+      malli.core/schema
       (m/validate-humanize value)))
 
 (defn create-map-schema [schemas ks]
