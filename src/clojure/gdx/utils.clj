@@ -13,7 +13,6 @@
   (os->clj SharedLibraryLoader/os))
 
 (defn dispatch-on-os
-  [ctx os->executions]
+  [os->executions]
   (doseq [[f params] (os->executions (operating-system))]
-    (f params))
-  ctx)
+    (f params)))

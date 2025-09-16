@@ -1,5 +1,7 @@
 (ns clojure.gdx.backends.lwjgl
-  (:require [cdq.application :as application])
+  (:require [cdq.application :as application]
+            [clojure.gdx.utils]
+            [clojure.utils :as utils])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -132,9 +134,22 @@
 
 (defn start!
   [ctx
-   {:keys [listener
-           config]}]
+   {:keys [os-settings
+           config
+           create
+           dispose
+           render
+           resize]}]
+  (clojure.gdx.utils/dispatch-on-os os-settings)
   (reset! application/state ctx)
-  (start-application! (let [[f params] listener]
-                        (f params))
+  (start-application! {:create! (fn []
+                                  (swap! application/state utils/pipeline create))
+                       :dispose! (fn []
+                                   (swap! application/state dispose))
+                       :render! (fn []
+                                  (swap! application/state utils/pipeline render))
+                       :resize! (fn [width height]
+                                  (swap! application/state resize width height))
+                       :pause! (fn [])
+                       :resume! (fn [])}
                       config))
