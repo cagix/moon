@@ -1,4 +1,5 @@
 [
+ [cdq.ui.menu/init!]
  [clojure.vis-ui.widget/load!]
  [clojure.extends/ns-impls #edn/resource "extends.edn"]
  [clojure.extends/ns-impls #edn/resource "extends_gdx.edn"]

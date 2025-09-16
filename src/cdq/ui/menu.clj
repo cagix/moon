@@ -11,6 +11,8 @@
             [clojure.vis-ui.menu-item :as menu-item]
             [clojure.vis-ui.popup-menu :as popup-menu]))
 
+(defn init! [_ctx] _ctx)
+
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
    :act (fn [_this _delta ctx]
@@ -51,19 +53,8 @@
                                                           (on-click actor (ctx-stage/get-ctx (event/stage event))))))))))
     (menu-bar/add-menu! menu-bar app-menu)))
 
-(defn create [{:keys [menus update-labels]}]
-  {:actor/type :actor.type/table
-   :rows [[{:actor (let [menu-bar (menu-bar/create)]
-                     (run! #(add-menu! menu-bar %) menus)
-                     (add-update-labels! menu-bar update-labels)
-                     (menu-bar/get-table menu-bar))
-            :expand-x? true
-            :fill-x? true
-            :colspan 1}]
-          [{:actor {:actor/type :actor.type/label
-                    :label/text ""
-                    :actor/touchable :disabled}
-            :expand? true
-            :fill-x? true
-            :fill-y? true}]]
-   :fill-parent? true})
+(defmethod scene2d/build :actor.type/menu-bar [{:keys [menus update-labels]}]
+  (let [menu-bar (menu-bar/create)]
+    (run! #(add-menu! menu-bar %) menus)
+    (add-update-labels! menu-bar update-labels)
+    (menu-bar/get-table menu-bar)))
