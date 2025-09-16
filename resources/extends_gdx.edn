@@ -1,4 +1,9 @@
 [
+
+ [com.badlogic.gdx.Input
+  clojure.gdx.input
+  clojure.input/Input]
+
  [com.badlogic.gdx.scenes.scene2d.Actor
   clojure.gdx.scene2d.actor
   clojure.scene2d.actor/Actor]

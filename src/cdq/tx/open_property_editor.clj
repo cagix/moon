@@ -6,7 +6,7 @@
             [cdq.ctx.stage]
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
-            [clojure.gdx.input :as input]
+            [clojure.input :as input]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]

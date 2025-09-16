@@ -3,7 +3,7 @@
             [cdq.inventory :as inventory]
             [cdq.ctx.stage :as stage]
             [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.gdx.input :as input]
+            [clojure.input :as input]
             [clojure.gdx.scene2d.ui.button :as button]
             [clojure.vis-ui.window :as window]))
 
