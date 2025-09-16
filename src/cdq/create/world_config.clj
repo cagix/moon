@@ -7,53 +7,6 @@
             [malli.core :as m]
             [reduce-fsm :as fsm]))
 
-(defrecord RCell [position
-                  middle
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  cell/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true
-      :air (case z-order
-             :z-order/flying false
-             :z-order/ground true)
-      :all false))
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance))
-
-  (pf-blocked? [this]
-    (cell/blocked? this :z-order/ground)))
-
-(defn- create-grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (mapv (partial + 0.5) position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
-(defn- create-grid [width height cell-movement]
-  (g2d/create-grid width
-                   height
-                   (fn [position]
-                     (atom (create-grid-cell position (cell-movement position))))))
-
 (defn- create-explored-tile-corners [width height]
   (atom (g2d/create-grid width height (constantly false))))
 
@@ -169,6 +122,7 @@
                               start-position]}]
     (let [width  (:tiled-map/width  tiled-map)
           height (:tiled-map/height tiled-map)
+          create-grid (requiring-resolve 'cdq.impl.grid/create)
           grid (create-grid width height
                             #(case (tiled/movement-property tiled-map %)
                                "none" :none
