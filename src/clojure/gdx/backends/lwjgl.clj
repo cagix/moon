@@ -18,10 +18,10 @@
            (org.lwjgl.glfw GLFW)
            (org.lwjgl.glfw GLFWErrorCallback)))
 
-(def error-callback)
+(def error-callback nil)
 
 (defn initializeGlfw []
-  (when-not (bound? #'error-callback)
+  (when-not error-callback
     (Lwjgl3NativesLoader/load)
     (.bindRoot #'error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream))
     (GLFW/glfwSetErrorCallback error-callback)
