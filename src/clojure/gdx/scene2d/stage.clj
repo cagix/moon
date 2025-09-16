@@ -1,23 +1,35 @@
 (ns clojure.gdx.scene2d.stage
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:require clojure.scene2d.stage)
+  (:import (clojure.gdx.scene2d Stage)))
 
-(defn act! [stage]
-  (Stage/.act stage))
+(defn create [viewport batch]
+  (Stage. viewport batch (atom nil)))
 
-(defn draw! [stage]
-  (Stage/.draw stage))
+(extend-type clojure.gdx.scene2d.Stage
+  clojure.scene2d.stage/Stage
+  (get-ctx [stage]
+    @(.ctx stage))
 
-(defn add! [^Stage stage actor]
-  (.addActor stage actor))
+  (set-ctx! [stage ctx]
+    (reset! (.ctx stage) ctx))
 
-(defn clear! [^Stage stage]
-  (.clear stage))
+  (act! [stage]
+    (.act stage))
 
-(defn root [^Stage stage]
-  (.getRoot stage))
+  (draw! [stage]
+    (.draw stage))
 
-(defn hit [stage [x y]]
-  (Stage/.hit stage x y true))
+  (add! [stage actor]
+    (.addActor stage actor))
 
-(defn viewport [stage]
-  (Stage/.getViewport stage))
+  (clear! [stage]
+    (.clear stage))
+
+  (root [stage]
+    (.getRoot stage))
+
+  (hit [stage [x y]]
+    (.hit stage x y true))
+
+  (viewport [stage]
+    (.getViewport stage)))

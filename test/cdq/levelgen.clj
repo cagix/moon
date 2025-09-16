@@ -5,7 +5,7 @@
             cdq.gdx.graphics
             cdq.ctx.graphics
             clojure.extends
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
+            [clojure.gdx.scene2d.stage]
             [cdq.db :as db]
             [cdq.files :as files]
             [cdq.world-fns.modules]
@@ -113,7 +113,7 @@
         ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (ctx-stage/create ui-viewport sprite-batch)
+        stage (clojure.gdx.scene2d.stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -183,7 +183,7 @@
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render-stage [{:keys [ctx/stage] :as ctx}]
-  (ctx-stage/set-ctx! stage ctx)
+  (stage/set-ctx! stage ctx)
   (stage/act! stage)
   (stage/draw! stage))
 

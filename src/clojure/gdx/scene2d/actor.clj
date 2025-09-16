@@ -1,6 +1,6 @@
 (ns clojure.gdx.scene2d.actor
-  (:require [clojure.gdx.scene2d.ctx :as ctx]
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
+  (:require [clojure.scene2d.stage :as stage]
+            [clojure.gdx.scene2d.ctx :as ctx]
             [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
@@ -95,7 +95,7 @@
 
 (defn- get-ctx [actor]
   (when-let [stage (get-stage actor)]
-    (ctx-stage/get-ctx stage)))
+    (stage/get-ctx stage)))
 
 (defn- try-act [actor delta f]
   (when-let [ctx (get-ctx actor)]

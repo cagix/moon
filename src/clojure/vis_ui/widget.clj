@@ -1,12 +1,12 @@
 (ns clojure.vis-ui.widget
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
-            [clojure.gdx.scene2d.ui.widget :as widget]
+            [clojure.scene2d.event :as event]
+            [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
-            [clojure.scene2d.event :as event]
             [clojure.vis-ui.tooltip :as tooltip])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -57,7 +57,7 @@
     (when on-clicked
       (.addListener image-button (listener/change
                                   (fn [event actor]
-                                    (on-clicked actor (ctx-stage/get-ctx (event/stage event)))))))
+                                    (on-clicked actor (stage/get-ctx (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
       (tooltip/add! image-button tooltip))
     (table/set-opts! image-button opts)))
@@ -75,7 +75,7 @@
    (let [actor (doto (VisTextButton. (str text))
                  (.addListener (listener/change
                                 (fn [event actor]
-                                  (on-clicked actor (ctx-stage/get-ctx (event/stage event))))))
+                                  (on-clicked actor (stage/get-ctx (event/stage event))))))
                  (table/set-opts! opts))]
      (when-let [tooltip (:tooltip opts)]
        (tooltip/add! actor tooltip))

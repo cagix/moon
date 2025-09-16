@@ -2,8 +2,8 @@
   (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.gdx.scene2d.ui.label :as label]
             [clojure.vis-ui.menu :as menu]
@@ -48,7 +48,7 @@
                                        (.addListener (listener/change
                                                       (fn [event actor]
                                                         (when on-click
-                                                          (on-click actor (ctx-stage/get-ctx (event/stage event))))))))))
+                                                          (on-click actor (stage/get-ctx (event/stage event))))))))))
     (menu-bar/add-menu! menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]

@@ -8,7 +8,6 @@
             [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ctx-stage :as ctx-stage]
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
@@ -150,7 +149,7 @@
               :clicked-cell-listener (fn [cell]
                                        (listener/click
                                         (fn [event _x _y]
-                                          (let [{:keys [ctx/world] :as ctx} (ctx-stage/get-ctx (event/stage event))
+                                          (let [{:keys [ctx/world] :as ctx} (stage/get-ctx (event/stage event))
                                                 eid (:world/player-eid world)
                                                 entity @eid
                                                 state-k (:state (:entity/fsm entity))

@@ -1,5 +1,4 @@
 [
-
  [com.badlogic.gdx.Input
   clojure.gdx.input
   clojure.input/Input]
@@ -17,10 +16,6 @@
   clojure.scene2d.event/Event]
 
  [com.badlogic.gdx.scenes.scene2d.Stage
-  clojure.gdx.scene2d.stage
-  clojure.scene2d.stage/Stage]
-
- [com.badlogic.gdx.scenes.scene2d.Stage
   cdq.gdx.stage
   cdq.ctx.stage/Stage]
 
@@ -31,6 +26,7 @@
  [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
   clojure.gdx.maps.tiled.layer
   clojure.tiled/HasMapProperties]
+
  [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
   clojure.gdx.maps.tiled.layer
   clojure.tiled/TMapLayer]
