@@ -1,8 +1,10 @@
 (ns cdq.ui.menu
   (:import (clojure.lang MultiFn)))
 
-(defn init! [ctx]
-  (MultiFn/.addMethod @(requiring-resolve 'clojure.scene2d/build)
-                      :actor.type/menu-bar
-                      (requiring-resolve 'clojure.gdx.scene2d.actor.menu-bar/create))
+(defn init! [ctx impls]
+  (doseq [[defmulti-var k method-fn-var] impls]
+    (assert (var? defmulti-var))
+    (assert (keyword? k))
+    (assert (var? method-fn-var))
+    (MultiFn/.addMethod @defmulti-var k method-fn-var))
   ctx)
