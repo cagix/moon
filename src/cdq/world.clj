@@ -13,8 +13,9 @@
   [world
    {:keys [tiled-map
            start-position]}]
-  (let [grid (grid/create (:tiled-map/width  tiled-map)
-                          (:tiled-map/height tiled-map)
+  (let [width  (:tiled-map/width  tiled-map)
+        height (:tiled-map/height tiled-map)
+        grid (grid/create width height
                           #(case (tiled/movement-property tiled-map %)
                              "none" :none
                              "air"  :air
@@ -23,11 +24,8 @@
            :world/tiled-map tiled-map
            :world/start-position start-position
            :world/grid grid
-           :world/content-grid (content-grid/create (:tiled-map/width  tiled-map)
-                                                    (:tiled-map/height tiled-map)
-                                                    (:content-grid-cell-size world))
-           :world/explored-tile-corners (explored-tile-corners/create (:tiled-map/width  tiled-map)
-                                                                      (:tiled-map/height tiled-map))
+           :world/content-grid (content-grid/create width height (:content-grid-cell-size world))
+           :world/explored-tile-corners (explored-tile-corners/create width height)
            :world/raycaster (cdq.world.raycaster/create grid)
            :world/elapsed-time 0
            :world/potential-field-cache (atom nil)
