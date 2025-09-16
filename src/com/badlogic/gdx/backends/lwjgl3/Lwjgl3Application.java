@@ -120,9 +120,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
   }
 
   public void loop (Array<Lwjgl3Window> closedWindows) {
-    // FIXME put it on a separate thread
-    audio.update();
-
     boolean haveWindowsRendered = false;
     closedWindows.clear();
     int targetFramerate = -2;

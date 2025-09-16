@@ -93,6 +93,7 @@
      (let [closed-windows (Array.)]
        (while (and (.running application)
                    (> (.size (.windows application)) 0))
+         (.update audio) ; FIXME put it on a separate thread
          (.loop application closed-windows)))
      (.cleanupWindows application)
      (catch Throwable t
