@@ -1,4 +1,5 @@
 [
+ [cdq.start.init-world-protocols/do!]
  [cdq.ui.menu/init!]
  [clojure.vis-ui.widget/load!]
  [clojure.extends/ns-impls #edn/resource "extends.edn"]

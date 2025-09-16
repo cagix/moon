@@ -1,7 +1,9 @@
 (ns cdq.ctx.world)
 
+(defprotocol Resettable
+  (reset-state [_ world-fn-result]))
+
 (defprotocol World
-  (reset-state [_ world-fn-result])
   (dispose! [_])
   (active-eids [_])
   (path-blocked? [_ start target path-w])
