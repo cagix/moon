@@ -1,52 +1,5 @@
 [
- [cdq.start.context-record/do!]
- [cdq.ui.menu/init! [[clojure.scene2d/build
-                      :actor.type/menu-bar
-                      clojure.gdx.scene2d.actor.menu-bar/create]
-                     [clojure.scene2d/build
-                      :actor.type/select-box
-                      clojure.vis-ui.select-box/create]
-                     [clojure.scene2d/build
-                      :actor.type/label
-                      clojure.vis-ui.label/create]
-                     [clojure.scene2d/build
-                      :actor.type/text-field
-                      clojure.vis-ui.text-field/create]
-                     ]]
- [clojure.vis-ui.widget/load!]
-
- [clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
-                                                      [:ctx/audio :some]
-                                                      [:ctx/editor :some]
-                                                      [:ctx/db :some]
-                                                      [:ctx/graphics :some]
-                                                      [:ctx/input :some]
-                                                      [:ctx/controls :some]
-                                                      [:ctx/stage :some]
-                                                      [:ctx/ui-actors :some]
-                                                      [:ctx/world :some]
-                                                      [:ctx/info :some]
-                                                      [:ctx/schema :some]
-                                                      [:ctx/application-state :some]])]
- [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
  [clojure.decl/assoc* :ctx/application-state (clojure.core/deref cdq.application/state)]
- [clojure.decl/assoc* :ctx/db (cdq.db/create {:schemas "schema.edn"
-                                              :properties "properties.edn"})]
- [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
- [clojure.core/assoc :ctx/controls {:zoom-in :minus
-                                    :zoom-out :equals
-                                    :unpause-once :p
-                                    :unpause-continously :space}]
-
- [cdq.start.txs/do! #edn/resource "txs.edn"]
- [cdq.impl.creature/init!]
-
- [clojure.extends/ns-impls #edn/resource "extends.edn"]
- [clojure.extends/ns-impls #edn/resource "extends_gdx.edn"]
- [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
- [cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn"]
- [cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn"]
-
  [clojure.gdx.utils/dispatch-on-os {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
                                           [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
  [clojure.gdx.backends.lwjgl/start! {:config {:title "Cyber Dungeon Quest"
