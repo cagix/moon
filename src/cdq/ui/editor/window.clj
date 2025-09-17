@@ -3,7 +3,9 @@
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
+            [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.widget.map.helper :as helper]
+            [cdq.ui.editor.map-widget-table]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
@@ -24,15 +26,6 @@
    :rows rows
    :cell-defaults {:pad 5}
    :pack? true})
-
-(defn build-widget [ctx schema k v]
-  (let [widget (schema/create schema v ctx)
-        widget (if (instance? com.badlogic.gdx.scenes.scene2d.Actor widget)
-                 widget
-                 (scene2d/build widget))]
-    ; FIXME assert no user object !
-    (actor/set-user-object! widget [k v])
-    widget))
 
 (defn- component-row [editor-widget k optional-key? table]
   (helper/component-row
@@ -59,10 +52,10 @@
                  :text (name k)
                  :on-clicked (fn [_actor ctx]
                                (.remove window)
-                               (table/add-rows! map-widget-table [(component-row (build-widget ctx
-                                                                                               (get schemas k)
-                                                                                               k
-                                                                                               (schemas/default-value schemas k))
+                               (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
+                                                                                                     (get schemas k)
+                                                                                                     k
+                                                                                                     (schemas/default-value schemas k))
                                                                                  k
                                                                                  (m/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
@@ -119,8 +112,10 @@
              component-rows))
     table))
 
-(defn map-widget-property-values [table schemas]
-  (into {}
-        (for [widget (filter (comp vector? actor/user-object) (group/children table))
-              :let [[k _] (actor/user-object widget)]]
-          [k (schema/value (get schemas k) widget schemas)])))
+(extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
+  cdq.ui.editor.map-widget-table/MapWidgetTable
+  (get-value [table schemas]
+    (into {}
+          (for [widget (filter (comp vector? actor/user-object) (group/children table))
+                :let [[k _] (actor/user-object widget)]]
+            [k (schema/value (get schemas k) widget schemas)]))))
