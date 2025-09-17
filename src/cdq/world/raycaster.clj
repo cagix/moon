@@ -2,7 +2,7 @@
   (:require [cdq.gdx.math.vector2 :as v])
   (:import (cdq.math RayCaster)))
 
-(defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]
+(defn blocked? [[arr width height] [start-x start-y] [target-x target-y]]
   (RayCaster/rayBlocked (double start-x)
                         (double start-y)
                         (double target-x)
@@ -28,16 +28,8 @@
         target2 (v/add [target-x target-y] normal2)]
     [start1,target1,start2,target2]))
 
-(defn path-blocked? [{:keys [world/raycaster]} start target path-w]
+(defn path-blocked? [raycaster start target path-w]
   (let [[start1,target1,start2,target2] (create-double-ray-endpositions start target path-w)]
     (or
      (blocked? raycaster start1 target1)
      (blocked? raycaster start2 target2))))
-
-(defn ray-blocked? [{:keys [world/raycaster]} start target]
-  (blocked? raycaster start target))
-
-(defn line-of-sight? [{:keys [world/raycaster]} source target]
-  (not (blocked? raycaster
-                 (:body/position (:entity/body source))
-                 (:body/position (:entity/body target)))))

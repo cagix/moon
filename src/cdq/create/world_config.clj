@@ -2,6 +2,7 @@
   (:require [cdq.ctx.world]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
+            [cdq.world.raycaster :as raycaster]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]
@@ -118,6 +119,18 @@
                     :z-order/effect]})
 
 (defrecord World []
+  cdq.ctx.world/RayCaster
+  (ray-blocked? [{:keys [world/raycaster]} start target]
+    (raycaster/blocked? raycaster start target))
+
+  (path-blocked? [{:keys [world/raycaster]} start target path-w]
+    (raycaster/path-blocked? raycaster start target path-w))
+
+  (line-of-sight? [{:keys [world/raycaster]} source target]
+    (not (raycaster/blocked? raycaster
+                             (:body/position (:entity/body source))
+                             (:body/position (:entity/body target)))))
+
   cdq.ctx.world/MovementAI
   (find-movement-direction [{:keys [world/grid
                                     world/movement-ai]} eid]

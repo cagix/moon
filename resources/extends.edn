@@ -1,8 +1,4 @@
 [
- [cdq.create.world_config.World
-  cdq.world.raycaster
-  cdq.ctx.world/RayCaster]
-
  [cdq.db.DB
   cdq.db
   cdq.ctx.db/DB]
