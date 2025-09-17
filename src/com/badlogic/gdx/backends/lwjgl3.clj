@@ -31,12 +31,9 @@
                                    GdxRuntimeException)
            (org.lwjgl.glfw GLFW)))
 
-(def error-callback nil)
-
 (defn initializeGlfw [init]
-  (when-not error-callback
-    (natives-loader/load!)
-    (.bindRoot #'error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream))
+  (natives-loader/load!)
+  (let [error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream)]
     (glfw/set-error-callback! error-callback)
     (when (= (shared-library-loader/operating-system) :mac)
       (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
@@ -44,8 +41,8 @@
     (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
                        GLFW/GLFW_FALSE)
     (when-not (GLFW/glfwInit)
-      (throw (GdxRuntimeException. "Unable to initialize GLFW"))))
-  init)
+      (throw (GdxRuntimeException. "Unable to initialize GLFW")))
+    (assoc init :init/error-callback error-callback)))
 
 (defn set-logger
   [{:keys [init/application]
@@ -176,24 +173,20 @@
   (.add (.windows application) window)
   init)
 
-(defn main-loop [{:keys [init/application]}]
+(defn main-loop
+  [{:keys [init/application
+           init/error-callback]}]
   (try
    (let [closed-windows (Array.)]
      (while (and (.running application)
                  (> (.size (.windows application)) 0))
-       (.update (.audio application)) ; FIXME put it on a separate thread
+       (.update (.audio application))
        (.loop application closed-windows)))
    (.cleanupWindows application)
    (catch Throwable t
-     (throw t)
-     ; if (t instanceof RuntimeException)
-     ; throw (RuntimeException)t;
-     ; else
-     ; throw new GdxRuntimeException(t);
-     )
+     (throw t))
    (finally
     (.free error-callback)
-    (.bindRoot #'error-callback nil)
     (.cleanup application))))
 
 (defn start-application! [listener config]
