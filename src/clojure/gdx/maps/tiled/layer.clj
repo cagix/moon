@@ -1,7 +1,37 @@
 (ns clojure.gdx.maps.tiled.layer
-  (:require [clojure.gdx.maps.properties :as properties])
+  (:require [clojure.gdx.maps.properties :as properties]
+            [clojure.tiled :as tiled])
   (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer
                                         TiledMapTileLayer$Cell)))
+
+(extend-type TiledMapTileLayer
+  tiled/HasMapProperties
+  (get-property [layer k]
+    (.get (.getProperties layer) k))
+
+  (map-properties [layer]
+    (properties/->clj (.getProperties layer)))
+
+  tiled/TMapLayer
+  (set-visible! [layer boolean]
+    (.setVisible layer boolean))
+
+  (visible? [layer]
+    (.isVisible layer))
+
+  (layer-name [layer]
+    (.getName layer))
+
+  (tile-at [layer [x y]]
+    (when-let [cell (.getCell layer x y)]
+      (.getTile cell)))
+
+  (property-value [layer [x y] property-key]
+    (if-let [cell (.getCell layer x y)]
+      (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
+        value
+        :undefined)
+      :no-cell)))
 
 (defn create
   [{:keys [width
@@ -23,29 +53,3 @@
       (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
                             (.setTile tiled-map-tile))))
     layer))
-
-(defn get-property [^TiledMapTileLayer layer k]
-  (.get (.getProperties layer) k))
-
-(defn map-properties [^TiledMapTileLayer layer]
-  (properties/->clj (.getProperties layer)))
-
-(defn set-visible! [^TiledMapTileLayer layer boolean]
-  (.setVisible layer boolean))
-
-(defn visible? [^TiledMapTileLayer layer]
-  (.isVisible layer))
-
-(defn layer-name [^TiledMapTileLayer layer]
-  (.getName layer))
-
-(defn tile-at [^TiledMapTileLayer layer [x y]]
-  (when-let [cell (.getCell layer x y)]
-    (.getTile cell)))
-
-(defn property-value [^TiledMapTileLayer layer [x y] property-key]
-  (if-let [cell (.getCell layer x y)]
-    (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
-      value
-      :undefined)
-    :no-cell))

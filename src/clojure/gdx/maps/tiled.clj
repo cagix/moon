@@ -49,7 +49,7 @@
       (.getLayers this))
 
     (layer-index [_ layer]
-      (let [idx (.getIndex (.getLayers this) ^String (layer/layer-name layer))]
+      (let [idx (.getIndex (.getLayers this) ^String (clojure.tiled/layer-name layer))]
         (when-not (= idx -1)
           idx)))
 

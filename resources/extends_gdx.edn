@@ -1,9 +1,0 @@
-[
- [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-  clojure.gdx.maps.tiled.layer
-  clojure.tiled/HasMapProperties]
-
- [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-  clojure.gdx.maps.tiled.layer
-  clojure.tiled/TMapLayer]
- ]

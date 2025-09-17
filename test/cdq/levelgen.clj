@@ -1,12 +1,9 @@
 (ns cdq.levelgen
   (:require [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
-            cdq.application
-
             clojure.vis-ui.widget
             cdq.gdx.graphics
             cdq.ctx.graphics
-            clojure.extends
             [clojure.gdx.scene2d.stage]
             [cdq.db :as db]
             [cdq.files :as files]
@@ -27,8 +24,6 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
-
-(clojure.extends/ns-impls nil (cdq.application/edn-resource "extends_gdx.edn")) ; FIXME
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
