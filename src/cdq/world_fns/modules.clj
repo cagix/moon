@@ -12,6 +12,7 @@
       ((requiring-resolve 'cdq.world-fns.modules.print-grid/do!))
       ((requiring-resolve 'cdq.world-fns.modules.create-scaled-grid/do!)) ; :scaled-grid
       ((requiring-resolve 'cdq.world-fns.modules.load-schema-tiled-map/do!)) ; :schema-tiled-map
-      ((requiring-resolve 'cdq.world-fns.modules.place-modules/do!)) ; :tiled-map
+      ((requiring-resolve 'cdq.world-fns.modules.place-modules/do!)) ; :scaled-grid
+      ((requiring-resolve 'cdq.world-fns.modules.convert-to-tiled-map/do!)) ; :tiled-map
       ((requiring-resolve 'cdq.world-fns.modules.calculate-start-position/do!)) ; :start-position
       ((requiring-resolve 'cdq.world-fns.modules.generate-modules/do!))))

@@ -1,6 +1,5 @@
 (ns cdq.world-fns.modules.place-modules
   (:require [cdq.grid2d :as g2d]
-            [cdq.world-fns.grid-to-tiled-map :as grid-to-tiled-map]
             [cdq.grid2d.utils :as helper]))
 
 (def ^:private number-modules-x 8)
@@ -85,7 +84,7 @@
                                                                      (get unscaled-grid %))))
                             scaled-grid
                             unscaled-transition-positions)]
-    (grid-to-tiled-map/grid->tiled-map modules-tiled-map scaled-grid)))
+    scaled-grid))
 
 (defn do!
   [{:keys [scale
@@ -93,9 +92,9 @@
            grid
            schema-tiled-map]
     :as w}]
-  (assoc w :tiled-map (place-modules schema-tiled-map
-                                     scale
-                                     scaled-grid
-                                     grid
-                                     (filter #(= :ground     (get grid %)) (g2d/posis grid))
-                                     (filter #(= :transition (get grid %)) (g2d/posis grid)))))
+  (assoc w :scaled-grid (place-modules schema-tiled-map
+                                       scale
+                                       scaled-grid
+                                       grid
+                                       (filter #(= :ground     (get grid %)) (g2d/posis grid))
+                                       (filter #(= :transition (get grid %)) (g2d/posis grid)))))
