@@ -1,10 +1,10 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.ctx.input :as controls]
-            [cdq.inventory :as inventory]
             [cdq.ctx.stage :as stage]
+            [cdq.inventory :as inventory]
             [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.input :as input]
             [clojure.gdx.scene2d.ui.button :as button]
+            [clojure.input :as input]
             [clojure.vis-ui.window :as window]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
