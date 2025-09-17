@@ -36,12 +36,8 @@
     :table table
     :label-text (helper/k->label-text k)}))
 
-(defn- open-add-component-window! [{:keys [ctx/db
-                                           ctx/stage]}
-                                   schema
-                                   map-widget-table]
-  (let [schemas (:schemas db)
-        window (scene2d/build {:actor/type :actor.type/window
+(defn- add-component-window [schemas schema map-widget-table]
+  (let [window (scene2d/build {:actor/type :actor.type/window
                                :title "Choose"
                                :modal? true
                                :close-button? true
@@ -66,7 +62,7 @@
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
     (.pack window)
-    (stage/add! stage window)))
+    window))
 
 (defn- horiz-sep [colspan]
   (fn []
@@ -111,8 +107,9 @@
      (concat [(when opt?
                 [{:actor {:actor/type :actor.type/text-button
                           :text "Add component"
-                          :on-clicked (fn [_actor ctx]
-                                        (open-add-component-window! ctx schema table))}
+                          :on-clicked (fn [_actor {:keys [ctx/db
+                                                          ctx/stage]}]
+                                        (stage/add! stage (add-component-window (:schemas db) schema table)))}
                   :colspan colspan}])]
              [(when opt?
                 [{:actor (separator/horizontal)
