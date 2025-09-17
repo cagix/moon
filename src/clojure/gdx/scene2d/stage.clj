@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.stage
-  (:require clojure.scene2d.stage)
+  (:require [clojure.scene2d.stage])
   (:import (clojure.gdx.scene2d Stage)))
 
 (defn create [viewport batch state]

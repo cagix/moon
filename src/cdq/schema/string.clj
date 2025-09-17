@@ -1,5 +1,5 @@
 (ns cdq.schema.string
-  (:require [clojure.vis-ui.text-field :as text-field]))
+  (:require [clojure.scene2d.ui.text-field :as text-field]))
 
 (defn malli-form [_ _schemas]
   :string)

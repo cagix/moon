@@ -1,5 +1,6 @@
 (ns cdq.ui.menu
   (:require [cdq.start]
+            [clojure.gdx.scene2d]
             [clojure.walk :as walk])
   (:import (clojure.lang MultiFn)))
 

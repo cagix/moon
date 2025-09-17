@@ -1,7 +1,7 @@
 (ns clojure.vis-ui.text-button
   (:require [clojure.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.vis-ui.tooltip :as tooltip])
   (:import (com.kotcrab.vis.ui.widget VisTextButton)))

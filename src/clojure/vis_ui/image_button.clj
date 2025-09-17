@@ -1,8 +1,8 @@
 (ns clojure.vis-ui.image-button
   (:require [clojure.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.vis-ui.tooltip :as tooltip])
