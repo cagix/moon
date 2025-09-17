@@ -1,8 +1,11 @@
 (ns cdq.render.assoc-interaction-state
-  (:require [cdq.stage :as stage]
-            [cdq.creature :as creature]
+  (:require [cdq.creature :as creature]
             [cdq.entity :as entity]
-            [cdq.gdx.math.vector2 :as v]))
+            [cdq.gdx.math.vector2 :as v]
+            [cdq.stage :as stage]
+            [cdq.ui.windows.inventory :as inventory-window]
+            [clojure.gdx.scene2d.ui.button :as button]
+            [clojure.vis-ui.window :as window]))
 
 (defn- distance [a b]
   (v/distance (entity/position a)
@@ -21,12 +24,6 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
-; TODO try to do this without cond/if !!!
-; so have to define a order of handling inputs, etc.
-; also in components method no if/else
-; => protocol
-; => straightforward
-; game without ifs
 (defn- interaction-state
   [{:keys [ctx/mouseover-actor
            ctx/stage
@@ -35,7 +32,14 @@
    player-eid]
   (cond
    mouseover-actor
-   [:interaction-state/mouseover-actor mouseover-actor]
+   [:interaction-state/mouseover-actor
+    (let [actor mouseover-actor]
+      (let [inventory-slot (inventory-window/cell-with-item? actor)]
+        (cond
+         inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
+         (window/title-bar? actor) [:mouseover-actor/window-title-bar]
+         (button/is?        actor) [:mouseover-actor/button]
+         :else                     [:mouseover-actor/unspecified])))]
 
    (and mouseover-eid
         (:entity/clickable @mouseover-eid))

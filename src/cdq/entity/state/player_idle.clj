@@ -1,24 +1,32 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.input :as controls]
-            [cdq.stage :as stage]
             [cdq.inventory :as inventory]
-            [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.gdx.scene2d.ui.button :as button]
-            [clojure.input :as input]
-            [clojure.vis-ui.window :as window]))
+            [cdq.stage :as stage]
+            [clojure.input :as input]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]
     (case k
       :interaction-state/mouseover-actor
-      (let [actor params]
-        (let [inventory-slot (inventory-window/cell-with-item? actor)]
-          (cond
-           (and inventory-slot
-                (get-in (:entity/inventory @player-eid) inventory-slot)) :cursors/hand-before-grab
-           (window/title-bar? actor) :cursors/move-window
-           (button/is?        actor) :cursors/over-button
-           :else :cursors/default)))
+      (let [[actor-type params] params
+            inventory-cell-with-item? (and (= actor-type :mouseover-actor/inventory-cell)
+                                           (let [inventory-slot params]
+                                             (get-in (:entity/inventory @player-eid) inventory-slot)))]
+        (cond
+          inventory-cell-with-item?
+          :cursors/hand-before-grab
+
+          (= actor-type :mouseover-actor/window-title-bar)
+          :cursors/move-window
+
+          (= actor-type :mouseover-actor/button)
+          :cursors/over-button
+
+          (= actor-type :mouseover-actor/unspecified)
+          :cursors/default
+
+          :else
+          :cursors/default))
 
       :interaction-state/clickable-mouseover-eid
       (let [{:keys [clicked-eid
