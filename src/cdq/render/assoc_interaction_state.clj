@@ -1,7 +1,7 @@
 (ns cdq.render.assoc-interaction-state
   (:require [cdq.creature :as creature]
             [cdq.entity :as entity]
-            [cdq.gdx.math.vector2 :as v]
+            [com.badlogic.gdx.math.vector2 :as v]
             [cdq.stage :as stage]))
 
 (defn- distance [a b]

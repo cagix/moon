@@ -1,5 +1,5 @@
 (ns cdq.world.raycaster
-  (:require [cdq.gdx.math.vector2 :as v])
+  (:require [com.badlogic.gdx.math.vector2 :as v])
   (:import (cdq.math RayCaster)))
 
 (defn blocked? [[arr width height] [start-x start-y] [target-x target-y]]

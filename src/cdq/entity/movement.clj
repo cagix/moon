@@ -1,5 +1,5 @@
 (ns cdq.entity.movement
-  (:require [cdq.gdx.math.vector2 :as v]
+  (:require [com.badlogic.gdx.math.vector2 :as v]
             [cdq.world.grid :as grid]
             [clojure.utils :as utils]))
 

@@ -3,7 +3,7 @@
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.gdx.math.vector2 :as v]
+            [com.badlogic.gdx.math.vector2 :as v]
             [cdq.world.grid :as grid]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]

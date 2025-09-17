@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-projectile
-  (:require [cdq.gdx.math.vector2 :as v]))
+  (:require [com.badlogic.gdx.math.vector2 :as v]))
 
 (defn do!
   [_ctx
