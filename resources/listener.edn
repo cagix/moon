@@ -53,6 +53,9 @@
                                :actor.type/actor
                                clojure.gdx.scene2d.actor/create]
                               [clojure.scene2d/build
+                               :actor.type/group
+                               clojure.gdx.scene2d.group/create]
+                              [clojure.scene2d/build
                                :actor.type/widget
                                clojure.gdx.scene2d.actor/create-widget]
                               [clojure.scene2d/build

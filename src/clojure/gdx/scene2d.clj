@@ -1,25 +1,9 @@
 (ns clojure.gdx.scene2d
   (:require [clojure.scene2d :as scene2d]
-            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
-           (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup
+  (:import (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup
                                                Stack
                                                WidgetGroup)))
-
-(defn set-group-opts! [group opts]
-  (run! (fn [actor-or-decl]
-          (group/add! group (if (instance? com.badlogic.gdx.scenes.scene2d.Actor actor-or-decl)
-                              actor-or-decl
-                              (scene2d/build actor-or-decl))))
-        (:group/actors opts))
-  (actor/set-opts! group opts))
-
-(defn- group [opts]
-  (doto (Group.)
-    (set-group-opts! opts)))
-
-(defmethod scene2d/build :actor.type/group [opts] (group opts))
 
 (defn set-widget-group-opts!
   [^WidgetGroup widget-group
@@ -28,7 +12,7 @@
   (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
   (when pack?
     (.pack widget-group))
-  (set-group-opts! widget-group opts))
+  (group/set-opts! widget-group opts))
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -41,7 +25,7 @@
   (let [group (HorizontalGroup.)]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
-    (set-group-opts! group opts)))
+    (group/set-opts! group opts)))
 
 (defmethod scene2d/build :actor.type/horizontal-group [opts]
   (horizontal-group opts))

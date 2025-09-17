@@ -1,14 +1,32 @@
 (ns clojure.gdx.scene2d.group
-  (:import (com.badlogic.gdx.scenes.scene2d Group)))
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.group :as group])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group)))
 
-(defn add! [group actor]
-  (Group/.addActor group actor))
+(extend-type Group
+  clojure.scene2d.group/Group
+  (add! [group actor]
+    (.addActor group actor))
 
-(defn find-actor [^Group group name]
-  (.findActor group name))
+  (find-actor [group name]
+    (.findActor group name))
 
-(defn clear-children! [^Group group]
-  (.clearChildren group))
+  (clear-children! [group]
+    (.clearChildren group))
 
-(defn children [^Group group]
-  (.getChildren group))
+  (children [group]
+    (.getChildren group)))
+
+(defn set-opts! [group opts]
+  (run! (fn [actor-or-decl]
+          (group/add! group (if (instance? Actor actor-or-decl)
+                              actor-or-decl
+                              (scene2d/build actor-or-decl))))
+        (:group/actors opts))
+  (actor/set-opts! group opts))
+
+(defn create [opts]
+  (doto (Group.)
+    (set-opts! opts)))
