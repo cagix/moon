@@ -1,17 +1,14 @@
 (ns clojure.gdx.scene2d
-  (:require [cdq.start]
-            [clojure.scene2d :as scene2d]
+  (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx :as ctx]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.walk :as walk]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
-  (:import (clojure.lang MultiFn)
-           (com.badlogic.gdx.scenes.scene2d Actor
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup
                                                Stack
@@ -233,54 +230,3 @@
     (doto table
       (table/add-rows! rows)
       (set-widget-group-opts! opts))))
-
-(def impls (walk/postwalk
-            cdq.start/require-resolve-symbols
-            '[
-              [clojure.scene2d/build
-               :actor.type/menu-bar
-               clojure.gdx.scene2d.actor.menu-bar/create]
-
-              [clojure.scene2d/build
-               :actor.type/select-box
-               clojure.vis-ui.select-box/create]
-
-              [clojure.scene2d/build
-               :actor.type/label
-               clojure.vis-ui.label/create]
-
-              [clojure.scene2d/build
-               :actor.type/text-field
-               clojure.vis-ui.text-field/create]
-
-              [clojure.scene2d/build
-               :actor.type/check-box
-               clojure.vis-ui.check-box/create]
-
-              [clojure.scene2d/build
-               :actor.type/table
-               clojure.vis-ui.table/create]
-
-              [clojure.scene2d/build
-               :actor.type/image-button
-               clojure.vis-ui.image-button/create]
-
-              [clojure.scene2d/build
-               :actor.type/text-button
-               clojure.vis-ui.text-button/create]
-
-              [clojure.scene2d/build
-               :actor.type/window
-               clojure.vis-ui.window/create]
-
-              [clojure.scene2d/build
-               :actor.type/image
-               clojure.vis-ui.image/create]]))
-
-(defn init! [ctx]
-  (doseq [[defmulti-var k method-fn-var] impls]
-    (assert (var? defmulti-var))
-    (assert (keyword? k))
-    (assert (var? method-fn-var))
-    (MultiFn/.addMethod @defmulti-var k method-fn-var))
-  ctx)
