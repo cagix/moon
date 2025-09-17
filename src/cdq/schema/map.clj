@@ -93,6 +93,7 @@
         k->widget (into {}
                         (for [[k v] m]
                           [k (build-widget ctx (get schemas k) k v)]))
+        k->optional? #(m/optional? % (schema/malli-form schema schemas))
         table (scene2d/build
                {:actor/type :actor.type/table
                 :cell-defaults {:pad 5}
@@ -102,7 +103,7 @@
                                     (map (fn [[k _v]]
                                            (component-row (k->widget k)
                                                           k
-                                                          (m/optional? k (schema/malli-form schema schemas))
+                                                          (k->optional? k)
                                                           table))
                                          (utils/sort-by-k-order k-sort-order m)))]
     (table/add-rows!
