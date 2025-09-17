@@ -3,11 +3,7 @@
             clojure.audio.sound
             clojure.files
             clojure.graphics
-            clojure.input
-            [com.badlogic.gdx.backends.lwjgl3.natives-loader :as natives-loader]
-            [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
-            [org.lwjgl.glfw :as glfw]
-            [org.lwjgl.glfw.error-callback :as error-callback])
+            clojure.input)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -20,29 +16,13 @@
            (com.badlogic.gdx.graphics GL20)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
-                                             Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3ApplicationLogger
                                              Lwjgl3Clipboard
                                              Lwjgl3Net
                                              Lwjgl3WindowConfiguration
                                              Sync)
            (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)
-           (com.badlogic.gdx.utils Array
-                                   GdxRuntimeException)
-           (org.lwjgl.glfw GLFW)))
-
-(defn initializeGlfw [init]
-  (natives-loader/load!)
-  (let [error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream)]
-    (glfw/set-error-callback! error-callback)
-    (when (= (shared-library-loader/operating-system) :mac)
-      (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
-                         GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))
-    (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
-                       GLFW/GLFW_FALSE)
-    (when-not (GLFW/glfwInit)
-      (throw (GdxRuntimeException. "Unable to initialize GLFW")))
-    (assoc init :init/error-callback error-callback)))
+           (com.badlogic.gdx.utils Array)))
 
 (defn set-logger
   [{:keys [init/application]
@@ -67,21 +47,6 @@
     (doseq [[k v] config]
       (set-config-key! obj k v))
     obj))
-
-(defn- gl-emulation-hook
-  [{:keys [init/config]
-    :as init}]
-  (when (= (.glEmulation config)
-           Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/loadANGLE))
-  init)
-
-(defn- gl-emulation-hook-after-window [{:keys [init/config]
-                                        :as init}]
-  (when (= (.glEmulation config)
-           Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/postLoadANGLE))
-  init)
 
 (defn- application-listener
   [{:keys [create!
@@ -189,6 +154,9 @@
     (.free error-callback)
     (.cleanup application))))
 
+(require 'init.gl-emulation)
+(require 'init.glfw)
+
 (defn start-application! [listener config]
   (-> (let [config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
         (when-not (.title config)
@@ -198,8 +166,8 @@
                              application)
          :init/listener (application-listener listener)
          :init/config config})
-      gl-emulation-hook
-      initializeGlfw
+      init.gl-emulation/before-glfw
+      init.glfw/do!
       set-logger
       set-gdx-app!
       set-app-audio
@@ -211,7 +179,7 @@
       set-gdx-net
       set-app-sync
       create-window
-      gl-emulation-hook-after-window
+      init.gl-emulation/after-window-creation
       add-windows-window
       main-loop))
 
