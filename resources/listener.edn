@@ -32,7 +32,6 @@
                                                        :properties "properties.edn"})]
           [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
           [cdq.start.txs/do! #edn/resource "txs.edn"]
-          [clojure.extends/ns-impls #edn/resource "extends.edn"]
           [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
           [cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn"]
           [cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn"]

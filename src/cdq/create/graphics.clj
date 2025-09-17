@@ -1,5 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.ctx.graphics]
+            [cdq.gdx.graphics]
             [clojure.gdx.scene2d.ctx]
             [cdq.files]
             [clojure.earlygrey.shape-drawer :as sd]
@@ -10,12 +11,109 @@
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
+            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.graphics.color :as color]))
+            [clojure.graphics.color :as color]
+            [clojure.utils :as utils]))
 
-(defrecord RGraphics [])
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+; TODO clamping only works for gui-viewport ?
+; TODO ? "Can be negative coordinates, undefined cells."
+(defn- unproject-clamp [viewport [x y]]
+  (viewport/unproject viewport
+                      (utils/clamp x
+                                   (:viewport/left-gutter-width viewport)
+                                   (:viewport/right-gutter-x    viewport))
+                      (utils/clamp y
+                                   (:viewport/top-gutter-height viewport)
+                                   (:viewport/top-gutter-y      viewport))))
+
+(defrecord RGraphics []
+  cdq.ctx.graphics/Graphics
+  (clear! [{:keys [ctx/graphics]} [r g b a]]
+    (graphics/clear! graphics r g b a))
+
+  (dispose!
+    [{:keys [ctx/batch
+             ctx/cursors
+             ctx/default-font
+             ctx/shape-drawer-texture
+             ctx/textures]}]
+    (disposable/dispose! batch)
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font)
+    (disposable/dispose! shape-drawer-texture)
+    (run! disposable/dispose! (vals textures)))
+
+  (draw-on-world-viewport!
+    [{:keys [ctx/batch
+             ctx/shape-drawer
+             ctx/unit-scale
+             ctx/world-unit-scale
+             ctx/world-viewport]}
+     f]
+    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
+    ; -> also Widgets, etc. ? check.
+    (batch/set-color! batch color/white)
+    (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
+    (batch/begin! batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (batch/end! batch))
+
+  (draw-tiled-map!
+    [{:keys [ctx/tiled-map-renderer
+             ctx/world-viewport]}
+     tiled-map
+     color-setter]
+    (tm-renderer/draw! tiled-map-renderer
+                       world-viewport
+                       tiled-map
+                       color-setter))
+
+  (set-cursor!
+    [{:keys [ctx/cursors
+             ctx/graphics]}
+     cursor-key]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! graphics (get cursors cursor-key)))
+
+  (delta-time
+    [{:keys [ctx/graphics]}]
+    (graphics/delta-time graphics))
+
+  (frames-per-second
+    [{:keys [ctx/graphics]}]
+    (graphics/frames-per-second graphics))
+
+  (world-viewport-width  [{:keys [ctx/world-viewport]}] (:viewport/width  world-viewport))
+  (world-viewport-height [{:keys [ctx/world-viewport]}] (:viewport/height world-viewport))
+
+  (camera-position [{:keys [ctx/world-viewport]}] (:camera/position     (:viewport/camera world-viewport)))
+  (visible-tiles   [{:keys [ctx/world-viewport]}] (camera/visible-tiles (:viewport/camera world-viewport)))
+  (camera-frustum  [{:keys [ctx/world-viewport]}] (camera/frustum       (:viewport/camera world-viewport)))
+  (camera-zoom     [{:keys [ctx/world-viewport]}] (:camera/zoom         (:viewport/camera world-viewport)))
+
+  (change-zoom! [{:keys [ctx/world-viewport]} amount]
+    (camera/inc-zoom! (:viewport/camera world-viewport) amount))
+
+  (set-camera-position! [{:keys [ctx/world-viewport]} position]
+    (camera/set-position! (:viewport/camera world-viewport) position))
+
+  (unproject-ui    [{:keys [ctx/ui-viewport]}    position] (unproject-clamp ui-viewport    position))
+  (unproject-world [{:keys [ctx/world-viewport]} position] (unproject-clamp world-viewport position))
+
+  (update-viewports! [this width height]
+    (cdq.gdx.graphics/update-viewports! this width height))
+  (texture-region [this image]
+    (cdq.gdx.graphics/texture-region this image)))
 
 (defn- create*
   [graphics
