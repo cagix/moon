@@ -1,9 +1,9 @@
 (ns clojure.gdx.scene2d.actor
   (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ctx :as ctx]
-            [clojure.gdx.scene2d.touchable :as touchable]
-            [clojure.gdx.math.vector2 :as vector2])
+            [clojure.scene2d.ctx :as ctx]
+            [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
+            [com.badlogic.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
