@@ -2,10 +2,7 @@
   (:require [cdq.creature :as creature]
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]
-            [cdq.stage :as stage]
-            [cdq.ui.windows.inventory :as inventory-window]
-            [clojure.gdx.scene2d.ui.button :as button]
-            [clojure.vis-ui.window :as window]))
+            [cdq.stage :as stage]))
 
 (defn- distance [a b]
   (v/distance (entity/position a)
@@ -33,13 +30,7 @@
   (cond
    mouseover-actor
    [:interaction-state/mouseover-actor
-    (let [actor mouseover-actor]
-      (let [inventory-slot (inventory-window/cell-with-item? actor)]
-        (cond
-         inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
-         (window/title-bar? actor) [:mouseover-actor/window-title-bar]
-         (button/is?        actor) [:mouseover-actor/button]
-         :else                     [:mouseover-actor/unspecified])))]
+    (stage/actor-information stage mouseover-actor)]
 
    (and mouseover-eid
         (:entity/clickable @mouseover-eid))

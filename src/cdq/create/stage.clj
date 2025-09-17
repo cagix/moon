@@ -4,11 +4,13 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
+            [clojure.gdx.scene2d.stage]
+            [clojure.gdx.scene2d.ui.button :as button]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.stage]))
+            [clojure.vis-ui.window :as window]))
 
 (defn do! [ctx]
   (assoc ctx :ctx/stage (clojure.gdx.scene2d.stage/create
@@ -117,4 +119,12 @@
   (close-all-windows! [stage]
     (->> (stage-find stage "cdq.ui.windows")
          group/children
-         (run! #(actor/set-visible! % false)))))
+         (run! #(actor/set-visible! % false))))
+
+  (actor-information [_ actor]
+    (let [inventory-slot (inventory-window/cell-with-item? actor)]
+      (cond
+       inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
+       (window/title-bar? actor) [:mouseover-actor/window-title-bar]
+       (button/is?        actor) [:mouseover-actor/button]
+       :else                     [:mouseover-actor/unspecified]))))

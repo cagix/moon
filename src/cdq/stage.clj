@@ -13,4 +13,5 @@
   (show-text-message! [stage message])
   (toggle-entity-info-window! [_])
   (close-all-windows! [_])
-  (action-bar-selected-skill [_]))
+  (action-bar-selected-skill [_])
+  (actor-information [_ actor]))
