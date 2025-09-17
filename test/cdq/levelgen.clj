@@ -28,7 +28,7 @@
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
 
-(clojure.extends/ns-impls nil (cdq.application/edn-resource "extends_gdx.edn"))
+(clojure.extends/ns-impls nil (cdq.application/edn-resource "extends_gdx.edn")) ; FIXME
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
