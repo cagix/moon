@@ -1,30 +1,30 @@
 (ns cdq.levelgen
-  (:require [com.badlogic.gdx :as gdx]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
-            cdq.ui.menu
-            cdq.gdx.graphics
-            cdq.ctx.graphics
-            [clojure.gdx.scene2d.stage]
+  (:require [cdq.ctx.db :as db]
+            [cdq.ctx.graphics]
             [cdq.db]
-            [cdq.ctx.db :as db]
             [cdq.files :as files]
+            [cdq.gdx.graphics]
+            [cdq.ui.menu]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
-            clojure.lwjgl.system.configuration
-            [clojure.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [clojure.input :as input]
-            [clojure.tiled :as tiled]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]
+            [clojure.gdx.scene2d.stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.color :as color]
+            [clojure.input :as input]
+            [clojure.lwjgl.system.configuration]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]
+            [clojure.tiled :as tiled]
             [clojure.vis-ui :as vis-ui]
-            [clojure.graphics.color :as color]))
+            [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
 
 (cdq.ui.menu/init! nil)
 
