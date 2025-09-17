@@ -10,7 +10,7 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.vis-ui.window :as window]))
+            [clojure.scene2d.ui.window :as window]))
 
 (defn do! [ctx]
   (assoc ctx :ctx/stage (clojure.gdx.scene2d.stage/create
@@ -121,8 +121,11 @@
          group/children
          (run! #(actor/set-visible! % false))))
 
-  (actor-information [_ actor]
-    (let [inventory-slot (inventory-window/cell-with-item? actor)]
+  (actor-information [stage actor]
+    (let [inventory-slot (inventory-window/cell-with-item? (-> stage
+                                                               (stage-find "cdq.ui.windows")
+                                                               (group/find-actor "cdq.ui.windows.inventory"))
+                                                           actor)]
       (cond
        inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
        (window/title-bar? actor) [:mouseover-actor/window-title-bar]

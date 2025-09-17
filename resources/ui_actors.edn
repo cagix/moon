@@ -30,7 +30,7 @@
                                           [cdq.ui.dev-menu.update-labels.world-mouse-position/item]
                                           [cdq.ui.dev-menu.update-labels.zoom/create "images/zoom.png"]
                                           [cdq.ui.dev-menu.update-labels.fps/create "images/fps.png"]]}]
- [cdq.ui.action-bar/create {}]
+ [cdq.impl.ui.action-bar/create {}]
  [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
                              :rahmenw 150
                              :rahmenh 26
@@ -38,7 +38,7 @@
                              :manacontent-file "images/mana.png"
                              :y-mana 80}]
  [cdq.ui.windows/create [cdq.ui.windows.entity-info/create
-                         cdq.ui.windows.inventory/create]]
+                         cdq.impl.ui.inventory/create]]
  [cdq.ui.player-state-draw/create]
- [cdq.ui.message/create {:duration-seconds 0.5
-                         :name "player-message"}]]
+ [cdq.impl.ui.message/create {:duration-seconds 0.5
+                              :name "player-message"}]]
