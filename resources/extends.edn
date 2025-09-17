@@ -1,8 +1,4 @@
 [
- [com.badlogic.gdx.scenes.scene2d.Stage
-  cdq.gdx.stage
-  cdq.ctx.stage/Stage]
-
  [cdq.create.world_config.World
   cdq.world.raycaster
   cdq.ctx.world/RayCaster]
