@@ -13,19 +13,7 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.vis-ui.separator :as separator]))
 
-(defn create
-  [{:keys [actors rows]}]
-  {:actor/type :actor.type/window
-   :title "[SKY]Property[]"
-   :actor/name "cdq.ui.editor.window"
-   :modal? true
-   :close-button? true
-   :center? true
-   :close-on-escape? true
-   :group/actors actors
-   :rows rows
-   :cell-defaults {:pad 5}
-   :pack? true})
+(defn init! [ctx] ctx)
 
 (defn- component-row [editor-widget k optional-key? table]
   (helper/component-row

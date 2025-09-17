@@ -2,7 +2,6 @@
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.ui.editor.window :as editor-window]
             [cdq.schema :as schema]
             [cdq.stage]
             [cdq.property :as property]
@@ -52,8 +51,17 @@
                            {:actor delete-button :center? true}]]
         rows [[(widget/scroll-pane-cell scroll-pane-height
                                         scroll-pane-rows)]]]
-    (editor-window/create {:rows rows
-                           :group/actors actors})))
+    {:actor/type :actor.type/window
+     :title "[SKY]Property[]"
+     :actor/name "cdq.ui.editor.window"
+     :modal? true
+     :close-button? true
+     :center? true
+     :close-on-escape? true
+     :group/actors actors
+     :rows rows
+     :cell-defaults {:pad 5}
+     :pack? true}))
 
 (defn do!
   [{:keys [ctx/db
