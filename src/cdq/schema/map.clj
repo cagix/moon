@@ -28,10 +28,10 @@
     (actor/set-user-object! widget [k v])
     widget))
 
-(defn- component-row [editor-widget k schema schemas table]
+(defn- component-row [editor-widget k optional-key? table]
   (helper/component-row
    {:editor-widget editor-widget
-    :display-remove-component-button? (m/optional? k (schema/malli-form schema schemas))
+    :display-remove-component-button? optional-key?
     :k k
     :table table
     :label-text (helper/k->label-text k)}))
@@ -62,8 +62,7 @@
                                                                                                k
                                                                                                (schemas/default-value schemas k))
                                                                                  k
-                                                                                 schema
-                                                                                 schemas
+                                                                                 (m/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
     (.pack window)
@@ -103,8 +102,7 @@
                                     (map (fn [[k _v]]
                                            (component-row (k->widget k)
                                                           k
-                                                          schema
-                                                          schemas
+                                                          (m/optional? k (schema/malli-form schema schemas))
                                                           table))
                                          (utils/sort-by-k-order k-sort-order m)))]
     (table/add-rows!
