@@ -1,8 +1,8 @@
-(ns cdq.tx.add-skill
-  (:require [cdq.entity.skills :as skills]))
+(ns cdq.tx.add-skill)
 
-(defn do! [_ctx eid skill]
-  (swap! eid update :entity/skills skills/add-skill skill)
+(defn do! [_ctx eid {:keys [property/id] :as skill}]
+  {:pre [(not (contains? (:entity/skills @eid) id))]}
+  (swap! eid update :entity/skills assoc id skill)
   (if (:entity/player? @eid)
     [[:tx/player-add-skill skill]]
     nil))

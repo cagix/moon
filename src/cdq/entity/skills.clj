@@ -17,9 +17,3 @@
   ; => recursive info-text leads to endless text wall
   (when (seq skills)
     (str "Skills: " (str/join "," (map name (keys skills))))))
-
-(defn add-skill
-  [skills
-   {:keys [property/id] :as skill}]
-  {:pre [(not (contains? skills id))]}
-  (assoc skills id skill))

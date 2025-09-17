@@ -17,6 +17,9 @@
                                                Widget
                                                WidgetGroup)))
 
+(defn init! [ctx]
+  ctx)
+
 (extend-type Actor
   clojure.scene2d.actor/Actor
   (get-stage [actor]

@@ -1,7 +1,7 @@
 (ns clojure.vis-ui.label
-  (:require [clojure.gdx.scene2d])
+  (:require [clojure.scene2d.ui.widget :as widget])
   (:import (com.kotcrab.vis.ui.widget VisLabel)))
 
 (defn create [{:keys [label/text] :as opts}]
   (doto (VisLabel. ^CharSequence text)
-    (clojure.gdx.scene2d/actor-opts! opts)))
+    (widget/set-opts! opts)))
