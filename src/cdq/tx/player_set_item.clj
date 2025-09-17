@@ -1,7 +1,7 @@
 (ns cdq.tx.player-set-item
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.info :as info]
-            [cdq.ctx.stage :as stage]))
+            [cdq.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/graphics

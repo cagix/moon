@@ -1,8 +1,8 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [clojure.utils :as utils]
             [cdq.val-max :as val-max]
-            [cdq.ctx.stage :as stage]
+            [cdq.stage :as stage]
             [cdq.stats :as modifiers]))
 
 (defn create

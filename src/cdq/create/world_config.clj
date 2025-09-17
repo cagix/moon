@@ -1,5 +1,5 @@
 (ns cdq.create.world-config
-  (:require [cdq.ctx.world]
+  (:require [cdq.world]
             [cdq.grid.cell :as cell]
             [cdq.grid2d :as g2d]
             [cdq.world.raycaster :as raycaster]
@@ -119,7 +119,7 @@
                     :z-order/effect]})
 
 (defrecord World []
-  cdq.ctx.world/RayCaster
+  cdq.world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]
     (raycaster/blocked? raycaster start target))
 
@@ -131,19 +131,19 @@
                              (:body/position (:entity/body source))
                              (:body/position (:entity/body target)))))
 
-  cdq.ctx.world/MovementAI
+  cdq.world/MovementAI
   (find-movement-direction [{:keys [world/grid
                                     world/movement-ai]} eid]
     (movement-ai grid eid))
 
-  cdq.ctx.world/World
+  cdq.world/World
   (dispose! [{:keys [world/tiled-map]}]
     (disposable/dispose! tiled-map))
 
   (active-eids [this]
     (:world/active-entities this))
 
-  cdq.ctx.world/Resettable
+  cdq.world/Resettable
   (reset-state [world {:keys [tiled-map
                               start-position]}]
     (let [width  (:tiled-map/width  tiled-map)

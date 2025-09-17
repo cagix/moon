@@ -1,6 +1,6 @@
 (ns cdq.render.draw-world-map
-  (:require [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.world :as world]))
+  (:require [cdq.graphics :as graphics]
+            [cdq.world :as world]))
 
 (defn- tile-color-setter
   [{:keys [ray-blocked?

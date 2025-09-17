@@ -1,5 +1,5 @@
 (ns cdq.render.update-time
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn do!
   [{:keys [ctx/graphics

@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.inventory
   (:require [cdq.ctx :as ctx]
-            [cdq.ctx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [cdq.entity.state :as state]
             [cdq.inventory :as inventory]
             [clojure.scene2d :as scene2d]

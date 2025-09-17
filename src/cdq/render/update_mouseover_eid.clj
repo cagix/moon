@@ -1,5 +1,5 @@
 (ns cdq.render.update-mouseover-eid
-  (:require [cdq.ctx.world :as world]
+  (:require [cdq.world :as world]
             [cdq.world.grid :as grid]
             [clojure.utils :as utils]))
 

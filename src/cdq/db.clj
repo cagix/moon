@@ -1,4 +1,4 @@
-(ns cdq.ctx.db)
+(ns cdq.db)
 
 (defprotocol DB
   (property-types [_])

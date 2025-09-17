@@ -1,7 +1,7 @@
 (ns cdq.gdx-app.dispose
-  (:require [cdq.ctx.audio :as audio]
-            [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.world :as world]
+  (:require [cdq.audio :as audio]
+            [cdq.graphics :as graphics]
+            [cdq.world :as world]
             [clojure.vis-ui :as vis-ui]))
 
 (defn do!

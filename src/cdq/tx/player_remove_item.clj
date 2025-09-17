@@ -1,5 +1,5 @@
 (ns cdq.tx.player-remove-item
-  (:require [cdq.ctx.stage :as stage]))
+  (:require [cdq.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]}

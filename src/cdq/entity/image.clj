@@ -1,5 +1,5 @@
 (ns cdq.entity.image
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn draw
   [image

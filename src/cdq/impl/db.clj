@@ -1,5 +1,5 @@
 (ns cdq.impl.db
-  (:require [cdq.ctx.db :as db]
+  (:require [cdq.db :as db]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [clojure.edn :as edn]

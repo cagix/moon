@@ -1,8 +1,8 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.world :as world]
+            [cdq.graphics :as graphics]
+            [cdq.world :as world]
             [cdq.stats :as stats]
             [cdq.timer :as timer]))
 

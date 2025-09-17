@@ -1,7 +1,7 @@
 (ns cdq.create.world
   (:require [cdq.ctx :as ctx]
-            [cdq.ctx.db :as db]
-            [cdq.ctx.world :as world]
+            [cdq.db :as db]
+            [cdq.world :as world]
             [clojure.tiled :as tiled]))
 
 (defn- call-world-fn

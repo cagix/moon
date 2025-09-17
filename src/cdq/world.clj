@@ -1,4 +1,4 @@
-(ns cdq.ctx.world)
+(ns cdq.world)
 
 (defprotocol Resettable
   (reset-state [_ world-fn-result]))

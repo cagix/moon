@@ -1,4 +1,4 @@
-(ns cdq.ctx.input)
+(ns cdq.input)
 
 (defprotocol Input
   (player-movement-vector [_]))

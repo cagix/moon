@@ -1,5 +1,5 @@
 (ns cdq.effects.target-all
-  (:require [cdq.ctx.world :as world]))
+  (:require [cdq.world :as world]))
 
 (defn- affected-targets
   [active-entities

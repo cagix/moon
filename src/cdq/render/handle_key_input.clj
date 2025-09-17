@@ -1,6 +1,6 @@
 (ns cdq.render.handle-key-input
-  (:require [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.stage :as stage]
+  (:require [cdq.graphics :as graphics]
+            [cdq.stage :as stage]
             [clojure.input :as input]))
 
 (def ^:private close-windows-key  :escape)

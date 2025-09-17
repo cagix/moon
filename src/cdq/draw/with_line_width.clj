@@ -1,5 +1,5 @@
 (ns cdq.draw.with-line-width
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [clojure.earlygrey.shape-drawer :as sd]))
 
 (defn do!

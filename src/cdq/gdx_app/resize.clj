@@ -1,5 +1,5 @@
 (ns cdq.gdx-app.resize
-  (:require [cdq.ctx.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn do!
   [{:keys [ctx/graphics] :as ctx} width height]

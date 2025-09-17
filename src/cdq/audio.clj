@@ -1,4 +1,4 @@
-(ns cdq.ctx.audio)
+(ns cdq.audio)
 
 (defprotocol Audio
   (dispose! [_])

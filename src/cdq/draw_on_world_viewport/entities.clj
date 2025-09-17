@@ -1,7 +1,7 @@
 (ns cdq.draw-on-world-viewport.entities
   (:require [cdq.ctx :as ctx]
-            [cdq.ctx.graphics :as graphics]
-            [cdq.ctx.world :as world]
+            [cdq.graphics :as graphics]
+            [cdq.world :as world]
             [clojure.graphics.color :as color]
             [clojure.utils :as utils]))
 

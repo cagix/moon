@@ -1,7 +1,7 @@
 (ns cdq.dev
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.ctx.db :as db]))
+            [cdq.db :as db]))
 
 (defn post-runnable! [f]
   (.postRunnable com.badlogic.gdx.Gdx/app

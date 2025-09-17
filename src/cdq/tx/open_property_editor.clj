@@ -1,10 +1,10 @@
 (ns cdq.tx.open-property-editor
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.ctx.db :as db]
+            [cdq.db :as db]
             [cdq.ui.editor.window :as editor-window]
             [cdq.schema :as schema]
-            [cdq.ctx.stage]
+            [cdq.stage]
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
             [clojure.input :as input]
@@ -63,7 +63,7 @@
   (let [schemas (:schemas db)
         schema (get schemas (property/type property))
         widget (schema/create schema property ctx)
-        actor (create* {:scroll-pane-height (cdq.ctx.stage/viewport-height stage)
+        actor (create* {:scroll-pane-height (cdq.stage/viewport-height stage)
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]

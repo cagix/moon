@@ -1,4 +1,4 @@
-(ns cdq.ctx.graphics)
+(ns cdq.graphics)
 
 (defprotocol DrawHandler
   (handle-draws! [_ draws]))

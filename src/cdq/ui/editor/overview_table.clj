@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.overview-table
-  (:require [cdq.ctx.db :as db]
-            [cdq.ctx.graphics :as graphics]
+  (:require [cdq.db :as db]
+            [cdq.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.string :as string]))
 

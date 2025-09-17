@@ -1,5 +1,5 @@
 (ns cdq.create.graphics
-  (:require [cdq.ctx.graphics]
+  (:require [cdq.graphics]
             [cdq.gdx.graphics]
             [clojure.gdx.scene2d.ctx]
             [cdq.files]
@@ -33,7 +33,7 @@
                                    (:viewport/top-gutter-y      viewport))))
 
 (defrecord RGraphics []
-  cdq.ctx.graphics/Graphics
+  cdq.graphics/Graphics
   (clear! [{:keys [ctx/graphics]} [r g b a]]
     (graphics/clear! graphics r g b a))
 
@@ -187,13 +187,13 @@
   (extend-type (class ctx)
     clojure.gdx.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
-      (cdq.ctx.graphics/handle-draws! graphics draws)))
+      (cdq.graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
                                          clojure.gdx/graphics]} gdx
                                  draw-fns (:draw-fns config)
                                  graphics (create* graphics (graphics-config files config))]
                              (extend-type (class graphics)
-                               cdq.ctx.graphics/DrawHandler
+                               cdq.graphics/DrawHandler
                                (handle-draws! [graphics draws]
                                  (doseq [{k 0 :as component} draws
                                          :when component]

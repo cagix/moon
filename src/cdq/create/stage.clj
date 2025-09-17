@@ -1,6 +1,6 @@
 (ns cdq.create.stage
   (:require [cdq.application :as application]
-            cdq.ctx.stage
+            cdq.stage
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
@@ -22,7 +22,7 @@
       (group/find-actor k)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Stage
-  cdq.ctx.stage/Stage
+  cdq.stage/Stage
   (viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
   (viewport-height [stage] (:viewport/height (stage/viewport stage)))
 

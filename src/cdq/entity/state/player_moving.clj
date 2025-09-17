@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-moving
-  (:require [cdq.ctx.input :as input]
+  (:require [cdq.input :as input]
             [cdq.stats :as stats]))
 
 (defn- speed [{:keys [creature/stats]}]

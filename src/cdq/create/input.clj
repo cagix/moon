@@ -1,5 +1,5 @@
 (ns cdq.create.input
-  (:require [cdq.ctx.input]
+  (:require [cdq.input]
             [clojure.input :as input]
             [cdq.gdx.math.vector2 :as v]))
 
@@ -18,6 +18,6 @@
           v)))))
 
 (extend-type com.badlogic.gdx.Input
-  cdq.ctx.input/Input
+  cdq.input/Input
   (player-movement-vector [input]
     (WASD-movement-vector input)))

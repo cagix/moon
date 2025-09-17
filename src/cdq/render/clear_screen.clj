@@ -1,5 +1,5 @@
 (ns cdq.render.clear-screen
-  (:require [cdq.ctx.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [clojure.graphics.color :as color]))
 
 (defn do!

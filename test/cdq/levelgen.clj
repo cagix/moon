@@ -1,6 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.ctx.db :as db]
-            [cdq.ctx.graphics]
+  (:require [cdq.db :as db]
+            [cdq.graphics]
             [cdq.files :as files]
             [cdq.gdx.graphics]
             [cdq.impl.db]
@@ -66,7 +66,7 @@
 (def tile-size 48)
 
 (defrecord Graphics []
-  cdq.ctx.graphics/Graphics
+  cdq.graphics/Graphics
   (texture-region [this image]
     (cdq.gdx.graphics/texture-region this image)))
 

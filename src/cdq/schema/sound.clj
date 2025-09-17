@@ -1,6 +1,6 @@
 (ns cdq.schema.sound
-  (:require [cdq.ctx.audio :as audio]
-            [cdq.ctx.stage]
+  (:require [cdq.audio :as audio]
+            [cdq.stage]
             [cdq.ui.widget]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
@@ -38,7 +38,7 @@
                       ctx/stage]}]
     (stage/add! stage
                 (cdq.ui.widget/scroll-pane-window
-                 (cdq.ctx.stage/viewport-width stage)
+                 (cdq.stage/viewport-width stage)
                  (for [sound-name (audio/all-sounds audio)]
                    [{:actor {:actor/type :actor.type/text-button
                              :text sound-name

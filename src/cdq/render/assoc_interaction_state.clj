@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-interaction-state
-  (:require [cdq.ctx.stage :as stage]
+  (:require [cdq.stage :as stage]
             [cdq.creature :as creature]
             [cdq.entity :as entity]
             [cdq.gdx.math.vector2 :as v]))

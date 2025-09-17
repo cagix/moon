@@ -1,5 +1,5 @@
 (ns cdq.create.audio
-  (:require [cdq.ctx.audio]
+  (:require [cdq.audio]
             [clojure.audio :as audio]
             [clojure.audio.sound :as sound]
             [clojure.files :as files]))
@@ -15,7 +15,7 @@
                                            (for [sound-name sound-names]
                                              [sound-name
                                               (audio/sound audio (files/internal files (format path-format sound-name)))]))]
-                          (reify cdq.ctx.audio/Audio
+                          (reify cdq.audio/Audio
                             (dispose! [_]
                               (run! com.badlogic.gdx.audio.Sound/.dispose (vals sounds)))
 

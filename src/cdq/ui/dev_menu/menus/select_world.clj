@@ -1,7 +1,7 @@
 (ns cdq.ui.dev-menu.menus.select-world
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.ctx.world :as world]))
+            [cdq.world :as world]))
 
 (defn create
   [_ctx

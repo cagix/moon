@@ -1,4 +1,4 @@
-(ns cdq.ctx.stage)
+(ns cdq.stage)
 
 (defprotocol Stage
   (viewport-width [stage])

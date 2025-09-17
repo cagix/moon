@@ -1,6 +1,6 @@
 (ns cdq.schema.animation
   (:require [cdq.schemas :as schemas]
-            [cdq.ctx.graphics :as graphics]))
+            [cdq.graphics :as graphics]))
 
 (defn malli-form [_ schemas]
   (schemas/create-map-schema schemas
