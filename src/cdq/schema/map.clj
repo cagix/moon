@@ -76,32 +76,24 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defn create
-  [schema
-   m
-   {:keys [ctx/db
-           ctx/editor]
-    :as ctx}]
-  (let [k-sort-order (:editor/property-k-sort-order editor)
-        schemas (:schemas db)
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
-                                  (set (keys m))))
-        k->widget (into {}
-                        (for [[k v] m]
-                          [k (build-widget ctx (get schemas k) k v)]))
-        k->optional? #(m/optional? % (schema/malli-form schema schemas))
-        table (scene2d/build
+(defn map-widget-table
+  [{:keys [schema
+           k->widget
+           k->optional?
+           ks-sorted
+           opt?]}]
+  (let [table (scene2d/build
                {:actor/type :actor.type/table
                 :cell-defaults {:pad 5}
                 :actor/name "cdq.schema.map.ui.widget"})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
-                                    (map (fn [[k _v]]
+                                    (map (fn [k]
                                            (component-row (k->widget k)
                                                           k
                                                           (k->optional? k)
                                                           table))
-                                         (utils/sort-by-k-order k-sort-order m)))]
+                                         ks-sorted))]
     (table/add-rows!
      table
      (concat [(when opt?
@@ -120,6 +112,23 @@
                   :expand-x? true}])]
              component-rows))
     table))
+
+(defn create
+  [schema
+   m
+   {:keys [ctx/db
+           ctx/editor]
+    :as ctx}]
+  (let [schemas (:schemas db)]
+    (map-widget-table
+     {:schema schema
+      :k->widget (into {}
+                       (for [[k v] m]
+                         [k (build-widget ctx (get schemas k) k v)]))
+      :k->optional? #(m/optional? % (schema/malli-form schema schemas))
+      :ks-sorted (map first (utils/sort-by-k-order (:editor/property-k-sort-order editor) m))
+      :opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
+                                 (set (keys m))))})))
 
 (defn value [_ table schemas]
   (editor-window/map-widget-property-values table schemas))
