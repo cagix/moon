@@ -107,3 +107,10 @@
       (.free error-callback)
       (.bindRoot #'error-callback nil)
       (.cleanup application)))))
+
+(defn- call [[f params]]
+  (f params))
+
+(defn start! [_ctx {:keys [listener config]}]
+  (start-application! (call listener)
+                      config))
