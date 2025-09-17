@@ -4,7 +4,7 @@
             [cdq.files :as files]
             [cdq.gdx.graphics]
             [cdq.impl.db]
-            [cdq.ui.menu]
+            [clojure.gdx.scene2d]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
@@ -26,7 +26,7 @@
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
 
-(cdq.ui.menu/init! nil)
+(clojure.gdx.scene2d/init! nil)
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48

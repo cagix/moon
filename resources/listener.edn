@@ -47,7 +47,7 @@
           [cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                  :path-format "sounds/%s.wav"}]
           [clojure.core/dissoc :ctx/gdx]
-          [cdq.ui.menu/init!]
+          [clojure.gdx.scene2d/init!]
           [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
           [cdq.create.reset-stage/do!]
           [cdq.create.world-config/do!]
