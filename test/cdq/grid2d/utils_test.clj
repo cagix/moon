@@ -1,4 +1,4 @@
-(ns clojure.grid2d.utils-test
+(ns cdq.grid2d.utils-test
   (:require [clojure.grid2d.caves :as caves]
             [clojure.grid2d.utils :as utils]))
 
