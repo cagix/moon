@@ -33,7 +33,7 @@
     :resume! (fn [])}
    config))
 
-(defn- require-resolve-symbols [form]
+(defn require-resolve-symbols [form]
   (if (and (symbol? form)
            (namespace form))
     (let [var (requiring-resolve form)]

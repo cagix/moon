@@ -47,29 +47,7 @@
           [cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                  :path-format "sounds/%s.wav"}]
           [clojure.core/dissoc :ctx/gdx]
-          [cdq.ui.menu/init! [[clojure.scene2d/build
-                               :actor.type/actor
-                               clojure.gdx.scene2d.actor/create]
-                              [clojure.scene2d/build
-                               :actor.type/group
-                               clojure.gdx.scene2d.group/create]
-                              [clojure.scene2d/build
-                               :actor.type/widget
-                               clojure.gdx.scene2d.actor/create-widget]
-                              [clojure.scene2d/build
-                               :actor.type/menu-bar
-                               clojure.gdx.scene2d.actor.menu-bar/create]
-                              [clojure.scene2d/build
-                               :actor.type/select-box
-                               clojure.vis-ui.select-box/create]
-                              [clojure.scene2d/build
-                               :actor.type/label
-                               clojure.vis-ui.label/create]
-                              [clojure.scene2d/build
-                               :actor.type/text-field
-                               clojure.vis-ui.text-field/create]
-                              ]]
-          [clojure.vis-ui.widget/load!]
+          [cdq.ui.menu/init!]
           [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
           [cdq.create.reset-stage/do!]
           [cdq.create.world-config/do!]

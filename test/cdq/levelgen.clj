@@ -1,7 +1,7 @@
 (ns cdq.levelgen
   (:require [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
-            clojure.vis-ui.widget
+            cdq.ui.menu
             cdq.gdx.graphics
             cdq.ctx.graphics
             [clojure.gdx.scene2d.stage]
@@ -25,6 +25,8 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui :as vis-ui]
             [clojure.graphics.color :as color]))
+
+(cdq.ui.menu/init! nil)
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
