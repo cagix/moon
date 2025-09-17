@@ -1,9 +1,6 @@
 (ns clojure.gdx.files.file-handle
   (:import (com.badlogic.gdx.files FileHandle)))
 
-; TODO _minimal api_ !
-; can then re-implement myself
-
 (defn recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
          result []]

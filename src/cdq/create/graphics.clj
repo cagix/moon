@@ -2,11 +2,9 @@
   (:require [cdq.graphics]
             [cdq.gdx.graphics]
             [cdq.files]
-            [clojure.earlygrey.shape-drawer :as sd]
             [clojure.files :as files]
             [clojure.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
@@ -16,7 +14,9 @@
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics.color :as color]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [com.badlogic.gdx.graphics.colors :as colors]
+            [space.earlygrey.shape-drawer :as sd]))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter

@@ -1,6 +1,6 @@
 (ns clojure.gdx.graphics.g2d.bitmap-font
-  (:require [clojure.gdx.utils.align :as align]
-            [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [com.badlogic.gdx.utils.align :as align])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn configure!

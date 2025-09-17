@@ -1,8 +1,8 @@
 (ns cdq.gdx.graphics
-  (:require [clojure.earlygrey.shape-drawer :as sd]
-            [clojure.gdx.graphics.texture :as texture]
+  (:require [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [space.earlygrey.shape-drawer :as sd]))
 
 (defn draw-arc!
   [{:keys [ctx/shape-drawer]}

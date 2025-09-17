@@ -1,5 +1,5 @@
-(ns clojure.earlygrey.shape-drawer
-  (:require [clojure.gdx.graphics.color :as color])
+(ns space.earlygrey.shape-drawer
+  (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
