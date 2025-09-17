@@ -40,7 +40,7 @@
 
 (defn- interaction-state->txs [[k params] stage player-eid]
   (case k
-    :interaction-state/mouseover-actor nil ; handled by ui actors themself.
+    :interaction-state/mouseover-actor nil
 
     :interaction-state/clickable-mouseover-eid
     (let [{:keys [clicked-eid
@@ -98,7 +98,6 @@
                               player-eid))))
 
 (defn clicked-inventory-cell [eid cell]
-  ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     [[:tx/sound "bfxr_takeit"]
      [:tx/event eid :pickup-item item]

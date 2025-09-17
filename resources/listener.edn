@@ -28,8 +28,8 @@
            :ctx/ui-mouse-position true
            :ctx/world-mouse-position true
            :ctx/interaction-state true]
-          [clojure.decl/assoc* :ctx/db (cdq.db/create {:schemas "schema.edn"
-                                                       :properties "properties.edn"})]
+          [clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
+                                                            :properties "properties.edn"})]
           [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
           [cdq.start.txs/do! #edn/resource "txs.edn"]
           [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
