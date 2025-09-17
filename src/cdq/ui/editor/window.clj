@@ -82,7 +82,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defn map-widget-table
+(defmethod scene2d/build :actor.type/map-widget-table
   [{:keys [schema
            k->widget
            k->optional?

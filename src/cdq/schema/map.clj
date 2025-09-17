@@ -19,15 +19,15 @@
            ctx/editor]
     :as ctx}]
   (let [schemas (:schemas db)]
-    (editor-window/map-widget-table
-     {:schema schema
-      :k->widget (into {}
-                       (for [[k v] m]
-                         [k (editor-window/build-widget ctx (get schemas k) k v)]))
-      :k->optional? #(m/optional? % (schema/malli-form schema schemas))
-      :ks-sorted (map first (utils/sort-by-k-order (:editor/property-k-sort-order editor) m))
-      :opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
-                                 (set (keys m))))})))
+    {:actor/type :actor.type/map-widget-table
+     :schema schema
+     :k->widget (into {}
+                      (for [[k v] m]
+                        [k (editor-window/build-widget ctx (get schemas k) k v)]))
+     :k->optional? #(m/optional? % (schema/malli-form schema schemas))
+     :ks-sorted (map first (utils/sort-by-k-order (:editor/property-k-sort-order editor) m))
+     :opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
+                                (set (keys m))))}))
 
 (defn value [_ table schemas]
   (editor-window/map-widget-property-values table schemas))
