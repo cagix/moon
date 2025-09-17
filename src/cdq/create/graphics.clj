@@ -1,7 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.graphics]
             [cdq.gdx.graphics]
-            [clojure.scene2d.ctx]
             [cdq.files]
             [clojure.earlygrey.shape-drawer :as sd]
             [clojure.files :as files]
@@ -184,10 +183,6 @@
   [{:keys [ctx/gdx]
     :as ctx}
    config]
-  (extend-type (class ctx)
-    clojure.scene2d.ctx/Graphics
-    (draw! [{:keys [ctx/graphics]} draws]
-      (cdq.graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
                                          clojure.gdx/graphics]} gdx
                                  draw-fns (:draw-fns config)

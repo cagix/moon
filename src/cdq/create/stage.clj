@@ -1,5 +1,6 @@
 (ns cdq.create.stage
   (:require [cdq.application :as application]
+            [cdq.graphics :as graphics]
             [cdq.stage]
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
@@ -8,11 +9,16 @@
             [clojure.gdx.scene2d.ui.button :as button]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.ctx]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.window :as window]))
 
 (defn do! [ctx]
+  (extend-type (class ctx)
+    clojure.scene2d.ctx/Graphics
+    (draw! [{:keys [ctx/graphics]} draws]
+      (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (clojure.gdx.scene2d.stage/create
                          (:ctx/ui-viewport (:ctx/graphics ctx))
                          (:ctx/batch       (:ctx/graphics ctx))
