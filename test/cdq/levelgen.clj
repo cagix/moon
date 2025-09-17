@@ -5,7 +5,8 @@
             cdq.gdx.graphics
             cdq.ctx.graphics
             [clojure.gdx.scene2d.stage]
-            [cdq.db :as db]
+            [cdq.db]
+            [cdq.ctx.db :as db]
             [cdq.files :as files]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]

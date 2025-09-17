@@ -1,8 +1,4 @@
 [
- [cdq.db.DB
-  cdq.db
-  cdq.ctx.db/DB]
-
  [cdq.create.graphics.RGraphics
   cdq.gdx.graphics
   cdq.ctx.graphics/Graphics]
