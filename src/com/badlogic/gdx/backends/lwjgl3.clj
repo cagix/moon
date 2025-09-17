@@ -33,7 +33,7 @@
 
 (def error-callback nil)
 
-(defn initializeGlfw []
+(defn initializeGlfw [init]
   (when-not error-callback
     (natives-loader/load!)
     (.bindRoot #'error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream))
@@ -44,7 +44,14 @@
     (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
                        GLFW/GLFW_FALSE)
     (when-not (GLFW/glfwInit)
-      (throw (GdxRuntimeException. "Unable to initialize GLFW")))))
+      (throw (GdxRuntimeException. "Unable to initialize GLFW"))))
+  init)
+
+(defn set-logger
+  [{:keys [init/application]
+    :as init}]
+  (.setApplicationLogger application (Lwjgl3ApplicationLogger.))
+  init)
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
   (case k
@@ -64,15 +71,20 @@
       (set-config-key! obj k v))
     obj))
 
-(defn- gl-emulation-hook [gl-emulation]
-  (when (= gl-emulation
+(defn- gl-emulation-hook
+  [{:keys [init/config]
+    :as init}]
+  (when (= (.glEmulation config)
            Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/loadANGLE)))
+    (Lwjgl3Application/loadANGLE))
+  init)
 
-(defn- gl-emulation-hook-after-window [gl-emulation]
-  (when (= gl-emulation
+(defn- gl-emulation-hook-after-window [{:keys [init/config]
+                                        :as init}]
+  (when (= (.glEmulation config)
            Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/postLoadANGLE)))
+    (Lwjgl3Application/postLoadANGLE))
+  init)
 
 (defn- application-listener
   [{:keys [create!
@@ -99,52 +111,116 @@
     (resume [_]
       (resume!))))
 
-(defn start-application! [listener config]
-  (let [application (Lwjgl3Application.)
-        listener (application-listener listener)
-        config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
-    (gl-emulation-hook (.glEmulation config))
-    (initializeGlfw)
-    (.setApplicationLogger application (Lwjgl3ApplicationLogger.))
-    (set! (.config application) config)
-    (when-not (.title config)
-      (set! (.title config) (.getSimpleName (class listener))))
-    (set! Gdx/app application)
-    (if (.disableAudio config)
-      (set! (.audio application) (MockAudio.))
-      (try
-       (set! (.audio application) (.createAudio application config))
-       (catch Throwable t
-         (.log application "Lwjgl3Application" "Couldn't initialize audio, disabling audio" t)
-         (set! (.audio application) (MockAudio.)))))
-    (set! Gdx/audio (.audio application))
-    (set! (.files application) (.createFiles application))
-    (set! Gdx/files (.files application))
-    (set! (.net application) (Lwjgl3Net. config))
-    (set! (.clipboard application) (Lwjgl3Clipboard.))
-    (set! Gdx/net (.net application))
-    (set! (.sync application) (Sync.))
-    (let [window (.createWindow application config listener 0)]
-      (gl-emulation-hook-after-window (.glEmulation config))
-      (.add (.windows application) window))
+(defn set-gdx-app! [{:keys [init/application] :as init}]
+  (set! Gdx/app application)
+  init)
+
+(defn set-app-audio
+  [{:keys [init/application
+           init/config]
+    :as init}]
+  (if (.disableAudio config)
+    (set! (.audio application) (MockAudio.))
     (try
-     (let [closed-windows (Array.)]
-       (while (and (.running application)
-                   (> (.size (.windows application)) 0))
-         (.update (.audio application)) ; FIXME put it on a separate thread
-         (.loop application closed-windows)))
-     (.cleanupWindows application)
+     (set! (.audio application) (.createAudio application config))
      (catch Throwable t
-       (throw t)
-      ; if (t instanceof RuntimeException)
-      ; throw (RuntimeException)t;
-      ; else
-      ; throw new GdxRuntimeException(t);
-       )
-     (finally
-      (.free error-callback)
-      (.bindRoot #'error-callback nil)
-      (.cleanup application)))))
+       (.log application "Lwjgl3Application" "Couldn't initialize audio, disabling audio" t)
+       (set! (.audio application) (MockAudio.)))))
+  init)
+
+(defn set-gdx-audio! [{:keys [init/application]
+                       :as init}]
+  (set! Gdx/audio (.audio application))
+  init)
+
+(defn set-app-files [{:keys [init/application]
+                      :as init}]
+  (set! (.files application) (.createFiles application))
+  init)
+
+(defn set-gdx-files [{:keys [init/application]
+                      :as init}]
+  (set! Gdx/files (.files application))
+  init)
+
+(defn set-app-net [{:keys [init/application
+                           init/config]
+                    :as init}]
+  (set! (.net application) (Lwjgl3Net. config))
+  init)
+
+(defn set-app-clipboard [{:keys [init/application]
+                          :as init }]
+  (set! (.clipboard application) (Lwjgl3Clipboard.))
+  init)
+
+(defn set-gdx-net [{:keys [init/application]
+                    :as init}]
+  (set! Gdx/net (.net application))
+  init)
+
+(defn set-app-sync [{:keys [init/application]
+                     :as init}]
+  (set! (.sync application) (Sync.))
+  init)
+
+(defn create-window [{:keys [init/application
+                             init/config
+                             init/listener]
+                      :as init}]
+  (assoc init :init/window (.createWindow application config listener 0)))
+
+(defn add-windows-window [{:keys [init/window
+                                  init/application]
+                           :as init}]
+  (.add (.windows application) window)
+  init)
+
+(defn main-loop [{:keys [init/application]}]
+  (try
+   (let [closed-windows (Array.)]
+     (while (and (.running application)
+                 (> (.size (.windows application)) 0))
+       (.update (.audio application)) ; FIXME put it on a separate thread
+       (.loop application closed-windows)))
+   (.cleanupWindows application)
+   (catch Throwable t
+     (throw t)
+     ; if (t instanceof RuntimeException)
+     ; throw (RuntimeException)t;
+     ; else
+     ; throw new GdxRuntimeException(t);
+     )
+   (finally
+    (.free error-callback)
+    (.bindRoot #'error-callback nil)
+    (.cleanup application))))
+
+(defn start-application! [listener config]
+  (-> (let [config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
+        (when-not (.title config)
+          (set! (.title config) (.getSimpleName (class listener))))
+        {:init/application (let [application (Lwjgl3Application.)]
+                             (set! (.config application) config)
+                             application)
+         :init/listener (application-listener listener)
+         :init/config config})
+      gl-emulation-hook
+      initializeGlfw
+      set-logger
+      set-gdx-app!
+      set-app-audio
+      set-gdx-audio!
+      set-app-files
+      set-gdx-files
+      set-app-net
+      set-app-clipboard
+      set-gdx-net
+      set-app-sync
+      create-window
+      gl-emulation-hook-after-window
+      add-windows-window
+      main-loop))
 
 (defn- call [[f params]]
   (f params))
