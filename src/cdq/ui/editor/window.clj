@@ -3,9 +3,8 @@
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
-            [cdq.ui.editor.value-widget :as value-widget]
-            [cdq.ui.editor.widget.map.helper :as helper]
             [cdq.ui.editor.map-widget-table]
+            [cdq.ui.editor.value-widget :as value-widget]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
@@ -15,13 +14,46 @@
 
 (defn init! [ctx] ctx)
 
+(defn- k->label-text [k]
+  (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+  )
+
+(defn- component-row
+  [{:keys [editor-widget
+           display-remove-component-button?
+           k
+           table
+           label-text]}]
+  [{:actor {:actor/type :actor.type/table
+            :cell-defaults {:pad 2}
+            :rows [[{:actor (when display-remove-component-button?
+                              {:actor/type :actor.type/text-button
+                               :text "-"
+                               :on-clicked (fn [_actor ctx]
+                                             (actor/remove! (first (filter (fn [actor]
+                                                                             (and (actor/user-object actor)
+                                                                                  (= k ((actor/user-object actor) 0))))
+                                                                           (group/children table))))
+                                             (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))})
+                     :left? true}
+                    {:actor {:actor/type :actor.type/label
+                             :label/text label-text}}]]}
+    :right? true}
+   {:actor (separator/vertical)
+    :pad-top 2
+    :pad-bottom 2
+    :fill-y? true
+    :expand-y? true}
+   {:actor editor-widget
+    :left? true}])
+
 (defn- component-row [editor-widget k optional-key? table]
-  (helper/component-row
+  (component-row
    {:editor-widget editor-widget
     :display-remove-component-button? optional-key?
     :k k
     :table table
-    :label-text (helper/k->label-text k)}))
+    :label-text (k->label-text k)}))
 
 (defn- add-component-window [schemas schema map-widget-table]
   (let [window (scene2d/build {:actor/type :actor.type/window
