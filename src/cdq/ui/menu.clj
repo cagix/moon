@@ -1,10 +1,10 @@
 (ns cdq.ui.menu
-  (:require [cdq.application]
+  (:require [cdq.start]
             [clojure.walk :as walk])
   (:import (clojure.lang MultiFn)))
 
 (def impls (walk/postwalk
-            cdq.application/require-resolve-symbols
+            cdq.start/require-resolve-symbols
             '[[clojure.scene2d/build
                :actor.type/actor
                clojure.gdx.scene2d.actor/create]

@@ -1,6 +1,6 @@
 (ns cdq.create.stage
   (:require [cdq.application :as application]
-            cdq.stage
+            [cdq.stage]
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
