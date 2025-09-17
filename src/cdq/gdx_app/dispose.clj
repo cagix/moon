@@ -1,16 +1,16 @@
 (ns cdq.gdx-app.dispose
   (:require [cdq.audio :as audio]
             [cdq.graphics :as graphics]
-            [cdq.world :as world]
-            [clojure.vis-ui :as vis-ui]))
+            [cdq.world :as world]))
 
 (defn do!
   [{:keys [ctx/audio
            ctx/graphics
-           ctx/world]
+           ctx/world
+           ctx/vis-ui]
     :as ctx}]
   (audio/dispose! audio)
   (graphics/dispose! graphics)
-  (vis-ui/dispose!)
+  (com.badlogic.gdx.utils.Disposable/.dispose vis-ui)
   (world/dispose! world)
   ctx)

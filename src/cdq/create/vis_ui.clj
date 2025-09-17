@@ -2,5 +2,4 @@
   (:require [clojure.vis-ui :as vis-ui]))
 
 (defn do! [ctx params]
-  (vis-ui/load! params)
-  ctx)
+  (assoc ctx :ctx/vis-ui (vis-ui/load! params)))

@@ -102,7 +102,6 @@
 (defrecord Context [])
 
 (defn create! []
-  (vis-ui/load! {:skin-scale :x1})
   (let [{:keys [clojure.gdx/files
                 clojure.gdx/input
                 clojure.gdx/graphics]} (gdx/state)
@@ -127,6 +126,7 @@
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
+                   :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})
                    :ctx/textures (into {} (for [[path file-handle] (files/search files
                                                                                  {:folder "resources/"
                                                                                   :extensions #{"png" "bmp"}})]
@@ -144,7 +144,7 @@
 (defn dispose! []
   ; TODO ? disposing properly everything cdq.start stuff??
   ; batch, cursors, default-font, shape-drawer-texture, etc.
-  (vis-ui/dispose!)
+  (com.badlogic.gdx.utils.Disposable/.dispose (:ctx/vis-ui @state))
   (let [{:keys [ctx/sprite-batch
                 ctx/tiled-map]} @state]
     (disposable/dispose! sprite-batch) ; TODO that wont work anymore -> and one more fn so have to move it together?

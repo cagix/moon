@@ -14,6 +14,7 @@
                                                                [:ctx/input :some]
                                                                [:ctx/controls :some]
                                                                [:ctx/stage :some]
+                                                               [:ctx/vis-ui :some]
                                                                [:ctx/ui-actors :some]
                                                                [:ctx/world :some]
                                                                [:ctx/info :some]
