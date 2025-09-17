@@ -1,12 +1,4 @@
 [
- [com.badlogic.gdx.scenes.scene2d.Event
-  clojure.gdx.scene2d.event
-  clojure.scene2d.event/Event]
-
- [com.badlogic.gdx.scenes.scene2d.ui.Table
-  clojure.gdx.scene2d.ui.table
-  clojure.scene2d.ui.table/Table]
-
  [com.badlogic.gdx.maps.tiled.TiledMapTileLayer
   clojure.gdx.maps.tiled.layer
   clojure.tiled/HasMapProperties]

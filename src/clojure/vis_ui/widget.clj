@@ -3,7 +3,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
+            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
