@@ -32,20 +32,12 @@
     :resume! (fn [])}
    config))
 
-(defn require-resolve-symbols [form]
-  (if (and (symbol? form)
-           (namespace form))
-    (let [var (requiring-resolve form)]
-      (assert var form)
-      var)
-    form))
-
 (defn edn-resource [path]
   (->> path
        io/resource
        slurp
        (edn/read-string {:readers {'edn/resource edn-resource}})
-       (walk/postwalk require-resolve-symbols)))
+       (walk/postwalk utils/require-resolve-symbols)))
 
 (defn -main [path]
   (start! (edn-resource path)))

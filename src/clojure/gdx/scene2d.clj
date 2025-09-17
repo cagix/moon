@@ -5,6 +5,7 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.widget :as widget]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
@@ -135,6 +136,11 @@
     (draw [_batch _parent-alpha]
       (when-let [f (:draw opts)]
         (try-draw this f)))))
+
+(extend-type Widget
+  clojure.scene2d.ui.widget/Widget
+  (set-opts! [actor opts]
+    (actor-opts! actor opts)))
 
 (extend-type Group
   clojure.scene2d.group/Group

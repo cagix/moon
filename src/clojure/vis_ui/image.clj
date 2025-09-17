@@ -1,5 +1,5 @@
 (ns clojure.vis-ui.image
-  (:require [clojure.gdx.scene2d.ui.widget :as widget])
+  (:require [clojure.scene2d.ui.widget :as widget])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable)
