@@ -1,31 +1,31 @@
 (ns com.badlogic.gdx.backends.lwjgl3
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
+  (:require [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3.natives-loader :as natives-loader]
+            [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
+            [org.lwjgl.glfw :as glfw]
+            [org.lwjgl.glfw.error-callback :as error-callback])
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3ApplicationLogger
                                              Lwjgl3Clipboard
-                                             Lwjgl3NativesLoader
                                              Lwjgl3Net
                                              Lwjgl3WindowConfiguration
                                              Sync)
            (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)
            (com.badlogic.gdx.utils Array
-                                   GdxRuntimeException
-                                   SharedLibraryLoader
-                                   Os)
-           (org.lwjgl.glfw GLFW)
-           (org.lwjgl.glfw GLFWErrorCallback)))
+                                   GdxRuntimeException)
+           (org.lwjgl.glfw GLFW)))
 
 (def error-callback nil)
 
 (defn initializeGlfw []
   (when-not error-callback
-    (Lwjgl3NativesLoader/load)
-    (.bindRoot #'error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream))
-    (GLFW/glfwSetErrorCallback error-callback)
-    (when (= SharedLibraryLoader/os Os/MacOsX)
+    (natives-loader/load!)
+    (.bindRoot #'error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream))
+    (glfw/set-error-callback! error-callback)
+    (when (= (shared-library-loader/operating-system) :mac)
       (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
                          GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))
     (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
@@ -51,27 +51,6 @@
       (set-config-key! obj k v))
     obj))
 
-(defn- create-listener
-  [{:keys [create!
-           dispose!
-           render!
-           resize!
-           pause!
-           resume!]}]
-  (reify ApplicationListener
-    (create [_]
-      (create!))
-    (dispose [_]
-      (dispose!))
-    (render [_]
-      (render!))
-    (resize [_ width height]
-      (resize! width height))
-    (pause [_]
-      (pause!))
-    (resume [_]
-      (resume!))))
-
 (defn- gl-emulation-hook [gl-emulation]
   (when (= gl-emulation
            Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
@@ -84,7 +63,7 @@
 
 (defn start-application! [listener config]
   (let [application (Lwjgl3Application.)
-        listener (create-listener listener)
+        listener (gdx/application-listener listener)
         config (Lwjgl3ApplicationConfiguration/copy (create-config config))]
     (gl-emulation-hook (.glEmulation config))
     (initializeGlfw)

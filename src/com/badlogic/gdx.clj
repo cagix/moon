@@ -4,7 +4,8 @@
             clojure.files
             clojure.graphics
             clojure.input)
-  (:import (com.badlogic.gdx Audio
+  (:import (com.badlogic.gdx ApplicationListener
+                             Audio
                              Files
                              Gdx
                              Graphics
@@ -14,8 +15,27 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics GL20)))
 
-; TODO ApplicationListener
-; Initial :ctx/?
+(defn application-listener
+  [{:keys [create!
+           dispose!
+           render!
+           resize!
+           pause!
+           resume!]}]
+  (reify ApplicationListener
+    (create [_]
+      (create!))
+    (dispose [_]
+      (dispose!))
+    (render [_]
+      (render!))
+    (resize [_ width height]
+      (resize! width height))
+    (pause [_]
+      (pause!))
+    (resume [_]
+      (resume!))))
+
 (defn state []
   {
    :clojure.gdx/app      Gdx/app

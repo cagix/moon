@@ -71,7 +71,7 @@
                  ]
   :java-source-paths ["src"]
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.gdx.backends.lwjgl/-main) \"listener.edn\")"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application/-main) \"listener.edn\")"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }

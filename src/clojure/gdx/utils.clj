@@ -1,18 +1,7 @@
 (ns clojure.gdx.utils
-  (:import (com.badlogic.gdx.utils SharedLibraryLoader
-                                   Os)))
-
-(def ^:private os->clj
-  {Os/Android :android
-   Os/IOS     :ios
-   Os/Linux   :linux
-   Os/MacOsX  :mac
-   Os/Windows :windows})
-
-(defn- operating-system []
-  (os->clj SharedLibraryLoader/os))
+  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]))
 
 (defn dispatch-on-os
   [os->executions]
-  (doseq [[f params] (os->executions (operating-system))]
+  (doseq [[f params] (os->executions (shared-library-loader/operating-system))]
     (f params)))
