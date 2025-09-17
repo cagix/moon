@@ -88,21 +88,25 @@
            ctx/editor]
     :as ctx}]
   (let [k-sort-order (:editor/property-k-sort-order editor)
+        schemas (:schemas db)
+        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
+                                  (set (keys m))))
+        k->widget (into {}
+                        (for [[k v] m]
+                          [k (build-widget ctx (get schemas k) k v)]))
         table (scene2d/build
                {:actor/type :actor.type/table
                 :cell-defaults {:pad 5}
                 :actor/name "cdq.schema.map.ui.widget"})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
-                                    (map (fn [[k v]]
-                                           (component-row (build-widget ctx (get (:schemas db) k) k v)
+                                    (map (fn [[k _v]]
+                                           (component-row (k->widget k)
                                                           k
                                                           schema
-                                                          (:schemas db)
+                                                          schemas
                                                           table))
-                                         (utils/sort-by-k-order k-sort-order m)))
-        opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema (:schemas db)))
-                                  (set (keys m))))]
+                                         (utils/sort-by-k-order k-sort-order m)))]
     (table/add-rows!
      table
      (concat [(when opt?
