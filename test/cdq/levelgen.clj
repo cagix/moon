@@ -23,7 +23,6 @@
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]
             [clojure.vis-ui :as vis-ui]
-            [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
 
 (clojure.gdx.scene2d/init! nil)
@@ -104,11 +103,11 @@
 
 (defrecord Context [])
 
-(defn create! []
-  (let [{:keys [clojure.gdx/files
-                clojure.gdx/input
-                clojure.gdx/graphics]} (gdx/state)
-        ctx (map->Context {:ctx/input input})
+(defn create!
+  [{:keys [clojure.gdx/files
+           clojure.gdx/input
+           clojure.gdx/graphics]}]
+  (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
         stage (clojure.gdx.scene2d.stage/create ui-viewport sprite-batch state)

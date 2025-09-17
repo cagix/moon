@@ -8,8 +8,8 @@
            dispose
            render
            resize]}]
-  {:create! (fn []
-              (reset! application/state (utils/pipeline {} create)))
+  {:create! (fn [gdx]
+              (reset! application/state (utils/pipeline {:ctx/gdx gdx} create)))
    :dispose! (fn []
                (swap! application/state dispose))
    :render! (fn []

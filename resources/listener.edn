@@ -10,7 +10,7 @@
             :foreground-fps 60}
    :listener [cdq.application.listener/create
               {
-               :create [[clojure.decl/assoc* :ctx/gdx (com.badlogic.gdx/state)]
+               :create [
                         [cdq.start.context-record/do!]
                         [clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
                                                                              [:ctx/audio :some]
