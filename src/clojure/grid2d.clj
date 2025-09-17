@@ -1,4 +1,4 @@
-(ns cdq.grid2d)
+(ns clojure.grid2d)
 
 (defn assoc-ks [m ks v]
   (if (empty? ks)

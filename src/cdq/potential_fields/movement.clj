@@ -4,7 +4,7 @@
             [cdq.entity :as entity]
             [cdq.entity.faction :as faction]
             [cdq.world.grid :as grid]
-            [cdq.grid2d :as g2d]
+            [clojure.grid2d :as g2d]
             [cdq.position :as position]
             [cdq.gdx.math.vector2 :as v]
             [clojure.utils :as utils]))

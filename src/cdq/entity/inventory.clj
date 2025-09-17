@@ -1,5 +1,5 @@
 (ns cdq.entity.inventory
-  (:require [cdq.grid2d :as g2d]
+  (:require [clojure.grid2d :as g2d]
             [cdq.inventory :as inventory]))
 
 (defn- create-inventory []

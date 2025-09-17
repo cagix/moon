@@ -1,7 +1,7 @@
 (ns cdq.world-fns.create-star
-  (:require [cdq.grid2d :as g2d]
-            [cdq.rand :as rand]
-            [cdq.grid2d.utils :as helper]
+  (:require [clojure.grid2d :as g2d]
+            [clojure.rand :as rand]
+            [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.gdx.maps.tiled]
             [clojure.tiled]))

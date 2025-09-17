@@ -1,5 +1,5 @@
-(ns cdq.grid2d.nads
-  (:require [cdq.grid2d :as g2d]))
+(ns clojure.grid2d.nads
+  (:require [clojure.grid2d :as g2d]))
 
 (comment
   (def found (atom false))

@@ -1,6 +1,6 @@
-(ns cdq.grid2d.utils-test
-  (:require [cdq.grid2d.caves :as caves]
-            [cdq.grid2d.utils :as utils]))
+(ns clojure.grid2d.utils-test
+  (:require [clojure.grid2d.caves :as caves]
+            [clojure.grid2d.utils :as utils]))
 
 (comment
  (let [{:keys [start grid]} (caves/create (java.util.Random.) 15 15 :wide)

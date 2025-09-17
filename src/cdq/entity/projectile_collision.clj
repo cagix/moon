@@ -1,7 +1,7 @@
 (ns cdq.entity.projectile-collision
   (:require [cdq.body :as body]
             [cdq.grid.cell :as cell]
-            [cdq.grid2d :as g2d]
+            [clojure.grid2d :as g2d]
             [cdq.world.grid :as grid]))
 
 (defn create [v _ctx]

@@ -1,6 +1,6 @@
 (ns cdq.tx.deal-damage
   (:require [cdq.entity :as entity]
-            [cdq.rand :refer [rand-int-between]]
+            [clojure.rand :refer [rand-int-between]]
             [cdq.stats :as stats]))
 
 (defn do!

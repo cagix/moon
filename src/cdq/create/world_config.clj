@@ -1,7 +1,7 @@
 (ns cdq.create.world-config
   (:require [cdq.world]
             [cdq.grid.cell :as cell]
-            [cdq.grid2d :as g2d]
+            [clojure.grid2d :as g2d]
             [cdq.world.raycaster :as raycaster]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.tiled :as tiled]

@@ -1,6 +1,6 @@
 (ns cdq.impl.content-grid
   (:require [cdq.entity :as entity]
-            [cdq.grid2d :as g2d]
+            [clojure.grid2d :as g2d]
             [cdq.world.content-grid]))
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]

@@ -1,6 +1,6 @@
 (ns cdq.world-fns.modules.generate-modules
-  (:require [cdq.grid2d :as g2d]
-            [cdq.grid2d.utils :as helper]
+  (:require [clojure.grid2d :as g2d]
+            [clojure.grid2d.utils :as helper]
             [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.tiled :as tiled]))
