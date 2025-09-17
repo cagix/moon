@@ -1,38 +1,24 @@
 (ns cdq.start
-  (:require [cdq.application :as application]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.gdx.utils]
-            [clojure.scene2d.stage :as stage]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
             [clojure.walk :as walk]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3])
   (:gen-class))
 
-(defn start!
+(defn- call [[f params]]
+  (f params))
+
+(defn- start!
   [{:keys [os-settings
            config
-           create
-           dispose
-           render
-           resize]}]
+           listener]}]
   (clojure.gdx.utils/dispatch-on-os os-settings)
-  (lwjgl3/start-application!
-   {:create! (fn []
-               (reset! application/state (utils/pipeline {} create)))
-    :dispose! (fn []
-                (swap! application/state dispose))
-    :render! (fn []
-               (swap! application/state utils/pipeline render)
-               (stage/act!  (:ctx/stage @application/state))
-               (stage/draw! (:ctx/stage @application/state)))
-    :resize! (fn [width height]
-               (swap! application/state resize width height))
-    :pause! (fn [])
-    :resume! (fn [])}
-   config))
+  (lwjgl3/start-application! (call listener)
+                             config))
 
-(defn edn-resource [path]
+(defn- edn-resource [path]
   (->> path
        io/resource
        slurp
