@@ -1,4 +1,4 @@
-(ns clojure.vis-ui
+(ns com.kotcrab.vis.ui.vis-ui
   (:require [clojure.utils :as utils]
             [clojure.walk :as walk])
   (:import (clojure.lang MultiFn)
@@ -15,39 +15,39 @@
 
               [clojure.scene2d/build
                :actor.type/select-box
-               clojure.vis-ui.select-box/create]
+               com.kotcrab.vis.ui.widget.select-box/create]
 
               [clojure.scene2d/build
                :actor.type/label
-               clojure.vis-ui.label/create]
+               com.kotcrab.vis.ui.widget.label/create]
 
               [clojure.scene2d/build
                :actor.type/text-field
-               clojure.vis-ui.text-field/create]
+               com.kotcrab.vis.ui.widget.text-field/create]
 
               [clojure.scene2d/build
                :actor.type/check-box
-               clojure.vis-ui.check-box/create]
+               com.kotcrab.vis.ui.widget.check-box/create]
 
               [clojure.scene2d/build
                :actor.type/table
-               clojure.vis-ui.table/create]
+               com.kotcrab.vis.ui.widget.table/create]
 
               [clojure.scene2d/build
                :actor.type/image-button
-               clojure.vis-ui.image-button/create]
+               com.kotcrab.vis.ui.widget.image-button/create]
 
               [clojure.scene2d/build
                :actor.type/text-button
-               clojure.vis-ui.text-button/create]
+               com.kotcrab.vis.ui.widget.text-button/create]
 
               [clojure.scene2d/build
                :actor.type/window
-               clojure.vis-ui.window/create]
+               com.kotcrab.vis.ui.widget.window/create]
 
               [clojure.scene2d/build
                :actor.type/image
-               clojure.vis-ui.image/create]]))
+               com.kotcrab.vis.ui.widget.image/create]]))
 
 (defn load! [{:keys [skin-scale]}]
   (doseq [[defmulti-var k method-fn-var] impls]

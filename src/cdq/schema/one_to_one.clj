@@ -11,7 +11,7 @@
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.window :as window]
-            [clojure.vis-ui.tooltip :as tooltip]))
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 
 (defn create-value [_ property-id db]
   (db/build db property-id))

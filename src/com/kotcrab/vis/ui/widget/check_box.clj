@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.check-box
+(ns com.kotcrab.vis.ui.widget.check-box
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui.widget VisCheckBox)))

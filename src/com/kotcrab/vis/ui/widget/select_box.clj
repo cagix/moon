@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.select-box
+(ns com.kotcrab.vis.ui.widget.select-box
   (:import (com.kotcrab.vis.ui.widget VisSelectBox)))
 
 (def get-selected VisSelectBox/.getSelected)

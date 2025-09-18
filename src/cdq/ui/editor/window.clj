@@ -9,7 +9,7 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.vis-ui.separator :as separator]
+            [com.kotcrab.vis.ui.widget.separator :as separator]
             [malli.map-schema :as map-schema]))
 
 (defn init! [ctx] ctx)

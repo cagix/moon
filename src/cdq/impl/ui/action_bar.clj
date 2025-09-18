@@ -4,7 +4,7 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.vis-ui.tooltip :as tooltip]))
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 
 (defn create [_ctx _]
   {:actor/type :actor.type/table

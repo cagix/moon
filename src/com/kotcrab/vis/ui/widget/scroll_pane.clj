@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.scroll-pane
+(ns com.kotcrab.vis.ui.widget.scroll-pane
   (:import (com.kotcrab.vis.ui.widget VisScrollPane)))
 
 (defn create [actor]

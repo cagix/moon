@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.menu-bar
+(ns com.kotcrab.vis.ui.widget.menu-bar
   (:import (com.kotcrab.vis.ui.widget MenuBar)))
 
 (defn get-table [menu-bar]

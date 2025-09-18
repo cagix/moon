@@ -12,7 +12,7 @@
             [clojure.gdx.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
-            [clojure.vis-ui.tooltip :as tooltip]))
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 
 (defn- create*
   [{:keys [ctx/stage]}

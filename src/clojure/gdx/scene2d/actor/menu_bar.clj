@@ -6,10 +6,10 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [clojure.gdx.scene2d.ui.label :as label]
-            [clojure.vis-ui.menu :as menu]
-            [clojure.vis-ui.menu-bar :as menu-bar]
-            [clojure.vis-ui.menu-item :as menu-item]
-            [clojure.vis-ui.popup-menu :as popup-menu]))
+            [com.kotcrab.vis.ui.widget.menu :as menu]
+            [com.kotcrab.vis.ui.widget.menu-bar :as menu-bar]
+            [com.kotcrab.vis.ui.widget.menu-item :as menu-item]
+            [com.kotcrab.vis.ui.widget.popup-menu :as popup-menu]))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor

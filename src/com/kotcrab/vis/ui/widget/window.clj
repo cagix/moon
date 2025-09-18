@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.window
+(ns com.kotcrab.vis.ui.widget.window
   (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ui.window]
             [clojure.scene2d.ui.table :as table])

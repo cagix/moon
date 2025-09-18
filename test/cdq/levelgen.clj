@@ -22,7 +22,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]
-            [clojure.vis-ui :as vis-ui]
+            [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
 
 (clojure.gdx.scene2d/init! nil)

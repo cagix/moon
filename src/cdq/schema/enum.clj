@@ -1,7 +1,7 @@
 (ns cdq.schema.enum
   (:require [cdq.string :as string]
             [clojure.edn :as edn]
-            [clojure.vis-ui.select-box :as select-box]))
+            [com.kotcrab.vis.ui.widget.select-box :as select-box]))
 
 (defn malli-form [[_ & params] _schemas]
   (apply vector :enum params))

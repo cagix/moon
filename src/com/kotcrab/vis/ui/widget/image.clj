@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.image
+(ns com.kotcrab.vis.ui.widget.image
   (:require [clojure.scene2d.ui.widget :as widget])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

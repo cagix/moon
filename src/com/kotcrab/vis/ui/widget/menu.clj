@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.menu
+(ns com.kotcrab.vis.ui.widget.menu
   (:import (com.kotcrab.vis.ui.widget Menu)))
 
 (defn create [label]

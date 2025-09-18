@@ -1,4 +1,4 @@
-(ns clojure.vis-ui.tooltip
+(ns com.kotcrab.vis.ui.widget.tooltip
   (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align])

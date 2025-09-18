@@ -1,5 +1,5 @@
 (ns cdq.schema.boolean
-  (:require [clojure.vis-ui.check-box :as check-box]))
+  (:require [com.kotcrab.vis.ui.widget.check-box :as check-box]))
 
 (defn malli-form [[_ & params] _schemas]
   :boolean)
