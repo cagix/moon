@@ -1,5 +1,7 @@
 (ns com.badlogic.gdx.backends.lwjgl3
-  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]))
+  (:require [clojure.config :as config]
+            [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader])
+  (:gen-class))
 
 (require 'com.badlogic.gdx.backends.lwjgl3.init.listener)
 (require 'com.badlogic.gdx.backends.lwjgl3.init.net)
@@ -48,3 +50,8 @@
     (f params))
   (start-application! (call listener)
                       config))
+
+(defn -main [path]
+  (-> path
+      config/edn-resource
+      start!))
