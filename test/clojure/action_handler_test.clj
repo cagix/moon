@@ -1,5 +1,5 @@
 (ns clojure.action-handler-test
-  (:require [clojure.action-handler :refer [handle-txs!]]
+  (:require [cdq.start.txs :refer [actions!]]
             [clojure.test :refer :all]))
 
 (deftest return-flat-txs
@@ -13,7 +13,7 @@
                     :tx/bim-bam (fn [{:keys [accum]}]
                                   (swap! accum conj 2)
                                   nil)}
-        result (handle-txs! txs-fn-map ctx [[:tx/foobar]])]
+        result (actions! txs-fn-map ctx [[:tx/foobar]])]
     (is (= result
            [[:tx/foobar]
             [:tx/bar-baz]
