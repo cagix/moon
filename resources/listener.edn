@@ -1,16 +1,16 @@
 [
- [com.badlogic.gdx.backends.lwjgl3/start!
+ (com.badlogic.gdx.backends.lwjgl3/start!
   {
-   :os->executions {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-                          [j.awt.taskbar/set-icon-image! "icon.png"]]}
+   :os->executions {:mac [(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+                          (j.awt.taskbar/set-icon-image! "icon.png")]}
    :config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440 :height 900}
             :foreground-fps 60}
-   :listener [cdq.application.listener/create
+   :listener (cdq.application.listener/create
               {
                :create [
-                        [cdq.start.context-record/do!]
-                        [clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
+                        (cdq.start.context-record/do!)
+                        (clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
                                                                              [:ctx/audio :some]
                                                                              [:ctx/editor :some]
                                                                              [:ctx/db :some]
@@ -26,67 +26,67 @@
                                                                              [:ctx/mouseover-actor :any]
                                                                              [:ctx/ui-mouse-position :some]
                                                                              [:ctx/world-mouse-position :some]
-                                                                             [:ctx/interaction-state :some]])]
-                        [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
-                        [cdq.ui.editor.window/init!]
-                        [clojure.core/assoc
+                                                                             [:ctx/interaction-state :some]]))
+                        (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
+                        (cdq.ui.editor.window/init!)
+                        (clojure.core/assoc
                          :ctx/mouseover-actor nil
                          :ctx/ui-mouse-position true
                          :ctx/world-mouse-position true
-                         :ctx/interaction-state true]
-                        [clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
-                                                                          :properties "properties.edn"})]
-                        [clojure.core/assoc :ctx/info #edn/resource "info.edn"]
-                        [cdq.start.txs/do! #edn/resource "txs.edn"]
-                        [cdq.start.load-entity-components/do! #edn/resource "entity_components.edn"]
-                        [cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn"]
-                        [cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn"]
-                        [clojure.core/assoc :ctx/controls {:zoom-in :minus
+                         :ctx/interaction-state true)
+                        (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
+                                                                          :properties "properties.edn"}))
+                        (clojure.core/assoc :ctx/info #edn/resource "info.edn")
+                        (cdq.start.txs/do! #edn/resource "txs.edn")
+                        (cdq.start.load-entity-components/do! #edn/resource "entity_components.edn")
+                        (cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn")
+                        (cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn")
+                        (clojure.core/assoc :ctx/controls {:zoom-in :minus
                                                            :zoom-out :equals
                                                            :unpause-once :p
-                                                           :unpause-continously :space}]
-                        [cdq.create.input/do!]
-                        [cdq.create.vis-ui/do! {:skin-scale :x1}]
-                        [cdq.create.graphics/do! #edn/resource "graphics.edn"]
-                        [cdq.create.stage/do!]
-                        [cdq.create.set-input-processor/do!]
-                        [cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
-                                               :path-format "sounds/%s.wav"}]
-                        [clojure.core/dissoc :ctx/files]
-                        [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
-                        [cdq.create.reset-stage/do!]
-                        [cdq.create.world-config/do!]
-                        [cdq.create.world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                         :start-position [32 71]}]]]
-               :render  [[cdq.render.validate/do!]
-                         [cdq.render.update-mouse/do!]
-                         [cdq.render.update-mouseover-eid/do!]
-                         [cdq.render.check-open-debug/do!]
-                         [cdq.render.assoc-active-entities/do!]
-                         [cdq.render.set-camera-on-player/do!]
-                         [cdq.render.clear-screen/do!]
-                         [cdq.render.draw-world-map/do!]
-                         [cdq.render.draw-on-world-viewport/do! [
+                                                           :unpause-continously :space})
+                        (cdq.create.input/do!)
+                        (cdq.create.vis-ui/do! {:skin-scale :x1})
+                        (cdq.create.graphics/do! #edn/resource "graphics.edn")
+                        (cdq.create.stage/do!)
+                        (cdq.create.set-input-processor/do!)
+                        (cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
+                                               :path-format "sounds/%s.wav"})
+                        (clojure.core/dissoc :ctx/files)
+                        (clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn")
+                        (cdq.create.reset-stage/do!)
+                        (cdq.create.world-config/do!)
+                        (cdq.create.world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                         :start-position [32 71]}))]
+               :render  [(cdq.render.validate/do!)
+                         (cdq.render.update-mouse/do!)
+                         (cdq.render.update-mouseover-eid/do!)
+                         (cdq.render.check-open-debug/do!)
+                         (cdq.render.assoc-active-entities/do!)
+                         (cdq.render.set-camera-on-player/do!)
+                         (cdq.render.clear-screen/do!)
+                         (cdq.render.draw-world-map/do!)
+                         (cdq.render.draw-on-world-viewport/do! [
                                                                  cdq.draw-on-world-viewport.tile-grid/do!
                                                                  cdq.draw-on-world-viewport.cell-debug/do!
                                                                  cdq.draw-on-world-viewport.entities/do!
                                                                  #_cdq.draw-on-world-viewport.geom-test/do!
                                                                  cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
-                                                                 ]]
-                         [cdq.render.assoc-interaction-state/do!]
-                         [cdq.render.set-cursor/do!]
-                         [cdq.render.player-state-handle-input/do!]
-                         [cdq.render.assoc-paused/do!]
-                         [cdq.render.update-time/do!]
-                         [cdq.render.update-potential-fields/do!]
-                         [cdq.render.tick-entities/do!]
-                         [cdq.render.remove-destroyed-entities/do!]
-                         [cdq.render.handle-key-input/do!]
-                         [cdq.render.validate/do!]]
+                                                                 ])
+                         (cdq.render.assoc-interaction-state/do!)
+                         (cdq.render.set-cursor/do!)
+                         (cdq.render.player-state-handle-input/do!)
+                         (cdq.render.assoc-paused/do!)
+                         (cdq.render.update-time/do!)
+                         (cdq.render.update-potential-fields/do!)
+                         (cdq.render.tick-entities/do!)
+                         (cdq.render.remove-destroyed-entities/do!)
+                         (cdq.render.handle-key-input/do!)
+                         (cdq.render.validate/do!)]
                :dispose cdq.gdx-app.dispose/do!
                :resize  cdq.gdx-app.resize/do!
                }
-              ]
+              )
    }
-  ]
+  )
  ]
