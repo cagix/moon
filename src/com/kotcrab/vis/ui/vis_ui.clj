@@ -11,7 +11,7 @@
             '[
               [clojure.scene2d/build
                :actor.type/menu-bar
-               clojure.gdx.scene2d.actor.menu-bar/create]
+               com.kotcrab.vis.ui.widget.menu/create]
 
               [clojure.scene2d/build
                :actor.type/select-box
