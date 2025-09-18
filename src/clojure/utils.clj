@@ -1,13 +1,5 @@
 (ns clojure.utils)
 
-(defn require-resolve-symbols [form]
-  (if (and (symbol? form)
-           (namespace form))
-    (let [var (requiring-resolve form)]
-      (assert var form)
-      var)
-    form))
-
 (defn pipeline [object pipeline]
   (reduce (fn [object [f & params]]
             (apply f object params))

@@ -1,11 +1,10 @@
-[(com.badlogic.gdx.backends.lwjgl3/start!
-  {:os->executions {:mac [(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-                          (j.awt.taskbar/set-icon-image! "icon.png")]}
-   :config {:title "Cyber Dungeon Quest"
-            :windowed-mode {:width 1440 :height 900}
-            :foreground-fps 60}
-   :listener (cdq.application.listener/create
-              {:create #edn/resource "create.edn"
-               :render #edn/resource "render.edn"
-               :dispose cdq.gdx-app.dispose/do!
-               :resize  cdq.gdx-app.resize/do!})})]
+{:os->executions {:mac [(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+                        (j.awt.taskbar/set-icon-image! "icon.png")]}
+ :config {:title "Cyber Dungeon Quest"
+          :windowed-mode {:width 1440 :height 900}
+          :foreground-fps 60}
+ :listener (cdq.application.listener/create
+            {:create #edn/resource "create.edn"
+             :render #edn/resource "render.edn"
+             :dispose cdq.gdx-app.dispose/do!
+             :resize  cdq.gdx-app.resize/do!})}

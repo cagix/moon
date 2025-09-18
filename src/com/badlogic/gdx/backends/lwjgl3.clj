@@ -43,7 +43,7 @@
 (defn- call [[f params]]
   (f params))
 
-(defn start! [_ctx {:keys [os->executions listener config]}]
+(defn start! [{:keys [os->executions listener config]}]
   (doseq [[f params] (os->executions (shared-library-loader/operating-system))]
     (f params))
   (start-application! (call listener)

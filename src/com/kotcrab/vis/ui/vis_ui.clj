@@ -1,5 +1,5 @@
 (ns com.kotcrab.vis.ui.vis-ui
-  (:require [clojure.utils :as utils]
+  (:require clojure.config
             [clojure.walk :as walk])
   (:import (clojure.lang MultiFn)
            (com.kotcrab.vis.ui VisUI
@@ -7,7 +7,7 @@
            (com.kotcrab.vis.ui.widget Tooltip)))
 
 (def impls (walk/postwalk
-            utils/require-resolve-symbols
+            clojure.config/require-resolve-symbols
             '[
               [gdl.scene2d/build
                :actor.type/menu-bar
