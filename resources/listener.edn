@@ -54,7 +54,7 @@
                         [cdq.create.set-input-processor/do!]
                         [cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                                :path-format "sounds/%s.wav"}]
-                        [clojure.core/dissoc :ctx/gdx]
+                        [clojure.core/dissoc :ctx/files]
                         [clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn"]
                         [cdq.create.reset-stage/do!]
                         [cdq.create.world-config/do!]

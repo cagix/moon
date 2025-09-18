@@ -5,13 +5,12 @@
             [clojure.files :as files]))
 
 (defn do!
-  [{:keys [ctx/gdx]
+  [{:keys [ctx/audio
+           ctx/files]
     :as ctx}
    {:keys [sound-names
            path-format]}]
-  (assoc ctx :ctx/audio (let [{:keys [clojure.gdx/audio
-                                      clojure.gdx/files]} gdx
-                              sounds (into {}
+  (assoc ctx :ctx/audio (let [sounds (into {}
                                            (for [sound-name sound-names]
                                              [sound-name
                                               (audio/sound audio (files/internal files (format path-format sound-name)))]))]

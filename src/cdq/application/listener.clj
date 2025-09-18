@@ -8,8 +8,16 @@
            dispose
            render
            resize]}]
-  {:create! (fn [gdx]
-              (reset! application/state (utils/pipeline {:ctx/gdx gdx} create)))
+  {:create! (fn [{:keys [clojure.gdx/audio
+                         clojure.gdx/files
+                         clojure.gdx/graphics
+                         clojure.gdx/input]}]
+              (reset! application/state (utils/pipeline
+                                         {:ctx/audio audio
+                                          :ctx/files files
+                                          :ctx/graphics graphics
+                                          :ctx/input input}
+                                         create)))
    :dispose! (fn []
                (swap! application/state dispose))
    :render! (fn []

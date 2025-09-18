@@ -180,12 +180,11 @@
    :textures-to-load (cdq.files/search files texture-folder)})
 
 (defn do!
-  [{:keys [ctx/gdx]
+  [{:keys [ctx/files
+           ctx/graphics]
     :as ctx}
    config]
-  (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/files
-                                         clojure.gdx/graphics]} gdx
-                                 draw-fns (:draw-fns config)
+  (assoc ctx :ctx/graphics (let [draw-fns (:draw-fns config)
                                  graphics (create* graphics (graphics-config files config))]
                              (extend-type (class graphics)
                                cdq.graphics/DrawHandler
