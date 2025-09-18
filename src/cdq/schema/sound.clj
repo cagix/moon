@@ -1,7 +1,6 @@
 (ns cdq.schema.sound
   (:require [cdq.audio :as audio]
             [cdq.stage]
-            [cdq.ui.widget]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
@@ -37,16 +36,17 @@
   (fn [_actor {:keys [ctx/audio
                       ctx/stage]}]
     (stage/add! stage
-                (cdq.ui.widget/scroll-pane-window
-                 (cdq.stage/viewport-width stage)
-                 (for [sound-name (audio/all-sounds audio)]
-                   [{:actor {:actor/type :actor.type/text-button
-                             :text sound-name
-                             :on-clicked (rebuild! table sound-name)}}
-                    {:actor {:actor/type :actor.type/text-button
-                             :text "play!"
-                             :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                                           (audio/play-sound! audio sound-name))}}])))))
+                (scene2d/build
+                 {:actor/type :actor.type/scroll-pane-window
+                  :viewport-height (cdq.stage/viewport-width stage)
+                  :rows (for [sound-name (audio/all-sounds audio)]
+                          [{:actor {:actor/type :actor.type/text-button
+                                    :text sound-name
+                                    :on-clicked (rebuild! table sound-name)}}
+                           {:actor {:actor/type :actor.type/text-button
+                                    :text "play!"
+                                    :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                                  (audio/play-sound! audio sound-name))}}])}))))
 
 (defn- sound-columns [table sound-name]
   [{:actor {:actor/type :actor.type/text-button

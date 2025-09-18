@@ -16,7 +16,8 @@
      :height (min (- viewport-height 50)
                   (.getHeight table))}))
 
-(defn scroll-pane-window [viewport-height rows]
+(defmethod scene2d/build :actor.type/scroll-pane-window
+  [{:keys [viewport-height rows]}]
   (scene2d/build
    {:actor/type :actor.type/window
     :title "Choose"
