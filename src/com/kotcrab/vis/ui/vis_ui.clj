@@ -9,12 +9,16 @@
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip
+           (com.kotcrab.vis.ui.widget Separator
+                                      Tooltip
                                       VisLabel
                                       VisScrollPane)))
 
-; in cdq referenced:
-; * com.kotcrab.vis.ui.widget.separator
+(defmethod scene2d/build :actor.type/separator-horizontal [_]
+  (Separator. "default"))
+
+(defmethod scene2d/build :actor.type/separator-vertical [_]
+  (Separator. "vertical"))
 
 (defmethod scene2d/build :actor.type/scroll-pane
   [{:keys [scroll-pane/actor

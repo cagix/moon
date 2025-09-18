@@ -9,7 +9,6 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.kotcrab.vis.ui.widget.separator :as separator]
             [malli.map-schema :as map-schema]))
 
 (defn init! [ctx] ctx)
@@ -39,7 +38,7 @@
                     {:actor {:actor/type :actor.type/label
                              :label/text label-text}}]]}
     :right? true}
-   {:actor (separator/vertical)
+   {:actor {:actor/type :actor.type/separator-vertical}
     :pad-top 2
     :pad-bottom 2
     :fill-y? true
@@ -85,7 +84,7 @@
 
 (defn- horiz-sep [colspan]
   (fn []
-    [{:actor (separator/horizontal)
+    [{:actor {:actor/type :actor.type/separator-horizontal}
       :pad-top 2
       :pad-bottom 2
       :colspan colspan
@@ -123,7 +122,7 @@
                                         (stage/add! stage (add-component-window (:schemas db) schema table)))}
                   :colspan colspan}])]
              [(when opt?
-                [{:actor (separator/horizontal)
+                [{:actor {:actor/type :actor.type/separator-horizontal}
                   :pad-top 2
                   :pad-bottom 2
                   :colspan colspan
