@@ -2,7 +2,7 @@
  [cdq.ui.editor.window/init!]
  [clojure.gdx.scene2d/init!]
  [clojure.gdx.utils/dispatch-on-os
-  {:mac [[clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+  {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
          [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
  [com.badlogic.gdx.backends.lwjgl3/start!
   {

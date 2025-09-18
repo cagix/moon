@@ -1,4 +1,4 @@
-(ns clojure.lwjgl.system.configuration
+(ns org.lwjgl.system.configuration
   (:import (org.lwjgl.system Configuration)))
 
 (defn set-glfw-library-name! [string]

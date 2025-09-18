@@ -18,7 +18,7 @@
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.input :as input]
-            [clojure.lwjgl.system.configuration]
+            [org.lwjgl.system.configuration]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]
@@ -192,7 +192,7 @@
   (cdq.gdx.graphics/update-viewports! @state width height))
 
 (defn -main []
-  (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+  (org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
   (lwjgl3/start-application!
    {:create! create!
     :dispose! dispose!
