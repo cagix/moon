@@ -1,4 +1,5 @@
 (ns gdl.audio.sound)
 
 (defprotocol Sound
-  (play! [_]))
+  (play! [_])
+  (dispose! [_]))

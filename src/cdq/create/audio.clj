@@ -16,7 +16,7 @@
                                               (audio/sound audio (files/internal files (format path-format sound-name)))]))]
                           (reify cdq.audio/Audio
                             (dispose! [_]
-                              (run! com.badlogic.gdx.audio.Sound/.dispose (vals sounds)))
+                              (run! sound/dispose! (vals sounds)))
 
                             (all-sounds [_]
                               (map first sounds))
