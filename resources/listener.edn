@@ -1,5 +1,4 @@
 [
- [cdq.ui.editor.window/init!]
  [com.badlogic.gdx.backends.lwjgl3/start!
   {
    :os->executions {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
@@ -29,6 +28,7 @@
                                                                              [:ctx/world-mouse-position :some]
                                                                              [:ctx/interaction-state :some]])]
                         [clojure.core/assoc :ctx/editor #edn/resource "editor.edn"]
+                        [cdq.ui.editor.window/init!]
                         [clojure.core/assoc
                          :ctx/mouseover-actor nil
                          :ctx/ui-mouse-position true
