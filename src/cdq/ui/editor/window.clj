@@ -18,7 +18,7 @@
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
   )
 
-(defn- component-row
+(defn- component-row*
   [{:keys [editor-widget
            display-remove-component-button?
            k
@@ -48,7 +48,7 @@
     :left? true}])
 
 (defn- component-row [editor-widget k optional-key? table]
-  (component-row
+  (component-row*
    {:editor-widget editor-widget
     :display-remove-component-button? optional-key?
     :k k
