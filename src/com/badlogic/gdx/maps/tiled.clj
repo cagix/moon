@@ -1,7 +1,7 @@
-(ns clojure.gdx.maps.tiled
-  (:require [clojure.gdx.maps.tiled.layer :as layer]
-            [clojure.tiled]
-            [com.badlogic.gdx.maps.map-properties :as properties])
+(ns com.badlogic.gdx.maps.tiled
+  (:require [clojure.tiled]
+            [com.badlogic.gdx.maps.map-properties :as properties]
+            [com.badlogic.gdx.maps.tiled.tiled-map-tile-layer :as layer])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TmxMapLoader)
            (com.badlogic.gdx.utils Disposable)))

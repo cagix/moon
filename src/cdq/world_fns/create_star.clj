@@ -3,7 +3,7 @@
             [clojure.rand :as rand]
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [clojure.gdx.maps.tiled]
+            [com.badlogic.gdx.maps.tiled]
             [clojure.tiled]))
 
 (defn- assoc-transition-cells [grid]
@@ -82,7 +82,7 @@
 
         ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
         position->tile (position->tile-fn grid)
-        tiled-map (clojure.gdx.maps.tiled/create-tiled-map
+        tiled-map (com.badlogic.gdx.maps.tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
                                  "height" (g2d/height grid)
                                  "tilewidth"  tile-size

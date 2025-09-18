@@ -1,5 +1,5 @@
 #_(ns cdq.graphics.tiled-map-renderer-test
-  (:require [clojure.gdx.maps.tiled :as tiled]
+  (:require [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)

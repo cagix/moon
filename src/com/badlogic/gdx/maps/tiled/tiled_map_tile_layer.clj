@@ -1,4 +1,4 @@
-(ns clojure.gdx.maps.tiled.layer
+(ns com.badlogic.gdx.maps.tiled.tiled-map-tile-layer
   (:require [clojure.tiled :as tiled]
             [com.badlogic.gdx.maps.map-properties :as properties])
   (:import (com.badlogic.gdx.maps.tiled TiledMapTileLayer

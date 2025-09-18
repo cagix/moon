@@ -1,4 +1,4 @@
-(ns clojure.gdx.maps.tiled.tiles.static-tiled-map-tile
+(ns com.badlogic.gdx.maps.tiled.tiles
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
 
@@ -8,7 +8,7 @@
      (assert tile)
      (StaticTiledMapTile. tile))))
 
-(defn create
+(defn static-tiled-map-tile
   [texture-region property-name property-value]
   {:pre [texture-region
          (string? property-name)]}

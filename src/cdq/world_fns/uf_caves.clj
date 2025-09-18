@@ -1,7 +1,7 @@
 (ns cdq.world-fns.uf-caves
   (:require [cdq.world-fns.creature-tiles :as creature-tiles]
             [com.badlogic.gdx.graphics.texture :as texture]
-            [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]))
+            [com.badlogic.gdx.maps.tiled.tiles :as tiles]))
 
 (defn create
   [{:keys [creature-properties
@@ -22,12 +22,12 @@
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
-                                   (static-tiled-map-tile/create (texture/region texture
-                                                                                 (* (sprite-idx 0) tile-size)
-                                                                                 (* (sprite-idx 1) tile-size)
-                                                                                 tile-size
-                                                                                 tile-size)
-                                                                 "movement" movement))))
+                                   (tiles/static-tiled-map-tile (texture/region texture
+                                                                                (* (sprite-idx 0) tile-size)
+                                                                                (* (sprite-idx 1) tile-size)
+                                                                                tile-size
+                                                                                tile-size)
+                                                                "movement" movement))))
            :level/spawn-rate spawn-rate
            :level/scaling scaling
            :level/creature-properties (creature-tiles/prepare creature-properties graphics)}
