@@ -1,4 +1,4 @@
-(ns cdq.gdx-app.dispose
+(ns cdq.game.dispose
   (:require [cdq.audio :as audio]
             [cdq.graphics :as graphics]
             [cdq.world :as world]))

@@ -6,5 +6,5 @@
  :listener (cdq.application.listener/create
             {:create #edn/resource "create.edn"
              :render #edn/resource "render.edn"
-             :dispose cdq.gdx-app.dispose/do!
-             :resize  cdq.gdx-app.resize/do!})}
+             :dispose cdq.game.dispose/do!
+             :resize  cdq.game.resize/do!})}

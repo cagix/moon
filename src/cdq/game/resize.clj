@@ -1,4 +1,4 @@
-(ns cdq.gdx-app.resize
+(ns cdq.game.resize
   (:require [cdq.graphics :as graphics]))
 
 (defn do!
