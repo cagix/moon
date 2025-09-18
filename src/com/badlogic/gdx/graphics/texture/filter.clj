@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.texture.filter
+(ns com.badlogic.gdx.graphics.texture.filter
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)))
 
 (comment

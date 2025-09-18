@@ -10,7 +10,7 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.tiled-map-renderer :as tm-renderer]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.scene2d]
             [clojure.gdx.scene2d.stage]
             [clojure.gdx.utils.disposable :as disposable]

@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.g2d.bitmap-font
+(ns com.badlogic.gdx.graphics.g2d.bitmap-font
   (:require [clojure.string :as str]
             [com.badlogic.gdx.utils.align :as align])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
