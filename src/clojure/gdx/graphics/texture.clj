@@ -3,14 +3,13 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-; clojure.gdx.graphics/texture
-
-(defn from-file [file-handle]
+(defn from-file [file-handle] ; needs graphics?
   (Texture. ^FileHandle file-handle))
 
-(defn create [pixmap]
+(defn create [pixmap] ; pixmap/texture?
   (Texture. pixmap))
 
+; use protocol ?
 (defn region
   ([^Texture texture]
    (TextureRegion. texture))

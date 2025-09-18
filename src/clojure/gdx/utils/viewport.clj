@@ -4,6 +4,8 @@
            (com.badlogic.gdx.utils.viewport Viewport
                                             FitViewport)))
 
+; TODO use extend-type
+
 (defn update! [viewport width height & {:keys [center?]}]
   (Viewport/.update viewport width height center?)
   ; ignores width/height !
@@ -16,6 +18,7 @@
     [(.x vector2)
      (.y vector2)]))
 
+; TODO where does the constructor come from?
 (defn fit [width height camera]
   (proxy [FitViewport ILookup] [width height camera]
     (valAt [k]
