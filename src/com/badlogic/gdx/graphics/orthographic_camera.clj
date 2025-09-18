@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.camera
+(ns com.badlogic.gdx.graphics.orthographic-camera
   (:require [com.badlogic.gdx.math.vector3 :as vector3])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics OrthographicCamera)))

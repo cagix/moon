@@ -1,7 +1,6 @@
-(ns clojure.gdx.graphics.pixmap
+(ns com.badlogic.gdx.graphics.pixmap
   (:import (com.badlogic.gdx.graphics Pixmap
-                                      Pixmap$Format
-                                      Texture)))
+                                      Pixmap$Format)))
 
 (defn create
   ([]

@@ -1,4 +1,4 @@
-package clojure.gdx.graphics;
+package com.badlogic.gdx.maps.tiled.renderers;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.C1;
 import static com.badlogic.gdx.graphics.g2d.Batch.C2;
@@ -31,13 +31,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 
-import clojure.gdx.graphics.ColorSetter;
+import com.badlogic.gdx.maps.tiled.renderers.orthogonal.ColorSetter;
 
-public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
+public class Orthogonal extends BatchTiledMapRenderer {
 
   private ColorSetter colorSetter;
 
-	public OrthogonalTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
+	public Orthogonal (TiledMap map, float unitScale, Batch batch) {
 		super(map, unitScale, batch);
 	}
 

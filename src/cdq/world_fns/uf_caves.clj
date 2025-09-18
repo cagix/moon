@@ -1,6 +1,6 @@
 (ns cdq.world-fns.uf-caves
   (:require [cdq.world-fns.creature-tiles :as creature-tiles]
-            [clojure.gdx.graphics.texture :as texture]
+            [com.badlogic.gdx.graphics.texture :as texture]
             [clojure.gdx.maps.tiled.tiles.static-tiled-map-tile :as static-tiled-map-tile]))
 
 (defn create
