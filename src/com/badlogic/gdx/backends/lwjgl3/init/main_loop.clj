@@ -1,4 +1,4 @@
-(ns init.main-loop
+(ns com.badlogic.gdx.backends.lwjgl3.init.main-loop
   (:import (com.badlogic.gdx.utils Array)))
 
 (defn do!

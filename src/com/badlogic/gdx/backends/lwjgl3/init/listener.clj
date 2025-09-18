@@ -1,4 +1,4 @@
-(ns init.listener
+(ns com.badlogic.gdx.backends.lwjgl3.init.listener
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)))
 

@@ -1,4 +1,4 @@
-(ns init.config
+(ns com.badlogic.gdx.backends.lwjgl3.init.config
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration
                                              Lwjgl3WindowConfiguration)))
 

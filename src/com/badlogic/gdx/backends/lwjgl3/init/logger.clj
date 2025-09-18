@@ -1,4 +1,4 @@
-(ns init.logger
+(ns com.badlogic.gdx.backends.lwjgl3.init.logger
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationLogger)))
 
 (defn do!

@@ -1,4 +1,4 @@
-(ns init.files)
+(ns com.badlogic.gdx.backends.lwjgl3.init.files)
 
 (defn do! [{:keys [init/application]
             :as init}]

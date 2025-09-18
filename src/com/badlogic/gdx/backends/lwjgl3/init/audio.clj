@@ -1,4 +1,4 @@
-(ns init.audio
+(ns com.badlogic.gdx.backends.lwjgl3.init.audio
   (:import (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)))
 
 (defn do!

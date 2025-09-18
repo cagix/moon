@@ -1,4 +1,4 @@
-(ns init.sync
+(ns com.badlogic.gdx.backends.lwjgl3.init.sync
   (:import (com.badlogic.gdx.backends.lwjgl3 Sync)))
 
 (defn do! [{:keys [init/application]

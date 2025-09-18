@@ -1,4 +1,4 @@
-(ns init.gdx
+(ns com.badlogic.gdx.backends.lwjgl3.init.gdx
   (:require clojure.audio
             clojure.audio.sound
             clojure.files

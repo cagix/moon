@@ -1,4 +1,4 @@
-(ns init.gl-emulation
+(ns com.badlogic.gdx.backends.lwjgl3.init.gl-emulation
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration$GLEmulation)))
 

@@ -1,4 +1,4 @@
-(ns init.clipboard
+(ns com.badlogic.gdx.backends.lwjgl3.init.clipboard
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Clipboard)))
 
 (defn do! [{:keys [init/application]

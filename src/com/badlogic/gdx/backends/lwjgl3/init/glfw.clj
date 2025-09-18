@@ -1,4 +1,4 @@
-(ns init.glfw
+(ns com.badlogic.gdx.backends.lwjgl3.init.glfw
   (:require [com.badlogic.gdx.backends.lwjgl3.natives-loader :as natives-loader]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
             [org.lwjgl.glfw :as glfw]
