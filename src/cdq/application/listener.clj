@@ -1,30 +1,20 @@
 (ns cdq.application.listener
-  (:require [cdq.application :as application]
-            [gdl.scene2d.stage :as stage]
-            [clojure.utils :as utils]))
+  (:require [cdq.application :as application]))
 
 (defn create
   [{:keys [create
            dispose
            render
            resize]}]
-  {:create! (fn [{:keys [clojure.gdx/audio
-                         clojure.gdx/files
-                         clojure.gdx/graphics
-                         clojure.gdx/input]}]
-              (reset! application/state (utils/pipeline
-                                         {:ctx/audio audio
-                                          :ctx/files files
-                                          :ctx/graphics graphics
-                                          :ctx/input input}
-                                         create)))
+  {:create! (fn [gdx]
+              (let [[f pipeline] create]
+                (f application/state gdx pipeline)))
    :dispose! (fn []
-               (swap! application/state dispose))
+               (dispose application/state))
    :render! (fn []
-              (swap! application/state utils/pipeline render)
-              (stage/act!  (:ctx/stage @application/state))
-              (stage/draw! (:ctx/stage @application/state)))
+              (let [[f pipeline] render]
+                (f application/state pipeline)))
    :resize! (fn [width height]
-              (swap! application/state resize width height))
+              (resize application/state width height))
    :pause! (fn [])
    :resume! (fn [])})

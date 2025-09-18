@@ -4,7 +4,7 @@
           :windowed-mode {:width 1440 :height 900}
           :foreground-fps 60}
  :listener (cdq.application.listener/create
-            {:create #edn/resource "create.edn"
-             :render #edn/resource "render.edn"
-             :dispose cdq.game.dispose/do!
-             :resize  cdq.game.resize/do!})}
+            {:create [cdq.application.create/do! #edn/resource "create.edn"]
+             :render [cdq.application.render/do! #edn/resource "render.edn"]
+             :dispose cdq.application.dispose/do!
+             :resize  cdq.application.resize/do!})}
