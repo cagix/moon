@@ -1,4 +1,5 @@
-(ns com.badlogic.gdx.backends.lwjgl3)
+(ns com.badlogic.gdx.backends.lwjgl3
+  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]))
 
 (require 'com.badlogic.gdx.backends.lwjgl3.init.listener)
 (require 'com.badlogic.gdx.backends.lwjgl3.init.net)
@@ -42,6 +43,8 @@
 (defn- call [[f params]]
   (f params))
 
-(defn start! [_ctx {:keys [listener config]}]
+(defn start! [_ctx {:keys [os->executions listener config]}]
+  (doseq [[f params] (os->executions (shared-library-loader/operating-system))]
+    (f params))
   (start-application! (call listener)
                       config))

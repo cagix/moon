@@ -1,11 +1,10 @@
 [
  [cdq.ui.editor.window/init!]
  [clojure.gdx.scene2d/init!]
- [clojure.gdx.utils/dispatch-on-os
-  {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-         [j.awt.taskbar/set-icon-image! "icon.png"]]}]
  [com.badlogic.gdx.backends.lwjgl3/start!
   {
+   :os->executions {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+                          [j.awt.taskbar/set-icon-image! "icon.png"]]}
    :config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440 :height 900}
             :foreground-fps 60}
