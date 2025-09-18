@@ -3,8 +3,7 @@
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
+            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx _]
   {:actor/type :actor.type/table
@@ -44,7 +43,7 @@
                    :actor/user-object skill-id
                    :drawable/texture-region texture-region
                    :drawable/scale 2})]
-      (tooltip/add!     button tooltip-text)
+      (actor/add-tooltip! button tooltip-text)
       (group/add!        horizontal-group button)
       (button-group/add! button-group     button)
       nil))

@@ -22,3 +22,7 @@
 
 (defn toggle-visible! [actor]
   (set-visible! actor (not (visible? actor))))
+
+(defprotocol Tooltip
+  (add-tooltip! [_ tooltip-text-or-text-fn])
+  (remove-tooltip! [_]))

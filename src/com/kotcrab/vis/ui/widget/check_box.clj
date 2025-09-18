@@ -1,13 +1,15 @@
 (ns com.kotcrab.vis.ui.widget.check-box
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.scenes.scene2d.ui Button)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui.widget VisCheckBox)))
 
-(def checked? VisCheckBox/.isChecked)
-
 (defn create
   [{:keys [text on-clicked checked?]}]
-  (let [^Button button (VisCheckBox. (str text))]
+  (let [^Button button (proxy [VisCheckBox ILookup] [(str text)]
+                         (valAt [k]
+                           (case k
+                             :check-box/checked? (VisCheckBox/.isChecked this))))]
     (.setChecked button checked?)
     (.addListener button
                   (proxy [ChangeListener] []

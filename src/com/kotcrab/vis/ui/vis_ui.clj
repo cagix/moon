@@ -1,10 +1,19 @@
 (ns com.kotcrab.vis.ui.vis-ui
   (:require clojure.config
-            [clojure.walk :as walk])
+            [clojure.walk :as walk]
+            [com.badlogic.gdx.utils.align :as align]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage])
   (:import (clojure.lang MultiFn)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip)))
+           (com.kotcrab.vis.ui.widget Tooltip
+                                      VisLabel)))
+
+; in cdq referenced:
+; * com.kotcrab.vis.ui.widget.scroll-pane
+; * com.kotcrab.vis.ui.widget.separator
 
 (def impls (walk/postwalk
             clojure.config/require-resolve-symbols
@@ -75,3 +84,35 @@
   (reify com.badlogic.gdx.utils.Disposable
     (dispose [_]
       (VisUI/dispose))))
+
+(let [update-fn (fn [tooltip-text]
+                  (fn [tooltip]
+                    (when-not (string? tooltip-text)
+                      (let [actor (Tooltip/.getTarget tooltip)
+                            ; acturs might be initialized without a stage yet so we do when-let
+                            ; FIXME double when-let
+                            ctx (when-let [stage (actor/get-stage actor)]
+                                  (stage/get-ctx stage))]
+                        (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
+                          (Tooltip/.setText tooltip (str (tooltip-text ctx))))))))]
+  (extend-type Actor
+    actor/Tooltip
+    (add-tooltip! [actor tooltip-text]
+      (let [text? (string? tooltip-text)
+            label (doto (VisLabel. ^CharSequence (str (if text? tooltip-text "")))
+                    (.setAlignment (align/k->value :center)))
+            update-text! (update-fn tooltip-text)]
+        (doto (proxy [Tooltip] []
+                ; hooking into getWidth because at
+                ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                ; when tooltip position gets calculated we setText (which calls pack) before that
+                ; so that the size is correct for the newly calculated text.
+                (getWidth []
+                  (update-text! this)
+                  (proxy-super getWidth)))
+          (.setTarget  actor)
+          (.setContent label)))
+      actor)
+
+    (remove-tooltip! [actor]
+      (Tooltip/removeTooltip actor))))

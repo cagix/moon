@@ -1,11 +1,11 @@
 (ns com.kotcrab.vis.ui.widget.image-button
-  (:require [gdl.scene2d.event :as event]
+  (:require [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.event :as event]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.kotcrab.vis.ui.widget VisImageButton)))
 
@@ -25,5 +25,5 @@
                                   (fn [event actor]
                                     (on-clicked actor (stage/get-ctx (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
-      (tooltip/add! image-button tooltip))
+      (actor/add-tooltip! image-button tooltip))
     (table/set-opts! image-button opts)))

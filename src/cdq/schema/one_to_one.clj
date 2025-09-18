@@ -10,8 +10,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
+            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn create-value [_ property-id db]
   (db/build db property-id))
@@ -55,7 +54,7 @@
                              {:actor/type :actor.type/image
                               :image/object texture-region
                               :actor/user-object property-id})]
-           {:actor (tooltip/add! image-widget (string/pprint-to-str property))}
+           {:actor (actor/add-tooltip! image-widget (string/pprint-to-str property))}
            image-widget))]
       [(when property-id
          {:actor {:actor/type :actor.type/text-button

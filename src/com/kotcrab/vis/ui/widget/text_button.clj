@@ -1,9 +1,9 @@
 (ns com.kotcrab.vis.ui.widget.text-button
-  (:require [gdl.scene2d.event :as event]
+  (:require [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.event :as event]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.kotcrab.vis.ui.widget VisTextButton)))
 
 (defn create
@@ -19,5 +19,5 @@
                                   (on-clicked actor (stage/get-ctx (event/stage event))))))
                  (table/set-opts! opts))]
      (when-let [tooltip (:tooltip opts)]
-       (tooltip/add! actor tooltip))
+       (actor/add-tooltip! actor tooltip))
      actor)))

@@ -1,19 +1,17 @@
 (ns com.kotcrab.vis.ui.widget.text-field
-  (:require [gdl.scene2d.ui.text-field]
-            [gdl.scene2d.ui.widget :as widget]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
-  (:import (com.kotcrab.vis.ui.widget VisTextField)))
-
-(extend-type VisTextField
-  gdl.scene2d.ui.text-field/TextField
-  (get-text [this]
-    (.getText this)))
+  (:require [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ui.widget :as widget])
+  (:import (clojure.lang ILookup)
+           (com.kotcrab.vis.ui.widget VisTextField)))
 
 (defn create
   [{:keys [text-field/text]
     :as opts}]
-  (let [actor (-> (VisTextField. (str text))
+  (let [actor (-> (proxy [VisTextField ILookup] [(str text)]
+                    (valAt [k]
+                      (case k
+                        :text-field/text (VisTextField/.getText this))))
                   (widget/set-opts! opts))]
     (when-let [tooltip (:tooltip opts)]
-      (tooltip/add! actor tooltip))
+      (actor/add-tooltip! actor tooltip))
     actor))

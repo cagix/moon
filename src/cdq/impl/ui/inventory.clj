@@ -11,8 +11,7 @@
             [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create*
   [{:keys [ctx/stage]}
@@ -107,13 +106,13 @@
           cell-size (:cell-size (actor/user-object image-widget))
           drawable (drawable/create texture-region :width cell-size :height cell-size)]
       (image/set-drawable! image-widget drawable)
-      (tooltip/add! cell-widget tooltip-text)))
+      (actor/add-tooltip! cell-widget tooltip-text)))
 
   (remove-item! [inventory-window cell]
     (let [cell-widget (window->cell inventory-window cell)
           image-widget (group/find-actor cell-widget "image-widget")]
       (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
-      (tooltip/remove! cell-widget)))
+      (actor/remove-tooltip! cell-widget)))
 
   (cell-with-item? [_ actor]
     (and (actor/parent actor)

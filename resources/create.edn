@@ -36,12 +36,13 @@
                                     :unpause-once :p
                                     :unpause-continously :space})
  (cdq.create.input/do!)
- (cdq.create.vis-ui/do! {:skin-scale :x1})
+ (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
  (cdq.create.graphics/do! #edn/resource "graphics.edn")
  (cdq.create.stage/do! {:state-var cdq.application/state
                         :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
  (cdq.create.set-input-processor/do!)
- (cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
+ (cdq.create.audio/do! {:audio-impl cdq.impl.audio/create
+                        :sound-names #edn/resource "sounds.edn"
                         :path-format "sounds/%s.wav"})
  (clojure.core/dissoc :ctx/files)
  (clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn")

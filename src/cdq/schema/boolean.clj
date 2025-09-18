@@ -1,5 +1,4 @@
-(ns cdq.schema.boolean
-  (:require [com.kotcrab.vis.ui.widget.check-box :as check-box]))
+(ns cdq.schema.boolean)
 
 (defn malli-form [[_ & params] _schemas]
   :boolean)
@@ -15,4 +14,4 @@
    :checked? checked?})
 
 (defn value [_ widget _schemas]
-  (check-box/checked? widget))
+  (:check-box/checked? widget))

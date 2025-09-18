@@ -70,7 +70,10 @@
    property]
   (let [schemas (:schemas db)
         schema (get schemas (property/type property))
-        widget (schema/create schema property ctx)
+        ; build for get-widget-value
+        ; or find a way to find the widget from the context @ save button
+        ; should be possible
+        widget (scene2d/build (schema/create schema property ctx))
         actor (create* {:scroll-pane-height (cdq.stage/viewport-height stage)
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
