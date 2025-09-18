@@ -10,7 +10,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [gdl.scene2d.ui.window :as window]))
 
 (defn malli-form [[_ property-type] _schemas]
   [:set [:qualified-keyword {:namespace (cdq.property/type->id-namespace property-type)}]])
@@ -27,7 +27,7 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (window/pack-ancestors! table))]
+                    (.pack (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[{:actor {:actor/type :actor.type/text-button

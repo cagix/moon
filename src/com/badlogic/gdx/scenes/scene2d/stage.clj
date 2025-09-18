@@ -6,6 +6,7 @@
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
             [gdl.scene2d.ui.widget :as widget]
+            [gdl.scene2d.ui.window :as window]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
@@ -16,7 +17,8 @@
                                                Stack
                                                Table
                                                Widget
-                                               WidgetGroup)))
+                                               WidgetGroup
+                                               Window)))
 
 (defn create [viewport batch state]
   (StageWithCtx. viewport batch state))
@@ -266,3 +268,12 @@
     (doto table
       (table/add-rows! rows)
       (set-widget-group-opts! opts))))
+
+(extend-type Window
+  window/Ancestor
+  (find-ancestor [actor]
+    (if-let [parent (actor/parent actor)]
+      (if (instance? Window parent)
+        parent
+        (window/find-ancestor parent))
+      (throw (Error. (str "Actor has no parent window " actor))))))

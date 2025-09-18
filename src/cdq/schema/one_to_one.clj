@@ -10,7 +10,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [gdl.scene2d.ui.window :as window]))
 
 (defn create-value [_ property-id db]
   (db/build db property-id))
@@ -27,7 +27,7 @@
   (let [redo-rows (fn [ctx id]
                     (group/clear-children! table)
                     (add-one-to-one-rows ctx table property-type id)
-                    (window/pack-ancestors! table))]
+                    (.pack (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[(when-not property-id

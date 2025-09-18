@@ -6,7 +6,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [gdl.scene2d.ui.window :as window]))
 
 (defn malli-form [_ _schemas]
   :string)
@@ -26,7 +26,7 @@
 
     (.remove (window/find-ancestor actor))
 
-    (window/pack-ancestors! table)
+    (.pack (window/find-ancestor table))
 
     (let [[k _] (actor/user-object table)]
       (actor/set-user-object! table [k sound-name]))
