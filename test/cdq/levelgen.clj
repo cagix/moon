@@ -11,7 +11,6 @@
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [clojure.gdx.scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.utils.viewport :as viewport]
@@ -24,8 +23,6 @@
             [clojure.tiled :as tiled]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
-
-(clojure.gdx.scene2d/init! nil)
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48

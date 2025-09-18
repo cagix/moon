@@ -1,6 +1,5 @@
 [
  [cdq.ui.editor.window/init!]
- [clojure.gdx.scene2d/init!]
  [com.badlogic.gdx.backends.lwjgl3/start!
   {
    :os->executions {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
