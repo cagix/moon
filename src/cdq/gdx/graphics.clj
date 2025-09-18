@@ -1,6 +1,6 @@
 (ns cdq.gdx.graphics
   (:require [com.badlogic.gdx.graphics.texture :as texture]
-            [clojure.gdx.utils.viewport :as viewport]
+            [com.badlogic.gdx.utils.viewport :as viewport]
             [clojure.utils :as utils]
             [space.earlygrey.shape-drawer :as sd]))
 

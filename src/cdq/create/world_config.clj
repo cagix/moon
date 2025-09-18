@@ -3,7 +3,7 @@
             [cdq.grid.cell :as cell]
             [clojure.grid2d :as g2d]
             [cdq.world.raycaster :as raycaster]
-            [clojure.gdx.utils.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]
             [malli.core :as m]
