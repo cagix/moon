@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.utils.listener
+(ns com.badlogic.gdx.scenes.scene2d.utils.listener
   (:require clojure.scene2d.event)
   (:import (com.badlogic.gdx.scenes.scene2d Event)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener

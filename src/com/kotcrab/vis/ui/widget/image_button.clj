@@ -3,8 +3,8 @@
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scene2d.utils.listener :as listener]
+            [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
   (:import (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.kotcrab.vis.ui.widget VisImageButton)))

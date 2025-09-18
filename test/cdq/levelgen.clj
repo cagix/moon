@@ -12,7 +12,7 @@
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.scene2d]
-            [clojure.gdx.scene2d.stage]
+            [com.badlogic.gdx.scenes.scene2d.stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
@@ -110,7 +110,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/fit 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (clojure.gdx.scene2d.stage/create ui-viewport sprite-batch state)
+        stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch state)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

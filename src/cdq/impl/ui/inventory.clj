@@ -10,8 +10,8 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
-            [clojure.gdx.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scene2d.utils.listener :as listener]
+            [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 
 (defn- create*

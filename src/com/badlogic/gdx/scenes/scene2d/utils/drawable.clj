@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.utils.drawable
+(ns com.badlogic.gdx.scenes.scene2d.utils.drawable
   (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable
