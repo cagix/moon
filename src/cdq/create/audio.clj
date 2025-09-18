@@ -1,7 +1,5 @@
 (ns cdq.create.audio
-  (:require [cdq.audio]
-            [gdl.audio :as audio]
-            [gdl.audio.sound :as sound]
+  (:require [cdq.impl.audio]
             [gdl.files :as files]))
 
 (defn do!
@@ -10,17 +8,9 @@
     :as ctx}
    {:keys [sound-names
            path-format]}]
-  (assoc ctx :ctx/audio (let [sounds (into {}
-                                           (for [sound-name sound-names]
-                                             [sound-name
-                                              (audio/sound audio (files/internal files (format path-format sound-name)))]))]
-                          (reify cdq.audio/Audio
-                            (dispose! [_]
-                              (run! sound/dispose! (vals sounds)))
-
-                            (all-sounds [_]
-                              (map first sounds))
-
-                            (play-sound! [_ sound-name]
-                              (assert (contains? sounds sound-name) (str sound-name))
-                              (sound/play! (get sounds sound-name)))))))
+  (assoc ctx :ctx/audio (let [sound-names->file-handles
+                              (into {}
+                                    (for [sound-name sound-names]
+                                      [sound-name
+                                       (files/internal files (format path-format sound-name))]))]
+                          (cdq.impl.audio/create audio sound-names->file-handles))))
