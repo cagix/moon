@@ -3,7 +3,7 @@
  [clojure.gdx.scene2d/init!]
  [clojure.gdx.utils/dispatch-on-os
   {:mac [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-         [clojure.java.awt/set-taskbar-icon! "icon.png"]]}]
+         [j.awt.taskbar/set-icon-image! "icon.png"]]}]
  [com.badlogic.gdx.backends.lwjgl3/start!
   {
    :config {:title "Cyber Dungeon Quest"
