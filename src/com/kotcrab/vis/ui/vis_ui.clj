@@ -2,6 +2,7 @@
   (:require clojure.config
             [clojure.walk :as walk]
             [com.badlogic.gdx.utils.align :as align]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])
   (:import (clojure.lang MultiFn)
@@ -9,11 +10,19 @@
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip
-                                      VisLabel)))
+                                      VisLabel
+                                      VisScrollPane)))
 
 ; in cdq referenced:
-; * com.kotcrab.vis.ui.widget.scroll-pane
 ; * com.kotcrab.vis.ui.widget.separator
+
+(defmethod scene2d/build :actor.type/scroll-pane
+  [{:keys [scroll-pane/actor
+           actor/name]}]
+  (doto (VisScrollPane. actor)
+    (.setFlickScroll false)
+    (.setFadeScrollBars false)
+    (actor/set-name! name)))
 
 (def impls (walk/postwalk
             clojure.config/require-resolve-symbols

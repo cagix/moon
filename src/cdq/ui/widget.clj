@@ -1,8 +1,6 @@
 (ns cdq.ui.widget
   (:require [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
-            [com.kotcrab.vis.ui.widget.scroll-pane :as scroll-pane]))
+            [gdl.scene2d.stage :as stage]))
 
 (defn scroll-pane-cell [viewport-height rows]
   (let [table (scene2d/build
@@ -11,8 +9,9 @@
                 :actor/name "scroll-pane-table"
                 :cell-defaults {:pad 5}
                 :pack? true})]
-    {:actor (doto (scroll-pane/create table)
-              (actor/set-name! "cdq.ui.widget.scroll-pane-table"))
+    {:actor {:actor/type :actor.type/scroll-pane
+             :actor/name "cdq.ui.widget.scroll-pane-table"
+             :scroll-pane/actor table}
      :width  (+ (.getWidth table) 50)
      :height (min (- viewport-height 50)
                   (.getHeight table))}))
@@ -81,7 +80,9 @@
                                        :rows [[scroll-pane-table]]
                                        :cell-defaults {:pad 1}
                                        :pack? true})]
-                           {:actor (scroll-pane/create table)
+                           {:actor {:actor/type :actor.type/scroll-pane
+                                    :actor/name "dbg scroll pane"
+                                    :scroll-pane/actor table}
                             :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
                             :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
