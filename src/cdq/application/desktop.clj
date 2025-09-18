@@ -1,4 +1,4 @@
-(ns cdq.start
+(ns cdq.application.desktop
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
