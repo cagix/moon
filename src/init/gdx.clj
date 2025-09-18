@@ -2,6 +2,7 @@
   (:require clojure.audio
             clojure.audio.sound
             clojure.files
+            clojure.files.file-handle
             clojure.graphics
             clojure.input)
   (:import (com.badlogic.gdx Audio
@@ -12,6 +13,7 @@
                              Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20)))
 
 (defn set-app! [{:keys [init/application] :as init}]
@@ -47,6 +49,17 @@
   clojure.files/Files
   (internal [this path]
     (.internal this path)))
+
+(extend-type FileHandle
+  clojure.files.file-handle/FileHandle
+  (list [this]
+    (.list this))
+  (directory? [this]
+    (.isDirectory this))
+  (extension [this]
+    (.extension this))
+  (path [this]
+    (.path this)))
 
 (extend-type Graphics
   clojure.graphics/Graphics

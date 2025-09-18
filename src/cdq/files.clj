@@ -1,6 +1,6 @@
 (ns cdq.files
   (:require [clojure.files :as files]
-            [clojure.gdx.files.file-handle :as file-handle]
+            [clojure.files.file-handle :as file-handle]
             [clojure.string :as str]))
 
 (defn search [files {:keys [folder extensions]}]
