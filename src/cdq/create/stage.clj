@@ -1,12 +1,11 @@
 (ns cdq.create.stage
-  (:require [cdq.application :as application]
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.stage]
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
-            [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
+            [com.badlogic.gdx.scenes.scene2d.stage]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.ctx]
@@ -14,7 +13,7 @@
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.window :as window]))
 
-(defn do! [ctx]
+(defn do! [ctx {:keys [state-var]}]
   (extend-type (class ctx)
     gdl.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
@@ -22,7 +21,7 @@
   (assoc ctx :ctx/stage (com.badlogic.gdx.scenes.scene2d.stage/create
                          (:ctx/ui-viewport (:ctx/graphics ctx))
                          (:ctx/batch       (:ctx/graphics ctx))
-                         application/state)))
+                         @state-var)))
 
 (defn- stage-find [stage k]
   (-> stage
