@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
-            [clojure.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [clojure.utils :as utils]))
 
 (def ^:dbg-flag show-body-bounds? false)

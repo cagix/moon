@@ -4,7 +4,7 @@
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
             [com.badlogic.gdx.maps.tiled]
-            [clojure.tiled]))
+            [gdl.tiled]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
@@ -95,7 +95,7 @@
         ; -
 
         ; - calculate spawn positions -
-        can-spawn? #(= "all" (clojure.tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (gdl.tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
         creatures (filter #(= level (:creature/level %)) creature-properties)

@@ -2,7 +2,7 @@
   (:require [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
             [com.badlogic.gdx.math.vector2 :as v]
-            [clojure.input :as input]))
+            [gdl.input :as input]))
 
 (defn- world-item? [mouseover-actor]
   (not mouseover-actor))

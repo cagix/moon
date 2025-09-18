@@ -1,8 +1,8 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.stage :as stage]
             [cdq.info :as info]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.group :as group]))
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.group :as group]))
 
 (comment
 

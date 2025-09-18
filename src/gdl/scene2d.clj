@@ -1,3 +1,3 @@
-(ns clojure.scene2d)
+(ns gdl.scene2d)
 
 (defmulti build :actor/type)

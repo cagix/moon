@@ -2,7 +2,7 @@
   (:require [cdq.input :as controls]
             [cdq.inventory :as inventory]
             [cdq.stage :as stage]
-            [clojure.input :as input]))
+            [gdl.input :as input]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]

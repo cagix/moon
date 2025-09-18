@@ -1,8 +1,8 @@
 (ns cdq.tx.show-error-window
   (:require [cdq.string :as string]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
             [clojure.repl]))
 
 (defn do! [{:keys [ctx/stage]} throwable]

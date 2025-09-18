@@ -1,4 +1,4 @@
-(ns clojure.files.file-handle
+(ns gdl.files.file-handle
   (:refer-clojure :exclude [list]))
 
 (defprotocol FileHandle

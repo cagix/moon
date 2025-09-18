@@ -6,10 +6,10 @@
             [cdq.stage]
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
-            [clojure.input :as input]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [gdl.input :as input]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]

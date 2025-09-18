@@ -2,7 +2,7 @@
   (:require [cdq.application :as application]
             #_[cdq.create.world-event-handlers :refer [show-modal-window!]]
             [cdq.ui.widget :as widget]
-            [clojure.scene2d.stage :as stage]))
+            [gdl.scene2d.stage :as stage]))
 
 (comment
  ; TODO use post-runnable! ?

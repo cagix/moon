@@ -1,4 +1,4 @@
-(ns clojure.graphics.g2d.batch)
+(ns gdl.graphics.g2d.batch)
 
 (defprotocol Batch
   (draw! [_ texture-region x y [w h] rotation])

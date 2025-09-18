@@ -4,7 +4,7 @@
             [clojure.grid2d :as g2d]
             [cdq.world.raycaster :as raycaster]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [clojure.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [clojure.utils :as utils]
             [malli.core :as m]
             [reduce-fsm :as fsm]))

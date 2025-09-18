@@ -1,8 +1,8 @@
 (ns cdq.create.audio
   (:require [cdq.audio]
-            [clojure.audio :as audio]
-            [clojure.audio.sound :as sound]
-            [clojure.files :as files]))
+            [gdl.audio :as audio]
+            [gdl.audio.sound :as sound]
+            [gdl.files :as files]))
 
 (defn do!
   [{:keys [ctx/audio

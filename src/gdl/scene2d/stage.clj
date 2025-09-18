@@ -1,4 +1,4 @@
-(ns clojure.scene2d.stage)
+(ns gdl.scene2d.stage)
 
 (defprotocol Stage
   (get-ctx [_])

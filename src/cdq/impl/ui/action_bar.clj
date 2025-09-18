@@ -1,8 +1,8 @@
 (ns cdq.impl.ui.action-bar
   (:require [cdq.ui.action-bar]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 

@@ -1,7 +1,7 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
             [com.kotcrab.vis.ui.widget.scroll-pane :as scroll-pane]))
 
 (defn scroll-pane-cell [viewport-height rows]

@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-paused
-  (:require [clojure.input :as input]))
+  (:require [gdl.input :as input]))
 
 (def ^:private pausing? true)
 

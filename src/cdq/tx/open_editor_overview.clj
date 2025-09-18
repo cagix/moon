@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.ui.editor.overview-table :as overview-table]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]))
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/db

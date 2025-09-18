@@ -1,11 +1,11 @@
 (ns com.badlogic.gdx.scenes.scene2d.stage
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ctx :as ctx]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.ui.widget :as widget]
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ctx :as ctx]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget :as widget]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
@@ -22,7 +22,7 @@
   (StageWithCtx. viewport batch state))
 
 (extend-type StageWithCtx
-  clojure.scene2d.stage/Stage
+  gdl.scene2d.stage/Stage
   (get-ctx [this]
     @(.ctx this))
 
@@ -48,7 +48,7 @@
     (.getViewport this)))
 
 (extend-type Actor
-  clojure.scene2d.actor/Actor
+  gdl.scene2d.actor/Actor
   (get-stage [actor]
     (.getStage actor))
 
@@ -168,12 +168,12 @@
         (try-draw this f)))))
 
 (extend-type Widget
-  clojure.scene2d.ui.widget/Widget
+  gdl.scene2d.ui.widget/Widget
   (set-opts! [actor opts]
     (actor-opts! actor opts)))
 
 (extend-type Group
-  clojure.scene2d.group/Group
+  gdl.scene2d.group/Group
   (add! [group actor]
     (.addActor group actor))
 
@@ -244,7 +244,7 @@
                          t)))))
 
 (extend-type Table
-  clojure.scene2d.ui.table/Table
+  gdl.scene2d.ui.table/Table
   (add! [table actor-or-decl]
     (.add table ^Actor (build? actor-or-decl)))
 

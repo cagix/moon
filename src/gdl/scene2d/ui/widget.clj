@@ -1,4 +1,4 @@
-(ns clojure.scene2d.ui.widget)
+(ns gdl.scene2d.ui.widget)
 
 (defprotocol Widget
   (set-opts! [_ opts]))

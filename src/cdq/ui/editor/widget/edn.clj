@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.widget.edn
   (:require [cdq.string :as string]
             [clojure.edn :as edn]
-            [clojure.scene2d.ui.text-field :as text-field]))
+            [gdl.scene2d.ui.text-field :as text-field]))
 
 (defn create [schema  v _ctx]
   {:actor/type :actor.type/text-field

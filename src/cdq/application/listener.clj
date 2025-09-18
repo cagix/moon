@@ -1,6 +1,6 @@
 (ns cdq.application.listener
   (:require [cdq.application :as application]
-            [clojure.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [clojure.utils :as utils]))
 
 (defn create

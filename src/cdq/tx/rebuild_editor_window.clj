@@ -1,8 +1,8 @@
 (ns cdq.tx.rebuild-editor-window
   (:require [cdq.ui.editor.map-widget-table :as map-widget-table]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]))
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/db

@@ -7,16 +7,16 @@
             [cdq.ui.windows.inventory :as inventory-window]
             [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ctx]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.window :as window]))
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ctx]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.window :as window]))
 
 (defn do! [ctx]
   (extend-type (class ctx)
-    clojure.scene2d.ctx/Graphics
+    gdl.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (com.badlogic.gdx.scenes.scene2d.stage/create

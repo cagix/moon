@@ -9,43 +9,43 @@
 (def impls (walk/postwalk
             utils/require-resolve-symbols
             '[
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/menu-bar
                com.kotcrab.vis.ui.widget.menu/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/select-box
                com.kotcrab.vis.ui.widget.select-box/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/label
                com.kotcrab.vis.ui.widget.label/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/text-field
                com.kotcrab.vis.ui.widget.text-field/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/check-box
                com.kotcrab.vis.ui.widget.check-box/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/table
                com.kotcrab.vis.ui.widget.table/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/image-button
                com.kotcrab.vis.ui.widget.image-button/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/text-button
                com.kotcrab.vis.ui.widget.text-button/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/window
                com.kotcrab.vis.ui.widget.window/create]
 
-              [clojure.scene2d/build
+              [gdl.scene2d/build
                :actor.type/image
                com.kotcrab.vis.ui.widget.image/create]]))
 

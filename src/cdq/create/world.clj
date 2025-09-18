@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.world :as world]
-            [clojure.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]

@@ -1,11 +1,11 @@
 (ns com.kotcrab.vis.ui.widget.text-field
-  (:require [clojure.scene2d.ui.text-field]
-            [clojure.scene2d.ui.widget :as widget]
+  (:require [gdl.scene2d.ui.text-field]
+            [gdl.scene2d.ui.widget :as widget]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
 (extend-type VisTextField
-  clojure.scene2d.ui.text-field/TextField
+  gdl.scene2d.ui.text-field/TextField
   (get-text [this]
     (.getText this)))
 

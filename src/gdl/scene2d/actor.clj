@@ -1,4 +1,4 @@
-(ns clojure.scene2d.actor)
+(ns gdl.scene2d.actor)
 
 (defprotocol Actor
   (get-stage [actor])

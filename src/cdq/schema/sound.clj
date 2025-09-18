@@ -2,11 +2,11 @@
   (:require [cdq.audio :as audio]
             [cdq.stage]
             [cdq.ui.widget]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn malli-form [_ _schemas]

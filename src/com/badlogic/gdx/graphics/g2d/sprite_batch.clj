@@ -1,12 +1,12 @@
 (ns com.badlogic.gdx.graphics.g2d.sprite-batch
-  (:require [clojure.graphics.g2d.batch])
+  (:require [gdl.graphics.g2d.batch])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (defn create []
   (SpriteBatch.))
 
 (extend-type SpriteBatch
-  clojure.graphics.g2d.batch/Batch
+  gdl.graphics.g2d.batch/Batch
   (draw! [this texture-region x y [w h] rotation]
     (.draw this
            texture-region

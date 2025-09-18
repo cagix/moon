@@ -1,7 +1,7 @@
 (ns com.kotcrab.vis.ui.widget.text-button
-  (:require [clojure.scene2d.event :as event]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
+  (:require [gdl.scene2d.event :as event]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip])
   (:import (com.kotcrab.vis.ui.widget VisTextButton)))

@@ -1,10 +1,10 @@
 (ns com.badlogic.gdx.backends.lwjgl3.init.gdx
-  (:require clojure.audio
-            clojure.audio.sound
-            clojure.files
-            clojure.files.file-handle
-            clojure.graphics
-            clojure.input)
+  (:require gdl.audio
+            gdl.audio.sound
+            gdl.files
+            gdl.files.file-handle
+            gdl.graphics
+            gdl.input)
   (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
@@ -36,22 +36,22 @@
   init)
 
 (extend-type Audio
-  clojure.audio/Audio
+  gdl.audio/Audio
   (sound [this file-handle]
     (.newSound this file-handle)))
 
 (extend-type Sound
-  clojure.audio.sound/Sound
+  gdl.audio.sound/Sound
   (play! [this]
     (.play this)))
 
 (extend-type Files
-  clojure.files/Files
+  gdl.files/Files
   (internal [this path]
     (.internal this path)))
 
 (extend-type FileHandle
-  clojure.files.file-handle/FileHandle
+  gdl.files.file-handle/FileHandle
   (list [this]
     (.list this))
   (directory? [this]
@@ -62,7 +62,7 @@
     (.path this)))
 
 (extend-type Graphics
-  clojure.graphics/Graphics
+  gdl.graphics/Graphics
   (delta-time [this]
     (.getDeltaTime this))
   (frames-per-second [this]
@@ -73,7 +73,7 @@
     (.newCursor this pixmap hotspot-x hotspot-y))
   (clear!
     ([this [r g b a]]
-     (clojure.graphics/clear! this r g b a))
+     (gdl.graphics/clear! this r g b a))
     ([this r g b a]
      (let [clear-depth? false
            apply-antialiasing? false
@@ -277,7 +277,7 @@
    :z                   Input$Keys/Z})
 
 (extend-type Input
-  clojure.input/Input
+  gdl.input/Input
   (button-just-pressed? [this button]
     {:pre [(contains? buttons-k->value button)]}
     (.isButtonJustPressed this (buttons-k->value button)))

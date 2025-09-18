@@ -2,7 +2,7 @@
   (:require [clojure.grid2d :as g2d]
             [com.badlogic.gdx.maps.tiled]
             [com.badlogic.gdx.maps.tiled.tiles :as tiles]
-            [clojure.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn- grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.

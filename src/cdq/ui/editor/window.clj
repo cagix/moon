@@ -4,11 +4,11 @@
             [cdq.schemas :as schemas]
             [cdq.ui.editor.map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
             [com.kotcrab.vis.ui.widget.separator :as separator]
             [malli.map-schema :as map-schema]))
 
