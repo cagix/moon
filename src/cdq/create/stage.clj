@@ -6,7 +6,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.windows.inventory :as inventory-window]
             [clojure.gdx.scene2d.stage]
-            [clojure.gdx.scene2d.ui.button :as button]
+            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx]

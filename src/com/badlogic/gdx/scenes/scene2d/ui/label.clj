@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.ui.label
+(ns com.badlogic.gdx.scenes.scene2d.ui.label
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label)))
 
 (defn set-text! [label text]

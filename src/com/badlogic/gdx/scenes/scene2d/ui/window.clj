@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.ui.window
+(ns com.badlogic.gdx.scenes.scene2d.ui.window
   (:require [clojure.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Window)))
 

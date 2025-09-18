@@ -10,7 +10,7 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.ui.window :as window]
+            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))
 
 (defn create-value [_ property-id db]

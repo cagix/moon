@@ -9,7 +9,7 @@
             [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.image :as image]
+            [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scene2d.utils.listener :as listener]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]))

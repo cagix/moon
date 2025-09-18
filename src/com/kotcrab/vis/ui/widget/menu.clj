@@ -5,7 +5,7 @@
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils.listener :as listener]
-            [clojure.gdx.scene2d.ui.label :as label])
+            [com.badlogic.gdx.scenes.scene2d.ui.label :as label])
   (:import (com.kotcrab.vis.ui.widget Menu
                                       MenuBar
                                       MenuItem
