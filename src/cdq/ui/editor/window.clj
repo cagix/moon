@@ -1,6 +1,5 @@
 (ns cdq.ui.editor.window
   (:require [cdq.ctx :as ctx]
-            [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.ui.editor.map-widget-table]
@@ -10,7 +9,8 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.vis-ui.separator :as separator]))
+            [clojure.vis-ui.separator :as separator]
+            [malli.map-schema :as map-schema]))
 
 (defn init! [ctx] ctx)
 
@@ -64,7 +64,7 @@
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (schema/value schema map-widget-table schemas)))
-                                   (m/map-keys (schema/malli-form schema schemas))))]
+                                   (map-schema/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -77,7 +77,7 @@
                                                                                                      k
                                                                                                      (schemas/default-value schemas k))
                                                                                  k
-                                                                                 (m/optional? k (schema/malli-form schema schemas))
+                                                                                 (map-schema/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
     (.pack window)

@@ -3,9 +3,9 @@
             [cdq.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
-            [cdq.malli :as m]
             [clojure.utils :as utils]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [malli.map-schema :as map-schema]))
 
 (defn malli-form [[_ ks] schemas]
   (schemas/create-map-schema schemas ks))
@@ -25,9 +25,9 @@
      :k->widget (into {}
                       (for [[k v] m]
                         [k (value-widget/build ctx (get schemas k) k v)]))
-     :k->optional? #(m/optional? % (schema/malli-form schema schemas))
+     :k->optional? #(map-schema/optional? % (schema/malli-form schema schemas))
      :ks-sorted (map first (utils/sort-by-k-order (:editor/property-k-sort-order editor) m))
-     :opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
+     :opt? (seq (set/difference (map-schema/optional-keyset (schema/malli-form schema schemas))
                                 (set (keys m))))}))
 
 (defn value [_ table schemas]
