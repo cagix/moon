@@ -107,31 +107,6 @@
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))
 
-(def config
-  {:content-grid-cell-size 16
-   :world/movement-ai (requiring-resolve 'cdq.potential-fields.movement/find-movement-direction)
-   :world/factions-iterations {:good 15 :evil 5}
-   :world/max-delta 0.04
-   :world/minimum-size 0.39
-   :world/z-orders [:z-order/on-ground
-                    :z-order/ground
-                    :z-order/flying
-                    :z-order/effect]
-   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                         :initial-state :npc-sleeping}
-                            :entity/faction :evil}
-   :world/player-components {:creature-id :creatures/vampire
-                             :components {:entity/fsm {:fsm :fsms/player
-                                                       :initial-state :player-idle}
-                                          :entity/faction :good
-                                          :entity/player? true
-                                          :entity/free-skill-points 3
-                                          :entity/clickable {:type :clickable/player}
-                                          :entity/click-distance-tiles 1.5}}
-   :world/effect-body-props {:width 0.5
-                             :height 0.5
-                             :z-order :z-order/effect}})
-
 (defrecord World []
   cdq.world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]
@@ -205,10 +180,6 @@
 (defn- read-spawn-entity-schema [world]
   (assoc world :world/spawn-entity-schema components-schema))
 
-(defn do! [ctx]
-  (assoc ctx :ctx/world (utils/pipeline config
-                                        [[create-record]
-                                         [read-spawn-entity-schema]
-                                         [create-fsms]
-                                         [calculate-max-speed]
-                                         [define-render-z-order]])))
+(defn do! [ctx {:keys [initial-state
+                       pipeline]}]
+  (assoc ctx :ctx/world (utils/pipeline initial-state pipeline)))
