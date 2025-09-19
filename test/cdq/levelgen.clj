@@ -6,6 +6,7 @@
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
+            [cdq.world-fns.creature-tiles]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -60,21 +61,6 @@
 
 (def tile-size 48)
 
-(defrecord Graphics []
-  cdq.graphics/Graphics
-  (texture-region [{:keys [ctx/textures]}
-                   {:keys [image/file image/bounds]}]
-    (assert file)
-    (assert (contains? textures file))
-    (let [texture (get textures file)]
-      (if bounds
-        (texture/region texture bounds)
-        (texture/region texture)))))
-
-(defn- make->Graphics [textures]
-  (assoc (map->Graphics {})
-         :ctx/textures textures))
-
 (defn- generate-level [{:keys [ctx/db
                                ctx/textures
                                ctx/tiled-map] :as ctx} level-fn]
@@ -82,8 +68,17 @@
     (disposable/dispose! tiled-map))
   (let [level (let [[f params] level-fn]
                 (f (assoc params
-                          :creature-properties (db/all-raw db :properties/creatures)
-                          :graphics (make->Graphics textures))))
+                          :level/creature-properties (cdq.world-fns.creature-tiles/prepare
+                                                      (db/all-raw db :properties/creatures)
+                                                      (reify cdq.graphics/Graphics
+                                                        (texture-region [_ {:keys [image/file image/bounds]}]
+                                                          (assert file)
+                                                          (assert (contains? textures file))
+                                                          (let [texture (get textures file)]
+                                                            (if bounds
+                                                              (texture/region texture bounds)
+                                                              (texture/region texture))))))
+                          :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
@@ -92,6 +87,7 @@
 
 (def state (atom nil))
 
+(require 'com.badlogic.gdx.scenes.scene2d.ui.table)
 (defn- edit-window []
   {:actor/type :actor.type/window
    :title "Edit"

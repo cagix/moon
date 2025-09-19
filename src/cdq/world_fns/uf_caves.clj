@@ -1,11 +1,10 @@
 (ns cdq.world-fns.uf-caves
-  (:require [cdq.world-fns.creature-tiles :as creature-tiles]
-            [com.badlogic.gdx.graphics.texture :as texture]
+  (:require [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.tiles :as tiles]))
 
 (defn create
-  [{:keys [creature-properties
-           graphics
+  [{:keys [level/creature-properties
+           textures
            tile-size
            texture-path
            spawn-rate
@@ -18,7 +17,7 @@
            :cave-style cave-style
            :random (java.util.Random.)
            :level/tile-size tile-size
-           :level/create-tile (let [texture (get (:graphics/textures graphics) texture-path)]
+           :level/create-tile (let [texture (get textures texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
@@ -30,7 +29,7 @@
                                                                 "movement" movement))))
            :level/spawn-rate spawn-rate
            :level/scaling scaling
-           :level/creature-properties (creature-tiles/prepare creature-properties graphics)}
+           :level/creature-properties creature-properties}
           (map requiring-resolve '[cdq.world-fns.initial-grid-creation/do!
                                    cdq.world-fns.fix-nads/do!
                                    cdq.world-fns.create-star/do!])))

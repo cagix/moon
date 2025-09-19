@@ -1,11 +1,12 @@
 (ns cdq.world-fns.creature-tiles
-  (:require [cdq.graphics :as graphics]
-            [clojure.utils :as utils]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn prepare [creature-properties graphics]
-  (for [creature creature-properties
-        :let [image (first (:animation/frames (:entity/animation creature)))
+  (for [{:keys [entity/animation
+                creature/level
+                property/id]} creature-properties
+        :let [image (first (:animation/frames animation))
               texture-region (graphics/texture-region graphics image)]]
-    (utils/safe-merge creature
-                      {:tile/id (:property/id creature)
-                       :tile/texture-region texture-region})))
+    {:creature/level level
+     :tile/id id
+     :tile/texture-region texture-region}))

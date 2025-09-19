@@ -5,7 +5,6 @@
   (-> world-fn-ctx
       ((requiring-resolve 'cdq.world-fns.modules.add-scale/do!)) ; :scale
       ((requiring-resolve 'cdq.world-fns.modules.assert-max-area-level/do!))
-      ((requiring-resolve 'cdq.world-fns.modules.prepare-creature-properties/do!)) ; :creature-properties
       ((requiring-resolve 'cdq.world-fns.modules.create-initial-grid/do!)) ; :grid
       ((requiring-resolve 'cdq.world-fns.modules.print-grid/do!))
       ((requiring-resolve 'cdq.world-fns.modules.assoc-transitions/do!)) ; :grid

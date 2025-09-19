@@ -2,14 +2,15 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.world :as world]
+            [cdq.world-fns.creature-tiles]
             [gdl.tiled :as tiled]))
 
 (defn- call-world-fn
   [[f params] creature-properties graphics]
   (f
    (assoc params
-          :creature-properties creature-properties
-          :graphics graphics)))
+          :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties graphics)
+          :textures (:graphics/textures graphics))))
 
 (defn- reset-world
   [{:keys [ctx/db
