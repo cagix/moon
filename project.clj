@@ -68,6 +68,8 @@
                  [org.lwjgl/lwjgl "3.3.3" :classifier "natives-macos"]
                  [org.lwjgl/lwjgl "3.3.3" :classifier "natives-windows-x86"]
                  [org.lwjgl/lwjgl "3.3.3" :classifier "natives-windows"]
+
+                 [lein-hiera "2.0.0"]
                  ]
   :java-source-paths ["src"]
   :aliases {
@@ -78,8 +80,8 @@
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
-  :jvm-opts ["-Xms256m"
-             "-Xmx256m"
+  :jvm-opts ["-Xms512m" ; 256 for game ok, lein hiera in repl needs more
+             "-Xmx512m"
              "-Dvisualvm.display.name=CDQ"
              "-XX:-OmitStackTraceInFastThrow" ; disappeared stacktraces
              ; for visualvm profiling
