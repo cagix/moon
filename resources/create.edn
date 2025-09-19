@@ -39,6 +39,6 @@
  (clojure.core/dissoc :ctx/files)
  (clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn")
  (cdq.application.create.reset-stage/do!)
- (cdq.application.create.world-config/do!)
- (cdq.application.create.world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                              :start-position [32 71]}))]
+ (cdq.application.create.world/do!)
+ (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                                    :start-position [32 71]}))]
