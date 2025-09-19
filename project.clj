@@ -108,11 +108,11 @@
                 *print-level* 3
                 }
 
-  :profiles {:uberjar {:aot [clojure.start]}}
+  :profiles {:uberjar {:aot [com.badlogic.gdx.backends.lwjgl3]}}
 
   :uberjar-name "cdq.jar"
 
-  :main clojure.start)
+  :main com.badlogic.gdx.backends.lwjgl3)
 
 ; * Notes
 
