@@ -205,4 +205,5 @@
     :pause! (fn [])}
    {:title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}))
+    :foreground-fps 60}
+   []))

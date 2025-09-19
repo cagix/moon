@@ -1,4 +1,5 @@
-[com.badlogic.gdx.backends.lwjgl3.init.listener/do!
+[com.badlogic.gdx.backends.lwjgl3.init.os-settings/do!
+ com.badlogic.gdx.backends.lwjgl3.init.listener/do!
  com.badlogic.gdx.backends.lwjgl3.init.config/do!
  com.badlogic.gdx.backends.lwjgl3.init.application/do!
  com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/before-glfw
