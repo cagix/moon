@@ -1,4 +1,4 @@
-(ns cdq.dev
+(ns dev.post
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.db :as db]))

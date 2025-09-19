@@ -1,4 +1,4 @@
-(ns cdq.dev.rename
+(ns dev.rename
   (:require [clojure.java.io :as io]))
 
 (defn replace-in-file! [file from to]

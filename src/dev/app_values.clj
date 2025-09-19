@@ -1,4 +1,4 @@
-(ns cdq.dev.app-values
+(ns dev.app-values
   (:require [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
