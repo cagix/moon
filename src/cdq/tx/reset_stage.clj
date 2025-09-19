@@ -7,8 +7,8 @@
            ctx/ui-actors]
     :as ctx}]
   (stage/clear! stage)
-  (let [actors (map #(let [[f params] %]
-                       (f ctx params))
+  (let [actors (map #(let [[f & params] %]
+                       (apply f ctx params))
                     ui-actors)]
     (doseq [actor actors]
       (stage/add! stage (scene2d/build actor))))

@@ -2,7 +2,7 @@
   (:require [cdq.graphics :as graphics]
             [cdq.entity.state :as state]))
 
-(defn create [_ctx _params]
+(defn create [_ctx]
   {:actor/type :actor.type/actor
    :draw (fn [_this {:keys [ctx/world]
                      :as ctx}]

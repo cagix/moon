@@ -1,36 +1,5 @@
-[[cdq.ui.dev-menu/create {:menus [{:label "World"
-                                   :items [cdq.ui.dev-menu.menus.select-world/create
-                                           {:create-world cdq.application.create.reset-world/do!
-                                            :world-fns [[cdq.world-fns.tmx/create
-                                                         {:tmx-file "maps/vampire.tmx"
-                                                          :start-position [32 71]}]
-                                                        [cdq.world-fns.uf-caves/create
-                                                         {:tile-size 48
-                                                          :texture-path "maps/uf_terrain.png"
-                                                          :spawn-rate 0.02
-                                                          :scaling 3
-                                                          :cave-size 200
-                                                          :cave-style :wide}]
-                                                        [cdq.world-fns.modules/create
-                                                         {:world/map-size 5,
-                                                          :world/max-area-level 3,
-                                                          :world/spawn-rate 0.05}]]}
-                                           ]}
-                                  {:label "Help"
-                                   :items [cdq.ui.dev-menu.menus.help/create-items
-                                           "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"]}
-                                  {:label "Editor"
-                                   :items [cdq.ui.dev-menu.menus.db/create]}
-                                  {:label "Ctx Data"
-                                   :items [cdq.ui.dev-menu.menus.ctx-data-view/items]}]
-                          :update-labels [[cdq.ui.dev-menu.update-labels.mouseover-entity-id/create "images/mouseover.png"]
-                                          [cdq.ui.dev-menu.update-labels.elapsed-time/create "images/clock.png"]
-                                          [cdq.ui.dev-menu.update-labels.paused/item]
-                                          [cdq.ui.dev-menu.update-labels.ui-mouse-position/item]
-                                          [cdq.ui.dev-menu.update-labels.world-mouse-position/item]
-                                          [cdq.ui.dev-menu.update-labels.zoom/create "images/zoom.png"]
-                                          [cdq.ui.dev-menu.update-labels.fps/create "images/fps.png"]]}]
- [cdq.impl.ui.action-bar/create {}]
+[[cdq.ui.dev-menu/create]
+ [cdq.impl.ui.action-bar/create]
  [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
                              :rahmenw 150
                              :rahmenh 26

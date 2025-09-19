@@ -5,7 +5,7 @@
             [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
-(defn create [_ctx _]
+(defn create [_ctx]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
