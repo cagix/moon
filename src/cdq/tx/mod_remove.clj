@@ -2,5 +2,5 @@
   (:require [cdq.stats :as stats]))
 
 (defn do! [_ctx eid modifiers]
-  (swap! eid update :creature/stats stats/remove modifiers)
+  (swap! eid update :creature/stats stats/remove-mods modifiers)
   nil)

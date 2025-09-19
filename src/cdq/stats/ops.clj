@@ -1,3 +1,5 @@
+; TODO SCHEMA FOR OPS -> can be just {:ops/inc and :ops/mult} ? or multiples?
+; then just {:op/inc :op/mult} in one map ?
 (ns cdq.stats.ops
   (:require [cdq.stats.op :as op]
             [clojure.math :as math]
