@@ -71,16 +71,10 @@
            level/scaling]}]
   (assert (= #{:wall :ground} (set (g2d/cells grid))))
   (let [
-
-        ; - next step scaling -
         {:keys [start-position grid]} (scale-grid grid start scaling)
-        ; -
 
-        ; - next step transition cells -
         grid (assoc-transition-cells grid)
-        ; -
 
-        ; - create tiled-map - (could do this at the end .... check spawn positions from grid itself ?)
         position->tile (position->tile-fn grid)
         tiled-map (com.badlogic.gdx.maps.tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
@@ -92,19 +86,15 @@
                               :properties {"movement-properties" true}
                               :tiles (for [position (g2d/posis grid)]
                                        [position (create-tile (position->tile position))])}]})
-        ; -
 
-        ; - calculate spawn positions -
         can-spawn? #(= "all" (gdl.tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
-        level (inc (rand-int 6)) ;;; oooh fuck we have a level ! -> go through your app remove all hardcoded values !!!! secrets lie in the shadows ! functional programming FTW !
+        level (inc (rand-int 6))
         creatures (filter #(= level (:creature/level %)) creature-properties)
         spawn-positions (helper/flood-fill grid start-position can-spawn?)
         creatures (for [position spawn-positions
                         :when (<= (rand) spawn-rate)]
                     [position (rand-nth creatures)])]
-    ; - add creature layer -
     (creature-layer/add-creatures-layer! tiled-map creatures)
-    ; - finished -
     {:tiled-map tiled-map
      :start-position start-position}))
