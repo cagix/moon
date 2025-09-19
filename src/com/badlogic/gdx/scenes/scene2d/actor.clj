@@ -23,6 +23,19 @@
 ; also vis-ui ones?
 ; => then I know all widget types! editor etc. actiomnar whatever
 
+(def ^:private opts-fn-map
+  {:actor/name (fn [a v] (actor/set-name! a v))
+   :actor/user-object (fn [a v] (actor/set-user-object! a v))
+   :actor/visible?  (fn [a v] (actor/set-visible! a v))
+   :actor/touchable (fn [a v] (actor/set-touchable! a v))
+   :actor/listener (fn [a v] (actor/add-listener! a v))
+   :actor/position (fn [actor [x y]]
+                     (actor/set-position! actor x y))
+   :actor/center-position (fn [actor [x y]]
+                            (actor/set-position! actor
+                                                 (- x (/ (actor/get-width  actor) 2))
+                                                 (- y (/ (actor/get-height actor) 2))))})
+
 (extend-type Actor
   gdl.scene2d.actor/Actor
   (get-stage [actor]
@@ -79,38 +92,25 @@
     (.getHeight actor))
 
   (add-listener! [actor listener]
-    (.addListener actor listener)))
+    (.addListener actor listener))
 
-(def ^:private opts-fn-map
-  {:actor/name actor/set-name!
-   :actor/user-object actor/set-user-object!
-   :actor/visible?  actor/set-visible!
-   :actor/touchable actor/set-touchable!
-   :actor/listener actor/add-listener!
-   :actor/position (fn [actor [x y]]
-                     (actor/set-position! actor x y))
-   :actor/center-position (fn [actor [x y]]
-                            (actor/set-position! actor
-                                                 (- x (/ (actor/get-width  actor) 2))
-                                                 (- y (/ (actor/get-height actor) 2))))})
-
-(defn- actor-opts! [actor opts]
-  (doseq [[k v] opts
-          :let [f (get opts-fn-map k)]
-          :when f]
-    (f actor v))
-  actor)
+  (set-opts! [actor opts]
+    (doseq [[k v] opts
+            :let [f (get opts-fn-map k)]
+            :when f]
+      (f actor v))
+    actor))
 
 (defn- create*
   [{:keys [actor/act
            actor/draw]
     :as opts}]
   (doto (proxy [Actor] []
-          (act [delta] ; TODO call proxy super required ?-> fixes tooltips in pure scene2d?
+          (act [delta] ; TODO call proxy super required ?-> fixes tooltips in pure scene2d? maybe also other ones..
             (act this delta))
           (draw [batch parent-alpha]
             (draw this batch parent-alpha)))
-    (actor-opts! opts)))
+    (actor/set-opts! opts)))
 
 (defn- get-ctx [actor]
   (when-let [stage (actor/get-stage actor)]
@@ -146,7 +146,7 @@
 (extend-type Widget
   gdl.scene2d.ui.widget/Widget
   (set-opts! [actor opts]
-    (actor-opts! actor opts)))
+    (actor/set-opts! actor opts)))
 
 (extend-type Group
   gdl.scene2d.group/Group
@@ -168,7 +168,7 @@
                               actor-or-decl
                               (scene2d/build actor-or-decl))))
         (:group/actors opts))
-  (actor-opts! group opts))
+  (actor/set-opts! group opts))
 
 (defmethod scene2d/build :actor.type/group [opts]
   (doto (Group.)
