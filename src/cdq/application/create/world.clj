@@ -183,8 +183,8 @@
              :world/paused? false
              :world/mouseover-eid nil))))
 
-(defn- create-record []
-  (map->World {}))
+(defn- create-record [world]
+  (merge (map->World {}) world))
 
 (defn- calculate-max-speed
   [{:keys [world/minimum-size
@@ -205,13 +205,10 @@
 (defn- read-spawn-entity-schema [world]
   (assoc world :world/spawn-entity-schema components-schema))
 
-(defn- world-impl []
-  (-> (create-record)
-      (merge config)
-      read-spawn-entity-schema
-      create-fsms
-      calculate-max-speed
-      define-render-z-order))
-
 (defn do! [ctx]
-  (assoc ctx :ctx/world (world-impl)))
+  (assoc ctx :ctx/world (utils/pipeline config
+                                        [[create-record]
+                                         [read-spawn-entity-schema]
+                                         [create-fsms]
+                                         [calculate-max-speed]
+                                         [define-render-z-order]])))
