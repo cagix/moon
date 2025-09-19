@@ -1,35 +1,20 @@
 (ns cdq.create.graphics
-  (:require [cdq.graphics]
-            [cdq.gdx.graphics]
-            [cdq.files]
-            [gdl.files :as files]
-            [gdl.graphics :as graphics]
+  (:require [cdq.files]
+            [cdq.graphics]
+            [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [gdl.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.utils.viewport :as viewport]
+            [gdl.files :as files]
+            [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
-            [clojure.utils :as utils]
-            [com.badlogic.gdx.graphics.colors :as colors]
+            [gdl.graphics.g2d.batch :as batch]
             [space.earlygrey.shape-drawer :as sd]))
-
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-; TODO clamping only works for gui-viewport ?
-; TODO ? "Can be negative coordinates, undefined cells."
-(defn- unproject-clamp [viewport [x y]]
-  (viewport/unproject viewport
-                      (utils/clamp x
-                                   (:viewport/left-gutter-width viewport)
-                                   (:viewport/right-gutter-x    viewport))
-                      (utils/clamp y
-                                   (:viewport/top-gutter-height viewport)
-                                   (:viewport/top-gutter-y      viewport))))
 
 (defrecord RGraphics []
   cdq.graphics/Graphics
@@ -106,13 +91,22 @@
   (set-camera-position! [{:keys [ctx/world-viewport]} position]
     (camera/set-position! (:viewport/camera world-viewport) position))
 
-  (unproject-ui    [{:keys [ctx/ui-viewport]}    position] (unproject-clamp ui-viewport    position))
-  (unproject-world [{:keys [ctx/world-viewport]} position] (unproject-clamp world-viewport position))
+  (unproject-ui    [{:keys [ctx/ui-viewport]}    position] (viewport/unproject-clamp ui-viewport    position))
+  (unproject-world [{:keys [ctx/world-viewport]} position] (viewport/unproject-clamp world-viewport position))
 
-  (update-viewports! [this width height]
-    (cdq.gdx.graphics/update-viewports! this width height))
-  (texture-region [this image]
-    (cdq.gdx.graphics/texture-region this image)))
+  (update-viewports! [{:keys [ctx/ui-viewport
+                              ctx/world-viewport]} width height]
+    (viewport/update! ui-viewport    width height :center? true)
+    (viewport/update! world-viewport width height :center? false))
+
+  (texture-region [{:keys [ctx/textures]}
+                   {:keys [image/file image/bounds]}]
+    (assert file)
+    (assert (contains? textures file))
+    (let [texture (get textures file)]
+      (if bounds
+        (texture/region texture bounds)
+        (texture/region texture)))))
 
 (defn- create*
   [graphics
@@ -159,7 +153,7 @@
                                                                      :world-width world-width
                                                                      :world-height world-height)))})))
 
-(defn graphics-config
+(defn- graphics-config
   [files {:keys [colors
                  cursors
                  default-font

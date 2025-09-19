@@ -2,7 +2,6 @@
   (:require [cdq.db :as db]
             [cdq.graphics]
             [cdq.files :as files]
-            [cdq.gdx.graphics]
             [cdq.impl.db]
             [cdq.world-fns.modules]
             [cdq.world-fns.uf-caves]
@@ -63,8 +62,14 @@
 
 (defrecord Graphics []
   cdq.graphics/Graphics
-  (texture-region [this image]
-    (cdq.gdx.graphics/texture-region this image)))
+  (texture-region [{:keys [ctx/textures]}
+                   {:keys [image/file image/bounds]}]
+    (assert file)
+    (assert (contains? textures file))
+    (let [texture (get textures file)]
+      (if bounds
+        (texture/region texture bounds)
+        (texture/region texture)))))
 
 (defn- make->Graphics [textures]
   (assoc (map->Graphics {})
@@ -186,7 +191,10 @@
   (stage/draw! (:ctx/stage @state)))
 
 (defn resize! [width height]
-  (cdq.gdx.graphics/update-viewports! @state width height))
+  (let [{:keys [ctx/ui-viewport
+                ctx/world-viewport]} @state]
+    (viewport/update! ui-viewport    width height :center? true)
+    (viewport/update! world-viewport width height :center? false)))
 
 (defn -main []
   (org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
