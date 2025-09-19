@@ -1,5 +1,6 @@
-(ns cdq.application.create.world.record
-  (:require cdq.application.create.world))
+(ns cdq.application.create.world.record)
+
+(defrecord World [])
 
 (defn do! [world]
-  (merge (cdq.application.create.world/map->World {}) world))
+  (merge (map->World {}) world))

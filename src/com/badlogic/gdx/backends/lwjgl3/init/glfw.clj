@@ -1,16 +1,15 @@
 (ns com.badlogic.gdx.backends.lwjgl3.init.glfw
-  (:require [com.badlogic.gdx.backends.lwjgl3.natives-loader :as natives-loader]
-            [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
-            [org.lwjgl.glfw :as glfw]
-            [org.lwjgl.glfw.error-callback :as error-callback])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration)
+  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader])
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration
+                                             Lwjgl3NativesLoader)
            (com.badlogic.gdx.utils GdxRuntimeException)
-           (org.lwjgl.glfw GLFW)))
+           (org.lwjgl.glfw GLFW
+                           GLFWErrorCallback)))
 
 (defn do! [init]
-  (natives-loader/load!)
-  (let [error-callback (error-callback/create-print Lwjgl3ApplicationConfiguration/errorStream)]
-    (glfw/set-error-callback! error-callback)
+  (Lwjgl3NativesLoader/load)
+  (let [error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream)]
+    (GLFW/glfwSetErrorCallback error-callback)
     (when (= (shared-library-loader/operating-system) :mac)
       (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
                          GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))

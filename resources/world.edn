@@ -25,4 +25,5 @@
             [cdq.application.create.world.entity-schema/do!]
             [cdq.application.create.world/create-fsms]
             [cdq.application.create.world/calculate-max-speed]
-            [cdq.application.create.world/define-render-z-order]]}
+            [cdq.application.create.world/define-render-z-order]
+            [cdq.application.create.world.protocols/do!]]}
