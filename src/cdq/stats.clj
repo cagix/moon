@@ -1,13 +1,13 @@
 (ns cdq.stats
   (:refer-clojure :exclude [remove])
-  (:require [cdq.op :as op]
+  (:require [cdq.stats.ops :as ops]
             [cdq.val-max :as val-max]
             [malli.core :as m]))
 
 (defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (op/apply (modifier-k modifiers)
-            base-value))
+  (ops/apply (modifier-k modifiers)
+             base-value))
 
 (defn get-stat-value [stats stat-k]
   (when-let [base-value (stat-k stats)]
@@ -15,8 +15,8 @@
                (:entity/modifiers stats)
                (keyword "modifier" (name stat-k)))))
 
-(defn- add*    [mods other-mods] (merge-with op/add    mods other-mods))
-(defn- remove* [mods other-mods] (merge-with op/remove mods other-mods))
+(defn- add*    [mods other-mods] (merge-with ops/add    mods other-mods))
+(defn- remove* [mods other-mods] (merge-with ops/remove mods other-mods))
 
 (defn add    [stats mods] (update stats :entity/modifiers add*    mods))
 (defn remove [stats mods] (update stats :entity/modifiers remove* mods))
@@ -84,18 +84,16 @@
            (:entity/modifiers target)
            :modifier/damage-receive-max)))
 
-; I don't see it triggering with 10 armor save ... !
+; FIXME I don't see it triggering with 10 armor save ... !
 (defn effective-armor-save [source-stats target-stats]
   (max (- (or (get-stat-value source-stats :entity/armor-save)   0)
           (or (get-stat-value target-stats :entity/armor-pierce) 0))
        0))
 
-(effective-armor-save {} {:entity/modifiers {:modifiers/armor-save {:op/inc 10}}
-                       :entity/armor-save 0
-                       }
-                      )
-
 (comment
+
+ (effective-armor-save {} {:entity/modifiers {:modifiers/armor-save {:op/inc 10}}
+                           :entity/armor-save 0})
  ; broken
  (let [source* {:entity/armor-pierce 0.4}
        target* {:entity/armor-save   0.5}]
