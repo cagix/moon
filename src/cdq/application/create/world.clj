@@ -109,14 +109,28 @@
 
 (def config
   {:content-grid-cell-size 16
-   :potential-field-factions-iterations {:good 15
-                                         :evil 5}
+   :world/movement-ai (requiring-resolve 'cdq.potential-fields.movement/find-movement-direction)
+   :world/factions-iterations {:good 15 :evil 5}
    :world/max-delta 0.04
    :world/minimum-size 0.39
    :world/z-orders [:z-order/on-ground
                     :z-order/ground
                     :z-order/flying
-                    :z-order/effect]})
+                    :z-order/effect]
+   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                         :initial-state :npc-sleeping}
+                            :entity/faction :evil}
+   :world/player-components {:creature-id :creatures/vampire
+                             :components {:entity/fsm {:fsm :fsms/player
+                                                       :initial-state :player-idle}
+                                          :entity/faction :good
+                                          :entity/player? true
+                                          :entity/free-skill-points 3
+                                          :entity/clickable {:type :clickable/player}
+                                          :entity/click-distance-tiles 1.5}}
+   :world/effect-body-props {:width 0.5
+                             :height 0.5
+                             :z-order :z-order/effect}})
 
 (defrecord World []
   cdq.world/RayCaster
@@ -172,34 +186,32 @@
 (defn- create-record []
   (map->World {}))
 
+(defn- calculate-max-speed
+  [{:keys [world/minimum-size
+           world/max-delta]
+    :as world}]
+  (assoc world :world/max-speed (/ minimum-size max-delta)))
+
+(defn- define-render-z-order
+  [{:keys [world/z-orders]
+    :as world}]
+  (assoc world :world/render-z-order (utils/define-order z-orders)))
+
+(defn- create-fsms
+  [world]
+  (assoc world :world/fsms {:fsms/player player-fsm
+                            :fsms/npc npc-fsm}))
+
+(defn- read-spawn-entity-schema [world]
+  (assoc world :world/spawn-entity-schema components-schema))
+
 (defn- world-impl []
   (-> (create-record)
-      (merge config
-             {:world/movement-ai (requiring-resolve 'cdq.potential-fields.movement/find-movement-direction)
-              :world/max-delta    (:world/max-delta    config)
-              :world/minimum-size (:world/minimum-size config)
-              :world/z-orders     (:world/z-orders     config)
-              :world/max-speed (/ (:world/minimum-size config)
-                                  (:world/max-delta    config))
-              :world/factions-iterations (:potential-field-factions-iterations config)
-              :world/render-z-order (utils/define-order (:world/z-orders config))
-              :world/spawn-entity-schema components-schema
-              :world/fsms {:fsms/player player-fsm
-                           :fsms/npc npc-fsm}
-              :world/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                                    :initial-state :npc-sleeping}
-                                       :entity/faction :evil}
-              :world/player-components {:creature-id :creatures/vampire
-                                        :components {:entity/fsm {:fsm :fsms/player
-                                                                  :initial-state :player-idle}
-                                                     :entity/faction :good
-                                                     :entity/player? true
-                                                     :entity/free-skill-points 3
-                                                     :entity/clickable {:type :clickable/player}
-                                                     :entity/click-distance-tiles 1.5}}
-              :world/effect-body-props {:width 0.5
-                                        :height 0.5
-                                        :z-order :z-order/effect}})))
+      (merge config)
+      read-spawn-entity-schema
+      create-fsms
+      calculate-max-speed
+      define-render-z-order))
 
 (defn do! [ctx]
   (assoc ctx :ctx/world (world-impl)))
