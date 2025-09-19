@@ -1,4 +1,4 @@
-(ns cdq.start.load-entity-components
+(ns cdq.application.create.load-entity-components
   (:require [cdq.entity :as entity])
   (:import (clojure.lang APersistentVector)))
 

@@ -1,4 +1,4 @@
-(ns cdq.create.reset-stage
+(ns cdq.application.create.reset-stage
   (:require [cdq.ctx :as ctx]))
 
 ; tx returns nil and not ctx so cant use it direclty

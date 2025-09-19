@@ -1,4 +1,4 @@
-(ns cdq.create.world-config
+(ns cdq.application.create.world-config
   (:require [cdq.world]
             [cdq.grid.cell :as cell]
             [clojure.grid2d :as g2d]

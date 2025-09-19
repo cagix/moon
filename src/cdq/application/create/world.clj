@@ -1,4 +1,4 @@
-(ns cdq.create.world
+(ns cdq.application.create.world
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.world :as world]

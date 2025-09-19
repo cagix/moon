@@ -1,4 +1,4 @@
-(ns cdq.start.context-record
+(ns cdq.application.create.context-record
   (:require [qrecord.core :as q]))
 
 (q/defrecord Context [

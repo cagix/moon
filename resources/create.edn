@@ -1,5 +1,5 @@
 [
- (cdq.start.context-record/do!)
+ (cdq.application.create.context-record/do!)
  (clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
                                                       [:ctx/audio :some]
                                                       [:ctx/editor :some]
@@ -27,26 +27,26 @@
  (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
                                                    :properties "properties.edn"}))
  (clojure.core/assoc :ctx/info #edn/resource "info.edn")
- (cdq.start.txs/do! #edn/resource "txs.edn")
- (cdq.start.load-entity-components/do! #edn/resource "entity_components.edn")
- (cdq.start.load-entity-states/do!     #edn/resource "entity_states.edn")
- (cdq.start.load-effects/do!           #edn/resource "effects_fn_map.edn")
+ (cdq.application.create.txs/do! #edn/resource "txs.edn")
+ (cdq.application.create.load-entity-components/do! #edn/resource "entity_components.edn")
+ (cdq.application.create.load-entity-states/do!     #edn/resource "entity_states.edn")
+ (cdq.application.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
  (clojure.core/assoc :ctx/controls {:zoom-in :minus
                                     :zoom-out :equals
                                     :unpause-once :p
                                     :unpause-continously :space})
- (cdq.create.input/do!)
+ (cdq.application.create.input/do!)
  (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
- (cdq.create.graphics/do! #edn/resource "graphics.edn")
- (cdq.create.stage/do! {:state-var cdq.application/state
-                        :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
- (cdq.create.set-input-processor/do!)
- (cdq.create.audio/do! {:audio-impl cdq.impl.audio/create
-                        :sound-names #edn/resource "sounds.edn"
-                        :path-format "sounds/%s.wav"})
+ (cdq.application.create.graphics/do! #edn/resource "graphics.edn")
+ (cdq.application.create.stage/do! {:state-var cdq.application/state
+                                    :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
+ (cdq.application.create.set-input-processor/do!)
+ (cdq.application.create.audio/do! {:audio-impl cdq.impl.audio/create
+                                    :sound-names #edn/resource "sounds.edn"
+                                    :path-format "sounds/%s.wav"})
  (clojure.core/dissoc :ctx/files)
  (clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn")
- (cdq.create.reset-stage/do!)
- (cdq.create.world-config/do!)
- (cdq.create.world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                  :start-position [32 71]}))]
+ (cdq.application.create.reset-stage/do!)
+ (cdq.application.create.world-config/do!)
+ (cdq.application.create.world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                              :start-position [32 71]}))]

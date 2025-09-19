@@ -1,4 +1,4 @@
-(ns cdq.start.load-effects
+(ns cdq.application.create.load-effects
   (:require [cdq.effect :as effect])
   (:import (clojure.lang APersistentVector)))
 

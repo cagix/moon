@@ -1,4 +1,4 @@
-(ns cdq.create.stage
+(ns cdq.application.create.stage
   (:require [cdq.graphics :as graphics]
             [cdq.stage]
             [cdq.ui.message]

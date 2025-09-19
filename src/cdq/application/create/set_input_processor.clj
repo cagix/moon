@@ -1,4 +1,4 @@
-(ns cdq.create.set-input-processor
+(ns cdq.application.create.set-input-processor
   (:require [gdl.input :as input]))
 
 (defn do! [ctx]

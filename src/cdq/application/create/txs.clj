@@ -1,4 +1,4 @@
-(ns cdq.start.txs
+(ns cdq.application.create.txs
   (:require [cdq.ctx :as ctx]))
 
 (defn- create-fn-map [{:keys [ks sym-format]}]

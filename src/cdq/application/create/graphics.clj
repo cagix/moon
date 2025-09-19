@@ -1,4 +1,4 @@
-(ns cdq.create.graphics
+(ns cdq.application.create.graphics
   (:require [cdq.files]
             [cdq.graphics]
             [com.badlogic.gdx.graphics.colors :as colors]

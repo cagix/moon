@@ -1,4 +1,4 @@
-(ns cdq.start.load-entity-states
+(ns cdq.application.create.load-entity-states
   (:require [cdq.entity.state :as state])
   (:import (clojure.lang APersistentVector)))
 

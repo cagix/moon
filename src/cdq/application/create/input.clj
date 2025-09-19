@@ -1,4 +1,4 @@
-(ns cdq.create.input
+(ns cdq.application.create.input
   (:require [cdq.input]
             [gdl.input :as input]
             [com.badlogic.gdx.math.vector2 :as v]))

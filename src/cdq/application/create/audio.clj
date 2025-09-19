@@ -1,4 +1,4 @@
-(ns cdq.create.audio
+(ns cdq.application.create.audio
   (:require [gdl.files :as files]))
 
 (defn do!
