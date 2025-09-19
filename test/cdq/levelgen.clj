@@ -89,6 +89,7 @@
 (def state (atom nil))
 
 (require 'com.badlogic.gdx.scenes.scene2d.ui.table)
+(require 'com.badlogic.gdx.scenes.scene2d.ui.widget-group)
 (defn- edit-window []
   {:actor/type :actor.type/window
    :title "Edit"
