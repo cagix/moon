@@ -8,7 +8,7 @@
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.viewport :as viewport]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
             [gdl.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]

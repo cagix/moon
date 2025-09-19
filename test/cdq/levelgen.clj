@@ -13,7 +13,7 @@
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [com.badlogic.gdx.utils.viewport :as viewport]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
