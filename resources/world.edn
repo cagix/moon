@@ -21,8 +21,8 @@
                  :world/effect-body-props {:width 0.5
                                            :height 0.5
                                            :z-order :z-order/effect}}
- :pipeline [[cdq.application.create.world/create-record]
-            [cdq.application.create.world/read-spawn-entity-schema]
+ :pipeline [[cdq.application.create.world.record/do!]
+            [cdq.application.create.world.entity-schema/do!]
             [cdq.application.create.world/create-fsms]
             [cdq.application.create.world/calculate-max-speed]
             [cdq.application.create.world/define-render-z-order]]}
