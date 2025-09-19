@@ -12,7 +12,7 @@
                                                    (f ctx params))))
                     :update-labels (for [[avar icon] update-labels]
                                      (if icon
-                                       (avar (get (:ctx/textures graphics) icon))
+                                       (avar (get (:graphics/textures graphics) icon))
                                        @avar))}
             :expand-x? true
             :fill-x? true

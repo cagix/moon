@@ -47,7 +47,7 @@
 (defn draw [_ entity {:keys [ctx/graphics]}]
   (let [ratio (val-max/ratio (stats/get-hitpoints (:creature/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar (:ctx/world-unit-scale graphics)
+      (draw-hpbar (:graphics/world-unit-scale graphics)
                   (:entity/body entity)
                   ratio))))
 

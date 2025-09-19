@@ -18,7 +18,7 @@
            :cave-style cave-style
            :random (java.util.Random.)
            :level/tile-size tile-size
-           :level/create-tile (let [texture (get (:ctx/textures graphics) texture-path)]
+           :level/create-tile (let [texture (get (:graphics/textures graphics) texture-path)]
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}

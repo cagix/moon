@@ -75,7 +75,7 @@
                                     [{:actor {:actor/type :actor.type/label
                                               :label/text label}}
                                      {:actor actor}])})
-        scroll-pane-cell (let [;viewport (:ctx/ui-viewport ctx)
+        scroll-pane-cell (let [;viewport (:graphics/ui-viewport ctx)
                                table (scene2d/build
                                       {:actor/type :actor.type/table
                                        :rows [[scroll-pane-table]]

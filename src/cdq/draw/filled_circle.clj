@@ -2,7 +2,7 @@
   (:require [space.earlygrey.shape-drawer :as sd]))
 
 (defn do!
-  [{:keys [ctx/shape-drawer]}
+  [{:keys [graphics/shape-drawer]}
    [x y] radius color]
   (sd/set-color! shape-drawer color)
   (sd/filled-circle! shape-drawer x y radius))

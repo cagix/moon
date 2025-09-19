@@ -3,7 +3,7 @@
             [space.earlygrey.shape-drawer :as sd]))
 
 (defn do!
-  [{:keys [ctx/shape-drawer]
+  [{:keys [graphics/shape-drawer]
     :as graphics}
    width
    draws]

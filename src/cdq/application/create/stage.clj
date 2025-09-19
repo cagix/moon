@@ -22,8 +22,8 @@
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (stage-impl
-                         (:ctx/ui-viewport graphics)
-                         (:ctx/batch       graphics)
+                         (:graphics/ui-viewport graphics)
+                         (:graphics/batch       graphics)
                          @state-var)))
 
 (defn- stage-find [stage k]

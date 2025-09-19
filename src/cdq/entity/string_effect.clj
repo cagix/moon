@@ -8,7 +8,7 @@
                   :x x
                   :y (+ y
                         (/ (:body/height (:entity/body entity)) 2)
-                        (* 5 (:ctx/world-unit-scale graphics)))
+                        (* 5 (:graphics/world-unit-scale graphics)))
                   :scale 2
                   :up? true}]]))
 

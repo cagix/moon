@@ -3,9 +3,9 @@
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]))
 
 (defn do!
-  [{:keys [ctx/batch
-           ctx/unit-scale
-           ctx/world-unit-scale]}
+  [{:keys [graphics/batch
+           graphics/unit-scale
+           graphics/world-unit-scale]}
    texture-region
    [x y]
    & {:keys [center? rotation]}]
