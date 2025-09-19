@@ -1,6 +1,6 @@
 (ns cdq.render.validate
-  (:require [cdq.malli :as m]))
+  (:require [cdq.ctx :as ctx]))
 
-(defn do! [{:keys [ctx/schema] :as ctx}]
-  (m/validate-humanize schema ctx)
+(defn do! [ctx]
+  (ctx/validate ctx)
   ctx)

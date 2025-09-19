@@ -1,22 +1,20 @@
 [
- (cdq.application.create.context-record/do!)
- (clojure.decl/assoc* :ctx/schema (malli.core/schema [:map {:closed true}
-                                                      [:ctx/audio :some]
-                                                      [:ctx/editor :some]
-                                                      [:ctx/db :some]
-                                                      [:ctx/graphics :some]
-                                                      [:ctx/input :some]
-                                                      [:ctx/controls :some]
-                                                      [:ctx/stage :some]
-                                                      [:ctx/vis-ui :some]
-                                                      [:ctx/ui-actors :some]
-                                                      [:ctx/world :some]
-                                                      [:ctx/info :some]
-                                                      [:ctx/schema :some]
-                                                      [:ctx/mouseover-actor :any]
-                                                      [:ctx/ui-mouse-position :some]
-                                                      [:ctx/world-mouse-position :some]
-                                                      [:ctx/interaction-state :some]]))
+ (cdq.application.create.record/do! [:map {:closed true}
+                                     [:ctx/audio :some]
+                                     [:ctx/editor :some]
+                                     [:ctx/db :some]
+                                     [:ctx/graphics :some]
+                                     [:ctx/input :some]
+                                     [:ctx/controls :some]
+                                     [:ctx/stage :some]
+                                     [:ctx/vis-ui :some]
+                                     [:ctx/ui-actors :some]
+                                     [:ctx/world :some]
+                                     [:ctx/info :some]
+                                     [:ctx/mouseover-actor :any]
+                                     [:ctx/ui-mouse-position :some]
+                                     [:ctx/world-mouse-position :some]
+                                     [:ctx/interaction-state :some]])
  (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
  (cdq.ui.editor.window/init!)
  (clojure.core/assoc

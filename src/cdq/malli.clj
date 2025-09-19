@@ -3,6 +3,9 @@
             [malli.error :as me]
             [malli.generator :as mg]))
 
+(defn schema [form]
+  (m/schema form))
+
 (defn generate [form opts]
   (mg/generate form opts))
 
