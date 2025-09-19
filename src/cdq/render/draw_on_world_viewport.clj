@@ -9,6 +9,6 @@
   (cdq.graphics/draw-on-world-viewport!
    graphics
    (fn []
-     (doseq [f draw-fns]
-       (graphics/handle-draws! graphics (f ctx)))))
+     (doseq [[f & params] draw-fns]
+       (graphics/handle-draws! graphics (apply f ctx params)))))
   ctx)

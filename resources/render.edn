@@ -7,11 +7,22 @@
  (cdq.render.clear-screen/do!)
  (cdq.render.draw-world-map/do!)
  (cdq.render.draw-on-world-viewport/do! [
-                                         cdq.draw-on-world-viewport.tile-grid/do!
-                                         cdq.draw-on-world-viewport.cell-debug/do!
-                                         cdq.draw-on-world-viewport.entities/do!
-                                         #_cdq.draw-on-world-viewport.geom-test/do!
-                                         cdq.draw-on-world-viewport.highlight-mouseover-tile/do!
+                                         [cdq.draw-on-world-viewport.tile-grid/do!]
+                                         [cdq.draw-on-world-viewport.cell-debug/do!]
+                                         [cdq.draw-on-world-viewport.entities/do! [{:entity/mouseover?     cdq.entity.mouseover/draw
+                                                                                    :stunned               cdq.entity.state.stunned/draw
+                                                                                    :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
+                                                                                   {:entity/clickable      cdq.entity.clickable/draw
+                                                                                    :entity/animation      cdq.entity.animation/draw
+                                                                                    :entity/image          cdq.entity.image/draw
+                                                                                    :entity/line-render    cdq.entity.line-render/draw}
+                                                                                   {:npc-sleeping          cdq.entity.state.npc-sleeping/draw
+                                                                                    :entity/temp-modifier  cdq.entity.temp-modifier/draw
+                                                                                    :entity/string-effect  cdq.entity.string-effect/draw}
+                                                                                   {:creature/stats        cdq.entity.stats/draw
+                                                                                    :active-skill          cdq.entity.state.active-skill/draw}]]
+                                         #_ [cdq.draw-on-world-viewport.geom-test/do!]
+                                         [cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
                                          ])
  (cdq.render.assoc-interaction-state/do!)
  (cdq.render.set-cursor/do!)

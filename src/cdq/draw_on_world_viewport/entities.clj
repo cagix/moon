@@ -34,10 +34,10 @@
 (defn do!
   [{:keys [ctx/graphics
            ctx/world]
-    :as ctx}]
+    :as ctx}
+   render-layers]
   (let [entities (map deref (world/active-eids world))
         player @(:world/player-eid world)
-        render-layers (:graphics/entity-render-layers graphics)
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
                            (world/line-of-sight? world player entity)))]
