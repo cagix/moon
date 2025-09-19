@@ -3,15 +3,13 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.ctx :as ctx]
             [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.widget :as widget]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-; TODO make a system for _all_ scene2d/build
-; also vis-ui ones?
-; => then I know all widget types! editor etc. actiomnar whatever
+(defn- get-ctx [actor]
+  (when-let [stage (actor/get-stage actor)]
+    (stage/get-ctx stage)))
 
 (def ^:private opts-fn-map
   {:actor/name (fn [a v] (actor/set-name! a v))
@@ -89,7 +87,15 @@
             :let [f (get opts-fn-map k)]
             :when f]
       (f actor v))
-    actor))
+    actor)
+
+  (act [actor delta f]
+    (when-let [ctx (get-ctx actor)]
+      (f actor delta ctx)))
+
+  (draw [actor f]
+    (when-let [ctx (get-ctx actor)]
+      (ctx/draw! ctx (f actor ctx)))))
 
 (defn- create*
   [{:keys [actor/act
@@ -102,18 +108,6 @@
             (draw this batch parent-alpha)))
     (actor/set-opts! opts)))
 
-(defn- get-ctx [actor]
-  (when-let [stage (actor/get-stage actor)]
-    (stage/get-ctx stage)))
-
-(defn- try-act [actor delta f]
-  (when-let [ctx (get-ctx actor)]
-    (f actor delta ctx)))
-
-(defn- try-draw [actor f]
-  (when-let [ctx (get-ctx actor)]
-    (ctx/draw! ctx (f actor ctx))))
-
 (defmethod scene2d/build :actor.type/actor
   [{:keys [act draw]
     :as opts}]
@@ -121,19 +115,7 @@
    (assoc opts
           :actor/act (fn [actor delta]
                        (when act
-                         (try-act actor delta act)))
+                         (actor/act actor delta act)))
           :actor/draw (fn [actor _batch _parent-alpha]
                         (when draw
-                          (try-draw actor draw))))))
-
-(defmethod scene2d/build :actor.type/widget
-  [opts]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (when-let [f (:draw opts)]
-        (try-draw this f)))))
-
-(extend-type Widget
-  gdl.scene2d.ui.widget/Widget
-  (set-opts! [actor opts]
-    (actor/set-opts! actor opts)))
+                          (actor/draw actor draw))))))

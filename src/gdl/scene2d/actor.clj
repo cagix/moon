@@ -1,6 +1,8 @@
 (ns gdl.scene2d.actor)
 
 (defprotocol Actor
+  (act [_ delta f])
+  (draw [_ f])
   (get-stage [_])
   (get-x [_])
   (get-y [_])
