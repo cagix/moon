@@ -173,17 +173,20 @@
    :world-viewport world-viewport
    :textures-to-load (cdq.files/search files texture-folder)})
 
+(defn- extend-draws [graphics draw-fns]
+  (extend-type (class graphics)
+    cdq.graphics/DrawHandler
+    (handle-draws! [graphics draws]
+      (doseq [{k 0 :as component} draws
+              :when component]
+        (apply (draw-fns k) graphics (rest component)))))
+  graphics)
+
 (defn do!
   [{:keys [ctx/files
            ctx/graphics]
     :as ctx}
    config]
-  (assoc ctx :ctx/graphics (let [draw-fns (:draw-fns config)
-                                 graphics (create* graphics (graphics-config files config))]
-                             (extend-type (class graphics)
-                               cdq.graphics/DrawHandler
-                               (handle-draws! [graphics draws]
-                                 (doseq [{k 0 :as component} draws
-                                         :when component]
-                                   (apply (draw-fns k) graphics (rest component)))))
-                             graphics)))
+  (assoc ctx :ctx/graphics (let [graphics (create* graphics (graphics-config files config))]
+                             (-> graphics
+                                 (extend-draws (:draw-fns config))))))
