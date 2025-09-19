@@ -1,5 +1,5 @@
 (ns cdq.draw.circle
-  (:require [space.earlygrey.shape-drawer :as sd]))
+  (:require [gdl.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

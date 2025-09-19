@@ -1,78 +1,81 @@
 (ns space.earlygrey.shape-drawer
-  (:require [com.badlogic.gdx.graphics.color :as color])
+  (:require [gdl.graphics.shape-drawer]
+            [com.badlogic.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
-(defn set-color! [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (color/create color)))
+(extend-type ShapeDrawer
+  gdl.graphics.shape-drawer/ShapeDrawer
+  (set-color! [this color]
+    (.setColor this (color/create color)))
 
-(defn with-line-width [^ShapeDrawer this width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth this)]
-    (.setDefaultLineWidth this (float (* width old-line-width)))
-    (draw-fn)
-    (.setDefaultLineWidth this (float old-line-width))))
+  (with-line-width [this width draw-fn]
+    (let [old-line-width (.getDefaultLineWidth this)]
+      (.setDefaultLineWidth this (float (* width old-line-width)))
+      (draw-fn)
+      (.setDefaultLineWidth this (float old-line-width))))
 
-(defn arc! [shape-drawer center-x center-y radius start-radians radians]
-  (ShapeDrawer/.arc shape-drawer
-                    (float center-x)
-                    (float center-y)
-                    (float radius)
-                    (float start-radians)
-                    (float radians)))
+  (arc! [this center-x center-y radius start-radians radians]
+    (.arc this
+          (float center-x)
+          (float center-y)
+          (float radius)
+          (float start-radians)
+          (float radians)))
 
-(defn circle! [shape-drawer x y radius]
-  (ShapeDrawer/.circle shape-drawer
-                       (float x)
-                       (float y)
-                       (float radius)))
+  (circle! [this x y radius]
+    (.circle this
+             (float x)
+             (float y)
+             (float radius)))
 
-(defn ellipse! [shape-drawer x y radius-x radius-y]
-  (ShapeDrawer/.ellipse shape-drawer
-                        (float x)
-                        (float y)
-                        (float radius-x)
-                        (float radius-y)))
+  (ellipse! [this x y radius-x radius-y]
+    (.ellipse this
+              (float x)
+              (float y)
+              (float radius-x)
+              (float radius-y)))
 
-(defn filled-circle! [shape-drawer x y radius]
-  (ShapeDrawer/.filledCircle shape-drawer
-                             (float x)
-                             (float y)
-                             (float radius)))
+  (filled-circle! [this x y radius]
+    (.filledCircle this
+                   (float x)
+                   (float y)
+                   (float radius)))
 
-(defn filled-ellipse! [shape-drawer x y radius-x radius-y]
-  (ShapeDrawer/.filledEllipse shape-drawer
-                              (float x)
-                              (float y)
-                              (float radius-x)
-                              (float radius-y)))
+  (filled-ellipse! [this x y radius-x radius-y]
+    (.filledEllipse this
+                    (float x)
+                    (float y)
+                    (float radius-x)
+                    (float radius-y)))
 
-(defn filled-rectangle! [shape-drawer x y w h]
-  (ShapeDrawer/.filledRectangle shape-drawer
-                                (float x)
-                                (float y)
-                                (float w)
-                                (float h)))
+  (filled-rectangle! [this x y w h]
+    (.filledRectangle this
+                      (float x)
+                      (float y)
+                      (float w)
+                      (float h)))
 
-(defn line! [shape-drawer sx sy ex ey]
-  (ShapeDrawer/.line shape-drawer
-                     (float sx)
-                     (float sy)
-                     (float ex)
-                     (float ey)))
+  (line! [this sx sy ex ey]
+    (.line this
+           (float sx)
+           (float sy)
+           (float ex)
+           (float ey)))
 
-(defn rectangle! [shape-drawer x y w h]
-  (ShapeDrawer/.rectangle shape-drawer
-                          (float x)
-                          (float y)
-                          (float w)
-                          (float h)))
+  (rectangle! [this x y w h]
+    (.rectangle this
+                (float x)
+                (float y)
+                (float w)
+                (float h)))
 
-(defn sector! [shape-drawer center-x center-y radius start-radians radians]
-  (ShapeDrawer/.sector shape-drawer
-                       (float center-x)
-                       (float center-y)
-                       (float radius)
-                       (float start-radians)
-                       (float radians)))
+  (sector! [this center-x center-y radius start-radians radians]
+    (.sector this
+             (float center-x)
+             (float center-y)
+             (float radius)
+             (float start-radians)
+             (float radians))))

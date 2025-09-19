@@ -7,8 +7,8 @@
             [com.badlogic.gdx.utils.viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
-            [gdl.graphics.g2d.batch :as batch]
-            [space.earlygrey.shape-drawer :as sd]))
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.g2d.batch :as batch]))
 
 (defn do! [graphics]
   (extend-type (class graphics)
