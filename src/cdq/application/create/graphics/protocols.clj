@@ -4,11 +4,11 @@
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [com.badlogic.gdx.utils.viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.g2d.batch :as batch]))
+            [gdl.graphics.g2d.batch :as batch]
+            [gdl.graphics.viewport :as viewport]))
 
 (defn do! [graphics]
   (extend-type (class graphics)
@@ -86,13 +86,13 @@
     (set-camera-position! [{:keys [graphics/world-viewport]} position]
       (camera/set-position! (:viewport/camera world-viewport) position))
 
-    (unproject-ui    [{:keys [graphics/ui-viewport]}    position] (viewport/unproject-clamp ui-viewport    position))
-    (unproject-world [{:keys [graphics/world-viewport]} position] (viewport/unproject-clamp world-viewport position))
+    (unproject-ui    [{:keys [graphics/ui-viewport]}    position] (viewport/unproject ui-viewport    position))
+    (unproject-world [{:keys [graphics/world-viewport]} position] (viewport/unproject world-viewport position))
 
     (update-viewports! [{:keys [graphics/ui-viewport
                                 graphics/world-viewport]} width height]
-      (viewport/update! ui-viewport    width height :center? true)
-      (viewport/update! world-viewport width height :center? false))
+      (viewport/update! ui-viewport    width height {:center? true})
+      (viewport/update! world-viewport width height {:center? false}))
 
     (texture-region [{:keys [graphics/textures]}
                      {:keys [image/file image/bounds]}]

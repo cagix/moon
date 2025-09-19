@@ -16,6 +16,7 @@
             [com.badlogic.gdx.utils.viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
+            [gdl.graphics.viewport]
             [gdl.input :as input]
             [org.lwjgl.system.configuration]
             [gdl.scene2d :as scene2d]
@@ -189,8 +190,8 @@
 (defn resize! [width height]
   (let [{:keys [ctx/ui-viewport
                 ctx/world-viewport]} @state]
-    (viewport/update! ui-viewport    width height :center? true)
-    (viewport/update! world-viewport width height :center? false)))
+    (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
+    (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
   (org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
