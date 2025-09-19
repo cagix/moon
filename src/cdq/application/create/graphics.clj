@@ -109,14 +109,14 @@
         (texture/region texture)))))
 
 (defn- create*
-  [graphics
-   {:keys [colors
+  [{:keys [colors
            textures-to-load
            world-unit-scale
            ui-viewport
            default-font
            cursors
-           world-viewport]}]
+           world-viewport]}
+   graphics]
   (colors/put! colors)
   (let [batch (sprite-batch/create)
         shape-drawer-texture (let [pixmap (doto (pixmap/create)
@@ -187,6 +187,6 @@
            ctx/graphics]
     :as ctx}
    config]
-  (assoc ctx :ctx/graphics (let [graphics (create* graphics (graphics-config files config))]
-                             (-> graphics
-                                 (extend-draws (:draw-fns config))))))
+  (assoc ctx :ctx/graphics (-> (graphics-config files config)
+                               (create* graphics)
+                               (extend-draws (:draw-fns config)))))
