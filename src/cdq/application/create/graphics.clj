@@ -65,20 +65,20 @@
   (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
 (defn- create-ui-viewport [graphics ui-viewport]
-  (assoc graphics :graphics/ui-viewport (viewport/fit (:width  ui-viewport)
-                                                      (:height ui-viewport)
-                                                      (camera/orthographic))))
+  (assoc graphics :graphics/ui-viewport (viewport/create (:width  ui-viewport)
+                                                         (:height ui-viewport)
+                                                         (camera/orthographic))))
 
 (defn- create-world-viewport [{:keys [graphics/world-unit-scale]
                                :as graphics}
                               world-viewport]
   (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                             (viewport/fit world-width
-                                                           world-height
-                                                           (camera/orthographic :y-down? false
-                                                                                :world-width world-width
-                                                                                :world-height world-height)))))
+                                             (viewport/create world-width
+                                                              world-height
+                                                              (camera/orthographic :y-down? false
+                                                                                   :world-width world-width
+                                                                                   :world-height world-height)))))
 
 (defn- create*
   [{:keys [textures-to-load

@@ -7,9 +7,9 @@
 
 (defn ->java
   ([[x y]]
-   (Vector2. x y))
+   (->java x y))
   ([x y]
-   (->java x y)))
+   (Vector2. x y)))
 
 (defn scale [[^double x ^double y] ^double scalar]
   [(* x scalar)

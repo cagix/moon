@@ -108,7 +108,7 @@
            clojure.gdx/input
            clojure.gdx/graphics]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (viewport/fit 1440 900 (camera/orthographic))
+        ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
         stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch state)
         _  (input/set-processor! input stage)
@@ -119,11 +119,11 @@
                                                     :properties "properties.edn"}))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (viewport/fit world-width
-                                       world-height
-                                       (camera/orthographic :y-down? false
-                                                            :world-width world-width
-                                                            :world-height world-height)))
+                         (viewport/create world-width
+                                          world-height
+                                          (camera/orthographic :y-down? false
+                                                               :world-width world-width
+                                                               :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
