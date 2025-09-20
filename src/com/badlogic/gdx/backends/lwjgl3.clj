@@ -14,8 +14,7 @@
             com.badlogic.gdx.backends.lwjgl3.init.sync
             com.badlogic.gdx.backends.lwjgl3.init.window
             com.badlogic.gdx.backends.lwjgl3.init.add-window
-            com.badlogic.gdx.backends.lwjgl3.init.main-loop)
-  )
+            com.badlogic.gdx.backends.lwjgl3.init.main-loop))
 
 (defn start-application!
   [listener config os->executions]
@@ -23,7 +22,7 @@
             (f ctx))
           {:init/listener listener
            :init/config config
-           :init/os->executions (or os->executions {})}
+           :init/os->executions os->executions}
           [com.badlogic.gdx.backends.lwjgl3.init.os-settings/do!
            com.badlogic.gdx.backends.lwjgl3.init.listener/do!
            com.badlogic.gdx.backends.lwjgl3.init.config/do!
