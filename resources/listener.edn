@@ -1,9 +1,0 @@
-{:os->executions {:mac [(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-                        (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}
- :config {:title "Cyber Dungeon Quest"
-          :windowed-mode {:width 1440 :height 900}
-          :foreground-fps 60}
- :listener {:create (cdq.application.create/do! #edn/resource "create.edn")
-            :render (cdq.application.render/do! #edn/resource "render.edn")
-            :dispose cdq.application.dispose/do!
-            :resize  cdq.application.resize/do!}}

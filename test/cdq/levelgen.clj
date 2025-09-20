@@ -18,7 +18,6 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
             [gdl.input :as input]
-            [org.lwjgl.system.configuration]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
@@ -197,7 +196,6 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
-  (org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
   (lwjgl3/start-application!
    {:create! create!
     :dispose! dispose!
@@ -208,4 +206,5 @@
    {:title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60}
-   []))
+   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}))
