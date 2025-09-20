@@ -1,4 +1,4 @@
-(ns j.awt.taskbar
+(ns clojure.java.awt.taskbar
   (:require [clojure.java.io :as io])
   (:import (java.awt Taskbar
                      Toolkit)))
