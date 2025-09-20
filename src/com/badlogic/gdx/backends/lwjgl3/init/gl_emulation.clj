@@ -5,9 +5,7 @@
 
 (defn- load-angle! []
   (try
-   (let [angle-loader (Class/forName "com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader")
-         load-method (.getMethod angle-loader "load")]
-     (.invoke load-method angle-loader))
+   (eval '(com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader/load))
    (catch ClassNotFoundException _
      nil)
    (catch Throwable t
@@ -15,9 +13,7 @@
 
 (defn- post-load-angle! []
   (try
-   (let [angle-loader (Class/forName "com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader")
-         post-method (.getMethod angle-loader "postGlfwInit")]
-     (.invoke post-method angle-loader))
+   (eval '(com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader/postGlfwInit))
    (catch ClassNotFoundException _
      nil)
    (catch Throwable t

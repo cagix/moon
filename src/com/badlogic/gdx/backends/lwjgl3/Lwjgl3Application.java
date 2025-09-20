@@ -8,7 +8,6 @@ import java.nio.IntBuffer;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.GLEmulation;
 import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
-import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
 import com.badlogic.gdx.utils.*;
@@ -297,18 +296,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	}
 
 	@Override
-	public Lwjgl3Audio createAudio (Lwjgl3ApplicationConfiguration config) {
-		return new OpenALLwjgl3Audio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-			config.audioDeviceBufferSize);
-	}
-
-	@Override
 	public Lwjgl3Input createInput (Lwjgl3Window window) {
 		return new DefaultLwjgl3Input(window);
-	}
-
-	public Files createFiles () {
-		return new Lwjgl3Files();
 	}
 
 	/** Creates a new {@link Lwjgl3Window} using the provided listener and {@link Lwjgl3WindowConfiguration}.
