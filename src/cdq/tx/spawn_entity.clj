@@ -5,7 +5,7 @@
             [cdq.stats :as modifiers]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
-            [cdq.malli :as m]
+            [malli.utils]
             [qrecord.core :as q]))
 
 (q/defrecord Entity [entity/body])
@@ -38,7 +38,7 @@
                 world/id-counter
                 world/spawn-entity-schema
                 ]} world
-        _ (m/validate-humanize spawn-entity-schema entity)
+        _ (malli.utils/validate-humanize spawn-entity-schema entity)
         entity (reduce (fn [m [k v]]
                          (assoc m k (entity/create [k v] ctx)))
                        {}

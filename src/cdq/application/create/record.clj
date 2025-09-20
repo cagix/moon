@@ -1,6 +1,7 @@
 (ns cdq.application.create.record
   (:require [cdq.ctx :as ctx]
-            [cdq.malli :as m]
+            [malli.core :as m]
+            [malli.utils]
             [qrecord.core :as q]))
 
 (def ^:private schema
@@ -39,7 +40,7 @@
                       ctx/controls]
   ctx/Validation
   (validate [this]
-    (m/validate-humanize schema this)
+    (malli.utils/validate-humanize schema this)
     this))
 
 (defn do! [ctx]

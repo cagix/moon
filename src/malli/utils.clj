@@ -1,13 +1,6 @@
-(ns cdq.malli
+(ns malli.utils
   (:require [malli.core :as m]
-            [malli.error :as me]
-            [malli.generator :as mg]))
-
-(defn schema [form]
-  (m/schema form))
-
-(defn generate [form opts]
-  (mg/generate form opts))
+            [malli.error :as me]))
 
 (defn validate-humanize [schema value]
   (when-not (m/validate schema value)

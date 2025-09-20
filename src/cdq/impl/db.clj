@@ -2,13 +2,13 @@
   (:require [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
-            [cdq.malli :as m]
             [cdq.property :as property]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [malli.core]
-            [malli.map-schema :as map-schema]))
+            [malli.map-schema :as map-schema]
+            [malli.utils]))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -85,7 +85,7 @@
     (-> (get schemas k)
         (schema/malli-form schemas)
         malli.core/schema
-        (m/validate-humanize value)))
+        (malli.utils/validate-humanize value)))
 
   (create-map-schema [schemas ks]
     (map-schema/create-map-schema ks (fn [k]
