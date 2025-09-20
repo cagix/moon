@@ -1,11 +1,13 @@
 (ns cdq.gdx.math.geom
   (:refer-clojure :exclude [contains?])
-  (:require [com.badlogic.gdx.math :as math]))
+  (:require [com.badlogic.gdx.math.circle :as circle]
+            [com.badlogic.gdx.math.intersector :as intersector]
+            [com.badlogic.gdx.math.rectangle :as rectangle]))
 
-(def circle    math/circle)
-(def rectangle math/rectangle)
-(def overlaps? math/overlaps?)
-(def contains? math/contains?)
+(def circle    circle/create)
+(def rectangle rectangle/create)
+(def overlaps? intersector/overlaps?)
+(def contains? rectangle/contains?)
 
 (defn circle->outer-rectangle [{[x y] :position :keys [radius]}]
   (let [radius (float radius)

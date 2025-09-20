@@ -1,18 +1,7 @@
-(ns com.badlogic.gdx.math
-  (:refer-clojure :exclude [contains?])
+(ns com.badlogic.gdx.math.intersector
   (:import (com.badlogic.gdx.math Circle
                                   Intersector
                                   Rectangle)))
-
-(defn circle [x y radius]
-  (Circle. x y radius))
-
-(defn rectangle [x y width height]
-  (Rectangle. x y width height))
-
-(defn contains?
-  [rectangle [x y]]
-  (Rectangle/.contains rectangle x y))
 
 (defmulti overlaps?
   (fn [a b] [(class a) (class b)]))
