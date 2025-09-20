@@ -70,7 +70,7 @@
        [{:actor {:actor/type :actor.type/text-button
                  :text (name k)
                  :on-clicked (fn [_actor ctx]
-                               (.remove window)
+                               (actor/remove! window)
                                (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
                                                                                                      (get schemas k)
                                                                                                      k
@@ -79,7 +79,7 @@
                                                                                  (map-schema/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
-    (.pack window)
+    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window)
     window))
 
 (defn- horiz-sep [colspan]

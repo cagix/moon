@@ -1,6 +1,6 @@
 (ns com.badlogic.gdx.backends.lwjgl3.init.window)
 
-(defn do! [{:keys [init/application
+(defn do! [{:keys [^com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application init/application
                    init/config
                    init/listener]
             :as init}]

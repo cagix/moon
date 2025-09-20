@@ -2,8 +2,8 @@
   (:import (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)))
 
 (defn do!
-  [{:keys [init/application
-           init/config]
+  [{:keys [^com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application init/application
+           ^com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration init/config]
     :as init}]
   (if (.disableAudio config)
     (set! (.audio application) (MockAudio.))

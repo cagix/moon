@@ -37,7 +37,7 @@
                                                  (fn [[file-handle [hotspot-x hotspot-y]]]
                                                    (let [pixmap (pixmap/create file-handle)
                                                          cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
-                                                     (.dispose pixmap)
+                                                     (pixmap/dispose! pixmap)
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]

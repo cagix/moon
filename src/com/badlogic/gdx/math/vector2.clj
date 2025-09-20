@@ -5,7 +5,7 @@
   [(.x vector2)
    (.y vector2)])
 
-(defn ->java
+(defn ^Vector2 ->java
   ([[x y]]
    (->java x y))
   ([x y]

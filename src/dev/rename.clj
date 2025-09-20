@@ -1,7 +1,7 @@
 (ns dev.rename
   (:require [clojure.java.io :as io]))
 
-(defn replace-in-file! [file from to]
+(defn replace-in-file! [^java.io.File file from to]
   (let [content (slurp file)
         new-content (.replaceAll content (java.util.regex.Pattern/quote from) to)]
     (when (not= content new-content)
@@ -11,7 +11,7 @@
 (defn matching-files [patterns]
   (->> patterns
        (mapcat #(file-seq (io/file %)))
-       (filter #(.isFile %))))
+       (filter java.io.File/.isFile)))
 
 (comment
  (let [from "gdl.tiled"

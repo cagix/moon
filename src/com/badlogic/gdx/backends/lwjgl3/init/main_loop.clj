@@ -2,7 +2,7 @@
   (:import (com.badlogic.gdx.utils Array)))
 
 (defn do!
-  [{:keys [init/application
+  [{:keys [^com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application init/application
            init/error-callback]}]
   (try
    (let [closed-windows (Array.)]
@@ -14,5 +14,5 @@
    (catch Throwable t
      (throw t))
    (finally
-    (.free error-callback)
+    (org.lwjgl.glfw.GLFWErrorCallback/.free error-callback)
     (.cleanup application))))

@@ -18,7 +18,7 @@
           :viewport/top-gutter-height (.getTopGutterHeight this)
           :viewport/top-gutter-y      (.getTopGutterY      this))))))
 
-(defn- unproject [viewport x y]
+(defn- unproject [^FitViewport viewport x y]
   (-> viewport
       (.unproject (vector2/->java x y))
       vector2/->clj))

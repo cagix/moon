@@ -27,7 +27,7 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (.pack (window/find-ancestor table)))]
+                    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[{:actor {:actor/type :actor.type/text-button
@@ -41,10 +41,10 @@
                                              :center? true
                                              :close-on-escape? true})
                                     clicked-id-fn (fn [id ctx]
-                                                    (.remove window)
+                                                    (actor/remove! window)
                                                     (redo-rows ctx (conj property-ids id)))]
                                 (table/add-rows! window (overview-table/create ctx property-type clicked-id-fn))
-                                (.pack window)
+                                (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window)
                                 (stage/add! stage window)))}}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)

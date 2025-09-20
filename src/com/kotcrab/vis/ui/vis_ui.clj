@@ -122,7 +122,8 @@
                 ; so that the size is correct for the newly calculated text.
                 (getWidth []
                   (update-text! this)
-                  (proxy-super getWidth)))
+                  (let [^Tooltip this this]
+                    (proxy-super getWidth))))
           (.setTarget  actor)
           (.setContent label)))
       actor)

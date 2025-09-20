@@ -6,7 +6,8 @@
             [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label])
-  (:import (com.kotcrab.vis.ui.widget Menu
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)
+           (com.kotcrab.vis.ui.widget Menu
                                       MenuBar
                                       MenuItem
                                       PopupMenu)))
@@ -26,12 +27,12 @@
                                       :image/object icon}}
                              label]]})]
      (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
-     (.expandX (.right (table/add! table sub-table)))))
+     (.expandX (Cell/.right (table/add! table sub-table)))))
   ([table text-fn]
    (let [label (scene2d/build {:actor/type :actor.type/label
                                :label/text ""})]
      (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
-     (.expandX (.right (table/add! table label))))))
+     (.expandX (Cell/.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
   (let [table (MenuBar/.getTable menu-bar)]

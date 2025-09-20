@@ -1,11 +1,12 @@
 (ns com.badlogic.gdx.graphics.pixmap
-  (:import (com.badlogic.gdx.graphics Pixmap
+  (:import (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format)))
 
 (defn create
   ([]
    (Pixmap. 1 1 Pixmap$Format/RGBA8888))
-  ([file-handle]
+  ([^FileHandle file-handle]
    (Pixmap. file-handle)))
 
 (defn set-color! [pixmap [r g b a]]

@@ -14,23 +14,16 @@
 (defn create-value [_ v _db]
   v)
 
-(declare sound-columns) ; < -- rebuilding itself ....
+(declare sound-columns)
 
 (defn- rebuild! [table sound-name]
   (fn [actor _ctx]
-    ; TODO just rebuild the editor window ?
-
     (group/clear-children! table)
-
     (table/add-rows! table [(sound-columns table sound-name)])
-
-    (.remove (window/find-ancestor actor))
-
-    (.pack (window/find-ancestor table))
-
+    (actor/remove! (window/find-ancestor actor))
+    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack (window/find-ancestor table))
     (let [[k _] (actor/user-object table)]
-      (actor/set-user-object! table [k sound-name]))
-    ))
+      (actor/set-user-object! table [k sound-name]))))
 
 (defn- open-select-sounds-handler [table]
   (fn [_actor {:keys [ctx/audio

@@ -1,6 +1,7 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.stage :as stage]
             [cdq.info :as info]
+            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.group :as group]))
 
@@ -46,8 +47,8 @@
                         {:actor/type :actor.type/actor
                          :act (fn [_this _delta {:keys [ctx/world]
                                                  :as ctx}]
-                                (.setText label (str (if-let [eid (:world/mouseover-eid world)]
-                                                       (->label-text @eid ctx)
-                                                       "")))
-                                (.pack window))}))
+                                (label/set-text! label (str (if-let [eid (:world/mouseover-eid world)]
+                                                              (->label-text @eid ctx)
+                                                              "")))
+                                (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window))}))
     window))
