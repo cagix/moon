@@ -1,11 +1,12 @@
 (ns cdq.draw.arc
   (:require [clojure.utils :as utils]
+            [com.badlogic.gdx.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}
    [center-x center-y] radius start-angle degree color]
-  (sd/set-color! shape-drawer color)
+  (sd/set-color! shape-drawer (color/create color))
   (sd/arc! shape-drawer
            center-x
            center-y

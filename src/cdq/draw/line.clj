@@ -1,8 +1,9 @@
 (ns cdq.draw.line
-  (:require [gdl.graphics.shape-drawer :as sd]))
+  (:require [com.badlogic.gdx.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}
    [sx sy] [ex ey] color]
-  (sd/set-color! shape-drawer color)
+  (sd/set-color! shape-drawer (color/create color))
   (sd/line! shape-drawer sx sy ex ey))

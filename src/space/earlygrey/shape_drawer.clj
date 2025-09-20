@@ -1,6 +1,5 @@
 (ns space.earlygrey.shape-drawer
-  (:require [gdl.graphics.shape-drawer]
-            [com.badlogic.gdx.graphics.color :as color])
+  (:require [gdl.graphics.shape-drawer])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
@@ -9,7 +8,7 @@
 (extend-type ShapeDrawer
   gdl.graphics.shape-drawer/ShapeDrawer
   (set-color! [this color]
-    (.setColor this (color/create color)))
+    (.setColor this color))
 
   (with-line-width [this width draw-fn]
     (let [old-line-width (.getDefaultLineWidth this)]

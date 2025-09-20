@@ -1,8 +1,9 @@
 (ns cdq.draw.rectangle
-  (:require [gdl.graphics.shape-drawer :as sd]))
+  (:require [com.badlogic.gdx.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}
    x y w h color]
-  (sd/set-color! shape-drawer color)
+  (sd/set-color! shape-drawer (color/create color))
   (sd/rectangle! shape-drawer x y w h))
