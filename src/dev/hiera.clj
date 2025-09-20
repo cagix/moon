@@ -2,13 +2,6 @@
   (:require [hiera.main :as hiera]
             [clojure.set :as set]))
 
-; A place for everything and everything in its place
-; e.g. 'impl' for components
-; and 'api' for stuff
-; the api should be minimal
-; whats the badlogic API?
-; whats hidden ? (converters) ?
-
 (def good-enough
   '#{
      cdq.application
@@ -45,11 +38,6 @@
      cdq.ui.dev-menu
      })
 
-; We have many 'namespaces' which are actually _not_ an API
-; e.g. entity create/tick/draw is extending something ....
-; or vis-ui shit
-; requiring-resolve ?
-
 (comment
 
  ; java heap space 512m required
@@ -58,6 +46,8 @@
    :output "target/hiera"
    :layout :horizontal
    :external false
-   :ignore good-enough})
+   ;:ignore good-enough
+
+   })
 
  )
