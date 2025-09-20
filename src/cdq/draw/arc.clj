@@ -6,7 +6,7 @@
 (defn do!
   [{:keys [graphics/shape-drawer]}
    [center-x center-y] radius start-angle degree color]
-  (sd/set-color! shape-drawer (color/create color))
+  (sd/set-color! shape-drawer (color/float-bits color))
   (sd/arc! shape-drawer
            center-x
            center-y

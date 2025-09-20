@@ -5,5 +5,5 @@
 (defn do!
   [{:keys [graphics/shape-drawer]}
    [sx sy] [ex ey] color]
-  (sd/set-color! shape-drawer (color/create color))
+  (sd/set-color! shape-drawer (color/float-bits color))
   (sd/line! shape-drawer sx sy ex ey))
