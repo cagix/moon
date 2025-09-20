@@ -44,7 +44,7 @@
        doall
        (async-pprint-spit! file)))
 
-(defn- save! [{:keys [data file]}]
+(defn- save! [{:keys [db/data db/file]}]
   ; TODO validate them again!?
   (save-vals! (vals data)
               file))
@@ -93,35 +93,35 @@
 
 (defrecord DB []
   db/DB
-  (property-types [{:keys [schemas]}]
+  (property-types [{:keys [db/schemas]}]
     (filter #(= "properties" (namespace %)) (keys schemas)))
 
-  (update! [{:keys [data schemas]
+  (update! [{:keys [db/data db/schemas]
              :as this}
             {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
     (validate-property schemas property)
-    (let [new-db (update this :data assoc id property)]
+    (let [new-db (update this :db/data assoc id property)]
       (save! new-db)
       new-db))
 
-  (delete! [{:keys [data] :as this} property-id]
+  (delete! [{:keys [db/data] :as this} property-id]
     (assert (contains? data property-id))
-    (let [new-db (update this :data dissoc property-id)]
+    (let [new-db (update this :db/data dissoc property-id)]
       (save! new-db)
       new-db))
 
-  (get-raw [{:keys [data]} property-id]
+  (get-raw [{:keys [db/data]} property-id]
     {:pre [(contains? data property-id)]}
     (get data property-id))
 
-  (all-raw [{:keys [data]} property-type]
+  (all-raw [{:keys [db/data]} property-type]
     (->> (vals data)
          (filter #(= property-type (property/type %)))))
 
   (build
-    [{:keys [schemas]
+    [{:keys [db/schemas]
       :as this}
      property-id]
     (schemas/build-values schemas
@@ -129,7 +129,7 @@
                           this))
 
   (build-all
-    [{:keys [schemas]
+    [{:keys [db/schemas]
       :as this}
      property-type]
     (map #(schemas/build-values schemas % this)
@@ -148,6 +148,6 @@
         properties (-> properties-file slurp edn/read-string)]
     (validate-properties! schemas properties)
     (merge (map->DB {})
-           {:data (zipmap (map :property/id properties) properties)
-            :file properties-file
-            :schemas schemas})))
+           {:db/data (zipmap (map :property/id properties) properties)
+            :db/file properties-file
+            :db/schemas schemas})))

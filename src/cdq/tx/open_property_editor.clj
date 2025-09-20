@@ -68,7 +68,7 @@
            ctx/stage]
     :as ctx}
    property]
-  (let [schemas (:schemas db)
+  (let [schemas (:db/schemas db)
         schema (get schemas (property/type property))
         ; build for get-widget-value
         ; or find a way to find the widget from the context @ save button

@@ -15,6 +15,6 @@
                              (group/find-actor "cdq.ui.widget.scroll-pane-table")
                              (group/find-actor "scroll-pane-table")
                              (group/find-actor "cdq.schema.map.ui.widget"))
-        property (map-widget-table/get-value map-widget-table (:schemas db))]
+        property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
     [[:tx/open-property-editor property]]))

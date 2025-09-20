@@ -11,7 +11,7 @@
   (schemas/create-map-schema schemas ks))
 
 (defn create-value [_ v db]
-  (schemas/build-values (:schemas db) v db))
+  (schemas/build-values (:db/schemas db) v db))
 
 (defn create
   [schema
@@ -19,7 +19,7 @@
    {:keys [ctx/db
            ctx/editor]
     :as ctx}]
-  (let [schemas (:schemas db)]
+  (let [schemas (:db/schemas db)]
     {:actor/type :actor.type/map-widget-table
      :schema schema
      :k->widget (into {}

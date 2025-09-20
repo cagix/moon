@@ -120,7 +120,7 @@
                           :text "Add component"
                           :on-clicked (fn [_actor {:keys [ctx/db
                                                           ctx/stage]}]
-                                        (stage/add! stage (add-component-window (:schemas db) schema table)))}
+                                        (stage/add! stage (add-component-window (:db/schemas db) schema table)))}
                   :colspan colspan}])]
              [(when opt?
                 [{:actor {:actor/type :actor.type/separator-horizontal}
