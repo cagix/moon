@@ -1,4 +1,5 @@
 [
+ ; belongs to ui?
  (cdq.application.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
                                        com.badlogic.gdx.scenes.scene2d.group
                                        com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
@@ -8,27 +9,46 @@
                                        com.badlogic.gdx.scenes.scene2d.ui.widget
                                        com.badlogic.gdx.scenes.scene2d.ui.widget-group
                                        com.badlogic.gdx.scenes.scene2d.ui.window])
- (cdq.application.create.record/do!)
+
+ ; editor impl?
  (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
+
+ ; ui or editor impl?
  (cdq.ui.editor.window/init!)
+
+ ; assoc in graphics/stage?
  (clojure.core/assoc
   :ctx/mouseover-actor nil
   :ctx/ui-mouse-position true
   :ctx/world-mouse-position true
   :ctx/interaction-state true)
+
+ ; db impl
  (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
                                                    :properties "properties.edn"}))
+
+ ; ??
  (clojure.core/assoc :ctx/info #edn/resource "info.edn")
+
+ ; ??
  (cdq.application.create.txs/do! #edn/resource "txs.edn")
+
+ ; world impl ?
  (cdq.application.create.load-entity-components/do! #edn/resource "entity_components.edn")
  (cdq.application.create.load-entity-states/do!     #edn/resource "entity_states.edn")
  (cdq.application.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
+
+ ; belongs together with input
  (clojure.core/assoc :ctx/controls {:zoom-in :minus
                                     :zoom-out :equals
                                     :unpause-once :p
                                     :unpause-continously :space})
  (cdq.application.create.input/do!)
+
+ ; ui
  (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
+
+ ; ok graphics
  (cdq.application.create.graphics/do! #edn/resource "graphics.edn")
  (cdq.application.create.stage/do! {:state-var cdq.application/state
                                     :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})

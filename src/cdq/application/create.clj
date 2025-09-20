@@ -1,6 +1,46 @@
 (ns cdq.application.create
-  (:require [clojure.config :as config]
-            [clojure.utils :as utils]))
+  (:require [cdq.ctx :as ctx]
+            [clojure.config :as config]
+            [clojure.utils :as utils]
+            [malli.core :as m]
+            [malli.utils]
+            [qrecord.core :as q]))
+
+(def ^:private schema
+  (m/schema [:map {:closed true}
+             [:ctx/audio :some]
+             [:ctx/editor :some]
+             [:ctx/db :some]
+             [:ctx/graphics :some]
+
+             ; FIXME
+             [:ctx/input :some]
+             [:ctx/controls :some]
+
+             ; FIXME
+             [:ctx/stage :some]
+             [:ctx/vis-ui :some]
+             [:ctx/ui-actors :some]
+
+             [:ctx/world :some]
+
+             ; FIXME
+             [:ctx/info :some]
+
+             ; FIXME
+             [:ctx/mouseover-actor :any]
+             [:ctx/ui-mouse-position :some]
+             [:ctx/world-mouse-position :some]
+             [:ctx/interaction-state :some]]))
+
+; this is a performance optimization we can make keys here accessible super fast
+(q/defrecord Context [
+                      ctx/graphics
+                      ]
+  ctx/Validation
+  (validate [this]
+    (malli.utils/validate-humanize schema this)
+    this))
 
 (def ^:private create-pipeline (config/edn-resource "create.edn"))
 
@@ -10,8 +50,9 @@
            gdx/graphics
            gdx/input]}]
   (utils/pipeline
-   {:ctx/audio audio
-    :ctx/files files
-    :ctx/graphics graphics
-    :ctx/input input}
+   (merge (map->Context {})
+          {:ctx/audio audio
+           :ctx/files files
+           :ctx/graphics graphics
+           :ctx/input input})
    create-pipeline))
