@@ -1,17 +1,38 @@
 (ns com.badlogic.gdx.backends.lwjgl3.init.gl-emulation
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration$GLEmulation)))
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration
+                                             Lwjgl3ApplicationConfiguration$GLEmulation)
+           (com.badlogic.gdx.utils GdxRuntimeException)))
+
+(defn- load-angle! []
+  (try
+   (let [angle-loader (Class/forName "com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader")
+         load-method (.getMethod angle-loader "load")]
+     (.invoke load-method angle-loader))
+   (catch ClassNotFoundException _
+     nil)
+   (catch Throwable t
+     (throw (GdxRuntimeException. "Couldn't load ANGLE." t)))))
+
+(defn- post-load-angle! []
+  (try
+   (let [angle-loader (Class/forName "com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader")
+         post-method (.getMethod angle-loader "postGlfwInit")]
+     (.invoke post-method angle-loader))
+   (catch ClassNotFoundException _
+     nil)
+   (catch Throwable t
+     (throw (GdxRuntimeException. "Couldn't load ANGLE." t)))))
 
 (defn before-glfw
-  [{:keys [^com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration init/config]
+  [{:keys [^Lwjgl3ApplicationConfiguration init/config]
     :as init}]
   (when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/loadANGLE))
+    (load-angle!))
   init)
 
 (defn after-window-creation
-  [{:keys [^com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration init/config]
+  [{:keys [^Lwjgl3ApplicationConfiguration init/config]
     :as init}]
   (when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-    (Lwjgl3Application/postLoadANGLE))
+    (post-load-angle!))
   init)
