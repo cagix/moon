@@ -1,5 +1,6 @@
 (ns com.badlogic.gdx.backends.lwjgl3.init.glfw
-  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader])
+  (:require [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
+            [com.badlogic.gdx.utils.os :as os])
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration
                                              Lwjgl3NativesLoader)
            (com.badlogic.gdx.utils GdxRuntimeException)
@@ -10,7 +11,7 @@
   (Lwjgl3NativesLoader/load)
   (let [error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream)]
     (GLFW/glfwSetErrorCallback error-callback)
-    (when (= (shared-library-loader/operating-system) :mac)
+    (when (= (os/value->keyword (shared-library-loader/os)) :mac)
       (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
                          GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))
     (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
