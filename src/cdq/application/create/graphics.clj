@@ -1,5 +1,6 @@
 (ns cdq.application.create.graphics
-  (:require [cdq.files]
+  (:require [cdq.application.create.graphics.shape-drawer]
+            [cdq.files]
             [cdq.graphics]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
@@ -11,8 +12,7 @@
             [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
             [gdl.files :as files]
             [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]
-            [space.earlygrey.shape-drawer :as sd]))
+            [gdl.graphics.color :as color]))
 
 (defrecord Graphics [])
 
@@ -43,11 +43,6 @@
 (defn- create-default-font [graphics default-font]
   (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
                                                                  (:params default-font))))
-
-(defn- create-shape-drawer [{:keys [graphics/batch
-                                    graphics/shape-drawer-texture]
-                             :as graphics}]
-  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defn- create-textures [graphics textures-to-load]
   (assoc graphics :graphics/textures
@@ -94,7 +89,7 @@
       (create-default-font default-font)
       create-batch
       create-shape-drawer-texture
-      create-shape-drawer
+      cdq.application.create.graphics.shape-drawer/do!
       (create-textures textures-to-load)
       (add-unit-scales world-unit-scale)
       tiled-map-renderer
