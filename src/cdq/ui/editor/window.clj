@@ -9,6 +9,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget-group :as widget-group]
             [malli.map-schema :as map-schema]))
 
 (defn init! [ctx] ctx)
@@ -79,7 +80,7 @@
                                                                                  (map-schema/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
-    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window)
+    (widget-group/pack! window)
     window))
 
 (defn- horiz-sep [colspan]

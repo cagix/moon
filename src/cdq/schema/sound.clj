@@ -6,6 +6,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget-group :as widget-group]
             [gdl.scene2d.ui.window :as window]))
 
 (defn malli-form [_ _schemas]
@@ -21,7 +22,7 @@
     (group/clear-children! table)
     (table/add-rows! table [(sound-columns table sound-name)])
     (actor/remove! (window/find-ancestor actor))
-    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack (window/find-ancestor table))
+    (widget-group/pack! (window/find-ancestor table))
     (let [[k _] (actor/user-object table)]
       (actor/set-user-object! table [k sound-name]))))
 

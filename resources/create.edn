@@ -2,6 +2,7 @@
  (cdq.application.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
                                        com.badlogic.gdx.scenes.scene2d.group
                                        com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
+                                       com.badlogic.gdx.scenes.scene2d.ui.label
                                        com.badlogic.gdx.scenes.scene2d.ui.stack
                                        com.badlogic.gdx.scenes.scene2d.ui.table
                                        com.badlogic.gdx.scenes.scene2d.ui.widget

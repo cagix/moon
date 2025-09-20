@@ -1,9 +1,10 @@
 (ns cdq.ui.windows.entity-info
   (:require [cdq.stage :as stage]
             [cdq.info :as info]
-            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.group :as group]))
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.ui.label :as label]
+            [gdl.scene2d.ui.widget-group :as widget-group]))
 
 (comment
 
@@ -50,5 +51,5 @@
                                 (label/set-text! label (str (if-let [eid (:world/mouseover-eid world)]
                                                               (->label-text @eid ctx)
                                                               "")))
-                                (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window))}))
+                                (widget-group/pack! window))}))
     window))

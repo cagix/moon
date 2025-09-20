@@ -5,6 +5,9 @@
 
 (extend-type WidgetGroup
   widget-group/WidgetGroup
+  (pack! [widget-group]
+    (.pack widget-group))
+
   (set-opts! [widget-group {:keys [fill-parent? pack?]
                             :as opts}]
     (.setFillParent widget-group (boolean fill-parent?))

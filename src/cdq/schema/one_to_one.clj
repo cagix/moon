@@ -10,6 +10,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget-group :as widget-group]
             [gdl.scene2d.ui.window :as window]))
 
 (defn create-value [_ property-id db]
@@ -27,7 +28,7 @@
   (let [redo-rows (fn [ctx id]
                     (group/clear-children! table)
                     (add-one-to-one-rows ctx table property-type id)
-                    (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack (window/find-ancestor table)))]
+                    (widget-group/pack! (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[(when-not property-id
@@ -45,7 +46,7 @@
                                                       (actor/remove! window)
                                                       (redo-rows ctx id))]
                                   (table/add-rows! window (overview-table/create ctx property-type clicked-id-fn))
-                                  (com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup/.pack window)
+                                  (widget-group/pack! window)
                                   (stage/add! stage window)))}})]
       [(when property-id
          (let [property (db/get-raw db property-id)
