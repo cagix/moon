@@ -4,6 +4,6 @@
 
 (defn do! [init]
   (doseq [[f params] (get (:init/os->executions init)
-                          (os/value->keyword (shared-library-loader/os)))]
+                          (os/value->keyword shared-library-loader/os))]
     (f params))
   init)

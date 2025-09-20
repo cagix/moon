@@ -11,7 +11,7 @@
   (Lwjgl3NativesLoader/load)
   (let [error-callback (GLFWErrorCallback/createPrint Lwjgl3ApplicationConfiguration/errorStream)]
     (GLFW/glfwSetErrorCallback error-callback)
-    (when (= (os/value->keyword (shared-library-loader/os)) :mac)
+    (when (= (os/value->keyword shared-library-loader/os) :mac)
       (GLFW/glfwInitHint GLFW/GLFW_ANGLE_PLATFORM_TYPE
                          GLFW/GLFW_ANGLE_PLATFORM_TYPE_METAL))
     (GLFW/glfwInitHint GLFW/GLFW_JOYSTICK_HAT_BUTTONS,
