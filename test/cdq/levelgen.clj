@@ -22,7 +22,9 @@
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3])
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -105,9 +107,9 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [clojure.gdx/files
-           clojure.gdx/input
-           clojure.gdx/graphics]}]
+  [{:keys [gdx/files
+           gdx/input
+           gdx/graphics]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
@@ -196,15 +198,23 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
-  (lwjgl3/start-application!
-   {:create! create!
-    :dispose! dispose!
-    :render! render!
-    :resize! resize!
-    :resume! (fn [])
-    :pause! (fn [])}
-   {:title "Levelgen test"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}
-   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}))
+  (lwjgl3/start-application! (reify ApplicationListener
+                               (create [_]
+                                 (create! {:gdx/app      Gdx/app
+                                           :gdx/audio    Gdx/audio
+                                           :gdx/files    Gdx/files
+                                           :gdx/graphics Gdx/graphics
+                                           :gdx/input    Gdx/input}))
+                               (dispose [_]
+                                 (dispose!))
+                               (render [_]
+                                 (render!))
+                               (resize [_ width height]
+                                 (resize! width height))
+                               (pause [_])
+                               (resume [_]))
+                             {:title "Levelgen test"
+                              :windowed-mode {:width 1440 :height 900}
+                              :foreground-fps 60}
+                             {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+                                     (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}))

@@ -1,6 +1,5 @@
 (ns com.badlogic.gdx.backends.lwjgl3
   (:require com.badlogic.gdx.backends.lwjgl3.init.os-settings
-            com.badlogic.gdx.backends.lwjgl3.init.listener
             com.badlogic.gdx.backends.lwjgl3.init.config
             com.badlogic.gdx.backends.lwjgl3.init.application
             com.badlogic.gdx.backends.lwjgl3.init.gl-emulation
@@ -24,7 +23,6 @@
            :init/config config
            :init/os->executions os->executions}
           [com.badlogic.gdx.backends.lwjgl3.init.os-settings/do!
-           com.badlogic.gdx.backends.lwjgl3.init.listener/do!
            com.badlogic.gdx.backends.lwjgl3.init.config/do!
            com.badlogic.gdx.backends.lwjgl3.init.application/do!
            com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/before-glfw
