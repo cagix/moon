@@ -73,7 +73,7 @@
                  ]
   :java-source-paths ["src"]
   :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'com.badlogic.gdx.backends.lwjgl3/-main) \"listener.edn\")"]
+            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.game/-main) \"listener.edn\")"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]
             }
@@ -108,11 +108,11 @@
                 *print-level* 3
                 }
 
-  :profiles {:uberjar {:aot [com.badlogic.gdx.backends.lwjgl3]}}
+  :profiles {:uberjar {:aot [cdq.game]}}
 
   :uberjar-name "cdq.jar"
 
-  :main com.badlogic.gdx.backends.lwjgl3)
+  :main cdq.game)
 
 ; * Notes
 

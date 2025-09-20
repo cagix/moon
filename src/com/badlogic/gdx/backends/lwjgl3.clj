@@ -1,6 +1,5 @@
 (ns com.badlogic.gdx.backends.lwjgl3
-  (:require [clojure.config :as config]
-            com.badlogic.gdx.backends.lwjgl3.init.os-settings
+  (:require com.badlogic.gdx.backends.lwjgl3.init.os-settings
             com.badlogic.gdx.backends.lwjgl3.init.listener
             com.badlogic.gdx.backends.lwjgl3.init.config
             com.badlogic.gdx.backends.lwjgl3.init.application
@@ -16,7 +15,7 @@
             com.badlogic.gdx.backends.lwjgl3.init.window
             com.badlogic.gdx.backends.lwjgl3.init.add-window
             com.badlogic.gdx.backends.lwjgl3.init.main-loop)
-  (:gen-class))
+  )
 
 (defn start-application!
   [listener config os->executions]
@@ -45,14 +44,3 @@
            com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/after-window-creation
            com.badlogic.gdx.backends.lwjgl3.init.add-window/do!
            com.badlogic.gdx.backends.lwjgl3.init.main-loop/do!]))
-
-(defn- call [[f params]]
-  (f params))
-
-(defn -main [path]
-  (let [{:keys [os->executions
-                listener
-                config]} (-> path config/edn-resource)]
-    (start-application! (call listener)
-                        config
-                        os->executions)))
