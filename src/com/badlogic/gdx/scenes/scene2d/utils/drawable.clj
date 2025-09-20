@@ -9,5 +9,5 @@
     (when (and width height)
       (BaseDrawable/.setMinSize drawable (float width) (float height)))
     (if tint-color
-      (TextureRegionDrawable/.tint drawable (color/create tint-color))
+      (TextureRegionDrawable/.tint drawable (color/->java tint-color))
       drawable)))

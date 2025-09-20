@@ -7,8 +7,7 @@
                                        com.badlogic.gdx.scenes.scene2d.ui.table
                                        com.badlogic.gdx.scenes.scene2d.ui.widget
                                        com.badlogic.gdx.scenes.scene2d.ui.widget-group
-                                       com.badlogic.gdx.scenes.scene2d.ui.window
-                                       ])
+                                       com.badlogic.gdx.scenes.scene2d.ui.window])
  (cdq.application.create.record/do!)
  (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
  (cdq.ui.editor.window/init!)
