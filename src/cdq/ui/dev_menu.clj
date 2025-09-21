@@ -53,7 +53,11 @@
    :items (for [property-type (sort (db/property-types db))]
             {:label (str/capitalize (name property-type))
              :on-click (fn [_actor ctx]
-                         (ctx/handle-txs! ctx [[:tx/open-editor-overview property-type]]))})})
+                         (ctx/handle-txs! ctx
+                                          [[:tx/open-editor-overview
+                                            {:property-type property-type
+                                             :clicked-id-fn (fn [id {:keys [ctx/db] :as ctx}]
+                                                              (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]]))}]]))})})
 
 (def ^:private select-world
   {:label "Select World"

@@ -6,10 +6,10 @@
             [gdl.scene2d.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/db
-           ctx/stage]
+  [{:keys [ctx/stage]
     :as ctx}
-   property-type]
+   {:keys [property-type
+           clicked-id-fn]}]
   (stage/add! stage (scene2d/build
                      {:actor/type :actor.type/window
                       :title "Edit"
@@ -20,6 +20,4 @@
                       :pack? true
                       :rows (overview-table/create ctx
                                                    property-type
-                                                   (fn [id ctx]
-                                                     (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]])))
-                      })))
+                                                   clicked-id-fn)})))
