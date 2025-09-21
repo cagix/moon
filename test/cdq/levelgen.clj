@@ -24,9 +24,7 @@
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
             [gdl.os-settings]
-            [gdl.impl])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)))
+            [gdl.impl]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -94,6 +92,7 @@
 (require 'com.badlogic.gdx.scenes.scene2d.actor)
 (require 'com.badlogic.gdx.scenes.scene2d.group)
 (require 'com.badlogic.gdx.scenes.scene2d.ui.table)
+(require 'com.badlogic.gdx.scenes.scene2d.ui.widget)
 (require 'com.badlogic.gdx.scenes.scene2d.ui.widget-group)
 (defn- edit-window []
   {:actor/type :actor.type/window
@@ -203,21 +202,12 @@
   (gdl.os-settings/do!
    {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
            (clojure.java.awt.taskbar/set-icon-image! "icon.png")]})
-  (lwjgl3/start-application! (reify ApplicationListener
-                               (create [_]
-                                 (create! {:gdx/app      Gdx/app
-                                           :gdx/audio    Gdx/audio
-                                           :gdx/files    Gdx/files
-                                           :gdx/graphics Gdx/graphics
-                                           :gdx/input    Gdx/input}))
-                               (dispose [_]
-                                 (dispose!))
-                               (render [_]
-                                 (render!))
-                               (resize [_ width height]
-                                 (resize! width height))
-                               (pause [_])
-                               (resume [_]))
-                             {:title "Levelgen test"
-                              :windowed-mode {:width 1440 :height 900}
-                              :foreground-fps 60}))
+  (lwjgl3/application! {:create create!
+                        :dispose dispose!
+                        :render render!
+                        :resize resize!
+                        :pause (fn [])
+                        :resume (fn [])}
+                       {:title "Levelgen test"
+                        :windowed-mode {:width 1440 :height 900}
+                        :foreground-fps 60}))

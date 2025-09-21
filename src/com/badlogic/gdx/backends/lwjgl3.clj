@@ -1,40 +1,54 @@
 (ns com.badlogic.gdx.backends.lwjgl3
-  (:require com.badlogic.gdx.backends.lwjgl3.init.config
-            com.badlogic.gdx.backends.lwjgl3.init.application
-            com.badlogic.gdx.backends.lwjgl3.init.gl-emulation
-            com.badlogic.gdx.backends.lwjgl3.init.glfw
-            com.badlogic.gdx.backends.lwjgl3.init.logger
-            com.badlogic.gdx.backends.lwjgl3.init.gdx
-            com.badlogic.gdx.backends.lwjgl3.init.audio
-            com.badlogic.gdx.backends.lwjgl3.init.files
-            com.badlogic.gdx.backends.lwjgl3.init.net
-            com.badlogic.gdx.backends.lwjgl3.init.clipboard
-            com.badlogic.gdx.backends.lwjgl3.init.sync
-            com.badlogic.gdx.backends.lwjgl3.init.window
-            com.badlogic.gdx.backends.lwjgl3.init.add-window
-            com.badlogic.gdx.backends.lwjgl3.init.main-loop))
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration
+                                             Lwjgl3WindowConfiguration)))
 
-(defn start-application!
+(defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
+  (case k
+    :windowed-mode (.setWindowedMode object
+                                     (int (:width v))
+                                     (int (:height v)))
+    :title (.setTitle object (str v))))
+
+(defn- set-config-key! [^Lwjgl3ApplicationConfiguration object k v]
+  (case k
+    :foreground-fps (.setForegroundFPS object (int v))
+    (set-window-config-key! object k v)))
+
+(defn- ->Lwjgl3ApplicationConfiguration [config]
+  (let [obj (Lwjgl3ApplicationConfiguration.)]
+    (doseq [[k v] config]
+      (set-config-key! obj k v))
+    obj))
+
+(defn- ->ApplicationListener
+  [{:keys [create
+           dispose
+           render
+           resize
+           pause
+           resume]}]
+  (reify ApplicationListener
+    (create [_]
+      (create {:gdx/app      Gdx/app
+               :gdx/audio    Gdx/audio
+               :gdx/files    Gdx/files
+               :gdx/graphics Gdx/graphics
+               :gdx/input    Gdx/input}))
+    (dispose [_]
+      (dispose))
+    (render [_]
+      (render))
+    (resize [_ width height]
+      (resize width height))
+    (pause [_]
+      (pause))
+    (resume [_]
+      (resume))))
+
+(defn application!
   [listener config]
-  (reduce (fn [ctx f]
-            (f ctx))
-          {:init/listener listener
-           :init/config config}
-          [com.badlogic.gdx.backends.lwjgl3.init.config/do!
-           com.badlogic.gdx.backends.lwjgl3.init.application/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/before-glfw
-           com.badlogic.gdx.backends.lwjgl3.init.glfw/do!
-           com.badlogic.gdx.backends.lwjgl3.init.logger/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gdx/set-app!
-           com.badlogic.gdx.backends.lwjgl3.init.audio/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gdx/set-audio!
-           com.badlogic.gdx.backends.lwjgl3.init.files/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gdx/set-files!
-           com.badlogic.gdx.backends.lwjgl3.init.net/do!
-           com.badlogic.gdx.backends.lwjgl3.init.clipboard/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gdx/set-net!
-           com.badlogic.gdx.backends.lwjgl3.init.sync/do!
-           com.badlogic.gdx.backends.lwjgl3.init.window/do!
-           com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/after-window-creation
-           com.badlogic.gdx.backends.lwjgl3.init.add-window/do!
-           com.badlogic.gdx.backends.lwjgl3.init.main-loop/do!]))
+  (Lwjgl3Application. (->ApplicationListener listener)
+                      (->Lwjgl3ApplicationConfiguration config)))

@@ -7,31 +7,23 @@
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [gdl.os-settings]
             [gdl.impl])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx))
   (:gen-class))
 
 (defn -main []
   (gdl.os-settings/do!
    {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
            (clojure.java.awt.taskbar/set-icon-image! "icon.png")]})
-  (lwjgl/start-application! (reify ApplicationListener
-                              (create [_]
-                                (reset! application/state (create/do!
-                                                           {:gdx/app      Gdx/app
-                                                            :gdx/audio    Gdx/audio
-                                                            :gdx/files    Gdx/files
-                                                            :gdx/graphics Gdx/graphics
-                                                            :gdx/input    Gdx/input})))
-                              (dispose [_]
-                                (dispose/do! @application/state))
-                              (render [_]
-                                (render/do! application/state))
-                              (resize [_ width height]
-                                (resize/do! @application/state width height))
-                              (pause [_])
-                              (resume [_]))
-                            {:title "Cyber Dungeon Quest"
-                             :windowed-mode {:width 1440
-                                             :height 900}
-                             :foreground-fps 60}))
+  (lwjgl/application! {:create (fn [gdx]
+                                 (reset! application/state (create/do!  gdx)))
+                       :dispose (fn []
+                                  (dispose/do! @application/state))
+                       :render (fn []
+                                 (render/do! application/state))
+                       :resize (fn [width height]
+                                 (resize/do! @application/state width height))
+                       :pause (fn [])
+                       :resume (fn [])}
+                      {:title "Cyber Dungeon Quest"
+                       :windowed-mode {:width 1440
+                                       :height 900}
+                       :foreground-fps 60}))
