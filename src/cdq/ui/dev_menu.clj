@@ -1,6 +1,8 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
             [cdq.application.create.reset-world]
+            [cdq.application.create.spawn-player]
+            [cdq.application.create.spawn-enemies]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
@@ -61,7 +63,9 @@
                                     :as ctx}]
                          (ctx/handle-txs! ctx [[:tx/reset-stage]])
                          (world/dispose! world)
-                         (swap! application/state cdq.application.create.reset-world/do! world-fn))})})
+                         (swap! application/state cdq.application.create.reset-world/do! world-fn)
+                         (swap! application/state cdq.application.create.spawn-player/do!)
+                         (swap! application/state cdq.application.create.spawn-enemies/do!))})})
 
 (def ^:private update-labels
   [{:label "elapsed-time"

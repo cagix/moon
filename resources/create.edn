@@ -61,4 +61,6 @@
  (cdq.application.create.reset-stage/do!)
  (cdq.application.create.world/do! #edn/resource "world.edn")
  (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                                    :start-position [32 71]}))]
+                                                                    :start-position [32 71]}))
+ (cdq.application.create.spawn-player/do!)
+ (cdq.application.create.spawn-enemies/do!)]
