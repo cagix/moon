@@ -14,10 +14,5 @@
      :useful? (fn [{k 0 :as component} effect-ctx ctx]
                 (if-let [f (:useful? (k->fn k))]
                   (f component effect-ctx ctx)
-                  true))
-
-     :render (fn [{k 0 :as component} effect-ctx ctx]
-               (if-let [f (:render (k->fn k))]
-                 (f component effect-ctx ctx)
-                 nil))})
+                  true))})
   ctx)
