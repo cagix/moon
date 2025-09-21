@@ -6,24 +6,20 @@
    [:ctx/editor :some]
    [:ctx/db :some]
    [:ctx/graphics :some]
-
-   ; FIXME
+   [:ctx/world :some]
+   ; FIXME same attribute
    [:ctx/input :some]
    [:ctx/controls :some]
-
-   ; FIXME
+   ; FIXME same attribute
    [:ctx/stage :some]
    [:ctx/vis-ui :some]
    [:ctx/ui-actors :some]
-
-   [:ctx/world :some]
-
-   ; FIXME
+   ; FIXME move to graphics/stage?
    [:ctx/mouseover-actor :any]
    [:ctx/ui-mouse-position :some]
    [:ctx/world-mouse-position :some]
+   ; TODO find another solution?
    [:ctx/interaction-state :some]])
- ; belongs to ui?
  (cdq.application.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
                                        com.badlogic.gdx.scenes.scene2d.group
                                        com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
@@ -33,44 +29,26 @@
                                        com.badlogic.gdx.scenes.scene2d.ui.widget
                                        com.badlogic.gdx.scenes.scene2d.ui.widget-group
                                        com.badlogic.gdx.scenes.scene2d.ui.window])
-
- ; editor impl?
  (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
  (cdq.ui.editor.overview-table/extend-ctx)
-
- ; ui or editor impl?
  (cdq.ui.editor.window/init!)
-
- ; assoc in graphics/stage?
  (clojure.core/assoc
   :ctx/mouseover-actor nil
   :ctx/ui-mouse-position true
   :ctx/world-mouse-position true
   :ctx/interaction-state true)
-
- ; db impl
  (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
                                                    :properties "properties.edn"}))
-
  (cdq.application.create.info/do!)
-
- ; ??
  (cdq.application.create.txs/do! #edn/resource "txs.edn")
-
  (cdq.application.create.load-entity-states/do!     #edn/resource "entity_states.edn")
  (cdq.application.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
-
- ; belongs together with input
  (clojure.core/assoc :ctx/controls {:zoom-in :minus
                                     :zoom-out :equals
                                     :unpause-once :p
                                     :unpause-continously :space})
  (cdq.application.create.input/do!)
-
- ; ui
  (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
-
- ; ok graphics
  (cdq.application.create.graphics/do! #edn/resource "graphics.edn")
  (cdq.application.create.stage/do! {:state-var cdq.application/state
                                     :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
@@ -85,4 +63,5 @@
  (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                     :start-position [32 71]}))
  (cdq.application.create.spawn-player/do!)
- (cdq.application.create.spawn-enemies/do!)]
+ (cdq.application.create.spawn-enemies/do!)
+ ]

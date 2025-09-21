@@ -3,8 +3,6 @@
             [clojure.config :as config]
             [clojure.utils :as utils]))
 
-(def ^:private create-pipeline (config/edn-resource "create.edn"))
-
 (defn do!
   [{:keys [gdl/audio
            gdl/files
@@ -15,4 +13,4 @@
                               :ctx/files files
                               :ctx/graphics graphics
                               :ctx/input input}
-                             create-pipeline)))
+                             (config/edn-resource "create.edn"))))
