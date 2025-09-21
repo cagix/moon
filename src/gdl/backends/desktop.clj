@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.backends.lwjgl3
+(ns gdl.backends.desktop
   (:require [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
             [com.badlogic.gdx.utils.os :as os]
