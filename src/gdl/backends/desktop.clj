@@ -54,11 +54,11 @@
            resume]}]
   (reify ApplicationListener
     (create [_]
-      (create {:gdx/app      Gdx/app
-               :gdx/audio    Gdx/audio
-               :gdx/files    Gdx/files
-               :gdx/graphics Gdx/graphics
-               :gdx/input    Gdx/input}))
+      (create {:gdl/app      Gdx/app
+               :gdl/audio    Gdx/audio
+               :gdl/files    Gdx/files
+               :gdl/graphics Gdx/graphics
+               :gdl/input    Gdx/input}))
     (dispose [_]
       (dispose))
     (render [_]

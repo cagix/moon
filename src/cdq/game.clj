@@ -13,8 +13,8 @@
     :windowed-mode {:width 1440
                     :height 900}
     :foreground-fps 60
-    :listener {:create (fn [gdx]
-                         (reset! application/state (create/do! gdx)))
+    :listener {:create (fn [context]
+                         (reset! application/state (create/do! context)))
                :dispose (fn []
                           (dispose/do! @application/state))
                :render (fn []
