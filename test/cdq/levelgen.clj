@@ -22,9 +22,7 @@
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
-            [gdl.os-settings]
-            [gdl.impl]))
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -199,15 +197,14 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
-  (gdl.os-settings/do!
-   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]})
-  (lwjgl3/application! {:create create!
-                        :dispose dispose!
-                        :render render!
-                        :resize resize!
-                        :pause (fn [])
-                        :resume (fn [])}
-                       {:title "Levelgen test"
-                        :windowed-mode {:width 1440 :height 900}
-                        :foreground-fps 60}))
+  (lwjgl3/application {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+                              (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}
+                      {:create create!
+                       :dispose dispose!
+                       :render render!
+                       :resize resize!
+                       :pause (fn [])
+                       :resume (fn [])}
+                      {:title "Levelgen test"
+                       :windowed-mode {:width 1440 :height 900}
+                       :foreground-fps 60}))
