@@ -1,4 +1,28 @@
 [
+ (cdq.application.create.initial-record/merge-into-record)
+ (cdq.application.create.ctx-schema/extend-validation
+  [:map {:closed true}
+   [:ctx/audio :some]
+   [:ctx/editor :some]
+   [:ctx/db :some]
+   [:ctx/graphics :some]
+
+   ; FIXME
+   [:ctx/input :some]
+   [:ctx/controls :some]
+
+   ; FIXME
+   [:ctx/stage :some]
+   [:ctx/vis-ui :some]
+   [:ctx/ui-actors :some]
+
+   [:ctx/world :some]
+
+   ; FIXME
+   [:ctx/mouseover-actor :any]
+   [:ctx/ui-mouse-position :some]
+   [:ctx/world-mouse-position :some]
+   [:ctx/interaction-state :some]])
  ; belongs to ui?
  (cdq.application.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
                                        com.badlogic.gdx.scenes.scene2d.group
