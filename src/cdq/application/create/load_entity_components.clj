@@ -5,11 +5,7 @@
 (defn do! [ctx k->fn]
   (extend APersistentVector
     entity/Entity
-    {:tick (fn [[k v] eid ctx]
-             (when-let [f (k (k->fn :tick))]
-               (f v eid ctx)))
-
-     :create (fn [[k v] ctx]
+    {:create (fn [[k v] ctx]
                (if-let [f (k (k->fn :create))]
                  (f v ctx)
                  v))

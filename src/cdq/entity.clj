@@ -5,5 +5,4 @@
 
 (defprotocol Entity
   (create [_ ctx])
-  (create! [_ eid ctx])
-  (tick [_ eid ctx]))
+  (create! [_ eid ctx]))

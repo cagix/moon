@@ -10,5 +10,4 @@
   (pay-mana-cost [_ cost])
   (get-hitpoints [_])
   (damage [_ damage]
-          [_ target damage])
-  (effective-armor-save [_ target-stats]))
+          [_ target damage]))

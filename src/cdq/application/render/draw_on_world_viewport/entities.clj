@@ -185,7 +185,9 @@
 (defn- render-effect [[k v] effect-ctx ctx]
   (case k
     :effects/target-entity (render-target-entity [k v] effect-ctx ctx)
-    :effects/target-all    (render-target-all    [k v] effect-ctx ctx)))
+    :effects/target-all    (render-target-all    [k v] effect-ctx ctx)
+    nil
+    ))
 
 (defn- render-active-effect [ctx effect-ctx effect]
   (mapcat #(render-effect % effect-ctx ctx) effect))

@@ -14,7 +14,7 @@
   (mapv #(-> % int (max 0)) val-max))
 
 ; TODO can just pass ops instead of modifiers modifier-k
-(defn- apply-max [val-max modifiers modifier-k]
+(defn apply-max [val-max modifiers modifier-k]
   (assert (m/validate val-max/schema val-max) val-max)
   (let [val-max (update val-max 1 get-value modifiers modifier-k)
         [v mx] (->pos-int val-max)
@@ -23,7 +23,7 @@
   result))
 
 ; TODO can just pass ops instead of modifiers modifier-k
-(defn- apply-min [val-max modifiers modifier-k]
+(defn apply-min [val-max modifiers modifier-k]
   (assert (m/validate val-max/schema val-max) val-max)
   (let [val-max (update val-max 0 get-value modifiers modifier-k)
         [v mx] (->pos-int val-max)
@@ -72,37 +72,7 @@
   (get-hitpoints
     [{:keys [entity/hp
              entity/modifiers]}]
-    (apply-max hp modifiers :modifier/hp-max))
-
-  (damage [source damage]
-    (update damage
-            :damage/min-max
-            #(-> %
-                 (apply-min (:entity/modifiers source) :modifier/damage-deal-min)
-                 (apply-max (:entity/modifiers source) :modifier/damage-deal-max))))
-
-  (damage [source target damage]
-    (update (stats/damage source damage)
-            :damage/min-max
-            apply-max
-            (:entity/modifiers target)
-            :modifier/damage-receive-max))
-
-  ; FIXME I don't see it triggering with 10 armor save ... !
-  (effective-armor-save [source-stats target-stats]
-    (max (- (or (stats/get-stat-value source-stats :entity/armor-save)   0)
-            (or (stats/get-stat-value target-stats :entity/armor-pierce) 0))
-         0)))
-
-(comment
-
- (effective-armor-save {} {:entity/modifiers {:modifiers/armor-save {:op/inc 10}}
-                           :entity/armor-save 0})
- ; broken
- (let [source* {:entity/armor-pierce 0.4}
-       target* {:entity/armor-save   0.5}]
-   (effective-armor-save source* target*))
- )
+    (apply-max hp modifiers :modifier/hp-max)))
 
 (defn create [stats _ctx]
   (map->Stats (-> (if (:entity/mana stats)

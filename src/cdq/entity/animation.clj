@@ -33,6 +33,3 @@
 
 (defn create [v _ctx]
   (create-animation v))
-
-(defn tick! [animation eid {:keys [ctx/world]}]
-  [[:tx/assoc eid :entity/animation (animation/tick animation (:world/delta-time world))]])
