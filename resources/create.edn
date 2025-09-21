@@ -12,6 +12,7 @@
 
  ; editor impl?
  (clojure.core/assoc :ctx/editor #edn/resource "editor.edn")
+ (cdq.ui.editor.overview-table/extend-ctx)
 
  ; ui or editor impl?
  (cdq.ui.editor.window/init!)
@@ -28,7 +29,7 @@
                                                    :properties "properties.edn"}))
 
  ; ??
- (clojure.core/assoc :ctx/info #edn/resource "info.edn")
+ (cdq.application.create.info/do! #edn/resource "info.edn")
 
  ; ??
  (cdq.application.create.txs/do! #edn/resource "txs.edn")

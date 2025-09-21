@@ -28,6 +28,7 @@
   '[clojure.java.awt.taskbar
     com.badlogic.gdx.input.buttons
     com.badlogic.gdx.input.keys
+    com.badlogic.gdx.graphics.color
     com.badlogic.gdx.maps.map-properties
     com.badlogic.gdx.math.circle
     com.badlogic.gdx.math.intersector
@@ -40,7 +41,23 @@
 
 (def ignore-for-now
   '[cdq.ui.dev-menu
-    gdl ])
+    gdl
+    cdq.application.create.graphics
+    cdq.entity.animation
+    cdq.world-fns
+    ])
+
+(def protocols
+  '[cdq.schema
+    cdq.graphics
+    cdq.db
+    cdq.input
+    cdq.stage
+    cdq.schemas
+    cdq.application
+
+    ]
+  )
 
 (comment
 
@@ -51,7 +68,8 @@
    :layout :horizontal
    :external false
    :ignore (set/union (set finished-namespaces)
-                      (set ignore-for-now))
+                      (set ignore-for-now)
+                      (set protocols))
    })
 
  )

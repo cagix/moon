@@ -1,6 +1,5 @@
 (ns cdq.levelgen
   (:require [cdq.db :as db]
-            [cdq.graphics]
             [cdq.files :as files]
             [cdq.impl.db]
             [cdq.world-fns.modules]
@@ -69,14 +68,13 @@
                 (f (assoc params
                           :level/creature-properties (cdq.world-fns.creature-tiles/prepare
                                                       (db/all-raw db :properties/creatures)
-                                                      (reify cdq.graphics/Graphics
-                                                        (texture-region [_ {:keys [image/file image/bounds]}]
-                                                          (assert file)
-                                                          (assert (contains? textures file))
-                                                          (let [texture (get textures file)]
-                                                            (if bounds
-                                                              (texture/region texture bounds)
-                                                              (texture/region texture))))))
+                                                      (fn [{:keys [image/file image/bounds]}]
+                                                        (assert file)
+                                                        (assert (contains? textures file))
+                                                        (let [texture (get textures file)]
+                                                          (if bounds
+                                                            (texture/region texture bounds)
+                                                            (texture/region texture)))))
                           :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]

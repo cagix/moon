@@ -1,7 +1,5 @@
 (ns cdq.tx.open-editor-overview
-  (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
-            [cdq.ui.editor.overview-table :as overview-table]
+  (:require [cdq.editor :as editor]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]))
 
@@ -18,6 +16,6 @@
                       :center? true
                       :close-on-escape? true
                       :pack? true
-                      :rows (overview-table/create ctx
-                                                   property-type
-                                                   clicked-id-fn)})))
+                      :rows (editor/overview-table-rows ctx
+                                                        property-type
+                                                        clicked-id-fn)})))

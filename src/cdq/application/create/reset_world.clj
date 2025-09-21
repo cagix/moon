@@ -1,5 +1,6 @@
 (ns cdq.application.create.reset-world
   (:require [cdq.db :as db]
+            [cdq.graphics :as graphics]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]))
 
@@ -7,7 +8,8 @@
   [[f params] creature-properties graphics]
   (f
    (assoc params
-          :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties graphics)
+          :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
+                                                                           #(graphics/texture-region graphics %))
           :textures (:graphics/textures graphics))))
 
 (defn do!

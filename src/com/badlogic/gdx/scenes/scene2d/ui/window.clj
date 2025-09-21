@@ -1,9 +1,10 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.window
   (:require [gdl.scene2d.actor :as actor]
             [gdl.scene2d.ui.window :as window])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Window)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Window)))
 
-(extend-type Window
+(extend-type Actor
   window/Ancestor
   (find-ancestor [actor]
     (if-let [parent (actor/parent actor)]

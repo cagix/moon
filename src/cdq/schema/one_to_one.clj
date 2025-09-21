@@ -1,6 +1,6 @@
 (ns cdq.schema.one-to-one
   (:require [cdq.db :as db]
-            [cdq.ui.editor.overview-table :as overview-table]
+            [cdq.editor]
             [cdq.graphics :as graphics]
             [cdq.ui.editor.property :as property]
             [cdq.property]
@@ -45,7 +45,7 @@
                                       clicked-id-fn (fn [id ctx]
                                                       (actor/remove! window)
                                                       (redo-rows ctx id))]
-                                  (table/add-rows! window (overview-table/create ctx property-type clicked-id-fn))
+                                  (table/add-rows! window (cdq.editor/overview-table-rows ctx property-type clicked-id-fn))
                                   (widget-group/pack! window)
                                   (stage/add! stage window)))}})]
       [(when property-id
