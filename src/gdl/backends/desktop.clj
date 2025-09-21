@@ -1,5 +1,6 @@
 (ns gdl.backends.desktop
-  (:require [com.badlogic.gdx.input.keys :as input.keys]
+  (:require clojure.java.awt.taskbar
+            [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
             [com.badlogic.gdx.utils.os :as os]
             gdl.audio
@@ -7,7 +8,8 @@
             gdl.files
             gdl.files.file-handle
             gdl.graphics
-            gdl.input)
+            gdl.input
+            org.lwjgl.system.configuration)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -21,6 +23,9 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20)))
+
+(defn- operating-system []
+  (os/value->keyword shared-library-loader/os))
 
 (defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
   (case k
@@ -65,12 +70,20 @@
     (resume [_]
       (resume))))
 
+(defn- set-mac-os-settings!
+  [{:keys [glfw-async?
+           taskbar-icon]}]
+  (when glfw-async?
+    (org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"))
+  (when taskbar-icon
+    (clojure.java.awt.taskbar/set-icon-image! taskbar-icon)))
+
 (defn application
-  [os->dispatches listener config]
-  (doseq [[f params] (get os->dispatches (os/value->keyword shared-library-loader/os))]
-    ((requiring-resolve f) params))
-  (Lwjgl3Application. (listener->java listener)
-                      (config->java config)))
+  [config]
+  (when (= (operating-system) :mac)
+    (set-mac-os-settings! (:mac config)))
+  (Lwjgl3Application. (listener->java (:listener config))
+                      (config->java (dissoc config :mac :listener))))
 
 (extend-type Audio
   gdl.audio/Audio

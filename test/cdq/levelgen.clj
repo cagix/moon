@@ -14,15 +14,15 @@
             [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
+            [com.kotcrab.vis.ui.vis-ui :as vis-ui]
+            [gdl.backends.desktop :as desktop]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
             [gdl.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
-            [gdl.tiled :as tiled]
-            [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [gdl.backends.desktop :as desktop]))
+            [gdl.tiled :as tiled]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -198,14 +198,14 @@
 
 (defn -main []
   (desktop/application
-   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}
-   {:create create!
-    :dispose dispose!
-    :render render!
-    :resize resize!
-    :pause (fn [])
-    :resume (fn [])}
    {:title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60}))
+    :foreground-fps 60
+    :listener {:create create!
+               :dispose dispose!
+               :render render!
+               :resize resize!
+               :pause (fn [])
+               :resume (fn [])}
+    :mac {:glfw-async? true
+          :taskbar-icon "icon.png"}}))
