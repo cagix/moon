@@ -22,7 +22,9 @@
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3])
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
+            [gdl.os-settings]
+            [gdl.impl])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)))
 
@@ -198,6 +200,9 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
+  (gdl.os-settings/do!
+   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]})
   (lwjgl3/start-application! (reify ApplicationListener
                                (create [_]
                                  (create! {:gdx/app      Gdx/app
@@ -215,6 +220,4 @@
                                (resume [_]))
                              {:title "Levelgen test"
                               :windowed-mode {:width 1440 :height 900}
-                              :foreground-fps 60}
-                             {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-                                     (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}))
+                              :foreground-fps 60}))

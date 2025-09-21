@@ -1,6 +1,5 @@
 (ns com.badlogic.gdx.backends.lwjgl3
-  (:require com.badlogic.gdx.backends.lwjgl3.init.os-settings
-            com.badlogic.gdx.backends.lwjgl3.init.config
+  (:require com.badlogic.gdx.backends.lwjgl3.init.config
             com.badlogic.gdx.backends.lwjgl3.init.application
             com.badlogic.gdx.backends.lwjgl3.init.gl-emulation
             com.badlogic.gdx.backends.lwjgl3.init.glfw
@@ -16,14 +15,12 @@
             com.badlogic.gdx.backends.lwjgl3.init.main-loop))
 
 (defn start-application!
-  [listener config os->executions]
+  [listener config]
   (reduce (fn [ctx f]
             (f ctx))
           {:init/listener listener
-           :init/config config
-           :init/os->executions os->executions}
-          [com.badlogic.gdx.backends.lwjgl3.init.os-settings/do!
-           com.badlogic.gdx.backends.lwjgl3.init.config/do!
+           :init/config config}
+          [com.badlogic.gdx.backends.lwjgl3.init.config/do!
            com.badlogic.gdx.backends.lwjgl3.init.application/do!
            com.badlogic.gdx.backends.lwjgl3.init.gl-emulation/before-glfw
            com.badlogic.gdx.backends.lwjgl3.init.glfw/do!

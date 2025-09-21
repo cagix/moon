@@ -4,12 +4,17 @@
             [cdq.application.dispose :as dispose]
             [cdq.application.render :as render]
             [cdq.application.resize :as resize]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
+            [gdl.os-settings]
+            [gdl.impl])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx))
   (:gen-class))
 
 (defn -main []
+  (gdl.os-settings/do!
+   {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+           (clojure.java.awt.taskbar/set-icon-image! "icon.png")]})
   (lwjgl/start-application! (reify ApplicationListener
                               (create [_]
                                 (reset! application/state (create/do!
@@ -29,6 +34,4 @@
                             {:title "Cyber Dungeon Quest"
                              :windowed-mode {:width 1440
                                              :height 900}
-                             :foreground-fps 60}
-                            {:mac '[(org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
-                                    (clojure.java.awt.taskbar/set-icon-image! "icon.png")]}))
+                             :foreground-fps 60}))
