@@ -33,8 +33,6 @@
  ; ??
  (cdq.application.create.txs/do! #edn/resource "txs.edn")
 
- ; world impl ?
- (cdq.application.create.load-entity-components/do! #edn/resource "entity_components.edn")
  (cdq.application.create.load-entity-states/do!     #edn/resource "entity_states.edn")
  (cdq.application.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
 

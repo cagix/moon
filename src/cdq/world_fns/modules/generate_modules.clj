@@ -9,7 +9,7 @@
   [{:keys [
            world/max-area-level
            world/spawn-rate
-           creature-properties
+           level/creature-properties
            grid
            start
            scale

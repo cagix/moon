@@ -4,9 +4,10 @@
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
 
-  (defn applicable? [_ _]
-    ; ?
-    true)
+  (defn applicable? [_ {:keys [effect/target]}]
+    ; TODO has stats , for mod-add
+    ; e,g, spiderweb on projectile leads to error
+    (:creature/stats @target))
 
   ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
   (defn handle [_
