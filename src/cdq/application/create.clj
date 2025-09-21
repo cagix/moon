@@ -34,10 +34,7 @@
              [:ctx/world-mouse-position :some]
              [:ctx/interaction-state :some]]))
 
-; this is a performance optimization we can make keys here accessible super fast
-(q/defrecord Context [
-                      ctx/graphics
-                      ]
+(q/defrecord Context [ctx/graphics]
   ctx/Validation
   (validate [this]
     (malli.utils/validate-humanize schema this)

@@ -1,10 +1,9 @@
 (ns gdl.backends.desktop
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            clojure.java.awt.taskbar
+  (:require clojure.java.awt.taskbar
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
+            [com.badlogic.gdx.input.buttons :as input.buttons]
             [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
-            [com.badlogic.gdx.utils.os :as os]
             gdl.audio
             gdl.audio.sound
             gdl.files
@@ -17,36 +16,10 @@
                              Files
                              Gdx
                              Graphics
-                             Input
-                             Input$Buttons)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration
-                                             Lwjgl3WindowConfiguration)
+                             Input)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics GL20))
-  (:gen-class))
-
-(defn- operating-system []
-  (os/value->keyword shared-library-loader/os))
-
-(defn- set-window-config-key! [^Lwjgl3WindowConfiguration object k v]
-  (case k
-    :windowed-mode (.setWindowedMode object
-                                     (int (:width v))
-                                     (int (:height v)))
-    :title (.setTitle object (str v))))
-
-(defn- set-config-key! [^Lwjgl3ApplicationConfiguration object k v]
-  (case k
-    :foreground-fps (.setForegroundFPS object (int v))
-    (set-window-config-key! object k v)))
-
-(defn- config->java [config]
-  (let [obj (Lwjgl3ApplicationConfiguration.)]
-    (doseq [[k v] config]
-      (set-config-key! obj k v))
-    obj))
+           (com.badlogic.gdx.graphics GL20)))
 
 (defn- listener->java
   [{:keys [create
@@ -83,10 +56,10 @@
 
 (defn application
   [config]
-  (when (= (operating-system) :mac)
+  (when (= (shared-library-loader/operating-system) :mac)
     (set-mac-os-settings! (:mac config)))
-  (Lwjgl3Application. (listener->java (:listener config))
-                      (config->java (dissoc config :mac :listener))))
+  (lwjgl3/application (listener->java (:listener config))
+                      (dissoc config :mac :listener)))
 
 (extend-type Audio
   gdl.audio/Audio
@@ -140,18 +113,11 @@
                     (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
          (GL20/.glClear gl20 mask))))))
 
-(def ^:private buttons-k->value
-  {:back    Input$Buttons/BACK
-   :forward Input$Buttons/FORWARD
-   :left    Input$Buttons/LEFT
-   :middle  Input$Buttons/MIDDLE
-   :right   Input$Buttons/RIGHT})
-
 (extend-type Input
   gdl.input/Input
   (button-just-pressed? [this button]
-    {:pre [(contains? buttons-k->value button)]}
-    (.isButtonJustPressed this (buttons-k->value button)))
+    {:pre [(contains? input.buttons/k->value button)]}
+    (.isButtonJustPressed this (input.buttons/k->value button)))
 
   (key-pressed? [this key]
     (assert (contains? input.keys/k->value key)
@@ -168,11 +134,3 @@
   (mouse-position [this]
     [(.getX this)
      (.getY this)]))
-
-(defn -main [edn-resource]
-  (-> edn-resource
-      io/resource
-      slurp
-      edn/read-string
-      (update :listener update-vals requiring-resolve)
-      application))
