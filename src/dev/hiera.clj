@@ -1,42 +1,46 @@
 (ns dev.hiera
   (:require [hiera.main :as hiera]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [clojure.string :as str])
+  (:import [java.io File]))
 
-(def good-enough
-  '#{
-     cdq.application
-     cdq.ctx
-     cdq.db
-     cdq.entity.state
-     cdq.effect
-     cdq.graphics
-     cdq.schema
-     cdq.stage
-     cdq.creature
-     cdq.malli
-     cdq.string
-     cdq.stats
-     cdq.input
-     cdq.position
-     cdq.world
-     cdq.world.content-grid
-     cdq.world.grid
-     cdq.body
-     cdq.entity
-     cdq.timer
+(defn locked-files [^File dir]
+  (->> (file-seq dir)
+       (filter #(.isFile ^File %))
+       (remove #(.canWrite ^File %))))
 
-     clojure.rand
-     clojure.utils
+(defn file->ns [^File f]
+  (let [path (.getPath f)
+        rel  (second (re-find #"src[/\\](.*)" path))
+        no-ext (str/replace rel #"\.(clj|cljc|cljs)$" "")]
+    (-> no-ext
+        (str/replace #"[\\/]" ".")   ;; / or \ → .
+        (str/replace "_" "-"))))     ;; _ → -
 
-     gdl
+(defn locked-namespaces []
+  (sort (map file->ns (locked-files (File. "src")))))
 
-     com.badlogic.gdx.backends.lwjgl3
-     com.badlogic.gdx.graphics.color
-     com.badlogic.gdx.scenes.scene2d.ui.cell
-     com.badlogic.gdx.utils.align
+(comment
+ (clojure.pprint/pprint
+  (mapv symbol (locked-namespaces))))
 
-     cdq.ui.dev-menu
-     })
+(def finished-namespaces
+  '[clojure.java.awt.taskbar
+    com.badlogic.gdx.input.buttons
+    com.badlogic.gdx.input.keys
+    com.badlogic.gdx.maps.map-properties
+    com.badlogic.gdx.math.circle
+    com.badlogic.gdx.math.intersector
+    com.badlogic.gdx.math.rectangle
+    com.badlogic.gdx.math.vector3
+    com.badlogic.gdx.utils.align
+    com.badlogic.gdx.utils.shared-library-loader
+    org.lwjgl.system.configuration
+    space.earlygrey.shape-drawer])
+
+(def ignore-for-now
+  '[cdq.ui.dev-menu
+    gdl ])
 
 (comment
 
@@ -46,8 +50,8 @@
    :output "target/hiera"
    :layout :horizontal
    :external false
-   ;:ignore good-enough
-
+   :ignore (set/union (set finished-namespaces)
+                      (set ignore-for-now))
    })
 
  )
