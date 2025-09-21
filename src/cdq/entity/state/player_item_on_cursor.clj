@@ -4,7 +4,7 @@
             [com.badlogic.gdx.math.vector2 :as v]
             [gdl.input :as input]))
 
-(defn- world-item? [mouseover-actor]
+(defn world-item? [mouseover-actor]
   (not mouseover-actor))
 
 ; It is possible to put items out of sight, losing them.
@@ -16,7 +16,7 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [world-mouse-position entity]
+(defn item-place-position [world-mouse-position entity]
   (placement-point (:body/position (:entity/body entity))
                    world-mouse-position
                    ; so you cannot put it out of your own reach
@@ -24,18 +24,6 @@
 
 (defn create [_eid item _ctx]
   {:item item})
-
-(defn draw
-  [{:keys [item]}
-   entity
-   {:keys [ctx/graphics
-           ctx/mouseover-actor
-           ctx/world-mouse-position]}]
-  (when (world-item? mouseover-actor)
-    [[:draw/texture-region
-      (graphics/texture-region graphics (:entity/image item))
-      (item-place-position world-mouse-position entity)
-      {:center? true}]]))
 
 (defn enter [{:keys [item]} eid]
   [[:tx/assoc eid :entity/item-on-cursor item]])

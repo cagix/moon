@@ -1,6 +1,5 @@
 (ns cdq.entity.animation
-  (:require [cdq.animation :as animation]
-            [cdq.entity.image :as image]))
+  (:require [cdq.animation :as animation]))
 
 (defrecord Animation [frames frame-duration looping? cnt maxcnt]
   cdq.animation/Animation
@@ -37,8 +36,3 @@
 
 (defn tick! [animation eid {:keys [ctx/world]}]
   [[:tx/assoc eid :entity/animation (animation/tick animation (:world/delta-time world))]])
-
-(defn draw [animation entity ctx]
-  (image/draw (animation/current-frame animation)
-              entity
-              ctx))

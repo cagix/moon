@@ -3,13 +3,6 @@
             [cdq.world.grid :as grid]
             [cdq.stats :as stats]))
 
-(defn draw [_ {:keys [entity/body]} _ctx]
-  (let [[x y] (:body/position body)]
-    [[:draw/text {:text "zzz"
-                  :x x
-                  :y (+ y (/ (:body/height body) 2))
-                  :up? true}]]))
-
 (defn tick! [_ eid {:keys [ctx/world]}]
   (let [entity @eid]
     (when-let [distance (grid/nearest-enemy-distance (:world/grid world) entity)]

@@ -1,10 +1,8 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
-            [cdq.entity :as entity]
-            [cdq.graphics :as graphics]
-            [cdq.world :as world]
             [cdq.stats :as stats]
-            [cdq.timer :as timer]))
+            [cdq.timer :as timer]
+            [cdq.world :as world]))
 
 (defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
   (/ action-time
@@ -29,30 +27,6 @@
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
-(def ^:private skill-image-radius-world-units
-  (let [tile-size 48
-        image-width 32]
-    (/ (/ image-width tile-size) 2)))
-
-(defn- render-active-effect [ctx effect-ctx effect]
-  (mapcat #(effect/render % effect-ctx ctx) effect))
-
-(defn- draw-skill-image
-  [texture-region entity [x y] action-counter-ratio]
-  (let [radius skill-image-radius-world-units
-        y (+ (float y)
-             (float (/ (:body/height (:entity/body entity)) 2))
-             (float 0.15))
-        center [x (+ y radius)]]
-    [[:draw/filled-circle center radius [1 1 1 0.125]]
-     [:draw/sector
-      center
-      radius
-      90 ; start-angle
-      (* (float action-counter-ratio) 360) ; degree
-      [1 1 1 0.5]]
-     [:draw/texture-region texture-region [(- (float x) radius) y]]]))
-
 (defn tick! [{:keys [skill effect-ctx counter]}
              eid
              {:keys [ctx/world]}]
@@ -66,24 +40,6 @@
    (timer/stopped? (:world/elapsed-time world) counter)
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
-
-(defn draw
-  [{:keys [skill effect-ctx counter]}
-   entity
-   {:keys [ctx/graphics
-           ctx/world]
-    :as ctx}]
-  (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (graphics/texture-region graphics image)
-                              entity
-                              (entity/position entity)
-                              (timer/ratio (:world/elapsed-time world) counter))
-            (render-active-effect ctx
-                                  effect-ctx ; TODO !!!
-                                  ; !! FIXME !!
-                                  ; (update-effect-ctx effect-ctx)
-                                  ; - render does not need to update .. update inside active-skill
-                                  effects))))
 
 (defn enter [{:keys [skill]} eid]
   [[:tx/sound (:skill/start-action-sound skill)]
