@@ -1,4 +1,4 @@
-(ns cdq.ui.windows.inventory)
+(ns cdq.ui.inventory)
 
 (defprotocol Inventory
   (set-item! [_ cell {:keys [texture-region tooltip-text]}])

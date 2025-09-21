@@ -1,4 +1,4 @@
-(ns cdq.ui.hp-mana-bar
+(ns cdq.application.create.ui.hp-mana-bar
   (:require [cdq.graphics :as graphics]
             [clojure.utils :as utils]
             [cdq.val-max :as val-max]

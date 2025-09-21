@@ -1,4 +1,4 @@
-(ns cdq.ui.windows.entity-info
+(ns cdq.application.create.ui.entity-info
   (:require [cdq.ctx :as ctx]
             [cdq.stage :as stage]
             [gdl.scene2d :as scene2d]

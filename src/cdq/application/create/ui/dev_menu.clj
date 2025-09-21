@@ -1,4 +1,4 @@
-(ns cdq.ui.dev-menu
+(ns cdq.application.create.ui.dev-menu
   (:require [cdq.application :as application]
             [cdq.application.create.reset-stage]
             [cdq.application.create.reset-world]

@@ -1,4 +1,4 @@
-(ns cdq.impl.ui.message
+(ns cdq.application.create.ui.message
   (:require [cdq.ui.message]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]))

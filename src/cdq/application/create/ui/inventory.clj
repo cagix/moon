@@ -1,9 +1,9 @@
-(ns cdq.impl.ui.inventory
+(ns cdq.application.create.ui.inventory
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.entity.state :as state]
             [cdq.inventory :as inventory]
-            [cdq.ui.windows.inventory]
+            [cdq.ui.inventory]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.event :as event]
@@ -99,7 +99,7 @@
       (find-cell cell)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Window
-  cdq.ui.windows.inventory/Inventory
+  cdq.ui.inventory/Inventory
   (set-item! [inventory-window cell {:keys [texture-region tooltip-text]}]
     (let [cell-widget (window->cell inventory-window cell)
           image-widget (group/find-actor cell-widget "image-widget")

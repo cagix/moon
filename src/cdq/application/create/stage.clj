@@ -3,7 +3,7 @@
             [cdq.stage]
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.windows.inventory :as inventory-window]
+            [cdq.ui.inventory :as inventory-window]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]

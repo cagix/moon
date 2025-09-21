@@ -1,13 +1,13 @@
-[[cdq.ui.dev-menu/create]
- [cdq.impl.ui.action-bar/create]
- [cdq.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
-                             :rahmenw 150
-                             :rahmenh 26
-                             :hpcontent-file "images/hp.png"
-                             :manacontent-file "images/mana.png"
-                             :y-mana 80}]
- [cdq.ui.windows/create [cdq.ui.windows.entity-info/create
-                         cdq.impl.ui.inventory/create]]
- [cdq.ui.player-state-draw/create]
- [cdq.impl.ui.message/create {:duration-seconds 0.5
-                              :name "player-message"}]]
+[[cdq.application.create.ui.dev-menu/create]
+ [cdq.application.create.ui.action-bar/create]
+ [cdq.application.create.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+                                                :rahmenw 150
+                                                :rahmenh 26
+                                                :hpcontent-file "images/hp.png"
+                                                :manacontent-file "images/mana.png"
+                                                :y-mana 80}]
+ [cdq.application.create.ui.windows/create [cdq.application.create.ui.entity-info/create
+                                            cdq.application.create.ui.inventory/create]]
+ [cdq.application.create.ui.player-state-draw/create]
+ [cdq.application.create.ui.message/create {:duration-seconds 0.5
+                                            :name "player-message"}]]
