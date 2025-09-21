@@ -1,15 +1,15 @@
-[(cdq.render.validate/do!)
- (cdq.render.update-mouse/do!)
- (cdq.render.update-mouseover-eid/do!)
- (cdq.render.check-open-debug/do!)
- (cdq.render.assoc-active-entities/do!)
- (cdq.render.set-camera-on-player/do!)
- (cdq.render.clear-screen/do!)
- (cdq.render.draw-world-map/do!)
- (cdq.render.draw-on-world-viewport/do! [
-                                         [cdq.draw-on-world-viewport.tile-grid/do!]
-                                         [cdq.draw-on-world-viewport.cell-debug/do!]
-                                         [cdq.draw-on-world-viewport.entities/do! [{:entity/mouseover?     cdq.entity.mouseover/draw
+[(cdq.application.render.validate/do!)
+ (cdq.application.render.update-mouse/do!)
+ (cdq.application.render.update-mouseover-eid/do!)
+ (cdq.application.render.check-open-debug/do!)
+ (cdq.application.render.assoc-active-entities/do!)
+ (cdq.application.render.set-camera-on-player/do!)
+ (cdq.application.render.clear-screen/do!)
+ (cdq.application.render.draw-world-map/do!)
+ (cdq.application.render.draw-on-world-viewport/do! [
+                                         [cdq.application.render.draw-on-world-viewport.tile-grid/do!]
+                                         [cdq.application.render.draw-on-world-viewport.cell-debug/do!]
+                                         [cdq.application.render.draw-on-world-viewport.entities/do! [{:entity/mouseover?     cdq.entity.mouseover/draw
                                                                                     :stunned               cdq.entity.state.stunned/draw
                                                                                     :player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw}
                                                                                    {:entity/clickable      cdq.entity.clickable/draw
@@ -21,16 +21,16 @@
                                                                                     :entity/string-effect  cdq.entity.string-effect/draw}
                                                                                    {:creature/stats        cdq.entity.stats/draw
                                                                                     :active-skill          cdq.entity.state.active-skill/draw}]]
-                                         #_ [cdq.draw-on-world-viewport.geom-test/do!]
-                                         [cdq.draw-on-world-viewport.highlight-mouseover-tile/do!]
+                                         #_ [cdq.application.render.draw-on-world-viewport.geom-test/do!]
+                                         [cdq.application.render.draw-on-world-viewport.highlight-mouseover-tile/do!]
                                          ])
- (cdq.render.assoc-interaction-state/do!)
- (cdq.render.set-cursor/do!)
- (cdq.render.player-state-handle-input/do!)
- (cdq.render.assoc-paused/do!)
- (cdq.render.update-time/do!)
- (cdq.render.update-potential-fields/do!)
- (cdq.render.tick-entities/do!)
- (cdq.render.remove-destroyed-entities/do!)
- (cdq.render.handle-key-input/do!)
- (cdq.render.validate/do!)]
+ (cdq.application.render.assoc-interaction-state/do!)
+ (cdq.application.render.set-cursor/do!)
+ (cdq.application.render.player-state-handle-input/do!)
+ (cdq.application.render.assoc-paused/do!)
+ (cdq.application.render.update-time/do!)
+ (cdq.application.render.update-potential-fields/do!)
+ (cdq.application.render.tick-entities/do!)
+ (cdq.application.render.remove-destroyed-entities/do!)
+ (cdq.application.render.handle-key-input/do!)
+ (cdq.application.render.validate/do!)]

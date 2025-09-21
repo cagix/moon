@@ -1,6 +1,6 @@
 (ns cdq.tx.update-potential-fields
   (:require [cdq.entity :as entity]
-            [cdq.grid.cell :as cell]
+            [cdq.world.grid.cell :as cell]
             [cdq.position :as position]
             [cdq.world.grid :as grid]))
 

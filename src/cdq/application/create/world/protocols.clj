@@ -1,5 +1,5 @@
 (ns cdq.application.create.world.protocols
-  (:require [cdq.grid.cell :as cell]
+  (:require [cdq.world.grid.cell :as cell]
             [cdq.world]
             [com.badlogic.gdx.math.vector2 :as v]
             [clojure.grid2d :as g2d]

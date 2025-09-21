@@ -2,7 +2,7 @@
   (:require [cdq.entity.faction :as faction]
             [cdq.position :as position]
             [clojure.grid2d :as g2d]
-            [cdq.grid.cell :as cell]
+            [cdq.world.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]
             [cdq.world.grid :as grid]))
 
