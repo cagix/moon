@@ -3,9 +3,9 @@
  :foreground-fps 60
  :listener {:create  cdq.levelgen/create!
             :dispose cdq.levelgen/dispose!
+            :pause   cdq.levelgen/pause!
             :render  cdq.levelgen/render!
             :resize  cdq.levelgen/resize!
-            :pause   cdq.levelgen/pause!
             :resume  cdq.levelgen/resume!}
  :mac {:glfw-async? true
        :taskbar-icon "icon.png"}}
