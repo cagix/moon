@@ -1,5 +1,6 @@
 (ns cdq.application.create
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.application :as application]
+            [cdq.ctx :as ctx]
             [clojure.config :as config]
             [clojure.utils :as utils]
             [malli.core :as m]
@@ -49,10 +50,10 @@
            gdl/files
            gdl/graphics
            gdl/input]}]
-  (utils/pipeline
-   (merge (map->Context {})
-          {:ctx/audio audio
-           :ctx/files files
-           :ctx/graphics graphics
-           :ctx/input input})
-   create-pipeline))
+  (reset! application/state (utils/pipeline
+                             (merge (map->Context {})
+                                    {:ctx/audio audio
+                                     :ctx/files files
+                                     :ctx/graphics graphics
+                                     :ctx/input input})
+                             create-pipeline)))

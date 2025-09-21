@@ -1,5 +1,7 @@
 (ns gdl.backends.desktop
-  (:require clojure.java.awt.taskbar
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            clojure.java.awt.taskbar
             [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
             [com.badlogic.gdx.utils.os :as os]
@@ -22,7 +24,8 @@
                                              Lwjgl3WindowConfiguration)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics GL20)))
+           (com.badlogic.gdx.graphics GL20))
+  (:gen-class))
 
 (defn- operating-system []
   (os/value->keyword shared-library-loader/os))
@@ -165,3 +168,11 @@
   (mouse-position [this]
     [(.getX this)
      (.getY this)]))
+
+(defn -main [edn-resource]
+  (-> edn-resource
+      io/resource
+      slurp
+      edn/read-string
+      (update :listener update-vals requiring-resolve)
+      application))

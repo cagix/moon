@@ -1,0 +1,12 @@
+{:title "Cyber Dungeon Quest"
+ :windowed-mode {:width 1440
+                 :height 900}
+ :foreground-fps 60
+ :listener {:create  cdq.application.create/do!
+            :dispose cdq.application.dispose/do
+            :render  cdq.application.render/do!
+            :resize  cdq.application.resize/do!
+            :pause   cdq.application.pause/do!
+            :resume  cdq.application.resume/do!}
+ :mac {:glfw-async? true
+       :taskbar-icon "icon.png"}}

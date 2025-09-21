@@ -19,11 +19,9 @@
                  [org.clojure/tools.namespace "1.3.0"]
                  [lein-hiera "2.0.0"]]
   :java-source-paths ["src"]
-  :aliases {
-            "dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.game/-main))"]
-            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
-            "ns"       ["hiera" ":layout" ":horizontal"]
-            }
+  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.backends.desktop/-main) \"cdq.game.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.backends.desktop/-main) \"levelgen.edn\")"]
+            "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
@@ -37,29 +35,21 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
-
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}
           ;:namespaces [#"^gdl\."]
           }
-
   ; lein hiera :layout :horizontal :ignore "#{cdq.render}"
   ; unfortunately cannot exclude only 'cdq.render.*' , would like to do for entity/effect...
-
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
-
   :global-vars {*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
-                *print-level* 3
-                }
-
-  :profiles {:uberjar {:aot [cdq.game]}}
-
+                *print-level* 3}
+  :profiles {:uberjar {:aot [gdl.backends.desktop]}}
   :uberjar-name "cdq.jar"
-
-  :main cdq.game)
+  :main gdl.backends.desktop)
 
 ; * Notes
 

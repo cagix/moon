@@ -6,9 +6,9 @@
 (defn require-resolve-symbols [form]
   (if (and (symbol? form)
            (namespace form))
-    (let [var (requiring-resolve form)]
-      (assert var form)
-      var)
+    (let [avar (requiring-resolve form)]
+      (assert avar form)
+      avar)
     form))
 
 (defn edn-resource [path]
