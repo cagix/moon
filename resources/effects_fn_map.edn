@@ -11,12 +11,10 @@
                  :handle cdq.effects.spawn/handle}
  :effects/target-all {:applicable? cdq.effects.target-all/applicable?
                       :useful? cdq.effects.target-all/useful?
-                      :handle cdq.effects.target-all/handle
-                      :render cdq.effects.target-all/render}
+                      :handle cdq.effects.target-all/handle}
  :effects/target-entity {:applicable? cdq.effects.target-entity/applicable?
                          :useful? cdq.effects.target-entity/useful?
-                         :handle cdq.effects.target-entity/handle
-                         :render cdq.effects.target-entity/render}
+                         :handle cdq.effects.target-entity/handle}
  :effects.target/audiovisual {:applicable? cdq.effects.target.audiovisual/applicable?
                               :useful? cdq.effects.target.audiovisual/useful?
                               :handle cdq.effects.target.audiovisual/handle}

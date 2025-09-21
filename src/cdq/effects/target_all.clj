@@ -1,7 +1,7 @@
 (ns cdq.effects.target-all
   (:require [cdq.world :as world]))
 
-(defn- affected-targets
+(defn affected-targets
   [active-entities
    world
    entity]
@@ -49,15 +49,3 @@
                {:effect/source source
                 :effect/target target}
                entity-effects]]))))
-
-(defn render
-  [_
-   {:keys [effect/source]}
-   {:keys [ctx/world]}]
-  (let [{:keys [world/active-entities]} world
-        source* @source]
-    (for [target* (map deref (affected-targets active-entities world source*))]
-      [:draw/line
-       (:body/position (:entity/body source*)) #_(start-point source* target*)
-       (:body/position (:entity/body target*))
-       [1 0 0 0.5]])))

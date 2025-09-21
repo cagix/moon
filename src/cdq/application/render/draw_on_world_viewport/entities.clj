@@ -1,7 +1,8 @@
 (ns cdq.application.render.draw-on-world-viewport.entities
   (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
-            [cdq.effect :as effect]
+            [cdq.effects.target-all :as target-all]
+            [cdq.effects.target-entity :as target-entity]
             [cdq.entity :as entity]
             [cdq.entity.faction :as faction]
             [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
@@ -150,13 +151,44 @@
                   (:entity/body entity)
                   ratio))))
 
+(defn- render-target-entity
+  [[_ {:keys [maxrange]}]
+   {:keys [effect/source effect/target]}
+   _ctx]
+  (when target
+    (let [source* @source
+          target* @target]
+      [[:draw/line
+        (target-entity/start-point source* target*)
+        (target-entity/end-point source* target* maxrange)
+        (if (target-entity/in-range? source* target* maxrange)
+          [1 0 0 0.5]
+          [1 1 0 0.5])]])))
+
+(defn- render-target-all
+  [_
+   {:keys [effect/source]}
+   {:keys [ctx/world]}]
+  (let [{:keys [world/active-entities]} world
+        source* @source]
+    (for [target* (map deref (target-all/affected-targets active-entities world source*))]
+      [:draw/line
+       (:body/position (:entity/body source*)) #_(start-point source* target*)
+       (:body/position (:entity/body target*))
+       [1 0 0 0.5]])))
+
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48
         image-width 32]
     (/ (/ image-width tile-size) 2)))
 
+(defn- render-effect [[k v] effect-ctx ctx]
+  (case k
+    :effects/target-entity (render-target-entity [k v] effect-ctx ctx)
+    :effects/target-all    (render-target-all    [k v] effect-ctx ctx)))
+
 (defn- render-active-effect [ctx effect-ctx effect]
-  (mapcat #(effect/render % effect-ctx ctx) effect))
+  (mapcat #(render-effect % effect-ctx ctx) effect))
 
 (defn- draw-skill-image
   [texture-region entity [x y] action-counter-ratio]

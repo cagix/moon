@@ -4,19 +4,19 @@
             [com.badlogic.gdx.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
-(defn- start-point [entity target*]
+(defn start-point [entity target*]
   (v/add (entity/position entity)
          (v/scale (v/direction (entity/position entity)
                                (entity/position target*))
                   (/ (:body/width (:entity/body entity)) 2))))
 
-(defn- end-point [entity target* maxrange]
+(defn end-point [entity target* maxrange]
   (v/add (start-point entity target*)
          (v/scale (v/direction (entity/position entity)
                                (entity/position target*))
                   maxrange)))
 
-(defn- in-range? [entity target* maxrange]
+(defn in-range? [entity target* maxrange]
   (< (- (float (v/distance (entity/position entity)
                            (entity/position target*)))
         (float (/ (:body/width (:entity/body entity))  2))
@@ -45,16 +45,3 @@
       [[:tx/audiovisual
         (end-point source* target* maxrange)
         :audiovisuals/hit-ground]])))
-
-(defn render [[_ {:keys [maxrange]}]
-              {:keys [effect/source effect/target]}
-              _ctx]
-  (when target
-    (let [source* @source
-          target* @target]
-      [[:draw/line
-        (start-point source* target*)
-        (end-point source* target* maxrange)
-        (if (in-range? source* target* maxrange)
-          [1 0 0 0.5]
-          [1 1 0 0.5])]])))

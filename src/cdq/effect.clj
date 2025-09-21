@@ -3,8 +3,7 @@
 (defprotocol Effect
   (applicable? [_ effect-ctx])
   (useful?     [_ effect-ctx ctx])
-  (handle      [_ effect-ctx ctx])
-  (render      [_ effect-ctx ctx]))
+  (handle      [_ effect-ctx ctx]))
 
 (defn filter-applicable? [effect-ctx effect]
   (filter #(applicable? % effect-ctx) effect))
