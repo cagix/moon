@@ -3,7 +3,7 @@
                  :height 900}
  :foreground-fps 60
  :listener {:create  cdq.application.create/do!
-            :dispose cdq.application.dispose/do
+            :dispose cdq.application.dispose/do!
             :pause   cdq.application.pause/do!
             :render  cdq.application.render/do!
             :resize  cdq.application.resize/do!

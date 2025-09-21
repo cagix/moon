@@ -27,7 +27,15 @@
            render
            resize
            pause
-           resume]}]
+           resume]
+    :as listener}]
+  (assert (and create
+               dispose
+               render
+               resize
+               pause
+               resume)
+          (str "Cant find all functions: (keys listener): "(pr-str (keys listener))))
   (reify ApplicationListener
     (create [_]
       (create {:gdl/app      Gdx/app

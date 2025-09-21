@@ -9,5 +9,8 @@
       io/resource
       slurp
       edn/read-string
-      (update :listener update-vals requiring-resolve)
+      (update :listener update-vals (fn [sym]
+                                      (let [avar (requiring-resolve sym)]
+                                        (assert avar sym)
+                                        avar)))
       desktop/application))
