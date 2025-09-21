@@ -13,7 +13,6 @@
    ; FIXME same attribute
    [:ctx/stage :some]
    [:ctx/vis-ui :some]
-   [:ctx/ui-actors :some]
    ; FIXME move to graphics/stage?
    [:ctx/mouseover-actor :any]
    [:ctx/ui-mouse-position :some]
@@ -57,7 +56,6 @@
                                     :sound-names #edn/resource "sounds.edn"
                                     :path-format "sounds/%s.wav"})
  (clojure.core/dissoc :ctx/files)
- (clojure.core/assoc :ctx/ui-actors #edn/resource "ui_actors.edn")
  (cdq.application.create.reset-stage/do!)
  (cdq.application.create.world/do! #edn/resource "world.edn")
  (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"

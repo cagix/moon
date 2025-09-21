@@ -1,5 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [cdq.application :as application]
+            [cdq.application.create.reset-stage]
             [cdq.application.create.reset-world]
             [cdq.application.create.spawn-player]
             [cdq.application.create.spawn-enemies]
@@ -65,7 +66,7 @@
             {:label (str "Start " (first world-fn))
              :on-click (fn [_actor {:keys [ctx/world]
                                     :as ctx}]
-                         (ctx/handle-txs! ctx [[:tx/reset-stage]])
+                         (cdq.application.create.reset-stage/do! ctx)
                          (world/dispose! world)
                          (swap! application/state cdq.application.create.reset-world/do! world-fn)
                          (swap! application/state cdq.application.create.spawn-player/do!)

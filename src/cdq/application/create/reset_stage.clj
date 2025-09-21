@@ -1,8 +1,15 @@
 (ns cdq.application.create.reset-stage
-  (:require [cdq.ctx :as ctx]))
+  (:require [clojure.config :as config]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.stage :as stage]))
 
-; tx returns nil and not ctx so cant use it direclty
 (defn do!
-  [ctx]
-  (ctx/handle-txs! ctx [[:tx/reset-stage]])
+  [{:keys [ctx/stage]
+    :as ctx}]
+  (stage/clear! stage)
+  (let [actors (map #(let [[f & params] %]
+                       (apply f ctx params))
+                    (config/edn-resource "ui_actors.edn"))]
+    (doseq [actor actors]
+      (stage/add! stage (scene2d/build actor))))
   ctx)
