@@ -5,3 +5,6 @@
 
 (defprotocol Validation
   (validate [_]))
+
+(defprotocol InfoText
+  (info-text [_ entity]))

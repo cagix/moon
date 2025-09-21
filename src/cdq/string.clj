@@ -1,15 +1,5 @@
 (ns cdq.string
-  (:require [clojure.string :as str]
-            [clojure.pprint :as pprint]))
-
-(defn remove-newlines [s]
-  (let [new-s (-> s
-                  (str/replace "\n\n" "\n")
-                  (str/replace #"^\n" "")
-                  str/trim-newline)]
-    (if (= (count new-s) (count s))
-      s
-      (remove-newlines new-s))))
+  (:require [clojure.pprint :as pprint]))
 
 (defn ->edn-str [v]
   (binding [*print-level* nil]

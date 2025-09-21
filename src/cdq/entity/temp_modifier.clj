@@ -1,7 +1,6 @@
 (ns cdq.entity.temp-modifier
   (:require [cdq.entity :as entity]
-            [cdq.timer :as timer]
-            [clojure.utils :as utils]))
+            [cdq.timer :as timer]))
 
 ; TODO draw opacity as of counter ratio?
 (defn draw [_ entity _ctx]
@@ -14,6 +13,3 @@
   (when (timer/stopped? (:world/elapsed-time world) counter)
     [[:tx/dissoc eid :entity/temp-modifier]
      [:tx/mod-remove eid modifiers]]))
-
-(defn info-text [[_ {:keys [counter]}] {:keys [ctx/world]}]
-  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))

@@ -28,8 +28,7 @@
  (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
                                                    :properties "properties.edn"}))
 
- ; ??
- (cdq.application.create.info/do! #edn/resource "info.edn")
+ (cdq.application.create.info/do!)
 
  ; ??
  (cdq.application.create.txs/do! #edn/resource "txs.edn")

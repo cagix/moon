@@ -1,6 +1,5 @@
 (ns cdq.entity.skills
-  (:require [cdq.timer :as timer]
-            [clojure.string :as str]))
+  (:require [cdq.timer :as timer]))
 
 (defn create! [skills eid _ctx]
   (cons [:tx/assoc eid :entity/skills nil]
@@ -12,8 +11,3 @@
         :when (and cooling-down?
                    (timer/stopped? (:world/elapsed-time world) cooling-down?))]
     [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
-
-(defn info-text [[_ skills] _ctx]
-  ; => recursive info-text leads to endless text wall
-  (when (seq skills)
-    (str "Skills: " (str/join "," (map name (keys skills))))))

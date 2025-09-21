@@ -1,6 +1,6 @@
 (ns cdq.ui.windows.entity-info
-  (:require [cdq.stage :as stage]
-            [cdq.info :as info]
+  (:require [cdq.ctx :as ctx]
+            [cdq.stage :as stage]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.group :as group]
             [gdl.scene2d.ui.label :as label]
@@ -28,7 +28,7 @@
 
 (defn- ->label-text [entity ctx]
   ; don't use select-keys as it loses Entity record type
-  (info/generate (:ctx/info ctx) (apply dissoc entity disallowed-keys) ctx))
+  (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
 
 (defn create [{:keys [ctx/stage]}]
   (let [y-position 0

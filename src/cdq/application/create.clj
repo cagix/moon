@@ -26,9 +26,6 @@
              [:ctx/world :some]
 
              ; FIXME
-             [:ctx/info :some]
-
-             ; FIXME
              [:ctx/mouseover-actor :any]
              [:ctx/ui-mouse-position :some]
              [:ctx/world-mouse-position :some]
