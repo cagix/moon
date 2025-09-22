@@ -5,6 +5,31 @@
             [cdq.ui.editor.property :as property]
             [cdq.string :as string]))
 
+(def ^:private property-type->overview-table-props
+  {:properties/audiovisuals {:columns 10
+                             :image-scale 2
+                             :sort-by-fn (comp name :property/id)
+                             :extra-info-text (constantly "")}
+   :properties/creatures    {:columns 15
+                             :image-scale 1.5
+                             :sort-by-fn #(vector (:creature/level %)
+                                                  (name (:entity/species %))
+                                                  (name (:property/id %)))
+                             :extra-info-text #(str (:creature/level %))}
+   :properties/items        {:columns 20
+                             :image-scale 1.1
+                             :sort-by-fn #(vector (name (:item/slot %))
+                                                  (name (:property/id %)))
+                             :extra-info-text (constantly "")}
+   :properties/projectiles  {:columns 16
+                             :image-scale 2
+                             :sort-by-fn (comp name :property/id)
+                             :extra-info-text (constantly "")}
+   :properties/skills       {:columns 16
+                             :image-scale 2
+                             :sort-by-fn (comp name :property/id)
+                             :extra-info-text (constantly "")}})
+
 (defn- create* [image-scale rows]
   (for [row rows]
     (for [{:keys [texture-region
@@ -23,14 +48,13 @@
 
 (defn- create
   [{:keys [ctx/db
-           ctx/editor
            ctx/graphics]}
    property-type
    clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
-                image-scale]} (get (:editor/overview-table editor) property-type)]
+                image-scale]} (get property-type->overview-table-props property-type)]
     (->> (db/all-raw db property-type)
          (sort-by sort-by-fn)
          (map (fn [property]
