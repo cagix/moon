@@ -4,6 +4,6 @@
             [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config]))
 
 (defn start-application!
-  [listener config]
+  [{:keys [listener config]}]
   (application/start! (application-listener/create listener)
                       (application-config/create config)))

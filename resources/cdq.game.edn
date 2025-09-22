@@ -1,4 +1,5 @@
-[[gdl.backends.desktop/dispatch-on-os
+[[clojure.config/dispatch-on
+  com.badlogic.gdx.utils/operating-system
   {:mac
    [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
     [clojure.java.awt.taskbar/set-icon-image! "icon.png"]]}]
@@ -9,7 +10,7 @@
   gdl.backends.gdx.extends.graphics
   gdl.backends.gdx.extends.input]
 
- [gdl.backends.desktop/application
+ [com.badlogic.gdx.backends.lwjgl3/start-application!
   {:listener {:create  cdq.application.create/do!
               :dispose cdq.application.dispose/do!
               :pause   cdq.application.pause/do!
