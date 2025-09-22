@@ -1,4 +1,5 @@
 (ns com.badlogic.gdx.application-listener
+  (:require [com.badlogic.gdx :as gdx])
   (:import (com.badlogic.gdx ApplicationListener)))
 
 (defn create
@@ -18,7 +19,7 @@
           (str "Cant find all functions: (keys listener): " (pr-str (keys listener))))
   (reify ApplicationListener
     (create [_]
-      (create))
+      (create (gdx/state)))
     (dispose [_]
       (dispose))
     (render [_]

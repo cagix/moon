@@ -6,7 +6,6 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -104,9 +103,8 @@
 (defrecord Context [])
 
 (defn create!
-  []
-  (let [{:keys [files graphics input]} (gdx/state)
-        ctx (map->Context {:ctx/input input})
+  [{:keys [files graphics input]}]
+  (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
         stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch state)
