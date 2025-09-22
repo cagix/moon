@@ -193,5 +193,10 @@
     (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
-(defn pause! [])
-(defn resume! [])
+(defn application-listener []
+  {:create  create!
+   :dispose dispose!
+   :pause   (fn [])
+   :render  render!
+   :resize  resize!
+   :resume  (fn [])})

@@ -1,5 +1,9 @@
 (ns clojure.utils)
 
+(defn execute
+  [[f & params]]
+  (apply f params))
+
 (defn pipeline [object pipeline]
   (reduce (fn [object [f & params]]
             (apply f object params))

@@ -10,12 +10,7 @@
   gdl.backends.gdx.extends.input]
 
  [com.badlogic.gdx.backends.lwjgl3/start-application!
-  {:listener {:create  cdq.levelgen/create!
-              :dispose cdq.levelgen/dispose!
-              :pause   cdq.levelgen/pause!
-              :render  cdq.levelgen/render!
-              :resize  cdq.levelgen/resize!
-              :resume  cdq.levelgen/resume!}
+  {:listener [cdq.levelgen/application-listener]
    :config {:title "Levelgen test"
             :windowed-mode {:width 1440 :height 900}
             :foreground-fps 60}}]]
