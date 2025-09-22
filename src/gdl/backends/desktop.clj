@@ -1,6 +1,7 @@
 (ns gdl.backends.desktop
   (:require clojure.java.awt.taskbar
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl3]
+            [com.badlogic.gdx.backends.lwjgl3.application :as application]
+            [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config]
             [com.badlogic.gdx.input.buttons :as input.buttons]
             [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
@@ -66,8 +67,8 @@
   [config]
   (when (= (shared-library-loader/operating-system) :mac)
     (set-mac-os-settings! (:mac config)))
-  (lwjgl3/application (listener->java (:listener config))
-                      (dissoc config :mac :listener)))
+  (application/start! (listener->java (:listener config))
+                      (application-config/create (dissoc config :mac :listener))))
 
 (extend-type Audio
   gdl.audio/Audio
