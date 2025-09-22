@@ -19,8 +19,8 @@
                  [org.clojure/tools.namespace "1.3.0"]
                  [lein-hiera "2.0.0"]]
   :java-source-paths ["src"]
-  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.backends.desktop.main/-main) \"cdq.game.edn\")"]
-            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.backends.desktop.main/-main) \"levelgen.edn\")"]
+  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.config/-main) \"cdq.game.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'clojure.config/-main) \"levelgen.edn\")"]
             "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
@@ -47,9 +47,9 @@
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3}
-  :profiles {:uberjar {:aot [gdl.backends.desktop.main]}}
+  :profiles {:uberjar {:aot [clojure.config]}}
   :uberjar-name "cdq.jar"
-  :main gdl.backends.desktop.main)
+  :main clojure.config)
 
 ; * Notes
 
