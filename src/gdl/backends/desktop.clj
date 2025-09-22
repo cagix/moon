@@ -1,7 +1,6 @@
 (ns gdl.backends.desktop
   (:require clojure.java.awt.taskbar
-            [com.badlogic.gdx.backends.lwjgl3.application :as application]
-            [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.input.buttons :as input.buttons]
             [com.badlogic.gdx.input.keys :as input.keys]
             [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
@@ -12,48 +11,20 @@
             gdl.graphics
             gdl.input
             org.lwjgl.system.configuration)
-  (:import (com.badlogic.gdx ApplicationListener
-                             Audio
+  (:import (com.badlogic.gdx Audio
                              Files
-                             Gdx
                              Graphics
                              Input)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20)))
 
-(defn- listener->java
-  [{:keys [create
-           dispose
-           render
-           resize
-           pause
-           resume]
-    :as listener}]
-  (assert (and create
-               dispose
-               render
-               resize
-               pause
-               resume)
-          (str "Cant find all functions: (keys listener): "(pr-str (keys listener))))
-  (reify ApplicationListener
-    (create [_]
-      (create {:gdl/app      Gdx/app
-               :gdl/audio    Gdx/audio
-               :gdl/files    Gdx/files
-               :gdl/graphics Gdx/graphics
-               :gdl/input    Gdx/input}))
-    (dispose [_]
-      (dispose))
-    (render [_]
-      (render))
-    (resize [_ width height]
-      (resize width height))
-    (pause [_]
-      (pause))
-    (resume [_]
-      (resume))))
+; 1. 'com.badlogic.gdx/get-state'
+; 2. 'com.badlogic.gdx.application/listener'
+; 3. keep one repo - delete unused repos/archive?
+
+; FIXME does _2_ things
+
 
 (defn- set-mac-os-settings!
   [{:keys [glfw-async?
@@ -67,8 +38,10 @@
   [config]
   (when (= (shared-library-loader/operating-system) :mac)
     (set-mac-os-settings! (:mac config)))
-  (application/start! (listener->java (:listener config))
-                      (application-config/create (dissoc config :mac :listener))))
+  (lwjgl/start-application! (:listener config)
+                            (dissoc config :mac :listener)))
+
+; FIXME does _x_ things!!
 
 (extend-type Audio
   gdl.audio/Audio
