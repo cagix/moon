@@ -19,13 +19,6 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20)))
 
-; 1. 'com.badlogic.gdx/get-state'
-; 2. 'com.badlogic.gdx.application/listener'
-; 3. keep one repo - delete unused repos/archive?
-
-; FIXME does _2_ things
-
-
 (defn- set-mac-os-settings!
   [{:keys [glfw-async?
            taskbar-icon]}]
@@ -40,8 +33,6 @@
     (set-mac-os-settings! (:mac config)))
   (lwjgl/start-application! (:listener config)
                             (dissoc config :mac :listener)))
-
-; FIXME does _x_ things!!
 
 (extend-type Audio
   gdl.audio/Audio
