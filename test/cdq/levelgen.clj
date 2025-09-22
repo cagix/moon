@@ -103,7 +103,9 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [files graphics input]}]
+  [{:keys [ctx/files
+           ctx/graphics
+           ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)

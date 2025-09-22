@@ -5,6 +5,7 @@
     [clojure.java.awt.taskbar/set-icon-image! "icon.png"]]}]
 
  [clojure.core/require
+  gdl.backends.gdx.extends.application
   gdl.backends.gdx.extends.audio
   gdl.backends.gdx.extends.files
   gdl.backends.gdx.extends.graphics

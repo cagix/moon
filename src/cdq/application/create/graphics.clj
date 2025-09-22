@@ -126,11 +126,12 @@
   graphics)
 
 (defn do!
-  [{:keys [ctx/gdx]
+  [{:keys [ctx/files
+           ctx/graphics]
     :as ctx}
    config]
   (colors/put! (:colors config))
-  (assoc ctx :ctx/graphics (-> (graphics-config (:files gdx) config)
-                               (create* (:graphics gdx))
+  (assoc ctx :ctx/graphics (-> (graphics-config files config)
+                               (create* graphics)
                                (extend-draws (:draw-fns config))
                                ((requiring-resolve 'cdq.application.create.graphics.protocols/do!)))))

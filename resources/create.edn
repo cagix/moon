@@ -2,6 +2,7 @@
  (cdq.application.create.initial-record/merge-into-record)
  (cdq.application.create.ctx-schema/extend-validation
   [:map {:closed true}
+   [:ctx/app :some]
    [:ctx/audio :some]
    [:ctx/editor :some]
    [:ctx/db :some]
@@ -52,10 +53,9 @@
  (cdq.application.create.stage/do! {:state-var cdq.application/state
                                     :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
  (cdq.application.create.set-input-processor/do!)
- (cdq.application.create.audio/do! {:audio-impl cdq.impl.audio/create
-                                    :sound-names #edn/resource "sounds.edn"
+ (cdq.application.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                     :path-format "sounds/%s.wav"})
- (clojure.core/dissoc :ctx/gdx)
+ (clojure.core/dissoc :ctx/files)
  (cdq.application.create.reset-stage/do!)
  (cdq.application.create.world/do! #edn/resource "world.edn")
  (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"

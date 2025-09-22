@@ -2,8 +2,8 @@
   (:import (com.badlogic.gdx Gdx)))
 
 (defn state []
-  {:app      Gdx/app
-   :audio    Gdx/audio
-   :files    Gdx/files
-   :graphics Gdx/graphics
-   :input    Gdx/input})
+  {:ctx/app      Gdx/app
+   :ctx/audio    Gdx/audio
+   :ctx/files    Gdx/files
+   :ctx/graphics Gdx/graphics
+   :ctx/input    Gdx/input})

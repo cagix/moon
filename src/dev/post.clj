@@ -1,11 +1,12 @@
 (ns dev.post
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
-            [cdq.db :as db]))
+            [cdq.db :as db]
+            [gdl.application]))
 
 (defn post-runnable! [f]
-  (.postRunnable com.badlogic.gdx.Gdx/app
-                 (fn [] (f @application/state))))
+  (gdl.application/post-runnable! (:ctx/app @application/state)
+                                  (fn [] (f @application/state))))
 
 (comment
  (post-runnable!
