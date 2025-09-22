@@ -1,12 +1,16 @@
-{:title "Cyber Dungeon Quest"
- :windowed-mode {:width 1440
-                 :height 900}
- :foreground-fps 60
- :listener {:create  cdq.application.create/do!
-            :dispose cdq.application.dispose/do!
-            :pause   cdq.application.pause/do!
-            :render  cdq.application.render/do!
-            :resize  cdq.application.resize/do!
-            :resume  cdq.application.resume/do!}
- :mac {:glfw-async? true
-       :taskbar-icon "icon.png"}}
+[[gdl.backends.desktop/dispatch-on-os
+  {:mac
+   [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+    [clojure.java.awt.taskbar/set-icon-image! "icon.png"]]}]
+
+ [gdl.backends.desktop/application
+  {:listener {:create  cdq.application.create/do!
+              :dispose cdq.application.dispose/do!
+              :pause   cdq.application.pause/do!
+              :render  cdq.application.render/do!
+              :resize  cdq.application.resize/do!
+              :resume  cdq.application.resume/do!}
+   :config {:title "Cyber Dungeon Quest"
+            :windowed-mode {:width 1440
+                            :height 900}
+            :foreground-fps 60}}]]
