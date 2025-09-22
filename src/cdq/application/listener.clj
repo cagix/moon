@@ -7,7 +7,7 @@
 
 ; TODO
 ; 1. gdx/state pass from create ✅
-; 2. gdx/state treat as 'gdl/context' which can do stuff like create sprite-batch/viewport?
+; 2. gdx/state pass as one ✅
 ; 3. dispose over all elements ?
 ; 4. resize over all elements ?
 ; 5. do not use `gdl.scene2d.stage` but `cdq.stage` ?
@@ -20,16 +20,9 @@
                       render-pipeline
                       state-var]}]
   (let [state @state-var]
-    {:create (fn [{:keys [audio
-                          files
-                          graphics
-                          input]}]
-               (reset! state (utils/pipeline
-                              {:ctx/audio audio
-                               :ctx/files files
-                               :ctx/graphics graphics
-                               :ctx/input input}
-                              create-pipeline)))
+    {:create (fn [gdx]
+               (reset! state (utils/pipeline {:ctx/gdx gdx}
+                                             create-pipeline)))
      :dispose (fn []
                 (let [{:keys [ctx/audio
                               ctx/graphics

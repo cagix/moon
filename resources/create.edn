@@ -55,7 +55,7 @@
  (cdq.application.create.audio/do! {:audio-impl cdq.impl.audio/create
                                     :sound-names #edn/resource "sounds.edn"
                                     :path-format "sounds/%s.wav"})
- (clojure.core/dissoc :ctx/files)
+ (clojure.core/dissoc :ctx/gdx)
  (cdq.application.create.reset-stage/do!)
  (cdq.application.create.world/do! #edn/resource "world.edn")
  (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"

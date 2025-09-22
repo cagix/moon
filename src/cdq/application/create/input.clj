@@ -3,9 +3,9 @@
             [gdl.input :as input]
             [com.badlogic.gdx.math.vector2 :as v]))
 
-(defn do! [{:keys [ctx/input]
+(defn do! [{:keys [ctx/gdx]
             :as ctx}]
-  (assoc ctx :ctx/input input))
+  (assoc ctx :ctx/input (:input gdx)))
 
 (defn- WASD-movement-vector [input]
   (let [r (when (input/key-pressed? input :d) [1  0])

@@ -2,8 +2,7 @@
   (:require [gdl.files :as files]))
 
 (defn do!
-  [{:keys [ctx/audio
-           ctx/files]
+  [{:keys [ctx/gdx]
     :as ctx}
    {:keys [audio-impl
            sound-names
@@ -12,5 +11,5 @@
                               (into {}
                                     (for [sound-name sound-names]
                                       [sound-name
-                                       (files/internal files (format path-format sound-name))]))]
-                          (audio-impl audio sound-names->file-handles))))
+                                       (files/internal (:files gdx) (format path-format sound-name))]))]
+                          (audio-impl (:audio gdx) sound-names->file-handles))))
