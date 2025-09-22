@@ -1,17 +1,4 @@
-[[clojure.config/dispatch-on
-  com.badlogic.gdx.utils/operating-system
-  {:mac
-   [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
-    [clojure.java.awt.taskbar/set-icon-image! "icon.png"]]}]
-
- [clojure.core/require
-  gdl.backends.gdx.extends.application
-  gdl.backends.gdx.extends.audio
-  gdl.backends.gdx.extends.files
-  gdl.backends.gdx.extends.graphics
-  gdl.backends.gdx.extends.input]
-
- [com.badlogic.gdx.backends.lwjgl3/start-application!
+[[gdl.backends.gdx.lwjgl/start-application!
   {:listener [cdq.application.listener/create
               {:state-var cdq.application/state
                :create-pipeline #edn/resource "create.edn"
