@@ -13,7 +13,7 @@
    ; FIXME same attribute
    [:ctx/stage :some]
    [:ctx/vis-ui :some]
-   ; FIXME move to graphics/stage?
+   ; FIXME move to graphics/stage?/:ctx/current-frame?
    [:ctx/mouseover-actor :any]
    [:ctx/ui-mouse-position :some]
    [:ctx/world-mouse-position :some]
