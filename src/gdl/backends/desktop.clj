@@ -3,7 +3,7 @@
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.input.buttons :as input.buttons]
             [com.badlogic.gdx.input.keys :as input.keys]
-            [com.badlogic.gdx.utils.shared-library-loader :as shared-library-loader]
+            [com.badlogic.gdx.utils :as utils]
             gdl.audio
             gdl.audio.sound
             gdl.files
@@ -29,7 +29,7 @@
 
 (defn application
   [config]
-  (when (= (shared-library-loader/operating-system) :mac)
+  (when (= (utils/operating-system) :mac)
     (set-mac-os-settings! (:mac config)))
   (lwjgl/start-application! (:listener config)
                             (dissoc config :mac :listener)))

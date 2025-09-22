@@ -24,41 +24,6 @@
  (clojure.pprint/pprint
   (mapv symbol (locked-namespaces))))
 
-(def finished-namespaces
-  '[clojure.java.awt.taskbar
-    com.badlogic.gdx.input.buttons
-    com.badlogic.gdx.input.keys
-    com.badlogic.gdx.graphics.color
-    com.badlogic.gdx.maps.map-properties
-    com.badlogic.gdx.math.circle
-    com.badlogic.gdx.math.intersector
-    com.badlogic.gdx.math.rectangle
-    com.badlogic.gdx.math.vector3
-    com.badlogic.gdx.utils.align
-    com.badlogic.gdx.utils.shared-library-loader
-    org.lwjgl.system.configuration
-    space.earlygrey.shape-drawer])
-
-(def ignore-for-now
-  '[cdq.ui.dev-menu
-    gdl
-    cdq.application.create.graphics
-    cdq.entity.animation
-    cdq.world-fns
-    ])
-
-(def protocols
-  '[cdq.schema
-    cdq.graphics
-    cdq.db
-    cdq.input
-    cdq.stage
-    cdq.schemas
-    cdq.application
-
-    ]
-  )
-
 (comment
 
  ; java heap space 512m required
@@ -67,9 +32,7 @@
    :output "target/hiera"
    :layout :horizontal
    :external false
-   :ignore (set/union (set finished-namespaces)
-                      (set ignore-for-now)
-                      (set protocols))
+   :ignore (set (mapv symbol (locked-namespaces)))
    })
 
  )
