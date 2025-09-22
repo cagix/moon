@@ -1,6 +1,6 @@
 [
- (cdq.application.create.initial-record/merge-into-record)
- (cdq.application.create.ctx-schema/extend-validation
+ (cdq.create.initial-record/merge-into-record)
+ (cdq.create.ctx-schema/extend-validation
   [:map {:closed true}
    [:ctx/app :some]
    [:ctx/audio :some]
@@ -20,7 +20,7 @@
    [:ctx/world-mouse-position :some]
    ; TODO find another solution?
    [:ctx/interaction-state :some]])
- (cdq.application.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
+ (cdq.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
                                        com.badlogic.gdx.scenes.scene2d.group
                                        com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
                                        com.badlogic.gdx.scenes.scene2d.ui.label
@@ -39,27 +39,27 @@
   :ctx/interaction-state true)
  (clojure.decl/assoc* :ctx/db (cdq.impl.db/create {:schemas "schema.edn"
                                                    :properties "properties.edn"}))
- (cdq.application.create.info/do!)
- (cdq.application.create.txs/do! #edn/resource "txs.edn")
- (cdq.application.create.load-entity-states/do!     #edn/resource "entity_states.edn")
- (cdq.application.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
+ (cdq.create.info/do!)
+ (cdq.create.txs/do! #edn/resource "txs.edn")
+ (cdq.create.load-entity-states/do!     #edn/resource "entity_states.edn")
+ (cdq.create.load-effects/do!           #edn/resource "effects_fn_map.edn")
  (clojure.core/assoc :ctx/controls {:zoom-in :minus
                                     :zoom-out :equals
                                     :unpause-once :p
                                     :unpause-continously :space})
- (cdq.application.create.input/do!)
+ (cdq.create.input/do!)
  (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
- (cdq.application.create.graphics/do! #edn/resource "graphics.edn")
- (cdq.application.create.stage/do! {:state-var cdq.application/state
+ (cdq.create.graphics/do! #edn/resource "graphics.edn")
+ (cdq.create.stage/do! {:state-var cdq.application/state
                                     :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
- (cdq.application.create.set-input-processor/do!)
- (cdq.application.create.audio/do! {:sound-names #edn/resource "sounds.edn"
+ (cdq.create.set-input-processor/do!)
+ (cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                     :path-format "sounds/%s.wav"})
  (clojure.core/dissoc :ctx/files)
- (cdq.application.create.reset-stage/do!)
- (cdq.application.create.world/do! #edn/resource "world.edn")
- (cdq.application.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+ (cdq.create.reset-stage/do!)
+ (cdq.create.world/do! #edn/resource "world.edn")
+ (cdq.create.reset-world/do! (cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                                     :start-position [32 71]}))
- (cdq.application.create.spawn-player/do!)
- (cdq.application.create.spawn-enemies/do!)
+ (cdq.create.spawn-player/do!)
+ (cdq.create.spawn-enemies/do!)
  ]
