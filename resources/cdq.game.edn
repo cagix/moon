@@ -3,6 +3,12 @@
    [[org.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
     [clojure.java.awt.taskbar/set-icon-image! "icon.png"]]}]
 
+ [clojure.core/require
+  gdl.backends.gdx.extends.audio
+  gdl.backends.gdx.extends.files
+  gdl.backends.gdx.extends.graphics
+  gdl.backends.gdx.extends.input]
+
  [gdl.backends.desktop/application
   {:listener {:create  cdq.application.create/do!
               :dispose cdq.application.dispose/do!

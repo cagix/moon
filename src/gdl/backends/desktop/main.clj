@@ -2,6 +2,11 @@
   (:require [clojure.config :as config])
   (:gen-class))
 
-(defn -main [path]
-  (doseq [[f & params] (config/edn-resource path)]
+(defn execute! [executions]
+  (doseq [[f & params] executions]
     (apply f params)))
+
+(defn -main [path]
+  (-> path
+      config/edn-resource
+      execute!))
