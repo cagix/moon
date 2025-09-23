@@ -3,8 +3,15 @@
             [clojure.input :as input]
             [clojure.math.vector2 :as v]))
 
-(defn do! [{:keys [ctx/input]
+; Only access 'clojure.input' through here
+; and every key is dispatched here
+; so I can create an info text
+
+(defn do! [{:keys [ctx/input
+                   ctx/stage]
             :as ctx}]
+  (assert stage)
+  (input/set-processor! input stage)
   (assoc ctx :ctx/input input))
 
 (defn- WASD-movement-vector [input]

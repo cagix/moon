@@ -2,8 +2,8 @@
   (:require [cdq.ctx :as ctx]
 
             ;;
-            [cdq.creature :as creature]
-            [cdq.entity :as entity]
+            [cdq.creature :as creature] ; interaction state
+            [cdq.entity :as entity] ; interaction state
             [cdq.entity.state :as state]
             ;;
 
@@ -43,9 +43,6 @@
    :player-dead true
    :active-skill false})
 
-(def ^:private close-windows-key  :escape)
-(def ^:private toggle-inventory   :i)
-(def ^:private toggle-entity-info :e)
 (def ^:private zoom-speed 0.025)
 
 (defn- handle-key-input!
@@ -56,9 +53,9 @@
     :as ctx}]
   (when (input/key-pressed? input (:zoom-in  controls)) (graphics/change-zoom! graphics zoom-speed))
   (when (input/key-pressed? input (:zoom-out controls)) (graphics/change-zoom! graphics (- zoom-speed)))
-  (when (input/key-just-pressed? input close-windows-key)  (stage/close-all-windows!         stage))
-  (when (input/key-just-pressed? input toggle-inventory )  (stage/toggle-inventory-visible!  stage))
-  (when (input/key-just-pressed? input toggle-entity-info) (stage/toggle-entity-info-window! stage))
+  (when (input/key-just-pressed? input (:close-windows-key controls))  (stage/close-all-windows!         stage))
+  (when (input/key-just-pressed? input (:toggle-inventory controls) )  (stage/toggle-inventory-visible!  stage))
+  (when (input/key-just-pressed? input (:toggle-entity-info controls)) (stage/toggle-entity-info-window! stage))
   ctx)
 
 (defn- tick-entities!
@@ -273,12 +270,13 @@
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
 (defn- check-open-debug!
-  [{:keys [ctx/input
+  [{:keys [ctx/controls
+           ctx/input
            ctx/stage
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
-  (when (input/button-just-pressed? input :right)
+  (when (input/button-just-pressed? input (:open-debug-button controls))
     (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
                    @((:world/grid world) (mapv int world-mouse-position)))]
       (clojure.scene2d.stage/add! stage (widget/data-viewer
@@ -288,6 +286,7 @@
                                           :height 500}))))
   ctx)
 
+; Input!
 (defn- update-mouse
   [{:keys [ctx/graphics
            ctx/input

@@ -4,7 +4,6 @@
             cdq.create.input
             cdq.create.graphics
             cdq.create.stage
-            cdq.create.set-input-processor
             cdq.create.txs
             cdq.create.audio
             cdq.create.reset-stage
@@ -73,10 +72,11 @@
                ;
 
 
-               [:ctx/mouseover-actor :any]
-               [:ctx/ui-mouse-position :some]
-               [:ctx/world-mouse-position :some]
-               [:ctx/interaction-state :some]
+               ; FIXME move in input
+               [:ctx/mouseover-actor :any] ; 5 usage: interaction-state, update-mouseover-eid!, handle-input, draw-gui-view, draw-item-on-cursor
+               [:ctx/ui-mouse-position :some] ; 3 usage: dev-menu, draw inventory cell, draw-gui-view
+               [:ctx/world-mouse-position :some] ; 7-8 usage: interaction-state, check-open-debug!, update-mouseover-eid!, dev-menu, player item on cursor exit, draw-item-on-cursor, highlight-mouseover-tile, geom-test
+               [:ctx/interaction-state :some] ; only cursor/handle-input
                ; * ctx/frame or graphics/input/stage
                ; or make ctx protocol
                ; or utils pass graphics input
@@ -88,7 +88,7 @@
       (malli.utils/validate-humanize schema ctx)
       ctx)))
 
-; only world
+; only world - or nothing, dispatch entity type?
 (extend-type Context
   cdq.ctx/InfoText
   (info-text [ctx entity]
@@ -120,17 +120,32 @@
        :ctx/ui-mouse-position true
        :ctx/world-mouse-position true
        :ctx/interaction-state true)
+
       (assoc :ctx/db (cdq.create.db/create {:schemas "schema.edn"
                                             :properties "properties.edn"}))
-      (assoc :ctx/controls {:zoom-in :minus
+
+      (assoc :ctx/controls {
+                            :zoom-in :minus
                             :zoom-out :equals
                             :unpause-once :p
-                            :unpause-continously :space})
-      cdq.create.input/do!
+                            :unpause-continously :space
+                            :close-windows-key :escape
+                            :toggle-inventory  :i
+                            :toggle-entity-info :e
+                            :open-debug-button :right
+                            ;:move-right :d
+                            ;:move-left :a
+                            ;:move-up :w
+                            ;:move-down :s
+                            ; & left-button @ player-idle interaction-state
+                            ; player-cursor
+
+                            })
+
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       (cdq.create.graphics/do! (edn-resource "graphics.edn"))
       (cdq.create.stage/do!)
-      (cdq.create.set-input-processor/do!)
+      cdq.create.input/do!
       (cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
                              :path-format "sounds/%s.wav"})
       (dissoc :ctx/files)
