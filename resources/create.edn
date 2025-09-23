@@ -15,15 +15,6 @@
    [:ctx/ui-mouse-position :some]
    [:ctx/world-mouse-position :some]
    [:ctx/interaction-state :some]])
- (cdq.create.requires/do! [com.badlogic.gdx.scenes.scene2d.actor
-                           com.badlogic.gdx.scenes.scene2d.group
-                           com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-                           com.badlogic.gdx.scenes.scene2d.ui.label
-                           com.badlogic.gdx.scenes.scene2d.ui.stack
-                           com.badlogic.gdx.scenes.scene2d.ui.table
-                           com.badlogic.gdx.scenes.scene2d.ui.widget
-                           com.badlogic.gdx.scenes.scene2d.ui.widget-group
-                           com.badlogic.gdx.scenes.scene2d.ui.window])
  (cdq.ui.editor.overview-table/extend-ctx)
  (cdq.ui.editor.window/init!)
  (clojure.core/assoc

@@ -1,5 +1,14 @@
 (ns gdl.impl.stage
-  (:require gdl.scene2d.stage)
+  (:require com.badlogic.gdx.scenes.scene2d.actor
+            com.badlogic.gdx.scenes.scene2d.group
+            com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
+            com.badlogic.gdx.scenes.scene2d.ui.label
+            com.badlogic.gdx.scenes.scene2d.ui.stack
+            com.badlogic.gdx.scenes.scene2d.ui.table
+            com.badlogic.gdx.scenes.scene2d.ui.widget
+            com.badlogic.gdx.scenes.scene2d.ui.widget-group
+            com.badlogic.gdx.scenes.scene2d.ui.window
+            gdl.scene2d.stage)
   (:import (com.badlogic.gdx.scenes.scene2d StageWithCtx)))
 
 (defn create [viewport batch state]

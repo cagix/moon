@@ -6,11 +6,6 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            com.badlogic.gdx.scenes.scene2d.actor
-            com.badlogic.gdx.scenes.scene2d.group
-            com.badlogic.gdx.scenes.scene2d.ui.table
-            com.badlogic.gdx.scenes.scene2d.ui.widget
-            com.badlogic.gdx.scenes.scene2d.ui.widget-group
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [gdl.graphics :as graphics]
@@ -108,15 +103,9 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
-
         sprite-batch (sprite-batch/create)
-
         stage (gdl.impl.stage/create ui-viewport sprite-batch state)
-
-
-
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
