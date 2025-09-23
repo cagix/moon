@@ -12,21 +12,21 @@
 
 (defn do! [graphics]
   (extend-type (class graphics)
-    cdq.graphics/Graphics
-    (clear! [{:keys [graphics/core]} [r g b a]]
-      (graphics/clear! core r g b a))
-
-    (dispose!
-      [{:keys [graphics/batch
-               graphics/cursors
-               graphics/default-font
-               graphics/shape-drawer-texture
-               graphics/textures]}]
+    disposable/Disposable
+    (dispose! [{:keys [graphics/batch
+                       graphics/cursors
+                       graphics/default-font
+                       graphics/shape-drawer-texture
+                       graphics/textures]}]
       (disposable/dispose! batch)
       (run! disposable/dispose! (vals cursors))
       (disposable/dispose! default-font)
       (disposable/dispose! shape-drawer-texture)
       (run! disposable/dispose! (vals textures)))
+
+    cdq.graphics/Graphics
+    (clear! [{:keys [graphics/core]} [r g b a]]
+      (graphics/clear! core r g b a))
 
     (draw-on-world-viewport!
       [{:keys [graphics/batch

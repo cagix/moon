@@ -8,12 +8,12 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.ui.widget :as widget]
-            [cdq.world :as world]
             [cdq.world-fns.tmx]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.modules]
             [clojure.string :as str]
             [clojure.utils :as utils]
+            [gdl.disposable :as disposable]
             [gdl.scene2d.stage :as stage]))
 
 (def ^:private world-fns
@@ -67,7 +67,7 @@
              :on-click (fn [_actor {:keys [ctx/world]
                                     :as ctx}]
                          (cdq.create.reset-stage/do! ctx)
-                         (world/dispose! world)
+                         (disposable/dispose! world)
                          (swap! application/state cdq.create.reset-world/do! world-fn)
                          (swap! application/state cdq.create.spawn-player/do!)
                          (swap! application/state cdq.create.spawn-enemies/do!))})})

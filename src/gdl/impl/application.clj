@@ -118,9 +118,7 @@
 (extend-type Sound
   gdl.audio.sound/Sound
   (play! [this]
-    (.play this))
-  (dispose! [this]
-    (.dispose this)))
+    (.play this)))
 
 (extend-type Files
   gdl.files/Files

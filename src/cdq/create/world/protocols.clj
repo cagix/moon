@@ -72,10 +72,11 @@
                                       world/movement-ai]} eid]
       (movement-ai grid eid))
 
-    cdq.world/World
+    disposable/Disposable
     (dispose! [{:keys [world/tiled-map]}]
       (disposable/dispose! tiled-map))
 
+    cdq.world/World
     (active-eids [this]
       (:world/active-entities this))
 

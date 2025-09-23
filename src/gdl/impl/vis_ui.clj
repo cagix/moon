@@ -10,6 +10,7 @@
             com.kotcrab.vis.ui.widget.text-button
             com.kotcrab.vis.ui.widget.window
             com.kotcrab.vis.ui.widget.image
+            [gdl.disposable :as disposable]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])
@@ -67,8 +68,8 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (reify com.badlogic.gdx.utils.Disposable
-    (dispose [_]
+  (reify disposable/Disposable
+    (dispose! [_]
       (VisUI/dispose))))
 
 (let [update-fn (fn [tooltip-text]

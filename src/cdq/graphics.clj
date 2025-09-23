@@ -4,7 +4,6 @@
   (handle-draws! [_ draws]))
 
 (defprotocol Graphics
-  (dispose! [_])
   (clear! [_ [r g b a]])
   (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])

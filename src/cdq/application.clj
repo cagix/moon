@@ -1,10 +1,9 @@
 (ns cdq.application
-  (:require [cdq.audio :as audio]
-            [cdq.graphics :as graphics]
-            [cdq.world :as world]
+  (:require [cdq.graphics :as graphics]
             [clojure.config :as config]
             [clojure.utils :as utils]
             [gdl.scene2d.stage :as stage]
+            [gdl.disposable :as disposable]
             [gdl.impl.application])
   (:gen-class))
 
@@ -21,10 +20,10 @@
                                           ctx/graphics
                                           ctx/vis-ui
                                           ctx/world]} @state]
-                              (audio/dispose! audio)
-                              (graphics/dispose! graphics)
-                              (com.badlogic.gdx.utils.Disposable/.dispose vis-ui)
-                              (world/dispose! world)))
+                              (disposable/dispose! audio)
+                              (disposable/dispose! graphics)
+                              (disposable/dispose! vis-ui)
+                              (disposable/dispose! world)))
                  :pause (fn [])
                  :render (fn []
                            (swap! state utils/pipeline render-pipeline)

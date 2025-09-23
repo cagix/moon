@@ -4,7 +4,6 @@
   (reset-state [_ world-fn-result]))
 
 (defprotocol World
-  (dispose! [_])
   (active-eids [_]))
 
 (defprotocol MovementAI
