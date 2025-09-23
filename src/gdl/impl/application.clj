@@ -3,6 +3,7 @@
             [gdl.application]
             [gdl.audio]
             [gdl.audio.sound]
+            [gdl.disposable]
             [gdl.files]
             [gdl.files.file-handle]
             [gdl.graphics]
@@ -25,7 +26,8 @@
            (com.badlogic.gdx.graphics GL20
                                       Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.utils SharedLibraryLoader
+           (com.badlogic.gdx.utils Disposable
+                                   SharedLibraryLoader
                                    Os)
            (java.awt Taskbar
                      Toolkit)
@@ -392,3 +394,8 @@
   (mouse-position [this]
     [(.getX this)
      (.getY this)]))
+
+(extend-type Disposable
+  gdl.disposable/Disposable
+  (dispose! [this]
+    (.dispose this)))

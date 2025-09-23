@@ -3,7 +3,7 @@
             [cdq.world]
             [com.badlogic.gdx.math.vector2 :as v]
             [clojure.grid2d :as g2d]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [gdl.tiled :as tiled])
   (:import (cdq.math RayCaster)))
 
