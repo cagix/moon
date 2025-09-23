@@ -5,8 +5,9 @@
             [clojure.application]))
 
 (defn post-runnable! [f]
-  (clojure.application/post-runnable! (:ctx/app @application/state)
-                                  (fn [] (f @application/state))))
+  (clojure.application/post-runnable!
+   (:ctx/app @application/state)
+   (fn [] (f @application/state))))
 
 (comment
  (post-runnable!

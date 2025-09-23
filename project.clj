@@ -29,9 +29,7 @@
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
   :codox {:source-uri "https://github.com/damn/cdq/blob/main/{filepath}#L{line}"
-          :metadata {:doc/format :markdown}
-          :namespaces [#"^clojure\."]
-          }
+          :metadata {:doc/format :markdown}}
   ; lein hiera :layout :horizontal :ignore "#{cdq.render}"
   ; unfortunately cannot exclude only 'cdq.render.*' , would like to do for entity/effect...
   ; this from engine, what purpose?
