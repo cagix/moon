@@ -8,6 +8,7 @@
             cdq.create.graphics
             cdq.create.stage
             cdq.create.set-input-processor
+            cdq.create.txs
             cdq.create.audio
             cdq.create.reset-stage
             cdq.create.world
@@ -56,15 +57,6 @@
                  (rest transactions)
                  handled-transactions)))
       handled-transactions)))
-
-(defn- create-fn-map [{:keys [ks sym-format]}]
-  (into {}
-        (for [k ks
-              :let [sym (symbol (format sym-format (name k)))
-                    f (requiring-resolve sym)]]
-          (do
-           (assert f (str "Cannot resolve " sym))
-           [k f]))))
 
 (defn- require-resolve-symbols [form]
   (if (and (symbol? form)
@@ -116,11 +108,10 @@
   (info-text [ctx entity]
     (cdq.create.info/info-text ctx entity)))
 
-(let [txs-fn-map (create-fn-map (edn-resource "txs.edn"))]
-  (extend-type Context
-    ctx/TransactionHandler
-    (handle-txs! [ctx transactions]
-      (actions! txs-fn-map ctx transactions))))
+(extend-type Context
+  ctx/TransactionHandler
+  (handle-txs! [ctx transactions]
+    (actions! cdq.create.txs/txs-fn-map ctx transactions)))
 
 (extend-type Context
   ctx/ResetGameState
