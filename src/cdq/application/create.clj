@@ -61,10 +61,7 @@
                [:ctx/graphics :some]
                [:ctx/world :some]
 
-               ; merge
                [:ctx/input :some]
-               [:ctx/controls :some]
-               ;
 
                ; merge?
                [:ctx/stage :some]
@@ -123,24 +120,6 @@
 
       (assoc :ctx/db (cdq.create.db/create {:schemas "schema.edn"
                                             :properties "properties.edn"}))
-
-      (assoc :ctx/controls {
-                            :zoom-in :minus
-                            :zoom-out :equals
-                            :unpause-once :p
-                            :unpause-continously :space
-                            :close-windows-key :escape
-                            :toggle-inventory  :i
-                            :toggle-entity-info :e
-                            :open-debug-button :right
-                            ;:move-right :d
-                            ;:move-left :a
-                            ;:move-up :w
-                            ;:move-down :s
-                            ; & left-button @ player-idle interaction-state
-                            ; player-cursor
-
-                            })
 
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       (cdq.create.graphics/do! (edn-resource "graphics.edn"))

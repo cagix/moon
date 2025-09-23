@@ -3,6 +3,31 @@
             [clojure.input :as input]
             [clojure.math.vector2 :as v]))
 
+(def controls
+  {
+   :zoom-in :minus
+   :zoom-out :equals
+   :unpause-once :p
+   :unpause-continously :space
+   :close-windows-key :escape
+   :toggle-inventory  :i
+   :toggle-entity-info :e
+   :open-debug-button :right
+   ;:move-right :d
+   ;:move-left :a
+   ;:move-up :w
+   ;:move-down :s
+   ; & left-button @ player-idle interaction-state
+   ; player-cursor
+   }
+  )
+
+(defn- unpause-once? [input]
+  (input/key-just-pressed? input (:unpause-once controls)))
+
+(defn- unpause-continously? [input]
+  (input/key-pressed?      input (:unpause-continously controls)))
+
 ; Only access 'clojure.input' through here
 ; and every key is dispatched here
 ; so I can create an info text
@@ -27,4 +52,29 @@
 (extend-type com.badlogic.gdx.Input
   cdq.input/Input
   (player-movement-vector [input]
-    (WASD-movement-vector input)))
+    (WASD-movement-vector input))
+
+  (zoom-in? [input]
+    (input/key-pressed? input (:zoom-in  controls)))
+
+  (zoom-out? [input]
+    (input/key-pressed? input (:zoom-out controls)))
+
+  (close-windows? [input]
+    (input/key-just-pressed? input (:close-windows-key controls)))
+
+  (toggle-inventory? [input]
+    (input/key-just-pressed? input (:toggle-inventory controls) ))
+
+  (toggle-entity-info? [input]
+    (input/key-just-pressed? input (:toggle-entity-info controls)))
+
+  (unpause? [input]
+    (or (unpause-once?        input)
+        (unpause-continously? input)))
+
+  (open-debug-button-pressed? [input]
+    (input/button-just-pressed? input (:open-debug-button controls)))
+
+  (mouse-position [input]
+    (input/mouse-position input)))

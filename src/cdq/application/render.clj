@@ -6,9 +6,8 @@
             [cdq.entity :as entity] ; interaction state
             [cdq.entity.state :as state]
             ;;
-
-
             [cdq.graphics :as graphics]
+            [cdq.input :as input]
 
             cdq.render.draw-on-world-viewport
             ; TODO part of 'update-world'
@@ -28,7 +27,7 @@
             [cdq.world.content-grid :as content-grid] ; FIXME
             [cdq.world.grid :as grid] ; FIXME
             [clojure.graphics.color :as color] ; FIXME
-            [clojure.input :as input] ; FIXME
+
             [clojure.scene2d.stage] ; FIXME
             [clojure.math.vector2 :as v] ; FIXME
             [clojure.utils :as utils])) ; FIXME
@@ -46,16 +45,15 @@
 (def ^:private zoom-speed 0.025)
 
 (defn- handle-key-input!
-  [{:keys [ctx/controls
-           ctx/graphics
+  [{:keys [ctx/graphics
            ctx/input
            ctx/stage]
     :as ctx}]
-  (when (input/key-pressed? input (:zoom-in  controls)) (graphics/change-zoom! graphics zoom-speed))
-  (when (input/key-pressed? input (:zoom-out controls)) (graphics/change-zoom! graphics (- zoom-speed)))
-  (when (input/key-just-pressed? input (:close-windows-key controls))  (stage/close-all-windows!         stage))
-  (when (input/key-just-pressed? input (:toggle-inventory controls) )  (stage/toggle-inventory-visible!  stage))
-  (when (input/key-just-pressed? input (:toggle-entity-info controls)) (stage/toggle-entity-info-window! stage))
+  (when (input/zoom-in?            input) (graphics/change-zoom! graphics zoom-speed))
+  (when (input/zoom-out?           input) (graphics/change-zoom! graphics (- zoom-speed)))
+  (when (input/close-windows?      input) (stage/close-all-windows!         stage))
+  (when (input/toggle-inventory?   input) (stage/toggle-inventory-visible!  stage))
+  (when (input/toggle-entity-info? input) (stage/toggle-entity-info-window! stage))
   ctx)
 
 (defn- tick-entities!
@@ -92,15 +90,13 @@
 
 (defn- assoc-paused
   [{:keys [ctx/input
-           ctx/controls
            ctx/world]
     :as ctx}]
   (assoc-in ctx [:ctx/world :world/paused?]
             (or #_error
                 (and pausing?
                      (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
-                     (not (or (input/key-just-pressed? input (:unpause-once controls))
-                              (input/key-pressed?      input (:unpause-continously controls))))))))
+                     (not (input/unpause? input))))))
 
 (defn- player-state-handle-input!
   [{:keys [ctx/world]
@@ -270,13 +266,12 @@
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
 (defn- check-open-debug!
-  [{:keys [ctx/controls
-           ctx/input
+  [{:keys [ctx/input
            ctx/stage
            ctx/world
            ctx/world-mouse-position]
     :as ctx}]
-  (when (input/button-just-pressed? input (:open-debug-button controls))
+  (when (input/open-debug-button-pressed? input)
     (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
                    @((:world/grid world) (mapv int world-mouse-position)))]
       (clojure.scene2d.stage/add! stage (widget/data-viewer
