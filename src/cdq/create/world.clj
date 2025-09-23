@@ -1,5 +1,8 @@
 (ns cdq.create.world
-  (:require [clojure.utils :as utils]
+  (:require cdq.create.world.record
+            cdq.create.world.entity-schema
+            cdq.create.world.protocols
+            [clojure.utils :as utils]
             [reduce-fsm :as fsm]))
 
 (comment
@@ -75,6 +78,11 @@
   (assoc world :world/fsms {:fsms/player player-fsm
                             :fsms/npc npc-fsm}))
 
-(defn do! [ctx {:keys [initial-state
-                       pipeline]}]
-  (assoc ctx :ctx/world (utils/pipeline initial-state pipeline)))
+(defn do! [ctx {:keys [initial-state]}]
+  (assoc ctx :ctx/world (-> initial-state
+                            cdq.create.world.record/do!
+                            cdq.create.world.entity-schema/do!
+                            cdq.create.world/create-fsms
+                            cdq.create.world/calculate-max-speed
+                            cdq.create.world/define-render-z-order
+                            cdq.create.world.protocols/do!)))

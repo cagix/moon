@@ -20,10 +20,4 @@
                                                         :entity/click-distance-tiles 1.5}}
                  :world/effect-body-props {:width 0.5
                                            :height 0.5
-                                           :z-order :z-order/effect}}
- :pipeline [[cdq.create.world.record/do!]
-            [cdq.create.world.entity-schema/do!]
-            [cdq.create.world/create-fsms]
-            [cdq.create.world/calculate-max-speed]
-            [cdq.create.world/define-render-z-order]
-            [cdq.create.world.protocols/do!]]}
+                                           :z-order :z-order/effect}}}

@@ -7,7 +7,7 @@
             [clojure.gdx.application :as application])
   (:gen-class))
 
-(def state (atom nil))
+(def ^:private state (atom nil))
 
 (defn -main []
   (application/start!
@@ -26,3 +26,22 @@
              :windowed-mode {:width 1440
                              :height 900}
              :foreground-fps 60}}))
+
+(defn post-runnable! [f]
+  (clojure.application/post-runnable! (:ctx/app @state)
+                                      (fn [] (f @state))))
+
+(comment
+ (require '[cdq.ctx :as ctx]
+          '[cdq.db :as db])
+
+ (post-runnable!
+  (fn [ctx]
+    (ctx/handle-txs! ctx
+                     [[:tx/spawn-creature
+                       {:position [35 73]
+                        :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
+                        :components {:entity/fsm {:fsm :fsms/npc
+                                                  :initial-state :npc-sleeping}
+                                     :entity/faction :evil}}]])))
+ )
