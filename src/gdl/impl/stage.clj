@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.scenes.scene2d.stage
+(ns gdl.impl.stage
   (:require gdl.scene2d.stage)
   (:import (com.badlogic.gdx.scenes.scene2d StageWithCtx)))
 

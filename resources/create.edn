@@ -45,7 +45,7 @@
  (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
  (cdq.create.graphics/do! #edn/resource "graphics.edn")
  (cdq.create.stage/do! {:state-var cdq.application/state
-                                    :stage-impl com.badlogic.gdx.scenes.scene2d.stage/create})
+                                    :stage-impl gdl.impl.stage/create})
  (cdq.create.set-input-processor/do!)
  (cdq.create.audio/do! {:sound-names #edn/resource "sounds.edn"
                                     :path-format "sounds/%s.wav"})

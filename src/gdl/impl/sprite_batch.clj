@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.graphics.g2d.sprite-batch
+(ns gdl.impl.sprite-batch
   (:require [gdl.graphics.g2d.batch])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 

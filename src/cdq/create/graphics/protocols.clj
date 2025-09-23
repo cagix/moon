@@ -1,6 +1,6 @@
 (ns cdq.create.graphics.protocols
   (:require [cdq.graphics]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
+            [gdl.impl.camera :as camera]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]

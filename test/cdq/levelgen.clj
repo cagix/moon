@@ -6,19 +6,19 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
             [gdl.input :as input]
+            [gdl.impl.application]
+            [gdl.impl.camera :as camera]
+            [gdl.impl.sprite-batch :as sprite-batch]
+            [gdl.impl.stage]
+            [gdl.impl.viewport :as viewport]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]))
@@ -108,9 +108,15 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
+
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
+
         sprite-batch (sprite-batch/create)
-        stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch state)
+
+        stage (gdl.impl.stage/create ui-viewport sprite-batch state)
+
+
+
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -195,7 +201,7 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
-  (gdl.application.desktop/start!
+  (gdl.impl.application/start!
    {:listener {:create  create!
                :dispose dispose!
                :pause   (fn [])

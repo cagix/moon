@@ -2,11 +2,11 @@
   (:require [cdq.application]
             [cdq.application.listener]
             [clojure.config :as config]
-            [gdl.application.desktop])
+            [gdl.impl.application])
   (:gen-class))
 
 (defn -main []
-  (gdl.application.desktop/start!
+  (gdl.impl.application/start!
    {:listener (cdq.application.listener/create
                {:state cdq.application/state
                 :create-pipeline (config/edn-resource "create.edn")

@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.utils.viewport.fit-viewport
+(ns gdl.impl.viewport
   (:require [clojure.utils :refer [clamp]]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [gdl.graphics.viewport])

@@ -1,4 +1,4 @@
-(ns gdl.application.desktop
+(ns gdl.impl.application
   (:require [clojure.java.io :as io]
             [gdl.application]
             [gdl.audio]
