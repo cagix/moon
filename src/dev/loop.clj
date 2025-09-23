@@ -60,8 +60,8 @@
 
 (declare ^:private nrepl-server)
 
-(defn -main [start-expression]
-  (.bindRoot #'start-app-expression (read-string start-expression))
+(defn -main [start-app-fn]
+  (.bindRoot #'start-app-expression `((requiring-resolve '~(symbol start-app-fn))))
   (.bindRoot #'nrepl-server (nrepl.server/start-server))
   (save-port-file! nrepl-server)
   (println "Started nrepl server on port" (:port nrepl-server))

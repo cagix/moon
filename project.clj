@@ -12,8 +12,8 @@
                  [lein-hiera "2.0.0"]
                  ]
   :java-source-paths ["src"]
-  :aliases {"dev"      ["run" "-m" "dev.loop" "((requiring-resolve 'cdq.application/-main))"]
-            "levelgen" ["run" "-m" "dev.loop" "((requiring-resolve 'cdq.levelgen/-main))"]
+  :aliases {"dev"      ["run" "-m" "dev.loop" "cdq.application/-main"]
+            "levelgen" ["run" "-m" "dev.loop" "cdq.levelgen/-main"]
             "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
