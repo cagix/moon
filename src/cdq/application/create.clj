@@ -81,53 +81,57 @@
        (edn/read-string {:readers {'edn/resource edn-resource}})
        (walk/postwalk require-resolve-symbols)))
 
-(cdq.create.load-entity-states/do! (edn-resource "entity_states.edn"))
-(cdq.create.load-effects/do!       (edn-resource "effects_fn_map.edn"))
-
 (q/defrecord Context [])
 
-(def ^:private schema
-  (m/schema
-   [:map {:closed true}
-    [:ctx/app :some]
-    [:ctx/audio :some]
-    [:ctx/db :some]
-    [:ctx/graphics :some]
-    [:ctx/world :some]
-    [:ctx/input :some]
-    [:ctx/controls :some]
-    [:ctx/stage :some]
-    [:ctx/vis-ui :some]
-    [:ctx/mouseover-actor :any]
-    [:ctx/ui-mouse-position :some]
-    [:ctx/world-mouse-position :some]
-    [:ctx/interaction-state :some]]))
-
-(extend-type Context
-  ctx/Validation
-  (validate [ctx]
-    (malli.utils/validate-humanize schema ctx)
-    ctx))
-
-(extend-type Context
-  cdq.editor/Editor
-  (overview-table-rows [ctx property-type clicked-id-fn]
-    (cdq.create.editor-overview-table/create ctx
-                                             property-type
-                                             clicked-id-fn)))
-
-(extend-type Context
-  cdq.ctx/InfoText
-  (info-text [ctx entity]
-    (cdq.create.info/info-text ctx entity)))
-
-(let [txs-fn-map (create-fn-map (edn-resource "txs.edn"))]
-  (extend-type Context
-    ctx/TransactionHandler
-    (handle-txs! [ctx transactions]
-      (actions! txs-fn-map ctx transactions))))
-
 (defn do! [context]
+  (let [schema (m/schema
+                [:map {:closed true}
+                 [:ctx/app :some]
+                 [:ctx/audio :some]
+                 [:ctx/db :some]
+                 [:ctx/graphics :some]
+                 [:ctx/world :some]
+                 [:ctx/input :some]
+                 [:ctx/controls :some]
+                 [:ctx/stage :some]
+                 [:ctx/vis-ui :some]
+                 [:ctx/mouseover-actor :any]
+                 [:ctx/ui-mouse-position :some]
+                 [:ctx/world-mouse-position :some]
+                 [:ctx/interaction-state :some]])]
+    (extend-type Context
+      ctx/Validation
+      (validate [ctx]
+        (malli.utils/validate-humanize schema ctx)
+        ctx)))
+  (extend-type Context
+    cdq.editor/Editor
+    (overview-table-rows [ctx property-type clicked-id-fn]
+      (cdq.create.editor-overview-table/create ctx
+                                               property-type
+                                               clicked-id-fn)))
+  (extend-type Context
+    cdq.ctx/InfoText
+    (info-text [ctx entity]
+      (cdq.create.info/info-text ctx entity)))
+  (let [txs-fn-map (create-fn-map (edn-resource "txs.edn"))]
+    (extend-type Context
+      ctx/TransactionHandler
+      (handle-txs! [ctx transactions]
+        (actions! txs-fn-map ctx transactions))))
+  (extend-type Context
+    ctx/ResetGameState
+    (reset-game-state! [{:keys [ctx/world]
+                         :as ctx}
+                        world-fn]
+      (disposable/dispose! world)
+      (-> ctx
+          cdq.create.reset-stage/do!
+          (cdq.create.reset-world/do! world-fn)
+          cdq.create.spawn-player/do!
+          cdq.create.spawn-enemies/do!)))
+  (cdq.create.load-entity-states/do! (edn-resource "entity_states.edn"))
+  (cdq.create.load-effects/do!       (edn-resource "effects_fn_map.edn"))
   (-> (merge (map->Context {})
              context)
       (assoc
@@ -152,15 +156,3 @@
       (cdq.create.world/do! (edn-resource "world.edn"))
       (ctx/reset-game-state! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                         :start-position [32 71]}])))
-
-(extend-type Context
-  ctx/ResetGameState
-  (reset-game-state! [{:keys [ctx/world]
-                       :as ctx}
-                      world-fn]
-    (disposable/dispose! world)
-    (-> ctx
-        cdq.create.reset-stage/do!
-        (cdq.create.reset-world/do! world-fn)
-        cdq.create.spawn-player/do!
-        cdq.create.spawn-enemies/do!)))
