@@ -6,12 +6,12 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [gdl.disposable :as disposable]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]
-            [gdl.graphics.texture :as texture]
-            [gdl.graphics.viewport]
-            [gdl.input :as input]
+            [clojure.disposable :as disposable]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.color :as color]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.viewport]
+            [clojure.input :as input]
             [clojure.gdx.application]
             [clojure.gdx.camera :as camera]
             [clojure.gdx.sprite-batch :as sprite-batch]
@@ -19,9 +19,9 @@
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.vis-ui :as vis-ui]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]
-            [gdl.tiled :as tiled]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]
+            [clojure.tiled :as tiled]))
 
 (def initial-level-fn [cdq.world-fns.uf-caves/create
                        {:tile-size 48
@@ -184,8 +184,8 @@
 (defn resize! [width height]
   (let [{:keys [ctx/ui-viewport
                 ctx/world-viewport]} @state]
-    (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
-    (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
+    (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
+    (clojure.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
   (clojure.gdx.application/start!

@@ -4,7 +4,7 @@
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.gdx.tiled]
-            [gdl.tiled]))
+            [clojure.tiled]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
@@ -87,7 +87,7 @@
                               :tiles (for [position (g2d/posis grid)]
                                        [position (create-tile (position->tile position))])}]})
 
-        can-spawn? #(= "all" (gdl.tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (clojure.tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6))
         creatures (filter #(= level (:creature/level %)) creature-properties)

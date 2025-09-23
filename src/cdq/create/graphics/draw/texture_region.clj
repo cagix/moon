@@ -1,6 +1,6 @@
 (ns cdq.create.graphics.draw.texture-region
-  (:require [gdl.graphics.texture-region :as texture-region]
-            [gdl.graphics.g2d.batch :as batch]))
+  (:require [clojure.graphics.texture-region :as texture-region]
+            [clojure.graphics.g2d.batch :as batch]))
 
 (defn do!
   [{:keys [graphics/batch

@@ -1,5 +1,5 @@
 (ns cdq.create.graphics.draw.text
-  (:require [gdl.graphics.bitmap-font :as bitmap-font]))
+  (:require [clojure.graphics.bitmap-font :as bitmap-font]))
 
 (defn do!
   [{:keys [graphics/batch

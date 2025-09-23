@@ -1,7 +1,7 @@
 (ns cdq.render.update-mouse
   (:require [cdq.graphics :as graphics]
-            [gdl.input :as input]
-            [gdl.scene2d.stage :as stage]))
+            [clojure.input :as input]
+            [clojure.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/graphics

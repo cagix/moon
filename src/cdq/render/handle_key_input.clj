@@ -1,7 +1,7 @@
 (ns cdq.render.handle-key-input
   (:require [cdq.graphics :as graphics]
             [cdq.stage :as stage]
-            [gdl.input :as input]))
+            [clojure.input :as input]))
 
 (def ^:private close-windows-key  :escape)
 (def ^:private toggle-inventory   :i)

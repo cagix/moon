@@ -5,12 +5,12 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.ctx]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.window :as window]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.ctx]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.window :as window]))
 
 (defn do!
   [{:keys [ctx/graphics]
@@ -18,7 +18,7 @@
    {:keys [state-var
            stage-impl]}]
   (extend-type (class ctx)
-    gdl.scene2d.ctx/Graphics
+    clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (stage-impl

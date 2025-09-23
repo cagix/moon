@@ -3,8 +3,8 @@
             [cdq.world]
             [clojure.math.vector2 :as v]
             [clojure.grid2d :as g2d]
-            [gdl.disposable :as disposable]
-            [gdl.tiled :as tiled])
+            [clojure.disposable :as disposable]
+            [clojure.tiled :as tiled])
   (:import (cdq.math RayCaster)))
 
 (defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]

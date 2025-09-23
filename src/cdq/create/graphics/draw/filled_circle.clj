@@ -1,5 +1,5 @@
 (ns cdq.create.graphics.draw.filled-circle
-  (:require [gdl.graphics.shape-drawer :as sd]))
+  (:require [clojure.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

@@ -2,10 +2,10 @@
   (:require [cdq.application :as application]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [gdl.application]))
+            [clojure.application]))
 
 (defn post-runnable! [f]
-  (gdl.application/post-runnable! (:ctx/app @application/state)
+  (clojure.application/post-runnable! (:ctx/app @application/state)
                                   (fn [] (f @application/state))))
 
 (comment

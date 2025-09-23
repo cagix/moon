@@ -12,7 +12,7 @@
             [cdq.val-max :as val-max]
             [cdq.world :as world]
             [clojure.utils :as utils]
-            [gdl.graphics.color :as color]))
+            [clojure.graphics.color :as color]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])

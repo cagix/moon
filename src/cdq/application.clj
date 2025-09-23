@@ -2,8 +2,8 @@
   (:require [cdq.graphics :as graphics]
             [clojure.config :as config]
             [clojure.utils :as utils]
-            [gdl.scene2d.stage :as stage]
-            [gdl.disposable :as disposable]
+            [clojure.scene2d.stage :as stage]
+            [clojure.disposable :as disposable]
             [clojure.gdx.application])
   (:gen-class))
 

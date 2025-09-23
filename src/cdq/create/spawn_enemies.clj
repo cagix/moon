@@ -1,7 +1,7 @@
 (ns cdq.create.spawn-enemies
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [gdl.tiled :as tiled]))
+            [clojure.tiled :as tiled]))
 
 (defn do!
   [{:keys [ctx/db

@@ -1,6 +1,6 @@
 (ns cdq.create.graphics.shape-drawer
   (:require [clojure.utils]
-            [gdl.graphics.texture :as texture]
+            [clojure.graphics.texture :as texture]
             [clojure.gdx.shape-drawer :as sd]))
 
 (defn do!

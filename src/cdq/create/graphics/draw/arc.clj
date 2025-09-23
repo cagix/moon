@@ -1,6 +1,6 @@
 (ns cdq.create.graphics.draw.arc
   (:require [clojure.utils :as utils]
-            [gdl.graphics.shape-drawer :as sd]))
+            [clojure.graphics.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

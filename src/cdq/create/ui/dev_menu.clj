@@ -13,8 +13,8 @@
             [cdq.world-fns.modules]
             [clojure.string :as str]
             [clojure.utils :as utils]
-            [gdl.disposable :as disposable]
-            [gdl.scene2d.stage :as stage]))
+            [clojure.disposable :as disposable]
+            [clojure.scene2d.stage :as stage]))
 
 (def ^:private world-fns
   [[cdq.world-fns.tmx/create

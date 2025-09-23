@@ -1,5 +1,5 @@
 (ns cdq.create.set-input-processor
-  (:require [gdl.input :as input]))
+  (:require [clojure.input :as input]))
 
 (defn do! [ctx]
   (input/set-processor! (:ctx/input ctx)

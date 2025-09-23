@@ -1,7 +1,7 @@
 (ns cdq.tx.open-editor-overview
   (:require [cdq.editor :as editor]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]

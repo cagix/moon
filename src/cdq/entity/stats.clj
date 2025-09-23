@@ -2,7 +2,7 @@
   (:require [cdq.stats :as stats]
             [cdq.stats.ops :as ops]
             [cdq.val-max :as val-max]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [malli.core :as m]))
 
 (defn- get-value [base-value modifiers modifier-k]

@@ -14,8 +14,8 @@
        (filter java.io.File/.isFile)))
 
 (comment
- (let [from "gdl.tiled"
-       to   "gdl.tiled"
+ (let [from "clojure.tiled"
+       to   "clojure.tiled"
        files (matching-files ["src" "resources" "test"])]
    (doseq [f files]
      (replace-in-file! f from to)))

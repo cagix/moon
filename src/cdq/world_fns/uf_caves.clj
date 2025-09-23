@@ -1,5 +1,5 @@
 (ns cdq.world-fns.uf-caves
-  (:require [gdl.graphics.texture :as texture]
+  (:require [clojure.graphics.texture :as texture]
             [clojure.gdx.tiled]))
 
 (defn create

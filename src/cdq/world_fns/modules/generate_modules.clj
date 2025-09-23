@@ -3,7 +3,7 @@
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [gdl.tiled :as tiled]))
+            [clojure.tiled :as tiled]))
 
 (defn do!
   [{:keys [

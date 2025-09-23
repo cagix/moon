@@ -2,11 +2,11 @@
   (:require [cdq.create.graphics.shape-drawer]
             [cdq.files]
             [cdq.graphics]
-            [gdl.disposable :as disposable]
-            [gdl.files :as files]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.pixmap :as pixmap]
-            [gdl.graphics.color :as color]
+            [clojure.disposable :as disposable]
+            [clojure.files :as files]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.pixmap :as pixmap]
+            [clojure.graphics.color :as color]
             [clojure.gdx.camera :as camera]
             [clojure.gdx.colors :as colors]
             [clojure.gdx.freetype :as freetype]
@@ -29,8 +29,8 @@
                                                    (disposable/dispose! pixmap)
                                                    texture)))
 
-(defn- assoc-gdl-graphics [graphics gdl-graphics]
-  (assoc graphics :graphics/core gdl-graphics))
+(defn- assoc-clojure-graphics [graphics clojure-graphics]
+  (assoc graphics :graphics/core clojure-graphics))
 
 (defn- create-cursors [{:keys [graphics/core]
                         :as graphics}
@@ -88,7 +88,7 @@
            world-viewport]}
    graphics]
   (-> (map->Graphics {})
-      (assoc-gdl-graphics graphics)
+      (assoc-clojure-graphics graphics)
       (create-cursors cursors)
       (create-default-font default-font)
       create-batch

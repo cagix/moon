@@ -6,11 +6,11 @@
             [cdq.stage]
             [cdq.property :as property]
             [cdq.ui.widget :as widget]
-            [gdl.input :as input]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.window :as window]))
+            [clojure.input :as input]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]
   (fn [actor ctx]

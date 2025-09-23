@@ -1,14 +1,14 @@
 (ns cdq.create.graphics.protocols
   (:require [cdq.graphics]
-            [gdl.disposable :as disposable]
+            [clojure.disposable :as disposable]
             [clojure.gdx.camera :as camera]
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]
-            [gdl.graphics.g2d.batch :as batch]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.texture :as texture]
-            [gdl.graphics.viewport :as viewport]))
+            [clojure.graphics :as graphics]
+            [clojure.graphics.color :as color]
+            [clojure.graphics.g2d.batch :as batch]
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.viewport :as viewport]))
 
 (defn do! [graphics]
   (extend-type (class graphics)
