@@ -1,6 +1,7 @@
 (ns cdq.create.graphics
   (:require [cdq.create.graphics.shape-drawer]
             [cdq.create.graphics.protocols]
+            [cdq.create.graphics.draw-fns]
             [cdq.files]
             [cdq.graphics]
             [clojure.disposable :as disposable]
@@ -121,13 +122,13 @@
    :world-viewport world-viewport
    :textures-to-load (cdq.files/search files texture-folder)})
 
-(defn- extend-draws [graphics draw-fns]
+(defn- extend-draws [graphics]
   (extend-type (class graphics)
     cdq.graphics/DrawHandler
     (handle-draws! [graphics draws]
       (doseq [{k 0 :as component} draws
               :when component]
-        (apply (draw-fns k) graphics (rest component)))))
+        (apply (cdq.create.graphics.draw-fns/k->fn k) graphics (rest component)))))
   graphics)
 
 (defn do!
@@ -138,5 +139,5 @@
   (colors/put! (:colors config))
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
                                (create* graphics)
-                               (extend-draws (:draw-fns config))
+                               (extend-draws)
                                cdq.create.graphics.protocols/do!)))

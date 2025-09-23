@@ -26,17 +26,4 @@
                   :cursors/sandclock             ["sandclock"    [16 16]]
                   :cursors/skill-not-usable      ["x007"         [0   0]]
                   :cursors/use-skill             ["pointer004"   [0   0]]
-                  :cursors/walking               ["walking"      [16 16]]}}
- :draw-fns {:draw/with-line-width  cdq.create.graphics.draw.with-line-width/do!
-            :draw/grid             cdq.create.graphics.draw.grid/do!
-            :draw/texture-region   cdq.create.graphics.draw.texture-region/do!
-            :draw/text             cdq.create.graphics.draw.text/do!
-            :draw/ellipse          cdq.create.graphics.draw.ellipse/do!
-            :draw/filled-ellipse   cdq.create.graphics.draw.filled-ellipse/do!
-            :draw/circle           cdq.create.graphics.draw.circle/do!
-            :draw/filled-circle    cdq.create.graphics.draw.filled-circle/do!
-            :draw/rectangle        cdq.create.graphics.draw.rectangle/do!
-            :draw/filled-rectangle cdq.create.graphics.draw.filled-rectangle/do!
-            :draw/arc              cdq.create.graphics.draw.arc/do!
-            :draw/sector           cdq.create.graphics.draw.sector/do!
-            :draw/line             cdq.create.graphics.draw.line/do!}}
+                  :cursors/walking               ["walking"      [16 16]]}}}
