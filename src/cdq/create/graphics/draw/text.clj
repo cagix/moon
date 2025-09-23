@@ -1,5 +1,5 @@
 (ns cdq.create.graphics.draw.text
-  (:require [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]))
+  (:require [gdl.graphics.bitmap-font :as bitmap-font]))
 
 (defn do!
   [{:keys [graphics/batch
