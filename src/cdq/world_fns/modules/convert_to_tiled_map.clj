@@ -1,13 +1,13 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
   (:require [clojure.grid2d :as g2d]
-            [gdl.impl.tiled]
+            [clojure.gdx.tiled]
             [gdl.tiled :as tiled]))
 
 (defn- grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (gdl.impl.tiled/create-tiled-map
+  (clojure.gdx.tiled/create-tiled-map
    {:properties (merge (tiled/map-properties schema-tiled-map)
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})
@@ -20,7 +20,7 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (gdl.impl.tiled/copy-tile tile)])))})}))
+                            [position (clojure.gdx.tiled/copy-tile tile)])))})}))
 
 (defn do!
   [{:keys [scaled-grid

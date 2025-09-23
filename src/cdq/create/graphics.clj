@@ -7,12 +7,12 @@
             [gdl.graphics :as graphics]
             [gdl.graphics.pixmap :as pixmap]
             [gdl.graphics.color :as color]
-            [gdl.impl.camera :as camera]
-            [gdl.impl.colors :as colors]
-            [gdl.impl.freetype :as freetype]
-            [gdl.impl.sprite-batch :as sprite-batch]
-            [gdl.impl.tiled-map-renderer :as tm-renderer]
-            [gdl.impl.viewport :as viewport]))
+            [clojure.gdx.camera :as camera]
+            [clojure.gdx.colors :as colors]
+            [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.sprite-batch :as sprite-batch]
+            [clojure.gdx.tiled-map-renderer :as tm-renderer]
+            [clojure.gdx.viewport :as viewport]))
 
 (defrecord Graphics [])
 

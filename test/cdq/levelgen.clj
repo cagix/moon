@@ -12,13 +12,13 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
             [gdl.input :as input]
-            [gdl.impl.application]
-            [gdl.impl.camera :as camera]
-            [gdl.impl.sprite-batch :as sprite-batch]
-            [gdl.impl.stage]
-            [gdl.impl.tiled-map-renderer :as tm-renderer]
-            [gdl.impl.viewport :as viewport]
-            [gdl.impl.vis-ui :as vis-ui]
+            [clojure.gdx.application]
+            [clojure.gdx.camera :as camera]
+            [clojure.gdx.sprite-batch :as sprite-batch]
+            [clojure.gdx.stage]
+            [clojure.gdx.tiled-map-renderer :as tm-renderer]
+            [clojure.gdx.viewport :as viewport]
+            [clojure.gdx.vis-ui :as vis-ui]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]))
@@ -105,7 +105,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (gdl.impl.stage/create ui-viewport sprite-batch state)
+        stage (clojure.gdx.stage/create ui-viewport sprite-batch state)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -188,7 +188,7 @@
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
 (defn -main []
-  (gdl.impl.application/start!
+  (clojure.gdx.application/start!
    {:listener {:create  create!
                :dispose dispose!
                :pause   (fn [])

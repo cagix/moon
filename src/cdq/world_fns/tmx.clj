@@ -1,5 +1,5 @@
 (ns cdq.world-fns.tmx
-  (:require [gdl.impl.tiled :as tiled]))
+  (:require [clojure.gdx.tiled :as tiled]))
 
 (defn create
   [{:keys [tmx-file

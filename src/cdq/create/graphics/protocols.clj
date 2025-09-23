@@ -1,8 +1,8 @@
 (ns cdq.create.graphics.protocols
   (:require [cdq.graphics]
             [gdl.disposable :as disposable]
-            [gdl.impl.camera :as camera]
-            [gdl.impl.tiled-map-renderer :as tm-renderer]
+            [clojure.gdx.camera :as camera]
+            [clojure.gdx.tiled-map-renderer :as tm-renderer]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.g2d.batch :as batch]

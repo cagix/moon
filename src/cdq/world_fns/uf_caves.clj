@@ -1,6 +1,6 @@
 (ns cdq.world-fns.uf-caves
   (:require [gdl.graphics.texture :as texture]
-            [gdl.impl.tiled]))
+            [clojure.gdx.tiled]))
 
 (defn create
   [{:keys [level/creature-properties
@@ -21,7 +21,7 @@
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
-                                   (gdl.impl.tiled/static-tiled-map-tile
+                                   (clojure.gdx.tiled/static-tiled-map-tile
                                     (texture/region texture
                                                     (* (sprite-idx 0) tile-size)
                                                     (* (sprite-idx 1) tile-size)

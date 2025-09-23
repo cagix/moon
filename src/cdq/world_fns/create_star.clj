@@ -3,7 +3,7 @@
             [clojure.rand :as rand]
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [gdl.impl.tiled]
+            [clojure.gdx.tiled]
             [gdl.tiled]))
 
 (defn- assoc-transition-cells [grid]
@@ -76,7 +76,7 @@
         grid (assoc-transition-cells grid)
 
         position->tile (position->tile-fn grid)
-        tiled-map (gdl.impl.tiled/create-tiled-map
+        tiled-map (clojure.gdx.tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
                                  "height" (g2d/height grid)
                                  "tilewidth"  tile-size

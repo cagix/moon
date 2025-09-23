@@ -4,7 +4,7 @@
             [clojure.utils :as utils]
             [gdl.scene2d.stage :as stage]
             [gdl.disposable :as disposable]
-            [gdl.impl.application])
+            [clojure.gdx.application])
   (:gen-class))
 
 (def state (atom nil))
@@ -12,7 +12,7 @@
 (defn -main []
   (let [create-pipeline (config/edn-resource "create.edn")
         render-pipeline (config/edn-resource "render.edn")]
-    (gdl.impl.application/start!
+    (clojure.gdx.application/start!
      {:listener {:create (fn [context]
                            (reset! state (utils/pipeline context create-pipeline)))
                  :dispose (fn []
