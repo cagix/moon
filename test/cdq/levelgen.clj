@@ -6,7 +6,6 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [gdl.disposable :as disposable]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
@@ -19,6 +18,7 @@
             [gdl.impl.stage]
             [gdl.impl.tiled-map-renderer :as tm-renderer]
             [gdl.impl.viewport :as viewport]
+            [gdl.impl.vis-ui :as vis-ui]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]))

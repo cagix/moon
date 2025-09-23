@@ -1,7 +1,15 @@
-(ns com.kotcrab.vis.ui.vis-ui
-  (:require clojure.config
-            [clojure.walk :as walk]
-            [com.badlogic.gdx.utils.align :as align]
+(ns gdl.impl.vis-ui
+  (:require [com.badlogic.gdx.utils.align :as align]
+            com.kotcrab.vis.ui.widget.menu
+            com.kotcrab.vis.ui.widget.select-box
+            com.kotcrab.vis.ui.widget.label
+            com.kotcrab.vis.ui.widget.text-field
+            com.kotcrab.vis.ui.widget.check-box
+            com.kotcrab.vis.ui.widget.table
+            com.kotcrab.vis.ui.widget.image-button
+            com.kotcrab.vis.ui.widget.text-button
+            com.kotcrab.vis.ui.widget.window
+            com.kotcrab.vis.ui.widget.image
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])
@@ -13,6 +21,19 @@
                                       Tooltip
                                       VisLabel
                                       VisScrollPane)))
+
+(doseq [[k method-fn] {:actor.type/menu-bar     com.kotcrab.vis.ui.widget.menu/create
+                       :actor.type/select-box   com.kotcrab.vis.ui.widget.select-box/create
+                       :actor.type/label        com.kotcrab.vis.ui.widget.label/create
+                       :actor.type/text-field   com.kotcrab.vis.ui.widget.text-field/create
+                       :actor.type/check-box    com.kotcrab.vis.ui.widget.check-box/create
+                       :actor.type/table        com.kotcrab.vis.ui.widget.table/create
+                       :actor.type/image-button com.kotcrab.vis.ui.widget.image-button/create
+                       :actor.type/text-button  com.kotcrab.vis.ui.widget.text-button/create
+                       :actor.type/window       com.kotcrab.vis.ui.widget.window/create
+                       :actor.type/image        com.kotcrab.vis.ui.widget.image/create}]
+  (assert (keyword? k))
+  (MultiFn/.addMethod gdl.scene2d/build k method-fn))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (Separator. "default"))
@@ -28,55 +49,7 @@
     (.setFadeScrollBars false)
     (actor/set-name! name)))
 
-(def impls (walk/postwalk
-            clojure.config/require-resolve-symbols
-            '[
-              [gdl.scene2d/build
-               :actor.type/menu-bar
-               com.kotcrab.vis.ui.widget.menu/create]
-
-              [gdl.scene2d/build
-               :actor.type/select-box
-               com.kotcrab.vis.ui.widget.select-box/create]
-
-              [gdl.scene2d/build
-               :actor.type/label
-               com.kotcrab.vis.ui.widget.label/create]
-
-              [gdl.scene2d/build
-               :actor.type/text-field
-               com.kotcrab.vis.ui.widget.text-field/create]
-
-              [gdl.scene2d/build
-               :actor.type/check-box
-               com.kotcrab.vis.ui.widget.check-box/create]
-
-              [gdl.scene2d/build
-               :actor.type/table
-               com.kotcrab.vis.ui.widget.table/create]
-
-              [gdl.scene2d/build
-               :actor.type/image-button
-               com.kotcrab.vis.ui.widget.image-button/create]
-
-              [gdl.scene2d/build
-               :actor.type/text-button
-               com.kotcrab.vis.ui.widget.text-button/create]
-
-              [gdl.scene2d/build
-               :actor.type/window
-               com.kotcrab.vis.ui.widget.window/create]
-
-              [gdl.scene2d/build
-               :actor.type/image
-               com.kotcrab.vis.ui.widget.image/create]]))
-
 (defn load! [{:keys [skin-scale]}]
-  (doseq [[defmulti-var k method-fn-var] impls]
-    (assert (var? defmulti-var))
-    (assert (keyword? k))
-    (assert (var? method-fn-var))
-    (MultiFn/.addMethod @defmulti-var k method-fn-var))
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...

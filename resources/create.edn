@@ -33,7 +33,7 @@
                                     :unpause-once :p
                                     :unpause-continously :space})
  (cdq.create.input/do!)
- (clojure.decl/assoc* :ctx/vis-ui (com.kotcrab.vis.ui.vis-ui/load! {:skin-scale :x1}))
+ (clojure.decl/assoc* :ctx/vis-ui (gdl.impl.vis-ui/load! {:skin-scale :x1}))
  (cdq.create.graphics/do! #edn/resource "graphics.edn")
  (cdq.create.stage/do! {:state-var cdq.application/state
                                     :stage-impl gdl.impl.stage/create})
