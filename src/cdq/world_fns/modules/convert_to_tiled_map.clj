@@ -1,6 +1,6 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
   (:require [clojure.grid2d :as g2d]
-            [com.badlogic.gdx.maps.tiled]
+            [gdl.impl.tiled]
             [com.badlogic.gdx.maps.tiled.tiles :as tiles]
             [gdl.tiled :as tiled]))
 
@@ -8,7 +8,7 @@
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (com.badlogic.gdx.maps.tiled/create-tiled-map
+  (gdl.impl.tiled/create-tiled-map
    {:properties (merge (tiled/map-properties schema-tiled-map)
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})

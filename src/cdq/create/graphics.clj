@@ -9,10 +9,10 @@
             [gdl.graphics.color :as color]
             [gdl.impl.camera :as camera]
             [gdl.impl.colors :as colors]
+            [gdl.impl.freetype :as freetype]
             [gdl.impl.sprite-batch :as sprite-batch]
             [gdl.impl.tiled-map-renderer :as tm-renderer]
-            [gdl.impl.viewport :as viewport]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]))
+            [gdl.impl.viewport :as viewport]))
 
 (defrecord Graphics [])
 

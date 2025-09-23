@@ -1,23 +1,16 @@
-(def libgdx-version "1.13.5")
-
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [com.badlogicgames.gdx/gdx                   ~libgdx-version]
-                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
-                 [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
-                 [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
-                 [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
-                 [com.kotcrab.vis/vis-ui "1.5.2"]
+                 [gdl "0.1"]
                  [fr.reuz/qrecord "0.1.0"]
                  [metosin/malli "0.13.0"]
                  [nrepl "0.9.0"]
-                 [space.earlygrey/shapedrawer "2.5.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]
                  [org.clojure/tools.namespace "1.3.0"]
-                 [lein-hiera "2.0.0"]]
+                 [lein-hiera "2.0.0"]
+                 ]
   :java-source-paths ["src"]
   :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
@@ -35,9 +28,9 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
-  :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
+  :codox {:source-uri "https://github.com/damn/cdq/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}
-          ;:namespaces [#"^gdl\."]
+          :namespaces [#"^gdl\."]
           }
   ; lein hiera :layout :horizontal :ignore "#{cdq.render}"
   ; unfortunately cannot exclude only 'cdq.render.*' , would like to do for entity/effect...
