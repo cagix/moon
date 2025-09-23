@@ -6,17 +6,6 @@
   (or (stats/get-stat-value stats :entity/movement-speed)
       0))
 
-(defn create [eid movement-vector _ctx]
-  {:movement-vector movement-vector})
-
-(defn enter [{:keys [movement-vector]} eid]
-  [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                    :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
-                                               0)}]])
-
-(defn exit [_ eid _ctx]
-  [[:tx/dissoc eid :entity/movement]])
-
 (defn handle-input [eid {:keys [ctx/input]}]
   (if-let [movement-vector (input/player-movement-vector input)]
     [[:tx/assoc eid :entity/movement {:direction movement-vector

@@ -1,13 +1,10 @@
 (ns cdq.entity.state
-  (:require cdq.entity.state.active-skill
-            cdq.entity.state.stunned
+  (:require [cdq.entity :as entity]
             cdq.entity.state.player-idle
             cdq.entity.state.player-item-on-cursor
             cdq.entity.state.player-moving
-            cdq.entity.state.player-dead
-            cdq.entity.state.npc-moving
-            cdq.entity.state.npc-dead
-            cdq.entity.state.npc-sleeping)
+            [cdq.stats :as stats]
+            [cdq.timer :as timer])
   (:import (clojure.lang APersistentVector)))
 
 (defprotocol State
@@ -19,25 +16,81 @@
   (clicked-inventory-cell [_ eid cell])
   (draw-gui-view [_ eid ctx]))
 
+(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
+  (/ action-time
+     (or (stats/get-stat-value stats (:skill/action-time-modifier-key skill))
+         1)))
+
+(def ^:private reaction-time-multiplier 0.016)
+
 (def ^:private fn->k->var
   {
-   :create {:active-skill cdq.entity.state.active-skill/create
-            :npc-moving cdq.entity.state.npc-moving/create
-            :player-item-on-cursor cdq.entity.state.player-item-on-cursor/create
-            :player-moving cdq.entity.state.player-moving/create
-            :stunned cdq.entity.state.stunned/create}
+   :create {:active-skill (fn [eid [skill effect-ctx] {:keys [ctx/world]}]
+                            {:skill skill
+                             :effect-ctx effect-ctx
+                             :counter (->> skill
+                                           :skill/action-time
+                                           (apply-action-speed-modifier @eid skill)
+                                           (timer/create (:world/elapsed-time world)))})
+            :npc-moving (fn [eid movement-vector {:keys [ctx/world]}]
+                          {:movement-vector movement-vector
+                           :timer (timer/create (:world/elapsed-time world)
+                                                (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
+                                                   reaction-time-multiplier))})
+            :player-item-on-cursor (fn [_eid item _ctx]
+                                     {:item item})
+            :player-moving (fn [eid movement-vector _ctx]
+                             {:movement-vector movement-vector})
+            :stunned (fn [_eid duration {:keys [ctx/world]}]
+                       {:counter (timer/create (:world/elapsed-time world) duration)})}
 
-   :enter {:npc-dead              cdq.entity.state.npc-dead/enter
-           :npc-moving            cdq.entity.state.npc-moving/enter
-           :player-dead           cdq.entity.state.player-dead/enter
-           :player-item-on-cursor cdq.entity.state.player-item-on-cursor/enter
-           :player-moving         cdq.entity.state.player-moving/enter
-           :active-skill          cdq.entity.state.active-skill/enter}
+   :enter {:npc-dead (fn [_ eid]
+                       [[:tx/mark-destroyed eid]])
+           :npc-moving (fn [{:keys [movement-vector]} eid]
+                         [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                           :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                                                      0)}]])
+           :player-dead (fn [_ _eid]
+                          [[:tx/sound "bfxr_playerdeath"]
+                           [:tx/show-modal {:title "YOU DIED - again!"
+                                            :text "Good luck next time!"
+                                            :button-text "OK"
+                                            :on-click (fn [])}]])
+           :player-item-on-cursor (fn [{:keys [item]} eid]
+                                    [[:tx/assoc eid :entity/item-on-cursor item]])
+           :player-moving (fn [{:keys [movement-vector]} eid]
+                            [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                                              :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                                                         0)}]])
+           :active-skill (fn [{:keys [skill]} eid]
+                           [[:tx/sound (:skill/start-action-sound skill)]
+                            (when (:skill/cooldown skill)
+                              [:tx/set-cooldown eid skill])
+                            (when (and (:skill/cost skill)
+                                       (not (zero? (:skill/cost skill))))
+                              [:tx/pay-mana-cost eid (:skill/cost skill)])])}
 
-   :exit {:npc-moving            cdq.entity.state.npc-moving/exit
-          :npc-sleeping          cdq.entity.state.npc-sleeping/exit
-          :player-item-on-cursor cdq.entity.state.player-item-on-cursor/exit
-          :player-moving         cdq.entity.state.player-moving/exit}
+   :exit {:npc-moving            (fn [_ eid _ctx]
+                                   [[:tx/dissoc eid :entity/movement]])
+          :npc-sleeping          (fn [_ eid _ctx]
+                                   [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]
+                                    [:tx/add-text-effect eid "[WHITE]!" 1]])
+          :player-item-on-cursor (fn [_ eid {:keys [ctx/world-mouse-position]}]
+                                   ; at clicked-cell when we put it into a inventory-cell
+                                   ; we do not want to drop it on the ground too additonally,
+                                   ; so we dissoc it there manually. Otherwise it creates another item
+                                   ; on the ground
+                                   (let [entity @eid]
+                                     (when (:entity/item-on-cursor entity)
+                                       [[:tx/sound "bfxr_itemputground"]
+                                        [:tx/dissoc eid :entity/item-on-cursor]
+                                        [:tx/spawn-item
+                                         (cdq.entity.state.player-item-on-cursor/item-place-position
+                                          world-mouse-position
+                                          entity)
+                                         (:entity/item-on-cursor entity)]])))
+          :player-moving         (fn [_ eid _ctx]
+                                   [[:tx/dissoc eid :entity/movement]])}
 
    :cursor {:active-skill :cursors/sandclock
             :player-dead :cursors/black-x
