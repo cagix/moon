@@ -1,7 +1,6 @@
 (ns cdq.application.create
   (:require cdq.create.editor-overview-table
             cdq.create.info
-            cdq.create.txs
             cdq.create.load-entity-states
             cdq.create.load-effects
             cdq.create.input
@@ -29,7 +28,7 @@
             [malli.utils]
             [qrecord.core :as q]))
 
-(defn- actions!
+(defn actions!
   [txs-fn-map ctx transactions]
   (loop [ctx ctx
          transactions transactions

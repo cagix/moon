@@ -1,5 +1,5 @@
 (ns clojure.action-handler-test
-  (:require [cdq.create.txs :refer [actions!]]
+  (:require [cdq.application.create :refer [actions!]]
             [clojure.test :refer :all]))
 
 (deftest return-flat-txs
