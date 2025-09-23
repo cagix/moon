@@ -7,7 +7,9 @@
             [gdl.files]
             [gdl.files.file-handle]
             [gdl.graphics]
+            [gdl.graphics.pixmap]
             [gdl.graphics.texture]
+            [gdl.graphics.texture-region]
             [gdl.input])
   (:import (com.badlogic.gdx Application
                              ApplicationListener
@@ -24,6 +26,8 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
+                                      Pixmap
+                                      Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils Disposable
@@ -160,7 +164,13 @@
                     (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
          (GL20/.glClear gl20 mask)))))
   (texture [this file-handle]
-    (Texture. ^FileHandle file-handle)))
+    (Texture. ^FileHandle file-handle))
+  (pixmap
+    ([this ^FileHandle file-handle]
+     (Pixmap. file-handle))
+    ([this width height pixmap-format]
+     (Pixmap. width height (case pixmap-format
+                             :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888)))))
 
 (extend-type Texture
   gdl.graphics.texture/Texture
@@ -179,6 +189,23 @@
                      (int y)
                      (int w)
                      (int h)))))
+
+(extend-type TextureRegion
+  gdl.graphics.texture-region/TextureRegion
+  (dimensions [this]
+    [(.getRegionWidth  this)
+     (.getRegionHeight this)]))
+
+(extend-type Pixmap
+  gdl.graphics.pixmap/Pixmap
+  (set-color! [this [r g b a]]
+    (.setColor this r g b a))
+
+  (draw-pixel! [this x y]
+    (.drawPixel this x y))
+
+  (texture [this]
+    (Texture. this)))
 
 (def ^:private input-buttons-k->value
   {:back    Input$Buttons/BACK

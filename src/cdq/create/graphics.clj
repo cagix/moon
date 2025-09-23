@@ -2,29 +2,31 @@
   (:require [cdq.create.graphics.shape-drawer]
             [cdq.files]
             [cdq.graphics]
-            [com.badlogic.gdx.graphics.colors :as colors]
+            [gdl.disposable :as disposable]
+            [gdl.files :as files]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.pixmap :as pixmap]
+            [gdl.graphics.color :as color]
             [gdl.impl.camera :as camera]
-            [com.badlogic.gdx.graphics.pixmap :as pixmap]
-            [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
+            [gdl.impl.colors :as colors]
             [gdl.impl.sprite-batch :as sprite-batch]
             [gdl.impl.tiled-map-renderer :as tm-renderer]
             [gdl.impl.viewport :as viewport]
-            [gdl.files :as files]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.color :as color]))
+            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]))
 
 (defrecord Graphics [])
 
 (defn- create-batch [graphics]
   (assoc graphics :graphics/batch (sprite-batch/create)))
 
-(defn- create-shape-drawer-texture [graphics]
-  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (pixmap/create)
+(defn- create-shape-drawer-texture
+  [{:keys [graphics/core]
+    :as graphics}]
+  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
                                                                 (pixmap/set-color! color/white)
                                                                 (pixmap/draw-pixel! 0 0))
-                                                       texture (texture/create pixmap)]
-                                                   (pixmap/dispose! pixmap)
+                                                       texture (pixmap/texture pixmap)]
+                                                   (disposable/dispose! pixmap)
                                                    texture)))
 
 (defn- assoc-gdl-graphics [graphics gdl-graphics]
@@ -35,9 +37,9 @@
                        cursors]
   (assoc graphics :graphics/cursors (update-vals cursors
                                                  (fn [[file-handle [hotspot-x hotspot-y]]]
-                                                   (let [pixmap (pixmap/create file-handle)
+                                                   (let [pixmap (graphics/pixmap core file-handle)
                                                          cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
-                                                     (pixmap/dispose! pixmap)
+                                                     (disposable/dispose! pixmap)
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]
