@@ -125,8 +125,8 @@
         cdq.create.spawn-player/do!
         cdq.create.spawn-enemies/do!)))
 
-(cdq.create.load-entity-states/do! (edn-resource "entity_states.edn"))
-(cdq.create.load-effects/do!       (edn-resource "effects_fn_map.edn"))
+(cdq.create.load-entity-states/do!)
+(cdq.create.load-effects/do!)
 
 (defn do! [context]
   (-> (merge (map->Context {})
