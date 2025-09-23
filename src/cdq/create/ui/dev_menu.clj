@@ -10,6 +10,7 @@
             [cdq.world-fns.modules]
             [clojure.string :as str]
             [clojure.disposable :as disposable]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
 
 (def ^:private world-fns
@@ -60,14 +61,16 @@
   {:label "Select World"
    :items (for [world-fn world-fns]
             {:label (str "Start " (first world-fn))
-             :on-click (fn [_actor {:keys [ctx/world]
+             :on-click (fn [actor {:keys [ctx/world]
                                     :as ctx}]
-                         ((requiring-resolve 'cdq.create.reset-stage/do!) ctx)
                          (disposable/dispose! world)
-                         (let [state @(requiring-resolve 'cdq.application/state)]
-                           (swap! state cdq.create.reset-world/do! world-fn)
-                           (swap! state cdq.create.spawn-player/do!)
-                           (swap! state cdq.create.spawn-enemies/do!)))})})
+                         (let [stage (actor/get-stage actor) ; before reset-stage!!!!
+                               _ ((requiring-resolve 'cdq.create.reset-stage/do!) ctx)
+                               new-ctx (-> ctx
+                                           (cdq.create.reset-world/do! world-fn)
+                                           cdq.create.spawn-player/do!
+                                           cdq.create.spawn-enemies/do!)]
+                           (stage/set-ctx! stage new-ctx)))})})
 
 (defn create
   [{:keys [ctx/db

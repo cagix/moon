@@ -1,6 +1,5 @@
 (ns cdq.tx.open-property-editor
-  (:require [cdq.application :as application]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.stage]
@@ -14,19 +13,22 @@
 
 (defn- with-window-close [f]
   (fn [actor ctx]
-    (try (f)
-         (actor/remove! (window/find-ancestor actor))
-         (catch Throwable t
-           (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
-                                 [:tx/show-error-window t]])))))
+    (try
+     (let [new-ctx (update ctx :ctx/db f)
+           stage (actor/get-stage actor)]
+       (stage/set-ctx! stage new-ctx))
+     (actor/remove! (window/find-ancestor actor))
+     (catch Throwable t
+       (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
+                             [:tx/show-error-window t]])))))
 
 (defn- update-property-fn [get-widget-value]
-  (fn []
-    (swap! application/state update :ctx/db db/update! (get-widget-value))))
+  (fn [db]
+    (db/update! db (get-widget-value))))
 
 (defn- delete-property-fn [property-id]
-  (fn []
-    (swap! application/state update :ctx/db db/delete! property-id)))
+  (fn [db]
+    (db/delete! db property-id)))
 
 (defn- create*
   [{:keys [scroll-pane-height

@@ -20,7 +20,6 @@
             cdq.ui.editor.window
             cdq.world-fns.tmx
             clojure.decl
-            clojure.gdx.stage
             clojure.gdx.vis-ui
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -80,7 +79,7 @@
    [cdq.create.input/do!]
    [clojure.decl/assoc* :ctx/vis-ui [clojure.gdx.vis-ui/load! {:skin-scale :x1}]]
    [cdq.create.graphics/do! (edn-resource "graphics.edn")]
-   [cdq.create.stage/do! {:stage-impl clojure.gdx.stage/create}]
+   [cdq.create.stage/do!]
    [cdq.create.set-input-processor/do!]
    [cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
                           :path-format "sounds/%s.wav"}]

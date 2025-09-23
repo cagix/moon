@@ -22,10 +22,16 @@
             cdq.render.tick-entities
             cdq.render.remove-destroyed-entities
             cdq.render.handle-key-input
+            [clojure.scene2d.stage :as stage]
             [clojure.utils :as utils]))
 
 (def ^:private pipeline
-  [[cdq.render.validate/do!]
+  [[(fn [ctx]
+      (if-let [new-ctx (stage/get-ctx (:ctx/stage ctx))]
+        new-ctx
+        ctx ; first render stage doesnt have context
+        ))]
+   [cdq.render.validate/do!]
    [cdq.render.update-mouse/do!]
    [cdq.render.update-mouseover-eid/do!]
    [cdq.render.check-open-debug/do!]
@@ -49,6 +55,12 @@
    [cdq.render.tick-entities/do!]
    [cdq.render.remove-destroyed-entities/do!]
    [cdq.render.handle-key-input/do!]
+   [(fn [{:keys [ctx/stage]
+          :as ctx}]
+      (stage/set-ctx! stage ctx)
+      (stage/act!     stage)
+      (stage/draw!    stage)
+      (stage/get-ctx  stage))]
    [cdq.render.validate/do!]])
 
 (defn do! [context]

@@ -5,6 +5,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
+            [clojure.gdx.stage]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx]
@@ -14,16 +15,14 @@
 
 (defn do!
   [{:keys [ctx/graphics]
-    :as ctx}
-   {:keys [stage-impl]}]
+    :as ctx}]
   (extend-type (class ctx)
     clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (stage-impl
+  (assoc ctx :ctx/stage (clojure.gdx.stage/create
                          (:graphics/ui-viewport graphics)
-                         (:graphics/batch       graphics)
-                         @(requiring-resolve 'cdq.application/state))))
+                         (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage

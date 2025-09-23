@@ -3,8 +3,7 @@
             [cdq.application.dispose :as dispose]
             [cdq.application.render :as render]
             [cdq.application.resize :as resize]
-            [clojure.gdx.application :as application]
-            [clojure.scene2d.stage :as stage])
+            [clojure.gdx.application :as application])
   (:gen-class))
 
 (def state (atom nil))
@@ -17,9 +16,7 @@
                           (dispose/do! @state))
                :pause (fn [])
                :render (fn []
-                         (swap! state render/do!)
-                         (stage/act!  (:ctx/stage @state))
-                         (stage/draw! (:ctx/stage @state)))
+                         (swap! state render/do!))
                :resize (fn [width height]
                          (resize/do! @state width height))
                :resume (fn [])}

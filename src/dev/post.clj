@@ -1,13 +1,12 @@
 (ns dev.post
-  (:require [cdq.application :as application]
+  (:require [cdq.application :refer [state]]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [clojure.application]))
+            [clojure.application :as application]))
 
 (defn post-runnable! [f]
-  (clojure.application/post-runnable!
-   (:ctx/app @application/state)
-   (fn [] (f @application/state))))
+  (application/post-runnable! (:ctx/app @state)
+                              (fn [] (f @state))))
 
 (comment
  (post-runnable!
