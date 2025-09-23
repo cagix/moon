@@ -21,6 +21,7 @@
             cdq.ui.editor.window
             cdq.world-fns.tmx
 
+            [clojure.disposable :as disposable]
             clojure.gdx.vis-ui
 
             [clojure.edn :as edn]
@@ -148,9 +149,18 @@
       (cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
                              :path-format "sounds/%s.wav"})
       (dissoc :ctx/files)
-      cdq.create.reset-stage/do!
       (cdq.create.world/do! (edn-resource "world.edn"))
-      (cdq.create.reset-world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                             :start-position [32 71]}])
-      cdq.create.spawn-player/do!
-      cdq.create.spawn-enemies/do!))
+      (ctx/reset-game-state! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
+                                                        :start-position [32 71]}])))
+
+(extend-type Context
+  ctx/ResetGameState
+  (reset-game-state! [{:keys [ctx/world]
+                       :as ctx}
+                      world-fn]
+    (disposable/dispose! world)
+    (-> ctx
+        cdq.create.reset-stage/do!
+        (cdq.create.reset-world/do! world-fn)
+        cdq.create.spawn-player/do!
+        cdq.create.spawn-enemies/do!)))

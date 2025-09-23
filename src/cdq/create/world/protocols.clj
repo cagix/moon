@@ -76,7 +76,8 @@
 
     disposable/Disposable
     (dispose! [{:keys [world/tiled-map]}]
-      (disposable/dispose! tiled-map))
+      (when tiled-map ; initialization
+        (disposable/dispose! tiled-map)))
 
     cdq.world/World
     (active-eids [this]

@@ -1,15 +1,11 @@
 (ns cdq.create.ui.dev-menu
-  (:require [cdq.create.reset-world]
-            [cdq.create.spawn-player]
-            [cdq.create.spawn-enemies]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.ui.widget :as widget]
             [cdq.world-fns.tmx]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.modules]
             [clojure.string :as str]
-            [clojure.disposable :as disposable]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
 
@@ -61,16 +57,9 @@
   {:label "Select World"
    :items (for [world-fn world-fns]
             {:label (str "Start " (first world-fn))
-             :on-click (fn [actor {:keys [ctx/world]
-                                    :as ctx}]
-                         (disposable/dispose! world)
-                         (let [stage (actor/get-stage actor) ; before reset-stage!!!!
-                               _ ((requiring-resolve 'cdq.create.reset-stage/do!) ctx)
-                               new-ctx (-> ctx
-                                           (cdq.create.reset-world/do! world-fn)
-                                           cdq.create.spawn-player/do!
-                                           cdq.create.spawn-enemies/do!)]
-                           (stage/set-ctx! stage new-ctx)))})})
+             :on-click (fn [actor ctx]
+                         (stage/set-ctx! (actor/get-stage actor)
+                                         (ctx/reset-game-state! ctx world-fn)))})})
 
 (defn create
   [{:keys [ctx/db
