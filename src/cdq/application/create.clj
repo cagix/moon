@@ -12,20 +12,14 @@
             cdq.create.reset-world
             cdq.create.spawn-player
             cdq.create.spawn-enemies
-
             [cdq.ctx :as ctx]
-
             cdq.world-fns.tmx
-
             [clojure.disposable :as disposable]
-            clojure.gdx.vis-ui
-
             [clojure.edn :as edn]
+            clojure.gdx.vis-ui
             [clojure.java.io :as io]
-
             [malli.core :as m]
             [malli.utils]
-
             [qrecord.core :as q]))
 
 (defn actions!
@@ -67,25 +61,40 @@
                [:ctx/db :some]
                [:ctx/graphics :some]
                [:ctx/world :some]
+
+               ; merge
                [:ctx/input :some]
                [:ctx/controls :some]
+               ;
+
+               ; merge?
                [:ctx/stage :some]
                [:ctx/vis-ui :some]
+               ;
+
+
                [:ctx/mouseover-actor :any]
                [:ctx/ui-mouse-position :some]
                [:ctx/world-mouse-position :some]
-               [:ctx/interaction-state :some]])]
+               [:ctx/interaction-state :some]
+               ; * ctx/frame or graphics/input/stage
+               ; or make ctx protocol
+               ; or utils pass graphics input
+               ; or call manually each time ( how many times used)
+               ])]
   (extend-type Context
     ctx/Validation
     (validate [ctx]
       (malli.utils/validate-humanize schema ctx)
       ctx)))
 
+; only world
 (extend-type Context
   cdq.ctx/InfoText
   (info-text [ctx entity]
     (cdq.create.info/info-text ctx entity)))
 
+; here just data create? functions to 'cdq.ctx' ?
 (extend-type Context
   ctx/TransactionHandler
   (handle-txs! [ctx transactions]

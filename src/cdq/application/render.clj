@@ -10,14 +10,7 @@
 
             [cdq.graphics :as graphics]
 
-            ; TODO part of 'draw-game'
-            cdq.render.draw-on-world-viewport.tile-grid
-            cdq.render.draw-on-world-viewport.cell-debug
-            cdq.render.draw-on-world-viewport.entities
-          #_cdq.render.draw-on-world-viewport.geom-test
-            cdq.render.draw-on-world-viewport.highlight-mouseover-tile
-            ;
-
+            cdq.render.draw-on-world-viewport
             ; TODO part of 'update-world'
             ; -> world tx handler which returns what happened
             ; (no sub-txs ?)
@@ -192,14 +185,7 @@
     :as ctx}]
   (graphics/draw-on-world-viewport! graphics
                                     (fn []
-                                      (doseq [f [
-                                                 cdq.render.draw-on-world-viewport.tile-grid/do!
-                                                 cdq.render.draw-on-world-viewport.cell-debug/do!
-                                                 cdq.render.draw-on-world-viewport.entities/do!
-                                               #_cdq.render.draw-on-world-viewport.geom-test/do!
-                                                 cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!
-                                                 ]]
-                                        (graphics/handle-draws! graphics (f ctx)))))
+                                      (cdq.render.draw-on-world-viewport/do! ctx)))
   ctx)
 
 (defn- tile-color-setter
@@ -364,6 +350,8 @@
       update-mouseover-eid!
       check-open-debug!
       assoc-active-entities
+      ; TODO make 'draw-game' function/module, passing only necessary ctx (world,graphics ?)
+      ; maybe also 'audio-game' for audio processing?
       set-camera-on-player!
       clear-screen!
       draw-world-map!

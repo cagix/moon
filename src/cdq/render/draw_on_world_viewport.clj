@@ -1,4 +1,4 @@
-(ns cdq.render.draw-on-world-viewport.entities
+(ns cdq.render.draw-on-world-viewport
   (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
             [cdq.effects.target-all :as target-all]
@@ -11,8 +11,13 @@
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
-            [clojure.utils :as utils]
-            [clojure.graphics.color :as color]))
+            [clojure.graphics.color :as color]
+            [clojure.utils :as utils]))
+
+(def ^:dbg-flag show-tile-grid? false)
+(def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
+(def ^:dbg-flag show-cell-entities? false)
+(def ^:dbg-flag show-cell-occupied? false)
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -266,7 +271,7 @@
          (ctx/handle-txs! ctx
                           [[:tx/print-stacktrace t]]))))
 
-(defn do!
+(defn- draw-entities
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
@@ -282,3 +287,78 @@
             entity entities
             :when (should-draw? entity z-order)]
       (draw-entity ctx entity render-layer))))
+
+(defn- draw-tile-grid
+  [{:keys [ctx/graphics]}]
+  (when show-tile-grid?
+    (let [[left-x _right-x bottom-y _top-y] (graphics/camera-frustum graphics)]
+      [[:draw/grid
+        (int left-x)
+        (int bottom-y)
+        (inc (int (graphics/world-viewport-width  graphics)))
+        (+ 2 (int (graphics/world-viewport-height graphics)))
+        1
+        1
+        [1 1 1 0.8]]])))
+
+(defn- draw-cell-debug
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (apply concat
+         (for [[x y] (graphics/visible-tiles graphics)
+               :let [cell ((:world/grid world) [x y])]
+               :when cell
+               :let [cell* @cell]]
+           [(when (and show-cell-entities? (seq (:entities cell*)))
+              [:draw/filled-rectangle x y 1 1 [1 0 0 0.6]])
+            (when (and show-cell-occupied? (seq (:occupied cell*)))
+              [:draw/filled-rectangle x y 1 1 [0 0 1 0.6]])
+            (when-let [faction show-potential-field-colors?]
+              (let [{:keys [distance]} (faction cell*)]
+                (when distance
+                  (let [ratio (/ distance ((:world/factions-iterations world) faction))]
+                    [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
+
+(defn- highlight-mouseover-tile
+  [{:keys [ctx/world
+           ctx/world-mouse-position]}]
+  (let [[x y] (mapv int world-mouse-position)
+        cell ((:world/grid world) [x y])]
+    (when (and cell (#{:air :none} (:movement @cell)))
+      [[:draw/rectangle x y 1 1
+        (case (:movement @cell)
+          :air  [1 1 0 0.5]
+          :none [1 0 0 0.5])]])))
+
+(comment
+ (require '[cdq.gdx.math.geom :as geom]
+          '[cdq.world.grid :as grid])
+
+ (defn- geom-test
+  [{:keys [ctx/world
+           ctx/world-mouse-position]}]
+  (let [position world-mouse-position
+        radius 0.8
+        circle {:position position
+                :radius radius}]
+    (conj (cons [:draw/circle position radius [1 0 0 0.5]]
+                (for [[x y] (map #(:position @%) (grid/circle->cells (:world/grid world) circle))]
+                  [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
+          (let [{:keys [x y width height]} (geom/circle->outer-rectangle circle)]
+            [:draw/rectangle x y width height [0 0 1 1]])))))
+
+; TODO what do I need from ctx?
+; select-keys ?
+; see where main ctx gets passed
+; check which keys required
+; select keys
+(defn do! [{:keys [ctx/graphics]
+            :as ctx}]
+  (doseq [f [
+             draw-tile-grid
+             draw-cell-debug
+             draw-entities
+             #_geom-test
+             highlight-mouseover-tile
+             ]]
+    (graphics/handle-draws! graphics (f ctx))))
