@@ -4,6 +4,13 @@
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
+            cdq.render.draw-on-world-viewport.tile-grid
+            cdq.render.draw-on-world-viewport.cell-debug
+            cdq.render.draw-on-world-viewport.entities
+          #_cdq.render.draw-on-world-viewport.geom-test
+            cdq.render.draw-on-world-viewport.highlight-mouseover-tile
+            cdq.render.tick-entities
+            cdq.render.remove-destroyed-entities
             [cdq.stage :as stage]
             [cdq.ui.widget :as widget]
             [cdq.world :as world]
@@ -13,14 +20,6 @@
             [clojure.input :as input]
             [clojure.scene2d.stage]
             [clojure.math.vector2 :as v]
-            [clojure.utils :as utils]
-            cdq.render.draw-on-world-viewport.tile-grid
-            cdq.render.draw-on-world-viewport.cell-debug
-            cdq.render.draw-on-world-viewport.entities
-          #_cdq.render.draw-on-world-viewport.geom-test
-            cdq.render.draw-on-world-viewport.highlight-mouseover-tile
-            cdq.render.tick-entities
-            cdq.render.remove-destroyed-entities
             [clojure.utils :as utils]))
 
 (def ^:private pausing? true)
@@ -172,12 +171,17 @@
 
 (defn- draw-on-world-viewport!
   [{:keys [ctx/graphics]
-    :as ctx}
-   draw-fns]
+    :as ctx}]
   (graphics/draw-on-world-viewport! graphics
                                     (fn []
-                                      (doseq [[f & params] draw-fns]
-                                        (graphics/handle-draws! graphics (apply f ctx params)))))
+                                      (doseq [f [
+                                                 cdq.render.draw-on-world-viewport.tile-grid/do!
+                                                 cdq.render.draw-on-world-viewport.cell-debug/do!
+                                                 cdq.render.draw-on-world-viewport.entities/do!
+                                               #_cdq.render.draw-on-world-viewport.geom-test/do!
+                                                 cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!
+                                                 ]]
+                                        (graphics/handle-draws! graphics (f ctx)))))
   ctx)
 
 (defn- tile-color-setter
@@ -333,34 +337,26 @@
     ctx ; first render stage doesnt have context
     ))
 
-(def ^:private pipeline
-  [[try-fetch-state-ctx]
-   [ctx/validate]
-   [update-mouse]
-   [update-mouseover-eid!]
-   [check-open-debug!]
-   [assoc-active-entities]
-   [set-camera-on-player!]
-   [clear-screen!]
-   [draw-world-map!]
-   [draw-on-world-viewport! [
-                             [cdq.render.draw-on-world-viewport.tile-grid/do!]
-                             [cdq.render.draw-on-world-viewport.cell-debug/do!]
-                             [cdq.render.draw-on-world-viewport.entities/do!]
-                             #_ [cdq.render.draw-on-world-viewport.geom-test/do!]
-                             [cdq.render.draw-on-world-viewport.highlight-mouseover-tile/do!]
-                             ]]
-   [assoc-interaction-state]
-   [set-cursor!]
-   [player-state-handle-input!]
-   [assoc-paused]
-   [update-world-time]
-   [update-potential-fields!]
-   [tick-entities!]
-   [cdq.render.remove-destroyed-entities/do!]
-   [handle-key-input!]
-   [render-stage!]
-   [ctx/validate]])
-
 (defn do! [context]
-  (utils/pipeline context pipeline))
+  (-> context
+      try-fetch-state-ctx
+      ctx/validate
+      update-mouse
+      update-mouseover-eid!
+      check-open-debug!
+      assoc-active-entities
+      set-camera-on-player!
+      clear-screen!
+      draw-world-map!
+      draw-on-world-viewport!
+      assoc-interaction-state
+      set-cursor!
+      player-state-handle-input!
+      assoc-paused
+      update-world-time
+      update-potential-fields!
+      tick-entities!
+      cdq.render.remove-destroyed-entities/do!
+      handle-key-input!
+      render-stage!
+      ctx/validate))
