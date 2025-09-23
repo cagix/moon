@@ -3,6 +3,7 @@
             [cdq.application.dispose :as dispose]
             [cdq.application.render :as render]
             [cdq.application.resize :as resize]
+            [clojure.application]
             [clojure.gdx.application :as application])
   (:gen-class))
 
@@ -10,16 +11,17 @@
 
 (defn -main []
   (application/start!
-   {:listener {:create (fn [context]
-                         (reset! state (create/do! context)))
-               :dispose (fn []
-                          (dispose/do! @state))
-               :pause (fn [])
-               :render (fn []
-                         (swap! state render/do!))
-               :resize (fn [width height]
-                         (resize/do! @state width height))
-               :resume (fn [])}
+   {:listener (reify clojure.application/Listener
+                (create [_ context]
+                  (reset! state (create/do! context)))
+                (dispose [_]
+                  (dispose/do! @state))
+                (pause [_])
+                (render [_]
+                  (swap! state render/do!))
+                (resize [_ width height]
+                  (resize/do! @state width height))
+                (resume [_]))
     :config {:title "Cyber Dungeon Quest"
              :windowed-mode {:width 1440
                              :height 900}

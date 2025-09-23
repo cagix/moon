@@ -6,6 +6,7 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
+            [clojure.application]
             [clojure.disposable :as disposable]
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
@@ -20,6 +21,7 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.vis-ui :as vis-ui]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]))
 
@@ -83,7 +85,6 @@
     (show-whole-map! ctx)
     ctx))
 
-(def state (atom nil))
 
 (defn- edit-window []
   {:actor/type :actor.type/window
@@ -92,8 +93,10 @@
    :rows (for [level-fn level-fns]
            [{:actor {:actor/type :actor.type/text-button
                      :text (str "Generate " (first level-fn))
-                     :on-clicked (fn [_actor _ctx]
-                                   (swap! state (fn [ctx] (generate-level ctx level-fn))))}}])
+                     :on-clicked (fn [actor ctx]
+                                   (let [stage (actor/get-stage actor)
+                                         new-ctx (generate-level ctx level-fn)]
+                                     (stage/set-ctx! stage new-ctx)))}}])
    :pack? true})
 
 (defrecord Context [])
@@ -105,7 +108,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (clojure.gdx.stage/create ui-viewport sprite-batch state)
+        stage (clojure.gdx.stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -136,14 +139,15 @@
                    :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale sprite-batch))
         ctx (generate-level ctx initial-level-fn)]
     (stage/add! (:ctx/stage ctx) (scene2d/build (edit-window)))
-    (reset! state ctx)))
+    ctx))
 
-(defn dispose! []
-  (disposable/dispose! (:ctx/vis-ui @state))
-  (let [{:keys [ctx/sprite-batch
-                ctx/tiled-map]} @state]
-    (disposable/dispose! sprite-batch)
-    (disposable/dispose! tiled-map)))
+(defn dispose!
+  [{:keys [ctx/sprite-batch
+           ctx/tiled-map
+           ctx/vis-ui]}]
+  (disposable/dispose! vis-ui)
+  (disposable/dispose! sprite-batch)
+  (disposable/dispose! tiled-map))
 
 (defn- draw-tiled-map! [{:keys [ctx/color-setter
                                 ctx/tiled-map
@@ -173,28 +177,44 @@
   (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
   (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
 
-(defn render! []
-  (graphics/clear! (:ctx/graphics @state) color/black)
-  (draw-tiled-map! @state)
-  (camera-zoom-controls! @state)
-  (camera-movement-controls! @state)
-  (stage/act! (:ctx/stage @state))
-  (stage/draw! (:ctx/stage @state)))
+(defn render!
+  [{:keys [ctx/graphics
+           ctx/stage]
+    :as ctx}]
+  (let [ctx (if-let [new-ctx (stage/get-ctx stage)]
+              new-ctx
+              ctx)]
+    (graphics/clear! graphics color/black)
+    (draw-tiled-map! ctx)
+    (camera-zoom-controls! ctx)
+    (camera-movement-controls! ctx)
+    (stage/set-ctx! stage ctx)
+    (stage/act!     stage)
+    (stage/draw!    stage)
+    (stage/get-ctx  stage)))
 
-(defn resize! [width height]
-  (let [{:keys [ctx/ui-viewport
-                ctx/world-viewport]} @state]
-    (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
-    (clojure.graphics.viewport/update! world-viewport width height {:center? false})))
+(defn resize!
+  [{:keys [ctx/ui-viewport
+           ctx/world-viewport]}
+   width height]
+  (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
+  (clojure.graphics.viewport/update! world-viewport width height {:center? false}))
+
+(def state (atom nil))
 
 (defn -main []
   (clojure.gdx.application/start!
-   {:listener {:create  create!
-               :dispose dispose!
-               :pause   (fn [])
-               :render  render!
-               :resize  resize!
-               :resume  (fn [])}
+   {:listener (reify clojure.application/Listener
+                (create [_ context]
+                  (reset! state (create! context)))
+                (dispose [_]
+                  (dispose! @state))
+                (pause [_])
+                (render [_]
+                  (swap! state render!))
+                (resize [_ width height]
+                  (resize! @state width height))
+                (resume [_]))
     :config {:title "Levelgen test"
              :windowed-mode {:width 1440 :height 900}
              :foreground-fps 60}}))
