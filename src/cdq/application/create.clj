@@ -1,7 +1,6 @@
 (ns cdq.application.create
   (:require cdq.create.db
             cdq.create.info
-            cdq.create.load-entity-states
             cdq.create.input
             cdq.create.graphics
             cdq.create.stage
@@ -103,8 +102,6 @@
         (cdq.create.reset-world/do! world-fn)
         cdq.create.spawn-player/do!
         cdq.create.spawn-enemies/do!)))
-
-(cdq.create.load-entity-states/do!)
 
 (defn do! [context]
   (-> (merge (map->Context {})
