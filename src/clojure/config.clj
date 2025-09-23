@@ -2,8 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
-            [clojure.walk :as walk])
-  (:gen-class))
+            [clojure.walk :as walk]))
 
 (defn require-resolve-symbols [form]
   (if (and (symbol? form)
@@ -19,8 +18,3 @@
        slurp
        (edn/read-string {:readers {'edn/resource edn-resource}})
        (walk/postwalk require-resolve-symbols)))
-
-(defn -main [path]
-  (->> path
-       edn-resource
-       (run! utils/execute)))

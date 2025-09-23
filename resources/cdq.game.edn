@@ -1,9 +1,0 @@
-[[gdl.application.desktop/start!
-  {:listener [cdq.application.listener/create
-              {:state-var cdq.application/state
-               :create-pipeline #edn/resource "create.edn"
-               :render-pipeline #edn/resource "render.edn"}]
-   :config {:title "Cyber Dungeon Quest"
-            :windowed-mode {:width 1440
-                            :height 900}
-            :foreground-fps 60}}]]

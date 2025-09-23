@@ -1,5 +1,0 @@
-[[gdl.application.desktop/start!
-  {:listener [cdq.levelgen/application-listener]
-   :config {:title "Levelgen test"
-            :windowed-mode {:width 1440 :height 900}
-            :foreground-fps 60}}]]

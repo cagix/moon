@@ -14,6 +14,7 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.utils.viewport.fit-viewport :as viewport]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
+            [gdl.application.desktop]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.viewport]
@@ -193,10 +194,14 @@
     (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
     (gdl.graphics.viewport/update! world-viewport width height {:center? false})))
 
-(defn application-listener []
-  {:create  create!
-   :dispose dispose!
-   :pause   (fn [])
-   :render  render!
-   :resize  resize!
-   :resume  (fn [])})
+(defn -main []
+  (gdl.application.desktop/start!
+   {:listener {:create  create!
+               :dispose dispose!
+               :pause   (fn [])
+               :render  render!
+               :resize  resize!
+               :resume  (fn [])}
+    :config {:title "Levelgen test"
+             :windowed-mode {:width 1440 :height 900}
+             :foreground-fps 60}}))

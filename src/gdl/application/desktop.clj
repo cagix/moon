@@ -1,6 +1,5 @@
 (ns gdl.application.desktop
   (:require [clojure.java.io :as io]
-            [clojure.utils :as utils]
             [gdl.application]
             [gdl.audio]
             [gdl.audio.sound]
@@ -98,9 +97,8 @@
   (when (= (operating-system) :mac)
     (set-glfw-async!)
     (set-taskbar-icon! "icon.png"))
-  (Lwjgl3Application.
-   (->ApplicationListener (utils/execute listener))
-   (->Lwjgl3ApplicationConfiguration config)))
+  (Lwjgl3Application. (->ApplicationListener listener)
+                      (->Lwjgl3ApplicationConfiguration config)))
 
 (extend-type Application
   gdl.application/Application
