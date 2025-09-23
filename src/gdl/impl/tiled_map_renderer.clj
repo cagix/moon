@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.maps.tiled.renderers.orthogonal
+(ns gdl.impl.tiled-map-renderer
   (:require [com.badlogic.gdx.graphics.color :as color]
             [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)

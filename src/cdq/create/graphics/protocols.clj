@@ -1,7 +1,7 @@
 (ns cdq.create.graphics.protocols
   (:require [cdq.graphics]
             [gdl.impl.camera :as camera]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [gdl.impl.tiled-map-renderer :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]

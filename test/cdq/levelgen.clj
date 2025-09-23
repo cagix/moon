@@ -6,7 +6,11 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            com.badlogic.gdx.scenes.scene2d.actor
+            com.badlogic.gdx.scenes.scene2d.group
+            com.badlogic.gdx.scenes.scene2d.ui.table
+            com.badlogic.gdx.scenes.scene2d.ui.widget
+            com.badlogic.gdx.scenes.scene2d.ui.widget-group
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [gdl.graphics :as graphics]
@@ -18,6 +22,7 @@
             [gdl.impl.camera :as camera]
             [gdl.impl.sprite-batch :as sprite-batch]
             [gdl.impl.stage]
+            [gdl.impl.tiled-map-renderer :as tm-renderer]
             [gdl.impl.viewport :as viewport]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
@@ -85,11 +90,6 @@
 
 (def state (atom nil))
 
-(require 'com.badlogic.gdx.scenes.scene2d.actor)
-(require 'com.badlogic.gdx.scenes.scene2d.group)
-(require 'com.badlogic.gdx.scenes.scene2d.ui.table)
-(require 'com.badlogic.gdx.scenes.scene2d.ui.widget)
-(require 'com.badlogic.gdx.scenes.scene2d.ui.widget-group)
 (defn- edit-window []
   {:actor/type :actor.type/window
    :title "Edit"
@@ -150,12 +150,10 @@
     (reset! state ctx)))
 
 (defn dispose! []
-  ; TODO ? disposing properly everything cdq.start stuff??
-  ; batch, cursors, default-font, shape-drawer-texture, etc.
-  (com.badlogic.gdx.utils.Disposable/.dispose (:ctx/vis-ui @state))
+  (disposable/dispose! (:ctx/vis-ui @state))
   (let [{:keys [ctx/sprite-batch
                 ctx/tiled-map]} @state]
-    (disposable/dispose! sprite-batch) ; TODO that wont work anymore -> and one more fn so have to move it together?
+    (disposable/dispose! sprite-batch)
     (disposable/dispose! tiled-map)))
 
 (defn- draw-tiled-map! [{:keys [ctx/color-setter
