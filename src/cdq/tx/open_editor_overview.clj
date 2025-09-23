@@ -4,8 +4,9 @@
             [clojure.scene2d.stage :as stage]))
 
 (defn do!
-  [{:keys [ctx/stage]
-    :as ctx}
+  [{:keys [ctx/db
+           ctx/graphics
+           ctx/stage]}
    {:keys [property-type
            clicked-id-fn]}]
   (stage/add! stage (scene2d/build
@@ -16,6 +17,7 @@
                       :center? true
                       :close-on-escape? true
                       :pack? true
-                      :rows (editor/overview-table-rows ctx
+                      :rows (editor/overview-table-rows db
+                                                        graphics
                                                         property-type
                                                         clicked-id-fn)})))

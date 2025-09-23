@@ -34,7 +34,9 @@
      [[(when-not property-id
          {:actor {:actor/type :actor.type/text-button
                   :text "+"
-                  :on-clicked (fn [_actor {:keys [ctx/stage] :as ctx}]
+                  :on-clicked (fn [_actor {:keys [ctx/db
+                                                  ctx/graphics
+                                                  ctx/stage]}]
                                 (let [window (scene2d/build
                                               {:actor/type :actor.type/window
                                                :title "Choose"
@@ -45,7 +47,10 @@
                                       clicked-id-fn (fn [id ctx]
                                                       (actor/remove! window)
                                                       (redo-rows ctx id))]
-                                  (table/add-rows! window (cdq.editor/overview-table-rows ctx property-type clicked-id-fn))
+                                  (table/add-rows! window (cdq.editor/overview-table-rows db
+                                                                                          graphics
+                                                                                          property-type
+                                                                                          clicked-id-fn))
                                   (widget-group/pack! window)
                                   (stage/add! stage window)))}})]
       [(when property-id

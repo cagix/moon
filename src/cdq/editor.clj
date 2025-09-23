@@ -46,8 +46,8 @@
                                :actor/touchable :disabled}]}})))
 
 (defn overview-table-rows
-  [{:keys [ctx/db
-           ctx/graphics]}
+  [db
+   graphics
    property-type
    clicked-id-fn]
   (let [{:keys [sort-by-fn
