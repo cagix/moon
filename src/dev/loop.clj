@@ -28,10 +28,10 @@
 
 (declare ^:private refresh-error)
 
-(declare ^:no-doc start-app-expression)
+(declare ^:no-doc start-fn-symbol)
 
 (defn ^:no-doc start-dev-loop! []
-  (try (eval start-app-expression)
+  (try ((requiring-resolve start-fn-symbol))
        (catch Throwable t
          (handle-throwable! t)))
   (loop []
@@ -61,7 +61,7 @@
 (declare ^:private nrepl-server)
 
 (defn -main [start-app-fn]
-  (.bindRoot #'start-app-expression `((requiring-resolve '~(symbol start-app-fn))))
+  (.bindRoot #'start-fn-symbol (symbol start-app-fn))
   (.bindRoot #'nrepl-server (nrepl.server/start-server))
   (save-port-file! nrepl-server)
   (println "Started nrepl server on port" (:port nrepl-server))
