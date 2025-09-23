@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
-            [com.badlogic.gdx.math.vector2 :as v]
+            [clojure.math.vector2 :as v]
             [gdl.input :as input]))
 
 (defn world-item? [mouseover-actor]

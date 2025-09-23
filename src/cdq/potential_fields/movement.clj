@@ -6,7 +6,7 @@
             [cdq.world.grid :as grid]
             [clojure.grid2d :as g2d]
             [cdq.position :as position]
-            [com.badlogic.gdx.math.vector2 :as v]
+            [clojure.math.vector2 :as v]
             [clojure.utils :as utils]))
 
 (let [order (position/get-8-neighbours [0 0])]

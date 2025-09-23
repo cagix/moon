@@ -12,7 +12,7 @@
             [cdq.world.grid.cell :as cell]
             [clojure.grid2d :as g2d]
             [clojure.utils :as utils]
-            [com.badlogic.gdx.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 (defn- npc-choose-skill [ctx entity effect-ctx]
   (->> entity

@@ -1,7 +1,7 @@
 (ns cdq.effects.projectile
   (:require [cdq.world :as world]
             [cdq.entity :as entity]
-            [com.badlogic.gdx.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 (defn- proj-start-point [entity direction size]
   (v/add (entity/position entity)

@@ -1,7 +1,7 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [com.badlogic.gdx.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
 (defn start-point [entity target*]

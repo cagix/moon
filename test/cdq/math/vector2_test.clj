@@ -1,6 +1,6 @@
 (ns cdq.math.vector2-test
   (:require [clojure.utils :as utils]
-            [com.badlogic.gdx.math.vector2 :as v]
+            [clojure.math.vector2 :as v]
             [clojure.test :refer :all]))
 
 (set! *unchecked-math* :warn-on-boxed)
@@ -26,3 +26,19 @@
                            1.2041595))
   (is (utils/nearly-equal? (v/length [1.2 -0.1])
                            1.2041595)))
+
+(comment
+
+ (clojure.pprint/pprint
+  (for [v [[0 1]
+           [1 1]
+           [1 0]
+           [1 -1]
+           [0 -1]
+           [-1 -1]
+           [-1 0]
+           [-1 1]]]
+    [v
+     (angle-from-vector v)]))
+
+ )

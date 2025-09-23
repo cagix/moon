@@ -1,7 +1,7 @@
 (ns cdq.create.world.protocols
   (:require [cdq.world.grid.cell :as cell]
             [cdq.world]
-            [com.badlogic.gdx.math.vector2 :as v]
+            [clojure.math.vector2 :as v]
             [clojure.grid2d :as g2d]
             [gdl.disposable :as disposable]
             [gdl.tiled :as tiled])
