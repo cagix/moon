@@ -1,5 +1,7 @@
 (ns cdq.create.world.protocols
-  (:require [cdq.world.grid.cell :as cell]
+  (:require cdq.impl.content-grid
+            cdq.impl.grid
+            [cdq.world.grid.cell :as cell]
             [cdq.world]
             [clojure.math.vector2 :as v]
             [clojure.grid2d :as g2d]
@@ -85,18 +87,16 @@
                                 start-position]}]
       (let [width  (:tiled-map/width  tiled-map)
             height (:tiled-map/height tiled-map)
-            create-grid (requiring-resolve 'cdq.impl.grid/create)
-            grid (create-grid width height
-                              #(case (tiled/movement-property tiled-map %)
-                                 "none" :none
-                                 "air"  :air
-                                 "all"  :all))
-            create-content-grid (requiring-resolve 'cdq.impl.content-grid/create)]
+            grid (cdq.impl.grid/create width height
+                                       #(case (tiled/movement-property tiled-map %)
+                                          "none" :none
+                                          "air"  :air
+                                          "all"  :all))]
         (assoc world
                :world/tiled-map tiled-map
                :world/start-position start-position
                :world/grid grid
-               :world/content-grid (create-content-grid width height (:content-grid-cell-size world))
+               :world/content-grid (cdq.impl.content-grid/create width height (:content-grid-cell-size world))
                :world/explored-tile-corners (create-explored-tile-corners width height)
                :world/raycaster (create-raycaster grid)
                :world/elapsed-time 0

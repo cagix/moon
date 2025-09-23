@@ -1,5 +1,6 @@
 (ns cdq.create.graphics
   (:require [cdq.create.graphics.shape-drawer]
+            [cdq.create.graphics.protocols]
             [cdq.files]
             [cdq.graphics]
             [clojure.disposable :as disposable]
@@ -138,4 +139,4 @@
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
                                (create* graphics)
                                (extend-draws (:draw-fns config))
-                               ((requiring-resolve 'cdq.create.graphics.protocols/do!)))))
+                               cdq.create.graphics.protocols/do!)))

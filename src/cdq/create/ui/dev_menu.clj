@@ -1,7 +1,5 @@
 (ns cdq.create.ui.dev-menu
-  (:require [cdq.application :as application]
-            [cdq.create.reset-stage]
-            [cdq.create.reset-world]
+  (:require [cdq.create.reset-world]
             [cdq.create.spawn-player]
             [cdq.create.spawn-enemies]
             [cdq.ctx :as ctx]
@@ -66,11 +64,12 @@
             {:label (str "Start " (first world-fn))
              :on-click (fn [_actor {:keys [ctx/world]
                                     :as ctx}]
-                         (cdq.create.reset-stage/do! ctx)
+                         ((requiring-resolve 'cdq.create.reset-stage/do!) ctx)
                          (disposable/dispose! world)
-                         (swap! application/state cdq.create.reset-world/do! world-fn)
-                         (swap! application/state cdq.create.spawn-player/do!)
-                         (swap! application/state cdq.create.spawn-enemies/do!))})})
+                         (let [state @(requiring-resolve 'cdq.application/state)]
+                           (swap! state cdq.create.reset-world/do! world-fn)
+                           (swap! state cdq.create.spawn-player/do!)
+                           (swap! state cdq.create.spawn-enemies/do!)))})})
 
 (def ^:private update-labels
   [{:label "elapsed-time"

@@ -19,10 +19,27 @@
             cdq.ui.editor.overview-table
             cdq.ui.editor.window
             cdq.world-fns.tmx
-            [clojure.config :as config]
             clojure.decl
             clojure.gdx.stage
-            [clojure.utils :as utils]))
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.utils :as utils]
+            [clojure.walk :as walk]))
+
+(defn- require-resolve-symbols [form]
+  (if (and (symbol? form)
+           (namespace form))
+    (let [avar (requiring-resolve form)]
+      (assert avar form)
+      avar)
+    form))
+
+(defn- edn-resource [path]
+  (->> path
+       io/resource
+       slurp
+       (edn/read-string {:readers {'edn/resource edn-resource}})
+       (walk/postwalk require-resolve-symbols)))
 
 (def ^:private pipeline
   [
@@ -52,23 +69,23 @@
    [clojure.decl/assoc* :ctx/db [cdq.impl.db/create {:schemas "schema.edn"
                                                      :properties "properties.edn"}]]
    [cdq.create.info/do!]
-   [cdq.create.txs/do! (config/edn-resource "txs.edn")]
-   [cdq.create.load-entity-states/do! (config/edn-resource "entity_states.edn")]
-   [cdq.create.load-effects/do! (config/edn-resource "effects_fn_map.edn")]
+   [cdq.create.txs/do! (edn-resource "txs.edn")]
+   [cdq.create.load-entity-states/do! (edn-resource "entity_states.edn")]
+   [cdq.create.load-effects/do! (edn-resource "effects_fn_map.edn")]
    [assoc :ctx/controls {:zoom-in :minus
                          :zoom-out :equals
                          :unpause-once :p
                          :unpause-continously :space}]
    [cdq.create.input/do!]
    [clojure.decl/assoc* :ctx/vis-ui [clojure.gdx.vis-ui/load! {:skin-scale :x1}]]
-   [cdq.create.graphics/do! (config/edn-resource "graphics.edn")]
+   [cdq.create.graphics/do! (edn-resource "graphics.edn")]
    [cdq.create.stage/do! {:stage-impl clojure.gdx.stage/create}]
    [cdq.create.set-input-processor/do!]
-   [cdq.create.audio/do! {:sound-names (config/edn-resource "sounds.edn")
+   [cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
                           :path-format "sounds/%s.wav"}]
    [dissoc :ctx/files]
    [cdq.create.reset-stage/do!]
-   [cdq.create.world/do! (config/edn-resource "world.edn")]
+   [cdq.create.world/do! (edn-resource "world.edn")]
    [cdq.create.reset-world/do! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                           :start-position [32 71]}]]
    [cdq.create.spawn-player/do!]

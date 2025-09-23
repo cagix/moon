@@ -1,5 +1,8 @@
 (ns cdq.world-fns.uf-caves
-  (:require [clojure.graphics.texture :as texture]
+  (:require cdq.world-fns.initial-grid-creation
+            cdq.world-fns.fix-nads
+            cdq.world-fns.create-star
+            [clojure.graphics.texture :as texture]
             [clojure.gdx.tiled]))
 
 (defn create
@@ -31,6 +34,6 @@
            :level/spawn-rate spawn-rate
            :level/scaling scaling
            :level/creature-properties creature-properties}
-          (map requiring-resolve '[cdq.world-fns.initial-grid-creation/do!
-                                   cdq.world-fns.fix-nads/do!
-                                   cdq.world-fns.create-star/do!])))
+          [cdq.world-fns.initial-grid-creation/do!
+           cdq.world-fns.fix-nads/do!
+           cdq.world-fns.create-star/do!]))
