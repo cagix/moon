@@ -21,6 +21,7 @@
             cdq.world-fns.tmx
             clojure.decl
             clojure.gdx.stage
+            clojure.gdx.vis-ui
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]

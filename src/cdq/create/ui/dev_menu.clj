@@ -4,13 +4,11 @@
             [cdq.create.spawn-enemies]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.graphics :as graphics]
             [cdq.ui.widget :as widget]
             [cdq.world-fns.tmx]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.modules]
             [clojure.string :as str]
-            [clojure.utils :as utils]
             [clojure.disposable :as disposable]
             [clojure.scene2d.stage :as stage]))
 
@@ -71,37 +69,10 @@
                            (swap! state cdq.create.spawn-player/do!)
                            (swap! state cdq.create.spawn-enemies/do!)))})})
 
-(def ^:private update-labels
-  [{:label "elapsed-time"
-    :update-fn (fn [ctx]
-                 (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
-    :icon "images/clock.png"}
-   {:label "FPS"
-    :update-fn (fn [ctx]
-                 (graphics/frames-per-second (:ctx/graphics ctx)))
-    :icon "images/fps.png"}
-   {:label "Mouseover-entity id"
-    :update-fn (fn [{:keys [ctx/world]}]
-                 (let [eid (:world/mouseover-eid world)]
-                   (when-let [entity (and eid @eid)]
-                     (:entity/id entity))))
-    :icon "images/mouseover.png"}
-   {:label "paused?"
-    :update-fn (comp :world/paused? :ctx/world)}
-   {:label "GUI"
-    :update-fn (fn [{:keys [ctx/ui-mouse-position]}]
-                 (mapv int ui-mouse-position))}
-   {:label "World"
-    :update-fn (fn [{:keys [ctx/world-mouse-position]}]
-                 (mapv int world-mouse-position))}
-   {:label "Zoom"
-    :update-fn (fn [ctx]
-                 (graphics/camera-zoom (:ctx/graphics ctx)))
-    :icon "images/zoom.png"}])
-
 (defn create
   [{:keys [ctx/db
-           ctx/graphics]}]
+           ctx/graphics]}
+   {:keys [update-labels]}]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/menu-bar
                     :menus [ctx-data-viewer
