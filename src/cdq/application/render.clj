@@ -1,26 +1,44 @@
 (ns cdq.application.render
   (:require [cdq.ctx :as ctx]
+
+            ;;
             [cdq.creature :as creature]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
+            ;;
+
+
             [cdq.graphics :as graphics]
+
+            ; TODO part of 'draw-game'
             cdq.render.draw-on-world-viewport.tile-grid
             cdq.render.draw-on-world-viewport.cell-debug
             cdq.render.draw-on-world-viewport.entities
           #_cdq.render.draw-on-world-viewport.geom-test
             cdq.render.draw-on-world-viewport.highlight-mouseover-tile
+            ;
+
+            ; TODO part of 'update-world'
+            ; -> world tx handler which returns what happened
+            ; (no sub-txs ?)
+            ; and is handled by full tx handler required
             cdq.render.tick-entities
             cdq.render.remove-destroyed-entities
+            ;
+
             [cdq.stage :as stage]
-            [cdq.ui.widget :as widget]
+
+            [cdq.ui.widget :as widget] ; FIXME
+
             [cdq.world :as world]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
-            [clojure.graphics.color :as color]
-            [clojure.input :as input]
-            [clojure.scene2d.stage]
-            [clojure.math.vector2 :as v]
-            [clojure.utils :as utils]))
+
+            [cdq.world.content-grid :as content-grid] ; FIXME
+            [cdq.world.grid :as grid] ; FIXME
+            [clojure.graphics.color :as color] ; FIXME
+            [clojure.input :as input] ; FIXME
+            [clojure.scene2d.stage] ; FIXME
+            [clojure.math.vector2 :as v] ; FIXME
+            [clojure.utils :as utils])) ; FIXME
 
 (def ^:private pausing? true)
 
@@ -268,22 +286,20 @@
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
-(defn- open-debug-data-window!
-  [{:keys [ctx/stage
-           ctx/world
-           ctx/world-mouse-position]}]
-  (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
-                 @((:world/grid world) (mapv int world-mouse-position)))]
-    (clojure.scene2d.stage/add! stage (widget/data-viewer
-                                       {:title "Data View"
-                                        :data data
-                                        :width 500
-                                        :height 500}))))
-
 (defn- check-open-debug!
-  [{:keys [ctx/input] :as ctx}]
+  [{:keys [ctx/input
+           ctx/stage
+           ctx/world
+           ctx/world-mouse-position]
+    :as ctx}]
   (when (input/button-just-pressed? input :right)
-    (open-debug-data-window! ctx))
+    (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
+                   @((:world/grid world) (mapv int world-mouse-position)))]
+      (clojure.scene2d.stage/add! stage (widget/data-viewer
+                                         {:title "Data View"
+                                          :data data
+                                          :width 500
+                                          :height 500}))))
   ctx)
 
 (defn- update-mouse
@@ -331,12 +347,15 @@
   (clojure.scene2d.stage/draw!    stage)
   (clojure.scene2d.stage/get-ctx  stage))
 
-(defn- try-fetch-state-ctx [ctx]
-  (if-let [new-ctx (clojure.scene2d.stage/get-ctx (:ctx/stage ctx))]
+(defn- try-fetch-state-ctx
+  [{:keys [ctx/stage]
+    :as ctx}]
+  (if-let [new-ctx (clojure.scene2d.stage/get-ctx stage)]
     new-ctx
-    ctx ; first render stage doesnt have context
-    ))
+    ctx)) ; first render stage doesnt have context
 
+; TODO make draw / update step / and see whats needed
+; maybe make a normal fn pass graphics/world to draw
 (defn do! [context]
   (-> context
       try-fetch-state-ctx
@@ -348,15 +367,15 @@
       set-camera-on-player!
       clear-screen!
       draw-world-map!
-      draw-on-world-viewport!
-      assoc-interaction-state
-      set-cursor!
-      player-state-handle-input!
+      draw-on-world-viewport! ; TODO passes full ctx to draw-fns (only world/frame/graphics needed?)
+      assoc-interaction-state ; TODO passes full ctx
+      set-cursor! ; state/cursor full ctx
+      player-state-handle-input! ; same
       assoc-paused
       update-world-time
-      update-potential-fields!
-      tick-entities!
-      cdq.render.remove-destroyed-entities/do!
+      update-potential-fields! ; tx/update-pot-fields !?
+      tick-entities! ; TODO full ctx !
+      cdq.render.remove-destroyed-entities/do! ; ?
       handle-key-input!
       render-stage!
       ctx/validate))
