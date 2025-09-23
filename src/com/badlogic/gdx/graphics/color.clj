@@ -5,8 +5,7 @@
 (defn ->java ^Color [[r g b a]]
   (Color. r g b a))
 
-
-(defn float-bits [[r g b a]]
+(defn float-bits ^Float [[r g b a]]
   (let [color (bit-or (bit-shift-left (int (* 255 (float a))) 24)
                       (bit-shift-left (int (* 255 (float b))) 16)
                       (bit-shift-left (int (* 255 (float g))) 8)
