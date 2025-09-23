@@ -1,7 +1,6 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
   (:require [clojure.grid2d :as g2d]
             [gdl.impl.tiled]
-            [com.badlogic.gdx.maps.tiled.tiles :as tiles]
             [gdl.tiled :as tiled]))
 
 (defn- grid->tiled-map
@@ -21,7 +20,7 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (tiles/copy tile)])))})}))
+                            [position (gdl.impl.tiled/copy-tile tile)])))})}))
 
 (defn do!
   [{:keys [scaled-grid
