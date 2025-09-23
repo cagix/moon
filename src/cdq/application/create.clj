@@ -1,6 +1,5 @@
 (ns cdq.application.create
   (:require cdq.create.db
-            cdq.create.editor-overview-table
             cdq.create.info
             cdq.create.load-entity-states
             cdq.create.load-effects
@@ -17,7 +16,6 @@
             cdq.create.spawn-enemies
 
             [cdq.ctx :as ctx]
-            [cdq.editor]
 
             cdq.ui.editor.window
             cdq.world-fns.tmx
@@ -95,13 +93,6 @@
     (validate [ctx]
       (malli.utils/validate-humanize schema ctx)
       ctx)))
-
-(extend-type Context
-  cdq.editor/Editor
-  (overview-table-rows [ctx property-type clicked-id-fn]
-    (cdq.create.editor-overview-table/create ctx
-                                             property-type
-                                             clicked-id-fn)))
 
 (extend-type Context
   cdq.ctx/InfoText
