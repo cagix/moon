@@ -15,8 +15,7 @@
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}
-   {:keys [state-var
-           stage-impl]}]
+   {:keys [stage-impl]}]
   (extend-type (class ctx)
     clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
@@ -24,7 +23,7 @@
   (assoc ctx :ctx/stage (stage-impl
                          (:graphics/ui-viewport graphics)
                          (:graphics/batch       graphics)
-                         @state-var)))
+                         @(requiring-resolve 'cdq.application/state))))
 
 (defn- stage-find [stage k]
   (-> stage
