@@ -1,4 +1,4 @@
-[[gdl.backends.gdx.lwjgl/start-application!
+[[gdl.application.desktop/start!
   {:listener [cdq.application.listener/create
               {:state-var cdq.application/state
                :create-pipeline #edn/resource "create.edn"

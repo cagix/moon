@@ -24,8 +24,3 @@
   (->> path
        edn-resource
        (run! utils/execute)))
-
-(defn dispatch-on [f os->executions]
-  (->> (f)
-       os->executions
-       (run! utils/execute)))

@@ -1,7 +1,172 @@
-(ns com.badlogic.gdx.input.keys
-  (:import (com.badlogic.gdx Input$Keys)))
+(ns gdl.application.desktop
+  (:require [clojure.java.io :as io]
+            [clojure.utils :as utils]
+            [gdl.application]
+            [gdl.audio]
+            [gdl.audio.sound]
+            [gdl.files]
+            [gdl.files.file-handle]
+            [gdl.graphics]
+            [gdl.input])
+  (:import (com.badlogic.gdx Application
+                             ApplicationListener
+                             Audio
+                             Files
+                             Gdx
+                             Graphics
+                             Input
+                             Input$Buttons
+                             Input$Keys)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration
+                                             Lwjgl3WindowConfiguration)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics GL20)
+           (com.badlogic.gdx.utils SharedLibraryLoader
+                                   Os)
+           (java.awt Taskbar
+                     Toolkit)
+           (org.lwjgl.system Configuration)))
 
-(def k->value
+(let [value->keyword {Os/Android :android
+                      Os/IOS     :ios
+                      Os/Linux   :linux
+                      Os/MacOsX  :mac
+                      Os/Windows :windows}]
+  (defn- operating-system []
+    (value->keyword SharedLibraryLoader/os)))
+
+(defn- set-taskbar-icon! [path]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource path))))
+
+(defn- set-glfw-async! []
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+
+(defn- ->ApplicationListener
+  [{:keys [create
+           dispose
+           render
+           resize
+           pause
+           resume]
+    :as listener}]
+  (assert (and create
+               dispose
+               render
+               resize
+               pause
+               resume)
+          (str "Cant find all functions: (keys listener): " (pr-str (keys listener))))
+  (reify ApplicationListener
+    (create [_]
+      (create {:ctx/app      Gdx/app
+               :ctx/audio    Gdx/audio
+               :ctx/files    Gdx/files
+               :ctx/graphics Gdx/graphics
+               :ctx/input    Gdx/input}))
+    (dispose [_]
+      (dispose))
+    (render [_]
+      (render))
+    (resize [_ width height]
+      (resize width height))
+    (pause [_]
+      (pause))
+    (resume [_]
+      (resume))))
+
+(defn- set-window-config-option! [^Lwjgl3WindowConfiguration object k v]
+  (case k
+    :windowed-mode (.setWindowedMode object
+                                     (int (:width v))
+                                     (int (:height v)))
+    :title (.setTitle object (str v))))
+
+(defn- ->Lwjgl3ApplicationConfiguration [config]
+  (let [obj (Lwjgl3ApplicationConfiguration.)]
+    (doseq [[k v] config]
+      (case k
+        :foreground-fps (.setForegroundFPS obj (int v))
+        (set-window-config-option! obj k v)))
+    obj))
+
+(defn start!
+  [{:keys [listener config]}]
+  (when (= (operating-system) :mac)
+    (set-glfw-async!)
+    (set-taskbar-icon! "icon.png"))
+  (Lwjgl3Application.
+   (->ApplicationListener (utils/execute listener))
+   (->Lwjgl3ApplicationConfiguration config)))
+
+(extend-type Application
+  gdl.application/Application
+  (post-runnable! [this f]
+    (.postRunnable this f)))
+
+(extend-type Audio
+  gdl.audio/Audio
+  (sound [this file-handle]
+    (.newSound this file-handle)))
+
+(extend-type Sound
+  gdl.audio.sound/Sound
+  (play! [this]
+    (.play this))
+  (dispose! [this]
+    (.dispose this)))
+
+(extend-type Files
+  gdl.files/Files
+  (internal [this path]
+    (.internal this path)))
+
+(extend-type FileHandle
+  gdl.files.file-handle/FileHandle
+  (list [this]
+    (.list this))
+  (directory? [this]
+    (.isDirectory this))
+  (extension [this]
+    (.extension this))
+  (path [this]
+    (.path this)))
+
+(extend-type Graphics
+  gdl.graphics/Graphics
+  (delta-time [this]
+    (.getDeltaTime this))
+  (frames-per-second [this]
+    (.getFramesPerSecond this))
+  (set-cursor! [this cursor]
+    (.setCursor this cursor))
+  (cursor [this pixmap hotspot-x hotspot-y]
+    (.newCursor this pixmap hotspot-x hotspot-y))
+  (clear!
+    ([this [r g b a]]
+     (gdl.graphics/clear! this r g b a))
+    ([this r g b a]
+     (let [clear-depth? false
+           apply-antialiasing? false
+           gl20 (.getGL20 this)]
+       (GL20/.glClearColor gl20 r g b a)
+       (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
+                    clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
+                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat this)))
+                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
+         (GL20/.glClear gl20 mask))))))
+
+(def ^:private input-buttons-k->value
+  {:back    Input$Buttons/BACK
+   :forward Input$Buttons/FORWARD
+   :left    Input$Buttons/LEFT
+   :middle  Input$Buttons/MIDDLE
+   :right   Input$Buttons/RIGHT})
+
+(def ^:private input-keys-k->value
   {:a                   Input$Keys/A
    :alt-left            Input$Keys/ALT_LEFT
    :alt-right           Input$Keys/ALT_RIGHT
@@ -184,3 +349,25 @@
    :x                   Input$Keys/X
    :y                   Input$Keys/Y
    :z                   Input$Keys/Z})
+
+(extend-type Input
+  gdl.input/Input
+  (button-just-pressed? [this button]
+    {:pre [(contains? input-buttons-k->value button)]}
+    (.isButtonJustPressed this (input-buttons-k->value button)))
+
+  (key-pressed? [this key]
+    (assert (contains? input-keys-k->value key)
+            (str "(pr-str key): "(pr-str key)))
+    (.isKeyPressed this (input-keys-k->value key)))
+
+  (key-just-pressed? [this key]
+    {:pre [(contains? input-keys-k->value key)]}
+    (.isKeyJustPressed this (input-keys-k->value key)))
+
+  (set-processor! [this input-processor]
+    (.setInputProcessor this input-processor))
+
+  (mouse-position [this]
+    [(.getX this)
+     (.getY this)]))
