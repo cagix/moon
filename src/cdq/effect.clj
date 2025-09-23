@@ -1,18 +1,11 @@
 (ns cdq.effect
-  (:require cdq.effects.audiovisual
-            cdq.effects.projectile
-            cdq.effects.sound
-            cdq.effects.spawn
+  (:require cdq.effects.projectile
             cdq.effects.target-all
             [cdq.effects.target-entity :as target-entity]
-            cdq.effects.target.audiovisual
-            cdq.effects.target.convert
-            cdq.effects.target.damage
-            cdq.effects.target.kill
-            cdq.effects.target.spiderweb
-            cdq.effects.target.stun
             [cdq.entity :as entity]
-            [cdq.stats :as stats])
+            [cdq.entity.faction :as faction]
+            [cdq.stats :as stats]
+            [cdq.timer :as timer])
   (:import (clojure.lang APersistentVector)))
 
 (defprotocol Effect
@@ -39,17 +32,32 @@
   [:effects.target/damage (entity->melee-damage entity)])
 
 (def ^:private k->fn
-  {:effects/audiovisual {:applicable? cdq.effects.audiovisual/applicable?
-                         :useful? cdq.effects.audiovisual/useful?
-                         :handle cdq.effects.audiovisual/handle}
+  {:effects/audiovisual {:applicable? (fn [_ {:keys [effect/target-position]}]
+                                        target-position)
+                         :useful? (fn [_ _effect-ctx _ctx]
+                                    false)
+                         :handle (fn [[_ audiovisual] {:keys [effect/target-position]} _ctx]
+                                   [[:tx/audiovisual target-position audiovisual]])}
    :effects/projectile {:applicable? cdq.effects.projectile/applicable?
                         :useful? cdq.effects.projectile/useful?
                         :handle cdq.effects.projectile/handle}
-   :effects/sound {:applicable? cdq.effects.sound/applicable?
-                   :useful? cdq.effects.sound/useful?
-                   :handle cdq.effects.sound/handle}
-   :effects/spawn {:applicable? cdq.effects.spawn/applicable?
-                   :handle cdq.effects.spawn/handle}
+   :effects/sound {:applicable? (fn [_ _ctx]
+                                  true)
+                   :useful? (fn [_ _effect-ctx _ctx]
+                              false)
+                   :handle (fn [[_ sound] _effect-ctx _ctx]
+                             [[:tx/sound sound]])}
+   :effects/spawn {:applicable? (fn [_ {:keys [effect/source effect/target-position]}]
+                                  (and (:entity/faction @source)
+                                       target-position))
+                   :handle (fn [[_ {:keys [property/id] :as property}]
+                                {:keys [effect/source effect/target-position]}
+                                _ctx]
+                             [[:tx/spawn-creature {:position target-position
+                                                   :creature-property property
+                                                   :components {:entity/fsm {:fsm :fsms/npc
+                                                                             :initial-state :npc-idle}
+                                                                :entity/faction (:entity/faction @source)}}]])}
    :effects/target-all {:applicable? cdq.effects.target-all/applicable?
                         :useful? cdq.effects.target-all/useful?
                         :handle cdq.effects.target-all/handle}
@@ -73,23 +81,56 @@
                                          [[:tx/audiovisual
                                            (target-entity/end-point source* target* maxrange)
                                            :audiovisuals/hit-ground]])))}
-   :effects.target/audiovisual {:applicable? cdq.effects.target.audiovisual/applicable?
-                                :useful? cdq.effects.target.audiovisual/useful?
-                                :handle cdq.effects.target.audiovisual/handle}
-   :effects.target/convert {:applicable? cdq.effects.target.convert/applicable?
-                            :handle cdq.effects.target.convert/handle}
-   :effects.target/damage {:applicable? cdq.effects.target.damage/applicable?
-                           :handle cdq.effects.target.damage/handle}
-   :effects.target/kill {:applicable? cdq.effects.target.kill/applicable?
-                         :handle cdq.effects.target.kill/handle}
+   :effects.target/audiovisual {:applicable? (fn [_ {:keys [effect/target]}]
+                                               target)
+                                :useful? (fn [_ _effect-ctx _ctx]
+                                           false)
+                                :handle (fn [[_ audiovisual] {:keys [effect/target]} _ctx]
+                                          [[:tx/audiovisual (entity/position @target) audiovisual]])}
+   :effects.target/convert {:applicable? (fn [_ {:keys [effect/source effect/target]}]
+                                           (and target
+                                                (= (:entity/faction @target)
+                                                   (faction/enemy (:entity/faction @source)))))
+                            :handle (fn [_ {:keys [effect/source effect/target]} _ctx]
+                                      [[:tx/assoc target :entity/faction (:entity/faction @source)]])}
+   :effects.target/damage {:applicable? (fn [_ {:keys [effect/target]}]
+                                          (and target
+                                               #_(:entity/hp @target))) ; not exist anymore ... bugfix .... -> is 'creature?'
+                           :handle (fn [[_ damage]
+                                        {:keys [effect/source effect/target]}
+                                        _ctx]
+                                     [[:tx/deal-damage source target damage]])}
+   :effects.target/kill {:applicable? (fn [_ {:keys [effect/target]}]
+                                        (and target
+                                             (:entity/fsm @target)))
+                         :handle (fn [_ {:keys [effect/target]} _ctx]
+                                   [[:tx/event target :kill]])}
    :effects.target/melee-damage {:applicable? (fn [_ {:keys [effect/source] :as effect-ctx}]
                                                 (applicable? (melee-damage-effect @source) effect-ctx))
                                  :handle (fn [_ {:keys [effect/source] :as effect-ctx} ctx]
                                            (handle (melee-damage-effect @source) effect-ctx ctx))}
-   :effects.target/spiderweb {:applicable? cdq.effects.target.spiderweb/applicable?
-                              :handle      cdq.effects.target.spiderweb/handle}
-   :effects.target/stun {:applicable? cdq.effects.target.stun/applicable?
-                         :handle      cdq.effects.target.stun/handle}})
+   :effects.target/spiderweb (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
+                                   duration 5]
+
+                               {:applicable? (fn [_ {:keys [effect/target]}]
+                                               ; TODO has stats , for mod-add
+                                               ; e,g, spiderweb on projectile leads to error
+                                               (:creature/stats @target))
+
+                                ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
+                                :handle (fn [_
+                                             {:keys [effect/target]}
+                                             {:keys [ctx/world]}]
+                                          (let [{:keys [world/elapsed-time]} world]
+                                            (when-not (:entity/temp-modifier @target)
+                                              [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
+                                                                                        :counter (timer/create elapsed-time duration)}]
+                                               [:tx/mod-add target modifiers]])))})
+   :effects.target/stun {:applicable? (fn [_ {:keys [effect/target]}]
+                                        (and target
+                                             (:entity/fsm @target)))
+                         :handle      (fn [[_ duration] {:keys [effect/target]} _ctx]
+                                        [[:tx/event target :stun duration]])}})
 
 (extend APersistentVector
   Effect
