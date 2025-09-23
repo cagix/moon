@@ -1,22 +1,228 @@
 (ns cdq.create.graphics
-  (:require [cdq.create.graphics.shape-drawer]
-            [cdq.create.graphics.protocols]
-            [cdq.create.graphics.draw-fns]
-            [cdq.files]
+  (:require [cdq.files]
             [cdq.graphics]
             [clojure.disposable :as disposable]
             [clojure.files :as files]
             [clojure.graphics :as graphics]
-            [clojure.graphics.pixmap :as pixmap]
+            [clojure.graphics.bitmap-font :as bitmap-font]
             [clojure.graphics.color :as color]
+            [clojure.graphics.g2d.batch :as batch]
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.pixmap :as pixmap]
+            [clojure.graphics.texture :as texture]
+            [clojure.graphics.texture-region :as texture-region]
+            [clojure.graphics.viewport :as viewport]
             [clojure.gdx.camera :as camera]
             [clojure.gdx.colors :as colors]
             [clojure.gdx.freetype :as freetype]
+            [clojure.gdx.shape-drawer]
             [clojure.gdx.sprite-batch :as sprite-batch]
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
-            [clojure.gdx.viewport :as viewport]))
+            [clojure.gdx.viewport]
+            [clojure.utils :as utils]))
 
-(defrecord Graphics [])
+(def ^:private draw-fns
+  {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
+                                :as graphics}
+                               width
+                               draws]
+                            (sd/with-line-width shape-drawer width
+                              (fn []
+                                (cdq.graphics/handle-draws! graphics draws))))
+   :draw/grid             (fn
+                            [graphics leftx bottomy gridw gridh cellw cellh color]
+                            (let [w (* (float gridw) (float cellw))
+                                  h (* (float gridh) (float cellh))
+                                  topy (+ (float bottomy) (float h))
+                                  rightx (+ (float leftx) (float w))]
+                              (doseq [idx (range (inc (float gridw)))
+                                      :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+                                (cdq.graphics/handle-draws! graphics
+                                                            [[:draw/line [linex topy] [linex bottomy] color]]))
+                              (doseq [idx (range (inc (float gridh)))
+                                      :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+                                (cdq.graphics/handle-draws! graphics
+                                                            [[:draw/line [leftx liney] [rightx liney] color]]))))
+   :draw/texture-region   (fn [{:keys [graphics/batch
+                                       graphics/unit-scale
+                                       graphics/world-unit-scale]}
+                               texture-region
+                               [x y]
+                               & {:keys [center? rotation]}]
+                            (let [[w h] (let [dimensions (texture-region/dimensions texture-region)]
+                                          (if (= @unit-scale 1)
+                                            dimensions
+                                            (mapv (comp float (partial * world-unit-scale))
+                                                  dimensions)))]
+                              (if center?
+                                (batch/draw! batch
+                                             texture-region
+                                             (- (float x) (/ (float w) 2))
+                                             (- (float y) (/ (float h) 2))
+                                             [w h]
+                                             (or rotation 0))
+                                (batch/draw! batch
+                                             texture-region
+                                             x
+                                             y
+                                             [w h]
+                                             0))))
+   :draw/text             (fn [{:keys [graphics/batch
+                                       graphics/unit-scale
+                                       graphics/default-font]}
+                               {:keys [font scale x y text h-align up?]}]
+                            (bitmap-font/draw! (or font default-font)
+                                               batch
+                                               {:scale (* (float @unit-scale)
+                                                          (float (or scale 1)))
+                                                :text text
+                                                :x x
+                                                :y y
+                                                :up? up?
+                                                :h-align h-align
+                                                :target-width 0
+                                                :wrap? false}))
+   :draw/ellipse          (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/ellipse! shape-drawer x y radius-x radius-y))
+   :draw/filled-ellipse   (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
+   :draw/circle           (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/circle! shape-drawer x y radius))
+   :draw/filled-circle    (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/filled-circle! shape-drawer x y radius))
+   :draw/rectangle        (fn [{:keys [graphics/shape-drawer]} x y w h color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/rectangle! shape-drawer x y w h))
+   :draw/filled-rectangle (fn [{:keys [graphics/shape-drawer]} x y w h color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/filled-rectangle! shape-drawer x y w h))
+   :draw/arc              (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/arc! shape-drawer
+                                     center-x
+                                     center-y
+                                     radius
+                                     (utils/degree->radians start-angle)
+                                     (utils/degree->radians degree)))
+   :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/sector! shape-drawer
+                                        center-x
+                                        center-y
+                                        radius
+                                        (utils/degree->radians start-angle)
+                                        (utils/degree->radians degree)))
+   :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
+                            (sd/set-color! shape-drawer color)
+                            (sd/line! shape-drawer sx sy ex ey))})
+
+(defn- create-shape-drawer
+  [{:keys [graphics/batch
+           graphics/shape-drawer-texture]
+    :as graphics}]
+  (assoc graphics :graphics/shape-drawer (clojure.gdx.shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))))
+
+(defrecord Graphics []
+  cdq.graphics/DrawHandler
+  (handle-draws! [graphics draws]
+    (doseq [{k 0 :as component} draws
+            :when component]
+      (apply (draw-fns k) graphics (rest component))))
+
+  disposable/Disposable
+  (dispose! [{:keys [graphics/batch
+                     graphics/cursors
+                     graphics/default-font
+                     graphics/shape-drawer-texture
+                     graphics/textures]}]
+    (disposable/dispose! batch)
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font)
+    (disposable/dispose! shape-drawer-texture)
+    (run! disposable/dispose! (vals textures)))
+
+  cdq.graphics/Graphics
+  (clear! [{:keys [graphics/core]} [r g b a]]
+    (graphics/clear! core r g b a))
+
+  (draw-on-world-viewport!
+    [{:keys [graphics/batch
+             graphics/shape-drawer
+             graphics/unit-scale
+             graphics/world-unit-scale
+             graphics/world-viewport]}
+     f]
+    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
+    ; -> also Widgets, etc. ? check.
+    (batch/set-color! batch color/white)
+    (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
+    (batch/begin! batch)
+    (sd/with-line-width shape-drawer world-unit-scale
+      (fn []
+        (reset! unit-scale world-unit-scale)
+        (f)
+        (reset! unit-scale 1)))
+    (batch/end! batch))
+
+  (draw-tiled-map!
+    [{:keys [graphics/tiled-map-renderer
+             graphics/world-viewport]}
+     tiled-map
+     color-setter]
+    (tm-renderer/draw! tiled-map-renderer
+                       world-viewport
+                       tiled-map
+                       color-setter))
+
+  (set-cursor!
+    [{:keys [graphics/cursors
+             graphics/core]}
+     cursor-key]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! core (get cursors cursor-key)))
+
+  (delta-time
+    [{:keys [graphics/core]}]
+    (graphics/delta-time core))
+
+  (frames-per-second
+    [{:keys [graphics/core]}]
+    (graphics/frames-per-second core))
+
+  (world-viewport-width  [{:keys [graphics/world-viewport]}] (:viewport/width  world-viewport))
+  (world-viewport-height [{:keys [graphics/world-viewport]}] (:viewport/height world-viewport))
+
+  (camera-position [{:keys [graphics/world-viewport]}] (:camera/position     (:viewport/camera world-viewport)))
+  (visible-tiles   [{:keys [graphics/world-viewport]}] (camera/visible-tiles (:viewport/camera world-viewport)))
+  (camera-frustum  [{:keys [graphics/world-viewport]}] (camera/frustum       (:viewport/camera world-viewport)))
+  (camera-zoom     [{:keys [graphics/world-viewport]}] (:camera/zoom         (:viewport/camera world-viewport)))
+
+  (change-zoom! [{:keys [graphics/world-viewport]} amount]
+    (camera/inc-zoom! (:viewport/camera world-viewport) amount))
+
+  (set-camera-position! [{:keys [graphics/world-viewport]} position]
+    (camera/set-position! (:viewport/camera world-viewport) position))
+
+  (unproject-ui    [{:keys [graphics/ui-viewport]}    position] (viewport/unproject ui-viewport    position))
+  (unproject-world [{:keys [graphics/world-viewport]} position] (viewport/unproject world-viewport position))
+
+  (update-viewports! [{:keys [graphics/ui-viewport
+                              graphics/world-viewport]} width height]
+    (viewport/update! ui-viewport    width height {:center? true})
+    (viewport/update! world-viewport width height {:center? false}))
+
+  (texture-region [{:keys [graphics/textures]}
+                   {:keys [image/file image/bounds]}]
+    (assert file)
+    (assert (contains? textures file))
+    (let [texture (get textures file)]
+      (if bounds
+        (texture/region texture bounds)
+        (texture/region texture)))))
 
 (defn- create-batch [graphics]
   (assoc graphics :graphics/batch (sprite-batch/create)))
@@ -66,20 +272,20 @@
   (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
 (defn- create-ui-viewport [graphics ui-viewport]
-  (assoc graphics :graphics/ui-viewport (viewport/create (:width  ui-viewport)
-                                                         (:height ui-viewport)
-                                                         (camera/orthographic))))
+  (assoc graphics :graphics/ui-viewport (clojure.gdx.viewport/create (:width  ui-viewport)
+                                                                     (:height ui-viewport)
+                                                                     (camera/orthographic))))
 
 (defn- create-world-viewport [{:keys [graphics/world-unit-scale]
                                :as graphics}
                               world-viewport]
   (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                             (viewport/create world-width
-                                                              world-height
-                                                              (camera/orthographic :y-down? false
-                                                                                   :world-width world-width
-                                                                                   :world-height world-height)))))
+                                             (clojure.gdx.viewport/create world-width
+                                                                          world-height
+                                                                          (camera/orthographic :y-down? false
+                                                                                               :world-width world-width
+                                                                                               :world-height world-height)))))
 
 (defn- create*
   [{:keys [textures-to-load
@@ -95,7 +301,7 @@
       (create-default-font default-font)
       create-batch
       create-shape-drawer-texture
-      cdq.create.graphics.shape-drawer/do!
+      create-shape-drawer
       (create-textures textures-to-load)
       (add-unit-scales world-unit-scale)
       tiled-map-renderer
@@ -122,15 +328,6 @@
    :world-viewport world-viewport
    :textures-to-load (cdq.files/search files texture-folder)})
 
-(defn- extend-draws [graphics]
-  (extend-type (class graphics)
-    cdq.graphics/DrawHandler
-    (handle-draws! [graphics draws]
-      (doseq [{k 0 :as component} draws
-              :when component]
-        (apply (cdq.create.graphics.draw-fns/k->fn k) graphics (rest component)))))
-  graphics)
-
 (defn do!
   [{:keys [ctx/files
            ctx/graphics]
@@ -138,6 +335,4 @@
    config]
   (colors/put! (:colors config))
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
-                               (create* graphics)
-                               (extend-draws)
-                               cdq.create.graphics.protocols/do!)))
+                               (create* graphics))))
