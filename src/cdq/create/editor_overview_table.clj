@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.overview-table
+(ns cdq.create.editor-overview-table
   (:require [cdq.db :as db]
             [cdq.editor]
             [cdq.graphics :as graphics]
@@ -46,7 +46,7 @@
                                :label/text extra-info-text
                                :actor/touchable :disabled}]}})))
 
-(defn- create
+(defn create
   [{:keys [ctx/db
            ctx/graphics]}
    property-type
@@ -65,10 +65,3 @@
                  :extra-info-text (extra-info-text property)}))
          (partition-all columns)
          (create* image-scale))))
-
-(defn extend-ctx [ctx]
-  (extend-type (class ctx)
-    cdq.editor/Editor
-    (overview-table-rows [ctx property-type clicked-id-fn]
-      (create ctx property-type clicked-id-fn)))
-  ctx)

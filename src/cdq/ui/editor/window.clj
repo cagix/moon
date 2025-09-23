@@ -12,8 +12,6 @@
             [clojure.scene2d.ui.widget-group :as widget-group]
             [malli.map-schema :as map-schema]))
 
-(defn init! [ctx] ctx)
-
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
   )

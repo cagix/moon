@@ -1,6 +1,5 @@
 (ns cdq.application.create
-  (:require cdq.create.initial-record
-            cdq.create.ctx-schema
+  (:require cdq.create.editor-overview-table
             cdq.create.info
             cdq.create.txs
             cdq.create.load-entity-states
@@ -15,8 +14,9 @@
             cdq.create.reset-world
             cdq.create.spawn-player
             cdq.create.spawn-enemies
-            cdq.impl.db
-            cdq.ui.editor.overview-table
+            [cdq.ctx :as ctx]
+            [cdq.editor]
+            cdq.create.db
             cdq.ui.editor.window
             cdq.world-fns.tmx
             clojure.decl
@@ -24,7 +24,43 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [malli.core :as m]
+            [malli.utils]
+            [qrecord.core :as q]))
+
+(defn- actions!
+  [txs-fn-map ctx transactions]
+  (loop [ctx ctx
+         transactions transactions
+         handled-transactions []]
+    (if (seq transactions)
+      (let [[k & params :as transaction] (first transactions)]
+        (if transaction
+          (let [_ (assert (vector? transaction))
+                f (get txs-fn-map k)
+                new-transactions (try
+                                  (apply f ctx params)
+                                  (catch Throwable t
+                                    (throw (ex-info "Error handling transaction"
+                                                    {:transaction transaction}
+                                                    t))))]
+            (recur ctx
+                   (concat (or new-transactions []) (rest transactions))
+                   (conj handled-transactions transaction)))
+          (recur ctx
+                 (rest transactions)
+                 handled-transactions)))
+      handled-transactions)))
+
+(defn- create-fn-map [{:keys [ks sym-format]}]
+  (into {}
+        (for [k ks
+              :let [sym (symbol (format sym-format (name k)))
+                    f (requiring-resolve sym)]]
+          (do
+           (assert f (str "Cannot resolve " sym))
+           [k f]))))
 
 (defn- require-resolve-symbols [form]
   (if (and (symbol? form)
@@ -41,35 +77,60 @@
        (edn/read-string {:readers {'edn/resource edn-resource}})
        (walk/postwalk require-resolve-symbols)))
 
+(q/defrecord Context [])
+
+(def ^:private schema
+  (m/schema
+   [:map {:closed true}
+    [:ctx/app :some]
+    [:ctx/audio :some]
+    [:ctx/db :some]
+    [:ctx/graphics :some]
+    [:ctx/world :some]
+    [:ctx/input :some]
+    [:ctx/controls :some]
+    [:ctx/stage :some]
+    [:ctx/vis-ui :some]
+    [:ctx/mouseover-actor :any]
+    [:ctx/ui-mouse-position :some]
+    [:ctx/world-mouse-position :some]
+    [:ctx/interaction-state :some]]))
+
+(extend-type Context
+  ctx/Validation
+  (validate [ctx]
+    (malli.utils/validate-humanize schema ctx)
+    ctx))
+
+(extend-type Context
+  cdq.editor/Editor
+  (overview-table-rows [ctx property-type clicked-id-fn]
+    (cdq.create.editor-overview-table/create ctx
+                                             property-type
+                                             clicked-id-fn)))
+
+(extend-type Context
+  cdq.ctx/InfoText
+  (info-text [ctx entity]
+    (cdq.create.info/info-text ctx entity)))
+
+(let [txs-fn-map (create-fn-map (edn-resource "txs.edn"))]
+  (extend-type Context
+    ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (actions! txs-fn-map ctx transactions))))
+
 (def ^:private pipeline
-  [
-   [cdq.create.initial-record/merge-into-record]
-   [cdq.create.ctx-schema/extend-validation
-    [:map {:closed true}
-     [:ctx/app :some]
-     [:ctx/audio :some]
-     [:ctx/db :some]
-     [:ctx/graphics :some]
-     [:ctx/world :some]
-     [:ctx/input :some]
-     [:ctx/controls :some]
-     [:ctx/stage :some]
-     [:ctx/vis-ui :some]
-     [:ctx/mouseover-actor :any]
-     [:ctx/ui-mouse-position :some]
-     [:ctx/world-mouse-position :some]
-     [:ctx/interaction-state :some]]]
-   [cdq.ui.editor.overview-table/extend-ctx]
-   [cdq.ui.editor.window/init!]
+  [[(fn [ctx]
+      (merge (map->Context {})
+             ctx))]
    [assoc
     :ctx/mouseover-actor nil
     :ctx/ui-mouse-position true
     :ctx/world-mouse-position true
     :ctx/interaction-state true]
-   [clojure.decl/assoc* :ctx/db [cdq.impl.db/create {:schemas "schema.edn"
-                                                     :properties "properties.edn"}]]
-   [cdq.create.info/do!]
-   [cdq.create.txs/do! (edn-resource "txs.edn")]
+   [clojure.decl/assoc* :ctx/db [cdq.create.db/create {:schemas "schema.edn"
+                                                       :properties "properties.edn"}]]
    [cdq.create.load-entity-states/do! (edn-resource "entity_states.edn")]
    [cdq.create.load-effects/do! (edn-resource "effects_fn_map.edn")]
    [assoc :ctx/controls {:zoom-in :minus

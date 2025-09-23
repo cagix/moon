@@ -1,6 +1,5 @@
 (ns cdq.create.info
-  (:require [cdq.ctx :as ctx]
-            [cdq.stats :as stats]
+  (:require [cdq.stats :as stats]
             [cdq.stats.op :as op]
             [cdq.timer :as timer]
             [clojure.math :as math]
@@ -194,24 +193,20 @@
    :maxrange (fn [[_ v] _ctx]
                v)})
 
-(defn do! [ctx]
-  (extend-type (class ctx)
-    cdq.ctx/InfoText
-    (info-text [ctx entity]
-      (let [component-info (fn [[k v]]
-                             (let [s (if-let [info-fn (info-fns k)]
-                                       (info-fn [k v] ctx))]
-                               (if-let [color (k->colors k)]
-                                 (str "[" color "]" s "[]")
-                                 s)))]
-        (->> entity
-             (utils/sort-by-k-order k-order)
-             (keep (fn [{k 0 v 1 :as component}]
-                     (str (try (component-info component)
-                               (catch Throwable t
-                                 (str "*info-error* " k)))
-                          (when (map? v)
-                            (str "\n" (ctx/info-text ctx v))))))
-             (str/join "\n")
-             remove-newlines))))
-  ctx)
+(defn info-text [ctx entity]
+  (let [component-info (fn [[k v]]
+                         (let [s (if-let [info-fn (info-fns k)]
+                                   (info-fn [k v] ctx))]
+                           (if-let [color (k->colors k)]
+                             (str "[" color "]" s "[]")
+                             s)))]
+    (->> entity
+         (utils/sort-by-k-order k-order)
+         (keep (fn [{k 0 v 1 :as component}]
+                 (str (try (component-info component)
+                           (catch Throwable t
+                             (str "*info-error* " k)))
+                      (when (map? v)
+                        (str "\n" (info-text ctx v))))))
+         (str/join "\n")
+         remove-newlines)))
