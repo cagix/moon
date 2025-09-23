@@ -17,7 +17,6 @@
 
             [cdq.ctx :as ctx]
 
-            cdq.ui.editor.window
             cdq.world-fns.tmx
 
             [clojure.disposable :as disposable]
