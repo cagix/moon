@@ -5,26 +5,6 @@
             [clojure.utils :as utils]
             [gdl.scene2d.stage :as stage]))
 
-#_(defprotocol ApplicationOrContextComponent
-  (on-resize [_ width height])
-  (on-dispose [_]))
-
-; mandatory dispose call on all ??
-
-; TODO
-; 1. gdx/state pass from create ✅
-; 2. gdx/state pass as one ✅
-; 3. naming ✅
-; 3. dispose over all elements ? `gdl.utils.disposable` -> also app ?!
-; 4. resize over all elements ?
-; 5. do not use `gdl.scene2d.stage` but `cdq.stage` ?
-; 6. stage into the pipeline -> dont give app/state
-; set-ctx! and don't do `swap!` in handlers but return new ctx
-; then get the new ctx (after InputQueue drain before render)
-; and set it to nil again
-
-; => DO NOT USE cdq.application/state at all ...
-
 (defn create [{:keys [create-pipeline
                       render-pipeline
                       state]}]
