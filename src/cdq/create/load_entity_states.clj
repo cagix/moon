@@ -2,7 +2,7 @@
   (:require [cdq.entity.state :as state])
   (:import (clojure.lang APersistentVector)))
 
-(defn do! [ctx fn->k->var]
+(defn do! [fn->k->var]
   (extend APersistentVector
     state/State
     {:create (fn [[k v] eid ctx]
@@ -35,6 +35,4 @@
 
      :draw-gui-view (fn [[k] eid ctx]
                       (when-let [f (k (:draw-gui-view fn->k->var))]
-                        (f eid ctx)))
-     })
-  ctx)
+                        (f eid ctx)))}))
