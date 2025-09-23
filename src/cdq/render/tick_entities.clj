@@ -233,25 +233,8 @@
                             :entity/id (:entity/id @eid)}
                            t))))))
 
-(defn- tick-entities!
+(defn tick-entities!
   [{:keys [ctx/world]
     :as ctx}]
   (doseq [eid (:world/active-entities world)]
     (tick-entity! ctx eid)))
-
-(defn- do!*
-  [{:keys [ctx/stage]
-    :as ctx}]
-  (try
-   (tick-entities! ctx)
-   (catch Throwable t
-     (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
-                           [:tx/show-error-window t]])
-     #_(bind-root ::error t)))
-  ctx)
-
-(defn do!
-  [ctx]
-  (if (:world/paused? (:ctx/world ctx))
-    ctx
-    (do!* ctx)))
