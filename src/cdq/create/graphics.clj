@@ -27,8 +27,8 @@
                                                    (pixmap/dispose! pixmap)
                                                    texture)))
 
-(defn- assoc-gdx [graphics gdx-graphics]
-  (assoc graphics :graphics/core gdx-graphics))
+(defn- assoc-gdl-graphics [graphics gdl-graphics]
+  (assoc graphics :graphics/core gdl-graphics))
 
 (defn- create-cursors [{:keys [graphics/core]
                         :as graphics}
@@ -44,10 +44,12 @@
   (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
                                                                  (:params default-font))))
 
-(defn- create-textures [graphics textures-to-load]
+(defn- create-textures
+  [{:keys [graphics/core]
+    :as graphics} textures-to-load]
   (assoc graphics :graphics/textures
          (into {} (for [[path file-handle] textures-to-load]
-                    [path (texture/from-file file-handle)]))))
+                    [path (graphics/texture core file-handle)]))))
 
 (defn- add-unit-scales [graphics world-unit-scale]
   (assoc graphics
@@ -84,7 +86,7 @@
            world-viewport]}
    graphics]
   (-> (map->Graphics {})
-      (assoc-gdx graphics)
+      (assoc-gdl-graphics graphics)
       (create-cursors cursors)
       (create-default-font default-font)
       create-batch

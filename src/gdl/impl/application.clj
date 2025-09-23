@@ -6,6 +6,7 @@
             [gdl.files]
             [gdl.files.file-handle]
             [gdl.graphics]
+            [gdl.graphics.texture]
             [gdl.input])
   (:import (com.badlogic.gdx Application
                              ApplicationListener
@@ -21,7 +22,9 @@
                                              Lwjgl3WindowConfiguration)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics GL20)
+           (com.badlogic.gdx.graphics GL20
+                                      Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.utils SharedLibraryLoader
                                    Os)
            (java.awt Taskbar
@@ -155,7 +158,27 @@
                     clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
                     (and apply-antialiasing? (.coverageSampling (.getBufferFormat this)))
                     (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
-         (GL20/.glClear gl20 mask))))))
+         (GL20/.glClear gl20 mask)))))
+  (texture [this file-handle]
+    (Texture. ^FileHandle file-handle)))
+
+(extend-type Texture
+  gdl.graphics.texture/Texture
+  (region
+    ([this]
+     (TextureRegion. this))
+    ([this [x y w h]]
+     (TextureRegion. this
+                     (int x)
+                     (int y)
+                     (int w)
+                     (int h)))
+    ([this x y w h]
+     (TextureRegion. this
+                     (int x)
+                     (int y)
+                     (int w)
+                     (int h)))))
 
 (def ^:private input-buttons-k->value
   {:back    Input$Buttons/BACK

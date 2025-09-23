@@ -1,13 +1,13 @@
 (ns cdq.create.graphics.protocols
   (:require [cdq.graphics]
             [gdl.impl.camera :as camera]
-            [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.g2d.batch :as batch]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport :as viewport]))
 
 (defn do! [graphics]

@@ -6,12 +6,12 @@
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
-            [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
+            [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
             [gdl.input :as input]
             [gdl.impl.application]
@@ -138,7 +138,7 @@
                    :ctx/textures (into {} (for [[path file-handle] (files/search files
                                                                                  {:folder "resources/"
                                                                                   :extensions #{"png" "bmp"}})]
-                                            [path (texture/from-file file-handle)]))
+                                            [path (graphics/texture graphics file-handle)]))
                    :ctx/camera (:viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
