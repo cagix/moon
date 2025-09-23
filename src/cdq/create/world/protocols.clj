@@ -1,6 +1,7 @@
 (ns cdq.create.world.protocols
   (:require cdq.impl.content-grid
             cdq.impl.grid
+            cdq.potential-fields.movement
             [cdq.world.grid.cell :as cell]
             [cdq.world]
             [clojure.math.vector2 :as v]
@@ -70,9 +71,8 @@
                      (:body/position (:entity/body target)))))
 
     cdq.world/MovementAI
-    (find-movement-direction [{:keys [world/grid
-                                      world/movement-ai]} eid]
-      (movement-ai grid eid))
+    (find-movement-direction [{:keys [world/grid]} eid]
+      (cdq.potential-fields.movement/find-movement-direction grid eid))
 
     disposable/Disposable
     (dispose! [{:keys [world/tiled-map]}]

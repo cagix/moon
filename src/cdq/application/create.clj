@@ -25,7 +25,6 @@
 
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.walk :as walk]
 
             [malli.core :as m]
             [malli.utils]
@@ -56,20 +55,11 @@
                  handled-transactions)))
       handled-transactions)))
 
-(defn- require-resolve-symbols [form]
-  (if (and (symbol? form)
-           (namespace form))
-    (let [avar (requiring-resolve form)]
-      (assert avar form)
-      avar)
-    form))
-
 (defn- edn-resource [path]
   (->> path
        io/resource
        slurp
-       (edn/read-string {:readers {'edn/resource edn-resource}})
-       (walk/postwalk require-resolve-symbols)))
+       edn/read-string))
 
 (q/defrecord Context [])
 

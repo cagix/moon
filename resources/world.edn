@@ -1,5 +1,4 @@
 {:initial-state {:content-grid-cell-size 16
-                 :world/movement-ai cdq.potential-fields.movement/find-movement-direction
                  :world/factions-iterations {:good 15 :evil 5}
                  :world/max-delta 0.04
                  :world/minimum-size 0.39
