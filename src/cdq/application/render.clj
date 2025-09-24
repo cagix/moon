@@ -1,4 +1,3 @@
-; TODO only audio/stage/world/graphics/db...
 (ns cdq.application.render
   (:require [cdq.ctx :as ctx]
             [cdq.creature :as creature]
@@ -71,10 +70,7 @@
     :as ctx}]
   (if (:world/paused? (:ctx/world ctx))
     ctx
-    (let [delta-ms (min (graphics/delta-time graphics) (:world/max-delta world))]
-      (-> ctx
-          (assoc-in [:ctx/world :world/delta-time] delta-ms)
-          (update-in [:ctx/world :world/elapsed-time] + delta-ms)))))
+    (update ctx :ctx/world world/update-time (graphics/delta-time graphics))))
 
 (defn- assoc-paused
   [{:keys [ctx/input

@@ -94,6 +94,14 @@
   (update-potential-fields! [world]
     (cdq.potential-fields.update/do! world))
 
+  (update-time [{:keys [world/max-delta]
+                 :as world}
+                delta-ms]
+    (let [delta-ms (min delta-ms max-delta)]
+      (-> world
+          (assoc :world/delta-time delta-ms)
+          (update :world/elapsed-time + delta-ms))))
+
   cdq.world/FSMs
   (handle-event [world eid event]
     (cdq.world/handle-event world eid event nil))

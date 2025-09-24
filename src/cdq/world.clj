@@ -22,4 +22,5 @@
                 [_ eid event params]))
 
 (defprotocol Update
-  (update-potential-fields! [_]))
+  (update-potential-fields! [_])
+  (update-time [_ delta-ms]))
