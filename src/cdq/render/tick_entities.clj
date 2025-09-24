@@ -42,24 +42,25 @@
 (defn- alert-friendlies-after-duration
   [{:keys [counter faction]}
    eid
-   {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+   {:keys [world/elapsed-time
+           world/grid]}]
+  (when (timer/stopped? elapsed-time counter)
     (cons [:tx/mark-destroyed eid]
           (for [friendly-eid (->> {:position (entity/position @eid)
                                    :radius 4}
-                                  (grid/circle->entities (:world/grid world))
+                                  (grid/circle->entities grid)
                                   (filter #(= (:entity/faction @%) faction)))]
             [:tx/event friendly-eid :alert]))))
 
-(defn- update-animation [animation eid {:keys [ctx/world]}]
-  [[:tx/assoc eid :entity/animation (animation/tick animation (:world/delta-time world))]])
+(defn- update-animation [animation eid {:keys [world/delta-time]}]
+  [[:tx/assoc eid :entity/animation (animation/tick animation delta-time)]])
 
-(defn- delete-after-animation-stopped [_ eid _ctx]
+(defn- delete-after-animation-stopped [_ eid _world]
   (when (animation/stopped? (:entity/animation @eid))
     [[:tx/mark-destroyed eid]]))
 
-(defn- delete-after-duration [counter eid {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+(defn- delete-after-duration [counter eid {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
     [[:tx/mark-destroyed eid]]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
@@ -90,8 +91,10 @@
            rotate-in-movement-direction?]
     :as movement}
    eid
-   {:keys [ctx/world]}]
-  (assert (<= 0 speed (:world/max-speed world))
+   {:keys [world/delta-time
+           world/grid
+           world/max-speed]}]
+  (assert (<= 0 speed max-speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
               (utils/nearly-equal? 1 (v/length direction)))
@@ -99,19 +102,18 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time (:world/delta-time world))
+    (let [movement (assoc movement :delta-time delta-time)
           body (:entity/body @eid)]
       (when-let [body (if (:body/collides? body)
-                        (try-move-solid-body (:world/grid world) body (:entity/id @eid) movement)
+                        (try-move-solid-body grid body (:entity/id @eid) movement)
                         (move-body body movement))]
         [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))
 
 (defn- check-projectile-collision
   [{:keys [entity-effects already-hit-bodies piercing?]}
    eid
-   {:keys [ctx/world]}]
-  (let [grid (:world/grid world)
-        entity @eid
+   {:keys [world/grid]}]
+  (let [entity @eid
         cells* (map deref (g2d/get-cells grid (body/touched-tiles (:entity/body entity))))
         hit-entity (first (filter #(and (not (contains? already-hit-bodies %))
                                         (not= (:entity/faction entity)
@@ -136,10 +138,10 @@
          :effect/target hit-entity}
         entity-effects])]))
 
-(defn- update-skills-cooldown [skills eid {:keys [ctx/world]}]
+(defn- update-skills-cooldown [skills eid {:keys [world/elapsed-time]}]
   (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
         :when (and cooling-down?
-                   (timer/stopped? (:world/elapsed-time world) cooling-down?))]
+                   (timer/stopped? elapsed-time cooling-down?))]
     [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
@@ -155,7 +157,8 @@
 (defn- update-active-skill
   [{:keys [skill effect-ctx counter]}
    eid
-   {:keys [ctx/world]}]
+   {:keys [world/elapsed-time]
+    :as world}]
   (cond
    (not (effect/some-applicable? (update-effect-ctx world effect-ctx) ; TODO how 2 test
                                  (:skill/effects skill)))
@@ -163,43 +166,43 @@
     ; TODO some sound ?
     ]
 
-   (timer/stopped? (:world/elapsed-time world) counter)
+   (timer/stopped? elapsed-time counter)
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
-(defn- update-npc-idle [_ eid {:keys [ctx/world]}]
+(defn- update-npc-idle [_ eid world]
   (let [effect-ctx (npc-effect-ctx world eid)]
     (if-let [skill (npc-choose-skill world @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
       [[:tx/event eid :movement-direction (or (world/find-movement-direction world eid)
                                               [0 0])]])))
 
-(defn- update-npc-moving [{:keys [timer]} eid {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) timer)
+(defn- update-npc-moving [{:keys [timer]} eid {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time timer)
     [[:tx/event eid :timer-finished]]))
 
-(defn- update-npc-sleeping [_ eid {:keys [ctx/world]}]
+(defn- update-npc-sleeping [_ eid {:keys [world/grid]}]
   (let [entity @eid]
-    (when-let [distance (grid/nearest-enemy-distance (:world/grid world) entity)]
+    (when-let [distance (grid/nearest-enemy-distance grid entity)]
       (when (<= distance (stats/get-stat-value (:creature/stats entity) :entity/aggro-range))
         [[:tx/event eid :alert]]))))
 
-(defn- tick-stunned-timer [{:keys [counter]} eid {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+(defn- tick-stunned-timer [{:keys [counter]} eid {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
     [[:tx/event eid :effect-wears-off]]))
 
 (defn- tick-string-effect-timer
   [{:keys [counter]}
    eid
-   {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+   {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
     [[:tx/dissoc eid :entity/string-effect]]))
 
 (defn- tick-temp-modifier
   [{:keys [modifiers counter]}
    eid
-   {:keys [ctx/world]}]
-  (when (timer/stopped? (:world/elapsed-time world) counter)
+   {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time counter)
     [[:tx/dissoc eid :entity/temp-modifier]
      [:tx/mod-remove eid modifiers]]))
 
@@ -226,4 +229,4 @@
           [k v] @eid
           :let [f (k->tick-fn k)]
           :when f]
-    (ctx/handle-txs! ctx (f v eid ctx))))
+    (ctx/handle-txs! ctx (f v eid world))))
