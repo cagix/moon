@@ -1,6 +1,6 @@
 (ns cdq.create.ui.entity-info
-  (:require [cdq.ctx :as ctx]
-            [cdq.stage :as stage]
+  (:require [cdq.stage :as stage]
+            [cdq.world :as world]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.ui.label :as label]
@@ -26,9 +26,9 @@
 ; * item
 ; => can test separately !?
 
-(defn- ->label-text [entity ctx]
+(defn- ->label-text [entity world]
   ; don't use select-keys as it loses Entity record type
-  (ctx/info-text ctx (apply dissoc entity disallowed-keys)))
+  (world/info-text world (apply dissoc entity disallowed-keys)))
 
 (defn create [{:keys [ctx/stage]}]
   (let [y-position 0
@@ -46,10 +46,9 @@
     ; => fix size somehow.
     (group/add! window (scene2d/build
                         {:actor/type :actor.type/actor
-                         :act (fn [_this _delta {:keys [ctx/world]
-                                                 :as ctx}]
+                         :act (fn [_this _delta {:keys [ctx/world]}]
                                 (label/set-text! label (str (if-let [eid (:world/mouseover-eid world)]
-                                                              (->label-text @eid ctx)
+                                                              (->label-text @eid world)
                                                               "")))
                                 (widget-group/pack! window))}))
     window))

@@ -1,5 +1,6 @@
 (ns cdq.create.world
-  (:require cdq.impl.content-grid
+  (:require cdq.create.world.info
+            cdq.impl.content-grid
             cdq.impl.grid
             [cdq.malli :as m]
             cdq.potential-fields.movement
@@ -87,6 +88,10 @@
              [:entity/projectile-collision {:optional true} :some]]))
 
 (defrecord World []
+  cdq.world/InfoText
+  (info-text [world entity]
+    (cdq.create.world.info/info-text world entity))
+
   cdq.world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]
     (blocked? raycaster start target))

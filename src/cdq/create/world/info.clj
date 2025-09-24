@@ -1,4 +1,4 @@
-(ns cdq.create.info
+(ns cdq.create.world.info
   (:require [cdq.stats :as stats]
             [cdq.stats.op :as op]
             [cdq.timer :as timer]
@@ -96,10 +96,10 @@
    :entity-effects])
 
 (def ^:private info-fns
-  {:creature/level (fn [[_ v] _ctx]
+  {:creature/level (fn [[_ v] _world]
                      (str "Level: " v))
 
-   :creature/stats (fn [[_ stats] _ctx]
+   :creature/stats (fn [[_ stats] _world]
                      (str/join "\n" (concat
                                      ["*STATS*"
                                       (str "Mana: " (if (:entity/mana stats)
@@ -110,10 +110,10 @@
                                        (str (str/capitalize (name stat-k)) ": "
                                             (stats/get-stat-value stats stat-k))))))
 
-   :effects.target/convert (fn [_ _ctx]
+   :effects.target/convert (fn [_ _world]
                              "Converts target to your side.")
 
-   :effects.target/damage (fn [[_ {[min max] :damage/min-max}] _ctx]
+   :effects.target/damage (fn [[_ {[min max] :damage/min-max}] _world]
                             (str min "-" max " damage")
                             #_(if source
                                 (let [modified (stats/damage @source damage)]
@@ -123,80 +123,80 @@
                                 (damage/info-text damage)) ; property menu no source,modifiers
                             )
 
-   :effects.target/kill (fn [_ _ctx]
+   :effects.target/kill (fn [_ _world]
                           "Kills target")
 
-   :effects.target/melee-damage (fn [_ _ctx]
+   :effects.target/melee-damage (fn [_ _world]
                                   (str "Damage based on entity strength."
                                        #_(when source
                                            (str "\n" (damage-info (entity->melee-damage @source))))))
 
-   :effects.target/spiderweb (fn [_ _ctx]
+   :effects.target/spiderweb (fn [_ _world]
                                "Spiderweb slows 50% for 5 seconds.")
 
-   :effects.target/stun (fn [[_ duration] _ctx]
+   :effects.target/stun (fn [[_ duration] _world]
                           (str "Stuns for " (utils/readable-number duration) " seconds"))
 
-   :effects/spawn (fn [[_ {:keys [property/pretty-name]}] _ctx]
+   :effects/spawn (fn [[_ {:keys [property/pretty-name]}] _world]
                     (str "Spawns a " pretty-name))
 
-   :effects/target-all (fn [_ _ctx]
+   :effects/target-all (fn [_ _world]
                          "All visible targets")
 
-   :entity/delete-after-duration (fn [[_ counter] {:keys [ctx/world]}]
-                                   (str "Remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))
+   :entity/delete-after-duration (fn [[_ counter] {:keys [world/elapsed-time]}]
+                                   (str "Remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
 
-   :entity/faction (fn [[_ faction] _ctx]
+   :entity/faction (fn [[_ faction] _world]
                      (str "Faction: " (name faction)))
 
-   :entity/fsm (fn [[_ fsm] _ctx]
+   :entity/fsm (fn [[_ fsm] _world]
                  (str "State: " (name (:state fsm))))
 
-   :entity/modifiers (fn [[_ mods] _ctx]
+   :entity/modifiers (fn [[_ mods] _world]
                        (when (seq mods)
                          (str/join "\n" (keep (fn [[k ops]]
                                                 (ops-info-text ops k)) mods))))
 
-   :entity/skills (fn [[_ skills] _ctx]
+   :entity/skills (fn [[_ skills] _world]
                     ; => recursive info-text leads to endless text wall
                     (when (seq skills)
                       (str "Skills: " (str/join "," (map name (keys skills))))))
 
-   :entity/species (fn [[_ species] _ctx]
+   :entity/species (fn [[_ species] _world]
                      (str "Creature - " (str/capitalize (name species))))
 
-   :entity/temp-modifier (fn [[_ {:keys [counter]}] {:keys [ctx/world]}]
-                           (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio (:world/elapsed-time world) counter)) "/1"))
+   :entity/temp-modifier (fn [[_ {:keys [counter]}] {:keys [world/elapsed-time]}]
+                           (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
 
-   :projectile/piercing? (fn [_ _ctx]
+   :projectile/piercing? (fn [_ _world]
                            "Piercing") ; what if false?
 
-   :property/pretty-name (fn [[_ v] _ctx]
+   :property/pretty-name (fn [[_ v] _world]
                            v)
 
-   :skill/action-time (fn [[_ v] _ctx]
+   :skill/action-time (fn [[_ v] _world]
                         (str "Action-Time: " (utils/readable-number v) " seconds"))
 
-   :skill/action-time-modifier-key (fn [[_ v] _ctx]
+   :skill/action-time-modifier-key (fn [[_ v] _world]
                                      (case v
                                        :entity/cast-speed "Spell"
                                        :entity/attack-speed "Attack"))
 
-   :skill/cooldown (fn [[_ v] _ctx]
+   :skill/cooldown (fn [[_ v] _world]
                      (when-not (zero? v)
                        (str "Cooldown: " (utils/readable-number v) " seconds")))
 
-   :skill/cost (fn [[_ v] _ctx]
+   :skill/cost (fn [[_ v] _world]
                  (when-not (zero? v)
                    (str "Cost: " v " Mana")))
 
-   :maxrange (fn [[_ v] _ctx]
+   :maxrange (fn [[_ v] _world]
                v)})
 
-(defn info-text [ctx entity]
+(defn info-text [world entity]
   (let [component-info (fn [[k v]]
                          (let [s (if-let [info-fn (info-fns k)]
-                                   (info-fn [k v] ctx))]
+                                   (info-fn [k v] world))]
                            (if-let [color (k->colors k)]
                              (str "[" color "]" s "[]")
                              s)))]
@@ -207,6 +207,6 @@
                            (catch Throwable t
                              (str "*info-error* " k)))
                       (when (map? v)
-                        (str "\n" (info-text ctx v))))))
+                        (str "\n" (info-text world v))))))
          (str/join "\n")
          remove-newlines)))

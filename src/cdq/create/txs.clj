@@ -1,6 +1,5 @@
 (ns cdq.create.txs
   (:require [cdq.audio :as audio]
-            [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.editor :as editor]
@@ -17,6 +16,7 @@
             cdq.tx.spawn-entity
             cdq.tx.update-potential-fields
             [cdq.ui.editor.map-widget-table :as map-widget-table]
+            [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
@@ -189,8 +189,8 @@
                           (cdq.stage/add-skill! stage
                                             {:skill-id (:property/id skill)
                                              :texture-region (graphics/texture-region graphics (:entity/image skill))
-                                             :tooltip-text (fn [ctx]
-                                                             (ctx/info-text ctx skill))})
+                                             :tooltip-text (fn [{:keys [ctx/world]}]
+                                                             (world/info-text world skill))})
                           nil)
    :tx/set-item (fn [_ctx eid cell item]
                   (let [entity @eid
@@ -219,8 +219,8 @@
                           cell item]
                          (cdq.stage/set-item! stage cell
                                           {:texture-region (graphics/texture-region graphics (:entity/image item))
-                                           :tooltip-text (fn [ctx]
-                                                           (ctx/info-text ctx item))})
+                                           :tooltip-text (fn [{:keys [ctx/world]}]
+                                                           (world/info-text world item))})
                          nil)
    :tx/player-remove-item (fn
                             [{:keys [ctx/stage]}

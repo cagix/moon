@@ -1,6 +1,5 @@
 (ns cdq.application.create
   (:require cdq.create.db
-            cdq.create.info
             cdq.create.input
             cdq.create.graphics
             cdq.create.stage
@@ -43,11 +42,6 @@
   (validate [ctx]
     (m/validate-humanize schema ctx)
     ctx))
-
-(extend-type Context
-  cdq.ctx/InfoText
-  (info-text [ctx entity]
-    (cdq.create.info/info-text ctx entity)))
 
 (extend-type Context
   ctx/TransactionHandler
