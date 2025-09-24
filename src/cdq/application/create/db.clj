@@ -1,6 +1,5 @@
 (ns cdq.application.create.db
-  (:require cdq.application.create.db.schemas
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
@@ -9,12 +8,11 @@
             [clojure.pprint :as pprint]
             [cdq.malli :as m]))
 
-; reduce-kv?
 (defn- apply-kvs
   "Calls for every key in map (f k v) to calculate new value at k."
   [m f]
   (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
+            (assoc m k (f k (get m k))))
           m
           (keys m)))
 
@@ -44,7 +42,6 @@
        (async-pprint-spit! file)))
 
 (defn- save! [{:keys [db/data db/file]}]
-  ; TODO validate them again!?
   (save-vals! (vals data)
               file))
 
@@ -69,12 +66,8 @@
   (default-value [schemas k]
     (let [schema (get schemas k)]
       (cond
-       ;(#{:s/one-to-one :s/one-to-many} (get-type schema)) nil
-       (#{:s/map} (schema 0)) {} ; cannot have empty for required keys, then no Add Component button
-       :else nil
-       ;:else (m/generate (schema/malli-form schema schemas) {:size 3})
-
-       )))
+       (#{:s/map} (schema 0)) {}
+       :else nil)))
 
   (validate [schemas k value]
     (-> (get schemas k)
@@ -136,7 +129,7 @@
         properties "properties.edn"
         schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
-                               (with-meta schema (get cdq.application.create.db.schemas/schema-fn-map k))))
+                               (with-meta schema (get (requiring-resolve 'cdq.application.create.db.schemas/schema-fn-map) k))))
         schemas (map->Schemas schemas)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]

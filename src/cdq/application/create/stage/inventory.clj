@@ -131,7 +131,7 @@
                                              :leg      7
                                              :glove    8
                                              :boot     9
-                                             :bag      10} ; transparent
+                                             :bag      10}
         slot->texture-region (fn [slot]
                                (let [width  48
                                      height 48

@@ -13,12 +13,6 @@
    :toggle-inventory  :i
    :toggle-entity-info :e
    :open-debug-button :right
-   ;:move-right :d
-   ;:move-left :a
-   ;:move-up :w
-   ;:move-down :s
-   ; & left-button @ player-idle interaction-state
-   ; player-cursor
    }
   )
 
@@ -27,10 +21,6 @@
 
 (defn- unpause-continously? [input]
   (input/key-pressed?      input (:unpause-continously controls)))
-
-; Only access 'clojure.input' through here
-; and every key is dispatched here
-; so I can create an info text
 
 (defn do! [{:keys [ctx/input
                    ctx/stage]
