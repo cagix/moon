@@ -2,7 +2,6 @@
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.schemas :as schemas]
-            [cdq.string :as string]
             [cdq.property]
             [cdq.val-max :as val-max]
             cdq.schema.image
@@ -12,7 +11,8 @@
             cdq.schema.sound
             cdq.ui.editor.widget.default
             cdq.ui.editor.widget.edn
-            [clojure.edn :as edn]))
+            [clojure.edn :as edn]
+            [clojure.utils :as utils]))
 
 (def schema-fn-map
   {
@@ -51,8 +51,8 @@
                                        v)
             'cdq.schema/create       (fn [schema v _ctx]
                                        {:actor/type :actor.type/select-box
-                                        :items (map string/->edn-str (rest schema))
-                                        :selected (string/->edn-str v)})
+                                        :items (map utils/->edn-str (rest schema))
+                                        :selected (utils/->edn-str v)})
             'cdq.schema/value        (fn [_  widget _schemas]
                                        (edn/read-string (:select-box/selected widget)))}
 

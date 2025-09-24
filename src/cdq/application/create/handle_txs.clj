@@ -8,7 +8,6 @@
             [cdq.inventory :as inventory]
             [cdq.stage]
             [cdq.stats :as stats]
-            [cdq.string :as string]
             [cdq.timer :as timer]
             cdq.tx.spawn-creature
             cdq.tx.spawn-entity
@@ -20,7 +19,8 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tx-handler :as tx-handler]
-            [clojure.repl]))
+            [clojure.repl]
+            [clojure.utils :as utils]))
 
 (def ^:private txs-fn-map
   {
@@ -146,7 +146,7 @@
                                                :title "Error"
                                                :rows [[{:actor {:actor/type :actor.type/label
                                                                 :label/text (binding [*print-level* 3]
-                                                                              (string/with-err-str
+                                                                              (utils/with-err-str
                                                                                 (clojure.repl/pst throwable)))}}]]
                                                :modal? true
                                                :close-button? true

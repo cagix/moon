@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.widget.default
-  (:require [cdq.string :as string]
-            [clojure.scene2d.actor :as actor]))
+  (:require [clojure.scene2d.actor :as actor]
+            [clojure.utils :as utils]))
 
 (defn create [_ v _ctx]
   {:actor/type :actor.type/label
-   :label/text (string/truncate (string/->edn-str v) 60)})
+   :label/text (utils/truncate (utils/->edn-str v) 60)})
 
 (defn value [_  widget _schemas]
   ((actor/user-object widget) 1))
