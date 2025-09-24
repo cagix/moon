@@ -1,12 +1,12 @@
 (ns cdq.schema.one-to-many
-  (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.string :as string]
             [cdq.ui.editor.property :as property]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
             [clojure.scene2d.ui.window :as window]))
@@ -25,13 +25,19 @@
      table
      [[{:actor {:actor/type :actor.type/text-button
                 :text "+"
-                :on-clicked (fn [_actor ctx]
-                              (ctx/open-editor-overview!
-                               ctx
-                               {:property-type property-type
-                                :clicked-id-fn (fn [actor id ctx]
-                                                 (actor/remove! (window/find-ancestor actor))
-                                                 (redo-rows ctx (conj property-ids id)))}))}}]
+                :on-clicked (fn [_actor {:keys [ctx/db
+                                                ctx/graphics
+                                                ctx/stage]}]
+                              (stage/add!
+                               stage
+                               (scene2d/build
+                                {:actor/type :actor.type/editor-overview-window
+                                 :db db
+                                 :graphics graphics
+                                 :property-type property-type
+                                 :clicked-id-fn (fn [actor id ctx]
+                                                  (actor/remove! (window/find-ancestor actor))
+                                                  (redo-rows ctx (conj property-ids id)))})))}}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
               texture-region (graphics/texture-region graphics (property/image property))

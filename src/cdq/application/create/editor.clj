@@ -1,11 +1,9 @@
 (ns cdq.application.create.editor
-  (:require [cdq.ctx :as ctx]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.string :as string]
             [cdq.ui.editor.property :as property]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]))
+            [clojure.scene2d :as scene2d]))
 
 (def ^:private property-type->overview-table-props
   {:properties/audiovisuals {:columns 10
@@ -68,24 +66,23 @@
          (partition-all columns)
          (overview-table-rows* image-scale))))
 
+(defmethod scene2d/build :actor.type/editor-overview-window
+  [{:keys [db
+           graphics
+           property-type
+           clicked-id-fn]}]
+  (scene2d/build
+   {:actor/type :actor.type/window
+    :title "Edit"
+    :modal? true
+    :close-button? true
+    :center? true
+    :close-on-escape? true
+    :pack? true
+    :rows (overview-table-rows db
+                               graphics
+                               property-type
+                               clicked-id-fn)}))
+
 (defn do! [ctx]
-  (extend-type (class ctx)
-    ctx/Editor
-    (open-editor-overview! [{:keys [ctx/db
-                                    ctx/graphics
-                                    ctx/stage]}
-                            {:keys [property-type
-                                    clicked-id-fn]}]
-      (stage/add! stage (scene2d/build
-                         {:actor/type :actor.type/window
-                          :title "Edit"
-                          :modal? true
-                          :close-button? true
-                          :center? true
-                          :close-on-escape? true
-                          :pack? true
-                          :rows (overview-table-rows db
-                                                     graphics
-                                                     property-type
-                                                     clicked-id-fn)}))))
   ctx)

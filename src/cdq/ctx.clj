@@ -8,6 +8,3 @@
 
 (defprotocol ResetGameState
   (reset-game-state! [_ world-fn]))
-
-(defprotocol Editor
-  (open-editor-overview! [_ {:keys [property-type clicked-id-fn]}]))
