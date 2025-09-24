@@ -1,4 +1,5 @@
 (ns cdq.entity)
 
-(defn position [{:keys [entity/body]}]
-  (:body/position body))
+(defprotocol Entity
+  (position [_])
+  (distance [_ other-entity]))

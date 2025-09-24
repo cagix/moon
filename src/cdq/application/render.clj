@@ -1,36 +1,23 @@
+; TODO only audio/stage/world/graphics/db...
 (ns cdq.application.render
   (:require [cdq.ctx :as ctx]
-
-            ;;
-            [cdq.creature :as creature] ; interaction state
-            [cdq.entity :as entity] ; interaction state
+            [cdq.creature :as creature]
+            [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            ;;
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-
             cdq.render.draw-on-world-viewport
-            ; TODO part of 'update-world'
-            ; -> world tx handler which returns what happened
-            ; (no sub-txs ?)
-            ; and is handled by full tx handler required
             cdq.render.tick-entities
             cdq.render.remove-destroyed-entities
-            ;
-
             [cdq.stage :as stage]
-
-            [cdq.ui.widget :as widget] ; FIXME
-
+            [cdq.ui.widget :as widget]
             [cdq.world :as world]
-
-            [cdq.world.content-grid :as content-grid] ; FIXME
-            [cdq.world.grid :as grid] ; FIXME
-            [clojure.graphics.color :as color] ; FIXME
-
-            [clojure.scene2d.stage] ; FIXME
-            [clojure.math.vector2 :as v] ; FIXME
-            [clojure.utils :as utils])) ; FIXME
+            [cdq.world.content-grid :as content-grid]
+            [cdq.world.grid :as grid]
+            [clojure.graphics.color :as color]
+            [clojure.scene2d.stage]
+            [clojure.math.vector2 :as v]
+            [clojure.utils :as utils]))
 
 (def ^:private pausing? true)
 
@@ -124,14 +111,6 @@
     (graphics/set-cursor! graphics cursor-key))
   ctx)
 
-(defn- distance [a b]
-  (v/distance (entity/position a)
-              (entity/position b)))
-
-(defn- in-click-range? [player-entity clicked-entity]
-  (< (distance player-entity clicked-entity)
-     (:entity/click-distance-tiles player-entity)))
-
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
   (let [target-position (or (and mouseover-eid
                                  (entity/position @mouseover-eid))
@@ -155,7 +134,8 @@
         (:entity/clickable @mouseover-eid))
    [:interaction-state/clickable-mouseover-eid
     {:clicked-eid mouseover-eid
-     :in-click-range? (in-click-range? @player-eid @mouseover-eid)}]
+     :in-click-range? (< (entity/distance @player-eid @mouseover-eid)
+                         (:entity/click-distance-tiles @player-eid))}]
 
    :else
    (if-let [skill-id (stage/action-bar-selected-skill stage)]
@@ -259,8 +239,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (graphics/set-camera-position! graphics
-                                 (:body/position (:entity/body @(:world/player-eid world))))
+  (graphics/set-camera-position! graphics (entity/position @(:world/player-eid world)))
   ctx)
 
 (defn- assoc-active-entities
@@ -339,8 +318,6 @@
     new-ctx
     ctx)) ; first render stage doesnt have context
 
-; TODO make draw / update step / and see whats needed
-; maybe make a normal fn pass graphics/world to draw
 (defn do! [context]
   (-> context
       try-fetch-state-ctx
@@ -349,21 +326,19 @@
       update-mouseover-eid!
       check-open-debug!
       assoc-active-entities
-      ; TODO make 'draw-game' function/module, passing only necessary ctx (world,graphics ?)
-      ; maybe also 'audio-game' for audio processing?
       set-camera-on-player!
       clear-screen!
       draw-world-map!
-      draw-on-world-viewport! ; TODO passes full ctx to draw-fns (only world/frame/graphics needed?)
-      assoc-interaction-state ; TODO passes full ctx
-      set-cursor! ; state/cursor full ctx
-      player-state-handle-input! ; same
+      draw-on-world-viewport!
+      assoc-interaction-state
+      set-cursor!
+      player-state-handle-input!
       (dissoc :ctx/interaction-state)
       assoc-paused
       update-world-time
-      update-potential-fields! ; tx/update-pot-fields !?
-      tick-entities! ; TODO full ctx !
-      cdq.render.remove-destroyed-entities/do! ; ?
+      update-potential-fields!
+      tick-entities!
+      cdq.render.remove-destroyed-entities/do!
       handle-key-input!
       render-stage!
       ctx/validate))

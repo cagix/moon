@@ -1,5 +1,4 @@
-; TODO only audio,stage,graphics,world, etc.
-; no details here
+; TODO only audio/stage/world/graphics/db...
 (ns cdq.create.txs
   (:require [cdq.audio :as audio]
             [cdq.db :as db]

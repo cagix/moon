@@ -1,6 +1,6 @@
 (ns cdq.tx.spawn-entity
   (:require [cdq.animation :as animation]
-            [cdq.body]
+            [cdq.body :as body]
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -14,6 +14,7 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clojure.grid2d :as g2d]
+            [clojure.math.vector2 :as v]
             [qrecord.core :as q]))
 
 (defrecord Animation [frames frame-duration looping? cnt maxcnt]
@@ -59,7 +60,11 @@
                     (geom/body->gdx-rectangle other-body)))
 
   (touched-tiles [body]
-    (geom/body->touched-tiles body)))
+    (geom/body->touched-tiles body))
+
+  (distance [body other-body]
+    (v/distance (:body/position body)
+                (:body/position other-body))))
 
 (defn- create-body
   [{[x y] :position
@@ -135,7 +140,14 @@
   (when-let [f (create!-fns k)]
     (f v eid ctx)))
 
-(q/defrecord Entity [entity/body])
+(q/defrecord Entity [entity/body]
+  entity/Entity
+  (position [_]
+    (:body/position body))
+
+  (distance [_ other-entity]
+    (body/distance body
+                   (:entity/body other-entity))))
 
 (extend-type Entity
   creature/Skills

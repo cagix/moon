@@ -2,4 +2,5 @@
 
 (defprotocol Body
   (overlaps? [_ other-body])
-  (touched-tiles [_]))
+  (touched-tiles [_])
+  (distance [_ other-body]))
