@@ -35,8 +35,7 @@
     [:ctx/world :some]
     [:ctx/input :some]
     [:ctx/stage :some]
-    [:ctx/vis-ui :some]
-    [:ctx/interaction-state :some]]))
+    [:ctx/vis-ui :some]]))
 
 (extend-type Context
   ctx/Validation
@@ -69,7 +68,6 @@
 (defn do! [context]
   (-> (merge (map->Context {})
              context)
-      (assoc :ctx/interaction-state true)
       (assoc :ctx/db (cdq.create.db/create))
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       cdq.create.graphics/do!

@@ -141,15 +141,14 @@
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
 (defn- interaction-state
-  [{:keys [ctx/graphics
-           ctx/stage]}
+  [stage
+   world-mouse-position
    mouseover-eid
    player-eid
    mouseover-actor]
   (cond
    mouseover-actor
-   [:interaction-state/mouseover-actor
-    (stage/actor-information stage mouseover-actor)]
+   [:interaction-state/mouseover-actor (stage/actor-information stage mouseover-actor)]
 
    (and mouseover-eid
         (:entity/clickable @mouseover-eid))
@@ -161,9 +160,7 @@
    (if-let [skill-id (stage/action-bar-selected-skill stage)]
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
-           effect-ctx (player-effect-ctx mouseover-eid
-                                         (:graphics/world-mouse-position graphics)
-                                         player-eid)
+           effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
            state (creature/skill-usable-state entity skill effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
@@ -171,12 +168,15 @@
      [:interaction-state/no-skill-selected])))
 
 (defn- assoc-interaction-state
-  [{:keys [ctx/input
-           ctx/stage]
+  [{:keys [ctx/graphics
+           ctx/input
+           ctx/stage
+           ctx/world]
     :as ctx}]
-  (assoc ctx :ctx/interaction-state (interaction-state ctx
-                                                       (:world/mouseover-eid (:ctx/world ctx))
-                                                       (:world/player-eid (:ctx/world ctx))
+  (assoc ctx :ctx/interaction-state (interaction-state stage
+                                                       (:graphics/world-mouse-position graphics)
+                                                       (:world/mouseover-eid world)
+                                                       (:world/player-eid    world)
                                                        (stage/mouseover-actor stage (input/mouse-position input)))))
 
 (defn- draw-on-world-viewport!
@@ -357,6 +357,7 @@
       assoc-interaction-state ; TODO passes full ctx
       set-cursor! ; state/cursor full ctx
       player-state-handle-input! ; same
+      (dissoc :ctx/interaction-state)
       assoc-paused
       update-world-time
       update-potential-fields! ; tx/update-pot-fields !?
