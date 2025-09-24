@@ -7,6 +7,8 @@
             [cdq.entity.faction :as faction]
             [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.graphics :as graphics]
+            [cdq.input :as input]
+            [cdq.stage :as stage]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
@@ -56,8 +58,9 @@
   [{:keys [item]}
    entity
    {:keys [ctx/graphics
-           ctx/mouseover-actor]}]
-  (when (player-item-on-cursor/world-item? mouseover-actor)
+           ctx/input
+           ctx/stage]}]
+  (when (player-item-on-cursor/world-item? (stage/mouseover-actor stage (input/mouse-position input)))
     [[:draw/texture-region
       (graphics/texture-region graphics (:entity/image item))
       (player-item-on-cursor/item-place-position (:graphics/world-mouse-position graphics)

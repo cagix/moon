@@ -6,6 +6,7 @@
             [cdq.ui.inventory :as inventory-window]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             [clojure.gdx.stage]
+            [clojure.graphics.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx]
@@ -136,4 +137,8 @@
        inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
        (window/title-bar? actor) [:mouseover-actor/window-title-bar]
        (button/is?        actor) [:mouseover-actor/button]
-       :else                     [:mouseover-actor/unspecified]))))
+       :else                     [:mouseover-actor/unspecified])))
+
+  (mouseover-actor [stage mouse-position]
+    (stage/hit stage
+               (viewport/unproject (stage/viewport stage) mouse-position))))

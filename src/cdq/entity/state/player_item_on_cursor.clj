@@ -1,6 +1,8 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.inventory :as inventory]
+  (:require [cdq.input]
+            [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
+            [cdq.stage :as stage]
             [clojure.math.vector2 :as v]
             [clojure.input :as input]))
 
@@ -22,10 +24,13 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn handle-input [eid {:keys [ctx/input ctx/mouseover-actor]}]
-  (when (and (input/button-just-pressed? input :left)
-             (world-item? mouseover-actor))
-    [[:tx/event eid :drop-item]]))
+(defn handle-input
+  [eid {:keys [ctx/input
+               ctx/stage]}]
+  (let [mouseover-actor (stage/mouseover-actor stage (cdq.input/mouse-position input))]
+    (when (and (input/button-just-pressed? input :left)
+               (world-item? mouseover-actor))
+      [[:tx/event eid :drop-item]])))
 
 (defn clicked-inventory-cell [eid cell]
   (let [entity @eid
@@ -64,8 +69,9 @@
 (defn draw-gui-view
   [eid
    {:keys [ctx/graphics
-           ctx/mouseover-actor]}]
-  (when (not (world-item? mouseover-actor))
+           ctx/input
+           ctx/stage]}]
+  (when (not (world-item? (stage/mouseover-actor stage (cdq.input/mouse-position input))))
     [[:draw/texture-region
       (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
       (:graphics/ui-mouse-position graphics)

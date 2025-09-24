@@ -142,10 +142,10 @@
 
 (defn- interaction-state
   [{:keys [ctx/graphics
-           ctx/mouseover-actor
            ctx/stage]}
    mouseover-eid
-   player-eid]
+   player-eid
+   mouseover-actor]
   (cond
    mouseover-actor
    [:interaction-state/mouseover-actor
@@ -170,10 +170,14 @@
          [:interaction-state.skill/not-usable state]))
      [:interaction-state/no-skill-selected])))
 
-(defn- assoc-interaction-state [ctx]
+(defn- assoc-interaction-state
+  [{:keys [ctx/input
+           ctx/stage]
+    :as ctx}]
   (assoc ctx :ctx/interaction-state (interaction-state ctx
                                                        (:world/mouseover-eid (:ctx/world ctx))
-                                                       (:world/player-eid (:ctx/world ctx)))))
+                                                       (:world/player-eid (:ctx/world ctx))
+                                                       (stage/mouseover-actor stage (input/mouse-position input)))))
 
 (defn- draw-on-world-viewport!
   [{:keys [ctx/graphics]
@@ -288,21 +292,19 @@
            ctx/input
            ctx/stage]
     :as ctx}]
-  (let [mouse-position (input/mouse-position input)
-        ctx (update ctx :ctx/graphics #(-> %
-                                           (graphics/unproject-ui    mouse-position)
-                                           (graphics/unproject-world mouse-position)))]
-    (assoc ctx
-           :ctx/mouseover-actor (clojure.scene2d.stage/hit stage
-                                                           (:graphics/ui-mouse-position
-                                                            (:ctx/graphics ctx))))))
+  (let [mouse-position (input/mouse-position input)]
+    (update ctx :ctx/graphics #(-> %
+                                   (graphics/unproject-ui    mouse-position)
+                                   (graphics/unproject-world mouse-position)))))
 
 (defn- update-mouseover-eid!
   [{:keys [ctx/graphics
-           ctx/mouseover-actor
+           ctx/input
+           ctx/stage
            ctx/world]
     :as ctx}]
-  (let [{:keys [world/grid
+  (let [mouseover-actor (stage/mouseover-actor stage (input/mouse-position input))
+        {:keys [world/grid
                 world/mouseover-eid
                 world/player-eid]} world
         new-eid (if mouseover-actor

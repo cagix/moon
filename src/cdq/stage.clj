@@ -14,4 +14,5 @@
   (toggle-entity-info-window! [_])
   (close-all-windows! [_])
   (action-bar-selected-skill [_])
-  (actor-information [_ actor]))
+  (actor-information [_ actor])
+  (mouseover-actor [_ mouse-position]))

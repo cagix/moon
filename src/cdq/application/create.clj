@@ -22,23 +22,27 @@
 
 (q/defrecord Context [])
 
-(let [schema (m/schema
-              [:map {:closed true}
-               [:ctx/app :some]
-               [:ctx/audio :some]
-               [:ctx/db :some]
-               [:ctx/graphics :some]
-               [:ctx/world :some]
-               [:ctx/input :some]
-               [:ctx/stage :some]
-               [:ctx/vis-ui :some]
-               [:ctx/mouseover-actor :any]
-               [:ctx/interaction-state :some]])]
-  (extend-type Context
-    ctx/Validation
-    (validate [ctx]
-      (malli.utils/validate-humanize schema ctx)
-      ctx)))
+; data has to be normalized ...
+; ui-viewport in 2 places
+; graphics/ui-mouse-posi / world-mouse-posi ?
+(def ^:private schema
+  (m/schema
+   [:map {:closed true}
+    [:ctx/app :some]
+    [:ctx/audio :some]
+    [:ctx/db :some]
+    [:ctx/graphics :some]
+    [:ctx/world :some]
+    [:ctx/input :some]
+    [:ctx/stage :some]
+    [:ctx/vis-ui :some]
+    [:ctx/interaction-state :some]]))
+
+(extend-type Context
+  ctx/Validation
+  (validate [ctx]
+    (malli.utils/validate-humanize schema ctx)
+    ctx))
 
 (extend-type Context
   cdq.ctx/InfoText
@@ -65,9 +69,7 @@
 (defn do! [context]
   (-> (merge (map->Context {})
              context)
-      (assoc
-       :ctx/mouseover-actor nil
-       :ctx/interaction-state true)
+      (assoc :ctx/interaction-state true)
       (assoc :ctx/db (cdq.create.db/create))
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       cdq.create.graphics/do!
