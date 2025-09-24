@@ -3,28 +3,14 @@
             [cdq.db :as db]
             [cdq.ui.widget :as widget]
             [cdq.ui.editor.window]
-            [cdq.world-fns.tmx]
-            [cdq.world-fns.uf-caves]
-            [cdq.world-fns.modules]
             [clojure.string :as str]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
 
 (def ^:private world-fns
-  [[cdq.world-fns.tmx/create
-    {:tmx-file "maps/vampire.tmx"
-     :start-position [32 71]}]
-   [cdq.world-fns.uf-caves/create
-    {:tile-size 48
-     :texture-path "maps/uf_terrain.png"
-     :spawn-rate 0.02
-     :scaling 3
-     :cave-size 200
-     :cave-style :wide}]
-   [cdq.world-fns.modules/create
-    {:world/map-size 5,
-     :world/max-area-level 3,
-     :world/spawn-rate 0.05}]])
+  ["world_fns/vampire.edn"
+   "world_fns/uf_caves.edn"
+   "world_fns/modules.edn"])
 
 (def ^:private help-str
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
@@ -58,7 +44,7 @@
 (def ^:private select-world
   {:label "Select World"
    :items (for [world-fn world-fns]
-            {:label (str "Start " (first world-fn))
+            {:label (str "Start " world-fn)
              :on-click (fn [actor ctx]
                          (stage/set-ctx! (actor/get-stage actor)
                                          (ctx/reset-game-state! ctx world-fn)))})})

@@ -2,15 +2,18 @@
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
-            [cdq.world-fns.creature-tiles]))
+            [cdq.world-fns.creature-tiles]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]))
 
 (defn- call-world-fn
-  [[f params] creature-properties graphics]
-  (f
-   (assoc params
-          :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
-                                                                           #(graphics/texture-region graphics %))
-          :textures (:graphics/textures graphics))))
+  [world-fn creature-properties graphics]
+  (let [[f params] (-> world-fn io/resource slurp edn/read-string)]
+    ((requiring-resolve f)
+     (assoc params
+            :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
+                                                                             #(graphics/texture-region graphics %))
+            :textures (:graphics/textures graphics)))))
 
 (defn do!
   [{:keys [ctx/db

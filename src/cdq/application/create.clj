@@ -1,4 +1,3 @@
-; TODO only audio/stage/world/graphics/db...
 (ns cdq.application.create
   (:require cdq.create.db
             cdq.create.input
@@ -13,7 +12,6 @@
             cdq.create.spawn-enemies
             [cdq.ctx :as ctx]
             [cdq.malli :as m]
-            cdq.world-fns.tmx
             [clojure.disposable :as disposable]
             clojure.gdx.vis-ui
             clojure.tx-handler
@@ -74,5 +72,4 @@
       cdq.create.audio/do!
       (dissoc :ctx/files)
       cdq.create.world/do!
-      (ctx/reset-game-state! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                                        :start-position [32 71]}])))
+      (ctx/reset-game-state! "world_fns/vampire.edn")))

@@ -2,12 +2,10 @@
   (:require [cdq.db :as db]
             [cdq.files :as files]
             [cdq.create.db]
-            [cdq.world-fns.modules]
-            [cdq.world-fns.uf-caves]
-            [cdq.world-fns.tmx]
             [cdq.world-fns.creature-tiles]
             [clojure.application]
             [clojure.disposable :as disposable]
+            [clojure.edn :as edn]
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.graphics.texture :as texture]
@@ -20,33 +18,18 @@
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.vis-ui :as vis-ui]
+            [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]))
 
-(def initial-level-fn [cdq.world-fns.uf-caves/create
-                       {:tile-size 48
-                        :texture-path "maps/uf_terrain.png"
-                        :spawn-rate 0.02
-                        :scaling 3
-                        :cave-size 200
-                        :cave-style :wide}])
+(def initial-level-fn "world_fns/uf_caves.edn")
 
 (def level-fns
-  [[#'cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
-                                :start-position [32 71]}]
-   [#'cdq.world-fns.uf-caves/create
-    {:tile-size 48
-     :texture-path "maps/uf_terrain.png"
-     :spawn-rate 0.02
-     :scaling 3
-     :cave-size 200
-     :cave-style :wide}]
-   [#'cdq.world-fns.modules/create
-    {:world/map-size 5,
-     :world/max-area-level 3,
-     :world/spawn-rate 0.05}]])
+  ["world_fns/vampire.edn"
+   "world_fns/uf_caves.edn"
+   "world_fns/modules.edn"])
 
 (defn- show-whole-map! [{:keys [ctx/camera
                                 ctx/tiled-map]}]
@@ -67,18 +50,22 @@
                                ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
     (disposable/dispose! tiled-map))
-  (let [level (let [[f params] level-fn]
-                (f (assoc params
-                          :level/creature-properties (cdq.world-fns.creature-tiles/prepare
-                                                      (db/all-raw db :properties/creatures)
-                                                      (fn [{:keys [image/file image/bounds]}]
-                                                        (assert file)
-                                                        (assert (contains? textures file))
-                                                        (let [texture (get textures file)]
-                                                          (if bounds
-                                                            (texture/region texture bounds)
-                                                            (texture/region texture)))))
-                          :textures textures)))
+  (let [level (let [[f params] (-> level-fn
+                                   io/resource
+                                   slurp
+                                   edn/read-string)]
+                ((requiring-resolve f)
+                 (assoc params
+                        :level/creature-properties (cdq.world-fns.creature-tiles/prepare
+                                                    (db/all-raw db :properties/creatures)
+                                                    (fn [{:keys [image/file image/bounds]}]
+                                                      (assert file)
+                                                      (assert (contains? textures file))
+                                                      (let [texture (get textures file)]
+                                                        (if bounds
+                                                          (texture/region texture bounds)
+                                                          (texture/region texture)))))
+                        :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
     (tiled/set-visible! (tiled/get-layer tiled-map "creatures") true)
@@ -92,7 +79,7 @@
    :cell-defaults {:pad 10}
    :rows (for [level-fn level-fns]
            [{:actor {:actor/type :actor.type/text-button
-                     :text (str "Generate " (first level-fn))
+                     :text (str "Generate " level-fn)
                      :on-clicked (fn [actor ctx]
                                    (let [stage (actor/get-stage actor)
                                          new-ctx (generate-level ctx level-fn)]
