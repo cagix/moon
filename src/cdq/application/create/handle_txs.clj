@@ -1,9 +1,8 @@
 (ns cdq.application.create.handle-txs
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
-            [cdq.ctx :as ctx]
+            [cdq.ctx]
             [cdq.effect :as effect]
-            [cdq.editor :as editor]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.inventory :as inventory]
@@ -25,6 +24,10 @@
 
 (def ^:private txs-fn-map
   {
+   :tx/sound (fn [{:keys [ctx/audio]} sound-name]
+               (audio/play-sound! audio sound-name)
+               nil)
+
    :tx/assoc (fn [_ctx eid k value]
                (swap! eid assoc k value)
                nil)
@@ -187,10 +190,6 @@
                     (cdq.stage/show-modal-window! stage (clojure.scene2d.stage/viewport stage) opts)
                     nil)
 
-   :tx/sound (fn [{:keys [ctx/audio]} sound-name]
-               (audio/play-sound! audio sound-name)
-               nil)
-
    :tx/audiovisual (fn [{:keys [ctx/db]} position audiovisual]
                      (let [{:keys [tx/sound
                                    entity/animation]} (if (keyword? audiovisual)
@@ -228,24 +227,6 @@
                      (when rotate-in-movement-direction?
                        (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
                      nil)
-
-   :tx/open-editor-overview (fn [{:keys [ctx/db
-                                         ctx/graphics
-                                         ctx/stage]}
-                                 {:keys [property-type
-                                         clicked-id-fn]}]
-                              (stage/add! stage (scene2d/build
-                                                 {:actor/type :actor.type/window
-                                                  :title "Edit"
-                                                  :modal? true
-                                                  :close-button? true
-                                                  :center? true
-                                                  :close-on-escape? true
-                                                  :pack? true
-                                                  :rows (editor/overview-table-rows db
-                                                                                    graphics
-                                                                                    property-type
-                                                                                    clicked-id-fn)})))
 
    :tx/spawn-projectile (fn [_ctx
                              {:keys [position direction faction]}
@@ -296,7 +277,7 @@
 
 (defn do! [ctx]
   (extend-type (class ctx)
-    ctx/TransactionHandler
+    cdq.ctx/TransactionHandler
     (handle-txs! [ctx transactions]
       (tx-handler/actions! txs-fn-map ctx transactions)))
   ctx)
