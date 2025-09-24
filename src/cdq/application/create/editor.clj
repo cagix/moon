@@ -1,7 +1,6 @@
 (ns cdq.application.create.editor
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.string :as string]
             [cdq.ui.editor.property :as property]
             [clojure.scene2d :as scene2d]))
 
@@ -61,7 +60,7 @@
                 {:texture-region (graphics/texture-region graphics (property/image property))
                  :on-clicked (fn [actor ctx]
                                (clicked-id-fn actor (:property/id property) ctx))
-                 :tooltip (string/pprint-to-str property)
+                 :tooltip (property/tooltip property)
                  :extra-info-text (extra-info-text property)}))
          (partition-all columns)
          (overview-table-rows* image-scale))))
