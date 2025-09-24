@@ -1,14 +1,5 @@
 (ns cdq.schema.image
-  (:require [cdq.graphics :as graphics]
-            [cdq.schemas :as schemas]))
-
-(defn malli-form [_ schemas]
-  (schemas/create-map-schema schemas
-                             [:image/file
-                              [:image/bounds {:optional true}]]))
-
-(defn create-value [_ v _db]
-  v)
+  (:require [cdq.graphics :as graphics]))
 
 (defn create [schema  image {:keys [ctx/graphics]}]
   {:actor/type :actor.type/image-button

@@ -25,12 +25,6 @@
    :skill/cost
    :skill/cooldown])
 
-(defn malli-form [[_ ks] schemas]
-  (schemas/create-map-schema schemas ks))
-
-(defn create-value [_ v db]
-  (schemas/build-values (:db/schemas db) v db))
-
 (defn create
   [schema
    m

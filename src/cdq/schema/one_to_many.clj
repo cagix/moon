@@ -3,7 +3,6 @@
             [cdq.editor]
             [cdq.graphics :as graphics]
             [cdq.ui.editor.property :as property]
-            [cdq.property]
             [cdq.string :as string]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
@@ -12,12 +11,6 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
             [clojure.scene2d.ui.window :as window]))
-
-(defn malli-form [[_ property-type] _schemas]
-  [:set [:qualified-keyword {:namespace (cdq.property/type->id-namespace property-type)}]])
-
-(defn create-value [_ property-ids db]
-  (set (map (partial db/build db) property-ids)))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
