@@ -14,19 +14,11 @@
             [cdq.ctx :as ctx]
             cdq.world-fns.tmx
             [clojure.disposable :as disposable]
-            [clojure.edn :as edn]
             clojure.gdx.vis-ui
-            [clojure.java.io :as io]
             clojure.tx-handler
             [malli.core :as m]
             [malli.utils]
             [qrecord.core :as q]))
-
-(defn- edn-resource [path]
-  (->> path
-       io/resource
-       slurp
-       edn/read-string))
 
 (q/defrecord Context [])
 
@@ -96,9 +88,8 @@
       cdq.create.graphics/do!
       cdq.create.stage/do!
       cdq.create.input/do!
-      (cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
-                             :path-format "sounds/%s.wav"})
+      cdq.create.audio/do!
       (dissoc :ctx/files)
-      (cdq.create.world/do! (edn-resource "world.edn"))
+      cdq.create.world/do!
       (ctx/reset-game-state! [cdq.world-fns.tmx/create {:tmx-file "maps/vampire.tmx"
                                                         :start-position [32 71]}])))

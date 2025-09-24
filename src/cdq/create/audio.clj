@@ -3,7 +3,9 @@
             [clojure.audio :as audio]
             [clojure.audio.sound :as sound]
             [clojure.disposable :as disposable]
-            [clojure.files :as files]))
+            [clojure.edn :as edn]
+            [clojure.files :as files]
+            [clojure.java.io :as io]))
 
 (defn- audio-impl [audio sound-names->file-handles]
   (let [sounds (update-vals sound-names->file-handles
@@ -22,12 +24,13 @@
       (dispose! [_]
         (run! disposable/dispose! (vals sounds))))))
 
+(def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
+(def ^:private path-format "sounds/%s.wav")
+
 (defn do!
   [{:keys [ctx/audio
            ctx/files]
-    :as ctx}
-   {:keys [sound-names
-           path-format]}]
+    :as ctx}]
   (assoc ctx :ctx/audio (let [sound-names->file-handles
                               (into {}
                                     (for [sound-name sound-names]
