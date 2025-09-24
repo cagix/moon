@@ -130,7 +130,7 @@
     (map #(schemas/build-values schemas % this)
          (db/all-raw this property-type))))
 
-(defn create
+(defn- create
   []
   (let [schemas "schema.edn"
         properties "properties.edn"
