@@ -1,7 +1,8 @@
 (ns cdq.application
   (:require [clojure.application :as application]
             [clojure.java.io :as io]
-            [clojure.edn :as edn])
+            [clojure.edn :as edn]
+            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application])
   (:gen-class))
 
 (def ^:private state (atom nil))
@@ -13,7 +14,7 @@
                              io/resource
                              slurp
                              edn/read-string)]
-    ((requiring-resolve starter)
+    (lwjgl3-application/start!
      {:listener (let [{:keys [create
                               dispose
                               render
@@ -22,7 +23,7 @@
                       dispose (requiring-resolve dispose)
                       render-pipeline (map requiring-resolve render)
                       resize (requiring-resolve resize)]
-                  (reify application/Listener
+                  (reify lwjgl3-application/Listener
                     (create [_ context]
                       (reset! state (reduce (fn [ctx f]
                                               (f ctx))
@@ -43,8 +44,8 @@
       :config config})))
 
 (defn post-runnable! [f]
-  (clojure.application/post-runnable! (:ctx/app @state)
-                                      (fn [] (f @state))))
+  (application/post-runnable! (:ctx/app @state)
+                              (fn [] (f @state))))
 
 (comment
  (require '[cdq.ctx :as ctx]

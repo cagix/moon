@@ -1,6 +1,5 @@
 (ns com.badlogic.gdx.backends.lwjgl3.application
-  (:require [clojure.application :as application]
-            [clojure.java.io :as io])
+  (:require [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -56,24 +55,32 @@
         ))
     obj))
 
+(defprotocol Listener
+  (create [_ context])
+  (dispose [_])
+  (render [_])
+  (resize [_ width height])
+  (pause [_])
+  (resume [_]))
+
 (defn start! [{:keys [listener config]}]
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (application/create listener {:ctx/app      Gdx/app
+                          (create listener {:ctx/app      Gdx/app
                                                         :ctx/audio    Gdx/audio
                                                         :ctx/files    Gdx/files
                                                         :ctx/graphics Gdx/graphics
                                                         :ctx/input    Gdx/input}))
                         (dispose [_]
-                          (application/dispose listener))
+                          (dispose listener))
                         (render [_]
-                          (application/render listener))
+                          (render listener))
                         (resize [_ width height]
-                          (application/resize listener width height))
+                          (resize listener width height))
                         (pause [_]
-                          (application/pause listener))
+                          (pause listener))
                         (resume [_]
-                          (application/resume listener)))
+                          (resume listener)))
                       (->Lwjgl3ApplicationConfiguration config)))
 
 (require 'com.badlogic.gdx.application

@@ -3,7 +3,6 @@
             [cdq.files :as files]
             [cdq.application.create.db]
             [cdq.world-fns.creature-tiles]
-            [clojure.application]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.graphics :as graphics]
@@ -190,7 +189,7 @@
 
 (defn -main []
   (lwjgl-application/start!
-   {:listener (reify clojure.application/Listener
+   {:listener (reify lwjgl-application/Listener
                 (create [_ context]
                   (reset! state (create! context)))
                 (dispose [_]
