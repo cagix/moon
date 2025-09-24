@@ -225,26 +225,7 @@
    :entity/string-effect tick-string-effect-timer
    :entity/temp-modifier tick-temp-modifier})
 
-(comment
- :tx/assoc
- :tx/assoc-in
- :tx/dissoc
- :tx/mark-destroyed
- :tx/move-entity
- :tx/mod-remove
- :tx/event (comment
-            :tx/state-exit
-            :tx/state-enter
-            )
- :tx/effect (comment
-             :tx/audiovisual
-             :tx/sound
-             :tx/spawn-creature
-             :tx/spawn-line
-             )
- )
-
-(defn tick-entities!
+(defn do!
   [{:keys [ctx/world]
     :as ctx}]
   (doseq [eid (:world/active-entities world)

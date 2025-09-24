@@ -5,9 +5,9 @@
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-            cdq.render.draw-on-world-viewport
-            cdq.render.tick-entities
-            cdq.render.remove-destroyed-entities
+            [cdq.render.draw-on-world-viewport :as draw-on-world-viewport]
+            [cdq.render.tick-entities :as tick-entities]
+            [cdq.render.remove-destroyed-entities :as remove-destroyed-entities]
             [cdq.stage :as stage]
             [cdq.ui.widget :as widget]
             [cdq.world :as world]
@@ -18,29 +18,18 @@
             [clojure.math.vector2 :as v]
             [clojure.utils :as utils]))
 
-(def ^:private pausing? true)
-
-(def ^:private state->pause-game?
-  {:stunned false
-   :player-moving false
-   :player-item-on-cursor true
-   :player-idle true
-   :player-dead true
-   :active-skill false})
-
-(def ^:private zoom-speed 0.025)
-
-(defn- handle-key-input!
-  [{:keys [ctx/graphics
-           ctx/input
-           ctx/stage]
-    :as ctx}]
-  (when (input/zoom-in?            input) (graphics/change-zoom! graphics zoom-speed))
-  (when (input/zoom-out?           input) (graphics/change-zoom! graphics (- zoom-speed)))
-  (when (input/close-windows?      input) (stage/close-all-windows!         stage))
-  (when (input/toggle-inventory?   input) (stage/toggle-inventory-visible!  stage))
-  (when (input/toggle-entity-info? input) (stage/toggle-entity-info-window! stage))
-  ctx)
+(let [zoom-speed 0.025]
+  (defn- window-and-camera-controls!
+    [{:keys [ctx/graphics
+             ctx/input
+             ctx/stage]
+      :as ctx}]
+    (when (input/zoom-in?            input) (graphics/change-zoom! graphics zoom-speed))
+    (when (input/zoom-out?           input) (graphics/change-zoom! graphics (- zoom-speed)))
+    (when (input/close-windows?      input) (stage/close-all-windows!         stage))
+    (when (input/toggle-inventory?   input) (stage/toggle-inventory-visible!  stage))
+    (when (input/toggle-entity-info? input) (stage/toggle-entity-info-window! stage))
+    ctx))
 
 (defn- tick-entities!
   [{:keys [ctx/stage]
@@ -48,7 +37,7 @@
   (if (:world/paused? (:ctx/world ctx))
     ctx
     (do (try
-         (cdq.render.tick-entities/tick-entities! ctx)
+         (tick-entities/do! ctx)
          (catch Throwable t
            (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
                                  [:tx/show-error-window t]])
@@ -72,15 +61,22 @@
     ctx
     (update ctx :ctx/world world/update-time (graphics/delta-time graphics))))
 
-(defn- assoc-paused
-  [{:keys [ctx/input
-           ctx/world]
-    :as ctx}]
-  (assoc-in ctx [:ctx/world :world/paused?]
-            (or #_error
-                (and pausing?
-                     (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
-                     (not (input/unpause? input))))))
+(let [pausing? true
+      state->pause-game? {:stunned false
+                          :player-moving false
+                          :player-item-on-cursor true
+                          :player-idle true
+                          :player-dead true
+                          :active-skill false}]
+  (defn- assoc-paused
+    [{:keys [ctx/input
+             ctx/world]
+      :as ctx}]
+    (assoc-in ctx [:ctx/world :world/paused?]
+              (or #_error
+                  (and pausing?
+                       (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
+                       (not (input/unpause? input)))))))
 
 (defn- player-state-handle-input!
   [{:keys [ctx/world]
@@ -161,7 +157,7 @@
     :as ctx}]
   (graphics/draw-on-world-viewport! graphics
                                     (fn []
-                                      (cdq.render.draw-on-world-viewport/do! ctx)))
+                                      (draw-on-world-viewport/do! ctx)))
   ctx)
 
 (defn- tile-color-setter
@@ -334,7 +330,7 @@
       update-world-time
       update-potential-fields!
       tick-entities!
-      cdq.render.remove-destroyed-entities/do!
-      handle-key-input!
+      remove-destroyed-entities/do!
+      window-and-camera-controls!
       render-stage!
       ctx/validate))
