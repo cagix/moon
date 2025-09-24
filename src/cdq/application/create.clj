@@ -22,9 +22,6 @@
 
 (q/defrecord Context [])
 
-; data has to be normalized ...
-; ui-viewport in 2 places
-; graphics/ui-mouse-posi / world-mouse-posi ?
 (def ^:private schema
   (m/schema
    [:map {:closed true}
@@ -32,10 +29,10 @@
     [:ctx/audio :some]
     [:ctx/db :some]
     [:ctx/graphics :some]
-    [:ctx/world :some]
     [:ctx/input :some]
     [:ctx/stage :some]
-    [:ctx/vis-ui :some]]))
+    [:ctx/vis-ui :some]
+    [:ctx/world :some]]))
 
 (extend-type Context
   ctx/Validation
