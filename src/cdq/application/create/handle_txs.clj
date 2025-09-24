@@ -1,7 +1,7 @@
 (ns cdq.application.create.handle-txs
   (:require [cdq.audio :as audio]
-            [cdq.db :as db]
             [cdq.ctx]
+            [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
@@ -16,10 +16,10 @@
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
             [clojure.math.vector2 :as v]
+            [clojure.repl]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tx-handler :as tx-handler]
-            [clojure.repl]
             [clojure.utils :as utils]))
 
 (def ^:private txs-fn-map
