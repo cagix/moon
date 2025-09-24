@@ -224,9 +224,8 @@
     (f v eid ctx)))
 
 (defn- tick-entity! [ctx eid]
-  (doseq [k (keys @eid)]
-    (try (when-let [v (k @eid)]
-           (ctx/handle-txs! ctx (tick-component [k v] eid ctx)))
+  (doseq [[k v] @eid]
+    (try (ctx/handle-txs! ctx (tick-component [k v] eid ctx))
          (catch Throwable t
            (throw (ex-info "entity-tick"
                            {:k k
