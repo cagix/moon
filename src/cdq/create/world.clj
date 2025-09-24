@@ -1,11 +1,12 @@
 (ns cdq.create.world
-  (:require cdq.create.world.info
+  (:require [cdq.create.world.effects]
+            [cdq.create.world.info]
             [cdq.entity.state :as state]
-            cdq.impl.content-grid
-            cdq.impl.grid
+            [cdq.impl.content-grid]
+            [cdq.impl.grid]
             [cdq.malli :as m]
-            cdq.potential-fields.movement
-            cdq.potential-fields.update
+            [cdq.potential-fields.movement]
+            [cdq.potential-fields.update]
             [cdq.world.grid.cell :as cell]
             [cdq.world]
             [clojure.math.vector2 :as v]

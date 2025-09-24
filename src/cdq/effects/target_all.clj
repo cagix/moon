@@ -22,30 +22,3 @@
                                    (entity/position @%)) targets)))
 
  )
-
-; TODO targets projectiles with -50% hp !!
-(defn applicable? [_ _]
-  true)
-
-; TODO
-(defn useful? [_ _effect-ctx _world]
-  false)
-
-(defn handle
-  [[_ {:keys [entity-effects]}]
-   {:keys [effect/source]}
-   world]
-  (let [{:keys [world/active-entities]} world
-        source* @source]
-    (apply concat
-           (for [target (affected-targets active-entities world source*)]
-             [[:tx/spawn-line
-               {:start (:body/position (:entity/body source*)) #_(start-point source* target*)
-                :end (:body/position (:entity/body @target))
-                :duration 0.05
-                :color [1 0 0 0.75]
-                :thick? true}]
-              [:tx/effect
-               {:effect/source source
-                :effect/target target}
-               entity-effects]]))))
