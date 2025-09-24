@@ -14,14 +14,14 @@
             [clojure.utils :as utils]
             [clojure.math.vector2 :as v]))
 
-(defn- npc-choose-skill [ctx entity effect-ctx]
+(defn- npc-choose-skill [world entity effect-ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (creature/skill-usable-state entity % effect-ctx))
-                     (effect/applicable-and-useful? ctx effect-ctx (:skill/effects %))))
+                     (effect/applicable-and-useful? world effect-ctx (:skill/effects %))))
        first))
 
 (defn- npc-effect-ctx
@@ -167,9 +167,9 @@
    [[:tx/effect effect-ctx (:skill/effects skill)]
     [:tx/event eid :action-done]]))
 
-(defn- update-npc-idle [_ eid {:keys [ctx/world] :as ctx}]
+(defn- update-npc-idle [_ eid {:keys [ctx/world]}]
   (let [effect-ctx (npc-effect-ctx world eid)]
-    (if-let [skill (npc-choose-skill ctx @eid effect-ctx)]
+    (if-let [skill (npc-choose-skill world @eid effect-ctx)]
       [[:tx/event eid :start-action [skill effect-ctx]]]
       [[:tx/event eid :movement-direction (or (world/find-movement-direction world eid)
                                               [0 0])]])))

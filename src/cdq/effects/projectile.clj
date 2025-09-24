@@ -29,7 +29,7 @@
 ; TODO valid params direction has to be  non-nil (entities not los player ) ?
 (defn useful? [[_ {:keys [projectile/max-range] :as projectile}]
                {:keys [effect/source effect/target]}
-               {:keys [ctx/world]}]
+               world]
   (let [source-p (entity/position @source)
         target-p (entity/position @target)]
     ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
@@ -39,7 +39,7 @@
                         target-p)
             max-range))))
 
-(defn handle [[_ projectile] {:keys [effect/source effect/target-direction]} _ctx]
+(defn handle [[_ projectile] {:keys [effect/source effect/target-direction]} _world]
   [[:tx/spawn-projectile
     {:position (proj-start-point @source
                                  target-direction

@@ -125,8 +125,8 @@
    :tx/state-enter (fn [_ctx eid [state-k state-v]]
                      (state/enter [state-k state-v] eid))
 
-   :tx/effect (fn [ctx effect-ctx effects]
-                (mapcat #(effect/handle % effect-ctx ctx)
+   :tx/effect (fn [{:keys [ctx/world]} effect-ctx effects]
+                (mapcat #(effect/handle % effect-ctx world)
                         (effect/filter-applicable? effect-ctx effects)))
 
    :tx/print-stacktrace (let[print-level 3

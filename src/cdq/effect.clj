@@ -12,8 +12,8 @@
 
 (defprotocol Effect
   (applicable? [_ effect-ctx])
-  (useful?     [_ effect-ctx ctx])
-  (handle      [_ effect-ctx ctx]))
+  (useful?     [_ effect-ctx world])
+  (handle      [_ effect-ctx world]))
 
 (defn filter-applicable? [effect-ctx effect]
   (filter #(applicable? % effect-ctx) effect))
@@ -21,10 +21,10 @@
 (defn some-applicable? [effect-ctx effect]
   (seq (filter-applicable? effect-ctx effect)))
 
-(defn applicable-and-useful? [ctx effect-ctx effect]
+(defn applicable-and-useful? [world effect-ctx effect]
   (->> effect
        (filter-applicable? effect-ctx)
-       (some #(useful? % effect-ctx ctx))))
+       (some #(useful? % effect-ctx world))))
 
 ; not in stats because projectile as source doesnt have stats
 ; FIXME I don't see it triggering with 10 armor save ... !
@@ -67,25 +67,25 @@
 (def ^:private k->fn
   {:effects/audiovisual {:applicable? (fn [_ {:keys [effect/target-position]}]
                                         target-position)
-                         :useful? (fn [_ _effect-ctx _ctx]
+                         :useful? (fn [_ _effect-ctx _world]
                                     false)
-                         :handle (fn [[_ audiovisual] {:keys [effect/target-position]} _ctx]
+                         :handle (fn [[_ audiovisual] {:keys [effect/target-position]} _world]
                                    [[:tx/audiovisual target-position audiovisual]])}
    :effects/projectile {:applicable? cdq.effects.projectile/applicable?
                         :useful? cdq.effects.projectile/useful?
                         :handle cdq.effects.projectile/handle}
-   :effects/sound {:applicable? (fn [_ _ctx]
+   :effects/sound {:applicable? (fn [_ _world]
                                   true)
-                   :useful? (fn [_ _effect-ctx _ctx]
+                   :useful? (fn [_ _effect-ctx _world]
                               false)
-                   :handle (fn [[_ sound] _effect-ctx _ctx]
+                   :handle (fn [[_ sound] _effect-ctx _world]
                              [[:tx/sound sound]])}
    :effects/spawn {:applicable? (fn [_ {:keys [effect/source effect/target-position]}]
                                   (and (:entity/faction @source)
                                        target-position))
                    :handle (fn [[_ {:keys [property/id] :as property}]
                                 {:keys [effect/source effect/target-position]}
-                                _ctx]
+                                _world]
                              [[:tx/spawn-creature {:position target-position
                                                    :creature-property property
                                                    :components {:entity/fsm {:fsm :fsms/npc
@@ -97,11 +97,11 @@
    :effects/target-entity {:applicable? (fn [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
                                           (and target
                                                (seq (filter-applicable? effect-ctx entity-effects))))
-                           :useful? (fn [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _ctx]
+                           :useful? (fn [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _world]
                                       (target-entity/in-range? @source @target maxrange))
                            :handle (fn [[_ {:keys [maxrange entity-effects]}]
                                         {:keys [effect/source effect/target] :as effect-ctx}
-                                        _ctx]
+                                        _world]
                                      (let [source* @source
                                            target* @target]
                                        (if (target-entity/in-range? source* target* maxrange)
@@ -116,15 +116,15 @@
                                            :audiovisuals/hit-ground]])))}
    :effects.target/audiovisual {:applicable? (fn [_ {:keys [effect/target]}]
                                                target)
-                                :useful? (fn [_ _effect-ctx _ctx]
+                                :useful? (fn [_ _effect-ctx _world]
                                            false)
-                                :handle (fn [[_ audiovisual] {:keys [effect/target]} _ctx]
+                                :handle (fn [[_ audiovisual] {:keys [effect/target]} _world]
                                           [[:tx/audiovisual (entity/position @target) audiovisual]])}
    :effects.target/convert {:applicable? (fn [_ {:keys [effect/source effect/target]}]
                                            (and target
                                                 (= (:entity/faction @target)
                                                    (faction/enemy (:entity/faction @source)))))
-                            :handle (fn [_ {:keys [effect/source effect/target]} _ctx]
+                            :handle (fn [_ {:keys [effect/source effect/target]} _world]
                                       [[:tx/assoc target :entity/faction (:entity/faction @source)]])}
 
 
@@ -134,7 +134,7 @@
 
                            :handle (fn [[_ damage]
                                         {:keys [effect/source effect/target]}
-                                        _ctx]
+                                        _world]
                                      (let [source* @source
                                            target* @target
                                            hp (stats/get-hitpoints (:creature/stats target*))]
@@ -167,12 +167,12 @@
    :effects.target/kill {:applicable? (fn [_ {:keys [effect/target]}]
                                         (and target
                                              (:entity/fsm @target)))
-                         :handle (fn [_ {:keys [effect/target]} _ctx]
+                         :handle (fn [_ {:keys [effect/target]} _world]
                                    [[:tx/event target :kill]])}
    :effects.target/melee-damage {:applicable? (fn [_ {:keys [effect/source] :as effect-ctx}]
                                                 (applicable? (melee-damage-effect @source) effect-ctx))
-                                 :handle (fn [_ {:keys [effect/source] :as effect-ctx} ctx]
-                                           (handle (melee-damage-effect @source) effect-ctx ctx))}
+                                 :handle (fn [_ {:keys [effect/source] :as effect-ctx} world]
+                                           (handle (melee-damage-effect @source) effect-ctx world))}
    :effects.target/spiderweb (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
                                    duration 5]
 
@@ -184,7 +184,7 @@
                                 ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
                                 :handle (fn [_
                                              {:keys [effect/target]}
-                                             {:keys [ctx/world]}]
+                                             world]
                                           (let [{:keys [world/elapsed-time]} world]
                                             (when-not (:entity/temp-modifier @target)
                                               [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
@@ -193,7 +193,7 @@
    :effects.target/stun {:applicable? (fn [_ {:keys [effect/target]}]
                                         (and target
                                              (:entity/fsm @target)))
-                         :handle      (fn [[_ duration] {:keys [effect/target]} _ctx]
+                         :handle      (fn [[_ duration] {:keys [effect/target]} _world]
                                         [[:tx/event target :stun duration]])}})
 
 (extend APersistentVector
@@ -201,10 +201,10 @@
   {:applicable? (fn [{k 0 :as component} effect-ctx]
                   ((:applicable? (k->fn k)) component effect-ctx))
 
-   :handle (fn [{k 0 :as component} effect-ctx ctx]
-             ((:handle (k->fn k)) component effect-ctx ctx))
+   :handle (fn [{k 0 :as component} effect-ctx world]
+             ((:handle (k->fn k)) component effect-ctx world))
 
-   :useful? (fn [{k 0 :as component} effect-ctx ctx]
+   :useful? (fn [{k 0 :as component} effect-ctx world]
               (if-let [f (:useful? (k->fn k))]
-                (f component effect-ctx ctx)
+                (f component effect-ctx world)
                 true))})

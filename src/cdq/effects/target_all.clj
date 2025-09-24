@@ -28,13 +28,13 @@
   true)
 
 ; TODO
-(defn useful? [_ _effect-ctx _ctx]
+(defn useful? [_ _effect-ctx _world]
   false)
 
 (defn handle
   [[_ {:keys [entity-effects]}]
    {:keys [effect/source]}
-   {:keys [ctx/world]}]
+   world]
   (let [{:keys [world/active-entities]} world
         source* @source]
     (apply concat
