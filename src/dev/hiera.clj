@@ -33,7 +33,7 @@
    :layout :horizontal
    :external false
    :ignore #_(set (mapv symbol (locked-namespaces)))
-   #{cdq.application
+   '#{cdq.application
      cdq.string
      ;cdq.schema
      cdq.schemas
@@ -60,6 +60,8 @@
      cdq.world.grid
      cdq.world.content-grid
      ;cdq.creature
+     clojure.tx-handler
+     dev
      }
    })
 
