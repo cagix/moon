@@ -1,12 +1,12 @@
-(ns cdq.create.reset-stage
-  (:require cdq.create.ui.dev-menu
-            cdq.create.ui.action-bar
-            cdq.create.ui.hp-mana-bar
-            cdq.create.ui.windows
-            cdq.create.ui.entity-info
-            cdq.create.ui.inventory
-            cdq.create.ui.player-state-draw
-            cdq.create.ui.message
+(ns cdq.application.create.reset-stage
+  (:require cdq.application.create.ui.dev-menu
+            cdq.application.create.ui.action-bar
+            cdq.application.create.ui.hp-mana-bar
+            cdq.application.create.ui.windows
+            cdq.application.create.ui.entity-info
+            cdq.application.create.ui.inventory
+            cdq.application.create.ui.player-state-draw
+            cdq.application.create.ui.message
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]))
 
@@ -42,18 +42,18 @@
     :icon "images/zoom.png"}])
 
 (def ^:private ui-actors
-  [[cdq.create.ui.dev-menu/create {:update-labels update-labels}]
-   [cdq.create.ui.action-bar/create]
-   [cdq.create.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
+  [[cdq.application.create.ui.dev-menu/create {:update-labels update-labels}]
+   [cdq.application.create.ui.action-bar/create]
+   [cdq.application.create.ui.hp-mana-bar/create {:rahmen-file "images/rahmen.png"
                                       :rahmenw 150
                                       :rahmenh 26
                                       :hpcontent-file "images/hp.png"
                                       :manacontent-file "images/mana.png"
                                       :y-mana 80}]
-   [cdq.create.ui.windows/create [cdq.create.ui.entity-info/create
-                                  cdq.create.ui.inventory/create]]
-   [cdq.create.ui.player-state-draw/create]
-   [cdq.create.ui.message/create {:duration-seconds 0.5
+   [cdq.application.create.ui.windows/create [cdq.application.create.ui.entity-info/create
+                                  cdq.application.create.ui.inventory/create]]
+   [cdq.application.create.ui.player-state-draw/create]
+   [cdq.application.create.ui.message/create {:duration-seconds 0.5
                                   :name "player-message"}]])
 
 (defn do!

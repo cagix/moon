@@ -1,4 +1,4 @@
-(ns cdq.create.ui.windows)
+(ns cdq.application.create.ui.windows)
 
 (defn create [ctx actors]
   {:actor/type :actor.type/group

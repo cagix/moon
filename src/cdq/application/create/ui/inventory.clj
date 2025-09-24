@@ -1,4 +1,4 @@
-(ns cdq.create.ui.inventory
+(ns cdq.application.create.ui.inventory
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.entity.state :as state]

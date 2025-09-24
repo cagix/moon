@@ -1,4 +1,4 @@
-(ns cdq.create.world.info
+(ns cdq.application.create.world.info
   (:require [cdq.stats :as stats]
             [cdq.stats.op :as op]
             [cdq.timer :as timer]

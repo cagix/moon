@@ -1,4 +1,4 @@
-(ns cdq.create.input
+(ns cdq.application.create.input
   (:require [cdq.input]
             [clojure.input :as input]
             [clojure.math.vector2 :as v]))

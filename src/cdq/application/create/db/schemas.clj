@@ -1,4 +1,4 @@
-(ns cdq.create.db.schemas
+(ns cdq.application.create.db.schemas
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.schemas :as schemas]

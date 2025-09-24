@@ -1,4 +1,4 @@
-(ns cdq.create.ui.entity-info
+(ns cdq.application.create.ui.entity-info
   (:require [cdq.stage :as stage]
             [cdq.world :as world]
             [clojure.scene2d :as scene2d]

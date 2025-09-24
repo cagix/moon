@@ -1,4 +1,4 @@
-(ns cdq.create.world.effects
+(ns cdq.application.create.world.effects
   (:require [cdq.effect :as effect]
             [cdq.effects.target-all :as target-all]
             [cdq.effects.target-entity :as target-entity]

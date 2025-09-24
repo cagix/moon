@@ -1,4 +1,4 @@
-(ns cdq.create.ui.player-state-draw
+(ns cdq.application.create.ui.player-state-draw
   (:require [cdq.graphics :as graphics]
             [cdq.entity.state :as state]))
 

@@ -1,5 +1,5 @@
 ; TODO only audio/stage/world/graphics/db...
-(ns cdq.create.txs
+(ns cdq.application.create.txs
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effect :as effect]

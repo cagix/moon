@@ -1,6 +1,6 @@
-(ns cdq.create.world
-  (:require [cdq.create.world.effects]
-            [cdq.create.world.info]
+(ns cdq.application.create.world
+  (:require [cdq.application.create.world.effects]
+            [cdq.application.create.world.info]
             [cdq.entity.state :as state]
             [cdq.impl.content-grid]
             [cdq.impl.grid]
@@ -125,7 +125,7 @@
 
   cdq.world/InfoText
   (info-text [world entity]
-    (cdq.create.world.info/info-text world entity))
+    (cdq.application.create.world.info/info-text world entity))
 
   cdq.world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]

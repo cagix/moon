@@ -1,4 +1,4 @@
-(ns cdq.create.ui.dev-menu
+(ns cdq.application.create.ui.dev-menu
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.ui.widget :as widget]

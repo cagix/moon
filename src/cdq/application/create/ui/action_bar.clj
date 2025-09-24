@@ -1,4 +1,4 @@
-(ns cdq.create.ui.action-bar
+(ns cdq.application.create.ui.action-bar
   (:require [cdq.ui.action-bar]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]

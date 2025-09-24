@@ -1,4 +1,4 @@
-(ns cdq.create.ui.message
+(ns cdq.application.create.ui.message
   (:require [cdq.ui.message]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))

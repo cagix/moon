@@ -1,5 +1,5 @@
-(ns cdq.create.db
-  (:require cdq.create.db.schemas
+(ns cdq.application.create.db
+  (:require cdq.application.create.db.schemas
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
@@ -136,7 +136,7 @@
         properties "properties.edn"
         schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
-                               (with-meta schema (get cdq.create.db.schemas/schema-fn-map k))))
+                               (with-meta schema (get cdq.application.create.db.schemas/schema-fn-map k))))
         schemas (map->Schemas schemas)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]

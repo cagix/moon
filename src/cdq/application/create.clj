@@ -1,15 +1,15 @@
 (ns cdq.application.create
-  (:require cdq.create.db
-            cdq.create.input
-            cdq.create.graphics
-            cdq.create.stage
-            cdq.create.txs
-            cdq.create.audio
-            cdq.create.reset-stage
-            cdq.create.world
-            cdq.create.reset-world
-            cdq.create.spawn-player
-            cdq.create.spawn-enemies
+  (:require cdq.application.create.db
+            cdq.application.create.input
+            cdq.application.create.graphics
+            cdq.application.create.stage
+            cdq.application.create.txs
+            cdq.application.create.audio
+            cdq.application.create.reset-stage
+            cdq.application.create.world
+            cdq.application.create.reset-world
+            cdq.application.create.spawn-player
+            cdq.application.create.spawn-enemies
             [cdq.ctx :as ctx]
             [cdq.malli :as m]
             [clojure.disposable :as disposable]
@@ -45,7 +45,7 @@
 (extend-type Context
   ctx/TransactionHandler
   (handle-txs! [ctx transactions]
-    (clojure.tx-handler/actions! cdq.create.txs/txs-fn-map
+    (clojure.tx-handler/actions! cdq.application.create.txs/txs-fn-map
                                  ctx
                                  transactions)))
 
@@ -56,20 +56,20 @@
                       world-fn]
     (disposable/dispose! world)
     (-> ctx
-        cdq.create.reset-stage/do!
-        (cdq.create.reset-world/do! world-fn)
-        cdq.create.spawn-player/do!
-        cdq.create.spawn-enemies/do!)))
+        cdq.application.create.reset-stage/do!
+        (cdq.application.create.reset-world/do! world-fn)
+        cdq.application.create.spawn-player/do!
+        cdq.application.create.spawn-enemies/do!)))
 
 (defn do! [context]
   (-> (merge (map->Context {})
              context)
-      (assoc :ctx/db (cdq.create.db/create))
+      (assoc :ctx/db (cdq.application.create.db/create))
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
-      cdq.create.graphics/do!
-      cdq.create.stage/do!
-      cdq.create.input/do!
-      cdq.create.audio/do!
+      cdq.application.create.graphics/do!
+      cdq.application.create.stage/do!
+      cdq.application.create.input/do!
+      cdq.application.create.audio/do!
       (dissoc :ctx/files)
-      cdq.create.world/do!
+      cdq.application.create.world/do!
       (ctx/reset-game-state! "world_fns/vampire.edn")))

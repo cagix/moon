@@ -1,4 +1,4 @@
-(ns cdq.create.spawn-player
+(ns cdq.application.create.spawn-player
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]))
 

@@ -1,4 +1,4 @@
-(ns cdq.create.reset-world
+(ns cdq.application.create.reset-world
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
