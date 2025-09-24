@@ -1,7 +1,7 @@
 (ns cdq.application.create
-  (:require [cdq.application.create.editor           :as create.editor]
-            [cdq.application.create.record           :as create.record]
+  (:require [cdq.application.create.record           :as create.record]
             [cdq.application.create.validation       :as create.validation]
+            [cdq.application.create.editor           :as create.editor]
             [cdq.application.create.handle-txs       :as create.handle-txs]
             [cdq.application.create.db               :as create.db]
             [cdq.application.create.vis-ui           :as create.vis-ui]
