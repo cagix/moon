@@ -219,21 +219,11 @@
    :entity/string-effect tick-string-effect-timer
    :entity/temp-modifier tick-temp-modifier})
 
-(defn- tick-component [[k v] eid ctx]
-  (when-let [f (k->tick-fn k)]
-    (f v eid ctx)))
-
-(defn- tick-entity! [ctx eid]
-  (doseq [[k v] @eid]
-    (try (ctx/handle-txs! ctx (tick-component [k v] eid ctx))
-         (catch Throwable t
-           (throw (ex-info "entity-tick"
-                           {:k k
-                            :entity/id (:entity/id @eid)}
-                           t))))))
-
 (defn tick-entities!
   [{:keys [ctx/world]
     :as ctx}]
-  (doseq [eid (:world/active-entities world)]
-    (tick-entity! ctx eid)))
+  (doseq [eid (:world/active-entities world)
+          [k v] @eid
+          :let [f (k->tick-fn k)]
+          :when f]
+    (ctx/handle-txs! ctx (f v eid ctx))))
