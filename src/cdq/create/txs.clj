@@ -14,7 +14,6 @@
             [cdq.timer :as timer]
             cdq.tx.spawn-creature
             cdq.tx.spawn-entity
-            cdq.tx.update-potential-fields
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -292,7 +291,5 @@
    :tx/spawn-creature cdq.tx.spawn-creature/do!
 
    :tx/spawn-entity cdq.tx.spawn-entity/do!
-
-   :tx/update-potential-fields cdq.tx.update-potential-fields/do!
    }
   )

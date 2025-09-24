@@ -1,4 +1,4 @@
-(ns cdq.tx.update-potential-fields
+(ns cdq.potential-fields.update
   (:require [cdq.entity :as entity]
             [cdq.world.grid.cell :as cell]
             [cdq.position :as position]
@@ -104,14 +104,13 @@
                                              max-iterations)))))
 
 (defn do!
-  [{:keys [ctx/world]}]
-  (let [{:keys [world/active-entities
-                world/factions-iterations
-                world/grid
-                world/potential-field-cache]} world]
-    (doseq [[faction max-iterations] factions-iterations]
-      (tick! potential-field-cache
-             grid
-             faction
-             active-entities
-             max-iterations))))
+  [{:keys [world/active-entities
+           world/factions-iterations
+           world/grid
+           world/potential-field-cache]}]
+  (doseq [[faction max-iterations] factions-iterations]
+    (tick! potential-field-cache
+           grid
+           faction
+           active-entities
+           max-iterations)))

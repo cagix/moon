@@ -5,6 +5,7 @@
             cdq.impl.grid
             [cdq.malli :as m]
             cdq.potential-fields.movement
+            cdq.potential-fields.update
             [cdq.world.grid.cell :as cell]
             [cdq.world]
             [clojure.math.vector2 :as v]
@@ -89,6 +90,10 @@
              [:entity/projectile-collision {:optional true} :some]]))
 
 (defrecord World []
+  cdq.world/Update
+  (update-potential-fields! [world]
+    (cdq.potential-fields.update/do! world))
+
   cdq.world/FSMs
   (handle-event [world eid event]
     (cdq.world/handle-event world eid event nil))

@@ -20,3 +20,6 @@
 (defprotocol FSMs
   (handle-event [_ eid event]
                 [_ eid event params]))
+
+(defprotocol Update
+  (update-potential-fields! [_]))

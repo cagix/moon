@@ -70,11 +70,12 @@
         ctx)))
 
 (defn- update-potential-fields!
-  [ctx]
-  (if (:world/paused? (:ctx/world ctx))
+  [{:keys [ctx/world]
+    :as ctx}]
+  (if (:world/paused? world)
     ctx
     (do
-     (ctx/handle-txs! ctx [[:tx/update-potential-fields]])
+     (world/update-potential-fields! world)
      ctx)))
 
 (defn- update-world-time
