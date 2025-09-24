@@ -1,3 +1,5 @@
+; TODO only audio,stage,graphics,world, etc.
+; no details here
 (ns cdq.create.txs
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
@@ -13,36 +15,17 @@
             cdq.tx.spawn-creature
             cdq.tx.spawn-entity
             cdq.tx.update-potential-fields
-            [cdq.ui.editor.window]
-            [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
             [clojure.math.vector2 :as v]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.repl]))
 
 (def txs-fn-map
   {
-   :tx/rebuild-editor-window (fn
-                               [{:keys [ctx/db
-                                        ctx/stage]
-                                 :as ctx}]
-                               (let [window (-> stage
-                                                stage/root
-                                                (group/find-actor "cdq.ui.editor.window"))
-                                     map-widget-table (-> window
-                                                          (group/find-actor "cdq.ui.widget.scroll-pane-table")
-                                                          (group/find-actor "scroll-pane-table")
-                                                          (group/find-actor "cdq.schema.map.ui.widget"))
-                                     property (map-widget-table/get-value map-widget-table (:db/schemas db))]
-                                 (actor/remove! window)
-                                 (cdq.ui.editor.window/add-to-stage! ctx property)
-                                 nil))
    :tx/assoc (fn [_ctx eid k value]
                (swap! eid assoc k value)
                nil)
