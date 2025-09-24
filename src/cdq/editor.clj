@@ -58,8 +58,8 @@
          (sort-by sort-by-fn)
          (map (fn [property]
                 {:texture-region (graphics/texture-region graphics (property/image property))
-                 :on-clicked (fn [_actor ctx]
-                               (clicked-id-fn (:property/id property) ctx))
+                 :on-clicked (fn [actor ctx]
+                               (clicked-id-fn actor (:property/id property) ctx))
                  :tooltip (string/pprint-to-str property)
                  :extra-info-text (extra-info-text property)}))
          (partition-all columns)

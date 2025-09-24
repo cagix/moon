@@ -11,6 +11,6 @@
              :on-click (fn [_actor ctx]
                          (ctx/open-editor-overview! ctx
                                                     {:property-type property-type
-                                                     :clicked-id-fn (fn [id {:keys [ctx/db] :as ctx}]
+                                                     :clicked-id-fn (fn [_actor id {:keys [ctx/db] :as ctx}]
                                                                       (cdq.ui.editor.window/add-to-stage! ctx
                                                                                                           (db/get-raw db id)))}))})})

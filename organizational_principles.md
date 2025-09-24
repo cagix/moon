@@ -20,3 +20,7 @@ See `cdq.application.create.info` - before it was in x number of namespaces whic
  :mac {:glfw-async? true
        :taskbar-icon "icon.png"}}
 ```
+
+# Make small files!
+
+# Keep monorepo ! You are making a game, not an engine

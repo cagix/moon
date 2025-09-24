@@ -36,8 +36,8 @@
                                              :close-button? true
                                              :center? true
                                              :close-on-escape? true})
-                                    clicked-id-fn (fn [id ctx]
-                                                    (actor/remove! window)
+                                    clicked-id-fn (fn [actor id ctx]
+                                                    (actor/remove! (window/find-ancestor actor))
                                                     (redo-rows ctx (conj property-ids id)))]
                                 (table/add-rows! window (cdq.editor/overview-table-rows db
                                                                                         graphics
