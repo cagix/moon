@@ -6,6 +6,6 @@
       (first (:animation/frames animation))))
 
 (defn tooltip [property]
-  (binding [*print-level* 1]
+  (binding [*print-level* 2]
     (with-out-str
      (pprint property))))
