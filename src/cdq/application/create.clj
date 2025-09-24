@@ -60,17 +60,17 @@
                [:ctx/db :some]
                [:ctx/graphics :some]
                [:ctx/world :some]
-
                [:ctx/input :some]
-
-               ; merge?
                [:ctx/stage :some]
                [:ctx/vis-ui :some]
-               ;
 
-
-               ; FIXME move in input
-               [:ctx/mouseover-actor :any] ; 5 usage: interaction-state, update-mouseover-eid!, handle-input, draw-gui-view, draw-item-on-cursor
+               [:ctx/mouseover-actor :any]
+               ; 5 usage:
+               ; * interaction-state,
+               ; * update-mouseover-eid!,
+               ; * handle-input,
+               ; * draw-gui-view,
+               ; * draw-item-on-cursor
                [:ctx/ui-mouse-position :some] ; 3 usage: dev-menu, draw inventory cell, draw-gui-view
                [:ctx/world-mouse-position :some] ; 7-8 usage: interaction-state, check-open-debug!, update-mouseover-eid!, dev-menu, player item on cursor exit, draw-item-on-cursor, highlight-mouseover-tile, geom-test
                [:ctx/interaction-state :some] ; only cursor/handle-input
@@ -117,10 +117,8 @@
        :ctx/ui-mouse-position true
        :ctx/world-mouse-position true
        :ctx/interaction-state true)
-
       (assoc :ctx/db (cdq.create.db/create {:schemas "schema.edn"
                                             :properties "properties.edn"}))
-
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       (cdq.create.graphics/do! (edn-resource "graphics.edn"))
       (cdq.create.stage/do!)
