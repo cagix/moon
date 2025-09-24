@@ -32,7 +32,7 @@
 (defn- handle-event
   ([ctx eid event]
    (handle-event ctx eid event nil))
-  ([ctx eid event params]
+  ([{:keys [ctx/world]} eid event params]
    (let [fsm (:entity/fsm @eid)
          _ (assert fsm)
          old-state-k (:state fsm)
@@ -41,7 +41,7 @@
      (when-not (= old-state-k new-state-k)
        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                              [k (k @eid)])
-             new-state-obj [new-state-k (state/create [new-state-k params] eid ctx)]]
+             new-state-obj [new-state-k (state/create [new-state-k params] eid world)]]
          [[:tx/assoc eid :entity/fsm new-fsm]
           [:tx/assoc eid new-state-k (new-state-obj 1)]
           [:tx/dissoc eid old-state-k]

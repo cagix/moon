@@ -8,7 +8,7 @@
   (:import (clojure.lang APersistentVector)))
 
 (defprotocol State
-  (create       [_ eid ctx])
+  (create       [_ eid world])
   (handle-input [_ eid ctx])
   (cursor       [_ eid ctx])
   (enter        [_ eid])
@@ -25,28 +25,28 @@
 
 (def ^:private fn->k->var
   {
-   :create {:active-skill (fn [eid [skill effect-ctx] {:keys [ctx/world]}]
+   :create {:active-skill (fn [eid [skill effect-ctx] {:keys [world/elapsed-time]}]
                             {:skill skill
                              :effect-ctx effect-ctx
                              :counter (->> skill
                                            :skill/action-time
                                            (apply-action-speed-modifier @eid skill)
-                                           (timer/create (:world/elapsed-time world)))})
+                                           (timer/create elapsed-time))})
 
-            :npc-moving (fn [eid movement-vector {:keys [ctx/world]}]
+            :npc-moving (fn [eid movement-vector {:keys [world/elapsed-time]}]
                           {:movement-vector movement-vector
-                           :timer (timer/create (:world/elapsed-time world)
+                           :timer (timer/create elapsed-time
                                                 (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
                                                    reaction-time-multiplier))})
 
-            :player-item-on-cursor (fn [_eid item _ctx]
+            :player-item-on-cursor (fn [_eid item _world]
                                      {:item item})
 
-            :player-moving (fn [eid movement-vector _ctx]
+            :player-moving (fn [eid movement-vector _world]
                              {:movement-vector movement-vector})
 
-            :stunned (fn [_eid duration {:keys [ctx/world]}]
-                       {:counter (timer/create (:world/elapsed-time world) duration)})}
+            :stunned (fn [_eid duration {:keys [world/elapsed-time]}]
+                       {:counter (timer/create elapsed-time duration)})}
 
    :enter {:npc-dead (fn [_ eid]
                        [[:tx/mark-destroyed eid]])
