@@ -6,6 +6,8 @@
             cdq.application.create.spawn-player
             cdq.application.create.spawn-enemies))
 
+(def starting-world-fn "world_fns/vampire.edn")
+
 (defn do! [ctx]
   (extend-type (class ctx)
     ctx/ResetGameState
@@ -18,4 +20,4 @@
           (cdq.application.create.reset-world/do! world-fn)
           cdq.application.create.spawn-player/do!
           cdq.application.create.spawn-enemies/do!)))
-  ctx)
+  (ctx/reset-game-state! ctx starting-world-fn))
