@@ -127,9 +127,10 @@
   []
   (let [schemas "schema.edn"
         properties "properties.edn"
+        schema-fn-map @(requiring-resolve 'cdq.application.create.db.schemas/schema-fn-map)
         schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
-                               (with-meta schema (get (requiring-resolve 'cdq.application.create.db.schemas/schema-fn-map) k))))
+                               (with-meta schema (get schema-fn-map k))))
         schemas (map->Schemas schemas)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
