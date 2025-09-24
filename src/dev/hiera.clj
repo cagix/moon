@@ -32,7 +32,35 @@
    :output "target/hiera"
    :layout :horizontal
    :external false
-   :ignore (set (mapv symbol (locked-namespaces)))
+   :ignore #_(set (mapv symbol (locked-namespaces)))
+   #{cdq.application
+     cdq.string
+     ;cdq.schema
+     cdq.schemas
+     cdq.db
+     cdq.malli
+     cdq.files
+     cdq.graphics
+     clojure.rand
+     ;clojure.grid2d
+     cdq.stage
+     cdq.ctx
+     cdq.inventory
+     ;cdq.stats
+     cdq.input
+     cdq.timer
+     ;cdq.world
+     cdq.animation
+     clojure.utils
+     ;cdq.entity
+     cdq.entity.faction
+     cdq.body
+     clojure.math.vector2
+     cdq.world.grid.cell
+     cdq.world.grid
+     cdq.world.content-grid
+     ;cdq.creature
+     }
    })
 
  )

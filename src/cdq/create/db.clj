@@ -1,103 +1,13 @@
 (ns cdq.create.db
-  (:require [cdq.db :as db]
+  (:require cdq.create.db.schemas
+            [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.property :as property]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [cdq.malli :as m]
-            cdq.schema.animation
-            cdq.schema.boolean
-            cdq.schema.enum
-            cdq.schema.image
-            cdq.schema.map
-            cdq.schema.number
-            cdq.schema.one-to-many
-            cdq.schema.one-to-one
-            cdq.schema.qualified-keyword
-            cdq.schema.some
-            cdq.schema.sound
-            cdq.schema.string
-            cdq.schema.val-max
-            cdq.schema.vector
-            cdq.ui.editor.widget.default
-            cdq.ui.editor.widget.edn
-            ))
-
-(def ^:private schema-fn-map
-  {
-   :s/animation {'cdq.schema/malli-form   cdq.schema.animation/malli-form
-                 'cdq.schema/create-value cdq.schema.animation/create-value
-                 'cdq.schema/create       cdq.schema.animation/create
-                 'cdq.schema/value        cdq.ui.editor.widget.default/value}
-
-   :s/boolean {'cdq.schema/malli-form   cdq.schema.boolean/malli-form
-               'cdq.schema/create-value cdq.schema.boolean/create-value
-               'cdq.schema/create       cdq.schema.boolean/create
-               'cdq.schema/value        cdq.schema.boolean/value}
-
-   :s/enum {'cdq.schema/malli-form   cdq.schema.enum/malli-form
-            'cdq.schema/create-value cdq.schema.enum/create-value
-            'cdq.schema/create       cdq.schema.enum/create
-            'cdq.schema/value        cdq.schema.enum/value}
-
-   :s/image {'cdq.schema/malli-form   cdq.schema.image/malli-form
-             'cdq.schema/create-value cdq.schema.image/create-value
-             'cdq.schema/create       cdq.schema.image/create
-             'cdq.schema/value        cdq.ui.editor.widget.default/value}
-
-   :s/map {'cdq.schema/malli-form   cdq.schema.map/malli-form
-           'cdq.schema/create-value cdq.schema.map/create-value
-           'cdq.schema/create       cdq.schema.map/create
-           'cdq.schema/value        cdq.schema.map/value}
-
-   :s/number {'cdq.schema/malli-form   cdq.schema.number/malli-form
-              'cdq.schema/create-value cdq.schema.number/create-value
-              'cdq.schema/create       cdq.ui.editor.widget.edn/create
-              'cdq.schema/value        cdq.ui.editor.widget.edn/value}
-
-   :s/one-to-many {'cdq.schema/malli-form   cdq.schema.one-to-many/malli-form
-                   'cdq.schema/create-value cdq.schema.one-to-many/create-value
-                   'cdq.schema/create       cdq.schema.one-to-many/create
-                   'cdq.schema/value        cdq.schema.one-to-many/value}
-
-   :s/one-to-one {'cdq.schema/malli-form   cdq.schema.one-to-one/malli-form
-                  'cdq.schema/create-value cdq.schema.one-to-one/create-value
-                  'cdq.schema/create       cdq.schema.one-to-one/create
-                  'cdq.schema/value        cdq.schema.one-to-one/value}
-
-   :s/qualified-keyword {'cdq.schema/malli-form   cdq.schema.qualified-keyword/malli-form
-                         'cdq.schema/create-value cdq.schema.qualified-keyword/create-value
-                         'cdq.schema/create       cdq.ui.editor.widget.default/create
-                         'cdq.schema/value        cdq.ui.editor.widget.default/value}
-
-   :s/some {'cdq.schema/malli-form   cdq.schema.some/malli-form
-            'cdq.schema/create-value cdq.schema.some/create-value
-            'cdq.schema/create       cdq.ui.editor.widget.default/create
-            'cdq.schema/value        cdq.ui.editor.widget.default/value}
-
-   :s/sound {'cdq.schema/malli-form   cdq.schema.sound/malli-form
-             'cdq.schema/create-value cdq.schema.sound/create-value
-             'cdq.schema/create       cdq.schema.sound/create
-             'cdq.schema/value        cdq.ui.editor.widget.default/value}
-
-   :s/string {'cdq.schema/malli-form   cdq.schema.string/malli-form
-              'cdq.schema/create-value cdq.schema.string/create-value
-              'cdq.schema/create       cdq.schema.string/create
-              'cdq.schema/value        cdq.schema.string/value}
-
-   :s/val-max {'cdq.schema/malli-form   cdq.schema.val-max/malli-form
-               'cdq.schema/create-value cdq.schema.val-max/create-value
-               'cdq.schema/create       cdq.ui.editor.widget.edn/create
-               'cdq.schema/value        cdq.ui.editor.widget.edn/value}
-
-   :s/vector {'cdq.schema/malli-form   cdq.schema.vector/malli-form
-              'cdq.schema/create-value cdq.schema.vector/create-value
-              'cdq.schema/create       cdq.ui.editor.widget.default/create
-              'cdq.schema/value        cdq.ui.editor.widget.default/value}
-   }
-  )
+            [cdq.malli :as m]))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -226,7 +136,7 @@
         properties "properties.edn"
         schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
-                               (with-meta schema (get schema-fn-map k))))
+                               (with-meta schema (get cdq.create.db.schemas/schema-fn-map k))))
         schemas (map->Schemas schemas)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
