@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.dev-menu.open-editor
+(ns cdq.application.create.stage.dev-menu.open-editor
   (:require [cdq.db :as db]
             [cdq.ui.editor.window]
             [clojure.scene2d :as scene2d]

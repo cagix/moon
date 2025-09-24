@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.dev-menu.ctx-data-viewer
+(ns cdq.application.create.stage.dev-menu.ctx-data-viewer
   (:require [cdq.ui.widget :as widget]
             [clojure.scene2d.stage :as stage]))
 

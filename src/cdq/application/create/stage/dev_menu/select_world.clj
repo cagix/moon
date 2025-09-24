@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.dev-menu.select-world
+(ns cdq.application.create.stage.dev-menu.select-world
   (:require [cdq.ctx :as ctx]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))

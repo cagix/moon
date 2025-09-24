@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.inventory
+(ns cdq.application.create.stage.inventory
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.entity.state :as state]
@@ -14,7 +14,7 @@
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create*
-  [{:keys [ctx/stage]}
+  [stage
    {:keys [title
            actor/visible?
            clicked-cell-listener
@@ -120,8 +120,7 @@
          (actor/user-object (actor/parent actor)))))
 
 (defn create
-  [{:keys [ctx/graphics]
-    :as ctx}]
+  [stage graphics]
   (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
                                              :shield   1
                                              :rings    2
@@ -145,7 +144,7 @@
                                  (graphics/texture-region graphics
                                                           {:image/file "images/items.png"
                                                            :image/bounds bounds})))]
-    (create* ctx
+    (create* stage
              {:title "Inventory"
               :actor/visible? false
               :clicked-cell-listener (fn [cell]

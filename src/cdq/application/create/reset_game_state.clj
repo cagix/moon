@@ -36,9 +36,11 @@
     (assoc-in ctx [:ctx/world :world/player-eid] eid)))
 
 (defn- reset-stage-actors!
-  [{:keys [ctx/stage]
+  [{:keys [ctx/db
+           ctx/graphics
+           ctx/stage]
     :as ctx}]
-  (stage/rebuild-actors! stage ctx)
+  (stage/rebuild-actors! stage db graphics)
   ctx)
 
 (defn- call-world-fn

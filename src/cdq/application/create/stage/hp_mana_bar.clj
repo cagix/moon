@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.hp-mana-bar
+(ns cdq.application.create.stage.hp-mana-bar
   (:require [cdq.graphics :as graphics]
             [clojure.utils :as utils]
             [cdq.val-max :as val-max]
@@ -14,8 +14,7 @@
    :y-mana 80})
 
 (defn create
-  [{:keys [ctx/graphics
-           ctx/stage]}]
+  [stage graphics]
   (let [{:keys [rahmen-file
                 rahmenw
                 rahmenh

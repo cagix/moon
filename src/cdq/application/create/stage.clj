@@ -1,10 +1,10 @@
 (ns cdq.application.create.stage
-  (:require cdq.application.create.ui.dev-menu
-            cdq.application.create.ui.action-bar
-            cdq.application.create.ui.hp-mana-bar
-            cdq.application.create.ui.windows
-            cdq.application.create.ui.player-state-draw
-            cdq.application.create.ui.message
+  (:require cdq.application.create.stage.dev-menu
+            cdq.application.create.stage.action-bar
+            cdq.application.create.stage.hp-mana-bar
+            cdq.application.create.stage.windows
+            cdq.application.create.stage.player-state-draw
+            cdq.application.create.stage.message
             [cdq.graphics :as graphics]
             [cdq.stage]
             [cdq.ui.message]
@@ -38,14 +38,14 @@
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Stage
   cdq.stage/Stage
-  (rebuild-actors! [stage ctx]
+  (rebuild-actors! [stage db graphics]
     (stage/clear! stage)
-    (let [actors (map #(% ctx) [cdq.application.create.ui.dev-menu/create
-                                cdq.application.create.ui.action-bar/create
-                                cdq.application.create.ui.hp-mana-bar/create
-                                cdq.application.create.ui.windows/create
-                                cdq.application.create.ui.player-state-draw/create
-                                cdq.application.create.ui.message/create])]
+    (let [actors [(cdq.application.create.stage.dev-menu/create db graphics)
+                  (cdq.application.create.stage.action-bar/create)
+                  (cdq.application.create.stage.hp-mana-bar/create stage graphics)
+                  (cdq.application.create.stage.windows/create stage graphics)
+                  (cdq.application.create.stage.player-state-draw/create)
+                  (cdq.application.create.stage.message/create)]]
       (doseq [actor actors]
         (stage/add! stage (scene2d/build actor)))))
 

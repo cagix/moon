@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.message
+(ns cdq.application.create.stage.message
   (:require [cdq.ui.message]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
@@ -19,7 +19,7 @@
 
 (def duration-seconds 0.5)
 
-(defn create [_ctx]
+(defn create []
   {:actor/type :actor.type/actor
    :draw (fn [this {:keys [ctx/stage]}]
            [(draw-message (actor/user-object this)

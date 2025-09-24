@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui.entity-info
+(ns cdq.application.create.stage.entity-info
   (:require [cdq.stage :as stage]
             [cdq.world :as world]
             [clojure.scene2d :as scene2d]
@@ -30,7 +30,7 @@
   ; don't use select-keys as it loses Entity record type
   (world/info-text world (apply dissoc entity disallowed-keys)))
 
-(defn create [{:keys [ctx/stage]}]
+(defn create [stage]
   (let [y-position 0
         position [(stage/viewport-width stage)
                   y-position]

@@ -1,13 +1,12 @@
-(ns cdq.application.create.ui.dev-menu
-  (:require [cdq.application.create.ui.dev-menu.ctx-data-viewer :as ctx-data-viewer]
-            [cdq.application.create.ui.dev-menu.open-editor :as open-editor]
-            [cdq.application.create.ui.dev-menu.help-info-text :as help-info-text]
-            [cdq.application.create.ui.dev-menu.select-world :as select-world]
-            [cdq.application.create.ui.dev-menu.update-labels :as update-labels]))
+(ns cdq.application.create.stage.dev-menu
+  (:require [cdq.application.create.stage.dev-menu.ctx-data-viewer :as ctx-data-viewer]
+            [cdq.application.create.stage.dev-menu.open-editor :as open-editor]
+            [cdq.application.create.stage.dev-menu.help-info-text :as help-info-text]
+            [cdq.application.create.stage.dev-menu.select-world :as select-world]
+            [cdq.application.create.stage.dev-menu.update-labels :as update-labels]))
 
 (defn create
-  [{:keys [ctx/db
-           ctx/graphics]}]
+  [db graphics]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/menu-bar
                     :menus [ctx-data-viewer/menu
