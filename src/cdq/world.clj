@@ -16,3 +16,7 @@
 
 (defprotocol InfoText
   (info-text [_ entity]))
+
+(defprotocol FSMs
+  (handle-event [_ eid event]
+                [_ eid event params]))

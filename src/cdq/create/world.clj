@@ -1,5 +1,6 @@
 (ns cdq.create.world
   (:require cdq.create.world.info
+            [cdq.entity.state :as state]
             cdq.impl.content-grid
             cdq.impl.grid
             [cdq.malli :as m]
@@ -88,6 +89,26 @@
              [:entity/projectile-collision {:optional true} :some]]))
 
 (defrecord World []
+  cdq.world/FSMs
+  (handle-event [world eid event]
+    (cdq.world/handle-event world eid event nil))
+
+  (handle-event [world eid event params]
+    (let [fsm (:entity/fsm @eid)
+          _ (assert fsm)
+          old-state-k (:state fsm)
+          new-fsm (fsm/fsm-event fsm event)
+          new-state-k (:state new-fsm)]
+      (when-not (= old-state-k new-state-k)
+        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
+                              [k (k @eid)])
+              new-state-obj [new-state-k (state/create [new-state-k params] eid world)]]
+          [[:tx/assoc       eid :entity/fsm new-fsm]
+           [:tx/assoc       eid new-state-k (new-state-obj 1)]
+           [:tx/dissoc      eid old-state-k]
+           [:tx/state-exit  eid old-state-obj]
+           [:tx/state-enter eid new-state-obj]]))))
+
   cdq.world/InfoText
   (info-text [world entity]
     (cdq.create.world.info/info-text world entity))
