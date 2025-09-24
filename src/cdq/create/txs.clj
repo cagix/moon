@@ -42,10 +42,10 @@
        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
                              [k (k @eid)])
              new-state-obj [new-state-k (state/create [new-state-k params] eid world)]]
-         [[:tx/assoc eid :entity/fsm new-fsm]
-          [:tx/assoc eid new-state-k (new-state-obj 1)]
-          [:tx/dissoc eid old-state-k]
-          [:tx/state-exit eid old-state-obj]
+         [[:tx/assoc       eid :entity/fsm new-fsm]
+          [:tx/assoc       eid new-state-k (new-state-obj 1)]
+          [:tx/dissoc      eid old-state-k]
+          [:tx/state-exit  eid old-state-obj]
           [:tx/state-enter eid new-state-obj]])))))
 
 (defn calc-damage
