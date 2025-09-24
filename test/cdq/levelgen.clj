@@ -11,7 +11,6 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport]
             [clojure.input :as input]
-            [clojure.gdx.application]
             [clojure.gdx.camera :as camera]
             [clojure.gdx.sprite-batch :as sprite-batch]
             [clojure.gdx.stage]
@@ -22,7 +21,8 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.tiled :as tiled]))
+            [clojure.tiled :as tiled]
+            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -189,7 +189,7 @@
 (def state (atom nil))
 
 (defn -main []
-  (clojure.gdx.application/start!
+  (lwjgl-application/start!
    {:listener (reify clojure.application/Listener
                 (create [_ context]
                   (reset! state (create! context)))
@@ -203,4 +203,5 @@
                 (resume [_]))
     :config {:title "Levelgen test"
              :windowed-mode {:width 1440 :height 900}
-             :foreground-fps 60}}))
+             :foreground-fps 60
+             :mac {:glfw-async? true}}}))
