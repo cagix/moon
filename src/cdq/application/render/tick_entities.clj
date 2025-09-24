@@ -76,10 +76,6 @@
     (when (grid/valid-position? grid new-body entity-id)
       new-body)))
 
-; TODO sliding threshold
-; TODO name - with-sliding? 'on'
-; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
-; direection [0 0] which is a waste of processor power...
 (defn- try-move-solid-body [grid body entity-id {[vx vy] :direction :as movement}]
   (let [xdir (Math/signum (float vx))
         ydir (Math/signum (float vy))]
@@ -146,9 +142,7 @@
                    (timer/stopped? elapsed-time cooling-down?))]
     [:tx/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] false]))
 
-; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
-  "Call this on effect-context if the time of using the context is not the time when context was built."
   [world {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
@@ -165,9 +159,7 @@
     (cond
      (not (seq (filter #(effect/applicable? % effect-ctx)
                        (:skill/effects skill))))
-     [[:tx/event eid :action-done]
-      ; TODO some sound ?
-      ]
+     [[:tx/event eid :action-done]]
 
      (timer/stopped? elapsed-time counter)
      [[:tx/effect effect-ctx (:skill/effects skill)]
@@ -239,6 +231,5 @@
            (ctx/handle-txs! ctx (f v eid world)))
          (catch Throwable t
            (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
-                                 [:tx/show-error-window t]])
-           #_(bind-root ::error t)))
+                                 [:tx/show-error-window t]])))
         ctx)))
