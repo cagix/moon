@@ -1,9 +1,9 @@
-(ns clojure.gdx.camera
+(ns com.badlogic.gdx.graphics.orthographic-camera
   (:require [com.badlogic.gdx.math.vector3 :as vector3])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics OrthographicCamera)))
 
-(defn orthographic
+(defn create
   ([]
    (proxy [OrthographicCamera ILookup] []
      (valAt [k]
@@ -16,7 +16,7 @@
            :camera/viewport-width  (.viewportWidth  this)
            :camera/viewport-height (.viewportHeight this))))))
   ([& {:keys [y-down? world-width world-height]}]
-   (doto (orthographic)
+   (doto (create)
      (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
 
 (defn set-position! [^OrthographicCamera this [x y]]

@@ -1,4 +1,4 @@
-(ns clojure.gdx.vis-ui
+(ns com.kotcrab.vis.ui
   (:require [com.badlogic.gdx.utils.align :as align]
             com.kotcrab.vis.ui.widget.menu
             com.kotcrab.vis.ui.widget.select-box

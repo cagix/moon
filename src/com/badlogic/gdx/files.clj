@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.files
+(ns com.badlogic.gdx.files
   (:require clojure.files
             clojure.files.file-handle)
   (:import (com.badlogic.gdx Files)

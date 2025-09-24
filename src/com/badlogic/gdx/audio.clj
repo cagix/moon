@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.audio
+(ns com.badlogic.gdx.audio
   (:require clojure.audio
             clojure.audio.sound)
   (:import (com.badlogic.gdx Audio)

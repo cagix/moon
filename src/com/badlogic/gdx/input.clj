@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.input
+(ns com.badlogic.gdx.input
   (:require clojure.input)
   (:import (com.badlogic.gdx Input
                              Input$Buttons

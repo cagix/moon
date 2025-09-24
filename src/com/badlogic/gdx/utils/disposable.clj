@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.disposable
+(ns com.badlogic.gdx.utils.disposable
   (:require clojure.disposable)
   (:import (com.badlogic.gdx.utils Disposable)))
 

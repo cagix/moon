@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.graphics
+(ns com.badlogic.gdx.graphics
   (:require clojure.graphics
             clojure.graphics.pixmap
             clojure.graphics.texture

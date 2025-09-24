@@ -11,18 +11,18 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport]
             [clojure.input :as input]
-            [clojure.gdx.camera :as camera]
-            [clojure.gdx.tiled-map-renderer :as tm-renderer]
-            [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.vis-ui :as vis-ui]
             [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]
+            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [com.badlogic.gdx.scenes.scene2d.stage]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [com.badlogic.gdx.scenes.scene2d.stage]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [com.kotcrab.vis.ui :as vis-ui]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -93,7 +93,7 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (viewport/create 1440 900 (camera/orthographic))
+        ui-viewport (fit-viewport/create 1440 900 (camera/create))
         sprite-batch (sprite-batch/create)
         stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -103,11 +103,11 @@
         ctx (assoc ctx :ctx/db (cdq.application.create.db/create))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (viewport/create world-width
-                                          world-height
-                                          (camera/orthographic :y-down? false
-                                                               :world-width world-width
-                                                               :world-height world-height)))
+                         (fit-viewport/create world-width
+                                              world-height
+                                              (camera/create :y-down? false
+                                                             :world-width world-width
+                                                             :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

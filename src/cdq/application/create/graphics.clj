@@ -12,13 +12,13 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
-            [clojure.gdx.camera :as camera]
-            [clojure.gdx.tiled-map-renderer :as tm-renderer]
-            [clojure.gdx.viewport]
             [clojure.utils :as utils]
+            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [space.earlygrey.shape-drawer]))
 
 (def ^:private draw-fns
@@ -279,20 +279,20 @@
   (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
 (defn- create-ui-viewport [graphics ui-viewport]
-  (assoc graphics :graphics/ui-viewport (clojure.gdx.viewport/create (:width  ui-viewport)
-                                                                     (:height ui-viewport)
-                                                                     (camera/orthographic))))
+  (assoc graphics :graphics/ui-viewport (fit-viewport/create (:width  ui-viewport)
+                                                             (:height ui-viewport)
+                                                             (camera/create))))
 
 (defn- create-world-viewport [{:keys [graphics/world-unit-scale]
                                :as graphics}
                               world-viewport]
   (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                             (clojure.gdx.viewport/create world-width
-                                                                          world-height
-                                                                          (camera/orthographic :y-down? false
-                                                                                               :world-width world-width
-                                                                                               :world-height world-height)))))
+                                             (fit-viewport/create world-width
+                                                                  world-height
+                                                                  (camera/create :y-down? false
+                                                                                 :world-width world-width
+                                                                                 :world-height world-height)))))
 
 (defn- create*
   [{:keys [textures-to-load

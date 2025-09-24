@@ -1,4 +1,4 @@
-(ns clojure.gdx.tiled-map-renderer
+(ns com.badlogic.gdx.maps.tiled.renderers.orthogonal
   (:require [com.badlogic.gdx.graphics.color :as color]
             [clojure.tiled :as tiled])
   (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)

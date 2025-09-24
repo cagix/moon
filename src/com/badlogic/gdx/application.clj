@@ -1,4 +1,4 @@
-(ns clojure.gdx.application.extends.application
+(ns com.badlogic.gdx.application
   (:require clojure.application)
   (:import (com.badlogic.gdx Application)))
 

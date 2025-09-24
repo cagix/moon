@@ -1,5 +1,10 @@
 (ns com.badlogic.gdx
-  (:require [clojure.gdx.application.extends])
+  (:require com.badlogic.gdx.application
+            com.badlogic.gdx.audio
+            com.badlogic.gdx.files
+            com.badlogic.gdx.graphics
+            com.badlogic.gdx.input
+            com.badlogic.gdx.utils.disposable)
   (:import (com.badlogic.gdx Gdx)))
 
 (defn get-state []

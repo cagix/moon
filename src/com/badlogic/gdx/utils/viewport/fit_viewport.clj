@@ -1,4 +1,4 @@
-(ns clojure.gdx.viewport
+(ns com.badlogic.gdx.utils.viewport.fit-viewport
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [clojure.graphics.viewport])
   (:import (clojure.lang ILookup)
