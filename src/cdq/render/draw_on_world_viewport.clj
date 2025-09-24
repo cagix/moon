@@ -1,9 +1,9 @@
 (ns cdq.render.draw-on-world-viewport
-  (:require [cdq.animation :as animation]
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.effects.target-all :as target-all]
             [cdq.effects.target-entity :as target-entity]
             [cdq.entity :as entity]
+            [cdq.entity.animation :as animation]
             [cdq.entity.faction :as faction]
             [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.graphics :as graphics]

@@ -1,8 +1,8 @@
 (ns cdq.application.create.stage.inventory
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
+            [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.inventory :as inventory]
             [cdq.ui.inventory]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]

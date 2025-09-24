@@ -1,4 +1,5 @@
-(ns cdq.inventory)
+(ns cdq.entity.inventory
+  (:require [clojure.grid2d :as g2d]))
 
 (defprotocol Inventory
   (can-pickup-item? [_ item]))
@@ -64,3 +65,9 @@
     (or
      (free-cell inventory (:item/slot item)   item)
      (free-cell inventory :inventory.slot/bag item))))
+
+(defn create []
+  (->> empty-inventory
+       (map (fn [[slot [width height]]]
+              [slot (g2d/create-grid width height (constantly nil))]))
+       (into {})))

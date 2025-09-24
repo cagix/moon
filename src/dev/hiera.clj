@@ -44,16 +44,13 @@
      ;clojure.grid2d
      cdq.stage
      cdq.ctx
-     cdq.inventory
      ;cdq.stats
      cdq.input
      cdq.timer
      ;cdq.world
-     cdq.animation
      clojure.utils
      ;cdq.entity
      cdq.entity.faction
-     cdq.body
      clojure.math.vector2
      cdq.world.grid.cell
      cdq.world.grid

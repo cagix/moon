@@ -1,10 +1,10 @@
 (ns cdq.render.tick-entities
-  (:require [cdq.animation :as animation]
-            [cdq.body :as body]
-            [cdq.creature :as creature]
+  (:require [cdq.creature :as creature]
             [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.animation :as animation]
+            [cdq.entity.body :as body]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.world :as world]

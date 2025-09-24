@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
-  (:require [cdq.input :as controls]
-            [cdq.inventory :as inventory]
+  (:require [cdq.entity.inventory :as inventory]
+            [cdq.input :as controls]
             [cdq.stage :as stage]
             [clojure.input :as input]))
 

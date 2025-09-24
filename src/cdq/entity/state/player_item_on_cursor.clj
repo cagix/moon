@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.input]
-            [cdq.inventory :as inventory]
+  (:require [cdq.entity.inventory :as inventory]
+            [cdq.input]
             [cdq.graphics :as graphics]
             [cdq.stage :as stage]
             [clojure.math.vector2 :as v]

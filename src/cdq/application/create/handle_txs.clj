@@ -1,17 +1,16 @@
 (ns cdq.application.create.handle-txs
-  (:require [cdq.animation :as animation]
-            [cdq.audio :as audio]
-            [cdq.body :as body]
+  (:require [cdq.audio :as audio]
             [cdq.creature :as creature]
             [cdq.ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.animation :as animation]
+            [cdq.entity.body :as body]
+            [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.entity.stats]
-            [cdq.gdx.math.geom :as geom]
             [cdq.graphics :as graphics]
-            [cdq.inventory :as inventory]
             [cdq.malli :as m]
             [cdq.stage]
             [cdq.stats :as stats]
@@ -20,7 +19,6 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.grid2d :as g2d]
             [clojure.math.vector2 :as v]
             [clojure.repl]
             [clojure.scene2d :as scene2d]
@@ -29,88 +27,14 @@
             [clojure.utils :as utils]
             [qrecord.core :as q]))
 
-(defrecord Animation [frames frame-duration looping? cnt maxcnt]
-  cdq.animation/Animation
-  (tick [this delta]
-    (let [maxcnt (float maxcnt)
-          newcnt (+ (float cnt) (float delta))]
-      (assoc this :cnt (cond (< newcnt maxcnt) newcnt
-                             looping? (min maxcnt (- newcnt maxcnt))
-                             :else maxcnt))))
-
-  (restart [this]
-    (assoc this :cnt 0))
-
-  (stopped? [_]
-    (and (not looping?) (>= cnt maxcnt)))
-
-  (current-frame [this]
-    (frames (min (int (/ (float cnt) (float frame-duration)))
-                 (dec (count frames))))))
-
-(defn- create-animation
-  [{:keys [animation/frames
-           animation/frame-duration
-           animation/looping?]}
-   _ctx]
-  (map->Animation
-   {:frames (vec frames)
-    :frame-duration frame-duration
-    :looping? looping?
-    :cnt 0
-    :maxcnt (* (count frames) (float frame-duration))}))
-
-(q/defrecord Body [body/position
-                   body/width
-                   body/height
-                   body/collides?
-                   body/z-order
-                   body/rotation-angle]
-  cdq.body/Body
-  (overlaps? [body other-body]
-    (geom/overlaps? (geom/body->gdx-rectangle body)
-                    (geom/body->gdx-rectangle other-body)))
-
-  (touched-tiles [body]
-    (geom/body->touched-tiles body))
-
-  (distance [body other-body]
-    (v/distance (:body/position body)
-                (:body/position other-body))))
-
-(defn- create-body
-  [{[x y] :position
-    :keys [position
-           width
-           height
-           collides?
-           z-order
-           rotation-angle]}
-   {:keys [ctx/world]}]
-  (assert position)
-  (assert width)
-  (assert height)
-  (assert (>= width  (if collides? (:world/minimum-size world) 0)))
-  (assert (>= height (if collides? (:world/minimum-size world) 0)))
-  (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set (:world/z-orders world)) z-order))
-  (assert (or (nil? rotation-angle)
-              (<= 0 rotation-angle 360)))
-  (map->Body
-   {:position (mapv float position)
-    :width  (float width)
-    :height (float height)
-    :collides? collides?
-    :z-order z-order
-    :rotation-angle (or rotation-angle 0)}))
-
-(def ^:private create-fns {:entity/animation create-animation
-                           :entity/body      create-body
-                           :entity/delete-after-duration (fn [duration {:keys [ctx/world]}]
-                                                           (timer/create (:world/elapsed-time world) duration))
-                           :entity/projectile-collision (fn [v _ctx]
-                                                          (assoc v :already-hit-bodies #{}))
-                           :creature/stats cdq.entity.stats/create})
+(def ^:private create-fns
+  {:entity/animation animation/create
+   :entity/body      body/create
+   :entity/delete-after-duration (fn [duration {:keys [ctx/world]}]
+                                   (timer/create (:world/elapsed-time world) duration))
+   :entity/projectile-collision (fn [v _ctx]
+                                  (assoc v :already-hit-bodies #{}))
+   :creature/stats cdq.entity.stats/create})
 
 (defn- create-component [[k v] ctx]
   (if-let [f (create-fns k)]
@@ -126,14 +50,8 @@
   [[:tx/assoc eid :entity/fsm (assoc ((get (:world/fsms world) fsm) initial-state nil) :state initial-state)]
    [:tx/assoc eid initial-state (state/create [initial-state nil] eid world)]])
 
-(defn- create-inventory []
-  (->> inventory/empty-inventory
-       (map (fn [[slot [width height]]]
-              [slot (g2d/create-grid width height (constantly nil))]))
-       (into {})))
-
 (defn- create!-inventory [items eid _ctx]
-  (cons [:tx/assoc eid :entity/inventory (create-inventory)]
+  (cons [:tx/assoc eid :entity/inventory (inventory/create)]
         (for [item items]
           [:tx/pickup-item eid item])))
 

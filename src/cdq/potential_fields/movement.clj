@@ -1,11 +1,11 @@
 (ns cdq.potential-fields.movement
-  (:require [cdq.body :as body]
-            [cdq.world.grid.cell :as cell]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
+            [cdq.entity.body :as body]
             [cdq.entity.faction :as faction]
-            [cdq.world.grid :as grid]
-            [clojure.grid2d :as g2d]
             [cdq.position :as position]
+            [cdq.world.grid :as grid]
+            [cdq.world.grid.cell :as cell]
+            [clojure.grid2d :as g2d]
             [clojure.math.vector2 :as v]
             [clojure.utils :as utils]))
 
