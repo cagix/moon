@@ -1,17 +1,11 @@
 (ns cdq.application.create.handle-txs
   (:require [cdq.audio :as audio]
-            [cdq.creature :as creature]
             [cdq.ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
-            [cdq.entity :as entity]
-            [cdq.entity.animation :as animation]
-            [cdq.entity.body :as body]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.entity.stats]
             [cdq.graphics :as graphics]
-            [cdq.malli :as m]
             [cdq.stage]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
@@ -24,76 +18,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tx-handler :as tx-handler]
-            [clojure.utils :as utils]
-            [qrecord.core :as q]))
-
-(def ^:private create-fns
-  {:entity/animation animation/create
-   :entity/body      body/create
-   :entity/delete-after-duration (fn [duration {:keys [world/elapsed-time]}]
-                                   (timer/create elapsed-time duration))
-   :entity/projectile-collision (fn [v _world]
-                                  (assoc v :already-hit-bodies #{}))
-   :creature/stats cdq.entity.stats/create})
-
-(defn- create-component [[k v] world]
-  (if-let [f (create-fns k)]
-    (f v world)
-    v))
-
-(defn- create-fsm
-  [{:keys [fsm initial-state]} eid world]
-  ; fsm throws when initial-state is not part of states, so no need to assert initial-state
-  ; initial state is nil, so associng it. make bug report at reduce-fsm?
-  [[:tx/assoc eid :entity/fsm (assoc ((get (:world/fsms world) fsm) initial-state nil) :state initial-state)]
-   [:tx/assoc eid initial-state (state/create [initial-state nil] eid world)]])
-
-(defn- create!-inventory [items eid _world]
-  (cons [:tx/assoc eid :entity/inventory (inventory/create)]
-        (for [item items]
-          [:tx/pickup-item eid item])))
-
-(def ^:private create!-fns
-  {:entity/fsm                             create-fsm
-   :entity/inventory                       create!-inventory
-   :entity/delete-after-animation-stopped? (fn [_ eid _world]
-                                             (-> @eid :entity/animation :looping? not assert)
-                                             nil)
-   :entity/skills                          (fn [skills eid _world]
-                                             (cons [:tx/assoc eid :entity/skills nil]
-                                                   (for [skill skills]
-                                                     [:tx/add-skill eid skill])))})
-
-(defn- after-create-component [[k v] eid world]
-  (when-let [f (create!-fns k)]
-    (f v eid world)))
-
-(q/defrecord Entity [entity/body]
-  entity/Entity
-  (position [_]
-    (:body/position body))
-
-  (distance [_ other-entity]
-    (body/distance body
-                   (:entity/body other-entity))))
-
-(extend-type Entity
-  creature/Skills
-  (skill-usable-state [entity
-                       {:keys [skill/cooling-down? skill/effects] :as skill}
-                       effect-ctx]
-    (cond
-     cooling-down?
-     :cooldown
-
-     (stats/not-enough-mana? (:creature/stats entity) skill)
-     :not-enough-mana
-
-     (not (seq (filter #(effect/applicable? % effect-ctx) effects)))
-     :invalid-params
-
-     :else
-     :usable)))
+            [clojure.utils :as utils]))
 
 (def ^:private txs-fn-map
   {
@@ -367,30 +292,7 @@
                               (utils/safe-merge components))]])
 
    :tx/spawn-entity (fn [{:keys [ctx/world]} entity]
-                      (let [{:keys [world/content-grid
-                                    world/entity-ids
-                                    world/grid
-                                    world/id-counter
-                                    world/spawn-entity-schema]} world
-                            _ (m/validate-humanize spawn-entity-schema entity)
-                            entity (reduce (fn [m [k v]]
-                                             (assoc m k (create-component [k v] world)))
-                                           {}
-                                           entity)
-                            _ (assert (and (not (contains? entity :entity/id))))
-                            entity (assoc entity :entity/id (swap! id-counter inc))
-                            entity (merge (map->Entity {}) entity)
-                            eid (atom entity)]
-                        (let [id (:entity/id @eid)]
-                          (assert (number? id))
-                          (swap! entity-ids assoc id eid))
-                        (content-grid/add-entity! content-grid eid)
-                        ; https://github.com/damn/core/issues/58
-                        ;(assert (valid-position? grid @eid))
-                        (grid/set-touched-cells! grid eid)
-                        (when (:body/collides? (:entity/body @eid))
-                          (grid/set-occupied-cells! grid eid))
-                        (mapcat #(after-create-component % eid world) @eid)))
+                      (world/spawn-entity! world entity))
    }
   )
 
