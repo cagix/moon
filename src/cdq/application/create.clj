@@ -17,33 +17,10 @@
             [clojure.edn :as edn]
             clojure.gdx.vis-ui
             [clojure.java.io :as io]
+            clojure.tx-handler
             [malli.core :as m]
             [malli.utils]
             [qrecord.core :as q]))
-
-(defn actions!
-  [txs-fn-map ctx transactions]
-  (loop [ctx ctx
-         transactions transactions
-         handled-transactions []]
-    (if (seq transactions)
-      (let [[k & params :as transaction] (first transactions)]
-        (if transaction
-          (let [_ (assert (vector? transaction))
-                f (get txs-fn-map k)
-                new-transactions (try
-                                  (apply f ctx params)
-                                  (catch Throwable t
-                                    (throw (ex-info "Error handling transaction"
-                                                    {:transaction transaction}
-                                                    t))))]
-            (recur ctx
-                   (concat (or new-transactions []) (rest transactions))
-                   (conj handled-transactions transaction)))
-          (recur ctx
-                 (rest transactions)
-                 handled-transactions)))
-      handled-transactions)))
 
 (defn- edn-resource [path]
   (->> path
@@ -93,7 +70,7 @@
 (extend-type Context
   ctx/TransactionHandler
   (handle-txs! [ctx transactions]
-    (actions! cdq.create.txs/txs-fn-map ctx transactions)))
+    (clojure.tx-handler/actions! cdq.create.txs/txs-fn-map ctx transactions)))
 
 (extend-type Context
   ctx/ResetGameState

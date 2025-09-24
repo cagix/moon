@@ -86,8 +86,7 @@
   {
    :tx/rebuild-editor-window (fn
                                [{:keys [ctx/db
-                                        ctx/stage]
-                                 :as ctx}]
+                                        ctx/stage]}]
                                (let [window (-> stage
                                                 stage/root
                                                 (group/find-actor "cdq.ui.editor.window"))
