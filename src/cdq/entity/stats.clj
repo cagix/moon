@@ -76,7 +76,7 @@
              entity/modifiers]}]
     (apply-max hp modifiers :modifier/hp-max)))
 
-(defn create [stats _ctx]
+(defn create [stats _world]
   (map->Stats (-> (if (:entity/mana stats)
                     (update stats :entity/mana (fn [v] [v v]))
                     stats)

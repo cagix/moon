@@ -30,27 +30,25 @@
 (def ^:private create-fns
   {:entity/animation animation/create
    :entity/body      body/create
-   :entity/delete-after-duration (fn [duration {:keys [ctx/world]}]
-                                   (timer/create (:world/elapsed-time world) duration))
-   :entity/projectile-collision (fn [v _ctx]
+   :entity/delete-after-duration (fn [duration {:keys [world/elapsed-time]}]
+                                   (timer/create elapsed-time duration))
+   :entity/projectile-collision (fn [v _world]
                                   (assoc v :already-hit-bodies #{}))
    :creature/stats cdq.entity.stats/create})
 
-(defn- create-component [[k v] ctx]
+(defn- create-component [[k v] world]
   (if-let [f (create-fns k)]
-    (f v ctx)
+    (f v world)
     v))
 
 (defn- create-fsm
-  [{:keys [fsm initial-state]}
-   eid
-   {:keys [ctx/world]}]
+  [{:keys [fsm initial-state]} eid world]
   ; fsm throws when initial-state is not part of states, so no need to assert initial-state
   ; initial state is nil, so associng it. make bug report at reduce-fsm?
   [[:tx/assoc eid :entity/fsm (assoc ((get (:world/fsms world) fsm) initial-state nil) :state initial-state)]
    [:tx/assoc eid initial-state (state/create [initial-state nil] eid world)]])
 
-(defn- create!-inventory [items eid _ctx]
+(defn- create!-inventory [items eid _world]
   (cons [:tx/assoc eid :entity/inventory (inventory/create)]
         (for [item items]
           [:tx/pickup-item eid item])))
@@ -58,17 +56,17 @@
 (def ^:private create!-fns
   {:entity/fsm                             create-fsm
    :entity/inventory                       create!-inventory
-   :entity/delete-after-animation-stopped? (fn [_ eid _ctx]
+   :entity/delete-after-animation-stopped? (fn [_ eid _world]
                                              (-> @eid :entity/animation :looping? not assert)
                                              nil)
-   :entity/skills                          (fn [skills eid _ctx]
+   :entity/skills                          (fn [skills eid _world]
                                              (cons [:tx/assoc eid :entity/skills nil]
                                                    (for [skill skills]
                                                      [:tx/add-skill eid skill])))})
 
-(defn- after-create-component [[k v] eid ctx]
+(defn- after-create-component [[k v] eid world]
   (when-let [f (create!-fns k)]
-    (f v eid ctx)))
+    (f v eid world)))
 
 (q/defrecord Entity [entity/body]
   entity/Entity
@@ -368,9 +366,7 @@
                               (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                               (utils/safe-merge components))]])
 
-   :tx/spawn-entity (fn [{:keys [ctx/world]
-                          :as ctx}
-                         entity]
+   :tx/spawn-entity (fn [{:keys [ctx/world]} entity]
                       (let [{:keys [world/content-grid
                                     world/entity-ids
                                     world/grid
@@ -378,7 +374,7 @@
                                     world/spawn-entity-schema]} world
                             _ (m/validate-humanize spawn-entity-schema entity)
                             entity (reduce (fn [m [k v]]
-                                             (assoc m k (create-component [k v] ctx)))
+                                             (assoc m k (create-component [k v] world)))
                                            {}
                                            entity)
                             _ (assert (and (not (contains? entity :entity/id))))
@@ -394,7 +390,7 @@
                         (grid/set-touched-cells! grid eid)
                         (when (:body/collides? (:entity/body @eid))
                           (grid/set-occupied-cells! grid eid))
-                        (mapcat #(after-create-component % eid ctx) @eid)))
+                        (mapcat #(after-create-component % eid world) @eid)))
    }
   )
 

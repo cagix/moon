@@ -34,14 +34,15 @@
            collides?
            z-order
            rotation-angle]}
-   {:keys [ctx/world]}]
+   {:keys [world/minimum-size
+           world/z-orders]}]
   (assert position)
   (assert width)
   (assert height)
-  (assert (>= width  (if collides? (:world/minimum-size world) 0)))
-  (assert (>= height (if collides? (:world/minimum-size world) 0)))
+  (assert (>= width  (if collides? minimum-size 0)))
+  (assert (>= height (if collides? minimum-size 0)))
   (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set (:world/z-orders world)) z-order))
+  (assert ((set z-orders) z-order))
   (assert (or (nil? rotation-angle)
               (<= 0 rotation-angle 360)))
   (map->RBody

@@ -29,7 +29,7 @@
   [{:keys [animation/frames
            animation/frame-duration
            animation/looping?]}
-   _ctx]
+   _world]
   (map->RAnimation
    {:frames (vec frames)
     :frame-duration frame-duration
