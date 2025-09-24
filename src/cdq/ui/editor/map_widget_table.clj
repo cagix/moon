@@ -1,5 +1,6 @@
 (ns cdq.ui.editor.map-widget-table
   (:require [cdq.ctx :as ctx]
+            [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]
@@ -8,8 +9,7 @@
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.ui.widget-group :as widget-group]
-            [malli.map-schema :as map-schema]))
+            [clojure.scene2d.ui.widget-group :as widget-group]))
 
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -61,7 +61,7 @@
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (schema/value schema map-widget-table schemas)))
-                                   (map-schema/map-keys (schema/malli-form schema schemas))))]
+                                   (m/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -74,7 +74,7 @@
                                                                                                      k
                                                                                                      (schemas/default-value schemas k))
                                                                                  k
-                                                                                 (map-schema/optional? k (schema/malli-form schema schemas))
+                                                                                 (m/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (ctx/handle-txs! ctx [[:tx/rebuild-editor-window]]))}}]))
     (widget-group/pack! window)

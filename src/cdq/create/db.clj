@@ -6,9 +6,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [malli.core]
-            [malli.map-schema :as map-schema]
-            [malli.utils]
+            [cdq.malli :as m]
             cdq.schema.animation
             cdq.schema.boolean
             cdq.schema.enum
@@ -171,12 +169,12 @@
   (validate [schemas k value]
     (-> (get schemas k)
         (schema/malli-form schemas)
-        malli.core/schema
-        (malli.utils/validate-humanize value)))
+        m/schema
+        (m/validate-humanize value)))
 
   (create-map-schema [schemas ks]
-    (map-schema/create-map-schema ks (fn [k]
-                                       (schema/malli-form (get schemas k) schemas)))))
+    (m/create-map-schema ks (fn [k]
+                              (schema/malli-form (get schemas k) schemas)))))
 
 (defrecord DB []
   db/DB

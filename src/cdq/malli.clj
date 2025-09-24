@@ -1,4 +1,15 @@
-(ns malli.map-schema)
+(ns cdq.malli
+  (:require [malli.core :as m]
+            [malli.error :as me]))
+
+(def schema   m/schema)
+(def validate m/validate)
+
+(defn validate-humanize [schema value]
+  (when-not (validate schema value)
+    (throw (ex-info (str (me/humanize (m/explain schema value)))
+                    {:value value
+                     :schema (m/form schema)}))))
 
 (defn map-keys [map-schema]
   (let [[_m _p & ks] map-schema]

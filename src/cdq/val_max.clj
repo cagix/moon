@@ -1,5 +1,5 @@
 (ns cdq.val-max
-  (:require [malli.core :as m]))
+  (:require [cdq.malli :as m]))
 
 ; What is the use case of this ?
 ; How is it used?

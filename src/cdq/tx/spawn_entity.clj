@@ -8,12 +8,12 @@
             [cdq.entity.stats]
             [cdq.inventory :as inventory]
             [cdq.gdx.math.geom :as geom]
+            [cdq.malli :as m]
             [cdq.stats :as modifiers]
             [cdq.timer :as timer]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clojure.grid2d :as g2d]
-            [malli.utils]
             [qrecord.core :as q]))
 
 (defrecord Animation [frames frame-duration looping? cnt maxcnt]
@@ -166,7 +166,7 @@
                 world/id-counter
                 world/spawn-entity-schema
                 ]} world
-        _ (malli.utils/validate-humanize spawn-entity-schema entity)
+        _ (m/validate-humanize spawn-entity-schema entity)
         entity (reduce (fn [m [k v]]
                          (assoc m k (create-component [k v] ctx)))
                        {}

@@ -12,12 +12,11 @@
             cdq.create.spawn-player
             cdq.create.spawn-enemies
             [cdq.ctx :as ctx]
+            [cdq.malli :as m]
             cdq.world-fns.tmx
             [clojure.disposable :as disposable]
             clojure.gdx.vis-ui
             clojure.tx-handler
-            [malli.core :as m]
-            [malli.utils]
             [qrecord.core :as q]))
 
 (def ^:private schema
@@ -35,7 +34,7 @@
 (q/defrecord Context []
   ctx/Validation
   (validate [ctx]
-    (malli.utils/validate-humanize schema ctx)
+    (m/validate-humanize schema ctx)
     ctx))
 
 (extend-type Context

@@ -1,6 +1,7 @@
 (ns cdq.create.world
   (:require cdq.impl.content-grid
             cdq.impl.grid
+            [cdq.malli :as m]
             cdq.potential-fields.movement
             [cdq.world.grid.cell :as cell]
             [cdq.world]
@@ -9,7 +10,6 @@
             [clojure.disposable :as disposable]
             [clojure.tiled :as tiled]
             [clojure.utils :as utils]
-            [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (cdq.math RayCaster)))
 
