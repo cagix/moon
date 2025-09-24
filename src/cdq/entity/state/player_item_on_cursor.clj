@@ -64,10 +64,9 @@
 (defn draw-gui-view
   [eid
    {:keys [ctx/graphics
-           ctx/mouseover-actor
-           ctx/ui-mouse-position]}]
+           ctx/mouseover-actor]}]
   (when (not (world-item? mouseover-actor))
     [[:draw/texture-region
       (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
-      ui-mouse-position
+      (:graphics/ui-mouse-position graphics)
       {:center? true}]]))

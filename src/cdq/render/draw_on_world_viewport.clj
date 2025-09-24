@@ -56,12 +56,12 @@
   [{:keys [item]}
    entity
    {:keys [ctx/graphics
-           ctx/mouseover-actor
-           ctx/world-mouse-position]}]
+           ctx/mouseover-actor]}]
   (when (player-item-on-cursor/world-item? mouseover-actor)
     [[:draw/texture-region
       (graphics/texture-region graphics (:entity/image item))
-      (player-item-on-cursor/item-place-position world-mouse-position entity)
+      (player-item-on-cursor/item-place-position (:graphics/world-mouse-position graphics)
+                                                 entity)
       {:center? true}]]))
 
 (defn- draw-clickable
@@ -320,9 +320,9 @@
                     [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
 
 (defn- highlight-mouseover-tile
-  [{:keys [ctx/world
-           ctx/world-mouse-position]}]
-  (let [[x y] (mapv int world-mouse-position)
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (let [[x y] (mapv int (:graphics/world-mouse-position graphics))
         cell ((:world/grid world) [x y])]
     (when (and cell (#{:air :none} (:movement @cell)))
       [[:draw/rectangle x y 1 1
@@ -335,9 +335,9 @@
           '[cdq.world.grid :as grid])
 
  (defn- geom-test
-  [{:keys [ctx/world
-           ctx/world-mouse-position]}]
-  (let [position world-mouse-position
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (let [position (:graphics/world-mouse-position graphics)
         radius 0.8
         circle {:position position
                 :radius radius}]

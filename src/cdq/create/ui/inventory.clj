@@ -38,13 +38,13 @@
                               [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
-                           :draw (fn [actor {:keys [ctx/ui-mouse-position
+                           :draw (fn [actor {:keys [ctx/graphics
                                                     ctx/world]}]
                                    (draw-cell-rect @(:world/player-eid world)
                                                    (actor/get-x actor)
                                                    (actor/get-y actor)
                                                    (actor/hit actor
-                                                              (actor/stage->local-coordinates actor ui-mouse-position))
+                                                              (actor/stage->local-coordinates actor (:graphics/ui-mouse-position graphics)))
                                                    (actor/user-object (actor/parent actor))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]

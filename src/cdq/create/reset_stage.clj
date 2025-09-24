@@ -31,11 +31,11 @@
    {:label "paused?"
     :update-fn (comp :world/paused? :ctx/world)}
    {:label "GUI"
-    :update-fn (fn [{:keys [ctx/ui-mouse-position]}]
-                 (mapv int ui-mouse-position))}
+    :update-fn (fn [{:keys [ctx/graphics]}]
+                 (mapv int (:graphics/ui-mouse-position graphics)))}
    {:label "World"
-    :update-fn (fn [{:keys [ctx/world-mouse-position]}]
-                 (mapv int world-mouse-position))}
+    :update-fn (fn [{:keys [ctx/graphics]}]
+                 (mapv int (:graphics/world-mouse-position graphics)))}
    {:label "Zoom"
     :update-fn (fn [ctx]
                  (graphics/camera-zoom (:ctx/graphics ctx)))

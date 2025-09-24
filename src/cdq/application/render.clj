@@ -141,9 +141,9 @@
      :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
 
 (defn- interaction-state
-  [{:keys [ctx/mouseover-actor
-           ctx/stage
-           ctx/world-mouse-position]}
+  [{:keys [ctx/graphics
+           ctx/mouseover-actor
+           ctx/stage]}
    mouseover-eid
    player-eid]
   (cond
@@ -161,7 +161,9 @@
    (if-let [skill-id (stage/action-bar-selected-skill stage)]
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
-           effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
+           effect-ctx (player-effect-ctx mouseover-eid
+                                         (:graphics/world-mouse-position graphics)
+                                         player-eid)
            state (creature/skill-usable-state entity skill effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
@@ -266,14 +268,14 @@
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)
 (defn- check-open-debug!
-  [{:keys [ctx/input
+  [{:keys [ctx/graphics
+           ctx/input
            ctx/stage
-           ctx/world
-           ctx/world-mouse-position]
+           ctx/world]
     :as ctx}]
   (when (input/open-debug-button-pressed? input)
     (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
-                   @((:world/grid world) (mapv int world-mouse-position)))]
+                   @((:world/grid world) (mapv int (:graphics/world-mouse-position graphics))))]
       (clojure.scene2d.stage/add! stage (widget/data-viewer
                                          {:title "Data View"
                                           :data data
@@ -281,24 +283,24 @@
                                           :height 500}))))
   ctx)
 
-; Input!
 (defn- update-mouse
   [{:keys [ctx/graphics
            ctx/input
            ctx/stage]
     :as ctx}]
   (let [mouse-position (input/mouse-position input)
-        ui-mouse-position    (graphics/unproject-ui    graphics mouse-position)
-        world-mouse-position (graphics/unproject-world graphics mouse-position)]
+        ctx (update ctx :ctx/graphics #(-> %
+                                           (graphics/unproject-ui    mouse-position)
+                                           (graphics/unproject-world mouse-position)))]
     (assoc ctx
-           :ctx/mouseover-actor      (clojure.scene2d.stage/hit stage ui-mouse-position)
-           :ctx/ui-mouse-position    ui-mouse-position
-           :ctx/world-mouse-position world-mouse-position)))
+           :ctx/mouseover-actor (clojure.scene2d.stage/hit stage
+                                                           (:graphics/ui-mouse-position
+                                                            (:ctx/graphics ctx))))))
 
 (defn- update-mouseover-eid!
-  [{:keys [ctx/mouseover-actor
-           ctx/world
-           ctx/world-mouse-position]
+  [{:keys [ctx/graphics
+           ctx/mouseover-actor
+           ctx/world]
     :as ctx}]
   (let [{:keys [world/grid
                 world/mouseover-eid
@@ -307,7 +309,7 @@
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:body/z-order (:entity/body @%)) :z-order/effect)
-                                     (grid/point->entities grid world-mouse-position))]
+                                     (grid/point->entities grid (:graphics/world-mouse-position graphics)))]
                     (->> (:world/render-z-order world)
                          (utils/sort-by-order hits #(:body/z-order (:entity/body @%)))
                          reverse
