@@ -73,10 +73,8 @@
                                        [:op/mult {:optional true}]]],
 
  :creature/stats [:s/map [[:entity/modifiers    {:optional true}]
-
                           :entity/hp
                           [:entity/mana         {:optional true}]
-
                           :entity/movement-speed
                           :entity/aggro-range
                           :entity/reaction-time
@@ -166,9 +164,7 @@
                              [:skill/cost     {:optional true}]]],
 
  :damage/min-max [:s/val-max],
- :effects.target/damage [:s/map [:damage/min-max
-                                 ; audiovisual
-                                 ]],
+ :effects.target/damage [:s/map [:damage/min-max]],
 
  :effects/sound [:s/sound]
  :effects/audiovisual [:s/one-to-one :properties/audiovisuals]
@@ -177,9 +173,7 @@
 
  :maxrange [:s/number :pos],
  :effects/target-entity [:s/map [:entity-effects
-                                 :maxrange
-                                 ; audiovisual
-                                 ]],
+                                 :maxrange]],
 
  :effects/target-all [:s/map [:entity-effects]],
 
