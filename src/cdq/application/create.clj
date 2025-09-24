@@ -31,7 +31,14 @@
     [:ctx/vis-ui :some]
     [:ctx/world :some]]))
 
-(q/defrecord Context []
+(q/defrecord Context [ctx/app
+                      ctx/audio
+                      ctx/db
+                      ctx/graphics
+                      ctx/input
+                      ctx/stage
+                      ctx/vis-ui
+                      ctx/world]
   ctx/Validation
   (validate [ctx]
     (m/validate-humanize schema ctx)
