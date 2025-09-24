@@ -12,8 +12,6 @@
             [clojure.graphics.viewport]
             [clojure.input :as input]
             [clojure.gdx.camera :as camera]
-            [clojure.gdx.sprite-batch :as sprite-batch]
-            [clojure.gdx.stage]
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.vis-ui :as vis-ui]
@@ -22,7 +20,9 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]
-            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]))
+            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]
+            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [com.badlogic.gdx.scenes.scene2d.stage]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -95,7 +95,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (viewport/create 1440 900 (camera/orthographic))
         sprite-batch (sprite-batch/create)
-        stage (clojure.gdx.stage/create ui-viewport sprite-batch)
+        stage (com.badlogic.gdx.scenes.scene2d.stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

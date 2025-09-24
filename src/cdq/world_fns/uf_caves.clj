@@ -3,7 +3,7 @@
             cdq.world-fns.fix-nads
             cdq.world-fns.create-star
             [clojure.graphics.texture :as texture]
-            [clojure.gdx.tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn create
   [{:keys [level/creature-properties
@@ -24,7 +24,7 @@
                                 (memoize
                                  (fn [& {:keys [sprite-idx movement]}]
                                    {:pre [#{"all" "air" "none"} movement]}
-                                   (clojure.gdx.tiled/static-tiled-map-tile
+                                   (tiled/static-tiled-map-tile
                                     (texture/region texture
                                                     (* (sprite-idx 0) tile-size)
                                                     (* (sprite-idx 1) tile-size)

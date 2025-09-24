@@ -4,15 +4,15 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [clojure.gdx.stage]
             [clojure.graphics.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.window :as window]))
+            [clojure.scene2d.ui.window :as window]
+            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
+            [com.badlogic.gdx.scenes.scene2d.stage]))
 
 (defn do!
   [{:keys [ctx/graphics]
@@ -21,7 +21,7 @@
     clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (clojure.gdx.stage/create
+  (assoc ctx :ctx/stage (com.badlogic.gdx.scenes.scene2d.stage/create
                          (:graphics/ui-viewport graphics)
                          (:graphics/batch       graphics))))
 

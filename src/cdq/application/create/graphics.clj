@@ -13,13 +13,13 @@
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
             [clojure.gdx.camera :as camera]
-            [clojure.gdx.colors :as colors]
-            [clojure.gdx.freetype :as freetype]
-            [clojure.gdx.shape-drawer]
-            [clojure.gdx.sprite-batch :as sprite-batch]
             [clojure.gdx.tiled-map-renderer :as tm-renderer]
             [clojure.gdx.viewport]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [com.badlogic.gdx.graphics.colors :as colors]
+            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
+            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [space.earlygrey.shape-drawer]))
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
@@ -124,7 +124,7 @@
   [{:keys [graphics/batch
            graphics/shape-drawer-texture]
     :as graphics}]
-  (assoc graphics :graphics/shape-drawer (clojure.gdx.shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))))
+  (assoc graphics :graphics/shape-drawer (space.earlygrey.shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defrecord Graphics []
   cdq.graphics/DrawHandler

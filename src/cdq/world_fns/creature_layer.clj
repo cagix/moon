@@ -1,5 +1,5 @@
 (ns cdq.world-fns.creature-layer
-  (:require [clojure.gdx.tiled]
+  (:require [com.badlogic.gdx.maps.tiled]
             [clojure.tiled :as tiled]))
 
 ; out of memory error -> each texture region is a new object
@@ -10,7 +10,7 @@
                 tile/texture-region]}]
      (assert (and id
                   texture-region))
-     (clojure.gdx.tiled/static-tiled-map-tile texture-region "id" id))))
+     (com.badlogic.gdx.maps.tiled/static-tiled-map-tile texture-region "id" id))))
 
 (defn add-creatures-layer! [tiled-map spawn-positions]
   (tiled/add-layer! tiled-map {:name "creatures"

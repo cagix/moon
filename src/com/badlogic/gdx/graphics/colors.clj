@@ -1,4 +1,4 @@
-(ns clojure.gdx.colors
+(ns com.badlogic.gdx.graphics.colors
   (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics Colors)))
 

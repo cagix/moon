@@ -1,5 +1,5 @@
 (ns cdq.world-fns.tmx
-  (:require [clojure.gdx.tiled :as tiled]))
+  (:require [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn create
   [{:keys [tmx-file

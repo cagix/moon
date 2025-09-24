@@ -1,4 +1,4 @@
-(ns clojure.gdx.stage
+(ns com.badlogic.gdx.scenes.scene2d.stage
   (:require com.badlogic.gdx.scenes.scene2d.actor
             com.badlogic.gdx.scenes.scene2d.group
             com.badlogic.gdx.scenes.scene2d.ui.horizontal-group

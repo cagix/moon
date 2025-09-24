@@ -1,4 +1,4 @@
-(ns clojure.gdx.tiled
+(ns com.badlogic.gdx.maps.tiled
   (:require [clojure.tiled]
             [com.badlogic.gdx.maps.map-properties :as properties]
             [com.badlogic.gdx.maps.tiled.tiled-map-tile-layer :as layer]
