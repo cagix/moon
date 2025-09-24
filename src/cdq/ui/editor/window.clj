@@ -1,4 +1,4 @@
-(ns cdq.tx.open-property-editor
+(ns cdq.ui.editor.window
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.schema :as schema]
@@ -65,7 +65,7 @@
      :cell-defaults {:pad 5}
      :pack? true}))
 
-(defn do!
+(defn add-to-stage!
   [{:keys [ctx/db
            ctx/stage]
     :as ctx}

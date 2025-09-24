@@ -2,6 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.ui.widget :as widget]
+            [cdq.ui.editor.window]
             [cdq.world-fns.tmx]
             [cdq.world-fns.uf-caves]
             [cdq.world-fns.modules]
@@ -51,7 +52,8 @@
                                           [[:tx/open-editor-overview
                                             {:property-type property-type
                                              :clicked-id-fn (fn [id {:keys [ctx/db] :as ctx}]
-                                                              (ctx/handle-txs! ctx [[:tx/open-property-editor (db/get-raw db id)]]))}]]))})})
+                                                              (cdq.ui.editor.window/add-to-stage! ctx
+                                                                                                  (db/get-raw db id)))}]]))})})
 
 (def ^:private select-world
   {:label "Select World"

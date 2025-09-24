@@ -10,10 +10,10 @@
             [cdq.stats :as stats]
             [cdq.string :as string]
             [cdq.timer :as timer]
-            cdq.tx.open-property-editor
             cdq.tx.spawn-creature
             cdq.tx.spawn-entity
             cdq.tx.update-potential-fields
+            [cdq.ui.editor.window]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
@@ -30,7 +30,8 @@
   {
    :tx/rebuild-editor-window (fn
                                [{:keys [ctx/db
-                                        ctx/stage]}]
+                                        ctx/stage]
+                                 :as ctx}]
                                (let [window (-> stage
                                                 stage/root
                                                 (group/find-actor "cdq.ui.editor.window"))
@@ -40,7 +41,8 @@
                                                           (group/find-actor "cdq.schema.map.ui.widget"))
                                      property (map-widget-table/get-value map-widget-table (:db/schemas db))]
                                  (actor/remove! window)
-                                 [[:tx/open-property-editor property]]))
+                                 (cdq.ui.editor.window/add-to-stage! ctx property)
+                                 nil))
    :tx/assoc (fn [_ctx eid k value]
                (swap! eid assoc k value)
                nil)
@@ -258,7 +260,6 @@
                                                                                     graphics
                                                                                     property-type
                                                                                     clicked-id-fn)})))
-   :tx/open-property-editor cdq.tx.open-property-editor/do!
    :tx/spawn-projectile (fn
                           [_ctx
                            {:keys [position direction faction]}
