@@ -46,7 +46,9 @@
 (extend-type Context
   ctx/TransactionHandler
   (handle-txs! [ctx transactions]
-    (clojure.tx-handler/actions! cdq.create.txs/txs-fn-map ctx transactions)))
+    (clojure.tx-handler/actions! cdq.create.txs/txs-fn-map
+                                 ctx
+                                 transactions)))
 
 (extend-type Context
   ctx/ResetGameState

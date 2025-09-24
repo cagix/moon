@@ -32,15 +32,19 @@
                                            :skill/action-time
                                            (apply-action-speed-modifier @eid skill)
                                            (timer/create (:world/elapsed-time world)))})
+
             :npc-moving (fn [eid movement-vector {:keys [ctx/world]}]
                           {:movement-vector movement-vector
                            :timer (timer/create (:world/elapsed-time world)
                                                 (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
                                                    reaction-time-multiplier))})
+
             :player-item-on-cursor (fn [_eid item _ctx]
                                      {:item item})
+
             :player-moving (fn [eid movement-vector _ctx]
                              {:movement-vector movement-vector})
+
             :stunned (fn [_eid duration {:keys [ctx/world]}]
                        {:counter (timer/create (:world/elapsed-time world) duration)})}
 
