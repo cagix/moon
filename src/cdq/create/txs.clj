@@ -30,9 +30,9 @@
             [reduce-fsm :as fsm]))
 
 (defn- handle-event
-  ([ctx eid event]
-   (handle-event ctx eid event nil))
-  ([{:keys [ctx/world]} eid event params]
+  ([world eid event]
+   (handle-event world eid event nil))
+  ([world eid event params]
    (let [fsm (:entity/fsm @eid)
          _ (assert fsm)
          old-state-k (:state fsm)
@@ -227,7 +227,8 @@
                              cell]
                             (cdq.stage/remove-item! stage cell)
                             nil)
-   :tx/event handle-event
+   :tx/event (fn [{:keys [ctx/world]} & params]
+               (apply handle-event world params))
    :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
                                   (cdq.stage/toggle-inventory-visible! stage)
                                   nil)
