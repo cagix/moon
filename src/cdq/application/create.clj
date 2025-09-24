@@ -20,8 +20,6 @@
             [malli.utils]
             [qrecord.core :as q]))
 
-(q/defrecord Context [])
-
 (def ^:private schema
   (m/schema
    [:map {:closed true}
@@ -34,7 +32,7 @@
     [:ctx/vis-ui :some]
     [:ctx/world :some]]))
 
-(extend-type Context
+(q/defrecord Context []
   ctx/Validation
   (validate [ctx]
     (malli.utils/validate-humanize schema ctx)
