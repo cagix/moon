@@ -1,7 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.db :as db]
             [cdq.files :as files]
-            [cdq.create.db]
+            [cdq.application.create.db]
             [cdq.world-fns.creature-tiles]
             [clojure.application]
             [clojure.disposable :as disposable]
@@ -100,7 +100,7 @@
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
-        ctx (assoc ctx :ctx/db (cdq.create.db/create))
+        ctx (assoc ctx :ctx/db (cdq.application.create.db/create))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (viewport/create world-width

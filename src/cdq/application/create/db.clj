@@ -145,3 +145,6 @@
            {:db/data (zipmap (map :property/id properties) properties)
             :db/file properties-file
             :db/schemas schemas})))
+
+(defn do! [ctx]
+  (assoc ctx :ctx/db (create)))

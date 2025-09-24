@@ -1,7 +1,7 @@
-; TODO only audio/stage/world/graphics/db...
-(ns cdq.application.create.txs
+(ns cdq.application.create.handle-txs
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
+            [cdq.ctx :as ctx]
             [cdq.effect :as effect]
             [cdq.editor :as editor]
             [cdq.entity.state :as state]
@@ -20,9 +20,10 @@
             [clojure.math.vector2 :as v]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
+            [clojure.tx-handler :as tx-handler]
             [clojure.repl]))
 
-(def txs-fn-map
+(def ^:private txs-fn-map
   {
    :tx/assoc (fn [_ctx eid k value]
                (swap! eid assoc k value)
@@ -292,3 +293,10 @@
    :tx/spawn-entity cdq.tx.spawn-entity/do!
    }
   )
+
+(defn do! [ctx]
+  (extend-type (class ctx)
+    ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (tx-handler/actions! txs-fn-map ctx transactions)))
+  ctx)
