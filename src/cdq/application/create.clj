@@ -93,8 +93,8 @@
       (assoc :ctx/db (cdq.create.db/create {:schemas "schema.edn"
                                             :properties "properties.edn"}))
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
-      (cdq.create.graphics/do! (edn-resource "graphics.edn"))
-      (cdq.create.stage/do!)
+      cdq.create.graphics/do!
+      cdq.create.stage/do!
       cdq.create.input/do!
       (cdq.create.audio/do! {:sound-names (edn-resource "sounds.edn")
                              :path-format "sounds/%s.wav"})
