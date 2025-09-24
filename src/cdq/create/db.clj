@@ -223,9 +223,10 @@
          (db/all-raw this property-type))))
 
 (defn create
-  [{:keys [schemas
-           properties]}]
-  (let [schemas (update-vals (-> schemas io/resource slurp edn/read-string)
+  []
+  (let [schemas "schema.edn"
+        properties "properties.edn"
+        schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
                                (with-meta schema (get schema-fn-map k))))
         schemas (map->Schemas schemas)

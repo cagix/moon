@@ -32,33 +32,19 @@
                [:ctx/input :some]
                [:ctx/stage :some]
                [:ctx/vis-ui :some]
-
                [:ctx/mouseover-actor :any]
-               ; 5 usage:
-               ; * interaction-state,
-               ; * update-mouseover-eid!,
-               ; * handle-input,
-               ; * draw-gui-view,
-               ; * draw-item-on-cursor
-               [:ctx/interaction-state :some] ; only cursor/handle-input
-               ; * ctx/frame or graphics/input/stage
-               ; or make ctx protocol
-               ; or utils pass graphics input
-               ; or call manually each time ( how many times used)
-               ])]
+               [:ctx/interaction-state :some]])]
   (extend-type Context
     ctx/Validation
     (validate [ctx]
       (malli.utils/validate-humanize schema ctx)
       ctx)))
 
-; only world - or nothing, dispatch entity type?
 (extend-type Context
   cdq.ctx/InfoText
   (info-text [ctx entity]
     (cdq.create.info/info-text ctx entity)))
 
-; here just data create? functions to 'cdq.ctx' ?
 (extend-type Context
   ctx/TransactionHandler
   (handle-txs! [ctx transactions]
@@ -82,8 +68,7 @@
       (assoc
        :ctx/mouseover-actor nil
        :ctx/interaction-state true)
-      (assoc :ctx/db (cdq.create.db/create {:schemas "schema.edn"
-                                            :properties "properties.edn"}))
+      (assoc :ctx/db (cdq.create.db/create))
       (assoc :ctx/vis-ui (clojure.gdx.vis-ui/load! {:skin-scale :x1}))
       cdq.create.graphics/do!
       cdq.create.stage/do!
