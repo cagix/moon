@@ -21,7 +21,9 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (creature/skill-usable-state entity % effect-ctx))
-                     (effect/applicable-and-useful? world effect-ctx (:skill/effects %))))
+                     (->> (:skill/effects %)
+                          (filter (fn [e] (effect/applicable? e effect-ctx)))
+                          (some (fn [e] (effect/useful? e effect-ctx world))))))
        first))
 
 (defn- npc-effect-ctx
@@ -159,16 +161,17 @@
    eid
    {:keys [world/elapsed-time]
     :as world}]
-  (cond
-   (not (effect/some-applicable? (update-effect-ctx world effect-ctx) ; TODO how 2 test
-                                 (:skill/effects skill)))
-   [[:tx/event eid :action-done]
-    ; TODO some sound ?
-    ]
+  (let [effect-ctx (update-effect-ctx world effect-ctx)]
+    (cond
+     (not (seq (filter #(effect/applicable? % effect-ctx)
+                       (:skill/effects skill))))
+     [[:tx/event eid :action-done]
+      ; TODO some sound ?
+      ]
 
-   (timer/stopped? elapsed-time counter)
-   [[:tx/effect effect-ctx (:skill/effects skill)]
-    [:tx/event eid :action-done]]))
+     (timer/stopped? elapsed-time counter)
+     [[:tx/effect effect-ctx (:skill/effects skill)]
+      [:tx/event eid :action-done]])))
 
 (defn- update-npc-idle [_ eid world]
   (let [effect-ctx (npc-effect-ctx world eid)]

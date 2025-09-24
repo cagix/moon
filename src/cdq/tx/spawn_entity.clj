@@ -161,7 +161,7 @@
      (modifiers/not-enough-mana? (:creature/stats entity) skill)
      :not-enough-mana
 
-     (not (effect/some-applicable? effect-ctx effects))
+     (not (seq (filter #(effect/applicable? % effect-ctx) effects)))
      :invalid-params
 
      :else

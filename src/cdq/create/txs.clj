@@ -127,7 +127,7 @@
 
    :tx/effect (fn [{:keys [ctx/world]} effect-ctx effects]
                 (mapcat #(effect/handle % effect-ctx world)
-                        (effect/filter-applicable? effect-ctx effects)))
+                        (filter #(effect/applicable? % effect-ctx) effects)))
 
    :tx/print-stacktrace (let[print-level 3
                              print-depth 24]

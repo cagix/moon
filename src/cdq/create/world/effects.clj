@@ -149,7 +149,7 @@
 
    :effects/target-entity {:applicable? (fn [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
                                           (and target
-                                               (seq (effect/filter-applicable? effect-ctx entity-effects))))
+                                               (seq (filter #(effect/applicable? % effect-ctx) entity-effects))))
                            :useful? (fn [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _world]
                                       (target-entity/in-range? @source @target maxrange))
                            :handle (fn [[_ {:keys [maxrange entity-effects]}]
