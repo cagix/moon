@@ -1,5 +1,11 @@
 (ns cdq.application.create.stage
-  (:require [cdq.graphics :as graphics]
+  (:require cdq.application.create.ui.dev-menu
+            cdq.application.create.ui.action-bar
+            cdq.application.create.ui.hp-mana-bar
+            cdq.application.create.ui.windows
+            cdq.application.create.ui.player-state-draw
+            cdq.application.create.ui.message
+            [cdq.graphics :as graphics]
             [cdq.stage]
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
@@ -32,6 +38,17 @@
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Stage
   cdq.stage/Stage
+  (rebuild-actors! [stage ctx]
+    (stage/clear! stage)
+    (let [actors (map #(% ctx) [cdq.application.create.ui.dev-menu/create
+                                cdq.application.create.ui.action-bar/create
+                                cdq.application.create.ui.hp-mana-bar/create
+                                cdq.application.create.ui.windows/create
+                                cdq.application.create.ui.player-state-draw/create
+                                cdq.application.create.ui.message/create])]
+      (doseq [actor actors]
+        (stage/add! stage (scene2d/build actor)))))
+
   (viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
   (viewport-height [stage] (:viewport/height (stage/viewport stage)))
 

@@ -1,20 +1,13 @@
 (ns cdq.application.create.reset-game-state
-  (:require cdq.application.create.ui.dev-menu
-            cdq.application.create.ui.action-bar
-            cdq.application.create.ui.hp-mana-bar
-            cdq.application.create.ui.windows
-            cdq.application.create.ui.player-state-draw
-            cdq.application.create.ui.message
-            [cdq.ctx :as ctx]
+  (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]
             [clojure.tiled :as tiled]))
 
 (defn- spawn-enemies!
@@ -45,15 +38,7 @@
 (defn- reset-stage-actors!
   [{:keys [ctx/stage]
     :as ctx}]
-  (stage/clear! stage)
-  (let [actors (map #(% ctx) [cdq.application.create.ui.dev-menu/create
-                              cdq.application.create.ui.action-bar/create
-                              cdq.application.create.ui.hp-mana-bar/create
-                              cdq.application.create.ui.windows/create
-                              cdq.application.create.ui.player-state-draw/create
-                              cdq.application.create.ui.message/create])]
-    (doseq [actor actors]
-      (stage/add! stage (scene2d/build actor))))
+  (stage/rebuild-actors! stage ctx)
   ctx)
 
 (defn- call-world-fn

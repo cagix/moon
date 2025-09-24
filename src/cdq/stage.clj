@@ -1,6 +1,7 @@
 (ns cdq.stage)
 
 (defprotocol Stage
+  (rebuild-actors! [_ ctx])
   (viewport-width [stage])
   (viewport-height [stage])
   (inventory-window-visible? [stage])
