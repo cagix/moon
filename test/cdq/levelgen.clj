@@ -100,7 +100,7 @@
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
-        ctx (assoc ctx :ctx/db (cdq.application.create.db/create))
+        ctx (cdq.application.create.db/do! ctx)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (fit-viewport/create world-width

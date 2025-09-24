@@ -5,16 +5,24 @@
             [cdq.stage :as stage]
             [cdq.stats :as modifiers]))
 
+(def config
+  {:rahmen-file "images/rahmen.png"
+   :rahmenw 150
+   :rahmenh 26
+   :hpcontent-file "images/hp.png"
+   :manacontent-file "images/mana.png"
+   :y-mana 80})
+
 (defn create
   [{:keys [ctx/graphics
-           ctx/stage]}
-   {:keys [rahmen-file
-           rahmenw
-           rahmenh
-           hpcontent-file
-           manacontent-file
-           y-mana]}]
-  (let [[x y-mana] [(/ (stage/viewport-width stage) 2)
+           ctx/stage]}]
+  (let [{:keys [rahmen-file
+                rahmenw
+                rahmenh
+                hpcontent-file
+                manacontent-file
+                y-mana]} config
+        [x y-mana] [(/ (stage/viewport-width stage) 2)
                     y-mana]
         rahmen-tex-reg (graphics/texture-region graphics {:image/file rahmen-file})
         y-hp (+ y-mana rahmenh)

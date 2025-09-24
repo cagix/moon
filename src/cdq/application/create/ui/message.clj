@@ -17,10 +17,9 @@
                  :scale 2.5
                  :up? true}]))
 
-(defn create
-  [_ctx
-   {:keys [duration-seconds
-           name]}]
+(def duration-seconds 0.5)
+
+(defn create [_ctx]
   {:actor/type :actor.type/actor
    :draw (fn [this {:keys [ctx/stage]}]
            [(draw-message (actor/user-object this)
@@ -32,5 +31,5 @@
               (swap! state update :counter + delta)
               (when (>= (:counter @state) duration-seconds)
                 (reset! state nil)))))
-   :actor/name name
+   :actor/name "player-message"
    :actor/user-object (atom nil)})
