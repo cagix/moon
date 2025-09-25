@@ -11,19 +11,20 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.window :as window]
-            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [com.badlogic.gdx.scenes.scene2d.stage]))
+            [gdl.plattform :as plattform]
+            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]))
 
 (defn do!
-  [{:keys [ctx/graphics]
+  [{:keys [ctx/graphics
+           ctx/plattform]
     :as ctx}]
   (extend-type (class ctx)
     gdl.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (com.badlogic.gdx.scenes.scene2d.stage/create
-                         (:graphics/ui-viewport graphics)
-                         (:graphics/batch       graphics))))
+  (assoc ctx :ctx/stage (plattform/stage plattform
+                                         (:graphics/ui-viewport graphics)
+                                         (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage

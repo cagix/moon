@@ -1,5 +1,6 @@
 (ns gdl.application.desktop
-  (:require [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config])
+  (:require [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config]
+            [com.badlogic.gdx.plattform :as plattform])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
@@ -19,7 +20,8 @@
                                             :ctx/audio    Gdx/audio
                                             :ctx/files    Gdx/files
                                             :ctx/graphics Gdx/graphics
-                                            :ctx/input    Gdx/input}))
+                                            :ctx/input    Gdx/input
+                                            :ctx/plattform plattform/impl}))
                         (dispose [_]
                           (dispose listener))
                         (render [_]

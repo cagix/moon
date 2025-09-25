@@ -17,6 +17,7 @@
                       cdq.application.create.input/do!
                       cdq.application.create.audio/do!
                       cdq.application.create.remove-files/do!
+                      cdq.application.create.remove-plattform/do!
                       cdq.application.create.world/do!
                       cdq.application.create.reset-game-state/do!]
             :dispose cdq.application.dispose/do!
