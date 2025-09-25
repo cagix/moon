@@ -7,6 +7,7 @@
             [cdq.stage]
             [cdq.property :as property]
             [cdq.ui.editor.value-widget :as value-widget]
+            [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
             [clojure.input :as input]
             [clojure.scene2d :as scene2d]
@@ -89,12 +90,6 @@
     (stage/add! stage (scene2d/build actor)))
   nil)
 
-(defn get-value [table schemas]
-  (into {}
-        (for [widget (filter (comp vector? actor/user-object) (group/children table))
-              :let [[k _] (actor/user-object widget)]]
-          [k (schema/value (get schemas k) widget schemas)])))
-
 (defn- rebuild!
   [{:keys [ctx/db
            ctx/stage]
@@ -106,7 +101,7 @@
                              (group/find-actor "cdq.ui.widget.scroll-pane-table")
                              (group/find-actor "scroll-pane-table")
                              (group/find-actor "cdq.schema.map.ui.widget"))
-        property (get-value map-widget-table (:db/schemas db))]
+        property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
     (add-to-stage! ctx property)
     nil))
@@ -228,3 +223,11 @@
                   :expand-x? true}])]
              component-rows))
     table))
+
+(extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
+  cdq.ui.editor.map-widget-table/MapWidgetTable
+  (get-value [table schemas]
+    (into {}
+          (for [widget (filter (comp vector? actor/user-object) (group/children table))
+                :let [[k _] (actor/user-object widget)]]
+            [k (schema/value (get schemas k) widget schemas)]))))

@@ -1,15 +1,5 @@
 (ns cdq.application.create.vis-ui
   (:require [com.badlogic.gdx.utils.align :as align]
-            com.kotcrab.vis.ui.widget.menu
-            com.kotcrab.vis.ui.widget.select-box
-            com.kotcrab.vis.ui.widget.label
-            com.kotcrab.vis.ui.widget.text-field
-            com.kotcrab.vis.ui.widget.check-box
-            com.kotcrab.vis.ui.widget.table
-            com.kotcrab.vis.ui.widget.image-button
-            com.kotcrab.vis.ui.widget.text-button
-            com.kotcrab.vis.ui.widget.window
-            com.kotcrab.vis.ui.widget.image
             [clojure.disposable :as disposable]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
@@ -23,18 +13,19 @@
                                       VisLabel
                                       VisScrollPane)))
 
-(doseq [[k method-fn] {:actor.type/menu-bar     com.kotcrab.vis.ui.widget.menu/create
-                       :actor.type/select-box   com.kotcrab.vis.ui.widget.select-box/create
-                       :actor.type/label        com.kotcrab.vis.ui.widget.label/create
-                       :actor.type/text-field   com.kotcrab.vis.ui.widget.text-field/create
-                       :actor.type/check-box    com.kotcrab.vis.ui.widget.check-box/create
-                       :actor.type/table        com.kotcrab.vis.ui.widget.table/create
-                       :actor.type/image-button com.kotcrab.vis.ui.widget.image-button/create
-                       :actor.type/text-button  com.kotcrab.vis.ui.widget.text-button/create
-                       :actor.type/window       com.kotcrab.vis.ui.widget.window/create
-                       :actor.type/image        com.kotcrab.vis.ui.widget.image/create}]
+(doseq [[k method-sym] '{:actor.type/menu-bar     com.kotcrab.vis.ui.widget.menu/create
+                         :actor.type/select-box   com.kotcrab.vis.ui.widget.select-box/create
+                         :actor.type/label        com.kotcrab.vis.ui.widget.label/create
+                         :actor.type/text-field   com.kotcrab.vis.ui.widget.text-field/create
+                         :actor.type/check-box    com.kotcrab.vis.ui.widget.check-box/create
+                         :actor.type/table        com.kotcrab.vis.ui.widget.table/create
+                         :actor.type/image-button com.kotcrab.vis.ui.widget.image-button/create
+                         :actor.type/text-button  com.kotcrab.vis.ui.widget.text-button/create
+                         :actor.type/window       com.kotcrab.vis.ui.widget.window/create
+                         :actor.type/image        com.kotcrab.vis.ui.widget.image/create}
+        :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))
-  (MultiFn/.addMethod clojure.scene2d/build k method-fn))
+  (MultiFn/.addMethod clojure.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (Separator. "default"))

@@ -1,6 +1,5 @@
 (ns cdq.application.create.world
-  (:require [cdq.application.create.world.effects]
-            [cdq.application.create.world.info]
+  (:require [cdq.application.create.world.info]
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity :as entity]

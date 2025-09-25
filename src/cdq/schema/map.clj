@@ -2,7 +2,7 @@
   (:require [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
-            [cdq.ui.editor.window :as editor-window]
+            [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
             [clojure.utils :as utils]
             [clojure.set :as set]))
@@ -42,4 +42,4 @@
                                 (set (keys m))))}))
 
 (defn value [_ table schemas]
-  (editor-window/get-value table schemas))
+  (map-widget-table/get-value table schemas))

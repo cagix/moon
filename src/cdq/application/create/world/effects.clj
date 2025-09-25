@@ -12,6 +12,8 @@
             [clojure.rand :refer [rand-int-between]])
   (:import (clojure.lang APersistentVector)))
 
+(defn do! [ctx] ctx)
+
 ; not in stats because projectile as source doesnt have stats
 ; FIXME I don't see it triggering with 10 armor save ... !
 (defn- effective-armor-save [source-stats target-stats]
