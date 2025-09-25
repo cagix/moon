@@ -1,4 +1,5 @@
-(ns gdl.scene2d.event)
+(ns gdl.scene2d.event
+  (:import (com.badlogic.gdx.scenes.scene2d Event)))
 
-(defprotocol Event
-  (stage [event]))
+(defn stage [^Event event]
+  (.getStage event))

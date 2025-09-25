@@ -1,13 +1,6 @@
 (ns com.badlogic.gdx.scenes.scene2d.utils.listener
-  (:require gdl.scene2d.event)
-  (:import (com.badlogic.gdx.scenes.scene2d Event)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
+  (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
                                                   ClickListener)))
-
-(extend-type Event
-  gdl.scene2d.event/Event
-  (stage [event]
-    (.getStage event)))
 
 (defn change [f]
   (proxy [ChangeListener] []
