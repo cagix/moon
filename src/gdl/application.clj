@@ -36,8 +36,7 @@
   [f]
   (.postRunnable Gdx/app f))
 
-(require 'com.badlogic.gdx.audio
-         'com.badlogic.gdx.files
+(require 'com.badlogic.gdx.files
          'com.badlogic.gdx.graphics
          'com.badlogic.gdx.scenes.scene2d.actor
          'com.badlogic.gdx.scenes.scene2d.group

@@ -1,7 +1,7 @@
 (ns cdq.application.create.audio
   (:require [cdq.audio]
-            [gdl.audio :as audio]
-            [gdl.audio.sound :as sound]
+            [com.badlogic.gdx.audio :as audio]
+            [com.badlogic.gdx.audio.sound :as sound]
             [gdl.disposable :as disposable]
             [clojure.edn :as edn]
             [gdl.files :as files]
@@ -10,7 +10,7 @@
 (defn- audio-impl [audio sound-names->file-handles]
   (let [sounds (update-vals sound-names->file-handles
                             (fn [file-handle]
-                              (audio/sound audio file-handle)))]
+                              (audio/new-sound audio file-handle)))]
     (reify
       cdq.audio/Audio
       (all-sounds [_]
