@@ -34,7 +34,6 @@
 (require 'com.badlogic.gdx.graphics
          'com.badlogic.gdx.scenes.scene2d.actor
          'com.badlogic.gdx.scenes.scene2d.group
-         'com.badlogic.gdx.scenes.scene2d.stage
          'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
          'com.badlogic.gdx.scenes.scene2d.ui.label
          'com.badlogic.gdx.scenes.scene2d.ui.stack
