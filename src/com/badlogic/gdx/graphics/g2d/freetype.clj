@@ -1,7 +1,7 @@
 (ns com.badlogic.gdx.graphics.g2d.freetype
-  (:require [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font])
-  (:import (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+  (:require [com.badlogic.gdx.graphics.texture.filter :as texture-filter])
+  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
 
 (defn- create-parameter
@@ -14,6 +14,16 @@
     (set! (.magFilter params) mag-filter)
     params))
 
+(defn- configure!
+  [^BitmapFont font
+   {:keys [scale
+           enable-markup?
+           use-integer-positions?]}]
+  (.setScale (.getData font) scale)
+  (set! (.markupEnabled (.getData font)) enable-markup?)
+  (.setUseIntegerPositions font use-integer-positions?)
+  font)
+
 (defn generate-font
   [file-handle
    {:keys [size
@@ -25,6 +35,6 @@
                                                          ; :texture-filter/linear because scaling to world-units
                                                          :min-filter (texture-filter/k->value :linear)
                                                          :mag-filter (texture-filter/k->value :linear)}))]
-    (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                  :enable-markup? enable-markup?
-                                  :use-integer-positions? use-integer-positions?})))
+    (configure! font {:scale (/ quality-scaling)
+                      :enable-markup? enable-markup?
+                      :use-integer-positions? use-integer-positions?})))
