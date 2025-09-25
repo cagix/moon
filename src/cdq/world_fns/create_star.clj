@@ -3,8 +3,7 @@
             [clojure.rand :as rand]
             [clojure.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [com.badlogic.gdx.maps.tiled]
-            [gdl.tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
@@ -76,7 +75,7 @@
         grid (assoc-transition-cells grid)
 
         position->tile (position->tile-fn grid)
-        tiled-map (com.badlogic.gdx.maps.tiled/create-tiled-map
+        tiled-map (tiled/create-tiled-map
                    {:properties {"width"  (g2d/width  grid)
                                  "height" (g2d/height grid)
                                  "tilewidth"  tile-size
@@ -87,7 +86,7 @@
                               :tiles (for [position (g2d/posis grid)]
                                        [position (create-tile (position->tile position))])}]})
 
-        can-spawn? #(= "all" (gdl.tiled/movement-property tiled-map %))
+        can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         level (inc (rand-int 6))
         creatures (filter #(= level (:creature/level %)) creature-properties)

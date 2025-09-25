@@ -2,7 +2,6 @@
   (:require [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             cdq.world-fns.modules.place-modules
-            [com.badlogic.gdx.maps.tiled]
             [clojure.grid2d :as g2d]
             [clojure.grid2d.caves :as caves]
             [clojure.grid2d.nads :as nads]
@@ -54,13 +53,13 @@
   (assoc w :scaled-grid (helper/scale-grid (:grid w) (:scale w))))
 
 (defn- load-schema-tiled-map [w]
-  (assoc w :schema-tiled-map (com.badlogic.gdx.maps.tiled/tmx-tiled-map "maps/modules.tmx")))
+  (assoc w :schema-tiled-map (tiled/tmx-tiled-map "maps/modules.tmx")))
 
 (defn- grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (com.badlogic.gdx.maps.tiled/create-tiled-map
+  (tiled/create-tiled-map
    {:properties (merge (tiled/map-properties schema-tiled-map)
                        {"width" (g2d/width grid)
                         "height" (g2d/height grid)})
@@ -73,7 +72,7 @@
                             :when local-position]
                         (when (vector? local-position)
                           (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (com.badlogic.gdx.maps.tiled/copy-tile tile)])))})}))
+                            [position (tiled/copy-tile tile)])))})}))
 
 (defn- convert-to-tiled-map
   [{:keys [scaled-grid
