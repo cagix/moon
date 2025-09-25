@@ -1,6 +1,7 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
+                 [cdq.malli "0.13.0"]
                  [com.badlogic.gdx                            "1.13.5"]
                  [com.badlogic.gdx.backends.lwjgl3            "1.13.5"]
                  [com.badlogic.gdx.graphics.g2d.freetype      "1.13.5"]
@@ -9,7 +10,6 @@
                  [space.earlygrey.shape-drawer "2.5.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
-                 [metosin/malli "0.13.0"]
                  [nrepl "0.9.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]
