@@ -1,5 +1,5 @@
 (ns cdq.entity.inventory
-  (:require [clojure.grid2d :as g2d]))
+  (:require [gdl.grid2d :as g2d]))
 
 (defprotocol Inventory
   (can-pickup-item? [_ item]))

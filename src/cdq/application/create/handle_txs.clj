@@ -13,12 +13,12 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.math.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [clojure.repl]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
-            [clojure.tx-handler :as tx-handler]
-            [clojure.utils :as utils]))
+            [gdl.tx-handler :as tx-handler]
+            [gdl.utils :as utils]))
 
 (def ^:private txs-fn-map
   {

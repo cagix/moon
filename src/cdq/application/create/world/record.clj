@@ -19,13 +19,13 @@
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
-            [clojure.math.vector2 :as v]
-            [clojure.grid2d :as g2d]
+            [gdl.math.vector2 :as v]
+            [gdl.grid2d :as g2d]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.maps.tiled :as tiled]
             [qrecord.core :as q]
             [reduce-fsm :as fsm])
-  (:import (cdq.math RayCaster)))
+  (:import (gdl.math RayCaster)))
 
 (def ^:private create-fns
   {:entity/animation animation/create

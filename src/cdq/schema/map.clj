@@ -4,7 +4,7 @@
             [cdq.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
-            [clojure.utils :as utils]
+            [gdl.utils :as utils]
             [clojure.set :as set]))
 
 (def ^:private property-k-sort-order

@@ -1,6 +1,6 @@
 (ns cdq.application.create.stage.hp-mana-bar
   (:require [cdq.graphics :as graphics]
-            [clojure.utils :as utils]
+            [gdl.utils :as utils]
             [cdq.val-max :as val-max]
             [cdq.stage :as stage]
             [cdq.stats :as modifiers]))

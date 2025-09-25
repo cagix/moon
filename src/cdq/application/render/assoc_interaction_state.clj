@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [cdq.input :as input]
             [cdq.stage :as stage]
-            [clojure.math.vector2 :as v]))
+            [gdl.math.vector2 :as v]))
 
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
   (let [target-position (or (and mouseover-eid

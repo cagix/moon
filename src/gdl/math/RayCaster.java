@@ -1,4 +1,4 @@
-package cdq.math;
+package gdl.math;
 
 import java.util.ArrayList;
 

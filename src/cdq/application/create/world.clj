@@ -1,8 +1,8 @@
 (ns cdq.application.create.world
   (:require [cdq.malli :as m]
-            [clojure.utils :as utils]
+            [gdl.utils :as utils]
             [reduce-fsm :as fsm])
-  (:import (cdq.math RayCaster)))
+  (:import (gdl.math RayCaster)))
 
 (comment
 

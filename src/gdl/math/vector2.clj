@@ -1,5 +1,5 @@
-(ns clojure.math.vector2
-  (:require [clojure.utils :as utils]))
+(ns gdl.math.vector2
+  (:require [gdl.math :as math]))
 
 (defn scale [[x y] scalar]
   [(* x scalar)
@@ -49,7 +49,7 @@
   [this reference]
   (let [angle (* (Math/atan2 (crs reference this)
                              (dot reference this))
-                 utils/radians-to-degrees)]
+                 math/radians-to-degrees)]
     (if (neg? angle)
       (+ angle 360)
       angle)))

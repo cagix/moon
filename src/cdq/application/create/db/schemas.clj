@@ -12,7 +12,7 @@
             cdq.ui.editor.widget.default
             cdq.ui.editor.widget.edn
             [clojure.edn :as edn]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (def schema-fn-map
   {

@@ -8,7 +8,7 @@
             [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.world :as world]
-            [clojure.math.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]])
   (:import (clojure.lang APersistentVector)))
 

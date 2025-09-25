@@ -1,7 +1,7 @@
 (ns cdq.application.create.input
   (:require [cdq.input]
             [com.badlogic.gdx.input :as input]
-            [clojure.math.vector2 :as v]))
+            [gdl.math.vector2 :as v]))
 
 (def controls
   {

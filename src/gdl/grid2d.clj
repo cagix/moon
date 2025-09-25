@@ -1,4 +1,4 @@
-(ns clojure.grid2d)
+(ns gdl.grid2d)
 ; TODO move to https://github.com/damn/grid2d
 
 (defn assoc-ks [m ks v]

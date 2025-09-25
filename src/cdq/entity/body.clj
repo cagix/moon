@@ -1,6 +1,6 @@
 (ns cdq.entity.body
   (:require [cdq.gdx.math.geom :as geom]
-            [clojure.math.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 
 (defprotocol Body

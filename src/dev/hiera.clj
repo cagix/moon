@@ -41,22 +41,22 @@
      cdq.files
      cdq.graphics
      clojure.rand
-     ;clojure.grid2d
+     ;gdl.grid2d
      cdq.stage
      cdq.ctx
      ;cdq.stats
      cdq.input
      cdq.timer
      ;cdq.world
-     clojure.utils
+     gdl.utils
      ;cdq.entity
      cdq.entity.faction
-     clojure.math.vector2
+     gdl.math.vector2
      cdq.world.grid.cell
      cdq.world.grid
      cdq.world.content-grid
      ;cdq.creature
-     clojure.tx-handler
+     gdl.tx-handler
      dev
      }
    })

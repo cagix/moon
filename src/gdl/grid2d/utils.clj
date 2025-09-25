@@ -1,5 +1,5 @@
-(ns clojure.grid2d.utils
-  (:require [clojure.grid2d :as g2d]))
+(ns gdl.grid2d.utils
+  (:require [gdl.grid2d :as g2d]))
 
 (defn scale-grid [grid [w h]]
   (g2d/create-grid (* (g2d/width grid)  w)

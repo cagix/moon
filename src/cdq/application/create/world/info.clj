@@ -3,7 +3,7 @@
             [cdq.stats.ops :as ops]
             [cdq.timer :as timer]
             [clojure.math :as math]
-            [clojure.utils :as utils]
+            [gdl.utils :as utils]
             [clojure.string :as str]))
 
 (defn- ops-info-text [ops modifier-k]

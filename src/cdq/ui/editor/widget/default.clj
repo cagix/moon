@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.default
   (:require [gdl.scene2d.actor :as actor]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (defn create [_ v _ctx]
   {:actor/type :actor.type/label

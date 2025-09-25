@@ -1,4 +1,4 @@
-(ns clojure.tx-handler)
+(ns gdl.tx-handler)
 
 (defn actions!
   [txs-fn-map ctx transactions]

@@ -3,7 +3,7 @@
             [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (defn do!
   [{:keys [ctx/graphics

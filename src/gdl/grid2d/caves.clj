@@ -1,5 +1,5 @@
-(ns clojure.grid2d.caves
-  (:require [clojure.grid2d :as g2d]
+(ns gdl.grid2d.caves
+  (:require [gdl.grid2d :as g2d]
             [clojure.rand :as rand]))
 
 ;Cave Algorithmus.

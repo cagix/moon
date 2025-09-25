@@ -1,6 +1,6 @@
 (ns cdq.application.create.stage.dev-menu.update-labels
   (:require [cdq.graphics :as graphics]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (def items
   [{:label "elapsed-time"

@@ -1,7 +1,7 @@
 (ns cdq.impl.grid
   (:require [cdq.entity.faction :as faction]
             [cdq.position :as position]
-            [clojure.grid2d :as g2d]
+            [gdl.grid2d :as g2d]
             [cdq.world.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]
             [cdq.world.grid :as grid]))
@@ -16,7 +16,7 @@
     (g2d/get-cells grid (geom/body->touched-tiles body))
     [(grid (mapv int position))]))
 
-(extend-type clojure.grid2d.VectorGrid
+(extend-type gdl.grid2d.VectorGrid
   cdq.world.grid/Grid
   (circle->cells [g2d circle]
     (->> circle

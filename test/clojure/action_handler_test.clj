@@ -1,5 +1,5 @@
 (ns clojure.action-handler-test
-  (:require [clojure.tx-handler :refer [actions!]]
+  (:require [gdl.tx-handler :refer [actions!]]
             [clojure.test :refer :all]))
 
 (deftest return-flat-txs

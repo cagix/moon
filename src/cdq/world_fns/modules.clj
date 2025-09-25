@@ -2,10 +2,10 @@
   (:require [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             cdq.world-fns.modules.place-modules
-            [clojure.grid2d :as g2d]
-            [clojure.grid2d.caves :as caves]
-            [clojure.grid2d.nads :as nads]
-            [clojure.grid2d.utils :as helper]
+            [gdl.grid2d :as g2d]
+            [gdl.grid2d.caves :as caves]
+            [gdl.grid2d.nads :as nads]
+            [gdl.grid2d.utils :as helper]
             [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- add-scale [w]

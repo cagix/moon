@@ -1,4 +1,4 @@
-(ns clojure.utils)
+(ns gdl.utils)
 
 (defn- index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -66,12 +66,6 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
-
-(def degrees-to-radians (float (/ Math/PI 180)))
-(def radians-to-degrees (float (/ 180 Math/PI)))
-
-(defn degree->radians [degree]
-  (* degrees-to-radians (float degree)))
 
 (defn ->edn-str [v]
   (binding [*print-level* nil]

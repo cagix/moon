@@ -14,7 +14,7 @@
             [gdl.graphics.texture :as texture]
             [gdl.graphics.texture-region :as texture-region]
             [gdl.graphics.viewport :as viewport]
-            [clojure.utils :as utils]
+            [gdl.math :as math]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def ^:private draw-fns
@@ -102,16 +102,16 @@
                                      center-x
                                      center-y
                                      radius
-                                     (utils/degree->radians start-angle)
-                                     (utils/degree->radians degree)))
+                                     (math/degree->radians start-angle)
+                                     (math/degree->radians degree)))
    :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
                             (sd/set-color! shape-drawer color)
                             (sd/sector! shape-drawer
                                         center-x
                                         center-y
                                         radius
-                                        (utils/degree->radians start-angle)
-                                        (utils/degree->radians degree)))
+                                        (math/degree->radians start-angle)
+                                        (math/degree->radians degree)))
    :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
                             (sd/set-color! shape-drawer color)
                             (sd/line! shape-drawer sx sy ex ey))})

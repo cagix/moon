@@ -14,7 +14,7 @@
             [cdq.val-max :as val-max]
             [cdq.world :as world]
             [gdl.graphics.color :as color]
-            [clojure.utils :as utils]))
+            [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-tile-grid? false)
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil

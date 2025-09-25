@@ -10,9 +10,9 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [clojure.grid2d :as g2d]
-            [clojure.math.vector2 :as v]
-            [clojure.utils :as utils]))
+            [gdl.grid2d :as g2d]
+            [gdl.math.vector2 :as v]
+            [gdl.utils :as utils]))
 
 (defn- npc-choose-skill [world entity effect-ctx]
   (->> entity
