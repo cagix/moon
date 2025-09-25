@@ -9,7 +9,7 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
-            [gdl.input :as input]
+            [com.badlogic.gdx.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]

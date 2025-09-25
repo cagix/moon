@@ -1,10 +1,7 @@
 (ns gdl.application
-  (:require gdl.input
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
-            [com.badlogic.gdx.input :as input])
+  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
   (:import (com.badlogic.gdx ApplicationListener
-                             Gdx
-                             Input)))
+                             Gdx)))
 
 (defprotocol Listener
   (create [_ context])
@@ -38,14 +35,6 @@
   "Posts a Runnable on the main loop thread."
   [f]
   (.postRunnable Gdx/app f))
-
-(extend Input
-  gdl.input/Input
-  {:button-just-pressed? input/button-just-pressed?
-   :key-pressed?         input/key-pressed?
-   :key-just-pressed?    input/key-just-pressed?
-   :set-processor!       input/set-processor!
-   :mouse-position       input/mouse-position})
 
 (require 'com.badlogic.gdx.audio
          'com.badlogic.gdx.files

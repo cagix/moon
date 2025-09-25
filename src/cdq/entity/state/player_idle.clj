@@ -2,7 +2,7 @@
   (:require [cdq.entity.inventory :as inventory]
             [cdq.input :as controls]
             [cdq.stage :as stage]
-            [gdl.input :as input]))
+            [com.badlogic.gdx.input :as input]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]

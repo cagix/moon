@@ -13,7 +13,7 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
-            [gdl.input :as input]
+            [com.badlogic.gdx.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
