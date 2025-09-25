@@ -1,10 +1,10 @@
 (ns cdq.impl.grid
   (:require [cdq.entity.faction :as faction]
-            [gdl.position :as position]
-            [gdl.grid2d :as g2d]
+            [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [cdq.gdx.math.geom :as geom]
-            [cdq.world.grid :as grid]))
+            [gdl.grid2d :as g2d]
+            [gdl.math.geom :as geom]
+            [gdl.position :as position]))
 
 (defn- body->occupied-cells
   [grid

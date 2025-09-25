@@ -1,5 +1,5 @@
 (ns cdq.entity.body
-  (:require [cdq.gdx.math.geom :as geom]
+  (:require [gdl.math.geom :as geom]
             [gdl.math.vector2 :as v]
             [qrecord.core :as q]))
 

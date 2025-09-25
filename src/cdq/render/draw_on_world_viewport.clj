@@ -334,7 +334,7 @@
           :none [1 0 0 0.5])]])))
 
 (comment
- (require '[cdq.gdx.math.geom :as geom]
+ (require '[gdl.math.geom :as geom]
           '[cdq.world.grid :as grid])
 
  (defn- geom-test

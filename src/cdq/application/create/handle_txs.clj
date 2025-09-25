@@ -13,10 +13,10 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clj-commons.pretty.repl :as pretty-repl]
-            [gdl.math.vector2 :as v]
             [clojure.repl]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.math.vector2 :as v]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]))
 

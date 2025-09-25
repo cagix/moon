@@ -1,4 +1,4 @@
-(ns cdq.gdx.math.geom
+(ns gdl.math.geom
   (:refer-clojure :exclude [contains?])
   (:require [com.badlogic.gdx.math.circle :as circle]
             [com.badlogic.gdx.math.intersector :as intersector]
