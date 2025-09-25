@@ -14,11 +14,11 @@
 (defn start! [{:keys [listener config]}]
   (lwjgl/application (reify ApplicationListener
                        (create [_]
-                         (create listener {:ctx/app      gdx/app
-                                           :ctx/audio    gdx/audio
-                                           :ctx/files    gdx/files
-                                           :ctx/graphics gdx/graphics
-                                           :ctx/input    gdx/input}))
+                         (create listener {:ctx/app      (gdx/app)
+                                           :ctx/audio    (gdx/audio)
+                                           :ctx/files    (gdx/files)
+                                           :ctx/graphics (gdx/graphics)
+                                           :ctx/input    (gdx/input)}))
                        (dispose [_]
                          (dispose listener))
                        (render [_]
