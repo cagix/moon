@@ -17,7 +17,6 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
-            [gdl.plattform :as plattform]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
@@ -89,12 +88,11 @@
 (defn create!
   [{:keys [ctx/files
            ctx/graphics
-           ctx/input
-           ctx/plattform]}]
+           ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (graphics/fit-viewport graphics 1440 900 (camera/create))
         sprite-batch (sprite-batch/create)
-        stage (plattform/stage plattform ui-viewport sprite-batch)
+        stage (scene2d/stage ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

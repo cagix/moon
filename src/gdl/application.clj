@@ -1,6 +1,5 @@
 (ns gdl.application
-  (:require [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config]
-            [com.badlogic.gdx.plattform :as plattform])
+  (:require [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
@@ -20,8 +19,7 @@
                                             :ctx/audio    Gdx/audio
                                             :ctx/files    Gdx/files
                                             :ctx/graphics Gdx/graphics
-                                            :ctx/input    Gdx/input
-                                            :ctx/plattform plattform/impl}))
+                                            :ctx/input    Gdx/input}))
                         (dispose [_]
                           (dispose listener))
                         (render [_]
@@ -34,13 +32,23 @@
                           (resume listener)))
                       (application-config/create config)))
 
-(require 'com.badlogic.gdx.audio
-         'com.badlogic.gdx.files
-         'com.badlogic.gdx.graphics
-         'com.badlogic.gdx.input
-         'com.badlogic.gdx.utils.disposable)
-
 (defn post-runnable!
   "Posts a Runnable on the main loop thread."
   [f]
   (.postRunnable Gdx/app f))
+
+(require 'com.badlogic.gdx.audio
+         'com.badlogic.gdx.files
+         'com.badlogic.gdx.graphics
+         'com.badlogic.gdx.input
+         'com.badlogic.gdx.scenes.scene2d.actor
+         'com.badlogic.gdx.scenes.scene2d.group
+         'com.badlogic.gdx.scenes.scene2d.stage
+         'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
+         'com.badlogic.gdx.scenes.scene2d.ui.label
+         'com.badlogic.gdx.scenes.scene2d.ui.stack
+         'com.badlogic.gdx.scenes.scene2d.ui.table
+         'com.badlogic.gdx.scenes.scene2d.ui.widget
+         'com.badlogic.gdx.scenes.scene2d.ui.widget-group
+         'com.badlogic.gdx.scenes.scene2d.ui.window
+         'com.badlogic.gdx.utils.disposable)
