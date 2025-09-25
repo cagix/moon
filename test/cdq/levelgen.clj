@@ -16,7 +16,7 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
-            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]
+            [gdl.application.desktop :as lwjgl-application]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
