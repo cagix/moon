@@ -9,7 +9,7 @@
   (and (utils/nearly-equal? x1 x2)
        (utils/nearly-equal? y1 y2)))
 
-(deftest nearly-equal?
+(deftest vecs-nearly-equal?
   (is (nearly-equal? [0.0000011 0.0123]
                      [0.000001 0.0123])))
 
