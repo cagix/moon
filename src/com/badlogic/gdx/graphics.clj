@@ -1,6 +1,5 @@
 (ns com.badlogic.gdx.graphics
   (:require gdl.graphics
-            gdl.graphics.texture-region
             [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.files FileHandle)
@@ -8,8 +7,7 @@
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)))
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (extend-type Graphics
   gdl.graphics/Graphics
@@ -50,9 +48,3 @@
 
   (sprite-batch [_]
     (SpriteBatch.)))
-
-(extend-type TextureRegion
-  gdl.graphics.texture-region/TextureRegion
-  (dimensions [this]
-    [(.getRegionWidth  this)
-     (.getRegionHeight this)]))

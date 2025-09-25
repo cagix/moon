@@ -1,4 +1,6 @@
-(ns gdl.graphics.texture-region)
+(ns gdl.graphics.texture-region
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(defprotocol TextureRegion
-  (dimensions [_] "Returns `[width height]`."))
+(defn dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])
