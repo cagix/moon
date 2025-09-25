@@ -1,12 +1,29 @@
-(ns gdl.scene2d.stage)
+(ns gdl.scene2d.stage
+  (:import (com.badlogic.gdx.scenes.scene2d StageWithCtx)))
 
-(defprotocol Stage
-  (set-ctx! [_ ctx])
-  (get-ctx [_])
-  (act! [_])
-  (draw! [_])
-  (add! [_ actor])
-  (clear! [_])
-  (root [_])
-  (hit [_ [x y]])
-  (viewport [_]))
+(defn set-ctx! [^StageWithCtx stage ctx]
+  (set! (.ctx stage) ctx))
+
+(defn get-ctx [^StageWithCtx stage]
+  (.ctx stage))
+
+(defn act! [^StageWithCtx stage]
+  (.act stage))
+
+(defn draw! [^StageWithCtx stage]
+  (.draw stage))
+
+(defn add! [^StageWithCtx stage actor]
+  (.addActor stage actor))
+
+(defn clear! [^StageWithCtx stage]
+  (.clear stage))
+
+(defn root [^StageWithCtx stage]
+  (.getRoot stage))
+
+(defn hit [^StageWithCtx stage [x y]]
+  (.hit stage x y true))
+
+(defn viewport [^StageWithCtx stage]
+  (.getViewport stage))
