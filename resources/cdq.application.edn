@@ -7,6 +7,7 @@
  :listener {:create  [cdq.application.create.record/do!
                       cdq.application.create.validation/do!
                       cdq.application.create.editor/do!
+                      cdq.application.create.init-entity-states/do!
                       cdq.application.create.handle-txs/do!
                       cdq.application.create.db/do!
                       cdq.application.create.vis-ui/do!
