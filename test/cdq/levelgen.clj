@@ -4,18 +4,18 @@
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
-            [clojure.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [clojure.edn :as edn]
-            [clojure.graphics :as graphics]
-            [clojure.graphics.color :as color]
-            [clojure.graphics.texture :as texture]
-            [clojure.graphics.viewport]
-            [clojure.input :as input]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.color :as color]
+            [gdl.graphics.texture :as texture]
+            [gdl.graphics.viewport]
+            [gdl.input :as input]
             [clojure.java.io :as io]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
-            [clojure.tiled :as tiled]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
+            [gdl.tiled :as tiled]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl-application]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -183,8 +183,8 @@
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
-  (clojure.graphics.viewport/update! world-viewport width height {:center? false}))
+  (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
+  (gdl.graphics.viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
 

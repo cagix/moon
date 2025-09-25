@@ -1,16 +1,16 @@
 (ns com.badlogic.gdx.files
-  (:require clojure.files
-            clojure.files.file-handle)
+  (:require gdl.files
+            gdl.files.file-handle)
   (:import (com.badlogic.gdx Files)
            (com.badlogic.gdx.files FileHandle)))
 
 (extend-type Files
-  clojure.files/Files
+  gdl.files/Files
   (internal [this path]
     (.internal this path)))
 
 (extend-type FileHandle
-  clojure.files.file-handle/FileHandle
+  gdl.files.file-handle/FileHandle
   (list [this]
     (.list this))
   (directory? [this]

@@ -1,7 +1,7 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.widget
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ui.widget :as widget])
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ui.widget :as widget])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
 (defmethod scene2d/build :actor.type/widget

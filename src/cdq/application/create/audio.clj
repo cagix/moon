@@ -1,10 +1,10 @@
 (ns cdq.application.create.audio
   (:require [cdq.audio]
-            [clojure.audio :as audio]
-            [clojure.audio.sound :as sound]
-            [clojure.disposable :as disposable]
+            [gdl.audio :as audio]
+            [gdl.audio.sound :as sound]
+            [gdl.disposable :as disposable]
             [clojure.edn :as edn]
-            [clojure.files :as files]
+            [gdl.files :as files]
             [clojure.java.io :as io]))
 
 (defn- audio-impl [audio sound-names->file-handles]

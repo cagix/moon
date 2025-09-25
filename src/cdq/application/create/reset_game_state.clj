@@ -5,10 +5,10 @@
             [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
-            [clojure.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn- spawn-enemies!
   [{:keys [ctx/db

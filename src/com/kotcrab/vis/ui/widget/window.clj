@@ -1,7 +1,7 @@
 (ns com.kotcrab.vis.ui.widget.window
-  (:require [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ui.window]
-            [clojure.scene2d.ui.table :as table])
+  (:require [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ui.window]
+            [gdl.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label
                                                Window)
            (com.kotcrab.vis.ui.widget VisWindow)))
@@ -21,7 +21,7 @@
     (table/set-opts! window opts)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Actor
-  clojure.scene2d.ui.window/TitleBar
+  gdl.scene2d.ui.window/TitleBar
   ; TODO buggy FIXME
   (title-bar? [actor]
     (when (instance? Label actor)

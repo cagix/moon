@@ -1,8 +1,8 @@
 (ns com.badlogic.gdx.utils.disposable
-  (:require clojure.disposable)
+  (:require gdl.disposable)
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (extend-type Disposable
-  clojure.disposable/Disposable
+  gdl.disposable/Disposable
   (dispose! [this]
     (.dispose this)))

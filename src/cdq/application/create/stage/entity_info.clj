@@ -1,10 +1,10 @@
 (ns cdq.application.create.stage.entity-info
   (:require [cdq.stage :as stage]
             [cdq.world :as world]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.ui.label :as label]
-            [clojure.scene2d.ui.widget-group :as widget-group]))
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.ui.label :as label]
+            [gdl.scene2d.ui.widget-group :as widget-group]))
 
 (comment
 

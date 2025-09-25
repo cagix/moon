@@ -7,7 +7,7 @@
             [clojure.grid2d.caves :as caves]
             [clojure.grid2d.nads :as nads]
             [clojure.grid2d.utils :as helper]
-            [clojure.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn- add-scale [w]
   (assoc w :scale [32 20]))

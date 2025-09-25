@@ -1,8 +1,8 @@
 (ns com.badlogic.gdx.scenes.scene2d.actor
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ctx :as ctx]
-            [clojure.scene2d.stage :as stage]
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ctx :as ctx]
+            [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -25,7 +25,7 @@
                                                  (- y (/ (actor/get-height actor) 2))))})
 
 (extend-type Actor
-  clojure.scene2d.actor/Actor
+  gdl.scene2d.actor/Actor
   (get-stage [actor]
     (.getStage actor))
 

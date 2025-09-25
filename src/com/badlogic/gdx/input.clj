@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.input
-  (:require clojure.input)
+  (:require gdl.input)
   (:import (com.badlogic.gdx Input
                              Input$Buttons
                              Input$Keys)))
@@ -196,7 +196,7 @@
    :z                   Input$Keys/Z})
 
 (extend-type Input
-  clojure.input/Input
+  gdl.input/Input
   (button-just-pressed? [this button]
     {:pre [(contains? input-buttons-k->value button)]}
     (.isButtonJustPressed this (input-buttons-k->value button)))

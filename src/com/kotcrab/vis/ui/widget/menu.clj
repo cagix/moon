@@ -1,10 +1,10 @@
 (ns com.kotcrab.vis.ui.widget.menu
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.event :as event]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.label :as label]
-            [clojure.scene2d.ui.table :as table]
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.event :as event]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.label :as label]
+            [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)
            (com.kotcrab.vis.ui.widget Menu

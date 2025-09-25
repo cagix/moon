@@ -1,9 +1,9 @@
 (ns cdq.application.create.vis-ui
   (:require [com.badlogic.gdx.utils.align :as align]
-            [clojure.disposable :as disposable]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage])
+            [gdl.disposable :as disposable]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage])
   (:import (clojure.lang MultiFn)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.kotcrab.vis.ui VisUI
@@ -25,7 +25,7 @@
                          :actor.type/image        com.kotcrab.vis.ui.widget.image/create}
         :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))
-  (MultiFn/.addMethod clojure.scene2d/build k method-var))
+  (MultiFn/.addMethod gdl.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (Separator. "default"))

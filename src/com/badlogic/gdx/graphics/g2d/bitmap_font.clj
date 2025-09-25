@@ -1,6 +1,6 @@
 (ns com.badlogic.gdx.graphics.g2d.bitmap-font
   (:require [clojure.string :as str]
-            [clojure.graphics.bitmap-font]
+            [gdl.graphics.bitmap-font]
             [com.badlogic.gdx.utils.align :as align])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
@@ -21,7 +21,7 @@
       (* (.getLineHeight font))))
 
 (extend-type BitmapFont
-  clojure.graphics.bitmap-font/BitmapFont
+  gdl.graphics.bitmap-font/BitmapFont
   (draw! [font
           batch
           {:keys [scale text x y up? h-align target-width wrap?]}]

@@ -13,7 +13,7 @@
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
-            [clojure.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [clojure.utils :as utils]))
 
 (def ^:dbg-flag show-tile-grid? false)

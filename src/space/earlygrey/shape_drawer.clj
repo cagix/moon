@@ -1,13 +1,13 @@
 (ns space.earlygrey.shape-drawer
   (:require [com.badlogic.gdx.graphics.color :as color]
-            [clojure.graphics.shape-drawer])
+            [gdl.graphics.shape-drawer])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
 (extend-type ShapeDrawer
-  clojure.graphics.shape-drawer/ShapeDrawer
+  gdl.graphics.shape-drawer/ShapeDrawer
   (set-color! [this color]
     (.setColor this (color/float-bits color)))
 

@@ -14,8 +14,8 @@
        (filter java.io.File/.isFile)))
 
 (comment
- (let [from "cdq.application.create.ui"
-       to   "cdq.application.create.stage"
+ (let [from "clojure.tiled"
+       to   "gdl.tiled"
        files (matching-files ["src" "resources" "test"])]
    (doseq [f files]
      (replace-in-file! f from to)))

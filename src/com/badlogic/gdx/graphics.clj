@@ -1,8 +1,8 @@
 (ns com.badlogic.gdx.graphics
-  (:require clojure.graphics
-            clojure.graphics.pixmap
-            clojure.graphics.texture
-            clojure.graphics.texture-region)
+  (:require gdl.graphics
+            gdl.graphics.pixmap
+            gdl.graphics.texture
+            gdl.graphics.texture-region)
   (:import (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
@@ -12,7 +12,7 @@
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (extend-type Graphics
-  clojure.graphics/Graphics
+  gdl.graphics/Graphics
   (delta-time [this]
     (.getDeltaTime this))
   (frames-per-second [this]
@@ -23,7 +23,7 @@
     (.newCursor this pixmap hotspot-x hotspot-y))
   (clear!
     ([this [r g b a]]
-     (clojure.graphics/clear! this r g b a))
+     (gdl.graphics/clear! this r g b a))
     ([this r g b a]
      (let [clear-depth? false
            apply-antialiasing? false
@@ -46,7 +46,7 @@
                 :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888)))))
 
 (extend-type Texture
-  clojure.graphics.texture/Texture
+  gdl.graphics.texture/Texture
   (region
     ([this]
      (TextureRegion. this))
@@ -64,13 +64,13 @@
                      (int h)))))
 
 (extend-type TextureRegion
-  clojure.graphics.texture-region/TextureRegion
+  gdl.graphics.texture-region/TextureRegion
   (dimensions [this]
     [(.getRegionWidth  this)
      (.getRegionHeight this)]))
 
 (extend-type Pixmap
-  clojure.graphics.pixmap/Pixmap
+  gdl.graphics.pixmap/Pixmap
   (set-color! [this [r g b a]]
     (.setColor this r g b a))
 

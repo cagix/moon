@@ -1,6 +1,6 @@
 (ns com.badlogic.gdx.utils.viewport.fit-viewport
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
-            [clojure.graphics.viewport])
+            [gdl.graphics.viewport])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
@@ -29,7 +29,7 @@
       vector2/->clj))
 
 (extend-type FitViewport
-  clojure.graphics.viewport/Viewport
+  gdl.graphics.viewport/Viewport
   (update! [this width height {:keys [center?]}]
     (.update this width height center?))
 

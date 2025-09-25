@@ -1,6 +1,6 @@
 (ns com.kotcrab.vis.ui.widget.text-field
-  (:require [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ui.widget :as widget])
+  (:require [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ui.widget :as widget])
   (:import (clojure.lang ILookup)
            (com.kotcrab.vis.ui.widget VisTextField)))
 

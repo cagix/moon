@@ -1,8 +1,8 @@
 (ns cdq.application.create.stage.dev-menu.open-editor
   (:require [cdq.db :as db]
             [cdq.ui.editor.window]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.stage :as stage]
             [clojure.string :as str]))
 
 (defn menu [db]

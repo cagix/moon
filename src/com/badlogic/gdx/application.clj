@@ -1,8 +1,8 @@
 (ns com.badlogic.gdx.application
-  (:require clojure.application)
+  (:require gdl.application)
   (:import (com.badlogic.gdx Application)))
 
 (extend-type Application
-  clojure.application/Application
+  gdl.application/Application
   (post-runnable! [this f]
     (.postRunnable this f)))

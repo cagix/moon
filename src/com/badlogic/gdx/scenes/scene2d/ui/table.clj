@@ -1,7 +1,7 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.table
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.ui.widget-group :as widget-group]
+  (:require [gdl.scene2d :as scene2d]
+            [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

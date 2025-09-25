@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.maps.tiled
-  (:require [clojure.tiled]
+  (:require [gdl.tiled]
             [com.badlogic.gdx.maps.map-properties :as properties]
             [com.badlogic.gdx.maps.tiled.tiled-map-tile-layer :as layer]
             [com.badlogic.gdx.maps.tiled.tiles :as tiles])
@@ -39,18 +39,18 @@
         :tiled-map/width  (.get (.getProperties this) "width")
         :tiled-map/height (.get (.getProperties this) "height")))
 
-    clojure.tiled/HasMapProperties
+    gdl.tiled/HasMapProperties
     (get-property [_ k]
       (.get (.getProperties this) key))
     (map-properties [_]
       (properties/->clj (.getProperties this)))
 
-    clojure.tiled/TMap
+    gdl.tiled/TMap
     (layers [_]
       (.getLayers this))
 
     (layer-index [_ layer]
-      (let [idx (.getIndex (.getLayers this) ^String (clojure.tiled/layer-name layer))]
+      (let [idx (.getIndex (.getLayers this) ^String (gdl.tiled/layer-name layer))]
         (when-not (= idx -1)
           idx)))
 

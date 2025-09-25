@@ -1,9 +1,9 @@
 (ns com.kotcrab.vis.ui.widget.image-button
-  (:require [clojure.graphics.texture-region :as texture-region]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.event :as event]
-            [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
+  (:require [gdl.graphics.texture-region :as texture-region]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.event :as event]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.utils Drawable)
