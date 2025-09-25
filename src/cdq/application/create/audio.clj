@@ -4,7 +4,7 @@
             [com.badlogic.gdx.audio.sound :as sound]
             [gdl.disposable :as disposable]
             [clojure.edn :as edn]
-            [gdl.files :as files]
+            [com.badlogic.gdx.files :as files]
             [clojure.java.io :as io]))
 
 (defn- audio-impl [audio sound-names->file-handles]

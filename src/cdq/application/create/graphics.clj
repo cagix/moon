@@ -2,7 +2,7 @@
   (:require [cdq.files]
             [cdq.graphics]
             [gdl.disposable :as disposable]
-            [gdl.files :as files]
+            [com.badlogic.gdx.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.bitmap-font :as bitmap-font]
             [gdl.graphics.camera :as camera]
