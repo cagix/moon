@@ -15,8 +15,7 @@
             [gdl.graphics.texture-region :as texture-region]
             [gdl.graphics.viewport :as viewport]
             [clojure.utils :as utils]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [space.earlygrey.shape-drawer]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
@@ -121,7 +120,7 @@
   [{:keys [graphics/batch
            graphics/shape-drawer-texture]
     :as graphics}]
-  (assoc graphics :graphics/shape-drawer (space.earlygrey.shape-drawer/create batch (texture/region shape-drawer-texture 1 0 1 1))))
+  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defrecord Graphics []
   cdq.graphics/DrawHandler
