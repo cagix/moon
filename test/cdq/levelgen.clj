@@ -18,7 +18,6 @@
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
-            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
@@ -91,7 +90,7 @@
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (graphics/fit-viewport graphics 1440 900 (camera/create))
-        sprite-batch (sprite-batch/create)
+        sprite-batch (graphics/sprite-batch graphics)
         stage (scene2d/stage ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48

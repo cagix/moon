@@ -16,7 +16,6 @@
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
-            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [space.earlygrey.shape-drawer]))
 
@@ -230,8 +229,9 @@
         (texture/region texture bounds)
         (texture/region texture)))))
 
-(defn- create-batch [graphics]
-  (assoc graphics :graphics/batch (sprite-batch/create)))
+(defn- create-batch [{:keys [graphics/core]
+                      :as graphics}]
+  (assoc graphics :graphics/batch (graphics/sprite-batch core)))
 
 (defn- create-shape-drawer-texture
   [{:keys [graphics/core]

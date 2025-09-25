@@ -54,4 +54,5 @@ Clears the color buffers with the specified color."
           [_ file-handle]
           "See `gdl.graphics.pixmap`."
           )
-  (fit-viewport [_ width height camera]))
+  (fit-viewport [_ width height camera])
+  (sprite-batch [_]))
