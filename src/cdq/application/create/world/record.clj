@@ -21,8 +21,8 @@
             [cdq.world.grid :as grid]
             [clojure.math.vector2 :as v]
             [clojure.grid2d :as g2d]
-            [gdl.disposable :as disposable]
-            [gdl.tiled :as tiled]
+            [com.badlogic.gdx.utils.disposable :as disposable]
+            [com.badlogic.gdx.maps.tiled :as tiled]
             [qrecord.core :as q]
             [reduce-fsm :as fsm])
   (:import (cdq.math RayCaster)))

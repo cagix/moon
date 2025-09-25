@@ -6,7 +6,7 @@
             [clojure.grid2d.caves :as caves]
             [clojure.grid2d.nads :as nads]
             [clojure.grid2d.utils :as helper]
-            [gdl.tiled :as tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- add-scale [w]
   (assoc w :scale [32 20]))

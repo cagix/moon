@@ -1,7 +1,7 @@
 (ns cdq.application.create.graphics
   (:require [cdq.files]
             [cdq.graphics]
-            [gdl.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.bitmap-font :as bitmap-font]

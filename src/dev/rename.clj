@@ -14,8 +14,8 @@
        (filter java.io.File/.isFile)))
 
 (comment
- (let [from "gdl.files"
-       to   "com.badlogic.gdx.files"
+ (let [from "com.badlogic.gdx.maps.tiled"
+       to   "com.badlogic.gdx.maps.tiled"
        files (matching-files ["src" "resources" "test"])]
    (doseq [f files]
      (replace-in-file! f from to)))

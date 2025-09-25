@@ -1,6 +1,6 @@
 (ns cdq.world-fns.uf-caves
   (:require [gdl.graphics.texture :as texture]
-            [gdl.tiled :as tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn create
   [{:keys [level/creature-properties

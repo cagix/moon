@@ -2,7 +2,7 @@
   (:require [cdq.audio]
             [com.badlogic.gdx.audio :as audio]
             [com.badlogic.gdx.audio.sound :as sound]
-            [gdl.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [com.badlogic.gdx.files :as files]
             [clojure.java.io :as io]))

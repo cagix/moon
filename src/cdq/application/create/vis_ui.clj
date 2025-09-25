@@ -1,6 +1,6 @@
 (ns cdq.application.create.vis-ui
   (:require [com.badlogic.gdx.utils.align :as align]
-            [gdl.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])

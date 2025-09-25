@@ -36,8 +36,7 @@
   [f]
   (.postRunnable Gdx/app f))
 
-(require 'com.badlogic.gdx.files
-         'com.badlogic.gdx.graphics
+(require 'com.badlogic.gdx.graphics
          'com.badlogic.gdx.scenes.scene2d.actor
          'com.badlogic.gdx.scenes.scene2d.group
          'com.badlogic.gdx.scenes.scene2d.stage
@@ -47,5 +46,4 @@
          'com.badlogic.gdx.scenes.scene2d.ui.table
          'com.badlogic.gdx.scenes.scene2d.ui.widget
          'com.badlogic.gdx.scenes.scene2d.ui.widget-group
-         'com.badlogic.gdx.scenes.scene2d.ui.window
-         'com.badlogic.gdx.utils.disposable)
+         'com.badlogic.gdx.scenes.scene2d.ui.window)

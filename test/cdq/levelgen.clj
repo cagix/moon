@@ -4,7 +4,7 @@
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
-            [gdl.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.application :as application]
@@ -17,7 +17,7 @@
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
-            [gdl.tiled :as tiled]
+            [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
