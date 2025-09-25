@@ -1,8 +1,5 @@
 (ns gdl.graphics
-  (:require [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
-            [com.badlogic.gdx.math.vector3 :as vector3]
-            gdl.graphics.bitmap-font)
+  (:require [com.badlogic.gdx.math.vector3 :as vector3])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics OrthographicCamera)))
 
@@ -19,9 +16,6 @@
   (fit-viewport [_ width height camera])
   (sprite-batch [_]))
 
-(defn generate-font [file-handle params]
-  (freetype/generate-font file-handle params))
-
 (defn orthographic-camera
   ([]
    (proxy [OrthographicCamera ILookup] []
@@ -37,7 +31,3 @@
   ([& {:keys [y-down? world-width world-height]}]
    (doto (orthographic-camera)
      (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
-
-(extend com.badlogic.gdx.graphics.g2d.BitmapFont
-  gdl.graphics.bitmap-font/BitmapFont
-  {:draw! bitmap-font/draw!})

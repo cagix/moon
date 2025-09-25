@@ -4,7 +4,8 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.files :as files]
             [gdl.graphics :as graphics]
-            [gdl.graphics.bitmap-font :as bitmap-font]
+            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.color :as color]
             [gdl.graphics.colors :as colors]
@@ -255,7 +256,7 @@
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]
-  (assoc graphics :graphics/default-font (graphics/generate-font (:file-handle default-font)
+  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
                                                                  (:params default-font))))
 
 (defn- create-textures
