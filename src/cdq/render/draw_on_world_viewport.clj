@@ -13,7 +13,7 @@
             [cdq.timer :as timer]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
-            [gdl.graphics.color :as color]
+            [com.badlogic.gdx.graphics.color :as color]
             [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-tile-grid? false)

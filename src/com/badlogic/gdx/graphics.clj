@@ -1,7 +1,5 @@
 (ns com.badlogic.gdx.graphics
   (:require gdl.graphics
-            gdl.graphics.pixmap
-            gdl.graphics.texture
             gdl.graphics.texture-region
             [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx Graphics)
@@ -53,37 +51,8 @@
   (sprite-batch [_]
     (SpriteBatch.)))
 
-(extend-type Texture
-  gdl.graphics.texture/Texture
-  (region
-    ([this]
-     (TextureRegion. this))
-    ([this [x y w h]]
-     (TextureRegion. this
-                     (int x)
-                     (int y)
-                     (int w)
-                     (int h)))
-    ([this x y w h]
-     (TextureRegion. this
-                     (int x)
-                     (int y)
-                     (int w)
-                     (int h)))))
-
 (extend-type TextureRegion
   gdl.graphics.texture-region/TextureRegion
   (dimensions [this]
     [(.getRegionWidth  this)
      (.getRegionHeight this)]))
-
-(extend-type Pixmap
-  gdl.graphics.pixmap/Pixmap
-  (set-color! [this [r g b a]]
-    (.setColor this r g b a))
-
-  (draw-pixel! [this x y]
-    (.drawPixel this x y))
-
-  (texture [this]
-    (Texture. this)))

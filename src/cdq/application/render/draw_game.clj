@@ -1,7 +1,7 @@
 (ns cdq.application.render.draw-game
   (:require [cdq.graphics :as graphics]
             [cdq.world :as world]
-            [gdl.graphics.color :as color]
+            [com.badlogic.gdx.graphics.color :as color]
             [cdq.render.draw-on-world-viewport :as draw-on-world-viewport]))
 
 (defn- clear-screen!

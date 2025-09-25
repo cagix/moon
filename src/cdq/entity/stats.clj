@@ -5,7 +5,7 @@
             [cdq.stats :as stats]
             [cdq.stats.ops :as ops]
             [cdq.val-max :as val-max]
-            [gdl.graphics.color :as color]))
+            [com.badlogic.gdx.graphics.color :as color]))
 
 (defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
