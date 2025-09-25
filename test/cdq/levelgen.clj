@@ -8,11 +8,11 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.application :as application]
-            [gdl.graphics :as graphics]
+            [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.texture :as texture]
-            [gdl.graphics.viewport]
+            [com.badlogic.gdx.graphics.viewport]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
@@ -181,8 +181,8 @@
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
-  (gdl.graphics.viewport/update! world-viewport width height {:center? false}))
+  (com.badlogic.gdx.graphics.viewport/update! ui-viewport    width height {:center? true})
+  (com.badlogic.gdx.graphics.viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
 

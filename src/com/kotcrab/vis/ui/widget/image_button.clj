@@ -1,5 +1,5 @@
 (ns com.kotcrab.vis.ui.widget.image-button
-  (:require [gdl.graphics.texture-region :as texture-region]
+  (:require [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]

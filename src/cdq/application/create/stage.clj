@@ -4,7 +4,7 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [gdl.graphics.viewport :as viewport]
+            [com.badlogic.gdx.graphics.viewport :as viewport]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.ctx]

@@ -3,7 +3,7 @@
             [cdq.graphics]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.files :as files]
-            [gdl.graphics :as graphics]
+            [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
@@ -13,8 +13,8 @@
             [space.earlygrey.shape-drawer :as sd]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
-            [gdl.graphics.texture-region :as texture-region]
-            [gdl.graphics.viewport :as viewport]
+            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
+            [com.badlogic.gdx.graphics.viewport :as viewport]
             [gdl.math :as math]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
