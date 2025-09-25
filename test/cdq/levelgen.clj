@@ -9,6 +9,7 @@
             [clojure.java.io :as io]
             [gdl.application :as application]
             [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as camera]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
@@ -17,7 +18,6 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
@@ -89,7 +89,7 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (graphics/fit-viewport graphics 1440 900 (camera/create))
+        ui-viewport (graphics/fit-viewport graphics 1440 900 (graphics/orthographic-camera))
         sprite-batch (graphics/sprite-batch graphics)
         stage (scene2d/stage ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -104,9 +104,9 @@
                          (graphics/fit-viewport graphics
                                                 world-width
                                                 world-height
-                                                (camera/create :y-down? false
-                                                               :world-width world-width
-                                                               :world-height world-height)))
+                                                (graphics/orthographic-camera :y-down? false
+                                                                              :world-width world-width
+                                                                              :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

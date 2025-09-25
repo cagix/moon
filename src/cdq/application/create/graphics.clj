@@ -5,7 +5,9 @@
             [gdl.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.bitmap-font :as bitmap-font]
+            [gdl.graphics.camera :as camera]
             [gdl.graphics.color :as color]
+            [gdl.graphics.colors :as colors]
             [gdl.graphics.g2d.batch :as batch]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.pixmap :as pixmap]
@@ -13,9 +15,6 @@
             [gdl.graphics.texture-region :as texture-region]
             [gdl.graphics.viewport :as viewport]
             [clojure.utils :as utils]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
-            [com.badlogic.gdx.graphics.colors :as colors]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [space.earlygrey.shape-drawer]))
 
@@ -257,7 +256,7 @@
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]
-  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
+  (assoc graphics :graphics/default-font (graphics/generate-font (:file-handle default-font)
                                                                  (:params default-font))))
 
 (defn- create-textures
@@ -283,7 +282,7 @@
   (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
                                                                (:width  ui-viewport)
                                                                (:height ui-viewport)
-                                                               (camera/create))))
+                                                               (graphics/orthographic-camera))))
 
 (defn- create-world-viewport
   [{:keys [graphics/core
@@ -295,9 +294,10 @@
                                              (graphics/fit-viewport core
                                                                     world-width
                                                                     world-height
-                                                                    (camera/create :y-down? false
-                                                                                   :world-width world-width
-                                                                                   :world-height world-height)))))
+                                                                    (graphics/orthographic-camera
+                                                                     :y-down? false
+                                                                     :world-width world-width
+                                                                     :world-height world-height)))))
 
 (defn- create*
   [{:keys [textures-to-load
