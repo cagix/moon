@@ -67,10 +67,10 @@
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
                           (create listener {:ctx/app      Gdx/app
-                                                        :ctx/audio    Gdx/audio
-                                                        :ctx/files    Gdx/files
-                                                        :ctx/graphics Gdx/graphics
-                                                        :ctx/input    Gdx/input}))
+                                            :ctx/audio    Gdx/audio
+                                            :ctx/files    Gdx/files
+                                            :ctx/graphics Gdx/graphics
+                                            :ctx/input    Gdx/input}))
                         (dispose [_]
                           (dispose listener))
                         (render [_]
