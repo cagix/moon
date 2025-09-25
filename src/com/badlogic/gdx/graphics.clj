@@ -2,7 +2,8 @@
   (:require gdl.graphics
             gdl.graphics.pixmap
             gdl.graphics.texture
-            gdl.graphics.texture-region)
+            gdl.graphics.texture-region
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
@@ -43,7 +44,10 @@
      (Pixmap. (int width)
               (int height)
               (case pixmap-format
-                :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888)))))
+                :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
+
+  (fit-viewport [_ width height camera]
+    (fit-viewport/create width height camera)))
 
 (extend-type Texture
   gdl.graphics.texture/Texture

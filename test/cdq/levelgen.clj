@@ -20,8 +20,7 @@
             [gdl.plattform :as plattform]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -93,7 +92,7 @@
            ctx/input
            ctx/plattform]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (fit-viewport/create 1440 900 (camera/create))
+        ui-viewport (graphics/fit-viewport graphics 1440 900 (camera/create))
         sprite-batch (sprite-batch/create)
         stage (plattform/stage plattform ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -105,11 +104,12 @@
                 cdq.application.create.vis-ui/do!)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (fit-viewport/create world-width
-                                              world-height
-                                              (camera/create :y-down? false
-                                                             :world-width world-width
-                                                             :world-height world-height)))
+                         (graphics/fit-viewport graphics
+                                                world-width
+                                                world-height
+                                                (camera/create :y-down? false
+                                                               :world-width world-width
+                                                               :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

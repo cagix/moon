@@ -18,7 +18,6 @@
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [space.earlygrey.shape-drawer]))
 
 (def ^:private draw-fns
@@ -278,21 +277,27 @@
                             :as graphics}]
   (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
-(defn- create-ui-viewport [graphics ui-viewport]
-  (assoc graphics :graphics/ui-viewport (fit-viewport/create (:width  ui-viewport)
-                                                             (:height ui-viewport)
-                                                             (camera/create))))
+(defn- create-ui-viewport
+  [{:keys [graphics/core]
+    :as graphics} ui-viewport]
+  (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
+                                                               (:width  ui-viewport)
+                                                               (:height ui-viewport)
+                                                               (camera/create))))
 
-(defn- create-world-viewport [{:keys [graphics/world-unit-scale]
-                               :as graphics}
-                              world-viewport]
+(defn- create-world-viewport
+  [{:keys [graphics/core
+           graphics/world-unit-scale]
+    :as graphics}
+   world-viewport]
   (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                             (fit-viewport/create world-width
-                                                                  world-height
-                                                                  (camera/create :y-down? false
-                                                                                 :world-width world-width
-                                                                                 :world-height world-height)))))
+                                             (graphics/fit-viewport core
+                                                                    world-width
+                                                                    world-height
+                                                                    (camera/create :y-down? false
+                                                                                   :world-width world-width
+                                                                                   :world-height world-height)))))
 
 (defn- create*
   [{:keys [textures-to-load

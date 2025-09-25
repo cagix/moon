@@ -53,4 +53,5 @@ Clears the color buffers with the specified color."
   (pixmap [_ width height pixmap-format]
           [_ file-handle]
           "See `gdl.graphics.pixmap`."
-          ))
+          )
+  (fit-viewport [_ width height camera]))
