@@ -1,7 +1,10 @@
 (ns gdl.application
-  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
+  (:require gdl.input
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
+            [com.badlogic.gdx.input :as input])
   (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)))
+                             Gdx
+                             Input)))
 
 (defprotocol Listener
   (create [_ context])
@@ -36,10 +39,17 @@
   [f]
   (.postRunnable Gdx/app f))
 
+(extend Input
+  gdl.input/Input
+  {:button-just-pressed? input/button-just-pressed?
+   :key-pressed?         input/key-pressed?
+   :key-just-pressed?    input/key-just-pressed?
+   :set-processor!       input/set-processor!
+   :mouse-position       input/mouse-position})
+
 (require 'com.badlogic.gdx.audio
          'com.badlogic.gdx.files
          'com.badlogic.gdx.graphics
-         'com.badlogic.gdx.input
          'com.badlogic.gdx.scenes.scene2d.actor
          'com.badlogic.gdx.scenes.scene2d.group
          'com.badlogic.gdx.scenes.scene2d.stage
