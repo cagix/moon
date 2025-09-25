@@ -1,14 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.stage
-  (:require com.badlogic.gdx.scenes.scene2d.actor
-            com.badlogic.gdx.scenes.scene2d.group
-            com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-            com.badlogic.gdx.scenes.scene2d.ui.label
-            com.badlogic.gdx.scenes.scene2d.ui.stack
-            com.badlogic.gdx.scenes.scene2d.ui.table
-            com.badlogic.gdx.scenes.scene2d.ui.widget
-            com.badlogic.gdx.scenes.scene2d.ui.widget-group
-            com.badlogic.gdx.scenes.scene2d.ui.window
-            clojure.scene2d.stage)
+  (:require clojure.scene2d.stage)
   (:import (com.badlogic.gdx.scenes.scene2d StageWithCtx)))
 
 (defn create [viewport batch]
@@ -42,3 +33,13 @@
 
   (viewport [this]
     (.getViewport this)))
+
+(require 'com.badlogic.gdx.scenes.scene2d.actor
+         'com.badlogic.gdx.scenes.scene2d.group
+         'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
+         'com.badlogic.gdx.scenes.scene2d.ui.label
+         'com.badlogic.gdx.scenes.scene2d.ui.stack
+         'com.badlogic.gdx.scenes.scene2d.ui.table
+         'com.badlogic.gdx.scenes.scene2d.ui.widget
+         'com.badlogic.gdx.scenes.scene2d.ui.widget-group
+         'com.badlogic.gdx.scenes.scene2d.ui.window)

@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.files :as files]
             [cdq.application.create.db]
+            [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
@@ -20,8 +21,7 @@
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.scenes.scene2d.stage]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [com.kotcrab.vis.ui :as vis-ui]))
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -99,7 +99,9 @@
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
-        ctx (cdq.application.create.db/do! ctx)
+        ctx (-> ctx
+                cdq.application.create.db/do!
+                cdq.application.create.vis-ui/do!)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (fit-viewport/create world-width
@@ -111,7 +113,6 @@
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})
                    :ctx/textures (into {} (for [[path file-handle] (files/search files
                                                                                  {:folder "resources/"
                                                                                   :extensions #{"png" "bmp"}})]

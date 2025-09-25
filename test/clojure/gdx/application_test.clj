@@ -1,10 +1,9 @@
 (ns clojure.gdx.application-test
-  (:require clojure.application
-            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]))
+  (:require [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]))
 
 (defn -main []
   (lwjgl3-application/start!
-   {:listener (reify clojure.application/Listener
+   {:listener (reify lwjgl3-application/Listener
                 (create [_ context]
                   (println"create!"))
                 (dispose [_]

@@ -1,6 +1,6 @@
 (ns cdq.application.create.world.info
   (:require [cdq.stats :as stats]
-            [cdq.stats.op :as op]
+            [cdq.stats.ops :as ops]
             [cdq.timer :as timer]
             [clojure.math :as math]
             [clojure.utils :as utils]
@@ -20,7 +20,7 @@
                         :op/mult (str v "%"))
                       " "
                       (str/capitalize (name modifier-k)))))
-             (sort-by op/order ops))))
+             (ops/sort ops))))
 
 (comment
  (deftest info-texts
