@@ -1,6 +1,6 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.widget
   (:require [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [gdl.scene2d.ui.widget :as widget])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 

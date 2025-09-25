@@ -1,6 +1,6 @@
 (ns cdq.application.create.stage.dev-menu.ctx-data-viewer
   (:require [cdq.ui.widget :as widget]
-            [gdl.scene2d.stage :as stage]))
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (def menu
   {:label "Ctx Data"

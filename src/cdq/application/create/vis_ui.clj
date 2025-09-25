@@ -2,8 +2,8 @@
   (:require [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage])
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage])
   (:import (clojure.lang MultiFn)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.kotcrab.vis.ui VisUI

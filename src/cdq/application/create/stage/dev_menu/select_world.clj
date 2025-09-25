@@ -1,7 +1,7 @@
 (ns cdq.application.create.stage.dev-menu.select-world
   (:require [cdq.ctx :as ctx]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]))
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (def world-fns
   ["world_fns/vampire.edn"

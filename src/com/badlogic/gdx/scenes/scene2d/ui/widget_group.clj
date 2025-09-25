@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.widget-group
-  (:require [gdl.scene2d.group :as group]
+  (:require [com.badlogic.gdx.scenes.scene2d.group :as group]
             [gdl.scene2d.ui.widget-group :as widget-group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui WidgetGroup)))
 

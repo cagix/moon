@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.window
-  (:require [gdl.scene2d.actor :as actor]
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [gdl.scene2d.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Window)))

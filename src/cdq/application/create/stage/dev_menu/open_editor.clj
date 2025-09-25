@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.ui.editor.window]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.string :as str]))
 
 (defn menu [db]

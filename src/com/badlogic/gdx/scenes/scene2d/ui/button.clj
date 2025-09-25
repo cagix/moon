@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.button
-  (:require [gdl.scene2d.actor :as actor])
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)))
 
 (defn- button-class? [actor]

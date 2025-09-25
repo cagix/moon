@@ -16,7 +16,7 @@
             [gdl.math.vector2 :as v]
             [clojure.repl]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]))
 
@@ -185,7 +185,7 @@
                       nil)
 
    :tx/show-modal (fn [{:keys [ctx/stage]} opts]
-                    (cdq.stage/show-modal-window! stage (gdl.scene2d.stage/viewport stage) opts)
+                    (cdq.stage/show-modal-window! stage (com.badlogic.gdx.scenes.scene2d.stage/viewport stage) opts)
                     nil)
 
    :tx/audiovisual (fn [{:keys [ctx/db]} position audiovisual]

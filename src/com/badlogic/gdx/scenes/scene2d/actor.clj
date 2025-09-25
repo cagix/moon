@@ -1,7 +1,7 @@
-(ns gdl.scene2d.actor
+(ns com.badlogic.gdx.scenes.scene2d.actor
   (:require [gdl.scene2d :as scene2d]
-            [gdl.scene2d.ctx :as ctx]
-            [gdl.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))

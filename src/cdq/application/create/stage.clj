@@ -6,10 +6,10 @@
             [cdq.ui.inventory :as inventory-window]
             [gdl.graphics.viewport :as viewport]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.ctx]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.ctx]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.scene2d.ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]))
 
@@ -17,7 +17,7 @@
   [{:keys [ctx/graphics]
     :as ctx}]
   (extend-type (class ctx)
-    gdl.scene2d.ctx/Graphics
+    com.badlogic.gdx.scenes.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)

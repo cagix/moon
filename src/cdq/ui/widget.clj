@@ -1,7 +1,7 @@
 (ns cdq.ui.widget
   (:require [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]))
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (defn scroll-pane-cell [viewport-height rows]
   (let [table (scene2d/build

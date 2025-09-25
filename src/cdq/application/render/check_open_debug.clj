@@ -1,7 +1,7 @@
 (ns cdq.application.render.check-open-debug
   (:require [cdq.input :as input]
             [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]))
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 ; TODO also items/skills/mouseover-actors
 ; -> can separate function get-mouseover-item-for-debug (@ ctx)

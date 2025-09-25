@@ -1,5 +1,5 @@
 (ns com.kotcrab.vis.ui.widget.window
-  (:require [gdl.scene2d.actor :as actor]
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [gdl.scene2d.ui.window]
             [gdl.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label
