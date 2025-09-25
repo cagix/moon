@@ -1,7 +1,7 @@
 (ns gdl.application
-  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)))
+  (:require [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
+  (:import (com.badlogic.gdx ApplicationListener)))
 
 (defprotocol Listener
   (create [_ context])
@@ -14,11 +14,11 @@
 (defn start! [{:keys [listener config]}]
   (lwjgl/application (reify ApplicationListener
                        (create [_]
-                         (create listener {:ctx/app      Gdx/app
-                                           :ctx/audio    Gdx/audio
-                                           :ctx/files    Gdx/files
-                                           :ctx/graphics Gdx/graphics
-                                           :ctx/input    Gdx/input}))
+                         (create listener {:ctx/app      gdx/app
+                                           :ctx/audio    gdx/audio
+                                           :ctx/files    gdx/files
+                                           :ctx/graphics gdx/graphics
+                                           :ctx/input    gdx/input}))
                        (dispose [_]
                          (dispose listener))
                        (render [_]
@@ -30,11 +30,6 @@
                        (resume [_]
                          (resume listener)))
                      config))
-
-(defn post-runnable!
-  "Posts a Runnable on the main loop thread."
-  [f]
-  (.postRunnable Gdx/app f))
 
 (require 'com.badlogic.gdx.graphics
          'com.badlogic.gdx.scenes.scene2d.actor

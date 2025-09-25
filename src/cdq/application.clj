@@ -46,7 +46,7 @@
  (require '[cdq.ctx :as ctx]
           '[cdq.db :as db])
 
- (application/post-runnable!
+ (com.badlogic.gdx/post-runnable!
   (fn []
     (let [ctx @state]
       (ctx/handle-txs! ctx
