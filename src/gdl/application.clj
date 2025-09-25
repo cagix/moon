@@ -1,8 +1,7 @@
 (ns gdl.application
-  (:require [com.badlogic.gdx.backends.lwjgl3.application.config :as application-config])
+  (:require [com.badlogic.gdx.backends.lwjgl3 :as lwjgl])
   (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
+                             Gdx)))
 
 (defprotocol Listener
   (create [_ context])
@@ -13,24 +12,24 @@
   (resume [_]))
 
 (defn start! [{:keys [listener config]}]
-  (Lwjgl3Application. (reify ApplicationListener
-                        (create [_]
-                          (create listener {:ctx/app      Gdx/app
-                                            :ctx/audio    Gdx/audio
-                                            :ctx/files    Gdx/files
-                                            :ctx/graphics Gdx/graphics
-                                            :ctx/input    Gdx/input}))
-                        (dispose [_]
-                          (dispose listener))
-                        (render [_]
-                          (render listener))
-                        (resize [_ width height]
-                          (resize listener width height))
-                        (pause [_]
-                          (pause listener))
-                        (resume [_]
-                          (resume listener)))
-                      (application-config/create config)))
+  (lwjgl/application (reify ApplicationListener
+                       (create [_]
+                         (create listener {:ctx/app      Gdx/app
+                                           :ctx/audio    Gdx/audio
+                                           :ctx/files    Gdx/files
+                                           :ctx/graphics Gdx/graphics
+                                           :ctx/input    Gdx/input}))
+                       (dispose [_]
+                         (dispose listener))
+                       (render [_]
+                         (render listener))
+                       (resize [_ width height]
+                         (resize listener width height))
+                       (pause [_]
+                         (pause listener))
+                       (resume [_]
+                         (resume listener)))
+                     config))
 
 (defn post-runnable!
   "Posts a Runnable on the main loop thread."
