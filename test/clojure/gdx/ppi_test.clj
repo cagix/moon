@@ -8,10 +8,10 @@
 
 (def state (atom nil))
 
-(defn- info-str []
+(defn- info-str [graphics]
   (str
-   "Density: " (.getDensity Gdx/graphics) "\n" "PPC-x: "  (.getPpcX Gdx/graphics) "\n" "PPC-y: "
-    (.getPpcY Gdx/graphics)  "\n"  "PPI-x: "  (.getPpiX Gdx/graphics)  "\n"  "PPI-y: "  (.getPpiY Gdx/graphics)))
+   "Density: " (.getDensity graphics) "\n" "PPC-x: "  (.getPpcX graphics) "\n" "PPC-y: "
+    (.getPpcY graphics)  "\n"  "PPI-x: "  (.getPpiX graphics)  "\n"  "PPI-y: "  (.getPpiY graphics)))
 
 (defn -main []
   (application/start!
@@ -27,7 +27,7 @@
                   (.begin batch)
                   (.draw font
                          batch
-                         ^CharSequence (info-str)
+                         ^CharSequence (info-str Gdx/graphics)
                          (float 0)
                          (float (.getHeight Gdx/graphics)))
                   (.end batch))
