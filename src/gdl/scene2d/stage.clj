@@ -1,6 +1,9 @@
 (ns gdl.scene2d.stage
   (:import (com.badlogic.gdx.scenes.scene2d StageWithCtx)))
 
+(defn create [viewport batch]
+  (StageWithCtx. viewport batch))
+
 (defn set-ctx! [^StageWithCtx stage ctx]
   (set! (.ctx stage) ctx))
 

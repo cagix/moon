@@ -20,8 +20,8 @@
     gdl.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (scene2d/stage (:graphics/ui-viewport graphics)
-                                       (:graphics/batch       graphics))))
+  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
+                                      (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage
