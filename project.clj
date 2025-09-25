@@ -3,11 +3,9 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [com.badlogic.gdx ~libgdx-version]
-                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
+                 [com.badlogic.gdx.backends.lwjgl3 "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
-                 [com.badlogicgames.gdx/gdx-platform          ~libgdx-version :classifier "natives-desktop"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]
                  [space.earlygrey/shapedrawer "2.5.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
