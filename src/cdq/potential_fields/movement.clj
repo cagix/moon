@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.entity.body :as body]
             [cdq.entity.faction :as faction]
-            [cdq.position :as position]
+            [gdl.position :as position]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [gdl.grid2d :as g2d]

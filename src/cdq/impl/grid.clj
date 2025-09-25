@@ -1,6 +1,6 @@
 (ns cdq.impl.grid
   (:require [cdq.entity.faction :as faction]
-            [cdq.position :as position]
+            [gdl.position :as position]
             [gdl.grid2d :as g2d]
             [cdq.world.grid.cell :as cell]
             [cdq.gdx.math.geom :as geom]
