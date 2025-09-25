@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.ui.editor.property :as property]
-            [gdl.scene2d :as scene2d]))
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]))
 
 (def ^:private property-type->overview-table-props
   {:properties/audiovisuals {:columns 10

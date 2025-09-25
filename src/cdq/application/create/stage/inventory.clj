@@ -4,7 +4,7 @@
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.ui.inventory]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.group :as group]

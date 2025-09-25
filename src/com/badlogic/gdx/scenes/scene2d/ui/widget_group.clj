@@ -1,15 +1,14 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.widget-group
-  (:require [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [gdl.scene2d.ui.widget-group :as widget-group])
+  (:require [com.badlogic.gdx.scenes.scene2d.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui WidgetGroup)))
 
-(extend-type WidgetGroup
-  widget-group/WidgetGroup
-  (pack! [widget-group]
-    (.pack widget-group))
+(defn pack! [^WidgetGroup widget-group]
+  (.pack widget-group))
 
-  (set-opts! [widget-group {:keys [fill-parent? pack?]
-                            :as opts}]
-    (.setFillParent widget-group (boolean fill-parent?))
-    (when pack? (.pack widget-group))
-    (group/set-opts! widget-group opts)))
+(defn set-opts!
+  [^WidgetGroup widget-group
+   {:keys [fill-parent? pack?]
+    :as opts}]
+  (.setFillParent widget-group (boolean fill-parent?))
+  (when pack? (.pack widget-group))
+  (group/set-opts! widget-group opts))

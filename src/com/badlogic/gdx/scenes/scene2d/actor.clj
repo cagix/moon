@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.actor
-  (:require [gdl.scene2d :as scene2d]
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.math.vector2 :as vector2]

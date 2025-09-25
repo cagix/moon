@@ -15,7 +15,7 @@
             [clj-commons.pretty.repl :as pretty-repl]
             [gdl.math.vector2 :as v]
             [clojure.repl]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]))

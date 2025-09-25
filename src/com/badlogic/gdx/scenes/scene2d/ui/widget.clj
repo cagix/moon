@@ -1,7 +1,6 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.widget
-  (:require [gdl.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [gdl.scene2d.ui.widget :as widget])
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Widget)))
 
 (defmethod scene2d/build :actor.type/widget
@@ -11,7 +10,5 @@
       (when-let [f (:draw opts)]
         (actor/draw this f)))))
 
-(extend-type Widget
-  widget/Widget
-  (set-opts! [actor opts]
-    (actor/set-opts! actor opts)))
+(defn set-opts! [actor opts]
+  (actor/set-opts! actor opts))

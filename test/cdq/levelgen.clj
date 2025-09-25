@@ -14,7 +14,7 @@
             [com.badlogic.gdx.graphics.texture :as texture]
             [gdl.graphics.viewport]
             [com.badlogic.gdx.input :as input]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.maps.tiled :as tiled]

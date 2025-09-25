@@ -33,9 +33,4 @@
 
 (require 'com.badlogic.gdx.graphics
          'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-         'com.badlogic.gdx.scenes.scene2d.ui.label
-         'com.badlogic.gdx.scenes.scene2d.ui.stack
-         'com.badlogic.gdx.scenes.scene2d.ui.table
-         'com.badlogic.gdx.scenes.scene2d.ui.widget
-         'com.badlogic.gdx.scenes.scene2d.ui.widget-group
-         'com.badlogic.gdx.scenes.scene2d.ui.window)
+         'com.badlogic.gdx.scenes.scene2d.ui.stack)

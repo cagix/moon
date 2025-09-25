@@ -1,4 +1,4 @@
-(ns gdl.scene2d)
+(ns com.badlogic.gdx.scenes.scene2d)
 
 (defmulti build
   "Builds the `com.badlogic.gdx.scenes.scene2d.actor` via the supplied options map.

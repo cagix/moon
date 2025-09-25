@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.value-widget
   (:require [cdq.schema :as schema]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]))
 
 (defn build [ctx schema k v]

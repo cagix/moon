@@ -3,7 +3,7 @@
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [gdl.scene2d.ui.table :as table]
+            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.utils Drawable)

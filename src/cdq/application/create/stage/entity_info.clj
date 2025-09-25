@@ -1,10 +1,10 @@
 (ns cdq.application.create.stage.entity-info
   (:require [cdq.stage :as stage]
             [cdq.world :as world]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
-            [gdl.scene2d.ui.widget-group :as widget-group]))
+            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (comment
 

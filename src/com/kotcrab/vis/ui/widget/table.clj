@@ -1,5 +1,5 @@
 (ns com.kotcrab.vis.ui.widget.table
-  (:require [gdl.scene2d.ui.table :as table])
+  (:require [com.badlogic.gdx.scenes.scene2d.ui.table :as table])
   (:import (com.kotcrab.vis.ui.widget VisTable)))
 
 (defn create [opts]

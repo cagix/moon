@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-  (:require [gdl.scene2d :as scene2d]
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup)))
 

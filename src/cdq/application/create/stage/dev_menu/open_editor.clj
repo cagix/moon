@@ -1,7 +1,7 @@
 (ns cdq.application.create.stage.dev-menu.open-editor
   (:require [cdq.db :as db]
             [cdq.ui.editor.window]
-            [gdl.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.string :as str]))
 

@@ -1,10 +1,15 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.table
-  (:require [gdl.scene2d :as scene2d]
-            [gdl.scene2d.ui.table :as table]
-            [gdl.scene2d.ui.widget-group :as widget-group]
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
+
+(defprotocol PTable
+  (add! [table actor-or-decl])
+  (cells [_])
+  (add-rows! [_ rows])
+  (set-opts! [_ opts]))
 
 (defn- build? [actor-or-decl]
   (try (cond
@@ -20,7 +25,7 @@
                          t)))))
 
 (extend-type Table
-  table/Table
+  PTable
   (add! [table actor-or-decl]
     (.add table ^Actor (build? actor-or-decl)))
 
@@ -31,14 +36,14 @@
     (doseq [row rows]
       (doseq [props-or-actor row]
         (cond
-         (map? props-or-actor) (-> (table/add! table (:actor props-or-actor))
+         (map? props-or-actor) (-> (add! table (:actor props-or-actor))
                                    (cell/set-opts! (dissoc props-or-actor :actor)))
-         :else (table/add! table props-or-actor)))
+         :else (add! table props-or-actor)))
       (.row table))
     table)
 
   (set-opts! [table {:keys [rows cell-defaults] :as opts}]
     (cell/set-opts! (.defaults table) cell-defaults)
     (doto table
-      (table/add-rows! rows)
+      (add-rows! rows)
       (widget-group/set-opts! opts))))

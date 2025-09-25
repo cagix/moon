@@ -1,5 +1,5 @@
 (ns com.kotcrab.vis.ui.widget.image
-  (:require [gdl.scene2d.ui.widget :as widget])
+  (:require [com.badlogic.gdx.scenes.scene2d.ui.widget :as widget])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable)
