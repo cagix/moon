@@ -4,7 +4,6 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.badlogic.gdx ~libgdx-version]
-                 ;[com.badlogicgames.gdx/gdx                   ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3    ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype          ~libgdx-version]
                  [com.badlogicgames.gdx/gdx-freetype-platform ~libgdx-version :classifier "natives-desktop"]
