@@ -32,7 +32,6 @@
                      config))
 
 (require 'com.badlogic.gdx.graphics
-         'com.badlogic.gdx.scenes.scene2d.actor
          'com.badlogic.gdx.scenes.scene2d.group
          'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
          'com.badlogic.gdx.scenes.scene2d.ui.label
