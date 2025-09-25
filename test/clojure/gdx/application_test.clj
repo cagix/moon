@@ -1,9 +1,9 @@
 (ns clojure.gdx.application-test
-  (:require [gdl.application.desktop :as lwjgl3-application]))
+  (:require [gdl.application :as application]))
 
 (defn -main []
-  (lwjgl3-application/start!
-   {:listener (reify lwjgl3-application/Listener
+  (application/start!
+   {:listener (reify application/Listener
                 (create [_ context]
                   (println"create!"))
                 (dispose [_]

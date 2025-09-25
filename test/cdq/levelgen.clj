@@ -6,17 +6,17 @@
             [cdq.world-fns.creature-tiles]
             [gdl.disposable :as disposable]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [gdl.application :as application]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
             [gdl.input :as input]
-            [clojure.java.io :as io]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.tiled :as tiled]
-            [gdl.application.desktop :as lwjgl-application]
             [gdl.plattform :as plattform]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -190,8 +190,8 @@
 (def state (atom nil))
 
 (defn -main []
-  (lwjgl-application/start!
-   {:listener (reify lwjgl-application/Listener
+  (application/start!
+   {:listener (reify application/Listener
                 (create [_ context]
                   (reset! state (create! context)))
                 (dispose [_]

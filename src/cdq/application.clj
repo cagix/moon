@@ -1,8 +1,7 @@
 (ns cdq.application
-  (:require [gdl.application :as application]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [gdl.application.desktop :as lwjgl3-application])
+            [gdl.application :as application])
   (:gen-class))
 
 (def ^:private state (atom nil))
@@ -14,7 +13,7 @@
                              io/resource
                              slurp
                              edn/read-string)]
-    (lwjgl3-application/start!
+    (application/start!
      {:listener (let [{:keys [create
                               dispose
                               render
@@ -23,7 +22,7 @@
                       dispose (requiring-resolve dispose)
                       render-pipeline (map requiring-resolve render)
                       resize (requiring-resolve resize)]
-                  (reify lwjgl3-application/Listener
+                  (reify application/Listener
                     (create [_ context]
                       (reset! state (reduce (fn [ctx f]
                                               (f ctx))
@@ -43,21 +42,18 @@
                     (resume [_])))
       :config config})))
 
-(defn post-runnable! [f]
-  (application/post-runnable! (:ctx/app @state)
-                              (fn [] (f @state))))
-
 (comment
  (require '[cdq.ctx :as ctx]
           '[cdq.db :as db])
 
- (post-runnable!
-  (fn [ctx]
-    (ctx/handle-txs! ctx
-                     [[:tx/spawn-creature
-                       {:position [35 73]
-                        :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
-                        :components {:entity/fsm {:fsm :fsms/npc
-                                                  :initial-state :npc-sleeping}
-                                     :entity/faction :evil}}]])))
+ (application/post-runnable!
+  (fn []
+    (let [ctx @state]
+      (ctx/handle-txs! ctx
+                       [[:tx/spawn-creature
+                         {:position [35 73]
+                          :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
+                          :components {:entity/fsm {:fsm :fsms/npc
+                                                    :initial-state :npc-sleeping}
+                                       :entity/faction :evil}}]]))))
  )
