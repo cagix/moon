@@ -4,8 +4,6 @@
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
-; 1. ScalingViewport with Scaling/fit
-
 (defn- clamp [value min max]
   (cond
    (< value min) min
@@ -29,22 +27,6 @@
   (-> viewport
       (.unproject (vector2/->java x y))
       vector2/->clj))
-
-; screenX -> viewports offset from the left edge of the csreen
-; what is the 'screen' ? the graphics window ?
-; getScreenX
-; getScreenY: Sets the viewport's offset from the bottom edge of the screen.
-
-(comment
- ; @ gdx.graphics.Camera
- (.unproject camera
-             tmp-vector3
-             screenX
-             screenY
-             screen-width
-             screen-height)
- ; return tmp-vector3
- )
 
 (extend-type FitViewport
   gdl.graphics.viewport/Viewport
