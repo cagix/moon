@@ -1,4 +1,4 @@
-(ns cdq.schema.enum
+(ns cdq.db.schema.enum
   (:require [clojure.edn :as edn]
             [gdl.utils :as utils]))
 

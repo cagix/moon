@@ -1,4 +1,4 @@
-(ns cdq.schemas)
+(ns cdq.db.schemas)
 
 (defprotocol Schemas
   (build-values [_ property db])

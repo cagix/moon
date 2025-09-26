@@ -1,6 +1,6 @@
-(ns cdq.schema.image
+(ns cdq.db.schema.image
   (:require [cdq.graphics :as graphics]
-            [cdq.schemas :as schemas]))
+            [cdq.db.schemas :as schemas]))
 
 (defn malli-form [_ schemas]
   (schemas/create-map-schema schemas

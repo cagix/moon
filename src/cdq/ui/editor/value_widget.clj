@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.value-widget
-  (:require [cdq.schema :as schema]
+  (:require [cdq.db.schema :as schema]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]))
 

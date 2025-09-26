@@ -1,7 +1,7 @@
 (ns cdq.application.create.editor
   (:require [cdq.db :as db]
+            [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [cdq.ui.editor.property :as property]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]))
 
 (def ^:private property-type->overview-table-props

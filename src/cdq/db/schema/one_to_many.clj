@@ -1,8 +1,7 @@
-(ns cdq.schema.one-to-many
+(ns cdq.db.schema.one-to-many
   (:require [cdq.db :as db]
+            [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [cdq.property]
-            [cdq.ui.editor.property :as property]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
@@ -12,7 +11,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn malli-form [[_ property-type] _schemas]
-  [:set [:qualified-keyword {:namespace (cdq.property/type->id-namespace property-type)}]])
+  [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])
 
 (defn create-value [_ property-ids db]
   (set (map (partial db/build db) property-ids)))

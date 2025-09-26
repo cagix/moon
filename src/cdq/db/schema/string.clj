@@ -1,4 +1,4 @@
-(ns cdq.schema.string)
+(ns cdq.db.schema.string)
 
 (defn malli-form [_ _schemas]
   :string)

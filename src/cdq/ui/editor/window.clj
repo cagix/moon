@@ -1,11 +1,11 @@
 (ns cdq.ui.editor.window
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
+            [cdq.db.property :as property]
             [cdq.malli :as m]
-            [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
+            [cdq.db.schema :as schema]
+            [cdq.db.schemas :as schemas]
             [cdq.stage]
-            [cdq.property :as property]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
@@ -101,7 +101,7 @@
         map-widget-table (-> window
                              (group/find-actor "cdq.ui.widget.scroll-pane-table")
                              (group/find-actor "scroll-pane-table")
-                             (group/find-actor "cdq.schema.map.ui.widget"))
+                             (group/find-actor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
     (stage/add! stage
@@ -200,7 +200,7 @@
   (let [table (scene2d/build
                {:actor/type :actor.type/table
                 :cell-defaults {:pad 5}
-                :actor/name "cdq.schema.map.ui.widget"})
+                :actor/name "cdq.db.schema.map.ui.widget"})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)
                                     (map (fn [k]

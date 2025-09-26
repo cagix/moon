@@ -1,4 +1,4 @@
-(ns cdq.schema.sound
+(ns cdq.db.schema.sound
   (:require [cdq.audio :as audio]
             [cdq.stage]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]

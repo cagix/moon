@@ -1,4 +1,4 @@
-(ns cdq.schema.boolean)
+(ns cdq.db.schema.boolean)
 
 (defn malli-form [[_ & params] _schemas]
   :boolean)

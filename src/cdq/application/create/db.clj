@@ -1,8 +1,8 @@
 (ns cdq.application.create.db
   (:require [cdq.db :as db]
-            [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
-            [cdq.property :as property]
+            [cdq.db.property :as property]
+            [cdq.db.schema :as schema]
+            [cdq.db.schemas :as schemas]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]

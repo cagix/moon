@@ -1,7 +1,7 @@
-(ns cdq.schema.map
+(ns cdq.db.schema.map
   (:require [cdq.malli :as m]
-            [cdq.schema :as schema]
-            [cdq.schemas :as schemas]
+            [cdq.db.schema :as schema]
+            [cdq.db.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
             [gdl.utils :as utils]

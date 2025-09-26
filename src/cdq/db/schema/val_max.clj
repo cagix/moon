@@ -1,4 +1,4 @@
-(ns cdq.schema.val-max
+(ns cdq.db.schema.val-max
   (:require [cdq.val-max :as val-max]))
 
 (defn malli-form [_ _schemas]

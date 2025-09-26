@@ -34,8 +34,8 @@
    :external false
    :ignore #_(set (mapv symbol (locked-namespaces)))
    '#{cdq.application
-     ;cdq.schema
-     cdq.schemas
+     ;cdq.db.schema
+     cdq.db.schemas
      cdq.db
      cdq.malli
      cdq.files

@@ -1,7 +1,7 @@
-(ns cdq.schema.vector)
+(ns cdq.db.schema.some)
 
 (defn malli-form [[_ & params] _schemas]
-  (apply vector :vector params))
+  :some)
 
 (defn create-value [_ v _db]
   v)

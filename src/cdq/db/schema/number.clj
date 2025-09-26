@@ -1,4 +1,4 @@
-(ns cdq.schema.number)
+(ns cdq.db.schema.number)
 
 (defn malli-form [[_ predicate] _schemas]
   (case predicate
