@@ -1,4 +1,5 @@
-(ns cdq.entity.animation)
+(ns cdq.entity.animation
+  (:require [cdq.entity.image :as image]))
 
 (defprotocol Animation
   (tick [_ delta])
@@ -36,3 +37,6 @@
     :looping? looping?
     :cnt 0
     :maxcnt (* (count frames) (float frame-duration))}))
+
+(defn draw [animation entity ctx]
+  (image/draw (current-frame animation) entity ctx))
