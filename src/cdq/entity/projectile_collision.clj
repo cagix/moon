@@ -4,6 +4,9 @@
             [cdq.world.grid.cell :as cell]
             [gdl.grid2d :as g2d]))
 
+(defn create [v _world]
+  (assoc v :already-hit-bodies #{}))
+
 (defn tick
   [{:keys [entity-effects already-hit-bodies piercing?]}
    eid

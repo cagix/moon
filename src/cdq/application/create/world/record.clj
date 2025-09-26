@@ -3,16 +3,12 @@
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.entity.animation :as animation]
             [cdq.entity.body :as body]
-            [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.entity.stats]
             [cdq.stats :as stats]
             [cdq.impl.content-grid]
             [cdq.impl.grid]
             [cdq.malli :as m]
-            [cdq.timer :as timer]
             [cdq.potential-fields.movement]
             [cdq.potential-fields.update]
             [cdq.world.grid.cell :as cell]
@@ -28,41 +24,30 @@
   (:import (gdl.math RayCaster)))
 
 (def ^:private create-fns
-  {:entity/animation animation/create
-   :entity/body      body/create
-   :entity/delete-after-duration (fn [duration {:keys [world/elapsed-time]}]
-                                   (timer/create elapsed-time duration))
-   :entity/projectile-collision (fn [v _world]
-                                  (assoc v :already-hit-bodies #{}))
-   :creature/stats cdq.entity.stats/create})
+  (update-vals '{:entity/animation             cdq.entity.animation/create
+                 :entity/body                  cdq.entity.body/create
+                 :entity/delete-after-duration cdq.entity.delete-after-duration/create
+                 :entity/projectile-collision  cdq.entity.projectile-collision/create
+                 :creature/stats               cdq.entity.stats/create}
+               (fn [sym]
+                 (let [avar (requiring-resolve sym)]
+                   (assert avar sym)
+                   avar))))
 
 (defn- create-component [[k v] world]
   (if-let [f (create-fns k)]
     (f v world)
     v))
 
-(defn- create-fsm
-  [{:keys [fsm initial-state]} eid world]
-  ; fsm throws when initial-state is not part of states, so no need to assert initial-state
-  ; initial state is nil, so associng it. make bug report at reduce-fsm?
-  [[:tx/assoc eid :entity/fsm (assoc ((get (:world/fsms world) fsm) initial-state nil) :state initial-state)]
-   [:tx/assoc eid initial-state (state/create [initial-state nil] eid world)]])
-
-(defn- create!-inventory [items eid _world]
-  (cons [:tx/assoc eid :entity/inventory (inventory/create)]
-        (for [item items]
-          [:tx/pickup-item eid item])))
-
 (def ^:private create!-fns
-  {:entity/fsm                             create-fsm
-   :entity/inventory                       create!-inventory
-   :entity/delete-after-animation-stopped? (fn [_ eid _world]
-                                             (-> @eid :entity/animation :looping? not assert)
-                                             nil)
-   :entity/skills                          (fn [skills eid _world]
-                                             (cons [:tx/assoc eid :entity/skills nil]
-                                                   (for [skill skills]
-                                                     [:tx/add-skill eid skill])))})
+  (update-vals '{:entity/fsm                             cdq.entity.fsm/create!
+                 :entity/inventory                       cdq.entity.inventory/create!
+                 :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/create!
+                 :entity/skills                          cdq.entity.skills/create!}
+               (fn [sym]
+                 (let [avar (requiring-resolve sym)]
+                   (assert avar sym)
+                   avar))))
 
 (defn- after-create-component [[k v] eid world]
   (when-let [f (create!-fns k)]

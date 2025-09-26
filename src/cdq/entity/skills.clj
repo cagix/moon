@@ -1,6 +1,11 @@
 (ns cdq.entity.skills
   (:require [cdq.timer :as timer]))
 
+(defn create! [skills eid _world]
+  (cons [:tx/assoc eid :entity/skills nil]
+        (for [skill skills]
+          [:tx/add-skill eid skill])))
+
 (defn tick [skills eid {:keys [world/elapsed-time]}]
   (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
         :when (and cooling-down?
