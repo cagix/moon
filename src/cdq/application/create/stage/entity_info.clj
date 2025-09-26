@@ -1,6 +1,6 @@
 (ns cdq.application.create.stage.entity-info
   (:require [cdq.stage :as stage]
-            [cdq.world :as world]
+            [cdq.info :as info]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
@@ -28,7 +28,8 @@
 
 (defn- ->label-text [entity world]
   ; don't use select-keys as it loses Entity record type
-  (world/info-text world (apply dissoc entity disallowed-keys)))
+  (info/info-text (apply dissoc entity disallowed-keys)
+                  world))
 
 (defn create [stage]
   (let [y-position 0

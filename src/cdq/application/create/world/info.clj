@@ -1,10 +1,13 @@
 (ns cdq.application.create.world.info
-  (:require [cdq.stats :as stats]
+  (:require [cdq.info]
+            [cdq.stats :as stats]
             [cdq.stats.ops :as ops]
             [cdq.timer :as timer]
             [clojure.math :as math]
-            [gdl.utils :as utils]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [gdl.utils :as utils]))
+
+(defn do! [ctx] ctx)
 
 (defn- ops-info-text [ops modifier-k]
   (str/join "\n"
@@ -193,7 +196,7 @@
    :maxrange (fn [[_ v] _world]
                v)})
 
-(defn info-text [world entity]
+(defn- info-text [world entity]
   (let [component-info (fn [[k v]]
                          (let [s (if-let [info-fn (info-fns k)]
                                    (info-fn [k v] world))]
@@ -210,3 +213,8 @@
                         (str "\n" (info-text world v))))))
          (str/join "\n")
          remove-newlines)))
+
+(extend-type clojure.lang.IPersistentMap
+  cdq.info/InfoText
+  (info-text [entity world]
+    (info-text world entity)))

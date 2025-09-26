@@ -1,6 +1,5 @@
 (ns cdq.application.create.world.record
-  (:require [cdq.application.create.world.info]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.entity.faction :as faction]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -242,10 +241,6 @@
       [arr width height])))
 
 (defrecord World []
-  world/InfoText
-  (info-text [world entity]
-    (cdq.application.create.world.info/info-text world entity))
-
   world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]
     (blocked? raycaster start target))

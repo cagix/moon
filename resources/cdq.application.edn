@@ -8,6 +8,7 @@
                       cdq.application.create.validation/do!
                       cdq.application.create.editor/do!
                       cdq.ui.editor.window/do!
+                      cdq.application.create.world.info/do!
                       cdq.application.create.init-entity-states/do!
                       cdq.application.create.world.effects/do!
                       cdq.application.create.handle-txs/do!

@@ -1,7 +1,7 @@
 (ns cdq.tx.stage
   (:require [cdq.graphics :as graphics]
+            [cdq.info :as info]
             [cdq.stage]
-            [cdq.world :as world]
             [clojure.repl]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
@@ -30,7 +30,7 @@
                         {:skill-id (:property/id skill)
                          :texture-region (graphics/texture-region graphics (:entity/image skill))
                          :tooltip-text (fn [{:keys [ctx/world]}]
-                                         (world/info-text world skill))})
+                                         (info/info-text skill world))})
   nil)
 
 (defn player-set-item! [{:keys [ctx/graphics
@@ -39,7 +39,7 @@
   (cdq.stage/set-item! stage cell
                        {:texture-region (graphics/texture-region graphics (:entity/image item))
                         :tooltip-text (fn [{:keys [ctx/world]}]
-                                        (world/info-text world item))})
+                                        (info/info-text item world))})
   nil)
 
 (defn player-remove-item! [{:keys [ctx/stage]}
