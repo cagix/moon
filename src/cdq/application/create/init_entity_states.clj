@@ -113,7 +113,7 @@
   {:create (fn [[k v] eid ctx]
              (if-let [f (k (:create fn->k->var))]
                (f eid v ctx)
-               (or v :something))) ; nil components are not tick'ed
+               v))
 
    :handle-input (fn [[k v] eid ctx]
                    (if-let [f (k (:handle-input fn->k->var))]
