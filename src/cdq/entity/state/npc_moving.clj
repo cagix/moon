@@ -10,6 +10,10 @@
                         (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
                            reaction-time-multiplier))})
 
+(defn tick [{:keys [timer]} eid {:keys [world/elapsed-time]}]
+  (when (timer/stopped? elapsed-time timer)
+    [[:tx/event eid :timer-finished]]))
+
 (defn enter [{:keys [movement-vector]} eid]
   [[:tx/assoc eid :entity/movement {:direction movement-vector
                                     :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)

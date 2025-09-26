@@ -3,7 +3,16 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.stats :as stats]
-            [cdq.timer :as timer]))
+            [cdq.timer :as timer]
+            [cdq.world :as world]))
+
+(defn- update-effect-ctx
+  [world {:keys [effect/source effect/target] :as effect-ctx}]
+  (if (and target
+           (not (:entity/destroyed? @target))
+           (world/line-of-sight? world @source @target))
+    effect-ctx
+    (dissoc effect-ctx :effect/target)))
 
 (defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
   (/ action-time
@@ -17,6 +26,21 @@
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
                  (timer/create elapsed-time))})
+
+(defn tick
+  [{:keys [skill effect-ctx counter]}
+   eid
+   {:keys [world/elapsed-time]
+    :as world}]
+  (let [effect-ctx (update-effect-ctx world effect-ctx)]
+    (cond
+     (not (seq (filter #(effect/applicable? % effect-ctx)
+                       (:skill/effects skill))))
+     [[:tx/event eid :action-done]]
+
+     (timer/stopped? elapsed-time counter)
+     [[:tx/effect effect-ctx (:skill/effects skill)]
+      [:tx/event eid :action-done]])))
 
 (defn enter [{:keys [skill]} eid]
   [[:tx/sound (:skill/start-action-sound skill)]

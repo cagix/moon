@@ -1,0 +1,46 @@
+(ns cdq.entity.movement
+  (:require [cdq.world.grid :as grid]
+            [gdl.math.vector2 :as v]
+            [gdl.utils :as utils]))
+
+(defn- move-position [position {:keys [direction speed delta-time]}]
+  (mapv #(+ %1 (* %2 speed delta-time)) position direction))
+
+(defn- move-body [body movement]
+  (update body :body/position move-position movement))
+
+(defn- try-move [grid body entity-id movement]
+  (let [new-body (move-body body movement)]
+    (when (grid/valid-position? grid new-body entity-id)
+      new-body)))
+
+(defn- try-move-solid-body [grid body entity-id {[vx vy] :direction :as movement}]
+  (let [xdir (Math/signum (float vx))
+        ydir (Math/signum (float vy))]
+    (or (try-move grid body entity-id movement)
+        (try-move grid body entity-id (assoc movement :direction [xdir 0]))
+        (try-move grid body entity-id (assoc movement :direction [0 ydir])))))
+
+(defn tick
+  [{:keys [direction
+           speed
+           rotate-in-movement-direction?]
+    :as movement}
+   eid
+   {:keys [world/delta-time
+           world/grid
+           world/max-speed]}]
+  (assert (<= 0 speed max-speed)
+          (pr-str speed))
+  (assert (or (zero? (v/length direction))
+              (utils/nearly-equal? 1 (v/length direction)))
+          (str "cannot understand direction: " (pr-str direction)))
+  (when-not (or (zero? (v/length direction))
+                (nil? speed)
+                (zero? speed))
+    (let [movement (assoc movement :delta-time delta-time)
+          body (:entity/body @eid)]
+      (when-let [body (if (:body/collides? body)
+                        (try-move-solid-body grid body (:entity/id @eid) movement)
+                        (move-body body movement))]
+        [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))

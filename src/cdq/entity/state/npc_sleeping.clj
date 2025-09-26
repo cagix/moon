@@ -1,5 +1,13 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.entity :as entity]))
+  (:require [cdq.entity :as entity]
+            [cdq.stats :as stats]
+            [cdq.world.grid :as grid]))
+
+(defn tick [_ eid {:keys [world/grid]}]
+  (let [entity @eid]
+    (when-let [distance (grid/nearest-enemy-distance grid entity)]
+      (when (<= distance (stats/get-stat-value (:creature/stats entity) :entity/aggro-range))
+        [[:tx/event eid :alert]]))))
 
 (defn exit [_ eid _ctx]
   [[:tx/spawn-alert (entity/position @eid) (:entity/faction @eid) 0.2]

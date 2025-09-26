@@ -2,14 +2,14 @@
   (:require [cdq.entity.image :as image]))
 
 (defprotocol Animation
-  (tick [_ delta])
+  (tick* [_ delta])
   (restart [_])
   (stopped? [_])
   (current-frame [_]))
 
 (defrecord RAnimation [frames frame-duration looping? cnt maxcnt]
   Animation
-  (tick [this delta]
+  (tick* [this delta]
     (let [maxcnt (float maxcnt)
           newcnt (+ (float cnt) (float delta))]
       (assoc this :cnt (cond (< newcnt maxcnt) newcnt
@@ -37,6 +37,9 @@
     :looping? looping?
     :cnt 0
     :maxcnt (* (count frames) (float frame-duration))}))
+
+(defn tick [animation eid {:keys [world/delta-time]}]
+  [[:tx/assoc eid :entity/animation (tick* animation delta-time)]])
 
 (defn draw [animation entity ctx]
   (image/draw (current-frame animation) entity ctx))
