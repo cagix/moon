@@ -1,6 +1,5 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
-            [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.stats :as stats]
             [cdq.timer :as timer]
@@ -80,7 +79,7 @@
   (let [{:keys [entity/image skill/effects]} skill]
     (concat (draw-skill-image (graphics/texture-region graphics image)
                               entity
-                              (entity/position entity)
+                              (:body/position (:entity/body entity))
                               (timer/ratio (:world/elapsed-time world) counter))
             (mapcat #(effect/draw % effect-ctx ctx)  ; update-effect-ctx here too ?
                     effects))))

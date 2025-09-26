@@ -16,7 +16,7 @@
  (let [targets (creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
-                                   (entity/position @%)) targets)))
+                                   (:body/position (:entity/body @%))) targets)))
 
  )
 

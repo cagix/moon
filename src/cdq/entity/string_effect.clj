@@ -1,6 +1,5 @@
 (ns cdq.entity.string-effect
-  (:require [cdq.entity :as entity]
-            [cdq.timer :as timer]))
+  (:require [cdq.timer :as timer]))
 
 (defn tick
   [{:keys [counter]}
@@ -10,7 +9,7 @@
     [[:tx/dissoc eid :entity/string-effect]]))
 
 (defn draw [{:keys [text]} entity {:keys [ctx/graphics]}]
-  (let [[x y] (entity/position entity)]
+  (let [[x y] (:body/position (:entity/body entity))]
     [[:draw/text {:text text
                   :x x
                   :y (+ y

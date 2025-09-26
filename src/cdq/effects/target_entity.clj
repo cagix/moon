@@ -1,26 +1,25 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
-            [cdq.entity :as entity]
             [gdl.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
-(defn- start-point [entity target*]
-  (v/add (entity/position entity)
-         (v/scale (v/direction (entity/position entity)
-                               (entity/position target*))
-                  (/ (:body/width (:entity/body entity)) 2))))
+(defn- start-point [body target-body]
+  (v/add (:body/position body)
+         (v/scale (v/direction (:body/position body)
+                               (:body/position target-body))
+                  (/ (:body/width body) 2))))
 
-(defn- end-point [entity target* maxrange]
-  (v/add (start-point entity target*)
-         (v/scale (v/direction (entity/position entity)
-                               (entity/position target*))
+(defn- end-point [body target-body maxrange]
+  (v/add (start-point body target-body)
+         (v/scale (v/direction (:body/position body)
+                               (:body/position target-body))
                   maxrange)))
 
-(defn- in-range? [entity target* maxrange]
-  (< (- (float (v/distance (entity/position entity)
-                           (entity/position target*)))
-        (float (/ (:body/width (:entity/body entity))  2))
-        (float (/ (:body/width (:entity/body target*)) 2)))
+(defn- in-range? [body target-body maxrange]
+  (< (- (float (v/distance (:body/position body)
+                           (:body/position target-body)))
+        (float (/ (:body/width body)  2))
+        (float (/ (:body/width target-body) 2)))
      (float maxrange)))
 
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
@@ -28,33 +27,35 @@
        (seq (filter #(effect/applicable? % effect-ctx) entity-effects))))
 
 (defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _world]
-  (in-range? @source @target maxrange))
+  (in-range? (:entity/body @source)
+             (:entity/body @target)
+             maxrange))
 
 (defn handle [[_ {:keys [maxrange entity-effects]}]
               {:keys [effect/source effect/target] :as effect-ctx}
               _world]
-  (let [source* @source
-        target* @target]
-    (if (in-range? source* target* maxrange)
-      [[:tx/spawn-line {:start (start-point source* target*)
-                        :end (entity/position target*)
+  (let [body        (:entity/body @source)
+        target-body (:entity/body @target)]
+    (if (in-range? body target-body maxrange)
+      [[:tx/spawn-line {:start (start-point body target-body)
+                        :end (:body/position target-body)
                         :duration 0.05
                         :color [1 0 0 0.75]
                         :thick? true}]
        [:tx/effect effect-ctx entity-effects]]
       [[:tx/audiovisual
-        (end-point source* target* maxrange)
+        (end-point body target-body maxrange)
         :audiovisuals/hit-ground]])))
 
 (defn draw [[_ {:keys [maxrange]}]
             {:keys [effect/source effect/target]}
             _ctx]
   (when target
-    (let [source* @source
-          target* @target]
+    (let [body        (:entity/body @source)
+          target-body (:entity/body @target)]
       [[:draw/line
-        (start-point source* target*)
-        (end-point source* target* maxrange)
-        (if (in-range? source* target* maxrange)
+        (start-point body target-body)
+        (end-point body target-body maxrange)
+        (if (in-range? body target-body maxrange)
           [1 0 0 0.5]
           [1 1 0 0.5])]])))

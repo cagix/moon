@@ -1,6 +1,5 @@
 (ns cdq.effects.target.damage
-  (:require [cdq.entity :as entity]
-            [cdq.entity.stats]
+  (:require [cdq.entity.stats]
             [cdq.stats :as stats]
             [clojure.rand :refer [rand-int-between]]))
 
@@ -68,5 +67,5 @@
                            0)]
        [[:tx/assoc-in target [:creature/stats :entity/hp 0] new-hp-val]
         [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
-        [:tx/audiovisual (entity/position target*) :audiovisuals/damage]
+        [:tx/audiovisual (:body/position (:entity/body target*)) :audiovisuals/damage]
         [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]]))))

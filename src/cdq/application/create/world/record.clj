@@ -1,6 +1,5 @@
 (ns cdq.application.create.world.record
-  (:require [cdq.entity :as entity]
-            [cdq.entity.faction :as faction]
+  (:require [cdq.entity.faction :as faction]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
@@ -151,8 +150,9 @@
                      (atom (create-grid-cell position (cell-movement position))))))
 
 (defn- update-entity! [{:keys [grid cell-w cell-h]} eid]
-  (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
-        [x y] (entity/position entity)
+  (let [{:keys [cdq.content-grid/content-cell
+                entity/body]} @eid
+        [x y] (:body/position body)
         new-cell (get grid [(int (/ x cell-w))
                             (int (/ y cell-h))])]
     (when-not (= content-cell new-cell)

@@ -1,6 +1,5 @@
 (ns cdq.entity.temp-modifier
-  (:require [cdq.entity :as entity]
-            [cdq.timer :as timer]))
+  (:require [cdq.timer :as timer]))
 
 (defn tick
   [{:keys [modifiers counter]}
@@ -11,4 +10,4 @@
      [:tx/mod-remove eid modifiers]]))
 
 (defn draw [_ entity _ctx]
-  [[:draw/filled-circle (entity/position entity) 0.5 [0.5 0.5 0.5 0.4]]])
+  [[:draw/filled-circle (:body/position (:entity/body entity)) 0.5 [0.5 0.5 0.5 0.4]]])

@@ -1,8 +1,6 @@
 (ns cdq.tx.spawn-entity
   (:require [cdq.creature :as creature]
             [cdq.effect :as effect]
-            [cdq.entity :as entity]
-            [cdq.entity.body :as body]
             [cdq.stats :as stats]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -39,14 +37,7 @@
   (when-let [f (create!-fns k)]
     (f v eid world)))
 
-(q/defrecord Entity [entity/body]
-  entity/Entity
-  (position [_]
-    (:body/position body))
-
-  (distance [_ other-entity]
-    (body/distance body
-                   (:entity/body other-entity))))
+(q/defrecord Entity [entity/body])
 
 (extend-type Entity
   creature/Skills

@@ -6,7 +6,8 @@
 (defprotocol Body
   (overlaps? [_ other-body])
   (touched-tiles [_])
-  (distance [_ other-body]))
+  (distance [_ other-body])
+  (direction [_ other-body]))
 
 (q/defrecord RBody [body/position
                     body/width
@@ -24,7 +25,11 @@
 
   (distance [body other-body]
     (v/distance (:body/position body)
-                (:body/position other-body))))
+                (:body/position other-body)))
+
+  (direction [body other-body]
+    (v/direction (:body/position body)
+                 (:body/position other-body))))
 
 (defn create
   [{[x y] :position

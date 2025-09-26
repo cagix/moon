@@ -1,6 +1,5 @@
 (ns cdq.application.render.update-potential-fields
-  (:require [cdq.entity :as entity]
-            [cdq.world.grid.cell :as cell]
+  (:require [cdq.world.grid.cell :as cell]
             [gdl.position :as position]
             [cdq.world.grid :as grid]))
 
@@ -26,7 +25,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(mapv int (entity/position @%)) entities)
+            (zipmap (map #(mapv int (:body/position (:entity/body @%))) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -86,7 +85,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(mapv int (entity/position @%)) entities)
+    (zipmap (map #(mapv int (:body/position (:entity/body @%))) entities)
             entities)))
 
 (defn- tick! [pf-cache grid faction entities max-iterations]

@@ -1,7 +1,7 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.creature :as creature]
             [cdq.effect :as effect]
-            [cdq.entity :as entity]
+            [cdq.entity.body :as body]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [gdl.math.vector2 :as v]))
@@ -35,8 +35,8 @@
     {:effect/source eid
      :effect/target target
      :effect/target-direction (when target
-                                (v/direction (entity/position entity)
-                                             (entity/position @target)))}))
+                                (body/direction (:entity/body entity)
+                                                (:entity/body @target)))}))
 
 (defn tick [_ eid world]
   (let [effect-ctx (npc-effect-ctx world eid)]

@@ -1,5 +1,4 @@
-(ns cdq.effects.target.audiovisual
-  (:require [cdq.entity :as entity]))
+(ns cdq.effects.target.audiovisual)
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)
@@ -8,4 +7,4 @@
   false)
 
 (defn handle [[_ audiovisual] {:keys [effect/target]} _world]
-  [[:tx/audiovisual (entity/position @target) audiovisual]])
+  [[:tx/audiovisual (:body/position (:entity/body @target)) audiovisual]])

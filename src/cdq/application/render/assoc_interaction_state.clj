@@ -1,18 +1,19 @@
 (ns cdq.application.render.assoc-interaction-state
   (:require [cdq.creature :as creature]
-            [cdq.entity :as entity]
+            [cdq.entity.body :as body]
             [cdq.input :as input]
             [cdq.stage :as stage]
             [gdl.math.vector2 :as v]))
 
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
   (let [target-position (or (and mouseover-eid
-                                 (entity/position @mouseover-eid))
+                                 (:body/position (:entity/body @mouseover-eid)))
                             world-mouse-position)]
     {:effect/source player-eid
      :effect/target mouseover-eid
      :effect/target-position target-position
-     :effect/target-direction (v/direction (entity/position @player-eid) target-position)}))
+     :effect/target-direction (v/direction (:body/position (:entity/body @player-eid))
+                                           target-position)}))
 
 (defn- interaction-state
   [stage
@@ -28,7 +29,8 @@
         (:entity/clickable @mouseover-eid))
    [:interaction-state/clickable-mouseover-eid
     {:clicked-eid mouseover-eid
-     :in-click-range? (< (entity/distance @player-eid @mouseover-eid)
+     :in-click-range? (< (body/distance (:entity/body @player-eid)
+                                        (:entity/body @mouseover-eid))
                          (:entity/click-distance-tiles @player-eid))}]
 
    :else

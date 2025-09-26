@@ -1,6 +1,5 @@
 (ns cdq.potential-fields.movement
-  (:require [cdq.entity :as entity]
-            [cdq.entity.body :as body]
+  (:require [cdq.entity.body :as body]
             [cdq.entity.faction :as faction]
             [gdl.position :as position]
             [cdq.world.grid :as grid]
@@ -92,12 +91,12 @@
          (= cell (first cells)))))
 
 (defn find-movement-direction [grid eid]
-  (let [position (entity/position @eid)
+  (let [position (:body/position (:entity/body @eid))
         own-cell (grid (mapv int position))
         {:keys [target-entity target-cell]} (find-next-cell grid eid own-cell)]
     (cond
      target-entity
-     (v/direction position (entity/position @target-entity))
+     (v/direction position (:body/position (:entity/body @target-entity)))
 
      (nil? target-cell)
      nil
