@@ -1,4 +1,4 @@
-(ns cdq.render.draw-on-world-viewport
+(ns cdq.application.render.draw-on-world-viewport
   (:require [cdq.ctx :as ctx]
             [cdq.effects.target-all :as target-all]
             [cdq.effects.target-entity :as target-entity]
@@ -350,13 +350,8 @@
           (let [{:keys [x y width height]} (geom/circle->outer-rectangle circle)]
             [:draw/rectangle x y width height [0 0 1 1]])))))
 
-; TODO what do I need from ctx?
-; select-keys ?
-; see where main ctx gets passed
-; check which keys required
-; select keys
-(defn do! [{:keys [ctx/graphics]
-            :as ctx}]
+(defn- do!* [{:keys [ctx/graphics]
+              :as ctx}]
   (doseq [f [
              draw-tile-grid
              draw-cell-debug
@@ -365,3 +360,11 @@
              highlight-mouseover-tile
              ]]
     (graphics/handle-draws! graphics (f ctx))))
+
+(defn do!
+  [{:keys [ctx/graphics]
+    :as ctx}]
+  (graphics/draw-on-world-viewport! graphics
+                                    (fn []
+                                      (do!* ctx)))
+  ctx)

@@ -27,7 +27,9 @@
                       cdq.application.render.check-open-debug/do!
                       cdq.application.render.assoc-active-entities/do!
                       cdq.application.render.set-camera-on-player/do!
-                      cdq.application.render.draw-game/do!
+                      cdq.application.render.clear-screen/do!
+                      cdq.application.render.draw-world-map/do!
+                      cdq.application.render.draw-on-world-viewport/do!
                       cdq.application.render.assoc-interaction-state/do!
                       cdq.application.render.set-cursor/do!
                       cdq.application.render.player-state-handle-input/do!

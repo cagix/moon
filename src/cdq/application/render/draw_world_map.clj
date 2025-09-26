@@ -1,13 +1,6 @@
-(ns cdq.application.render.draw-game
+(ns cdq.application.render.draw-world-map
   (:require [cdq.graphics :as graphics]
-            [cdq.world :as world]
-            [com.badlogic.gdx.graphics.color :as color]
-            [cdq.render.draw-on-world-viewport :as draw-on-world-viewport]))
-
-(defn- clear-screen!
-  [{:keys [ctx/graphics] :as ctx}]
-  (graphics/clear! graphics color/black)
-  ctx)
+            [cdq.world :as world]))
 
 (defn- tile-color-setter
   [{:keys [ray-blocked?
@@ -55,7 +48,7 @@
  2432
  )
 
-(defn- draw-world-map!
+(defn do!
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
@@ -70,17 +63,3 @@
                               :visible-tile-color   [1 1 1 1]
                               :invisible-tile-color [0 0 0 1]}))
   ctx)
-
-(defn- draw-on-world-viewport!
-  [{:keys [ctx/graphics]
-    :as ctx}]
-  (graphics/draw-on-world-viewport! graphics
-                                    (fn []
-                                      (draw-on-world-viewport/do! ctx)))
-  ctx)
-
-(defn do! [ctx]
-  (-> ctx
-      clear-screen!
-      draw-world-map!
-      draw-on-world-viewport!))
