@@ -4,21 +4,22 @@
           :foreground-fps 60
           :mac {:glfw-async? true
                 :taskbar-icon "icon.png"}}
- :listener {:create  [cdq.application.create.record/do!
-                      cdq.application.create.validation/do!
-                      cdq.application.create.editor/do!
-                      cdq.ui.editor.window/do!
-                      cdq.application.create.world.info/do!
-                      cdq.application.create.handle-txs/do!
-                      cdq.application.create.db/do!
-                      cdq.application.create.vis-ui/do!
-                      cdq.application.create.graphics/do!
-                      cdq.application.create.stage/do!
-                      cdq.application.create.input/do!
-                      cdq.application.create.audio/do!
-                      cdq.application.create.remove-files/do!
-                      cdq.application.create.world/do!
-                      cdq.application.create.reset-game-state/do!]
+ :listener {:create  [cdq.application.create.record/do!     ; cdq.ctx/create
+                      cdq.application.create.validation/do! ; cdq.ctx/create
+                      cdq.application.create.editor/do!     ; defmethod scene2d/build
+                      cdq.ui.editor.window/do!              ; defmethod scene2d/build
+                      cdq.application.create.world.info/do! ; cdq.info
+                      cdq.application.create.handle-txs/do! ; cdq.ctx
+                      cdq.application.create.db/do!         ; cdq.db
+                      cdq.application.create.vis-ui/do!     ; com.kotcrab.vis.ui/create ?
+                      cdq.application.create.graphics/do!   ; cdq.graphics/create
+                      cdq.application.create.stage/do!      ; cdq.stage/create
+                      cdq.application.create.input/do! ; cdq.input/create
+                      cdq.application.create.audio/do! ; cdq.audio/create
+                      cdq.application.create.remove-files/do! ; cdq.files/dissoc
+                      cdq.application.create.world/do!   ; cdq.world/create !?
+                      cdq.application.create.reset-game-state/do!  ; ??
+                      ]
             :dispose cdq.application.dispose/do!
             :render  [cdq.application.render.try-fetch-state-ctx/do!
                       cdq.application.render.validate/do!
