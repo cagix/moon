@@ -3,8 +3,6 @@
             [cdq.entity.state :as state]
             [cdq.impl.content-grid]
             [cdq.impl.grid]
-            [cdq.potential-fields.movement]
-            [cdq.potential-fields.update]
             [cdq.world.grid.cell :as cell]
             [cdq.world :as world]
             [gdl.math.vector2 :as v]
@@ -62,9 +60,6 @@
 
 (defrecord World []
   world/Update
-  (update-potential-fields! [world]
-    (cdq.potential-fields.update/do! world))
-
   (update-time [{:keys [world/max-delta]
                  :as world}
                 delta-ms]
@@ -108,10 +103,6 @@
     (not (blocked? raycaster
                    (:body/position (:entity/body source))
                    (:body/position (:entity/body target)))))
-
-  world/MovementAI
-  (find-movement-direction [{:keys [world/grid]} eid]
-    (cdq.potential-fields.movement/find-movement-direction grid eid))
 
   disposable/Disposable
   (dispose! [{:keys [world/tiled-map]}]

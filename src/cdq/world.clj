@@ -6,9 +6,6 @@
 (defprotocol World
   (active-eids [_]))
 
-(defprotocol MovementAI
-  (find-movement-direction [_ eid]))
-
 (defprotocol RayCaster
   (ray-blocked? [_ start target])
   (path-blocked? [_ start target path-w])
@@ -22,5 +19,4 @@
                 [_ eid event params]))
 
 (defprotocol Update
-  (update-potential-fields! [_])
   (update-time [_ delta-ms]))
