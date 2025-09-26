@@ -147,7 +147,18 @@
                                               [:tx/effect
                                                {:effect/source source
                                                 :effect/target target}
-                                               entity-effects]]))))}
+                                               entity-effects]]))))
+
+                        :draw (fn [_
+                                   {:keys [effect/source]}
+                                   {:keys [ctx/world]}]
+                                (let [{:keys [world/active-entities]} world
+                                      source* @source]
+                                  (for [target* (map deref (target-all/affected-targets active-entities world source*))]
+                                    [:draw/line
+                                     (:body/position (:entity/body source*)) #_(start-point source* target*)
+                                     (:body/position (:entity/body target*))
+                                     [1 0 0 0.5]])))}
 
    :effects/target-entity {:applicable? (fn [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
                                           (and target
@@ -168,7 +179,20 @@
                                           [:tx/effect effect-ctx entity-effects]]
                                          [[:tx/audiovisual
                                            (target-entity/end-point source* target* maxrange)
-                                           :audiovisuals/hit-ground]])))}
+                                           :audiovisuals/hit-ground]])))
+
+                           :draw (fn [[_ {:keys [maxrange]}]
+                                      {:keys [effect/source effect/target]}
+                                      _ctx]
+                                   (when target
+                                     (let [source* @source
+                                           target* @target]
+                                       [[:draw/line
+                                         (target-entity/start-point source* target*)
+                                         (target-entity/end-point source* target* maxrange)
+                                         (if (target-entity/in-range? source* target* maxrange)
+                                           [1 0 0 0.5]
+                                           [1 1 0 0.5])]])))}
 
    :effects.target/audiovisual {:applicable? (fn [_ {:keys [effect/target]}]
                                                target)
@@ -267,4 +291,9 @@
    :useful? (fn [{k 0 :as component} effect-ctx world]
               (if-let [f (:useful? (k->fn k))]
                 (f component effect-ctx world)
-                true))})
+                true))
+
+   :draw (fn [{k 0 :as component} effect-ctx ctx]
+           (if-let [f (:draw (k->fn k))]
+             (f component effect-ctx ctx)
+             nil))})

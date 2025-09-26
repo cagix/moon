@@ -1,6 +1,5 @@
 (ns cdq.entity.state.active-skill
-  (:require [cdq.effects.target-all :as target-all]
-            [cdq.effects.target-entity :as target-entity]
+  (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.stats :as stats]
@@ -27,46 +26,10 @@
               (not (zero? (:skill/cost skill))))
      [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
-(defn- render-target-entity
-  [[_ {:keys [maxrange]}]
-   {:keys [effect/source effect/target]}
-   _ctx]
-  (when target
-    (let [source* @source
-          target* @target]
-      [[:draw/line
-        (target-entity/start-point source* target*)
-        (target-entity/end-point source* target* maxrange)
-        (if (target-entity/in-range? source* target* maxrange)
-          [1 0 0 0.5]
-          [1 1 0 0.5])]])))
-
-(defn- render-target-all
-  [_
-   {:keys [effect/source]}
-   {:keys [ctx/world]}]
-  (let [{:keys [world/active-entities]} world
-        source* @source]
-    (for [target* (map deref (target-all/affected-targets active-entities world source*))]
-      [:draw/line
-       (:body/position (:entity/body source*)) #_(start-point source* target*)
-       (:body/position (:entity/body target*))
-       [1 0 0 0.5]])))
-
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48
         image-width 32]
     (/ (/ image-width tile-size) 2)))
-
-(defn- render-effect [[k v] effect-ctx ctx]
-  (case k
-    :effects/target-entity (render-target-entity [k v] effect-ctx ctx)
-    :effects/target-all    (render-target-all    [k v] effect-ctx ctx)
-    nil
-    ))
-
-(defn- render-active-effect [ctx effect-ctx effect]
-  (mapcat #(render-effect % effect-ctx ctx) effect))
 
 (defn- draw-skill-image
   [texture-region entity [x y] action-counter-ratio]
@@ -95,6 +58,5 @@
                               entity
                               (entity/position entity)
                               (timer/ratio (:world/elapsed-time world) counter))
-            (render-active-effect ctx
-                                  effect-ctx ; update-effect-ctx?
-                                  effects))))
+            (mapcat #(effect/draw % effect-ctx ctx)  ; update-effect-ctx here too ?
+                    effects))))
