@@ -2,8 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
-            [cdq.ui.editor.window]
-            [cdq.ui.widget :as widget]
             [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
@@ -24,17 +22,20 @@
                             :db db
                             :graphics graphics
                             :property-type property-type
-                            :clicked-id-fn (fn [_actor id {:keys [ctx/db] :as ctx}]
-                                             (cdq.ui.editor.window/add-to-stage!
-                                              ctx
-                                              (db/get-raw db id)))})))})})
+                            :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
+                                             (stage/add! stage
+                                                         (scene2d/build
+                                                          {:actor/type :actor.type/editor-window
+                                                           :ctx ctx
+                                                           :property (db/get-raw db id)})))})))})})
 
 (def ^:private ctx-data-viewer
   {:label "Ctx Data"
    :items [{:label "Show data"
             :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                        (stage/add! stage (widget/data-viewer
-                                           {:title "Context"
+                        (stage/add! stage (scene2d/build
+                                           {:actor/type :actor.type/data-viewer
+                                            :title "Context"
                                             :data ctx
                                             :width 500
                                             :height 500})))}]})

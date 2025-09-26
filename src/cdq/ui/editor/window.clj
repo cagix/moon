@@ -18,6 +18,8 @@
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
+(defn do! [ctx] ctx)
+
 (defn- with-window-close [f]
   (fn [actor ctx]
     (try
@@ -72,12 +74,12 @@
      :cell-defaults {:pad 5}
      :pack? true}))
 
-(defn add-to-stage!
-  [{:keys [ctx/db
-           ctx/stage]
-    :as ctx}
-   property]
-  (let [schemas (:db/schemas db)
+(defmethod scene2d/build :actor.type/editor-window
+  [{:keys [ctx
+           property]}]
+  (let [{:keys [ctx/db
+                ctx/stage]} ctx
+        schemas (:db/schemas db)
         schema (get schemas (property/type property))
         ; build for get-widget-value
         ; or find a way to find the widget from the context @ save button
@@ -87,8 +89,7 @@
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]
-    (stage/add! stage (scene2d/build actor)))
-  nil)
+    (scene2d/build actor)))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -103,8 +104,11 @@
                              (group/find-actor "cdq.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (actor/remove! window)
-    (add-to-stage! ctx property)
-    nil))
+    (stage/add! stage
+                (scene2d/build
+                 {:actor/type :actor.type/editor-window
+                  :ctx ctx
+                  :property property}))))
 
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
