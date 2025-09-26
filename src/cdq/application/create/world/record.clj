@@ -1,6 +1,5 @@
 (ns cdq.application.create.world.record
   (:require [cdq.application.create.world.info]
-            [cdq.entity.state :as state]
             [cdq.impl.content-grid]
             [cdq.impl.grid]
             [cdq.world.grid.cell :as cell]
@@ -8,8 +7,7 @@
             [gdl.math.vector2 :as v]
             [gdl.grid2d :as g2d]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [com.badlogic.gdx.maps.tiled :as tiled]
-            [reduce-fsm :as fsm])
+            [com.badlogic.gdx.maps.tiled :as tiled])
   (:import (gdl.math RayCaster)))
 
 (defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]
@@ -59,35 +57,6 @@
       [arr width height])))
 
 (defrecord World []
-  world/Update
-  (update-time [{:keys [world/max-delta]
-                 :as world}
-                delta-ms]
-    (let [delta-ms (min delta-ms max-delta)]
-      (-> world
-          (assoc :world/delta-time delta-ms)
-          (update :world/elapsed-time + delta-ms))))
-
-  world/FSMs
-  (handle-event [world eid event]
-    (world/handle-event world eid event nil))
-
-  (handle-event [world eid event params]
-    (let [fsm (:entity/fsm @eid)
-          _ (assert fsm)
-          old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
-          new-state-k (:state new-fsm)]
-      (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
-                              [k (k @eid)])
-              new-state-obj [new-state-k (state/create [new-state-k params] eid world)]]
-          [[:tx/assoc       eid :entity/fsm new-fsm]
-           [:tx/assoc       eid new-state-k (new-state-obj 1)]
-           [:tx/dissoc      eid old-state-k]
-           [:tx/state-exit  eid old-state-obj]
-           [:tx/state-enter eid new-state-obj]]))))
-
   world/InfoText
   (info-text [world entity]
     (cdq.application.create.world.info/info-text world entity))

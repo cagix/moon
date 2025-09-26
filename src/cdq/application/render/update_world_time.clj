@@ -1,6 +1,13 @@
 (ns cdq.application.render.update-world-time
-  (:require [cdq.graphics :as graphics]
-            [cdq.world :as world]))
+  (:require [cdq.graphics :as graphics]))
+
+(defn- update-world-time [{:keys [world/max-delta]
+                           :as world}
+                          delta-ms]
+  (let [delta-ms (min delta-ms max-delta)]
+    (-> world
+        (assoc :world/delta-time delta-ms)
+        (update :world/elapsed-time + delta-ms))))
 
 (defn do!
   [{:keys [ctx/graphics
@@ -8,4 +15,4 @@
     :as ctx}]
   (if (:world/paused? (:ctx/world ctx))
     ctx
-    (update ctx :ctx/world world/update-time (graphics/delta-time graphics))))
+    (update ctx :ctx/world update-world-time (graphics/delta-time graphics))))
