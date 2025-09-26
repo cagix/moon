@@ -1,300 +1,65 @@
 (ns cdq.application.create.handle-txs
-  (:require [cdq.audio :as audio]
-            [cdq.ctx]
-            [cdq.db :as db]
-            [cdq.effect :as effect]
-            [cdq.entity.inventory :as inventory]
-            [cdq.entity.state :as state]
-            [cdq.graphics :as graphics]
-            [cdq.stage]
-            [cdq.stats :as stats]
-            [cdq.timer :as timer]
-            [cdq.world :as world]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
-            [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.repl]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [gdl.math.vector2 :as v]
-            [gdl.tx-handler :as tx-handler]
-            [gdl.utils :as utils]))
+  (:require [cdq.ctx]
+            [gdl.tx-handler :as tx-handler]))
 
 (def ^:private txs-fn-map
-  {
-   :tx/sound (fn [{:keys [ctx/audio]} sound-name]
-               (audio/play-sound! audio sound-name)
-               nil)
+  '{
+    :tx/sound cdq.tx.sound/do!
 
-   :tx/assoc (fn [_ctx eid k value]
-               (swap! eid assoc k value)
-               nil)
-
-   :tx/assoc-in (fn [_ctx eid ks value]
-                  (swap! eid assoc-in ks value)
-                  nil)
-
-   :tx/dissoc (fn [_ctx eid k]
-                (swap! eid dissoc k)
+    :tx/assoc (fn [_ctx eid k value]
+                (swap! eid assoc k value)
                 nil)
 
-   :tx/mark-destroyed (fn [_ctx eid]
-                        (swap! eid assoc :entity/destroyed? true)
-                        nil)
+    :tx/assoc-in (fn [_ctx eid ks value]
+                   (swap! eid assoc-in ks value)
+                   nil)
 
-   :tx/mod-add (fn [_ctx eid modifiers]
-                 (swap! eid update :creature/stats stats/add modifiers)
+    :tx/dissoc (fn [_ctx eid k]
+                 (swap! eid dissoc k)
                  nil)
-
-   :tx/mod-remove (fn [_ctx eid modifiers]
-                    (swap! eid update :creature/stats stats/remove-mods modifiers)
-                    nil)
-
-   :tx/pay-mana-cost (fn [_ctx eid cost]
-                       (swap! eid update :creature/stats stats/pay-mana-cost cost)
-                       nil)
-
-   :tx/set-cooldown (fn [{:keys [ctx/world]} eid skill]
-                      (swap! eid assoc-in
-                             [:entity/skills (:property/id skill) :skill/cooling-down?]
-                             (timer/create (:world/elapsed-time world) (:skill/cooldown skill)))
-                      nil)
-
-   :tx/add-text-effect (fn [{:keys [ctx/world]} eid text duration]
-                         [[:tx/assoc
-                           eid
-                           :entity/string-effect
-                           (if-let [existing (:entity/string-effect @eid)]
-                             (-> existing
-                                 (update :text str "\n" text)
-                                 (update :counter timer/increment duration))
-                             {:text text
-                              :counter (timer/create (:world/elapsed-time world) duration)})]])
-
-   :tx/add-skill (fn [_ctx eid {:keys [property/id] :as skill}]
-                   {:pre [(not (contains? (:entity/skills @eid) id))]}
-                   (swap! eid update :entity/skills assoc id skill)
-                   (if (:entity/player? @eid)
-                     [[:tx/player-add-skill skill]]
-                     nil))
-
-   #_(defn remove-skill [_ctx eid {:keys [property/id] :as skill}]
-       {:pre [(contains? (:entity/skills @eid) id)]}
-       (swap! eid update :entity/skills dissoc id)
-       (when (:entity/player? @eid)
-         (remove-skill! ctx skill)))
-
-   :tx/set-item (fn [_ctx eid cell item]
-                  (let [entity @eid
-                        inventory (:entity/inventory entity)]
-                    (assert (and (nil? (get-in inventory cell))
-                                 (inventory/valid-slot? cell item)))
-                    (swap! eid assoc-in (cons :entity/inventory cell) item)
-                    (when (inventory/applies-modifiers? cell)
-                      (swap! eid update :creature/stats stats/add (:entity/modifiers item)))
-                    (if (:entity/player? entity)
-                      [[:tx/player-set-item cell item]]
-                      nil)))
-
-   :tx/remove-item (fn [_ctx eid cell]
-                     (let [entity @eid
-                           item (get-in (:entity/inventory entity) cell)]
-                       (assert item)
-                       (swap! eid assoc-in (cons :entity/inventory cell) nil)
-                       (when (inventory/applies-modifiers? cell)
-                         (swap! eid update :creature/stats stats/remove-mods (:entity/modifiers item)))
-                       (if (:entity/player? entity)
-                         [[:tx/player-remove-item cell]]
-                         nil)))
-
-   :tx/pickup-item (fn [_ctx eid item]
-                     (inventory/assert-valid-item? item)
-                     (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
-                       (assert cell)
-                       (assert (or (inventory/stackable? item cell-item)
-                                   (nil? cell-item)))
-                       (if (inventory/stackable? item cell-item)
-                         (do
-                          #_(tx/stack-item ctx eid cell item))
-                         [[:tx/set-item eid cell item]])))
-
-   :tx/event (fn [{:keys [ctx/world]} & params]
-               (apply world/handle-event world params))
-
-   :tx/state-exit (fn [ctx eid [state-k state-v]]
-                    (state/exit [state-k state-v] eid ctx))
-
-   :tx/state-enter (fn [_ctx eid [state-k state-v]]
-                     (state/enter [state-k state-v] eid))
-
-   :tx/effect (fn [{:keys [ctx/world]} effect-ctx effects]
-                (mapcat #(effect/handle % effect-ctx world)
-                        (filter #(effect/applicable? % effect-ctx) effects)))
-
-   :tx/print-stacktrace (let[print-level 3
-                             print-depth 24]
-                          (fn [_ctx throwable]
-                            (binding [*print-level* print-level]
-                              (pretty-repl/pretty-pst throwable print-depth))
-                            nil))
-
-   :tx/show-error-window (fn [{:keys [ctx/stage]} throwable]
-                           (stage/add! stage (scene2d/build
-                                              {:actor/type :actor.type/window
-                                               :title "Error"
-                                               :rows [[{:actor {:actor/type :actor.type/label
-                                                                :label/text (binding [*print-level* 3]
-                                                                              (utils/with-err-str
-                                                                                (clojure.repl/pst throwable)))}}]]
-                                               :modal? true
-                                               :close-button? true
-                                               :close-on-escape? true
-                                               :center? true
-                                               :pack? true})))
-
-   :tx/player-add-skill (fn [{:keys [ctx/graphics
-                                     ctx/stage]}
-                             skill]
-                          (cdq.stage/add-skill! stage
-                                            {:skill-id (:property/id skill)
-                                             :texture-region (graphics/texture-region graphics (:entity/image skill))
-                                             :tooltip-text (fn [{:keys [ctx/world]}]
-                                                             (world/info-text world skill))})
-                          nil)
-
-   :tx/player-set-item (fn [{:keys [ctx/graphics
-                                    ctx/stage]}
-                            cell item]
-                         (cdq.stage/set-item! stage cell
-                                          {:texture-region (graphics/texture-region graphics (:entity/image item))
-                                           :tooltip-text (fn [{:keys [ctx/world]}]
-                                                           (world/info-text world item))})
+    :tx/mark-destroyed (fn [_ctx eid]
+                         (swap! eid assoc :entity/destroyed? true)
                          nil)
-
-   :tx/player-remove-item (fn [{:keys [ctx/stage]}
-                               cell]
-                            (cdq.stage/remove-item! stage cell)
-                            nil)
-
-   :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
-                                  (cdq.stage/toggle-inventory-visible! stage)
-                                  nil)
-
-   :tx/show-message (fn [{:keys [ctx/stage]} message]
-                      (cdq.stage/show-text-message! stage message)
-                      nil)
-
-   :tx/show-modal (fn [{:keys [ctx/stage]} opts]
-                    (cdq.stage/show-modal-window! stage (com.badlogic.gdx.scenes.scene2d.stage/viewport stage) opts)
-                    nil)
-
-   :tx/audiovisual (fn [{:keys [ctx/db]} position audiovisual]
-                     (let [{:keys [tx/sound
-                                   entity/animation]} (if (keyword? audiovisual)
-                                                        (db/build db audiovisual)
-                                                        audiovisual)]
-                       [[:tx/sound sound]
-                        [:tx/spawn-effect
-                         position
-                         {:entity/animation animation
-                          :entity/delete-after-animation-stopped? true}]]))
-
-   :tx/spawn-alert (fn [{:keys [ctx/world]} position faction duration]
-                     [[:tx/spawn-effect
-                       position
-                       {:entity/alert-friendlies-after-duration
-                        {:counter (timer/create (:world/elapsed-time world) duration)
-                         :faction faction}}]])
-
-   :tx/spawn-line (fn [_ctx {:keys [start end duration color thick?]}]
-                    [[:tx/spawn-effect
-                      start
-                      {:entity/line-render {:thick? thick? :end end :color color}
-                       :entity/delete-after-duration duration}]])
-
-   :tx/move-entity (fn [{:keys [ctx/world]} eid body direction rotate-in-movement-direction?]
-                     (let [{:keys [world/content-grid
-                                   world/grid]} world]
-                       (content-grid/position-changed! content-grid eid)
-                       (grid/remove-from-touched-cells! grid eid)
-                       (grid/set-touched-cells! grid eid)
-                       (when (:body/collides? (:entity/body @eid))
-                         (grid/remove-from-occupied-cells! grid eid)
-                         (grid/set-occupied-cells! grid eid)))
-                     (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
-                     (when rotate-in-movement-direction?
-                       (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
-                     nil)
-
-   :tx/spawn-projectile (fn [_ctx
-                             {:keys [position direction faction]}
-                             {:keys [entity/image
-                                     projectile/max-range
-                                     projectile/speed
-                                     entity-effects
-                                     projectile/size
-                                     projectile/piercing?] :as projectile}]
-                          [[:tx/spawn-entity
-                            {:entity/body {:position position
-                                           :width size
-                                           :height size
-                                           :z-order :z-order/flying
-                                           :rotation-angle (v/angle-from-vector direction)}
-                             :entity/movement {:direction direction
-                                               :speed speed}
-                             :entity/image image
-                             :entity/faction faction
-                             :entity/delete-after-duration (/ max-range speed)
-                             :entity/destroy-audiovisual :audiovisuals/hit-wall
-                             :entity/projectile-collision {:entity-effects entity-effects
-                                                           :piercing? piercing?}}]])
-
-   :tx/spawn-effect (fn [{:keys [ctx/world]}
-                         position
-                         components]
-                      [[:tx/spawn-entity
-                        (assoc components
-                               :entity/body (assoc (:world/effect-body-props world) :position position))]])
-
-   :tx/spawn-item (fn [_ctx position item]
-                    [[:tx/spawn-entity
-                      {:entity/body {:position position
-                                     :width 0.75
-                                     :height 0.75
-                                     :z-order :z-order/on-ground}
-                       :entity/image (:entity/image item)
-                       :entity/item item
-                       :entity/clickable {:type :clickable/item
-                                          :text (:property/pretty-name item)}}]])
-
-   ; # :z-order/flying has no effect for now
-   ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-   ; because using potential-field for z-order/ground
-   ; -> would have to add one more potential-field for each faction for z-order/flying
-   ; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-   ; * they could also go over ground units and not collide with them
-   ; ( a test showed then flying OVER player entity )
-   ; -> so no flying units for now
-   :tx/spawn-creature (fn [_ctx
-                           {:keys [position
-                                   creature-property
-                                   components]}]
-                        (assert creature-property)
-                        [[:tx/spawn-entity
-                          (-> creature-property
-                              (assoc :entity/body (let [{:keys [body/width body/height #_body/flying?]} (:entity/body creature-property)]
-                                                    {:position position
-                                                     :width  width
-                                                     :height height
-                                                     :collides? true
-                                                     :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)}))
-                              (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                              (utils/safe-merge components))]])
-
-   :tx/spawn-entity (fn [{:keys [ctx/world]} entity]
-                      (world/spawn-entity! world entity))
-   }
+    :tx/mod-add cdq.tx.mod-add/do!
+    :tx/mod-remove cdq.tx.mod-remove/do!
+    :tx/pay-mana-cost cdq.tx.pay-mana-cost/do!
+    :tx/set-cooldown cdq.tx.set-cooldown/do!
+    :tx/add-text-effect cdq.tx.add-text-effect/do!
+    :tx/add-skill cdq.tx.add-skill/do!
+    :tx/set-item cdq.tx.set-item/do!
+    :tx/remove-item cdq.tx.remove-item/do!
+    :tx/pickup-item cdq.tx.pickup-item/do!
+    :tx/event cdq.tx.event/do!
+    :tx/state-exit cdq.tx.state-exit/do!
+    :tx/state-enter cdq.tx.state-enter/do!
+    :tx/effect cdq.tx.effect/do!
+    :tx/print-stacktrace cdq.tx.print-stacktrace/do!
+    :tx/show-error-window        cdq.tx.stage/show-error-window!
+    :tx/player-add-skill         cdq.tx.stage/player-add-skill!
+    :tx/player-set-item          cdq.tx.stage/player-set-item!
+    :tx/player-remove-item       cdq.tx.stage/player-remove-item!
+    :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
+    :tx/show-message             cdq.tx.stage/show-message!
+    :tx/show-modal               cdq.tx.stage/show-modal!
+    :tx/audiovisual cdq.tx.audiovisual/do!
+    :tx/spawn-alert cdq.tx.spawn-alert/do!
+    :tx/spawn-line cdq.tx.spawn-line/do!
+    :tx/move-entity cdq.tx.move-entity/do!
+    :tx/spawn-projectile cdq.tx.spawn-projectile/do!
+    :tx/spawn-effect cdq.tx.spawn-effect/do!
+    :tx/spawn-item     cdq.tx.spawn-item/do!
+    :tx/spawn-creature cdq.tx.spawn-creature/do!
+    :tx/spawn-entity   cdq.tx.spawn-entity/do!
+    }
   )
+
+(alter-var-root #'txs-fn-map update-vals
+                (fn [form]
+                  (if (symbol? form)
+                    (let [avar (requiring-resolve form)]
+                      (assert avar form)
+                      avar)
+                    (eval form))))
 
 (defn do! [ctx]
   (extend-type (class ctx)
