@@ -5,7 +5,6 @@
   (update-vals
    '{:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick
      :entity/animation                       cdq.entity.animation/tick
-     :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/tick
      :entity/delete-after-duration           cdq.entity.delete-after-duration/tick
      :entity/movement                        cdq.entity.movement/tick
      :entity/projectile-collision            cdq.entity.projectile-collision/tick

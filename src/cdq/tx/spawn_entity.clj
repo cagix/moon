@@ -26,7 +26,6 @@
 (def ^:private create!-fns
   (update-vals '{:entity/fsm                             cdq.entity.fsm/create!
                  :entity/inventory                       cdq.entity.inventory/create!
-                 :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/create!
                  :entity/skills                          cdq.entity.skills/create!}
                (fn [sym]
                  (let [avar (requiring-resolve sym)]

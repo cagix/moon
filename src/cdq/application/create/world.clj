@@ -82,7 +82,6 @@
              [:entity/body :some]
              [:entity/image {:optional true} :some]
              [:entity/animation {:optional true} :some]
-             [:entity/delete-after-animation-stopped? {:optional true} :some]
              [:entity/alert-friendlies-after-duration {:optional true} :some]
              [:entity/line-render {:optional true} :some]
              [:entity/delete-after-duration {:optional true} :some]

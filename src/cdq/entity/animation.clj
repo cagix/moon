@@ -7,7 +7,8 @@
   (stopped? [_])
   (current-frame [_]))
 
-(defrecord RAnimation [frames frame-duration looping? cnt maxcnt]
+(defrecord RAnimation
+  [frames frame-duration looping? cnt maxcnt delete-after-stopped?]
   Animation
   (tick* [this delta]
     (let [maxcnt (float maxcnt)
@@ -29,17 +30,23 @@
 (defn create
   [{:keys [animation/frames
            animation/frame-duration
-           animation/looping?]}
+           animation/looping?
+           delete-after-stopped?]}
    _world]
+  (assert (not (and looping? delete-after-stopped?)))
   (map->RAnimation
    {:frames (vec frames)
     :frame-duration frame-duration
     :looping? looping?
     :cnt 0
-    :maxcnt (* (count frames) (float frame-duration))}))
+    :maxcnt (* (count frames) (float frame-duration))
+    :delete-after-stopped? delete-after-stopped?}))
 
 (defn tick [animation eid {:keys [world/delta-time]}]
-  [[:tx/assoc eid :entity/animation (tick* animation delta-time)]])
+  [[:tx/assoc eid :entity/animation (tick* animation delta-time)]
+   (when (and (:delete-after-stopped? animation)
+              (stopped? animation))
+     [:tx/mark-destroyed eid])])
 
 (defn draw [animation entity ctx]
   (image/draw (current-frame animation) entity ctx))

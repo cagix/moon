@@ -10,5 +10,4 @@
     [[:tx/sound sound]
      [:tx/spawn-effect
       position
-      {:entity/animation animation
-       :entity/delete-after-animation-stopped? true}]]))
+      {:entity/animation (assoc animation :delete-after-stopped? true)}]]))
