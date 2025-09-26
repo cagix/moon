@@ -7,6 +7,12 @@
             [gdl.utils :as utils]
             [clojure.set :as set]))
 
+(defn malli-form [[_ ks] schemas]
+  (schemas/create-map-schema schemas ks))
+
+(defn create-value [_ v db]
+  (schemas/build-values (:db/schemas db) v db))
+
 (def ^:private property-k-sort-order
   [:property/id
    :property/pretty-name

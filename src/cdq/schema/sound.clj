@@ -9,6 +9,12 @@
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
+(defn malli-form [_ _schemas]
+  :string)
+
+(defn create-value [_ v _db]
+  v)
+
 (declare sound-columns)
 
 (defn- rebuild! [table sound-name]
