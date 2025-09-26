@@ -2,6 +2,17 @@
   (:require [cdq.input :as input]
             [cdq.stats :as stats]))
 
+(defn create [eid movement-vector _world]
+  {:movement-vector movement-vector})
+
+(defn enter [{:keys [movement-vector]} eid]
+  [[:tx/assoc eid :entity/movement {:direction movement-vector
+                                    :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                               0)}]])
+
+(defn exit [_ eid _ctx]
+  [[:tx/dissoc eid :entity/movement]])
+
 (defn- speed [{:keys [creature/stats]}]
   (or (stats/get-stat-value stats :entity/movement-speed)
       0))
