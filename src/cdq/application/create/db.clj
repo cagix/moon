@@ -97,8 +97,7 @@
   [{:keys [schemas
            properties
            schema-fn-map]}]
-  (let [schema-fn-map @(requiring-resolve schema-fn-map)
-        schemas (update-vals (-> schemas io/resource slurp edn/read-string)
+  (let [schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
                                (with-meta schema (get schema-fn-map k))))
         schemas (map->Schemas schemas)
