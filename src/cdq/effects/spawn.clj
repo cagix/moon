@@ -12,3 +12,6 @@
                         :components {:entity/fsm {:fsm :fsms/npc
                                                   :initial-state :npc-idle}
                                      :entity/faction (:entity/faction @source)}}]])
+
+(defn info-text [[_ {:keys [property/pretty-name]}] _world]
+  (str "Spawns a " pretty-name))

@@ -1,4 +1,5 @@
-(ns cdq.effects.target.stun)
+(ns cdq.effects.target.stun
+  (:require [gdl.utils :as utils]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
@@ -6,3 +7,6 @@
 
 (defn handle [[_ duration] {:keys [effect/target]} _world]
   [[:tx/event target :stun duration]])
+
+(defn info-text [[_ duration] _world]
+  (str "Stuns for " (utils/readable-number duration) " seconds"))
