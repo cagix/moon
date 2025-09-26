@@ -70,7 +70,7 @@
 (defn- draw-clickable
   [{:keys [text]}
    {:keys [entity/body
-           entity/mouseover?] }
+           entity/mouseover?]}
    _ctx]
   (when (and mouseover? text)
     (let [[x y] (:body/position body)]
@@ -228,10 +228,7 @@
                               (entity/position entity)
                               (timer/ratio (:world/elapsed-time world) counter))
             (render-active-effect ctx
-                                  effect-ctx ; TODO !!!
-                                  ; !! FIXME !!
-                                  ; (update-effect-ctx effect-ctx)
-                                  ; - render does not need to update .. update inside active-skill
+                                  effect-ctx ; update-effect-ctx?
                                   effects))))
 
 (def ^:private render-layers
