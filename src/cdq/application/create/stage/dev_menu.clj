@@ -1,19 +1,98 @@
 (ns cdq.application.create.stage.dev-menu
-  (:require [cdq.application.create.stage.dev-menu.ctx-data-viewer :as ctx-data-viewer]
-            [cdq.application.create.stage.dev-menu.open-editor :as open-editor]
-            [cdq.application.create.stage.dev-menu.help-info-text :as help-info-text]
-            [cdq.application.create.stage.dev-menu.select-world :as select-world]
-            [cdq.application.create.stage.dev-menu.update-labels :as update-labels]))
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
+            [cdq.graphics :as graphics]
+            [cdq.ui.editor.window]
+            [cdq.ui.widget :as widget]
+            [clojure.string :as str]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.utils :as utils]))
+
+(defn ^:private open-editor [db]
+  {:label "Editor"
+   :items (for [property-type (sort (db/property-types db))]
+            {:label (str/capitalize (name property-type))
+             :on-click (fn [_actor {:keys [ctx/db
+                                           ctx/graphics
+                                           ctx/stage]}]
+                         (stage/add!
+                          stage
+                          (scene2d/build
+                           {:actor/type :actor.type/editor-overview-window
+                            :db db
+                            :graphics graphics
+                            :property-type property-type
+                            :clicked-id-fn (fn [_actor id {:keys [ctx/db] :as ctx}]
+                                             (cdq.ui.editor.window/add-to-stage!
+                                              ctx
+                                              (db/get-raw db id)))})))})})
+
+(def ^:private ctx-data-viewer
+  {:label "Ctx Data"
+   :items [{:label "Show data"
+            :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
+                        (stage/add! stage (widget/data-viewer
+                                           {:title "Context"
+                                            :data ctx
+                                            :width 500
+                                            :height 500})))}]})
+
+(def ^:private help-str
+  "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
+
+(def ^:private help-info-text
+  {:label "Help"
+   :items [{:label help-str}]})
+
+(def ^:private select-world
+  {:label "Select World"
+   :items (for [world-fn ["world_fns/vampire.edn"
+                          "world_fns/uf_caves.edn"
+                          "world_fns/modules.edn"]]
+            {:label (str "Start " world-fn)
+             :on-click (fn [actor ctx]
+                         (stage/set-ctx! (actor/get-stage actor)
+                                         (ctx/reset-game-state! ctx world-fn)))})})
+
+(def ^:private update-labels
+  [{:label "elapsed-time"
+    :update-fn (fn [ctx]
+                 (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
+    :icon "images/clock.png"}
+   {:label "FPS"
+    :update-fn (fn [ctx]
+                 (graphics/frames-per-second (:ctx/graphics ctx)))
+    :icon "images/fps.png"}
+   {:label "Mouseover-entity id"
+    :update-fn (fn [{:keys [ctx/world]}]
+                 (let [eid (:world/mouseover-eid world)]
+                   (when-let [entity (and eid @eid)]
+                     (:entity/id entity))))
+    :icon "images/mouseover.png"}
+   {:label "paused?"
+    :update-fn (comp :world/paused? :ctx/world)}
+   {:label "GUI"
+    :update-fn (fn [{:keys [ctx/graphics]}]
+                 (mapv int (:graphics/ui-mouse-position graphics)))}
+   {:label "World"
+    :update-fn (fn [{:keys [ctx/graphics]}]
+                 (mapv int (:graphics/world-mouse-position graphics)))}
+   {:label "Zoom"
+    :update-fn (fn [ctx]
+                 (graphics/camera-zoom (:ctx/graphics ctx)))
+    :icon "images/zoom.png"}])
 
 (defn create
   [db graphics]
   {:actor/type :actor.type/table
    :rows [[{:actor {:actor/type :actor.type/menu-bar
-                    :menus [ctx-data-viewer/menu
-                            (open-editor/menu db)
-                            help-info-text/menu
-                            select-world/menu]
-                    :update-labels (for [item update-labels/items]
+                    :menus [ctx-data-viewer
+                            (open-editor db)
+                            help-info-text
+                            select-world]
+                    :update-labels (for [item update-labels]
                                      (if (:icon item)
                                        (update item :icon #(get (:graphics/textures graphics) %))
                                        item))}
