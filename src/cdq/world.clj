@@ -24,6 +24,3 @@
 (defprotocol Update
   (update-potential-fields! [_])
   (update-time [_ delta-ms]))
-
-(defprotocol Entities
-  (spawn-entity! [_ entity]))

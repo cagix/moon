@@ -1,84 +1,18 @@
 (ns cdq.application.create.world.record
   (:require [cdq.application.create.world.info]
-            [cdq.creature :as creature]
-            [cdq.effect :as effect]
-            [cdq.entity :as entity]
-            [cdq.entity.body :as body]
             [cdq.entity.state :as state]
-            [cdq.stats :as stats]
             [cdq.impl.content-grid]
             [cdq.impl.grid]
-            [cdq.malli :as m]
             [cdq.potential-fields.movement]
             [cdq.potential-fields.update]
             [cdq.world.grid.cell :as cell]
             [cdq.world :as world]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
             [gdl.math.vector2 :as v]
             [gdl.grid2d :as g2d]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.maps.tiled :as tiled]
-            [qrecord.core :as q]
             [reduce-fsm :as fsm])
   (:import (gdl.math RayCaster)))
-
-(def ^:private create-fns
-  (update-vals '{:entity/animation             cdq.entity.animation/create
-                 :entity/body                  cdq.entity.body/create
-                 :entity/delete-after-duration cdq.entity.delete-after-duration/create
-                 :entity/projectile-collision  cdq.entity.projectile-collision/create
-                 :creature/stats               cdq.entity.stats/create}
-               (fn [sym]
-                 (let [avar (requiring-resolve sym)]
-                   (assert avar sym)
-                   avar))))
-
-(defn- create-component [[k v] world]
-  (if-let [f (create-fns k)]
-    (f v world)
-    v))
-
-(def ^:private create!-fns
-  (update-vals '{:entity/fsm                             cdq.entity.fsm/create!
-                 :entity/inventory                       cdq.entity.inventory/create!
-                 :entity/delete-after-animation-stopped? cdq.entity.delete-after-animation-stopped/create!
-                 :entity/skills                          cdq.entity.skills/create!}
-               (fn [sym]
-                 (let [avar (requiring-resolve sym)]
-                   (assert avar sym)
-                   avar))))
-
-(defn- after-create-component [[k v] eid world]
-  (when-let [f (create!-fns k)]
-    (f v eid world)))
-
-(q/defrecord Entity [entity/body]
-  entity/Entity
-  (position [_]
-    (:body/position body))
-
-  (distance [_ other-entity]
-    (body/distance body
-                   (:entity/body other-entity))))
-
-(extend-type Entity
-  creature/Skills
-  (skill-usable-state [entity
-                       {:keys [skill/cooling-down? skill/effects] :as skill}
-                       effect-ctx]
-    (cond
-     cooling-down?
-     :cooldown
-
-     (stats/not-enough-mana? (:creature/stats entity) skill)
-     :not-enough-mana
-
-     (not (seq (filter #(effect/applicable? % effect-ctx) effects)))
-     :invalid-params
-
-     :else
-     :usable)))
 
 (defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]
   (RayCaster/rayBlocked (double start-x)
@@ -127,34 +61,6 @@
       [arr width height])))
 
 (defrecord World []
-  world/Entities
-  (spawn-entity! [{:keys [world/content-grid
-                          world/entity-ids
-                          world/grid
-                          world/id-counter
-                          world/spawn-entity-schema]
-                   :as world}
-                  entity]
-    (m/validate-humanize spawn-entity-schema entity)
-    (let [entity (reduce (fn [m [k v]]
-                           (assoc m k (create-component [k v] world)))
-                         {}
-                         entity)
-          _ (assert (and (not (contains? entity :entity/id))))
-          entity (assoc entity :entity/id (swap! id-counter inc))
-          entity (merge (map->Entity {}) entity)
-          eid (atom entity)]
-      (let [id (:entity/id @eid)]
-        (assert (number? id))
-        (swap! entity-ids assoc id eid))
-      (content-grid/add-entity! content-grid eid)
-      ; https://github.com/damn/core/issues/58
-      ;(assert (valid-position? grid @eid))
-      (grid/set-touched-cells! grid eid)
-      (when (:body/collides? (:entity/body @eid))
-        (grid/set-occupied-cells! grid eid))
-      (mapcat #(after-create-component % eid world) @eid)))
-
   world/Update
   (update-potential-fields! [world]
     (cdq.potential-fields.update/do! world))
