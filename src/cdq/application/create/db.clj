@@ -6,62 +6,32 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [cdq.malli :as m]))
+            [cdq.malli :as m]
+            [gdl.utils :as utils]))
 
-(defn- apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k))))
-          m
-          (keys m)))
-
-(defn- async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint/pprint
-             with-out-str
-             (spit file)))))))
-
-(defn- recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-(defn save-vals! [data-vals file]
-  (->> data-vals
-       (sort-by property/type)
-       (map recur-sort-map)
-       doall
-       (async-pprint-spit! file)))
-
-(defn- save! [{:keys [db/data db/file]}]
-  (save-vals! (vals data)
-              file))
-
-(defn- validate-property [schemas property]
-  (schemas/validate schemas (property/type property) property))
-
-(defn- validate-properties! [schemas properties]
-  (assert (or (empty? properties)
-              (apply distinct? (map :property/id properties))))
-  (doseq [property properties]
-    (validate-property schemas property)))
+(defn- save!
+  [{:keys [db/data db/file]}]
+  (let [data (->> (vals data)
+                  (sort-by property/type)
+                  (map utils/recur-sort-map)
+                  doall)]
+    (.start
+     (Thread.
+      (fn []
+        (binding [*print-level* nil]
+          (->> data
+               pprint/pprint
+               with-out-str
+               (spit file))))))))
 
 (defrecord Schemas []
   schemas/Schemas
   (build-values [schemas property db]
-    (apply-kvs property
-               (fn [k v]
-                 (try (schema/create-value (get schemas k) v db)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t)))))))
+    (utils/apply-kvs property
+                     (fn [k v]
+                       (try (schema/create-value (get schemas k) v db)
+                            (catch Throwable t
+                              (throw (ex-info " " {:k k :v v} t)))))))
 
   (default-value [schemas k]
     (let [schema (get schemas k)]
@@ -89,7 +59,7 @@
             {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (validate-property schemas property)
+    (schemas/validate schemas (property/type property) property)
     (let [new-db (update this :db/data assoc id property)]
       (save! new-db)
       new-db))
@@ -124,21 +94,26 @@
          (db/all-raw this property-type))))
 
 (defn- create
-  []
-  (let [schemas "schema.edn"
-        properties "properties.edn"
-        schema-fn-map @(requiring-resolve 'cdq.application.create.db.schemas/schema-fn-map)
+  [{:keys [schemas
+           properties
+           schema-fn-map]}]
+  (let [schema-fn-map @(requiring-resolve schema-fn-map)
         schemas (update-vals (-> schemas io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
                                (with-meta schema (get schema-fn-map k))))
         schemas (map->Schemas schemas)
         properties-file (io/resource properties)
         properties (-> properties-file slurp edn/read-string)]
-    (validate-properties! schemas properties)
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (doseq [property properties]
+      (schemas/validate schemas (property/type property) property))
     (merge (map->DB {})
            {:db/data (zipmap (map :property/id properties) properties)
             :db/file properties-file
             :db/schemas schemas})))
 
 (defn do! [ctx]
-  (assoc ctx :ctx/db (create)))
+  (assoc ctx :ctx/db (create {:schemas "schema.edn"
+                              :properties "properties.edn"
+                              :schema-fn-map 'cdq.application.create.db.schemas/schema-fn-map})))

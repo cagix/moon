@@ -81,3 +81,17 @@
      (binding [*err* s#]
        ~@body
        (str s#))))
+
+(defn apply-kvs [m f]
+  (reduce (fn [m k]
+            (assoc m k (f k (get m k))))
+          m
+          (keys m)))
+
+(defn recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
