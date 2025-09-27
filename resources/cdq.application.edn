@@ -2,8 +2,10 @@
           :windowed-mode {:width 1440
                           :height 900}
           :foreground-fps 60
-          :mac {:glfw-async? true
-                :taskbar-icon "icon.png"}}
+         ; :mac {:glfw-async? true
+         ;       :taskbar-icon "icon.png"}
+          
+          }
  :listener {:create  [cdq.application.create.record/do!     ; cdq.ctx/create
                       cdq.application.create.validation/do! ; cdq.ctx/create
                       cdq.application.create.editor/do!     ; defmethod scene2d/build
