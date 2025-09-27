@@ -1,25 +1,25 @@
 (ns gdl.tx-handler)
 
 (defn actions!
-  [txs-fn-map ctx transactions]
+  [txs-fn-map ctx txs]
   (loop [ctx ctx
-         transactions transactions
-         handled-transactions []]
-    (if (seq transactions)
-      (let [[k & params :as transaction] (first transactions)]
-        (if transaction
-          (let [_ (assert (vector? transaction))
+         txs txs
+         handled-txs []]
+    (if (empty? txs)
+      handled-txs
+      (let [[k & params :as tx] (first txs)]
+        (if tx
+          (let [_ (assert (vector? tx))
                 f (get txs-fn-map k)
-                new-transactions (try
-                                  (apply f ctx params)
-                                  (catch Throwable t
-                                    (throw (ex-info "Error handling transaction"
-                                                    {:transaction transaction}
-                                                    t))))]
+                new-txs (try
+                         (apply f ctx params)
+                         (catch Throwable t
+                           (throw (ex-info "Error handling tx"
+                                           {:tx tx}
+                                           t))))]
             (recur ctx
-                   (concat (or new-transactions []) (rest transactions))
-                   (conj handled-transactions transaction)))
+                   (concat (or new-txs []) (rest txs))
+                   (conj handled-txs tx)))
           (recur ctx
-                 (rest transactions)
-                 handled-transactions)))
-      handled-transactions)))
+                 (rest txs)
+                 handled-txs))))))
