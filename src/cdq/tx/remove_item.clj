@@ -8,7 +8,7 @@
     (assert item)
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (inventory/applies-modifiers? cell)
-      (swap! eid update :creature/stats stats/remove-mods (:entity/modifiers item)))
+      (swap! eid update :entity/stats stats/remove-mods (:entity/modifiers item)))
     (if (:entity/player? entity)
       [[:tx/player-remove-item cell]]
       nil)))

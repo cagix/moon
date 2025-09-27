@@ -2,5 +2,5 @@
   (:require [cdq.stats :as stats]))
 
 (defn do! [_ctx eid cost]
-  (swap! eid update :creature/stats stats/pay-mana-cost cost)
+  (swap! eid update :entity/stats stats/pay-mana-cost cost)
   nil)

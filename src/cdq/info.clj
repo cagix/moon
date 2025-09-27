@@ -36,7 +36,7 @@
    :skill/effects
    :entity/species
    :creature/level
-   :creature/stats
+   :entity/stats
    :entity/delete-after-duration
    :projectile/piercing?
    :entity/projectile-collision
@@ -45,7 +45,7 @@
 
 (def ^:private info-fns
   '{:creature/level creature.level/info-text
-    :creature/stats cdq.entity.stats/info-text
+    :entity/stats cdq.entity.stats/info-text
     :effects.target/convert cdq.effects.target.convert/info-text
     :effects.target/damage cdq.effects.target.damage/info-text
     :effects.target/kill cdq.effects.target.kill/info-text

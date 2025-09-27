@@ -21,7 +21,7 @@
     {:npc-sleeping          cdq.entity.state.npc-sleeping/draw
      :entity/temp-modifier  cdq.entity.temp-modifier/draw
      :entity/string-effect  cdq.entity.string-effect/draw}
-    {:creature/stats        cdq.entity.stats/draw
+    {:entity/stats        cdq.entity.stats/draw
      :active-skill          cdq.entity.state.active-skill/draw}])
 
 (alter-var-root #'render-layers

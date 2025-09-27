@@ -7,7 +7,7 @@
 (defn create [eid movement-vector {:keys [world/elapsed-time]}]
   {:movement-vector movement-vector
    :timer (timer/create elapsed-time
-                        (* (stats/get-stat-value (:creature/stats @eid) :entity/reaction-time)
+                        (* (stats/get-stat-value (:entity/stats @eid) :entity/reaction-time)
                            reaction-time-multiplier))})
 
 (defn tick [{:keys [timer]} eid {:keys [world/elapsed-time]}]
@@ -16,7 +16,7 @@
 
 (defn enter [{:keys [movement-vector]} eid]
   [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                    :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                    :speed (or (stats/get-stat-value (:entity/stats @eid) :entity/movement-speed)
                                                0)}]])
 
 (defn exit [_ eid _ctx]

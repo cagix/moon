@@ -383,7 +383,7 @@
              [:entity/species {:optional true} :some]
              [:entity/movement {:optional true} :some]
              [:entity/skills {:optional true} :some]
-             [:creature/stats {:optional true} :some]
+             [:entity/stats {:optional true} :some]
              [:entity/inventory    {:optional true} :some]
              [:entity/item {:optional true} :some]
              [:entity/projectile-collision {:optional true} :some]]))

@@ -22,7 +22,7 @@
 
 (defn move-stats-in-separate-component [creature]
   (-> (apply dissoc creature stat-keys)
-      (assoc :creature/stats (select-keys creature stat-keys))))
+      (assoc :entity/stats (select-keys creature stat-keys))))
 
 (def creature? :creature/level)
 
@@ -76,7 +76,7 @@
   :property/pretty-name "Toad-horned",
   :entity/species :species/toad,
   :entity/body #:body{:flying? false, :height 11/24, :width 2/3},
-  :creature/stats
+  :entity/stats
   #:entity{:hp 12,
            :movement-speed 1.6,
            :aggro-range 6,

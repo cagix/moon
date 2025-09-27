@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.stats :as stats]))
 
-(defn- entity->melee-damage [{:keys [creature/stats]}]
+(defn- entity->melee-damage [{:keys [entity/stats]}]
   (let [strength (or (stats/get-stat-value stats :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 

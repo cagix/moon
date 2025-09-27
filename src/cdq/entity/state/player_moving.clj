@@ -7,13 +7,13 @@
 
 (defn enter [{:keys [movement-vector]} eid]
   [[:tx/assoc eid :entity/movement {:direction movement-vector
-                                    :speed (or (stats/get-stat-value (:creature/stats @eid) :entity/movement-speed)
+                                    :speed (or (stats/get-stat-value (:entity/stats @eid) :entity/movement-speed)
                                                0)}]])
 
 (defn exit [_ eid _ctx]
   [[:tx/dissoc eid :entity/movement]])
 
-(defn- speed [{:keys [creature/stats]}]
+(defn- speed [{:keys [entity/stats]}]
   (or (stats/get-stat-value stats :entity/movement-speed)
       0))
 

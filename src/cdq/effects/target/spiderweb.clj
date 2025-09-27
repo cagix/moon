@@ -7,7 +7,7 @@
 (defn applicable? [_ {:keys [effect/target]}]
   ; TODO has stats , for mod-add
   ; e,g, spiderweb on projectile leads to error
-  (:creature/stats @target))
+  (:entity/stats @target))
 
 ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
 (defn handle [_

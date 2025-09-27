@@ -13,7 +13,7 @@
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
-(defn- apply-action-speed-modifier [{:keys [creature/stats]} skill action-time]
+(defn- apply-action-speed-modifier [{:keys [entity/stats]} skill action-time]
   (/ action-time
      (or (stats/get-stat-value stats (:skill/action-time-modifier-key skill))
          1)))

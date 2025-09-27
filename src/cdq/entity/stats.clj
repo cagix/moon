@@ -119,7 +119,7 @@
         (hpbar-color ratio)]])))
 
 (defn draw [_ entity {:keys [ctx/graphics]}]
-  (let [ratio (val-max/ratio (stats/get-hitpoints (:creature/stats entity)))]
+  (let [ratio (val-max/ratio (stats/get-hitpoints (:entity/stats entity)))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar (:graphics/world-unit-scale graphics)
                   (:entity/body entity)

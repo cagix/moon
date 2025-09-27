@@ -72,7 +72,7 @@
  :modifier/mana-max           [:s/map [[:op/inc {:optional true}]
                                        [:op/mult {:optional true}]]],
 
- :creature/stats [:s/map [[:entity/modifiers    {:optional true}]
+ :entity/stats [:s/map [[:entity/modifiers    {:optional true}]
                           :entity/hp
                           [:entity/mana         {:optional true}]
                           :entity/movement-speed
@@ -95,7 +95,7 @@
                                 :entity/animation
                                 :entity/skills
                                 [:entity/inventory    {:optional true}]
-                                :creature/stats
+                                :entity/stats
                                 ]],
 
  :item/slot [:s/enum

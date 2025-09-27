@@ -9,7 +9,7 @@
                  :entity/body                  cdq.entity.body/create
                  :entity/delete-after-duration cdq.entity.delete-after-duration/create
                  :entity/projectile-collision  cdq.entity.projectile-collision/create
-                 :creature/stats               cdq.entity.stats/create}
+                 :entity/stats               cdq.entity.stats/create}
                (fn [sym]
                  (let [avar (requiring-resolve sym)]
                    (assert avar sym)

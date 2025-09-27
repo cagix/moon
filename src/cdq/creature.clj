@@ -9,7 +9,7 @@
    cooling-down?
    :cooldown
 
-   (stats/not-enough-mana? (:creature/stats entity) skill)
+   (stats/not-enough-mana? (:entity/stats entity) skill)
    :not-enough-mana
 
    (not (seq (filter #(effect/applicable? % effect-ctx) effects)))
