@@ -72,13 +72,13 @@
                   :title title
                   :rows [[{:actor {:actor/type :actor.type/label
                                    :label/text text}}]
-                         [{:actor/type :actor.type/text-button
-                           :text button-text
-                           :on-clicked (fn [_actor _ctx]
-                                         (actor/remove! (-> stage
-                                                            stage/root
-                                                            (group/find-actor "cdq.ui.modal-window")))
-                                         (on-click))}]]
+                         [{:actor {:actor/type :actor.type/text-button
+                                   :text button-text
+                                   :on-clicked (fn [_actor _ctx]
+                                                 (actor/remove! (-> stage
+                                                                    stage/root
+                                                                    (group/find-actor "cdq.ui.modal-window")))
+                                                 (on-click))}}]]
                   :actor/name "cdq.ui.modal-window"
                   :modal? true
                   :actor/center-position [(/ (:viewport/width  ui-viewport) 2)
