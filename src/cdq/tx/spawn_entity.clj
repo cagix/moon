@@ -1,8 +1,5 @@
 (ns cdq.tx.spawn-entity
-  (:require [cdq.creature :as creature]
-            [cdq.effect :as effect]
-            [cdq.stats :as stats]
-            [cdq.world.content-grid :as content-grid]
+  (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.malli :as m]
             [qrecord.core :as q]))
@@ -37,24 +34,6 @@
     (f v eid world)))
 
 (q/defrecord Entity [entity/body])
-
-(extend-type Entity
-  creature/Skills
-  (skill-usable-state [entity
-                       {:keys [skill/cooling-down? skill/effects] :as skill}
-                       effect-ctx]
-    (cond
-     cooling-down?
-     :cooldown
-
-     (stats/not-enough-mana? (:creature/stats entity) skill)
-     :not-enough-mana
-
-     (not (seq (filter #(effect/applicable? % effect-ctx) effects)))
-     :invalid-params
-
-     :else
-     :usable)))
 
 (defn do! [{:keys [ctx/world]} entity]
   (let [{:keys [world/content-grid
