@@ -1,5 +1,5 @@
 (ns cdq.application.create.handle-txs
-  (:require [cdq.ctx]
+  (:require [cdq.ctx :as ctx]
             [gdl.tx-handler :as tx-handler]))
 
 (def ^:private txs-fn-map
@@ -35,7 +35,6 @@
     :tx/effect cdq.tx.effect/do!
     :tx/print-stacktrace cdq.tx.print-stacktrace/do!
     :tx/show-error-window        cdq.tx.stage/show-error-window!
-    :tx/player-add-skill         cdq.tx.stage/player-add-skill!
     :tx/player-set-item          cdq.tx.stage/player-set-item!
     :tx/player-remove-item       cdq.tx.stage/player-remove-item!
     :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
@@ -61,9 +60,27 @@
                       avar)
                     (eval form))))
 
+(require 'cdq.tx.stage)
+
+(def ^:private reaction-txs-fn-map
+  {:tx/add-skill (fn [ctx eid skill]
+                   (when (:entity/player? @eid)
+                     (cdq.tx.stage/player-add-skill! ctx skill)
+                     nil))
+   }
+  )
+
 (defn do! [ctx]
   (extend-type (class ctx)
-    cdq.ctx/TransactionHandler
+    ctx/TransactionHandler
     (handle-txs! [ctx transactions]
-      (tx-handler/actions! txs-fn-map ctx transactions)))
+      (let [handled-txs (tx-handler/actions!
+                         txs-fn-map
+                         ctx  ; here pass only world ....
+                         transactions)]
+        (tx-handler/actions!
+         reaction-txs-fn-map
+         ctx
+         handled-txs
+         :strict? false))))
   ctx)
