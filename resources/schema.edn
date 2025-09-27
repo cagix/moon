@@ -143,7 +143,6 @@
  :skill/action-time [:s/number :pos],
  :skill/start-action-sound [:s/sound],
  :skill/effects [:s/map [
-                         [:effects/sound         {:optional true}]
                          [:effects/audiovisual   {:optional true}]
                          [:effects/projectile    {:optional true}]
                          [:effects/spawn         {:optional true}]
@@ -166,7 +165,6 @@
  :damage/min-max [:s/val-max],
  :effects.target/damage [:s/map [:damage/min-max]],
 
- :effects/sound [:s/sound]
  :effects/audiovisual [:s/one-to-one :properties/audiovisuals]
  :effects/projectile [:s/one-to-one :properties/projectiles],
  :effects/spawn      [:s/one-to-one :properties/creatures],

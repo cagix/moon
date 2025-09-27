@@ -4285,8 +4285,7 @@
   :skill/cooldown 0,
   :skill/cost 0,
   :skill/effects
-  {:effects/projectile :projectiles/double-fireball,
-   :effects/sound "bfxr_potionuse"},
+  {:effects/projectile :projectiles/double-fireball}
   :skill/start-action-sound "bfxr_cast"}
  {:entity/image
   {:image/bounds [160 64 32 32], :image/file "images/skills.png"},

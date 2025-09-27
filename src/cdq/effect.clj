@@ -15,10 +15,6 @@
                          :useful?     cdq.effects.projectile/useful?
                          :handle      cdq.effects.projectile/handle}
 
-    :effects/sound {:applicable? cdq.effects.sound/applicable?
-                    :useful?     cdq.effects.sound/useful?
-                    :handle      cdq.effects.sound/handle}
-
     :effects/spawn {:applicable? cdq.effects.spawn/applicable?
                     :handle      cdq.effects.spawn/handle}
 
