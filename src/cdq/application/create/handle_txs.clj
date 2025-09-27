@@ -26,21 +26,25 @@
     :tx/set-cooldown cdq.tx.set-cooldown/do!
     :tx/add-text-effect cdq.tx.add-text-effect/do!
     :tx/add-skill cdq.tx.add-skill/do!
+
     :tx/set-item cdq.tx.set-item/do!
     :tx/remove-item cdq.tx.remove-item/do!
+
     :tx/pickup-item cdq.tx.pickup-item/do!
     :tx/event cdq.tx.event/do!
     :tx/state-exit cdq.tx.state-exit/do!
     :tx/state-enter cdq.tx.state-enter/do!
+
     :tx/effect cdq.tx.effect/do!
+
     :tx/print-stacktrace cdq.tx.print-stacktrace/do!
+
     :tx/show-error-window        cdq.tx.stage/show-error-window!
-    :tx/player-set-item          cdq.tx.stage/player-set-item!
-    :tx/player-remove-item       cdq.tx.stage/player-remove-item!
     :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
     :tx/show-message             cdq.tx.stage/show-message!
     :tx/show-modal               cdq.tx.stage/show-modal!
     :tx/audiovisual cdq.tx.audiovisual/do!
+
     :tx/spawn-alert cdq.tx.spawn-alert/do!
     :tx/spawn-line cdq.tx.spawn-line/do!
     :tx/move-entity cdq.tx.move-entity/do!
@@ -63,7 +67,19 @@
 (require 'cdq.tx.stage)
 
 (def ^:private reaction-txs-fn-map
-  {:tx/add-skill (fn [ctx eid skill]
+  {
+
+   :tx/set-item (fn [ctx eid cell item]
+                  (when (:entity/player? @eid)
+                    (cdq.tx.stage/player-set-item! ctx cell item)
+                    nil))
+
+   :tx/remove-item (fn [ctx eid cell]
+                     (when (:entity/player? @eid)
+                       (cdq.tx.stage/player-remove-item! ctx cell)
+                       nil))
+
+   :tx/add-skill (fn [ctx eid skill]
                    (when (:entity/player? @eid)
                      (cdq.tx.stage/player-add-skill! ctx skill)
                      nil))
