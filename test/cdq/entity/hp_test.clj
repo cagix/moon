@@ -4,8 +4,8 @@
 
 (defn- ->value [hp-base-value hp-mods]
   (modifiers/get-hitpoints
-   {:entity/hp hp-base-value
-    :entity/modifiers {:modifier/hp-max hp-mods}}))
+   {:stats/hp hp-base-value
+    :stats/modifiers {:modifier/hp-max hp-mods}}))
 
 (deftest max-modifier
   (is (= (->value [100 100]
