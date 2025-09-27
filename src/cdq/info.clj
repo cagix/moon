@@ -13,7 +13,7 @@
 
 (def ^:private k->colors
   {:property/pretty-name "PRETTY_NAME"
-   :entity/modifiers "CYAN"
+   :stats/modifiers "CYAN"
    :maxrange "LIGHT_GRAY"
    :creature/level "GRAY"
    :projectile/piercing? "LIME"
@@ -57,7 +57,7 @@
     :entity/delete-after-duration cdq.entity.delete-after-duration/info-text
     :entity/faction cdq.entity.faction/info-text
     :entity/fsm cdq.entity.fsm/info-text
-    :entity/modifiers cdq.entity.modifiers/info-text
+    :stats/modifiers cdq.entity.modifiers/info-text
     :entity/skills cdq.entity.skills/info-text
     :entity/species cdq.entity.species/info-text
     :entity/temp-modifier cdq.entity.temp-modifier/info-text

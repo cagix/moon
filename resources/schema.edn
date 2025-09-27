@@ -28,18 +28,18 @@
                        :body/height
                        :body/flying?]],
 
- :entity/hp             [:s/number :pos-int],
- :entity/movement-speed [:s/number :pos],
- :entity/aggro-range    [:s/number :nat-int],
- :entity/reaction-time  [:s/number :pos-int],
- :entity/mana           [:s/number :nat-int],
- :entity/strength       [:s/number :nat-int],
- :entity/cast-speed     [:s/number :pos],
- :entity/attack-speed   [:s/number :pos],
- :entity/armor-save     [:s/number :any],
- :entity/armor-pierce   [:s/number :any],
+ :stats/hp             [:s/number :pos-int],
+ :stats/movement-speed [:s/number :pos],
+ :stats/aggro-range    [:s/number :nat-int],
+ :stats/reaction-time  [:s/number :pos-int],
+ :stats/mana           [:s/number :nat-int],
+ :stats/strength       [:s/number :nat-int],
+ :stats/cast-speed     [:s/number :pos],
+ :stats/attack-speed   [:s/number :pos],
+ :stats/armor-save     [:s/number :any],
+ :stats/armor-pierce   [:s/number :any],
 
- :entity/modifiers [:s/map [[:modifier/armor-pierce       {:optional true}]
+ :stats/modifiers [:s/map [[:modifier/armor-pierce       {:optional true}]
                             [:modifier/armor-save         {:optional true}]
                             [:modifier/attack-speed       {:optional true}]
                             [:modifier/cast-speed         {:optional true}]
@@ -72,17 +72,17 @@
  :modifier/mana-max           [:s/map [[:op/inc {:optional true}]
                                        [:op/mult {:optional true}]]],
 
- :entity/stats [:s/map [[:entity/modifiers    {:optional true}]
-                          :entity/hp
-                          [:entity/mana         {:optional true}]
-                          :entity/movement-speed
-                          :entity/aggro-range
-                          :entity/reaction-time
-                          [:entity/strength     {:optional true}]
-                          [:entity/cast-speed   {:optional true}]
-                          [:entity/attack-speed {:optional true}]
-                          [:entity/armor-save   {:optional true}]
-                          [:entity/armor-pierce {:optional true}]]]
+ :entity/stats [:s/map [[:stats/modifiers    {:optional true}]
+                        :stats/hp
+                        [:stats/mana         {:optional true}]
+                        :stats/movement-speed
+                        :stats/aggro-range
+                        :stats/reaction-time
+                        [:stats/strength     {:optional true}]
+                        [:stats/cast-speed   {:optional true}]
+                        [:stats/attack-speed {:optional true}]
+                        [:stats/armor-save   {:optional true}]
+                        [:stats/armor-pierce {:optional true}]]]
 
  :entity/inventory [:s/one-to-many :properties/items],
  :entity/skills    [:s/one-to-many :properties/skills],
@@ -115,7 +115,7 @@
                             :property/pretty-name
                             :entity/image
                             :item/slot
-                            [:entity/modifiers {:optional true}]]],
+                            [:stats/modifiers {:optional true}]]],
 
  :projectile/max-range [:s/number :pos-int],
  :projectile/speed [:s/number :pos-int],
@@ -139,7 +139,7 @@
                                   :projectile/size
                                   :entity-effects]],
 
- :skill/action-time-modifier-key [:s/enum :entity/cast-speed :entity/attack-speed],
+ :skill/action-time-modifier-key [:s/enum :stats/cast-speed :stats/attack-speed],
  :skill/action-time [:s/number :pos],
  :skill/start-action-sound [:s/sound],
  :skill/effects [:s/map [

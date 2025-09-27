@@ -8,17 +8,17 @@
   (-> file io/resource slurp edn/read-string))
 
 (def stat-keys
-  [:entity/modifiers
-   :entity/hp
-   :entity/movement-speed
-   :entity/aggro-range
-   :entity/reaction-time
-   :entity/mana
-   :entity/strength
-   :entity/cast-speed
-   :entity/attack-speed
-   :entity/armor-save
-   :entity/armor-pierce])
+  [:stats/modifiers
+   :stats/hp
+   :stats/movement-speed
+   :stats/aggro-range
+   :stats/reaction-time
+   :stats/mana
+   :stats/strength
+   :stats/cast-speed
+   :stats/attack-speed
+   :stats/armor-save
+   :stats/armor-pierce])
 
 (defn move-stats-in-separate-component [creature]
   (-> (apply dissoc creature stat-keys)
@@ -41,7 +41,7 @@
  (db/do! {} {:schemas "schema.edn"
              :properties "properties.edn"})
 
- (def example-creature {:entity/aggro-range 6,
+ (def example-creature {:stats/aggro-range 6,
                         :entity/animation
                         {:frame-duration 0.1,
                          :frames
@@ -51,14 +51,14 @@
                           {:file "images/animations/toad-horned-4.png"}],
                          :looping? true},
                         :creature/level 1,
-                        :entity/reaction-time 12,
-                        :entity/mana 11,
+                        :stats/reaction-time 12,
+                        :stats/mana 11,
                         :property/pretty-name "Toad-horned",
-                        :entity/strength 1,
+                        :stats/strength 1,
                         :entity/species :species/toad,
                         :entity/body #:body{:flying? false, :height 11/24, :width 2/3},
-                        :entity/movement-speed 1.6,
-                        :entity/hp 12,
+                        :stats/movement-speed 1.6,
+                        :stats/hp 12,
                         :property/id :creatures/toad-horned,
                         :entity/skills #{:skills/melee-attack}})
 

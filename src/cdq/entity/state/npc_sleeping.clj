@@ -5,7 +5,7 @@
 (defn tick [_ eid {:keys [world/grid]}]
   (let [entity @eid]
     (when-let [distance (grid/nearest-enemy-distance grid entity)]
-      (when (<= distance (stats/get-stat-value (:entity/stats entity) :entity/aggro-range))
+      (when (<= distance (stats/get-stat-value (:entity/stats entity) :stats/aggro-range))
         [[:tx/event eid :alert]]))))
 
 (defn exit [_ eid _ctx]

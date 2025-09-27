@@ -3,7 +3,7 @@
             [cdq.stats :as stats]))
 
 (defn- entity->melee-damage [{:keys [entity/stats]}]
-  (let [strength (or (stats/get-stat-value stats :entity/strength) 0)]
+  (let [strength (or (stats/get-stat-value stats :stats/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- melee-damage-effect [entity]
