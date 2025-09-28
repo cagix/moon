@@ -5,7 +5,7 @@
             [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
+            [gdl.graphics.freetype :as freetype]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]

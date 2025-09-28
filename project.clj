@@ -3,12 +3,16 @@
   :dependencies [
                  [cdq.malli "0.1"]
                  [clojure.rand "0.1"]
-                 [com.badlogic.gdx                            "1.13.5"]
-                 [gdl.application.desktop                     "1.13.5"]
-                 [com.badlogic.gdx.graphics.g2d.freetype      "1.13.5"]
+
+                 ;
+                 [com.badlogic.gdx          "1.13.5"]
+                 [gdl.application.desktop   "1.13.5"]
+                 [gdl.graphics.freetype     "1.13.5"]
+                 [gdl.graphics.shape-drawer "2.5.0"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.kotcrab.vis.ui "1.5.2"]
-                 [gdl.graphics.shape-drawer "2.5.0"]
+                 ;
+
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
                  [org.clj-commons/pretty "3.2.0"]
