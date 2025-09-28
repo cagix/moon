@@ -7,7 +7,7 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.badlogic.gdx.backends.lwjgl3 :as application]
+            [gdl.application.desktop :as application]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.color :as color]

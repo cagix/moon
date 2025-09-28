@@ -4,7 +4,7 @@
                  [cdq.malli "0.1"]
                  [clojure.rand "0.1"]
                  [com.badlogic.gdx                            "1.13.5"]
-                 [com.badlogic.gdx.backends.lwjgl3            "1.13.5"]
+                 [gdl.application.desktop                     "1.13.5"]
                  [com.badlogic.gdx.graphics.g2d.freetype      "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.kotcrab.vis.ui "1.5.2"]
@@ -22,7 +22,7 @@
                  ;
                  ]
   :java-source-paths ["src"]
-  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'com.badlogic.gdx.backends.lwjgl3.starter/-main) \"cdq.application.edn\")"]
+  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.application.desktop.starter/-main) \"cdq.application.edn\")"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
@@ -48,9 +48,9 @@
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3}
-  :profiles {:uberjar {:aot [com.badlogic.gdx.backends.lwjgl3.starter]}}
+  :profiles {:uberjar {:aot [gdl.application.desktop.starter]}}
   :uberjar-name "cdq.jar"
-  :main com.badlogic.gdx.backends.lwjgl3.starter)
+  :main gdl.application.desktop.starter)
 
 ; * Notes
 
