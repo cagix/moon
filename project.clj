@@ -18,11 +18,12 @@
                  [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]
                  [lein-hiera "2.0.0"]
+                 [com.github.damn/clojure.dev-loop "ef54a03"]
                  ;
                  ]
   :java-source-paths ["src"]
-  :aliases {"dev"      ["run" "-m" "dev.loop" "cdq.application/-main"]
-            "levelgen" ["run" "-m" "dev.loop" "cdq.levelgen/-main"]
+  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.application/-main) \"cdq.application.edn\")"]
+            "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
@@ -47,9 +48,9 @@
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3}
-  :profiles {:uberjar {:aot [cdq.application]}}
+  :profiles {:uberjar {:aot [gdl.application]}}
   :uberjar-name "cdq.jar"
-  :main cdq.application)
+  :main gdl.application)
 
 ; * Notes
 
