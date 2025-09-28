@@ -13,7 +13,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
             com.badlogic.gdx.scenes.scene2d.ui.stack
-            [com.kotcrab.vis.ui.widget.window :as window]))
+            [gdl.scene2d.vis-ui.window :as window]))
 
 (defn do!
   [{:keys [ctx/graphics]

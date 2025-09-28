@@ -9,8 +9,7 @@
                  [gdl.application.desktop   "1.13.5"]
                  [gdl.graphics.freetype     "1.13.5"]
                  [gdl.graphics.shape-drawer "2.5.0"]
-                 [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
-                 [com.kotcrab.vis.ui "1.5.2"]
+                 [gdl.scene2d.vis-ui "1.5.2"]
                  ;
 
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
