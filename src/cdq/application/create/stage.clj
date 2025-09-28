@@ -11,6 +11,8 @@
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
+            com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
+            com.badlogic.gdx.scenes.scene2d.ui.stack
             [com.kotcrab.vis.ui.widget.window :as window]))
 
 (defn do!

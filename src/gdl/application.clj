@@ -34,9 +34,6 @@
                          (resume listener)))
                      config))
 
-(require 'com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-         'com.badlogic.gdx.scenes.scene2d.ui.stack)
-
 (defn -main [config-path]
   (let [{:keys [listener
                 config
