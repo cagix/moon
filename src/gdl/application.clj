@@ -35,35 +35,28 @@
                      config))
 
 (defn -main [config-path]
-  (let [{:keys [listener
-                config
-                state-atom-var-sym]} (-> config-path io/resource slurp edn/read-string)
-        state @(requiring-resolve state-atom-var-sym)]
-    (start!
-     {:listener (let [{:keys [create
-                              dispose
-                              render
-                              resize]} listener
-                      create-pipeline (map requiring-resolve create)
-                      dispose (requiring-resolve dispose)
-                      render-pipeline (map requiring-resolve render)
-                      resize (requiring-resolve resize)]
-                  (reify Listener
-                    (create [_ context]
-                      (reset! state (reduce (fn [ctx f]
-                                              (f ctx))
-                                            context
-                                            create-pipeline)))
-                    (dispose [_]
-                      (dispose @state))
-                    (pause [_])
-                    (render [_]
-                      (swap! state (fn [ctx]
-                                     (reduce (fn [ctx f]
-                                               (f ctx))
-                                             ctx
-                                             render-pipeline))))
-                    (resize [_ width height]
-                      (resize @state width height))
-                    (resume [_])))
-      :config config})))
+  (let [config (-> config-path io/resource slurp edn/read-string)
+        state @(requiring-resolve (:state config))
+        create-pipeline (map requiring-resolve (:create config))
+        dispose (requiring-resolve (:dispose config))
+        render-pipeline (map requiring-resolve (:render config))
+        resize (requiring-resolve (:resize config))]
+    (start! {:listener (reify Listener
+                         (create [_ context]
+                           (reset! state (reduce (fn [ctx f]
+                                                   (f ctx))
+                                                 context
+                                                 create-pipeline)))
+                         (dispose [_]
+                           (dispose @state))
+                         (pause [_])
+                         (render [_]
+                           (swap! state (fn [ctx]
+                                          (reduce (fn [ctx f]
+                                                    (f ctx))
+                                                  ctx
+                                                  render-pipeline))))
+                         (resize [_ width height]
+                           (resize @state width height))
+                         (resume [_]))
+             :config config})))
