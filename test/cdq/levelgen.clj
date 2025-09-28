@@ -7,7 +7,7 @@
             [gdl.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.application.desktop :as application]
+            [gdl.application :as application]
             [gdl.graphics :as graphics]
             [gdl.graphics.orthographic-camera :as camera]
             [gdl.graphics.color :as color]

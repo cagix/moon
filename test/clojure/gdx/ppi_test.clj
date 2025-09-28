@@ -1,6 +1,6 @@
 ; com.badlogic.gdx.tests.DpiTest
 (ns clojure.gdx.ppi-test
-  (:require [gdl.application.desktop :as application])
+  (:require [gdl.application :as application])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics GL20)
            com.badlogic.gdx.graphics.g2d.BitmapFont

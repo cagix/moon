@@ -18,7 +18,7 @@
                  ;
                  ]
   :java-source-paths ["src"]
-  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'gdl.application.desktop.starter/-main) \"cdq.application.edn\")"]
+  :aliases {"dev"      ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.application/-main))"]
             "levelgen" ["run" "-m" "clojure.dev-loop" "((requiring-resolve 'cdq.levelgen/-main))"]
             "ns"       ["hiera" ":layout" ":horizontal"]}
   :plugins [[lein-hiera "2.0.0"]
@@ -44,9 +44,9 @@
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3}
-  :profiles {:uberjar {:aot [gdl.application.desktop.starter]}}
+  :profiles {:uberjar {:aot [cdq.application]}}
   :uberjar-name "cdq.jar"
-  :main gdl.application.desktop.starter)
+  :main cdq.application)
 
 ; * Notes
 
