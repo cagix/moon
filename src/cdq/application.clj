@@ -4,7 +4,7 @@
             [gdl.application :as application])
   (:gen-class))
 
-(def ^:private state (atom nil))
+(def state (atom nil))
 
 (defn -main []
   (let [{:keys [starter
@@ -41,19 +41,3 @@
                       (resize @state width height))
                     (resume [_])))
       :config config})))
-
-(comment
- (require '[cdq.ctx :as ctx]
-          '[cdq.db :as db])
-
- (com.badlogic.gdx/post-runnable!
-  (fn []
-    (let [ctx @state]
-      (ctx/handle-txs! ctx
-                       [[:tx/spawn-creature
-                         {:position [35 73]
-                          :creature-property (db/build (:ctx/db ctx) :creatures/dragon-red)
-                          :components {:entity/fsm {:fsm :fsms/npc
-                                                    :initial-state :npc-sleeping}
-                                       :entity/faction :evil}}]]))))
- )
