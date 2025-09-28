@@ -8,7 +8,7 @@
                  [com.badlogic.gdx.graphics.g2d.freetype      "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.kotcrab.vis.ui "1.5.2"]
-                 [space.earlygrey.shape-drawer "2.5.0"]
+                 [gdl.graphics.shape-drawer "2.5.0"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
                  [org.clj-commons/pretty "3.2.0"]
