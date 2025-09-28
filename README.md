@@ -1,11 +1,3 @@
-* lein deps :tree
-
-* lein hiera :layout :horizontal :cluster-depth 1
-     cluster.png
-
-* lein hiera :layout :horizontal
-     namespacs.png
-
 * Liste dependencies with __javadoc io__ (!!!) & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
     => hidden in my browser.
     => my bookmarks.
