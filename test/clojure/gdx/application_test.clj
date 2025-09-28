@@ -1,5 +1,5 @@
 (ns clojure.gdx.application-test
-  (:require [gdl.application :as application]))
+  (:require [com.badlogic.gdx.backends.lwjgl3 :as application]))
 
 (defn -main []
   (application/start!

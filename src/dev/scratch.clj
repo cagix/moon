@@ -5,7 +5,7 @@
 
 (comment
 
- (com.badlogic.gdx/post-runnable!
+ (.postRunnable com.badlogic.gdx.Gdx/app
   (fn []
     (let [{:keys [ctx/db]
            :as ctx} @state]
