@@ -2,13 +2,13 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.widget-group :as widget-group]
+            [gdl.scene2d.ui.window :as window]))
 
 (defn malli-form [[_ property-type] _schemas]
   [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])

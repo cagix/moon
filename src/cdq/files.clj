@@ -1,6 +1,6 @@
 (ns cdq.files
-  (:require [com.badlogic.gdx.files :as files]
-            [com.badlogic.gdx.files.file-handle :as file-handle]
+  (:require [gdl.files :as files]
+            [gdl.files.file-handle :as file-handle]
             [clojure.string :as str]))
 
 (defn search [files {:keys [folder extensions]}]

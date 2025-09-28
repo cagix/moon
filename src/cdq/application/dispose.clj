@@ -1,5 +1,5 @@
 (ns cdq.application.dispose
-  (:require [com.badlogic.gdx.utils.disposable :as disposable]))
+  (:require [gdl.utils.disposable :as disposable]))
 
 (defn do! [{:keys [ctx/audio
                    ctx/graphics

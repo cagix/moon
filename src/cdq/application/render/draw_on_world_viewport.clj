@@ -2,7 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
-            [com.badlogic.gdx.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [gdl.utils :as utils]))
 
 (def ^:dbg-flag show-tile-grid? false)

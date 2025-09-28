@@ -4,7 +4,7 @@
             [cdq.graphics :as graphics]
             [cdq.stage :as stage]
             [gdl.math.vector2 :as v]
-            [com.badlogic.gdx.input :as input]))
+            [gdl.input :as input]))
 
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))

@@ -10,8 +10,8 @@
             [gdl.grid2d :as g2d]
             [gdl.position :as position]
             [gdl.utils :as utils]
-            [com.badlogic.gdx.utils.disposable :as disposable]
-            [com.badlogic.gdx.maps.tiled :as tiled]
+            [gdl.utils.disposable :as disposable]
+            [gdl.maps.tiled :as tiled]
             [reduce-fsm :as fsm])
   (:import (gdl.math RayCaster)))
 

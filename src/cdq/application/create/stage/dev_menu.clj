@@ -3,9 +3,9 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 
 (defn ^:private open-editor [db]

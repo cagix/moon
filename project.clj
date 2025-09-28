@@ -4,16 +4,9 @@
                  [cdq.malli "0.1"]
                  [clojure.rand "0.1"]
 
-                 ;
-                 [com.badlogic.gdx          "1.13.5"]
-                 [gdl.application.desktop   "1.13.5"]
-                 [gdl.graphics.freetype     "1.13.5"]
-                 [gdl.graphics.shape-drawer "2.5.0"]
-                 [gdl.scene2d.vis-ui "1.5.2"]
-                 ;
-
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
+                 [gdl                       "1.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]
 

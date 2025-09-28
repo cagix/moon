@@ -4,21 +4,21 @@
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.application.desktop :as application]
-            [com.badlogic.gdx.graphics :as graphics]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
-            [com.badlogic.gdx.graphics.color :as color]
-            [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.graphics.viewport]
-            [com.badlogic.gdx.input :as input]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [com.badlogic.gdx.maps.tiled :as tiled]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
+            [gdl.graphics :as graphics]
+            [gdl.graphics.orthographic-camera :as camera]
+            [gdl.graphics.color :as color]
+            [gdl.graphics.texture :as texture]
+            [gdl.graphics.viewport]
+            [gdl.input :as input]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
+            [gdl.maps.tiled :as tiled]
+            [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -181,8 +181,8 @@
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (com.badlogic.gdx.graphics.viewport/update! ui-viewport    width height {:center? true})
-  (com.badlogic.gdx.graphics.viewport/update! world-viewport width height {:center? false}))
+  (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
+  (gdl.graphics.viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
 

@@ -3,8 +3,8 @@
             [cdq.info :as info]
             [cdq.stage]
             [clojure.repl]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d :as scene2d]
+            [gdl.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 
 (defn show-error-window!
