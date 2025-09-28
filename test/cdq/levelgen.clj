@@ -188,18 +188,14 @@
 
 (defn -main []
   (application/start!
-   {:listener (reify application/Listener
-                (create [_ context]
-                  (reset! state (create! context)))
-                (dispose [_]
-                  (dispose! @state))
-                (pause [_])
-                (render [_]
-                  (swap! state render!))
-                (resize [_ width height]
-                  (resize! @state width height))
-                (resume [_]))
-    :config {:title "Levelgen test"
-             :windowed-mode {:width 1440 :height 900}
-             :foreground-fps 60
-             :mac {:glfw-async? true}}}))
+   {:title "Levelgen test"
+    :windowed-mode {:width 1440 :height 900}
+    :foreground-fps 60
+    :create (fn [context]
+              (reset! state (create! context)))
+    :dispose (fn []
+               (dispose! @state))
+    :render (fn []
+              (swap! state render!))
+    :resize (fn [width height]
+              (resize! @state width height))}))

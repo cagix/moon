@@ -13,22 +13,19 @@
         render-pipeline (map requiring-resolve (:render config))
         resize (requiring-resolve (:resize config))]
     (application/start!
-     {:listener (reify application/Listener
-                  (create [_ context]
-                    (reset! state (reduce (fn [ctx f]
-                                            (f ctx))
-                                          context
-                                          create-pipeline)))
-                  (dispose [_]
-                    (dispose @state))
-                  (pause [_])
-                  (render [_]
-                    (swap! state (fn [ctx]
-                                   (reduce (fn [ctx f]
-                                             (f ctx))
-                                           ctx
-                                           render-pipeline))))
-                  (resize [_ width height]
-                    (resize @state width height))
-                  (resume [_]))
-      :config config})))
+     (assoc config
+            :create (fn [context]
+                      (reset! state (reduce (fn [ctx f]
+                                              (f ctx))
+                                            context
+                                            create-pipeline)))
+            :dispose (fn []
+                       (dispose @state))
+            :render (fn []
+                      (swap! state (fn [ctx]
+                                     (reduce (fn [ctx f]
+                                               (f ctx))
+                                             ctx
+                                             render-pipeline))))
+            :resize (fn [ width height]
+                      (resize @state width height))))))

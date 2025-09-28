@@ -14,7 +14,7 @@
     (.getPpcY graphics)  "\n"  "PPI-x: "  (.getPpiX graphics)  "\n"  "PPI-y: "  (.getPpiY graphics)))
 
 (defn -main []
-  (application/start!
+  #_(application/start!
    {:listener (reify application/Listener
                 (create [_ context]
                   (def batch (SpriteBatch.))

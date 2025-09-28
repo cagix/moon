@@ -5,7 +5,6 @@
 (def ^:private schema
   (m/schema
    [:map {:closed true}
-    [:ctx/app :some]
     [:ctx/audio :some]
     [:ctx/db :some]
     [:ctx/graphics :some]
