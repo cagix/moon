@@ -8,13 +8,15 @@
             clojure.graphics.batch
             clojure.graphics.bitmap-font
             clojure.graphics.orthographic-camera
+            clojure.graphics.pixmap
             clojure.graphics.texture-region
+            clojure.graphics.viewport
             [clojure.string :as str]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+            [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.math.vector3 :as vector3]
-            [com.badlogic.gdx.utils.align :as align]
-            [gdl.utils.viewport.fit-viewport :as fit-viewport])
+            [com.badlogic.gdx.utils.align :as align])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationListener
                              Audio
@@ -38,9 +40,16 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)))
 
 ;;;;; Helpers
+
+(defn- clamp [value min max]
+  (cond
+   (< value min) min
+   (> value max) max
+   :else value))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -67,6 +76,11 @@
   (set! (.markupEnabled (.getData font)) enable-markup?)
   (.setUseIntegerPositions font use-integer-positions?)
   font)
+
+(defn- unproject [^FitViewport viewport x y]
+  (-> viewport
+      (.unproject (vector2/->java x y))
+      vector2/->clj))
 
 ;;;;; API
 
@@ -129,6 +143,19 @@
   ([& {:keys [y-down? world-width world-height]}]
    (doto (orthographic-camera)
      (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
+
+(defn- fit-viewport [width height camera]
+  (proxy [FitViewport ILookup] [width height camera]
+    (valAt [k]
+      (let [^FitViewport this this]
+        (case k
+          :viewport/width             (.getWorldWidth      this)
+          :viewport/height            (.getWorldHeight     this)
+          :viewport/camera            (.getCamera          this)
+          :viewport/left-gutter-width (.getLeftGutterWidth this)
+          :viewport/right-gutter-x    (.getRightGutterX    this)
+          :viewport/top-gutter-height (.getTopGutterHeight this)
+          :viewport/top-gutter-y      (.getTopGutterY      this))))))
 
 ;;;;; extend-types
 
@@ -253,7 +280,7 @@
                 :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
 
   (fit-viewport [_ width height camera]
-    (fit-viewport/create width height camera))
+    (fit-viewport width height camera))
 
   (sprite-batch [_]
     (SpriteBatch.)))
@@ -268,3 +295,28 @@
   (set-zoom! [this amount]
     (set! (.zoom this) amount)
     (.update this)))
+
+(extend-type Pixmap
+  clojure.graphics.pixmap/Pixmap
+  (set-color! [pixmap [r g b a]]
+    (.setColor pixmap r g b a))
+
+  (draw-pixel! [pixmap x y]
+    (.drawPixel pixmap x y))
+
+  (texture [pixmap]
+    (Texture. pixmap)))
+
+(extend-type FitViewport
+  clojure.graphics.viewport/Viewport
+  (update! [this width height {:keys [center?]}]
+    (.update this width height center?))
+
+  (unproject [this [x y]]
+    (unproject this
+               (clamp x
+                      (:viewport/left-gutter-width this)
+                      (:viewport/right-gutter-x    this))
+               (clamp y
+                      (:viewport/top-gutter-height this)
+                      (:viewport/top-gutter-y      this)))))

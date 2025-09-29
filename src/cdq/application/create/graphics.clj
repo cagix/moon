@@ -10,10 +10,10 @@
             [clojure.gdx :as gdx]
             [clojure.graphics.batch :as batch]
             [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.pixmap :as pixmap]
+            [clojure.graphics.pixmap :as pixmap]
             [gdl.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
-            [gdl.graphics.viewport :as viewport]
+            [clojure.graphics.viewport :as viewport]
             [gdl.math :as math]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 

@@ -12,7 +12,7 @@
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
             [gdl.graphics.texture :as texture]
-            [gdl.graphics.viewport]
+            [clojure.graphics.viewport]
             [gdl.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
@@ -181,8 +181,8 @@
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (gdl.graphics.viewport/update! ui-viewport    width height {:center? true})
-  (gdl.graphics.viewport/update! world-viewport width height {:center? false}))
+  (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
+  (clojure.graphics.viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
 

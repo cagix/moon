@@ -4,7 +4,7 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [gdl.graphics.viewport :as viewport]
+            [clojure.graphics.viewport :as viewport]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.ctx]
