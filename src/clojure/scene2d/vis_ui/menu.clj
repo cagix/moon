@@ -1,16 +1,16 @@
 (ns clojure.scene2d.vis-ui.menu
-  (:require [clojure.scene2d :as scene2d]
+  (:require [com.kotcrab.vis.ui.widget.menu :as menu]
+            [com.kotcrab.vis.ui.widget.menu-bar :as menu-bar]
+            [com.kotcrab.vis.ui.widget.menu-item :as menu-item]
+            [com.kotcrab.vis.ui.widget.popup-menu :as popup-menu]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.utils.listener :as listener])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)
-           (com.kotcrab.vis.ui.widget Menu
-                                      MenuBar
-                                      MenuItem
-                                      PopupMenu)))
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
@@ -35,7 +35,7 @@
      (.expandX (Cell/.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
-  (let [table (MenuBar/.getTable menu-bar)]
+  (let [table (menu-bar/table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
       (let [update-fn #(str label ": " (update-fn %))]
         (if icon
@@ -43,17 +43,17 @@
           (add-upd-label! table update-fn))))))
 
 (defn- add-menu! [menu-bar {:keys [label items]}]
-  (let [app-menu (Menu. label)]
+  (let [app-menu (menu/create label)]
     (doseq [{:keys [label on-click]} items]
-      (PopupMenu/.addItem app-menu (doto (MenuItem. label)
-                                     (.addListener (listener/change
-                                                    (fn [event actor]
-                                                      (when on-click
-                                                        (on-click actor (stage/get-ctx (event/stage event))))))))))
-    (MenuBar/.addMenu menu-bar app-menu)))
+      (popup-menu/add-item! app-menu (doto (menu-item/create label)
+                                       (.addListener (listener/change
+                                                      (fn [event actor]
+                                                        (when on-click
+                                                          (on-click actor (stage/get-ctx (event/stage event))))))))))
+    (menu-bar/add-menu! menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]
-  (let [menu-bar (MenuBar.)]
+  (let [menu-bar (menu-bar/create)]
     (run! #(add-menu! menu-bar %) menus)
     (add-update-labels! menu-bar update-labels)
-    (MenuBar/.getTable menu-bar)))
+    (menu-bar/table menu-bar)))

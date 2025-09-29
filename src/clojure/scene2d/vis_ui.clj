@@ -14,7 +14,7 @@
                                       VisScrollPane)))
 
 (doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
-                         :actor.type/select-box   clojure.scene2d.vis-ui.select-box/create
+                         :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
                          :actor.type/label        clojure.scene2d.vis-ui.label/create
                          :actor.type/text-field   clojure.scene2d.vis-ui.text-field/create
                          :actor.type/check-box    clojure.scene2d.vis-ui.check-box/create
