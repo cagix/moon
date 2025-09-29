@@ -18,3 +18,12 @@
   ([& {:keys [y-down? world-width world-height]}]
    (doto (create)
      (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
+
+(defn set-position! [^OrthographicCamera this [x y]]
+  (set! (.x (.position this)) (float x))
+  (set! (.y (.position this)) (float y))
+  (.update this))
+
+(defn set-zoom! [^OrthographicCamera this amount]
+  (set! (.zoom this) amount)
+  (.update this))

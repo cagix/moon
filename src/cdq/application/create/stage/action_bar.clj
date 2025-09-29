@@ -1,9 +1,9 @@
 (ns cdq.application.create.stage.action-bar
   (:require [cdq.ui.action-bar]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
-            [clojure.scene2d.ui.button-group :as button-group]))
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create []
   {:actor/type :actor.type/table

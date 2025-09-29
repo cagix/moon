@@ -3,7 +3,7 @@
             [cdq.info :as info]
             [cdq.stage]
             [clojure.repl]
-            [clojure.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 

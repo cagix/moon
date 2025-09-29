@@ -4,14 +4,14 @@
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.ui.inventory]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [clojure.scene2d.ui.image :as image]
-            [clojure.scene2d.utils.drawable :as drawable]
-            [clojure.scene2d.utils.listener :as listener]))
+            [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
+            [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create*
   [stage

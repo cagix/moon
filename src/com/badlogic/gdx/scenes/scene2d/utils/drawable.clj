@@ -1,4 +1,4 @@
-(ns clojure.scene2d.utils.drawable ; => move to ui.image/set-drawable!
+(ns com.badlogic.gdx.scenes.scene2d.utils.drawable ; => move to ui.image/set-drawable!
   (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable

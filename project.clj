@@ -3,7 +3,6 @@
   :dependencies [
                  [com.badlogic.gdx.backends.lwjgl3 "0.1"]
                  [com.badlogicgames.gdx/gdx                   "1.13.5"]
-                 ; src/clojure/gdx.clj
                  ; src/clojure/scene2d/
                  ; src/gdl/maps/tiled
                  [com.badlogic.gdx.graphics.g2d.freetype "0.1"]

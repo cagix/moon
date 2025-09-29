@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require [clojure.gdx]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]

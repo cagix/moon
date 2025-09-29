@@ -9,14 +9,14 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
-            [clojure.input :as input]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.input :as input]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.ui.window :as window]
-            [clojure.scene2d.ui.widget-group :as widget-group]))
+            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
+            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
+            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn do! [ctx] ctx)
 

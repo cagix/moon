@@ -1,8 +1,8 @@
 (ns clojure.scene2d.vis-ui
   (:require [com.kotcrab.vis.ui.vis-ui :as vis-ui]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.disposable :as disposable]
@@ -24,7 +24,7 @@
                          :actor.type/image        clojure.scene2d.vis-ui.image/create}
         :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))
-  (MultiFn/.addMethod clojure.scene2d/build k method-var))
+  (MultiFn/.addMethod com.badlogic.gdx.scenes.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (separator/horizontal))

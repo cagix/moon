@@ -1,6 +1,6 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (defn scroll-pane-cell [viewport-height rows]

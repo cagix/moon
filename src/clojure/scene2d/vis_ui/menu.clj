@@ -3,13 +3,13 @@
             [com.kotcrab.vis.ui.widget.menu-bar :as menu-bar]
             [com.kotcrab.vis.ui.widget.menu-item :as menu-item]
             [com.kotcrab.vis.ui.widget.popup-menu :as popup-menu]
-            [clojure.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [clojure.scene2d.ui.label :as label]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.utils.listener :as listener])
+            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
+            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
 (defn- set-label-text-actor [label text-fn]

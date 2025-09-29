@@ -1,5 +1,5 @@
-(ns clojure.scene2d.ui.button ; -> actor
-  (:require [clojure.scene2d.actor :as actor])
+(ns com.badlogic.gdx.scenes.scene2d.ui.button ; -> actor
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)))
 
 (defn- button-class? [actor]

@@ -1,4 +1,4 @@
-(ns clojure.scene2d.ui.button-group ; ? action-bar
+(ns com.badlogic.gdx.scenes.scene2d.ui.button-group ; ? action-bar
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 

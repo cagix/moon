@@ -3,8 +3,8 @@
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [clojure.string :as str]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 

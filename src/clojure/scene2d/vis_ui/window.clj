@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.window
-  (:require [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ui.table :as table]
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
             [com.kotcrab.vis.ui.widget.vis-window :as vis-window])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label
                                                Window)))

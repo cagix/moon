@@ -1,6 +1,6 @@
 (ns cdq.application.create.stage.message
   (:require [cdq.ui.message]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Actor
