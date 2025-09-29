@@ -1,5 +1,7 @@
 (ns gdl.application
+  (:require clojure.audio)
   (:import (com.badlogic.gdx ApplicationListener
+                             Audio
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)))
@@ -28,3 +30,8 @@
 
 (defn post-runnable! [f]
   (.postRunnable Gdx/app f))
+
+(extend-type Audio
+  clojure.audio/Audio
+  (new-sound [this file-handle]
+    (.newSound this file-handle)))
