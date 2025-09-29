@@ -14,6 +14,7 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
+            [com.badlogic.gdx.graphics.color :as gdx-color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [gdl.math :as math]
@@ -81,25 +82,25 @@
                                                 :target-width 0
                                                 :wrap? false}))
    :draw/ellipse          (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/ellipse! shape-drawer x y radius-x radius-y))
    :draw/filled-ellipse   (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
    :draw/circle           (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/circle! shape-drawer x y radius))
    :draw/filled-circle    (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/filled-circle! shape-drawer x y radius))
    :draw/rectangle        (fn [{:keys [graphics/shape-drawer]} x y w h color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/rectangle! shape-drawer x y w h))
    :draw/filled-rectangle (fn [{:keys [graphics/shape-drawer]} x y w h color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/filled-rectangle! shape-drawer x y w h))
    :draw/arc              (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/arc! shape-drawer
                                      center-x
                                      center-y
@@ -107,7 +108,7 @@
                                      (math/degree->radians start-angle)
                                      (math/degree->radians degree)))
    :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/sector! shape-drawer
                                         center-x
                                         center-y
@@ -115,7 +116,7 @@
                                         (math/degree->radians start-angle)
                                         (math/degree->radians degree)))
    :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
-                            (sd/set-color! shape-drawer color)
+                            (sd/set-color! shape-drawer (gdx-color/float-bits color))
                             (sd/line! shape-drawer sx sy ex ey))})
 
 (defn- create-shape-drawer

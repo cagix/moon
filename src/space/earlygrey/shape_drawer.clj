@@ -1,12 +1,11 @@
 (ns space.earlygrey.shape-drawer
-  (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
 (defprotocol PShapeDrawer
-  (set-color! [_ [r g b a]])
+  (set-color! [_ color-float-bits])
   (with-line-width [_ width draw-fn])
   (arc! [_ center-x center-y radius start-radians radians])
   (circle! [_ x y radius])
@@ -20,8 +19,8 @@
 
 (extend-type ShapeDrawer
   PShapeDrawer
-  (set-color! [this rgba-vec]
-    (.setColor this (color/float-bits rgba-vec)))
+  (set-color! [this color-float-bits]
+    (.setColor this (float color-float-bits)))
 
   (with-line-width [this width draw-fn]
     (let [old-line-width (.getDefaultLineWidth this)]
