@@ -23,10 +23,9 @@
   (add-listener! [_ listener])
   (set-opts! [_ opts]))
 
-(defn toggle-visible! [actor]
-  (set-visible! actor (not (visible? actor))))
-
 (defprotocol Tooltip
   (add-tooltip! [_ tooltip-text-or-text-fn])
   (remove-tooltip! [_]))
 
+(defn toggle-visible! [actor]
+  (set-visible! actor (not (visible? actor))))

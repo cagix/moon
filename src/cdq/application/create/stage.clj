@@ -16,6 +16,12 @@
             clojure.scene2d.ui.stack
             [clojure.scene2d.vis-ui.window :as window]))
 
+; If the stage creates _all_ ui elements (including editor)
+; and only domain elements passed
+; it can reference sub-namespaces
+; and doesnt need to be a protocol?
+; only libgdx dependencies as protocol?
+
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}]

@@ -14,8 +14,8 @@
        (filter java.io.File/.isFile)))
 
 (comment
- (let [from "gdl.grid2d"
-       to   "gdl.grid2d"
+ (let [from "gdl.scene2d"
+       to   "clojure.scene2d"
        files (matching-files ["src" "resources" "test"])]
    (doseq [f files]
      (replace-in-file! f from to)))

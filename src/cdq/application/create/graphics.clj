@@ -14,6 +14,7 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
+            [com.badlogic.gdx.graphics.colors :as colors]
             [gdl.math :as math]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
@@ -373,6 +374,6 @@
   [{:keys [ctx/files
            ctx/graphics]
     :as ctx}]
-  (gdx/def-colors (:colors config))
+  (colors/put! (:colors config))
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
                                (create* graphics))))

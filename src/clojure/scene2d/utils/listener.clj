@@ -1,4 +1,4 @@
-(ns clojure.scene2d.utils.listener
+(ns clojure.scene2d.utils.listener ; => move to actor protocol
   (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
                                                   ClickListener)))
 

@@ -25,6 +25,8 @@
             [clojure.scene2d.ui.widget-group :as widget-group]
 
             [clojure.string :as str]
+            [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
             [com.badlogic.gdx.input.buttons :as input-buttons]
@@ -41,11 +43,8 @@
                              Graphics
                              Input)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Colors
-                                      GL20
+           (com.badlogic.gdx.graphics GL20
                                       Pixmap
                                       Pixmap$Format
                                       Texture
@@ -62,7 +61,6 @@
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (clojure.scene2d Stage)
-           (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 ;;;;; Helpers
@@ -73,12 +71,14 @@
    (> value max) max
    :else value))
 
+; bitmap font
 (defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
       count
       (* (.getLineHeight font))))
 
+; <- to protect from change move to freetype/parameter file~!
 (defn- create-parameter
   [{:keys [size
            min-filter
@@ -89,6 +89,7 @@
     (set! (.magFilter params) mag-filter)
     params))
 
+; <- to protect from change move to bitmap-font file~!
 (defn- configure!
   [^BitmapFont font
    {:keys [scale
@@ -99,6 +100,7 @@
   (.setUseIntegerPositions font use-integer-positions?)
   font)
 
+; to protect from change move ti combad.gdx.utilsviewport file
 (defn- unproject [^FitViewport viewport x y]
   (-> viewport
       (.unproject (vector2/->java x y))
@@ -107,33 +109,25 @@
 ;;;;; API
 
 (defn application [config]
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application. (reify ApplicationListener
-                        (create [_]
-                          ((:create config) {:ctx/audio    Gdx/audio
-                                             :ctx/files    Gdx/files
-                                             :ctx/graphics Gdx/graphics
-                                             :ctx/input    Gdx/input}))
-                        (dispose [_]
-                          ((:dispose config)))
-                        (render [_]
-                          ((:render config)))
-                        (resize [_ width height]
-                          ((:resize config) width height))
-                        (pause [_])
-                        (resume [_]))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setWindowedMode (:width (:windowed-mode config))
-                                          (:height (:windowed-mode config)))
-                        (.setTitle (:title config))
-                        (.setForegroundFPS (:foreground-fps config)))))
+  (lwjgl3-application/set-glfw-async!)
+  (lwjgl3-application/start! (reify ApplicationListener
+                               (create [_]
+                                 ((:create config) {:ctx/audio    (gdx/audio)
+                                                    :ctx/files    (gdx/files)
+                                                    :ctx/graphics (gdx/graphics)
+                                                    :ctx/input    (gdx/input)}))
+                               (dispose [_]
+                                 ((:dispose config)))
+                               (render [_]
+                                 ((:render config)))
+                               (resize [_ width height]
+                                 ((:resize config) width height))
+                               (pause [_])
+                               (resume [_]))
+                             config))
 
 (defn post-runnable! [f]
   (.postRunnable Gdx/app f))
-
-(defn def-colors [colors]
-  (doseq [[name color-params] colors]
-    (Colors/put name (color/->java color-params))))
 
 (defn freetype-font
   [file-handle
