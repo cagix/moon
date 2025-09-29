@@ -3,7 +3,7 @@
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [clojure.disposable :as disposable])
   (:import (clojure.lang MultiFn)

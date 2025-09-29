@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
+  (:require [clojure.gdx]
+            [cdq.db :as db]
             [clojure.files.utils :as files-utils]
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
@@ -7,7 +8,7 @@
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.gdx :as gdx]
+            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.graphics :as graphics]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
@@ -16,7 +17,7 @@
             [clojure.input :as input]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.maps.tiled :as tiled]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx :as gdx-ctx]
@@ -93,9 +94,9 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (graphics/fit-viewport graphics 1440 900 (gdx/orthographic-camera))
+        ui-viewport (graphics/fit-viewport graphics 1440 900 (orthographic-camera/create))
         sprite-batch (graphics/sprite-batch graphics)
-        stage (gdx/stage ui-viewport sprite-batch)
+        stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -108,9 +109,9 @@
                          (graphics/fit-viewport graphics
                                                 world-width
                                                 world-height
-                                                (gdx/orthographic-camera :y-down? false
-                                                                         :world-width world-width
-                                                                         :world-height world-height)))
+                                                (orthographic-camera/create :y-down? false
+                                                                            :world-width world-width
+                                                                            :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

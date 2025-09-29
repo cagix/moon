@@ -4,13 +4,12 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [clojure.gdx :as gdx]
             [clojure.graphics.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx]
             [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.button :as button]
             clojure.scene2d.ui.horizontal-group
             clojure.scene2d.ui.stack
@@ -29,15 +28,15 @@
     clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (gdx/stage (:graphics/ui-viewport graphics)
-                                   (:graphics/batch       graphics))))
+  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
+                                      (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage
       stage/root
       (group/find-actor k)))
 
-(extend-type clojure.scene2d.Stage
+(extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
   cdq.stage/Stage
   (rebuild-actors! [stage db graphics]
     (stage/clear! stage)

@@ -14,12 +14,11 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx :as ctx]
             [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.cell :as cell]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
             [clojure.core-ext :refer [clamp]]
-            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
@@ -43,13 +42,7 @@
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.badlogic.gdx.utils Disposable)
-           (clojure.scene2d Stage)))
-
-(def orthographic-camera orthographic-camera/create)
-
-(defn stage [viewport batch]
-  (Stage. viewport batch))
+           (com.badlogic.gdx.utils Disposable)))
 
 (extend-type Disposable
   clojure.disposable/Disposable
@@ -223,35 +216,6 @@
   (mouse-position [this]
     [(.getX this)
      (.getY this)]))
-
-(extend-type Stage
-  clojure.scene2d.stage/Stage
-  (set-ctx! [stage ctx]
-    (set! (.ctx stage) ctx))
-
-  (get-ctx [stage]
-    (.ctx stage))
-
-  (act! [stage]
-    (.act stage))
-
-  (draw! [stage]
-    (.draw stage))
-
-  (add! [stage actor]
-    (.addActor stage actor))
-
-  (clear! [stage]
-    (.clear stage))
-
-  (root [stage]
-    (.getRoot stage))
-
-  (hit [stage [x y]]
-    (.hit stage x y true))
-
-  (viewport [stage]
-    (.getViewport stage)))
 
 (defn- get-ctx [actor]
   (when-let [stage (actor/get-stage actor)]

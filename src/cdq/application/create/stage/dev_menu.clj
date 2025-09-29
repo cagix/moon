@@ -5,7 +5,7 @@
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 
 (defn ^:private open-editor [db]

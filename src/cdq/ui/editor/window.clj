@@ -13,7 +13,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.window :as window]
             [clojure.scene2d.ui.widget-group :as widget-group]))

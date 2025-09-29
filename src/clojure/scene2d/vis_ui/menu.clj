@@ -6,7 +6,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.event :as event]
             [clojure.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.utils.listener :as listener])

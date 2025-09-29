@@ -3,12 +3,12 @@
             [clojure.disposable :as disposable]
             [clojure.files.utils :as files-utils]
             [com.badlogic.gdx.files :as files]
-            [clojure.gdx :as gdx]
             [clojure.graphics :as graphics]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.bitmap-font :as bitmap-font]
             [clojure.graphics.color :refer [white]]
             [clojure.graphics.orthographic-camera :as camera]
+            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [space.earlygrey.shape-drawer :as sd]
             [clojure.graphics.pixmap :as pixmap]
             [clojure.graphics.texture :as texture]
@@ -288,7 +288,7 @@
   (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
                                                                (:width  ui-viewport)
                                                                (:height ui-viewport)
-                                                               (gdx/orthographic-camera))))
+                                                               (orthographic-camera/create))))
 
 (defn- create-world-viewport
   [{:keys [graphics/core
@@ -300,7 +300,7 @@
                                              (graphics/fit-viewport core
                                                                     world-width
                                                                     world-height
-                                                                    (gdx/orthographic-camera
+                                                                    (orthographic-camera/create
                                                                      :y-down? false
                                                                      :world-width world-width
                                                                      :world-height world-height)))))
