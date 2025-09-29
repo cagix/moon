@@ -1,12 +1,87 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
+                 [com.badlogicgames.gdx/gdx                   "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-platform          "1.13.5" :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
+                 [com.kotcrab.vis/vis-ui "1.5.2"]
+                 [space.earlygrey/shapedrawer "2.5.0"]
+
+                 [com.badlogicgames.gdx/gdx-lwjgl3-angle "1.13.5"]
+
+                 ;[com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.5"]
+                 ; commit 078ba3ca5e13b2ede4c4051f300f6f262a42dd00
+                 ; Author: CuriousTorvald <curioustorvald@gmail.com>
+                 ; Date:   Sun Apr 27 08:58:13 2025 +0900
+                 ;
+                 ;     WORLD1/2 keys for Lwjgl3 backends (#7456)
+                 ;
+                 ;     * WORLD1/2 keys for Lwjgl3 backends
+                 ;
+                 ;     * Apply formatter
+                 ;
+                 ;     ---------
+                 ;
+                 ;     Co-authored-by: GitHub Action <action@github.com>
+                 ;     Co-authored-by: Tomski <tomwojciechowski@asidik.com>
+                 [com.badlogicgames.jlayer/jlayer "1.0.1-gdx"]
+                 [org.jcraft/jorbis "0.0.17"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl-glfw "3.3.3" :classifier "natives-windows"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl-jemalloc "3.3.3" :classifier "natives-windows"]
+                 [org.lwjgl/lwjgl-openal "3.3.3"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl-openal "3.3.3" :classifier "natives-windows"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl-opengl "3.3.3" :classifier "natives-windows"]
+                 [org.lwjgl/lwjgl-stb "3.3.3"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl-stb "3.3.3" :classifier "natives-windows"]
+                 [org.lwjgl/lwjgl "3.3.3"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-linux-arm32"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-linux-arm64"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-linux"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-macos-arm64"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-macos"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-windows-x86"]
+                 [org.lwjgl/lwjgl "3.3.3" :classifier "natives-windows"]
+
+
+
                  [cdq.malli "0.1"]
                  [clojure.rand "0.1"]
-
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
-                 [gdl                       "1.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]
 
