@@ -1,5 +1,5 @@
 (ns cdq.application.dispose
-  (:require [gdl.utils.disposable :as disposable]))
+  (:require [clojure.disposable :as disposable]))
 
 (defn do! [{:keys [ctx/audio
                    ctx/graphics

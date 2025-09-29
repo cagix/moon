@@ -3,7 +3,7 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
-            [gdl.utils.disposable :as disposable])
+            [clojure.disposable :as disposable])
   (:import (clojure.lang MultiFn)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.kotcrab.vis.ui VisUI

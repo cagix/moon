@@ -1,7 +1,7 @@
 (ns cdq.application.create.graphics
   (:require [clojure.files.utils :as files-utils]
             [cdq.graphics]
-            [gdl.utils.disposable :as disposable]
+            [clojure.disposable :as disposable]
             [clojure.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]

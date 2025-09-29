@@ -2,10 +2,10 @@
   (:require [cdq.audio]
             [clojure.audio :as audio]
             [clojure.audio.sound :as sound]
+            [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files :as files]
-            [clojure.java.io :as io]
-            [gdl.utils.disposable :as disposable]))
+            [clojure.java.io :as io]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")

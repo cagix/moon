@@ -1,6 +1,7 @@
 (ns gdl.application
   (:require clojure.audio
             clojure.audio.sound
+            clojure.disposable
             clojure.files
             clojure.files.file-handle)
   (:import (com.badlogic.gdx ApplicationListener
@@ -11,6 +12,7 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
 
 (defn start! [config]
@@ -66,3 +68,8 @@
 
   (path [this]
     (.path this)))
+
+(extend-type Disposable
+  clojure.disposable/Disposable
+  (dispose! [this]
+    (.dispose this)))

@@ -5,7 +5,7 @@
             [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
-            [gdl.utils.disposable :as disposable]
+            [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.maps.tiled :as tiled]))

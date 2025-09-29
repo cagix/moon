@@ -4,7 +4,7 @@
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
-            [gdl.utils.disposable :as disposable]
+            [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.application :as application]

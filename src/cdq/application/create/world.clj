@@ -10,7 +10,7 @@
             [gdl.grid2d :as g2d]
             [gdl.position :as position]
             [gdl.utils :as utils]
-            [gdl.utils.disposable :as disposable]
+            [clojure.disposable :as disposable]
             [gdl.maps.tiled :as tiled]
             [reduce-fsm :as fsm])
   (:import (gdl.math RayCaster)))
