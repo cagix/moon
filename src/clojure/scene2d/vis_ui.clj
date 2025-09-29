@@ -1,15 +1,14 @@
 (ns clojure.scene2d.vis-ui
-  (:require [clojure.scene2d :as scene2d]
+  (:require [com.kotcrab.vis.ui.vis-ui :as vis-ui]
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
+            [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [clojure.disposable :as disposable])
   (:import (clojure.lang MultiFn)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.kotcrab.vis.ui VisUI
-                               VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator
-                                      Tooltip
                                       VisLabel
                                       VisScrollPane)))
 
@@ -42,37 +41,29 @@
     (actor/set-name! name)))
 
 (defn load! [{:keys [skin-scale]}]
-  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose))
-  (VisUI/load (case skin-scale
-                :x1 VisUI$SkinScale/X1
-                :x2 VisUI$SkinScale/X2))
-  (-> (VisUI/getSkin)
-      (.getFont "default-font")
+  ; app crashes during startup before vis-ui/dispose!
+  ; and we do clojure.tools.namespace.refresh -> gui elements not showing.
+  (when (vis-ui/loaded?)
+    (vis-ui/dispose!))
+  (vis-ui/load! skin-scale)
+  (-> (vis-ui/skin)
+      (.getFont "default-font") ; FIXME SKIN !
       .getData
       .markupEnabled
       (set! true))
-  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-  ;Controls whether to fade out tooltip when mouse was moved. (default false)
-  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  (tooltip/set-default-appear-delay-time! 0)
   (reify disposable/Disposable
     (dispose! [_]
-      (VisUI/dispose))))
+      (vis-ui/dispose!))))
 
 (let [update-fn (fn [tooltip-text]
                   (fn [tooltip]
                     (when-not (string? tooltip-text)
-                      (let [actor (Tooltip/.getTarget tooltip)
-                            ; acturs might be initialized without a stage yet so we do when-let
-                            ; FIXME double when-let
+                      (let [actor (tooltip/target tooltip)
                             ctx (when-let [stage (actor/get-stage actor)]
                                   (stage/get-ctx stage))]
-                        (when ctx ; ctx is only set later for update!/draw! ... not at starting of initialisation
-                          (Tooltip/.setText tooltip (str (tooltip-text ctx))))))))]
+                        (when ctx
+                          (tooltip/set-text! tooltip (tooltip-text ctx)))))))]
   (extend-type Actor
     actor/Tooltip
     (add-tooltip! [actor tooltip-text]
@@ -80,18 +71,10 @@
             label (doto (VisLabel. ^CharSequence (str (if text? tooltip-text "")))
                     (.setAlignment (align/k->value :center)))
             update-text! (update-fn tooltip-text)]
-        (doto (proxy [Tooltip] []
-                ; hooking into getWidth because at
-                ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                ; when tooltip position gets calculated we setText (which calls pack) before that
-                ; so that the size is correct for the newly calculated text.
-                (getWidth []
-                  (update-text! this)
-                  (let [^Tooltip this this]
-                    (proxy-super getWidth))))
-          (.setTarget  actor)
-          (.setContent label)))
+        (tooltip/create {:update-fn update-text!
+                         :target actor
+                         :content label}))
       actor)
 
     (remove-tooltip! [actor]
-      (Tooltip/removeTooltip actor))))
+      (tooltip/remove! actor))))

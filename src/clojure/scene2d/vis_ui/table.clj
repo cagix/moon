@@ -1,7 +1,7 @@
 (ns clojure.scene2d.vis-ui.table
-  (:require [clojure.scene2d.ui.table :as table])
-  (:import (com.kotcrab.vis.ui.widget VisTable)))
+  (:require [com.kotcrab.vis.ui.widget.vis-table :as vis-table]
+            [clojure.scene2d.ui.table :as table]))
 
 (defn create [opts]
-  (-> (VisTable.)
+  (-> (vis-table/create)
       (table/set-opts! opts)))
