@@ -1,7 +1,4 @@
-; == 'clojure.gdx' => add sprite-batch/stage/all constructors...
-; => concentrate badlogic in 1 place
-; or 'clojure.gdl' ?
-(ns gdl.application
+(ns clojure.gdx
   (:require clojure.audio
             clojure.audio.sound
             clojure.disposable
@@ -36,7 +33,7 @@
 
 ;;;;;
 
-(defn start! [config]
+(defn application [config]
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]

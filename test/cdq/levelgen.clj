@@ -7,7 +7,7 @@
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.application :as application]
+            [clojure.gdx :as gdx]
             [gdl.graphics :as graphics]
             [gdl.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
@@ -187,7 +187,7 @@
 (def state (atom nil))
 
 (defn -main []
-  (application/start!
+  (gdx/application
    {:title "Levelgen test"
     :windowed-mode {:width 1440 :height 900}
     :foreground-fps 60

@@ -1,5 +1,5 @@
 (ns gdl.application-test
-  (:require [gdl.application :as application])
+  (:require [clojure.gdx :as gdx])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx ApplicationListener)))
 
@@ -83,4 +83,4 @@
              })
 
 (defn -main []
-  (application/start! config))
+  (gdx/application config))

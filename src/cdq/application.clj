@@ -1,7 +1,7 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [gdl.application :as application])
+            [clojure.gdx :as gdx]
+            [clojure.java.io :as io])
   (:gen-class))
 
 (def state (atom nil))
@@ -12,7 +12,7 @@
         dispose (requiring-resolve (:dispose config))
         render-pipeline (map requiring-resolve (:render config))
         resize (requiring-resolve (:resize config))]
-    (application/start!
+    (gdx/application
      (assoc config
             :create (fn [context]
                       (reset! state (reduce (fn [ctx f]
