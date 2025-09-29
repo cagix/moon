@@ -383,6 +383,7 @@
   [{:keys [ctx/files
            ctx/graphics]
     :as ctx}]
-  (colors/put! (:colors config))
+  (doseq [[name rgba] (:colors config)]
+    (colors/put! name (color/create rgba)))
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
                                (create* graphics))))
