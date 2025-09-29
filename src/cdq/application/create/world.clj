@@ -6,14 +6,14 @@
             [cdq.world.grid.cell :as cell]
             [cdq.world :as world]
             [gdl.math.geom :as geom]
+            [gdl.math.raycaster :as raycaster]
             [gdl.math.vector2 :as v]
             [gdl.grid2d :as g2d]
             [gdl.position :as position]
             [gdl.utils :as utils]
             [clojure.disposable :as disposable]
             [gdl.maps.tiled :as tiled]
-            [reduce-fsm :as fsm])
-  (:import (gdl.math RayCaster)))
+            [reduce-fsm :as fsm]))
 
 (defn- body->occupied-cells
   [grid
@@ -197,15 +197,6 @@
     :cell-w cell-size
     :cell-h cell-size}))
 
-(defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]
-  (RayCaster/rayBlocked (double start-x)
-                        (double start-y)
-                        (double target-x)
-                        (double target-y)
-                        width
-                        height
-                        arr))
-
 (defn- create-double-ray-endpositions
   [[start-x start-y]
    [target-x target-y]
@@ -226,8 +217,8 @@
 (defn- path-blocked? [raycaster start target path-w]
   (let [[start1,target1,start2,target2] (create-double-ray-endpositions start target path-w)]
     (or
-     (blocked? raycaster start1 target1)
-     (blocked? raycaster start2 target2))))
+     (raycaster/blocked? raycaster start1 target1)
+     (raycaster/blocked? raycaster start2 target2))))
 
 (defn- create-explored-tile-corners [width height]
   (atom (g2d/create-grid width height (constantly false))))
@@ -246,15 +237,15 @@
 (defrecord World []
   world/RayCaster
   (ray-blocked? [{:keys [world/raycaster]} start target]
-    (blocked? raycaster start target))
+    (raycaster/blocked? raycaster start target))
 
   (path-blocked? [{:keys [world/raycaster]} start target path-w]
     (path-blocked? raycaster start target path-w))
 
   (line-of-sight? [{:keys [world/raycaster]} source target]
-    (not (blocked? raycaster
-                   (:body/position (:entity/body source))
-                   (:body/position (:entity/body target)))))
+    (not (raycaster/blocked? raycaster
+                             (:body/position (:entity/body source))
+                             (:body/position (:entity/body target)))))
 
   disposable/Disposable
   (dispose! [{:keys [world/tiled-map]}]
