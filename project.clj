@@ -7,7 +7,7 @@
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]
-                 [space.earlygrey/shapedrawer "2.5.0"]
+                 [space.earlygrey.shape-drawer "0.1"]
 
                  [cdq.malli "0.1"]
                  [clojure.rand "0.1"]
