@@ -1,4 +1,4 @@
-(ns gdl.scene2d.ui.button
+(ns gdl.scene2d.ui.button ; -> actor
   (:require [gdl.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)))
 
