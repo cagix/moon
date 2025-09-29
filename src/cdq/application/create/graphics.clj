@@ -20,14 +20,19 @@
             [gdl.math :as math]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
+(defmacro ^:private with-line-width [shape-drawer width & exprs]
+  `(let [old-line-width# (sd/default-line-width ~shape-drawer)]
+     (sd/set-default-line-width! ~shape-drawer (* ~width old-line-width#))
+     ~@exprs
+     (sd/set-default-line-width! ~shape-drawer old-line-width#)))
+
 (def ^:private draw-fns
   {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
                                 :as graphics}
                                width
                                draws]
-                            (sd/with-line-width shape-drawer width
-                              (fn []
-                                (cdq.graphics/handle-draws! graphics draws))))
+                            (with-line-width shape-drawer width
+                              (cdq.graphics/handle-draws! graphics draws)))
    :draw/grid             (fn
                             [graphics leftx bottomy gridw gridh cellw cellh color]
                             (let [w (* (float gridw) (float cellw))
@@ -160,11 +165,10 @@
     (batch/set-color! batch color/white)
     (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
     (batch/begin! batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (fn []
-        (reset! unit-scale world-unit-scale)
-        (f)
-        (reset! unit-scale 1)))
+    (with-line-width shape-drawer world-unit-scale
+      (reset! unit-scale world-unit-scale)
+      (f)
+      (reset! unit-scale 1))
     (batch/end! batch))
 
   (draw-tiled-map!
