@@ -15,6 +15,7 @@
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics.colors :as colors]
+            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [gdl.math :as math]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
@@ -256,8 +257,8 @@
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]
-  (assoc graphics :graphics/default-font (gdx/freetype-font (:file-handle default-font)
-                                                            (:params default-font))))
+  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
+                                                                 (:params default-font))))
 
 (defn- create-textures
   [{:keys [graphics/core]

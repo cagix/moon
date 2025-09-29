@@ -24,11 +24,11 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
 
-            [clojure.string :as str]
+            [clojure.core-ext :refer [clamp]]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
             [com.badlogic.gdx.graphics.color :as color]
-            [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
             [com.badlogic.gdx.math.vector2 :as vector2]
@@ -53,8 +53,6 @@
                                           BitmapFont
                                           TextureRegion
                                           SpriteBatch)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
@@ -62,43 +60,6 @@
            (com.badlogic.gdx.utils.viewport FitViewport)
            (clojure.scene2d Stage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-;;;;; Helpers
-
-(defn- clamp [value min max]
-  (cond
-   (< value min) min
-   (> value max) max
-   :else value))
-
-; bitmap font
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-; <- to protect from change move to freetype/parameter file~!
-(defn- create-parameter
-  [{:keys [size
-           min-filter
-           mag-filter]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    (set! (.minFilter params) min-filter)
-    (set! (.magFilter params) mag-filter)
-    params))
-
-; <- to protect from change move to bitmap-font file~!
-(defn- configure!
-  [^BitmapFont font
-   {:keys [scale
-           enable-markup?
-           use-integer-positions?]}]
-  (.setScale (.getData font) scale)
-  (set! (.markupEnabled (.getData font)) enable-markup?)
-  (.setUseIntegerPositions font use-integer-positions?)
-  font)
 
 ; to protect from change move ti combad.gdx.utilsviewport file
 (defn- unproject [^FitViewport viewport x y]
@@ -128,21 +89,6 @@
 
 (defn post-runnable! [f]
   (.postRunnable Gdx/app f))
-
-(defn freetype-font
-  [file-handle
-   {:keys [size
-           quality-scaling
-           enable-markup?
-           use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator (create-parameter {:size (* size quality-scaling)
-                                                         ; :texture-filter/linear because scaling to world-units
-                                                         :min-filter (texture-filter/k->value :linear)
-                                                         :mag-filter (texture-filter/k->value :linear)}))]
-    (configure! font {:scale (/ quality-scaling)
-                      :enable-markup? enable-markup?
-                      :use-integer-positions? use-integer-positions?})))
 
 (defn orthographic-camera
   ([]
@@ -255,7 +201,7 @@
              batch
              text
              (float x)
-             (float (+ y (if up? (text-height font text) 0)))
+             (float (+ y (if up? (bitmap-font/text-height font text) 0)))
              (float target-width)
              (get align/k->value (or h-align :center))
              wrap?)
