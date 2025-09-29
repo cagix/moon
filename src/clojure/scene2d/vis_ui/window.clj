@@ -1,9 +1,9 @@
 (ns clojure.scene2d.vis-ui.window
   (:require [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.ui.table :as table])
+            [clojure.scene2d.ui.table :as table]
+            [com.kotcrab.vis.ui.widget.vis-window :as vis-window])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label
-                                               Window)
-           (com.kotcrab.vis.ui.widget VisWindow)))
+                                               Window)))
 
 (defn create
   [{:keys [title
@@ -12,11 +12,13 @@
            center?
            close-on-escape?]
     :as opts}]
-  (let [window (doto (VisWindow. ^String title true) ; true = showWindowBorder
-                 (.setModal (boolean modal?)))]
-    (when close-button?    (.addCloseButton window))
-    (when center?          (.centerWindow   window))
-    (when close-on-escape? (.closeOnEscape  window))
+  (let [window (vis-window/create
+                {:title title
+                 :close-button? close-button?
+                 :center? center?
+                 :close-on-escape? close-on-escape?
+                 :show-window-border? true})]
+    (.setModal window (boolean modal?))
     (table/set-opts! window opts)))
 
 ; TODO buggy FIXME
@@ -26,5 +28,5 @@
   (when (instance? Label actor)
     (when-let [p (actor/parent actor)]
       (when-let [p (actor/parent p)]
-        (and (instance? VisWindow actor)
+        (and (instance? Window actor)
              (= (.getTitleLabel ^Window p) actor))))))

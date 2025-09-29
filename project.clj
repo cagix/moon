@@ -2,13 +2,9 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.badlogic.gdx.backends.lwjgl3 "0.1"]
-
                  [com.badlogicgames.gdx/gdx                   "1.13.5"]
-
                  [com.badlogic.gdx.graphics.g2d.freetype "0.1"]
-
-                 [com.kotcrab.vis/vis-ui "1.5.2"]
-
+                 [com.kotcrab.vis.ui "0.1"]
                  [space.earlygrey.shape-drawer "0.1"]
 
                  [cdq.malli "0.1"]

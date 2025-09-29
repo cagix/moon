@@ -3,8 +3,8 @@
             [clojure.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.scene2d.utils.listener :as listener])
-  (:import (com.kotcrab.vis.ui.widget VisTextButton)))
+            [clojure.scene2d.utils.listener :as listener]
+            [com.kotcrab.vis.ui.widget.vis-text-button :as vis-text-button]))
 
 (defn create
   ([text on-clicked]
@@ -13,7 +13,7 @@
   ([{:keys [text
             on-clicked]
      :as opts}]
-   (let [actor (doto (VisTextButton. (str text))
+   (let [actor (doto (vis-text-button/create text)
                  (.addListener (listener/change
                                 (fn [event actor]
                                   (on-clicked actor (stage/get-ctx (event/stage event))))))

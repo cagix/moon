@@ -5,12 +5,12 @@
             [clojure.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
-            [clojure.disposable :as disposable])
+            [clojure.disposable :as disposable]
+            [com.kotcrab.vis.ui.widget.separator :as separator]
+            [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
+            [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane])
   (:import (clojure.lang MultiFn)
-           (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.kotcrab.vis.ui.widget Separator
-                                      VisLabel
-                                      VisScrollPane)))
+           (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
@@ -27,17 +27,17 @@
   (MultiFn/.addMethod clojure.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
-  (Separator. "default"))
+  (separator/horizontal))
 
 (defmethod scene2d/build :actor.type/separator-vertical [_]
-  (Separator. "vertical"))
+  (separator/vertical))
 
 (defmethod scene2d/build :actor.type/scroll-pane
   [{:keys [scroll-pane/actor
            actor/name]}]
-  (doto (VisScrollPane. actor)
-    (.setFlickScroll false)
-    (.setFadeScrollBars false)
+  (doto (vis-scroll-pane/create actor
+                                {:flick-scroll? false
+                                 :fade-scroll-bars? false})
     (actor/set-name! name)))
 
 (defn load! [{:keys [skin-scale]}]
@@ -68,7 +68,7 @@
     actor/Tooltip
     (add-tooltip! [actor tooltip-text]
       (let [text? (string? tooltip-text)
-            label (doto (VisLabel. ^CharSequence (str (if text? tooltip-text "")))
+            label (doto (vis-label/create (if text? tooltip-text ""))
                     (.setAlignment (align/k->value :center)))
             update-text! (update-fn tooltip-text)]
         (tooltip/create {:update-fn update-text!

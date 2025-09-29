@@ -1,5 +1,0 @@
-(ns com.kotcrab.vis.ui.widget.vis-label
-  (:import (com.kotcrab.vis.ui.widget VisLabel)))
-
-(defn create [text]
-  (VisLabel. ^CharSequence text))
