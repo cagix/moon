@@ -1,9 +1,17 @@
+; == 'clojure.gdx' => add sprite-batch/stage/all constructors...
+; => concentrate badlogic in 1 place
+; or 'clojure.gdl' ?
 (ns gdl.application
   (:require clojure.audio
             clojure.audio.sound
             clojure.disposable
             clojure.files
-            clojure.files.file-handle)
+            clojure.files.file-handle
+            clojure.graphics.batch
+            clojure.graphics.bitmap-font
+            clojure.graphics.texture-region
+            [clojure.string :as str]
+            [com.badlogic.gdx.utils.align :as align])
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -12,8 +20,21 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          BitmapFont
+                                          TextureRegion)
            (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
+
+;;;;;
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+;;;;;
 
 (defn start! [config]
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
@@ -73,3 +94,55 @@
   clojure.disposable/Disposable
   (dispose! [this]
     (.dispose this)))
+
+(extend-type Batch
+  clojure.graphics.batch/Batch
+  (draw! [this texture-region x y [w h] rotation]
+    (.draw this
+           texture-region
+           x
+           y
+           (/ (float w) 2) ; origin-x
+           (/ (float h) 2) ; origin-y
+           w
+           h
+           1 ; scale-x
+           1 ; scale-y
+           rotation))
+
+  (set-color! [this [r g b a]]
+    (.setColor this r g b a))
+
+  (set-projection-matrix! [this matrix]
+    (.setProjectionMatrix this matrix))
+
+  (begin! [this]
+    (.begin this))
+
+  (end! [this]
+    (.end this)))
+
+(extend-type BitmapFont
+  clojure.graphics.bitmap-font/BitmapFont
+  (draw! [font
+          batch
+          {:keys [scale text x y up? h-align target-width wrap?]}]
+    {:pre [(or (nil? h-align)
+               (contains? align/k->value h-align))]}
+    (let [old-scale (.scaleX (.getData font))]
+      (.setScale (.getData font) (float (* old-scale scale)))
+      (.draw font
+             batch
+             text
+             (float x)
+             (float (+ y (if up? (text-height font text) 0)))
+             (float target-width)
+             (get align/k->value (or h-align :center))
+             wrap?)
+      (.setScale (.getData font) (float old-scale)))))
+
+(extend-type TextureRegion
+  clojure.graphics.texture-region/TextureRegion
+  (dimensions [texture-region]
+    [(.getRegionWidth  texture-region)
+     (.getRegionHeight texture-region)]))

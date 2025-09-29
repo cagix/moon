@@ -10,7 +10,7 @@
             [gdl.application :as application]
             [gdl.graphics :as graphics]
             [gdl.graphics.orthographic-camera :as camera]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]
             [gdl.input :as input]

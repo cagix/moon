@@ -1,4 +1,4 @@
-(ns gdl.graphics.color)
+(ns clojure.graphics.color)
 
 (def black [0 0 0 1])
 (def white [1 1 1 1])

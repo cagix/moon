@@ -6,7 +6,7 @@
             [cdq.stats.ops :as ops]
             [cdq.val-max :as val-max]
             [clojure.string :as str]
-            [gdl.graphics.color :as color]))
+            [clojure.graphics.color :as color]))
 
 (defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}

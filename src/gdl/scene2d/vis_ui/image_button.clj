@@ -1,5 +1,5 @@
 (ns gdl.scene2d.vis-ui.image-button
-  (:require [gdl.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.graphics.texture-region :as texture-region]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.event :as event]
             [gdl.scene2d.stage :as stage]
