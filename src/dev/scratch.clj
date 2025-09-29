@@ -5,7 +5,7 @@
 
 (comment
 
- (clojure.gdx/post-runnable!
+ (com.badlogic.gdx/post-runnable!
   (fn []
     (let [{:keys [ctx/db]
            :as ctx} @state]

@@ -5,3 +5,6 @@
 (defn files    [] Gdx/files)
 (defn graphics [] Gdx/graphics)
 (defn input    [] Gdx/input)
+
+(defn post-runnable! [f]
+  (.postRunnable Gdx/app f))

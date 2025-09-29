@@ -25,7 +25,11 @@
 
             [clojure.core-ext :refer [clamp]]
             [com.badlogic.gdx :as gdx]
+
+            [org.lwjgl.system.configuration :as lwjgl-system]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
+            [com.badlogic.gdx.backends.lwjgl3.application.configuration :as config]
+
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
@@ -59,7 +63,7 @@
            (clojure.scene2d Stage)))
 
 (defn application [config]
-  (lwjgl3-application/set-glfw-async!)
+  (lwjgl-system/set-glfw-library-name! "glfw_async")
   (lwjgl3-application/start! (reify ApplicationListener
                                (create [_]
                                  ((:create config) {:ctx/audio    (gdx/audio)
@@ -74,10 +78,7 @@
                                  ((:resize config) width height))
                                (pause [_])
                                (resume [_]))
-                             config))
-
-(defn post-runnable! [f]
-  (.postRunnable Gdx/app f))
+                             (config/create config)))
 
 (def orthographic-camera orthographic-camera/create)
 
