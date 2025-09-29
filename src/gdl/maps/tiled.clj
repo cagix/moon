@@ -1,5 +1,5 @@
 (ns gdl.maps.tiled
-  (:require [gdl.maps.map-properties :as properties]
+  (:require [com.badlogic.gdx.maps.map-properties :as properties]
             [gdl.maps.tiled.tiles :as tiles])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer

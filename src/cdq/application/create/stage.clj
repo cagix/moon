@@ -4,6 +4,7 @@
             [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
+            [clojure.gdx :as gdx]
             [clojure.graphics.viewport :as viewport]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
@@ -22,8 +23,8 @@
     gdl.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
-                                      (:graphics/batch       graphics))))
+  (assoc ctx :ctx/stage (gdx/stage (:graphics/ui-viewport graphics)
+                                   (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage

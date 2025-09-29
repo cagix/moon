@@ -1,32 +1,12 @@
-(ns gdl.scene2d.stage
-  (:import (gdl.scene2d Stage)))
+(ns gdl.scene2d.stage)
 
-(defn create [viewport batch]
-  (Stage. viewport batch))
-
-(defn set-ctx! [^Stage stage ctx]
-  (set! (.ctx stage) ctx))
-
-(defn get-ctx [^Stage stage]
-  (.ctx stage))
-
-(defn act! [^Stage stage]
-  (.act stage))
-
-(defn draw! [^Stage stage]
-  (.draw stage))
-
-(defn add! [^Stage stage actor]
-  (.addActor stage actor))
-
-(defn clear! [^Stage stage]
-  (.clear stage))
-
-(defn root [^Stage stage]
-  (.getRoot stage))
-
-(defn hit [^Stage stage [x y]]
-  (.hit stage x y true))
-
-(defn viewport [^Stage stage]
-  (.getViewport stage))
+(defprotocol Stage
+  (set-ctx! [_ ctx])
+  (get-ctx [_])
+  (act! [_])
+  (draw! [_])
+  (add! [_ actor])
+  (clear! [_])
+  (root [_])
+  (hit [_ [x y]])
+  (viewport [_]))

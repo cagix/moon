@@ -14,6 +14,9 @@
             clojure.graphics.texture-region
             clojure.graphics.viewport
             clojure.input
+
+            gdl.scene2d.stage
+
             [clojure.string :as str]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
@@ -47,6 +50,7 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
+           (gdl.scene2d Stage)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -166,6 +170,9 @@
 
 (defn shape-drawer [batch texture-region]
   (ShapeDrawer. batch texture-region))
+
+(defn stage [viewport batch]
+  (Stage. viewport batch))
 
 ;;;;; extend-types
 
@@ -444,3 +451,32 @@
   (mouse-position [this]
     [(.getX this)
      (.getY this)]))
+
+(extend-type Stage
+  gdl.scene2d.stage/Stage
+  (set-ctx! [stage ctx]
+    (set! (.ctx stage) ctx))
+
+  (get-ctx [stage]
+    (.ctx stage))
+
+  (act! [stage]
+    (.act stage))
+
+  (draw! [stage]
+    (.draw stage))
+
+  (add! [stage actor]
+    (.addActor stage actor))
+
+  (clear! [stage]
+    (.clear stage))
+
+  (root [stage]
+    (.getRoot stage))
+
+  (hit [stage [x y]]
+    (.hit stage x y true))
+
+  (viewport [stage]
+    (.getViewport stage)))

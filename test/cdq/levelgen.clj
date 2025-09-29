@@ -91,7 +91,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (graphics/fit-viewport graphics 1440 900 (gdx/orthographic-camera))
         sprite-batch (graphics/sprite-batch graphics)
-        stage (stage/create ui-viewport sprite-batch)
+        stage (gdx/stage ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
