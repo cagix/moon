@@ -1,7 +1,7 @@
 (ns cdq.application.create.audio
   (:require [cdq.audio]
-            [clojure.audio :as audio]
-            [clojure.audio.sound :as sound]
+            [com.badlogic.gdx.audio :as audio]
+            [com.badlogic.gdx.audio.sound :as sound]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files :as files]

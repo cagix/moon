@@ -1,7 +1,5 @@
 (ns clojure.gdx
-  (:require clojure.audio
-            clojure.audio.sound
-            clojure.disposable
+  (:require clojure.disposable
             clojure.files
             clojure.files.file-handle
             clojure.graphics
@@ -32,11 +30,9 @@
             [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.viewport :as viewport]
             [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
-  (:import (com.badlogic.gdx Audio
-                             Files
+  (:import (com.badlogic.gdx Files
                              Graphics
                              Input)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
                                       Pixmap
@@ -57,18 +53,6 @@
 
 (defn stage [viewport batch]
   (Stage. viewport batch))
-
-;;;;; extend-types
-
-(extend-type Audio
-  clojure.audio/Audio
-  (new-sound [this file-handle]
-    (.newSound this file-handle)))
-
-(extend-type Sound
-  clojure.audio.sound/Sound
-  (play! [this]
-    (.play this)))
 
 (extend-type Files
   clojure.files/Files
