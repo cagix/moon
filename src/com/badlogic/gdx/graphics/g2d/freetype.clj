@@ -9,12 +9,13 @@
    {:keys [size
            quality-scaling
            enable-markup?
-           use-integer-positions?]}]
+           use-integer-positions?
+           min-filter
+           mag-filter]}]
   (let [generator (FreeTypeFontGenerator. file-handle)
         font (.generateFont generator (parameter/create {:size (* size quality-scaling)
-                                                         ; :texture-filter/linear because scaling to world-units
-                                                         :min-filter (texture-filter/k->value :linear)
-                                                         :mag-filter (texture-filter/k->value :linear)}))]
+                                                         :min-filter (texture-filter/k->value min-filter)
+                                                         :mag-filter (texture-filter/k->value mag-filter)}))]
     (font/configure! font {:scale (/ quality-scaling)
                            :enable-markup? enable-markup?
                            :use-integer-positions? use-integer-positions?})))
