@@ -1,13 +1,16 @@
 (ns gdl.application
-  (:require clojure.audio)
+  (:require clojure.audio
+            clojure.audio.sound)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)))
+                                             Lwjgl3ApplicationConfiguration)
+           (org.lwjgl.system Configuration)))
 
 (defn start! [config]
-  (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async")
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
                           ((:create config) {:ctx/audio    Gdx/audio
@@ -35,3 +38,8 @@
   clojure.audio/Audio
   (new-sound [this file-handle]
     (.newSound this file-handle)))
+
+(extend-type Sound
+  clojure.audio.sound/Sound
+  (play! [this]
+    (.play this)))

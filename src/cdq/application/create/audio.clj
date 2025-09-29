@@ -1,9 +1,9 @@
 (ns cdq.application.create.audio
   (:require [cdq.audio]
             [clojure.audio :as audio]
+            [clojure.audio.sound :as sound]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.audio.sound :as sound]
             [gdl.files :as files]
             [gdl.utils.disposable :as disposable]))
 
