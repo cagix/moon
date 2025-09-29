@@ -1,4 +1,4 @@
-package gdl.maps.tiled.renderers;
+package com.badlogic.gdx.maps.tiled.renderers;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.C1;
 import static com.badlogic.gdx.graphics.g2d.Batch.C2;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 
-import gdl.maps.tiled.renderers.orthogonal.ColorSetter;
+import com.badlogic.gdx.maps.tiled.renderers.orthogonal.ColorSetter;
 
 public class Orthogonal extends BatchTiledMapRenderer {
 

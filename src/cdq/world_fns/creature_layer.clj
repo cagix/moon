@@ -1,5 +1,5 @@
 (ns cdq.world-fns.creature-layer
-  (:require [gdl.maps.tiled :as tiled]))
+  (:require [com.badlogic.gdx.maps.tiled :as tiled]))
 
 ; out of memory error -> each texture region is a new object
 ; so either memoize on id or property/image already calculated !? idk

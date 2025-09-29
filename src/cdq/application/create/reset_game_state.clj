@@ -8,7 +8,7 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.maps.tiled :as tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- spawn-enemies!
   [{:keys [ctx/db

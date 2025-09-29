@@ -1,4 +1,4 @@
-package gdl.maps.tiled.renderers.orthogonal;
+package com.badlogic.gdx.maps.tiled.renderers.orthogonal;
 
 import com.badlogic.gdx.graphics.Color;
 

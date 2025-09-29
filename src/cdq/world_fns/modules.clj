@@ -6,7 +6,7 @@
             [gdl.grid2d.caves :as caves]
             [gdl.grid2d.nads :as nads]
             [gdl.grid2d.utils :as helper]
-            [gdl.maps.tiled :as tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- add-scale [w]
   (assoc w :scale [32 20]))

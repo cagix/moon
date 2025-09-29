@@ -1,8 +1,8 @@
-(ns gdl.maps.tiled.renderers.orthogonal
+(ns com.badlogic.gdx.maps.tiled.renderers.orthogonal
   (:require [com.badlogic.gdx.graphics.color :as color]
-            [gdl.maps.tiled :as tiled])
-  (:import (gdl.maps.tiled.renderers Orthogonal)
-           (gdl.maps.tiled.renderers.orthogonal ColorSetter)))
+            [com.badlogic.gdx.maps.tiled :as tiled])
+  (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)
+           (com.badlogic.gdx.maps.tiled.renderers.orthogonal ColorSetter)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]
   (let [^Orthogonal renderer (tiled-map-renderer tiled-map)

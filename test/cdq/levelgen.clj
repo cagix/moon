@@ -17,8 +17,8 @@
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [gdl.maps.tiled :as tiled]
-            [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [com.badlogic.gdx.maps.tiled :as tiled]
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx :as gdx-ctx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [org.lwjgl.system.configuration :as lwjgl-system])

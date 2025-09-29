@@ -18,7 +18,7 @@
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
             [gdl.math :as math]
-            [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (defmacro ^:private with-line-width [shape-drawer width & exprs]
   `(let [old-line-width# (sd/default-line-width ~shape-drawer)]

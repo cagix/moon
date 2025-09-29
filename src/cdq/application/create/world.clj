@@ -12,7 +12,7 @@
             [gdl.position :as position]
             [gdl.utils :as utils]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [gdl.maps.tiled :as tiled]
+            [com.badlogic.gdx.maps.tiled :as tiled]
             [reduce-fsm :as fsm]))
 
 (defn- body->occupied-cells

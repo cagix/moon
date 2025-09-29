@@ -1,4 +1,4 @@
-(ns gdl.maps.tiled.tiles
+(ns com.badlogic.gdx.maps.tiled.tiles
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
 

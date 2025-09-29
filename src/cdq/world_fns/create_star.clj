@@ -3,7 +3,7 @@
             [clojure.rand :as rand]
             [gdl.grid2d.utils :as helper]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [gdl.maps.tiled :as tiled]))
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- assoc-transition-cells [grid]
   (let [grid (reduce #(assoc %1 %2 :transition) grid
