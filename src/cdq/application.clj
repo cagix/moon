@@ -1,8 +1,34 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
+            [org.lwjgl.system.configuration :as lwjgl-system])
+  (:import (com.badlogic.gdx ApplicationListener))
   (:gen-class))
+
+(deftype AtomStateApp [state create-pipeline dispose render-pipeline resize]
+  ApplicationListener
+  (create [_]
+    (reset! state (reduce (fn [ctx f]
+                            (f ctx))
+                          {:ctx/audio    (gdx/audio)
+                           :ctx/files    (gdx/files)
+                           :ctx/graphics (gdx/graphics)
+                           :ctx/input    (gdx/input)}
+                          create-pipeline)))
+  (dispose [_]
+    (dispose @state))
+  (render [_]
+    (swap! state (fn [ctx]
+                   (reduce (fn [ctx f]
+                             (f ctx))
+                           ctx
+                           render-pipeline))))
+  (resize [_ width height]
+    (resize @state width height))
+  (pause [_])
+  (resume [_]))
 
 (def state (atom nil))
 
@@ -12,20 +38,10 @@
         dispose (requiring-resolve (:dispose config))
         render-pipeline (map requiring-resolve (:render config))
         resize (requiring-resolve (:resize config))]
-    (gdx/application
-     (assoc config
-            :create (fn [context]
-                      (reset! state (reduce (fn [ctx f]
-                                              (f ctx))
-                                            context
-                                            create-pipeline)))
-            :dispose (fn []
-                       (dispose @state))
-            :render (fn []
-                      (swap! state (fn [ctx]
-                                     (reduce (fn [ctx f]
-                                               (f ctx))
-                                             ctx
-                                             render-pipeline))))
-            :resize (fn [ width height]
-                      (resize @state width height))))))
+    (lwjgl-system/set-glfw-library-name! "glfw_async")
+    (lwjgl/application (->AtomStateApp state
+                                       create-pipeline
+                                       dispose
+                                       render-pipeline
+                                       resize)
+                       config)))

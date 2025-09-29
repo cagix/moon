@@ -1,5 +1,5 @@
 (ns gdl.application-test
-  (:require [clojure.gdx :as gdx])
+  ;(:require [clojure.gdx :as gdx])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx ApplicationListener)))
 
@@ -18,7 +18,7 @@
                           (resume [_]))
                         (Lwjgl3WindowConfiguration.)))
 
-(def config {:title "Fooz Baaz"
+#_(def config {:title "Fooz Baaz"
              :windowed-mode {:width 800
                              :height 600}
              ; Sets the target framerate for the application. The CPU sleeps as needed. Must be positive. Use 0 to never sleep. Default is 0
@@ -82,5 +82,5 @@
 
              })
 
-(defn -main []
+#_(defn -main []
   (gdx/application config))

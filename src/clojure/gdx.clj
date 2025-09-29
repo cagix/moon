@@ -22,12 +22,7 @@
             [clojure.scene2d.ui.cell :as cell]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
-
             [clojure.core-ext :refer [clamp]]
-            [com.badlogic.gdx :as gdx]
-
-            [org.lwjgl.system.configuration :as lwjgl-system]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
@@ -37,10 +32,8 @@
             [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.viewport :as viewport]
             [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Audio
+  (:import (com.badlogic.gdx Audio
                              Files
-                             Gdx
                              Graphics
                              Input)
            (com.badlogic.gdx.audio Sound)
@@ -59,24 +52,6 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.badlogic.gdx.utils Disposable)
            (clojure.scene2d Stage)))
-
-(defn application [config]
-  (lwjgl-system/set-glfw-library-name! "glfw_async")
-  (lwjgl/application (reify ApplicationListener
-                       (create [_]
-                         ((:create config) {:ctx/audio    (gdx/audio)
-                                            :ctx/files    (gdx/files)
-                                            :ctx/graphics (gdx/graphics)
-                                            :ctx/input    (gdx/input)}))
-                       (dispose [_]
-                         ((:dispose config)))
-                       (render [_]
-                         ((:render config)))
-                       (resize [_ width height]
-                         ((:resize config) width height))
-                       (pause [_])
-                       (resume [_]))
-                     config))
 
 (def orthographic-camera orthographic-camera/create)
 

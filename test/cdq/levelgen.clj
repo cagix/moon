@@ -18,7 +18,11 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [gdl.maps.tiled :as tiled]
-            [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
+            [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [com.badlogic.gdx :as gdx-ctx]
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
+            [org.lwjgl.system.configuration :as lwjgl-system])
+  (:import (com.badlogic.gdx ApplicationListener)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -187,15 +191,21 @@
 (def state (atom nil))
 
 (defn -main []
-  (gdx/application
-   {:title "Levelgen test"
-    :windowed-mode {:width 1440 :height 900}
-    :foreground-fps 60
-    :create (fn [context]
-              (reset! state (create! context)))
-    :dispose (fn []
-               (dispose! @state))
-    :render (fn []
-              (swap! state render!))
-    :resize (fn [width height]
-              (resize! @state width height))}))
+  (lwjgl-system/set-glfw-library-name! "glfw_async")
+  (lwjgl/application (reify ApplicationListener
+                       (create [_]
+                         (reset! state (create! {:ctx/audio    (gdx-ctx/audio)
+                                                 :ctx/files    (gdx-ctx/files)
+                                                 :ctx/graphics (gdx-ctx/graphics)
+                                                 :ctx/input    (gdx-ctx/input)})))
+                       (dispose [_]
+                         (dispose! @state))
+                       (render [_]
+                         (swap! state render!))
+                       (resize [_ width height]
+                         (resize! @state width height))
+                       (pause [_])
+                       (resume [_]))
+                     {:title "Levelgen test"
+                      :windowed-mode {:width 1440 :height 900}
+                      :foreground-fps 60}))
