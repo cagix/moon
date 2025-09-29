@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [gdl.scene2d :as scene2d]))
+            [clojure.scene2d :as scene2d]))
 
 (def ^:private property-type->overview-table-props
   {:properties/audiovisuals {:columns 10

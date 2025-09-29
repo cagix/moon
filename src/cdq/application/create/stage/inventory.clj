@@ -4,14 +4,14 @@
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.ui.inventory]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.event :as event]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.image :as image]
-            [gdl.scene2d.utils.drawable :as drawable]
-            [gdl.scene2d.utils.listener :as listener]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.event :as event]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.image :as image]
+            [clojure.scene2d.utils.drawable :as drawable]
+            [clojure.scene2d.utils.listener :as listener]))
 
 (defn- create*
   [stage

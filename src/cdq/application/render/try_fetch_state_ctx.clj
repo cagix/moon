@@ -1,5 +1,5 @@
 (ns cdq.application.render.try-fetch-state-ctx
-  (:require [gdl.scene2d.stage :as stage]))
+  (:require [clojure.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]

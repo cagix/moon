@@ -6,21 +6,21 @@
             [cdq.ui.inventory :as inventory-window]
             [clojure.gdx :as gdx]
             [clojure.graphics.viewport :as viewport]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.ctx]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.button :as button]
-            gdl.scene2d.ui.horizontal-group
-            gdl.scene2d.ui.stack
-            [gdl.scene2d.vis-ui.window :as window]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.ctx]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.button :as button]
+            clojure.scene2d.ui.horizontal-group
+            clojure.scene2d.ui.stack
+            [clojure.scene2d.vis-ui.window :as window]))
 
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}]
   (extend-type (class ctx)
-    gdl.scene2d.ctx/Graphics
+    clojure.scene2d.ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
   (assoc ctx :ctx/stage (gdx/stage (:graphics/ui-viewport graphics)
@@ -31,7 +31,7 @@
       stage/root
       (group/find-actor k)))
 
-(extend-type gdl.scene2d.Stage
+(extend-type clojure.scene2d.Stage
   cdq.stage/Stage
   (rebuild-actors! [stage db graphics]
     (stage/clear! stage)

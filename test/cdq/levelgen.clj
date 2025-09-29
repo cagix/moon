@@ -14,9 +14,9 @@
             [clojure.graphics.texture :as texture]
             [clojure.graphics.viewport]
             [clojure.input :as input]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
             [gdl.maps.tiled :as tiled]
             [gdl.maps.tiled.renderers.orthogonal :as tm-renderer]))
 

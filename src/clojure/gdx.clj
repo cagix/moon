@@ -15,14 +15,14 @@
             clojure.graphics.viewport
             clojure.input
 
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.ctx :as ctx]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.cell :as cell]
-            [gdl.scene2d.ui.table :as table]
-            [gdl.scene2d.ui.widget-group :as widget-group]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.ctx :as ctx]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.cell :as cell]
+            [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.widget-group :as widget-group]
 
             [clojure.string :as str]
             [com.badlogic.gdx.graphics.color :as color]
@@ -61,7 +61,7 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
-           (gdl.scene2d Stage)
+           (clojure.scene2d Stage)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -464,7 +464,7 @@
      (.getY this)]))
 
 (extend-type Stage
-  gdl.scene2d.stage/Stage
+  clojure.scene2d.stage/Stage
   (set-ctx! [stage ctx]
     (set! (.ctx stage) ctx))
 
@@ -510,7 +510,7 @@
                                                  (- y (/ (actor/get-height actor) 2))))})
 
 (extend-type Actor
-  gdl.scene2d.actor/Actor
+  clojure.scene2d.actor/Actor
   (get-stage [actor]
     (.getStage actor))
 
@@ -619,7 +619,7 @@
                          t)))))
 
 (extend-type Table
-  gdl.scene2d.ui.table/Table
+  clojure.scene2d.ui.table/Table
   (add! [table actor-or-decl]
     (.add table ^Actor (build? actor-or-decl)))
 
@@ -643,7 +643,7 @@
       (widget-group/set-opts! opts))))
 
 (extend-type Group
-  gdl.scene2d.group/Group
+  clojure.scene2d.group/Group
   (add! [group actor]
     (.addActor group actor))
 
