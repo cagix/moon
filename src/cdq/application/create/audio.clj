@@ -1,11 +1,11 @@
 (ns cdq.application.create.audio
   (:require [cdq.audio]
-            [com.badlogic.gdx.audio :as audio]
-            [com.badlogic.gdx.audio.sound :as sound]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
-            [clojure.files :as files]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [com.badlogic.gdx.audio :as audio]
+            [com.badlogic.gdx.audio.sound :as sound]
+            [com.badlogic.gdx.files :as files]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")

@@ -1,7 +1,5 @@
 (ns clojure.gdx
   (:require clojure.disposable
-            clojure.files
-            clojure.files.file-handle
             clojure.graphics
             clojure.graphics.batch
             clojure.graphics.bitmap-font
@@ -30,8 +28,7 @@
             [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.viewport :as viewport]
             [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
-  (:import (com.badlogic.gdx Files
-                             Graphics
+  (:import (com.badlogic.gdx Graphics
                              Input)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
@@ -53,25 +50,6 @@
 
 (defn stage [viewport batch]
   (Stage. viewport batch))
-
-(extend-type Files
-  clojure.files/Files
-  (internal [this path]
-    (.internal this path)))
-
-(extend-type FileHandle
-  clojure.files.file-handle/FileHandle
-  (list [this]
-    (.list this))
-
-  (directory? [this]
-    (.isDirectory this))
-
-  (extension [this]
-    (.extension this))
-
-  (path [this]
-    (.path this)))
 
 (extend-type Disposable
   clojure.disposable/Disposable

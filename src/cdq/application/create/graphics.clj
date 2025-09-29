@@ -2,7 +2,7 @@
   (:require [cdq.graphics]
             [clojure.disposable :as disposable]
             [clojure.files.utils :as files-utils]
-            [clojure.files :as files]
+            [com.badlogic.gdx.files :as files]
             [clojure.gdx :as gdx]
             [clojure.graphics :as graphics]
             [clojure.graphics.batch :as batch]
