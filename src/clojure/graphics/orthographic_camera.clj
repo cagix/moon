@@ -1,14 +1,8 @@
-(ns gdl.graphics.orthographic-camera
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)))
+(ns clojure.graphics.orthographic-camera)
 
-(defn set-position! [^OrthographicCamera this [x y]]
-  (set! (.x (.position this)) (float x))
-  (set! (.y (.position this)) (float y))
-  (.update this))
-
-(defn set-zoom! [^OrthographicCamera this amount]
-  (set! (.zoom this) amount)
-  (.update this))
+(defprotocol OrthographicCamera
+  (set-position! [_ [x y]])
+  (set-zoom! [_ amount]))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))

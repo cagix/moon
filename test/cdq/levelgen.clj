@@ -9,7 +9,7 @@
             [clojure.java.io :as io]
             [clojure.gdx :as gdx]
             [clojure.graphics :as graphics]
-            [gdl.graphics.orthographic-camera :as camera]
+            [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
             [gdl.graphics.texture :as texture]
             [gdl.graphics.viewport]

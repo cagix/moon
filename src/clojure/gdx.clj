@@ -7,6 +7,7 @@
             clojure.graphics
             clojure.graphics.batch
             clojure.graphics.bitmap-font
+            clojure.graphics.orthographic-camera
             clojure.graphics.texture-region
             [clojure.string :as str]
             [com.badlogic.gdx.graphics.color :as color]
@@ -256,3 +257,14 @@
 
   (sprite-batch [_]
     (SpriteBatch.)))
+
+(extend-type OrthographicCamera
+  clojure.graphics.orthographic-camera/OrthographicCamera
+  (set-position! [this [x y]]
+    (set! (.x (.position this)) (float x))
+    (set! (.y (.position this)) (float y))
+    (.update this))
+
+  (set-zoom! [this amount]
+    (set! (.zoom this) amount)
+    (.update this)))

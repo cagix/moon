@@ -5,7 +5,7 @@
             [clojure.files :as files]
             [clojure.graphics :as graphics]
             [clojure.graphics.bitmap-font :as bitmap-font]
-            [gdl.graphics.orthographic-camera :as camera]
+            [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
             [clojure.gdx :as gdx]
             [clojure.graphics.batch :as batch]
