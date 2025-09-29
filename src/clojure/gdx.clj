@@ -28,15 +28,16 @@
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
             [com.badlogic.gdx.graphics.color :as color]
+            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
             [com.badlogic.gdx.math.vector2 :as vector2]
-            [com.badlogic.gdx.math.vector3 :as vector3]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
-            [com.badlogic.gdx.utils.align :as align])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx ApplicationListener
+            [com.badlogic.gdx.utils.align :as align]
+            [com.badlogic.gdx.utils.viewport :as viewport]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
+  (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
                              Gdx
@@ -57,17 +58,8 @@
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)
            (clojure.scene2d Stage)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-; to protect from change move ti combad.gdx.utilsviewport file
-(defn- unproject [^FitViewport viewport x y]
-  (-> viewport
-      (.unproject (vector2/->java x y))
-      vector2/->clj))
-
-;;;;; API
 
 (defn application [config]
   (lwjgl3-application/set-glfw-async!)
@@ -90,34 +82,7 @@
 (defn post-runnable! [f]
   (.postRunnable Gdx/app f))
 
-(defn orthographic-camera
-  ([]
-   (proxy [OrthographicCamera ILookup] []
-     (valAt [k]
-       (let [^OrthographicCamera this this]
-         (case k
-           :camera/combined (.combined this)
-           :camera/zoom (.zoom this)
-           :camera/frustum {:frustum/plane-points (mapv vector3/clojurize (.planePoints (.frustum this)))}
-           :camera/position (vector3/clojurize (.position this))
-           :camera/viewport-width  (.viewportWidth  this)
-           :camera/viewport-height (.viewportHeight this))))))
-  ([& {:keys [y-down? world-width world-height]}]
-   (doto (orthographic-camera)
-     (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
-
-(defn- fit-viewport [width height camera]
-  (proxy [FitViewport ILookup] [width height camera]
-    (valAt [k]
-      (let [^FitViewport this this]
-        (case k
-          :viewport/width             (.getWorldWidth      this)
-          :viewport/height            (.getWorldHeight     this)
-          :viewport/camera            (.getCamera          this)
-          :viewport/left-gutter-width (.getLeftGutterWidth this)
-          :viewport/right-gutter-x    (.getRightGutterX    this)
-          :viewport/top-gutter-height (.getTopGutterHeight this)
-          :viewport/top-gutter-y      (.getTopGutterY      this))))))
+(def orthographic-camera orthographic-camera/create)
 
 (defn shape-drawer [batch texture-region]
   (ShapeDrawer. batch texture-region))
@@ -248,7 +213,7 @@
                 :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
 
   (fit-viewport [_ width height camera]
-    (fit-viewport width height camera))
+    (fit-viewport/create width height camera))
 
   (sprite-batch [_]
     (SpriteBatch.)))
@@ -275,19 +240,19 @@
   (texture [pixmap]
     (Texture. pixmap)))
 
-(extend-type FitViewport
+(extend-type com.badlogic.gdx.utils.viewport.FitViewport
   clojure.graphics.viewport/Viewport
   (update! [this width height {:keys [center?]}]
-    (.update this width height center?))
+    (viewport/update! this width height :center? center?))
 
   (unproject [this [x y]]
-    (unproject this
-               (clamp x
-                      (:viewport/left-gutter-width this)
-                      (:viewport/right-gutter-x    this))
-               (clamp y
-                      (:viewport/top-gutter-height this)
-                      (:viewport/top-gutter-y      this)))))
+    (viewport/unproject this
+                        (clamp x
+                               (:viewport/left-gutter-width this)
+                               (:viewport/right-gutter-x    this))
+                        (clamp y
+                               (:viewport/top-gutter-height this)
+                               (:viewport/top-gutter-y      this)))))
 
 (extend-type ShapeDrawer
   clojure.graphics.shape-drawer/ShapeDrawer
