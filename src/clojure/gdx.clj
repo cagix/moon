@@ -9,7 +9,6 @@
             clojure.graphics.bitmap-font
             clojure.graphics.orthographic-camera
             clojure.graphics.pixmap
-            clojure.graphics.shape-drawer
             clojure.graphics.texture
             clojure.graphics.texture-region
             clojure.graphics.viewport
@@ -27,7 +26,6 @@
             [clojure.core-ext :refer [clamp]]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
-            [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
@@ -58,8 +56,7 @@
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.badlogic.gdx.utils Disposable)
-           (clojure.scene2d Stage)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (clojure.scene2d Stage)))
 
 (defn application [config]
   (lwjgl3-application/set-glfw-async!)
@@ -83,9 +80,6 @@
   (.postRunnable Gdx/app f))
 
 (def orthographic-camera orthographic-camera/create)
-
-(defn shape-drawer [batch texture-region]
-  (ShapeDrawer. batch texture-region))
 
 (defn stage [viewport batch]
   (Stage. viewport batch))
@@ -253,80 +247,6 @@
                         (clamp y
                                (:viewport/top-gutter-height this)
                                (:viewport/top-gutter-y      this)))))
-
-(extend-type ShapeDrawer
-  clojure.graphics.shape-drawer/ShapeDrawer
-  (set-color! [this color]
-    (.setColor this (color/float-bits color)))
-
-  (with-line-width [this width draw-fn]
-    (let [old-line-width (.getDefaultLineWidth this)]
-      (.setDefaultLineWidth this (float (* width old-line-width)))
-      (draw-fn)
-      (.setDefaultLineWidth this (float old-line-width))))
-
-  (arc! [this center-x center-y radius start-radians radians]
-    (.arc this
-          (float center-x)
-          (float center-y)
-          (float radius)
-          (float start-radians)
-          (float radians)))
-
-  (circle! [this x y radius]
-    (.circle this
-             (float x)
-             (float y)
-             (float radius)))
-
-  (ellipse! [this x y radius-x radius-y]
-    (.ellipse this
-              (float x)
-              (float y)
-              (float radius-x)
-              (float radius-y)))
-
-  (filled-circle! [this x y radius]
-    (.filledCircle this
-                   (float x)
-                   (float y)
-                   (float radius)))
-
-  (filled-ellipse! [this x y radius-x radius-y]
-    (.filledEllipse this
-                    (float x)
-                    (float y)
-                    (float radius-x)
-                    (float radius-y)))
-
-  (filled-rectangle! [this x y w h]
-    (.filledRectangle this
-                      (float x)
-                      (float y)
-                      (float w)
-                      (float h)))
-
-  (line! [this sx sy ex ey]
-    (.line this
-           (float sx)
-           (float sy)
-           (float ex)
-           (float ey)))
-
-  (rectangle! [this x y w h]
-    (.rectangle this
-                (float x)
-                (float y)
-                (float w)
-                (float h)))
-
-  (sector! [this center-x center-y radius start-radians radians]
-    (.sector this
-             (float center-x)
-             (float center-y)
-             (float radius)
-             (float start-radians)
-             (float radians))))
 
 (extend-type Texture
   clojure.graphics.texture/Texture

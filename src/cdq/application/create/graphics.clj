@@ -9,7 +9,7 @@
             [clojure.graphics.bitmap-font :as bitmap-font]
             [clojure.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]
-            [clojure.graphics.shape-drawer :as sd]
+            [space.earlygrey.shape-drawer :as sd]
             [clojure.graphics.pixmap :as pixmap]
             [clojure.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
@@ -122,7 +122,7 @@
   [{:keys [graphics/batch
            graphics/shape-drawer-texture]
     :as graphics}]
-  (assoc graphics :graphics/shape-drawer (gdx/shape-drawer batch (texture/region shape-drawer-texture 1 0 1 1))))
+  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defrecord Graphics []
   cdq.graphics/DrawHandler
