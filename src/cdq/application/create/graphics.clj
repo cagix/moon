@@ -16,7 +16,7 @@
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
-            [com.badlogic.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.graphics.freetype :as freetype]
             [gdl.math :as math]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 

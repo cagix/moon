@@ -1,4 +1,4 @@
-(ns com.badlogic.gdx.graphics.g2d.freetype
+(ns clojure.graphics.freetype
   (:require [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as font]
             [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
