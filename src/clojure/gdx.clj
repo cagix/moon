@@ -27,9 +27,7 @@
             [com.badlogic.gdx :as gdx]
 
             [org.lwjgl.system.configuration :as lwjgl-system]
-            [com.badlogic.gdx.backends.lwjgl3.application :as lwjgl3-application]
-            [com.badlogic.gdx.backends.lwjgl3.application.configuration :as config]
-
+            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
@@ -64,21 +62,21 @@
 
 (defn application [config]
   (lwjgl-system/set-glfw-library-name! "glfw_async")
-  (lwjgl3-application/start! (reify ApplicationListener
-                               (create [_]
-                                 ((:create config) {:ctx/audio    (gdx/audio)
-                                                    :ctx/files    (gdx/files)
-                                                    :ctx/graphics (gdx/graphics)
-                                                    :ctx/input    (gdx/input)}))
-                               (dispose [_]
-                                 ((:dispose config)))
-                               (render [_]
-                                 ((:render config)))
-                               (resize [_ width height]
-                                 ((:resize config) width height))
-                               (pause [_])
-                               (resume [_]))
-                             (config/create config)))
+  (lwjgl/application (reify ApplicationListener
+                       (create [_]
+                         ((:create config) {:ctx/audio    (gdx/audio)
+                                            :ctx/files    (gdx/files)
+                                            :ctx/graphics (gdx/graphics)
+                                            :ctx/input    (gdx/input)}))
+                       (dispose [_]
+                         ((:dispose config)))
+                       (render [_]
+                         ((:render config)))
+                       (resize [_ width height]
+                         ((:resize config) width height))
+                       (pause [_])
+                       (resume [_]))
+                     config))
 
 (def orthographic-camera orthographic-camera/create)
 
