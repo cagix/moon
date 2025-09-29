@@ -3,8 +3,8 @@
             [clojure.audio :as audio]
             [clojure.audio.sound :as sound]
             [clojure.edn :as edn]
+            [clojure.files :as files]
             [clojure.java.io :as io]
-            [gdl.files :as files]
             [gdl.utils.disposable :as disposable]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))

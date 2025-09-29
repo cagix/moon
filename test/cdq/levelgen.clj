@@ -1,6 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.db :as db]
-            [cdq.files :as files]
+            [clojure.files.utils :as files-utils]
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]
@@ -111,9 +111,9 @@
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path file-handle] (files/search files
-                                                                                 {:folder "resources/"
-                                                                                  :extensions #{"png" "bmp"}})]
+                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
+                                                                                       {:folder "resources/"
+                                                                                        :extensions #{"png" "bmp"}})]
                                             [path (graphics/texture graphics file-handle)]))
                    :ctx/camera (:viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])

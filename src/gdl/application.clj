@@ -1,12 +1,16 @@
 (ns gdl.application
   (:require clojure.audio
-            clojure.audio.sound)
+            clojure.audio.sound
+            clojure.files
+            clojure.files.file-handle)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
+                             Files
                              Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
            (org.lwjgl.system Configuration)))
 
 (defn start! [config]
@@ -43,3 +47,22 @@
   clojure.audio.sound/Sound
   (play! [this]
     (.play this)))
+
+(extend-type Files
+  clojure.files/Files
+  (internal [this path]
+    (.internal this path)))
+
+(extend-type FileHandle
+  clojure.files.file-handle/FileHandle
+  (list [this]
+    (.list this))
+
+  (directory? [this]
+    (.isDirectory this))
+
+  (extension [this]
+    (.extension this))
+
+  (path [this]
+    (.path this)))

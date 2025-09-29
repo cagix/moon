@@ -1,8 +1,8 @@
 (ns cdq.application.create.graphics
-  (:require [cdq.files]
+  (:require [clojure.files.utils :as files-utils]
             [cdq.graphics]
             [gdl.utils.disposable :as disposable]
-            [gdl.files :as files]
+            [clojure.files :as files]
             [gdl.graphics :as graphics]
             [gdl.graphics.g2d.bitmap-font :as bitmap-font]
             [gdl.graphics.freetype :as freetype]
@@ -338,7 +338,7 @@
                             hotspot]))
    :world-unit-scale (float (/ tile-size))
    :world-viewport world-viewport
-   :textures-to-load (cdq.files/search files texture-folder)})
+   :textures-to-load (files-utils/search files texture-folder)})
 
 (def ^:private config
   {:tile-size 48
