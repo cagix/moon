@@ -9,9 +9,9 @@
             [clojure.graphics.color :as color]
             [clojure.gdx :as gdx]
             [clojure.graphics.batch :as batch]
-            [gdl.graphics.shape-drawer :as sd]
+            [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.pixmap :as pixmap]
-            [gdl.graphics.texture :as texture]
+            [clojure.graphics.texture :as texture]
             [clojure.graphics.texture-region :as texture-region]
             [clojure.graphics.viewport :as viewport]
             [gdl.math :as math]
@@ -120,7 +120,7 @@
   [{:keys [graphics/batch
            graphics/shape-drawer-texture]
     :as graphics}]
-  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
+  (assoc graphics :graphics/shape-drawer (gdx/shape-drawer batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defrecord Graphics []
   cdq.graphics/DrawHandler

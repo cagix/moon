@@ -9,11 +9,16 @@
             clojure.graphics.bitmap-font
             clojure.graphics.orthographic-camera
             clojure.graphics.pixmap
+            clojure.graphics.shape-drawer
+            clojure.graphics.texture
             clojure.graphics.texture-region
             clojure.graphics.viewport
+            clojure.input
             [clojure.string :as str]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+            [com.badlogic.gdx.input.buttons :as input-buttons]
+            [com.badlogic.gdx.input.keys    :as input-keys]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.math.vector3 :as vector3]
             [com.badlogic.gdx.utils.align :as align])
@@ -22,7 +27,8 @@
                              Audio
                              Files
                              Gdx
-                             Graphics)
+                             Graphics
+                             Input)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -41,7 +47,8 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
-           (org.lwjgl.system Configuration)))
+           (org.lwjgl.system Configuration)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 ;;;;; Helpers
 
@@ -156,6 +163,9 @@
           :viewport/right-gutter-x    (.getRightGutterX    this)
           :viewport/top-gutter-height (.getTopGutterHeight this)
           :viewport/top-gutter-y      (.getTopGutterY      this))))))
+
+(defn shape-drawer [batch texture-region]
+  (ShapeDrawer. batch texture-region))
 
 ;;;;; extend-types
 
@@ -320,3 +330,117 @@
                (clamp y
                       (:viewport/top-gutter-height this)
                       (:viewport/top-gutter-y      this)))))
+
+(extend-type ShapeDrawer
+  clojure.graphics.shape-drawer/ShapeDrawer
+  (set-color! [this color]
+    (.setColor this (color/float-bits color)))
+
+  (with-line-width [this width draw-fn]
+    (let [old-line-width (.getDefaultLineWidth this)]
+      (.setDefaultLineWidth this (float (* width old-line-width)))
+      (draw-fn)
+      (.setDefaultLineWidth this (float old-line-width))))
+
+  (arc! [this center-x center-y radius start-radians radians]
+    (.arc this
+          (float center-x)
+          (float center-y)
+          (float radius)
+          (float start-radians)
+          (float radians)))
+
+  (circle! [this x y radius]
+    (.circle this
+             (float x)
+             (float y)
+             (float radius)))
+
+  (ellipse! [this x y radius-x radius-y]
+    (.ellipse this
+              (float x)
+              (float y)
+              (float radius-x)
+              (float radius-y)))
+
+  (filled-circle! [this x y radius]
+    (.filledCircle this
+                   (float x)
+                   (float y)
+                   (float radius)))
+
+  (filled-ellipse! [this x y radius-x radius-y]
+    (.filledEllipse this
+                    (float x)
+                    (float y)
+                    (float radius-x)
+                    (float radius-y)))
+
+  (filled-rectangle! [this x y w h]
+    (.filledRectangle this
+                      (float x)
+                      (float y)
+                      (float w)
+                      (float h)))
+
+  (line! [this sx sy ex ey]
+    (.line this
+           (float sx)
+           (float sy)
+           (float ex)
+           (float ey)))
+
+  (rectangle! [this x y w h]
+    (.rectangle this
+                (float x)
+                (float y)
+                (float w)
+                (float h)))
+
+  (sector! [this center-x center-y radius start-radians radians]
+    (.sector this
+             (float center-x)
+             (float center-y)
+             (float radius)
+             (float start-radians)
+             (float radians))))
+
+(extend-type Texture
+  clojure.graphics.texture/Texture
+  (region
+    ([texture]
+     (TextureRegion. texture))
+    ([texture [x y w h]]
+     (TextureRegion. texture
+                     (int x)
+                     (int y)
+                     (int w)
+                     (int h)))
+    ([texture x y w h]
+     (TextureRegion. texture
+                     (int x)
+                     (int y)
+                     (int w)
+                     (int h)))))
+
+(extend-type Input
+  clojure.input/Input
+  (button-just-pressed? [this button]
+    {:pre [(contains? input-buttons/k->value button)]}
+    (.isButtonJustPressed this (input-buttons/k->value button)))
+
+  (key-pressed? [this key]
+    (assert (contains? input-keys/keyword->value key)
+            (str "(pr-str key): "(pr-str key)))
+    (.isKeyPressed this (input-keys/keyword->value key)))
+
+  (key-just-pressed? [this key]
+    {:pre [(contains? input-keys/keyword->value key)]}
+    (.isKeyJustPressed this (input-keys/keyword->value key)))
+
+  (set-processor! [this input-processor]
+    (.setInputProcessor this input-processor))
+
+  (mouse-position [this]
+    [(.getX this)
+     (.getY this)]))

@@ -1,6 +1,6 @@
 (ns cdq.application.create.input
   (:require [cdq.input]
-            [gdl.input :as input]
+            [clojure.input :as input]
             [gdl.math.vector2 :as v]))
 
 (def controls
