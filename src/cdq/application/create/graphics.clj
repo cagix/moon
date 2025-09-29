@@ -3,12 +3,11 @@
             [cdq.graphics]
             [clojure.disposable :as disposable]
             [clojure.files :as files]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [clojure.graphics.bitmap-font :as bitmap-font]
-            [gdl.graphics.freetype :as freetype]
             [gdl.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
-            [gdl.graphics.colors :as colors]
+            [clojure.gdx :as gdx]
             [clojure.graphics.batch :as batch]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.pixmap :as pixmap]
@@ -256,8 +255,8 @@
                                                      cursor)))))
 
 (defn- create-default-font [graphics default-font]
-  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
-                                                                 (:params default-font))))
+  (assoc graphics :graphics/default-font (gdx/freetype-font (:file-handle default-font)
+                                                            (:params default-font))))
 
 (defn- create-textures
   [{:keys [graphics/core]
@@ -282,7 +281,7 @@
   (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
                                                                (:width  ui-viewport)
                                                                (:height ui-viewport)
-                                                               (graphics/orthographic-camera))))
+                                                               (gdx/orthographic-camera))))
 
 (defn- create-world-viewport
   [{:keys [graphics/core
@@ -294,7 +293,7 @@
                                              (graphics/fit-viewport core
                                                                     world-width
                                                                     world-height
-                                                                    (graphics/orthographic-camera
+                                                                    (gdx/orthographic-camera
                                                                      :y-down? false
                                                                      :world-width world-width
                                                                      :world-height world-height)))))
@@ -374,6 +373,6 @@
   [{:keys [ctx/files
            ctx/graphics]
     :as ctx}]
-  (colors/put! (:colors config))
+  (gdx/def-colors (:colors config))
   (assoc ctx :ctx/graphics (-> (graphics-config files config)
                                (create* graphics))))

@@ -8,7 +8,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.gdx :as gdx]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [gdl.graphics.orthographic-camera :as camera]
             [clojure.graphics.color :as color]
             [gdl.graphics.texture :as texture]
@@ -89,7 +89,7 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (graphics/fit-viewport graphics 1440 900 (graphics/orthographic-camera))
+        ui-viewport (graphics/fit-viewport graphics 1440 900 (gdx/orthographic-camera))
         sprite-batch (graphics/sprite-batch graphics)
         stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -104,9 +104,9 @@
                          (graphics/fit-viewport graphics
                                                 world-width
                                                 world-height
-                                                (graphics/orthographic-camera :y-down? false
-                                                                              :world-width world-width
-                                                                              :world-height world-height)))
+                                                (gdx/orthographic-camera :y-down? false
+                                                                         :world-width world-width
+                                                                         :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

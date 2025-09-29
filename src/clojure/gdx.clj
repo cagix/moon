@@ -4,26 +4,42 @@
             clojure.disposable
             clojure.files
             clojure.files.file-handle
+            clojure.graphics
             clojure.graphics.batch
             clojure.graphics.bitmap-font
             clojure.graphics.texture-region
             [clojure.string :as str]
-            [com.badlogic.gdx.utils.align :as align])
-  (:import (com.badlogic.gdx ApplicationListener
+            [com.badlogic.gdx.graphics.color :as color]
+            [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+            [com.badlogic.gdx.math.vector3 :as vector3]
+            [com.badlogic.gdx.utils.align :as align]
+            [gdl.utils.viewport.fit-viewport :as fit-viewport])
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
-                             Gdx)
+                             Gdx
+                             Graphics)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Colors
+                                      GL20
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
-                                          TextureRegion)
+                                          TextureRegion
+                                          SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
 
-;;;;;
+;;;;; Helpers
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -31,7 +47,27 @@
       count
       (* (.getLineHeight font))))
 
-;;;;;
+(defn- create-parameter
+  [{:keys [size
+           min-filter
+           mag-filter]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    (set! (.minFilter params) min-filter)
+    (set! (.magFilter params) mag-filter)
+    params))
+
+(defn- configure!
+  [^BitmapFont font
+   {:keys [scale
+           enable-markup?
+           use-integer-positions?]}]
+  (.setScale (.getData font) scale)
+  (set! (.markupEnabled (.getData font)) enable-markup?)
+  (.setUseIntegerPositions font use-integer-positions?)
+  font)
+
+;;;;; API
 
 (defn application [config]
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
@@ -57,6 +93,43 @@
 
 (defn post-runnable! [f]
   (.postRunnable Gdx/app f))
+
+(defn def-colors [colors]
+  (doseq [[name color-params] colors]
+    (Colors/put name (color/->java color-params))))
+
+(defn freetype-font
+  [file-handle
+   {:keys [size
+           quality-scaling
+           enable-markup?
+           use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        font (.generateFont generator (create-parameter {:size (* size quality-scaling)
+                                                         ; :texture-filter/linear because scaling to world-units
+                                                         :min-filter (texture-filter/k->value :linear)
+                                                         :mag-filter (texture-filter/k->value :linear)}))]
+    (configure! font {:scale (/ quality-scaling)
+                      :enable-markup? enable-markup?
+                      :use-integer-positions? use-integer-positions?})))
+
+(defn orthographic-camera
+  ([]
+   (proxy [OrthographicCamera ILookup] []
+     (valAt [k]
+       (let [^OrthographicCamera this this]
+         (case k
+           :camera/combined (.combined this)
+           :camera/zoom (.zoom this)
+           :camera/frustum {:frustum/plane-points (mapv vector3/clojurize (.planePoints (.frustum this)))}
+           :camera/position (vector3/clojurize (.position this))
+           :camera/viewport-width  (.viewportWidth  this)
+           :camera/viewport-height (.viewportHeight this))))))
+  ([& {:keys [y-down? world-width world-height]}]
+   (doto (orthographic-camera)
+     (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
+
+;;;;; extend-types
 
 (extend-type Audio
   clojure.audio/Audio
@@ -143,3 +216,43 @@
   (dimensions [texture-region]
     [(.getRegionWidth  texture-region)
      (.getRegionHeight texture-region)]))
+
+(extend-type Graphics
+  clojure.graphics/Graphics
+  (delta-time [this]
+    (.getDeltaTime this))
+  (frames-per-second [this]
+    (.getFramesPerSecond this))
+  (set-cursor! [this cursor]
+    (.setCursor this cursor))
+  (cursor [this pixmap hotspot-x hotspot-y]
+    (.newCursor this pixmap hotspot-x hotspot-y))
+  (clear!
+    ([this [r g b a]]
+     (clojure.graphics/clear! this r g b a))
+    ([this r g b a]
+     (let [clear-depth? false
+           apply-antialiasing? false
+           gl20 (.getGL20 this)]
+       (GL20/.glClearColor gl20 r g b a)
+       (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
+                    clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
+                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat this)))
+                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
+         (GL20/.glClear gl20 mask)))))
+  (texture [_ file-handle]
+    (Texture. ^FileHandle file-handle))
+  (pixmap
+    ([_ ^FileHandle file-handle]
+     (Pixmap. file-handle))
+    ([_ width height pixmap-format]
+     (Pixmap. (int width)
+              (int height)
+              (case pixmap-format
+                :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
+
+  (fit-viewport [_ width height camera]
+    (fit-viewport/create width height camera))
+
+  (sprite-batch [_]
+    (SpriteBatch.)))
