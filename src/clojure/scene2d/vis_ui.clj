@@ -5,7 +5,7 @@
             [clojure.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
-            [clojure.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [com.kotcrab.vis.ui.widget.separator :as separator]
             [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
             [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane])

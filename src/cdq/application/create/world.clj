@@ -11,7 +11,7 @@
             [gdl.grid2d :as g2d]
             [gdl.position :as position]
             [gdl.utils :as utils]
-            [clojure.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.maps.tiled :as tiled]
             [reduce-fsm :as fsm]))
 

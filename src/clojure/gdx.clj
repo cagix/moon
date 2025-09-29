@@ -1,15 +1,9 @@
 (ns clojure.gdx
-  (:require clojure.disposable
-            clojure.graphics
-            clojure.graphics.batch
-            clojure.graphics.bitmap-font
-            clojure.graphics.orthographic-camera
+  (:require clojure.graphics.orthographic-camera
             clojure.graphics.pixmap
             clojure.graphics.texture
-            clojure.graphics.texture-region
             clojure.graphics.viewport
             clojure.input
-
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ctx :as ctx]
@@ -19,127 +13,21 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.ui.widget-group :as widget-group]
             [clojure.core-ext :refer [clamp]]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
             [com.badlogic.gdx.utils.align :as align]
-            [com.badlogic.gdx.utils.viewport :as viewport]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
-  (:import (com.badlogic.gdx Graphics
-                             Input)
+            [com.badlogic.gdx.utils.viewport :as viewport])
+  (:import (com.badlogic.gdx Input)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics GL20
-                                      Pixmap
-                                      Pixmap$Format
+           (com.badlogic.gdx.graphics Pixmap
                                       Texture
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch
-                                          BitmapFont
-                                          TextureRegion
-                                          SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.badlogic.gdx.utils Disposable)))
-
-(extend-type Disposable
-  clojure.disposable/Disposable
-  (dispose! [this]
-    (.dispose this)))
-
-(extend-type Batch
-  clojure.graphics.batch/Batch
-  (draw! [this texture-region x y [w h] rotation]
-    (.draw this
-           texture-region
-           x
-           y
-           (/ (float w) 2) ; origin-x
-           (/ (float h) 2) ; origin-y
-           w
-           h
-           1 ; scale-x
-           1 ; scale-y
-           rotation))
-
-  (set-color! [this [r g b a]]
-    (.setColor this r g b a))
-
-  (set-projection-matrix! [this matrix]
-    (.setProjectionMatrix this matrix))
-
-  (begin! [this]
-    (.begin this))
-
-  (end! [this]
-    (.end this)))
-
-(extend-type BitmapFont
-  clojure.graphics.bitmap-font/BitmapFont
-  (draw! [font
-          batch
-          {:keys [scale text x y up? h-align target-width wrap?]}]
-    {:pre [(or (nil? h-align)
-               (contains? align/k->value h-align))]}
-    (let [old-scale (.scaleX (.getData font))]
-      (.setScale (.getData font) (float (* old-scale scale)))
-      (.draw font
-             batch
-             text
-             (float x)
-             (float (+ y (if up? (bitmap-font/text-height font text) 0)))
-             (float target-width)
-             (get align/k->value (or h-align :center))
-             wrap?)
-      (.setScale (.getData font) (float old-scale)))))
-
-(extend-type TextureRegion
-  clojure.graphics.texture-region/TextureRegion
-  (dimensions [texture-region]
-    [(.getRegionWidth  texture-region)
-     (.getRegionHeight texture-region)]))
-
-(extend-type Graphics
-  clojure.graphics/Graphics
-  (delta-time [this]
-    (.getDeltaTime this))
-  (frames-per-second [this]
-    (.getFramesPerSecond this))
-  (set-cursor! [this cursor]
-    (.setCursor this cursor))
-  (cursor [this pixmap hotspot-x hotspot-y]
-    (.newCursor this pixmap hotspot-x hotspot-y))
-  (clear!
-    ([this [r g b a]]
-     (clojure.graphics/clear! this r g b a))
-    ([this r g b a]
-     (let [clear-depth? false
-           apply-antialiasing? false
-           gl20 (.getGL20 this)]
-       (GL20/.glClearColor gl20 r g b a)
-       (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
-                    clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
-                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat this)))
-                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
-         (GL20/.glClear gl20 mask)))))
-  (texture [_ file-handle]
-    (Texture. ^FileHandle file-handle))
-  (pixmap
-    ([_ ^FileHandle file-handle]
-     (Pixmap. file-handle))
-    ([_ width height pixmap-format]
-     (Pixmap. (int width)
-              (int height)
-              (case pixmap-format
-                :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
-
-  (fit-viewport [_ width height camera]
-    (fit-viewport/create width height camera))
-
-  (sprite-batch [_]
-    (SpriteBatch.)))
+           (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (extend-type OrthographicCamera
   clojure.graphics.orthographic-camera/OrthographicCamera

@@ -1,8 +1,8 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [com.kotcrab.vis.ui.widget.vis-image-button :as vis-image-button]
-            [clojure.graphics.texture-region :as texture-region]
+            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.event :as event]
+            [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.utils.drawable :as drawable]
