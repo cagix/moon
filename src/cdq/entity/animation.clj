@@ -1,5 +1,4 @@
-(ns cdq.entity.animation
-  (:require [cdq.entity.image :as image]))
+(ns cdq.entity.animation)
 
 (defprotocol Animation
   (tick* [_ delta])
@@ -47,6 +46,3 @@
    (when (and (:delete-after-stopped? animation)
               (stopped? animation))
      [:tx/mark-destroyed eid])])
-
-(defn draw [animation entity ctx]
-  (image/draw (current-frame animation) entity ctx))

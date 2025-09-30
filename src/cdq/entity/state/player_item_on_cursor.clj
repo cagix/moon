@@ -97,16 +97,3 @@
       (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
       (:graphics/ui-mouse-position graphics)
       {:center? true}]]))
-
-(defn draw
-  [{:keys [item]}
-   entity
-   {:keys [ctx/graphics
-           ctx/input
-           ctx/stage]}]
-  (when (world-item? (stage/mouseover-actor stage (input/mouse-position input)))
-    [[:draw/texture-region
-      (graphics/texture-region graphics (:entity/image item))
-      (item-place-position (:graphics/world-mouse-position graphics)
-                           entity)
-      {:center? true}]]))

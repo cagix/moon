@@ -11,10 +11,3 @@
 (defn exit [_ eid _ctx]
   [[:tx/spawn-alert (:body/position (:entity/body @eid)) (:entity/faction @eid) 0.2]
    [:tx/add-text-effect eid "[WHITE]!" 1]])
-
-(defn draw [_ {:keys [entity/body]} _ctx]
-  (let [[x y] (:body/position body)]
-    [[:draw/text {:text "zzz"
-                  :x x
-                  :y (+ y (/ (:body/height body) 2))
-                  :up? true}]]))
