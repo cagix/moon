@@ -82,6 +82,3 @@
                                graphics
                                property-type
                                clicked-id-fn)}))
-
-(defn do! [ctx]
-  ctx)
