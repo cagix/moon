@@ -1,6 +1,6 @@
 (ns cdq.levelgen
   (:require [cdq.db :as db]
-            [clojure.files.utils :as files-utils]
+            [com.badlogic.gdx.files.utils :as files-utils]
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
             [cdq.world-fns.creature-tiles]

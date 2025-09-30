@@ -1,6 +1,6 @@
 (ns cdq.application.create.graphics
   (:require [cdq.graphics]
-            [clojure.files.utils :as files-utils]
+            [com.badlogic.gdx.files.utils :as files-utils]
             [clojure.graphics.color :refer [white]]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.freetype :as freetype]
