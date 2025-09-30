@@ -102,7 +102,7 @@
                                              tiles->entities
                                              max-iterations)))))
 
-(defn- do!*
+(defn do!
   [{:keys [world/active-entities
            world/factions-iterations
            world/grid
@@ -113,12 +113,3 @@
            faction
            active-entities
            max-iterations)))
-
-(defn do!
-  [{:keys [ctx/world]
-    :as ctx}]
-  (if (:world/paused? world)
-    ctx
-    (do
-     (do!* world)
-     ctx)))
