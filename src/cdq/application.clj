@@ -1,7 +1,15 @@
 (ns cdq.application
   (:require [cdq.c :as c]
+            [cdq.ctx.create-db :as create-db]
+            [cdq.ctx.create-audio :as create-audio]
+            [cdq.ctx.create-graphics :as create-graphics]
             [cdq.ctx.create-record :as create-record]
+            [cdq.ctx.create-stage :as create-stage]
+            [cdq.ctx.create-input :as create-input]
+            [cdq.ctx.create-vis-ui :as create-vis-ui]
+            [cdq.ctx.create-world :as create-world]
             [cdq.ctx.dispose :as dispose]
+            [cdq.ctx.dissoc-files :as dissoc-files]
             [cdq.ctx.update-viewports :as update-viewports]
             [cdq.ctx.assoc-active-entities :as assoc-active-entities]
             [cdq.ctx.assoc-paused :as assoc-paused]
@@ -41,6 +49,14 @@
                                             :ctx/graphics (gdx/graphics)
                                             :ctx/input    (gdx/input)}
                                            create-record/do!
+                                           create-db/do!
+                                           create-graphics/do!
+                                           create-vis-ui/do!
+                                           create-stage/do!
+                                           create-input/do!
+                                           create-audio/do!
+                                           dissoc-files/do!
+                                           create-world/do!
                                            c/create!)))
                        (dispose [_]
                          (dispose/do! @state))

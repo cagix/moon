@@ -4,7 +4,6 @@
             [clj-commons.pretty.repl :as pretty-repl]
             [cdq.ctx :as ctx]
             [clojure.edn :as edn]
-            [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.string :as str]
             [clojure.java.io :as io]
             [cdq.audio :as audio]
@@ -39,42 +38,6 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]))
-
-(def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
-(def ^:private path-format "sounds/%s.wav")
-
-(def ^:private graphics-config
-  {:tile-size 48
-   :ui-viewport {:width 1440
-                 :height 900}
-   :world-viewport {:width 1440
-                    :height 900}
-   :texture-folder {:folder "resources/"
-                    :extensions #{"png" "bmp"}}
-   :default-font {:path "exocet/films.EXL_____.ttf"
-                  :params {:size 16
-                           :quality-scaling 2
-                           :enable-markup? true
-                           :use-integer-positions? false
-                           ; :texture-filter/linear because scaling to world-units
-                           :min-filter :linear
-                           :mag-filter :linear}}
-   :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-   :cursors {:path-format "cursors/%s.png"
-             :data {:cursors/bag                   ["bag001"       [0   0]]
-                    :cursors/black-x               ["black_x"      [0   0]]
-                    :cursors/default               ["default"      [0   0]]
-                    :cursors/denied                ["denied"       [16 16]]
-                    :cursors/hand-before-grab      ["hand004"      [4  16]]
-                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                    :cursors/hand-grab             ["hand003"      [4  16]]
-                    :cursors/move-window           ["move002"      [16 16]]
-                    :cursors/no-skill-selected     ["denied003"    [0   0]]
-                    :cursors/over-button           ["hand002"      [0   0]]
-                    :cursors/sandclock             ["sandclock"    [16 16]]
-                    :cursors/skill-not-usable      ["x007"         [0   0]]
-                    :cursors/use-skill             ["pointer004"   [0   0]]
-                    :cursors/walking               ["walking"      [16 16]]}}})
 
 (def ^:private txs-fn-map
   '{
@@ -548,69 +511,6 @@
                                        graphics)]
     (update ctx :ctx/world world/reset-state world-fn-result)))
 
-(defn- create-db [ctx]
-  (assoc ctx :ctx/db (db/create)))
-
-(defn- create-graphics!
-  [{:keys [ctx/files
-           ctx/graphics]
-    :as ctx}
-   params]
-  (assoc ctx :ctx/graphics (graphics/create! files graphics params)))
-
-(defn- create-vis-ui! [ctx params]
-  (assoc ctx :ctx/vis-ui (vis-ui/load! params)))
-
-(defn- create-stage
-  [{:keys [ctx/graphics]
-    :as ctx}]
-  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
-                                      (:graphics/batch       graphics))))
-
-(defn- create-input! [{:keys [ctx/input
-                              ctx/stage]
-                       :as ctx}]
-  (assoc ctx :ctx/input (input/create! input stage)))
-
-(defn- create-audio [{:keys [ctx/audio
-                             ctx/files]
-                      :as ctx}
-                     sound-names path-format]
-  (assoc ctx :ctx/audio (audio/create audio
-                                      files
-                                      sound-names
-                                      path-format)))
-
-(defn- dissoc-files [ctx]
-  (dissoc ctx :ctx/files))
-
-(defn- create-world [ctx params]
-  (assoc ctx :ctx/world (world/create params)))
-
-(def ^:private world-params
-  {:content-grid-cell-size 16
-   :world/factions-iterations {:good 15 :evil 5}
-   :world/max-delta 0.04
-   :world/minimum-size 0.39
-   :world/z-orders [:z-order/on-ground
-                    :z-order/ground
-                    :z-order/flying
-                    :z-order/effect]
-   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                         :initial-state :npc-sleeping}
-                            :entity/faction :evil}
-   :world/player-components {:creature-id :creatures/vampire
-                             :components {:entity/fsm {:fsm :fsms/player
-                                                       :initial-state :player-idle}
-                                          :entity/faction :good
-                                          :entity/player? true
-                                          :entity/free-skill-points 3
-                                          :entity/clickable {:type :clickable/player}
-                                          :entity/click-distance-tiles 1.5}}
-   :world/effect-body-props {:width 0.5
-                             :height 0.5
-                             :z-order :z-order/effect}})
-
 (defn create! [ctx]
   (extend-type (class ctx)
     ctx/TransactionHandler
@@ -640,12 +540,4 @@
           spawn-player!
           spawn-enemies!)) )
   (-> ctx
-      create-db
-      (create-graphics! graphics-config)
-      (create-vis-ui! {:skin-scale :x1})
-      create-stage
-      create-input!
-      (create-audio sound-names path-format)
-      dissoc-files
-      (create-world world-params)
       (ctx/reset-game-state! "world_fns/vampire.edn")))
