@@ -7,7 +7,7 @@
             [clojure.graphics.viewport]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [com.badlogic.gdx :as gdx-ctx]
+            [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.files.utils :as files-utils]
             [com.badlogic.gdx.graphics.texture :as texture]
@@ -193,10 +193,10 @@
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (lwjgl/application (reify ApplicationListener
                        (create [_]
-                         (reset! state (create! {:ctx/audio    (gdx-ctx/audio)
-                                                 :ctx/files    (gdx-ctx/files)
-                                                 :ctx/graphics (gdx-ctx/graphics)
-                                                 :ctx/input    (gdx-ctx/input)})))
+                         (reset! state (create! {:ctx/audio    (gdx/audio)
+                                                 :ctx/files    (gdx/files)
+                                                 :ctx/graphics (gdx/graphics)
+                                                 :ctx/input    (gdx/input)})))
                        (dispose [_]
                          (dispose! @state))
                        (render [_]
