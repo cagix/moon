@@ -1,10 +1,7 @@
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
+  (:require [cdq.c]
+            [cdq.db :as db]
             [com.badlogic.gdx.files.utils :as files-utils]
-
-            [cdq.application.create.db]
-            [cdq.application.create.vis-ui]
-
             [cdq.world-fns.creature-tiles]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
@@ -103,8 +100,8 @@
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
         ctx (-> ctx
-                cdq.application.create.db/do!
-                cdq.application.create.vis-ui/do!)
+                cdq.c/create-db
+                cdq.c/create-vis-ui!)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (graphics/fit-viewport graphics
