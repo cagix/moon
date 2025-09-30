@@ -271,7 +271,15 @@
            ctx/graphics
            ctx/stage]
     :as ctx}]
-  (cdq.stage/rebuild-actors! stage db graphics)
+  (stage/clear! stage)
+  (let [actors [((requiring-resolve 'cdq.application.create.stage.dev-menu/create) db graphics)
+                ((requiring-resolve 'cdq.application.create.stage.action-bar/create))
+                ((requiring-resolve 'cdq.application.create.stage.hp-mana-bar/create) stage graphics)
+                ((requiring-resolve 'cdq.application.create.stage.windows/create) stage graphics)
+                ((requiring-resolve 'cdq.application.create.stage.player-state-draw/create))
+                ((requiring-resolve 'cdq.application.create.stage.message/create))]]
+    (doseq [actor actors]
+      (stage/add! stage (scene2d/build actor))))
   ctx)
 
 (defn- call-world-fn

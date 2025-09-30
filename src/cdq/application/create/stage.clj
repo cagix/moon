@@ -21,17 +21,6 @@
 
 (extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
   cdq.stage/Stage
-  (rebuild-actors! [stage db graphics]
-    (stage/clear! stage)
-    (let [actors [((requiring-resolve 'cdq.application.create.stage.dev-menu/create) db graphics)
-                  ((requiring-resolve 'cdq.application.create.stage.action-bar/create))
-                  ((requiring-resolve 'cdq.application.create.stage.hp-mana-bar/create) stage graphics)
-                  ((requiring-resolve 'cdq.application.create.stage.windows/create) stage graphics)
-                  ((requiring-resolve 'cdq.application.create.stage.player-state-draw/create))
-                  ((requiring-resolve 'cdq.application.create.stage.message/create))]]
-      (doseq [actor actors]
-        (stage/add! stage (scene2d/build actor)))))
-
   (viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
   (viewport-height [stage] (:viewport/height (stage/viewport stage)))
 
