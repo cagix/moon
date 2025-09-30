@@ -22,12 +22,10 @@
 (defn- unpause-continously? [input]
   (input/key-pressed?      input (:unpause-continously controls)))
 
-(defn do! [{:keys [ctx/input
-                   ctx/stage]
-            :as ctx}]
-  (assert stage)
-  (input/set-processor! input stage)
-  (assoc ctx :ctx/input input))
+(defn create! [input input-processor]
+  (assert input-processor)
+  (input/set-processor! input input-processor)
+  input)
 
 (defn- WASD-movement-vector [input]
   (let [r (when (input/key-pressed? input :d) [1  0])

@@ -406,9 +406,9 @@
                              :height 0.5
                              :z-order :z-order/effect}})
 
-(defn do! [ctx]
-  (assoc ctx :ctx/world (-> (merge (map->World {}) initial-state)
-                            entity-schema
-                            create-fsms
-                            calculate-max-speed
-                            define-render-z-order)))
+(defn create []
+  (-> (merge (map->World {}) initial-state)
+      entity-schema
+      create-fsms
+      calculate-max-speed
+      define-render-z-order))

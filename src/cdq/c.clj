@@ -1,16 +1,17 @@
 (ns cdq.c
   (:require cdq.application.create.editor
             cdq.ui.editor.window
+            cdq.application.create.stage
+            cdq.application.render.update-potential-fields
+            cdq.application.create.input
             [cdq.application.create.db]
             [cdq.application.create.vis-ui]
-            [cdq.application.create.stage]
-            [cdq.application.create.input]
-            [cdq.application.create.audio]
-            [cdq.application.create.world]
             [cdq.application.create.reset-game-state]
-            cdq.application.render.update-potential-fields
+            [cdq.application.create.world]
             [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
             [clojure.graphics.color :as color]
+            [clojure.java.io :as io]
             [cdq.audio :as audio]
             [cdq.creature :as creature]
             [cdq.ctx :as ctx]
@@ -25,11 +26,15 @@
             [cdq.world.grid :as grid]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.ctx]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.math.vector2 :as v]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]
             [qrecord.core :as q]))
+
+(def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
+(def ^:private path-format "sounds/%s.wav")
 
 (def ^:private graphics-config
   {:tile-size 48
@@ -244,7 +249,11 @@
        reaction-txs-fn-map
        ctx
        handled-txs
-       :strict? false))))
+       :strict? false)))
+
+  com.badlogic.gdx.scenes.scene2d.ctx/Graphics
+  (draw! [{:keys [ctx/graphics]} draws]
+    (graphics/handle-draws! graphics draws)))
 
 (defn- create-record [ctx]
   (merge (map->Context {})
@@ -258,8 +267,30 @@
                                              graphics
                                              graphics-config)))
 
+(defn- create-stage
+  [{:keys [ctx/graphics]
+    :as ctx}]
+  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
+                                      (:graphics/batch       graphics))))
+
+(defn- create-input! [{:keys [ctx/input
+                              ctx/stage]
+                       :as ctx}]
+  (assoc ctx :ctx/input (cdq.application.create.input/create! input stage)))
+
+(defn- create-audio [{:keys [ctx/audio
+                             ctx/files]
+                      :as ctx}]
+  (assoc ctx :ctx/audio (audio/create audio
+                                      files
+                                      sound-names
+                                      path-format)))
+
 (defn- dissoc-files [ctx]
   (dissoc ctx :ctx/files))
+
+(defn- create-world [ctx]
+  (assoc ctx :ctx/world (cdq.application.create.world/create)))
 
 (defn- try-fetch-state-ctx
   [{:keys [ctx/stage]
@@ -702,11 +733,11 @@
       cdq.application.create.db/do! ; used by levelgen
       cdq.application.create.vis-ui/do! ; used by levelgen
       create-graphics!
-      cdq.application.create.stage/do!
-      cdq.application.create.input/do!
-      cdq.application.create.audio/do!
+      create-stage
+      create-input!
+      create-audio
       dissoc-files
-      cdq.application.create.world/do!
+      create-world
       cdq.application.create.reset-game-state/do!))
 
 (defn dispose! [{:keys [ctx/audio

@@ -7,29 +7,12 @@
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
             com.badlogic.gdx.scenes.scene2d.ui.stack
             [clojure.scene2d.vis-ui.window :as window]))
-
-; If the stage creates _all_ ui elements (including editor)
-; and only domain elements passed
-; it can reference sub-namespaces
-; and doesnt need to be a protocol?
-; only libgdx dependencies as protocol?
-
-(defn do!
-  [{:keys [ctx/graphics]
-    :as ctx}]
-  (extend-type (class ctx)
-    com.badlogic.gdx.scenes.scene2d.ctx/Graphics
-    (draw! [{:keys [ctx/graphics]} draws]
-      (graphics/handle-draws! graphics draws)))
-  (assoc ctx :ctx/stage (stage/create (:graphics/ui-viewport graphics)
-                                      (:graphics/batch       graphics))))
 
 (defn- stage-find [stage k]
   (-> stage
