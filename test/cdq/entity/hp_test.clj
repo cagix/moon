@@ -1,5 +1,5 @@
 (ns cdq.entity.hp-test
-  (:require [cdq.stats :as modifiers]
+  (:require [cdq.entity.stats :as modifiers]
             [clojure.test :refer :all]))
 
 (defn- ->value [hp-base-value hp-mods]

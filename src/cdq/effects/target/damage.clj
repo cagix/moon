@@ -1,6 +1,5 @@
 (ns cdq.effects.target.damage
-  (:require [cdq.entity.stats]
-            [cdq.stats :as stats]
+  (:require [cdq.entity.stats :as stats]
             [clojure.rand :refer [rand-int-between]]))
 
 ; not in stats because projectile as source doesnt have stats

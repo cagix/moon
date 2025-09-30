@@ -2,7 +2,6 @@
 ; e.g. ops just :ops/inc/:ops/mult?
 (ns cdq.entity.stats
   (:require [cdq.malli :as m]
-            [cdq.stats :as stats]
             [cdq.stats.ops :as ops]
             [cdq.val-max :as val-max]
             [clojure.string :as str]))
@@ -42,45 +41,43 @@
 ; how does the whole thing look like
 ; including editor based omgfwtf
 
-(defrecord Stats []
-  stats/Stats
-  (get-stat-value [stats stat-k]
-    (when-let [base-value (stat-k stats)]
-      (get-value base-value
-                 (:stats/modifiers stats)
-                 (keyword "modifier" (name stat-k)))))
+(defn get-stat-value [stats stat-k]
+  (when-let [base-value (stat-k stats)]
+    (get-value base-value
+               (:stats/modifiers stats)
+               (keyword "modifier" (name stat-k)))))
 
-  (add    [stats mods] (update stats :stats/modifiers add*    mods))
-  (remove-mods [stats mods] (update stats :stats/modifiers remove* mods))
+(defn add    [stats mods] (update stats :stats/modifiers add*    mods))
+(defn remove-mods [stats mods] (update stats :stats/modifiers remove* mods))
 
-  (get-mana
-    [{:keys [stats/mana
-             stats/modifiers]}]
-    (apply-max mana modifiers :modifier/mana-max))
+(defn get-mana
+  [{:keys [stats/mana
+           stats/modifiers]}]
+  (apply-max mana modifiers :modifier/mana-max))
 
-  (mana-val [stats]
-    (if (:stats/mana stats)
-      ((stats/get-mana stats) 0) ; TODO fucking optional shit
-      0))
+(defn mana-val [stats]
+  (if (:stats/mana stats)
+    ((get-mana stats) 0) ; TODO fucking optional shit
+    0))
 
-  (not-enough-mana? [stats {:keys [skill/cost]}]
-    (and cost (> cost (stats/mana-val stats))))
+(defn not-enough-mana? [stats {:keys [skill/cost]}]
+  (and cost (> cost (mana-val stats))))
 
-  (pay-mana-cost [stats cost]
-    (let [mana-val (stats/mana-val stats)]
-      (assert (<= cost mana-val))
-      (assoc-in stats [:stats/mana 0] (- mana-val cost))))
+(defn pay-mana-cost [stats cost]
+  (let [mana-val (mana-val stats)]
+    (assert (<= cost mana-val))
+    (assoc-in stats [:stats/mana 0] (- mana-val cost))))
 
-  (get-hitpoints
-    [{:keys [stats/hp
-             stats/modifiers]}]
-    (apply-max hp modifiers :modifier/hp-max)))
+(defn get-hitpoints
+  [{:keys [stats/hp
+           stats/modifiers]}]
+  (apply-max hp modifiers :modifier/hp-max))
 
 (defn create [stats _world]
-  (map->Stats (-> (if (:stats/mana stats)
-                    (update stats :stats/mana (fn [v] [v v]))
-                    stats)
-                  (update :stats/hp   (fn [v] [v v]))))
+  (-> (if (:stats/mana stats)
+        (update stats :stats/mana (fn [v] [v v]))
+        stats)
+      (update :stats/hp   (fn [v] [v v])))
 
   #_(-> stats
         (update :stats/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
@@ -100,9 +97,9 @@
   (str/join "\n" (concat
                   ["*STATS*"
                    (str "Mana: " (if (:stats/mana stats)
-                                   (stats/get-mana stats)
+                                   (get-mana stats)
                                    "-"))
-                   (str "Hitpoints: " (stats/get-hitpoints stats))]
+                   (str "Hitpoints: " (get-hitpoints stats))]
                   (for [stat-k non-val-max-stat-ks]
                     (str (str/capitalize (name stat-k)) ": "
-                         (stats/get-stat-value stats stat-k))))))
+                         (get-stat-value stats stat-k))))))

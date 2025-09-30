@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-moving
   (:require [cdq.input :as input]
-            [cdq.stats :as stats]))
+            [cdq.entity.stats :as stats]))
 
 (defn create [eid movement-vector _world]
   {:movement-vector movement-vector})

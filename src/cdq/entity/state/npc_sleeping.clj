@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [cdq.stats :as stats]
+  (:require [cdq.entity.stats :as stats]
             [cdq.world.grid :as grid]))
 
 (defn tick [_ eid {:keys [world/grid]}]

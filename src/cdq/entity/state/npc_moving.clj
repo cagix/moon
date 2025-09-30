@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-moving
-  (:require [cdq.stats :as stats]
+  (:require [cdq.entity.stats :as stats]
             [cdq.timer :as timer]))
 
 (def reaction-time-multiplier 0.016)

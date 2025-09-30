@@ -1,6 +1,6 @@
 (ns cdq.tx.remove-item
   (:require [cdq.entity.inventory :as inventory]
-            [cdq.stats :as stats]))
+            [cdq.entity.stats :as stats]))
 
 (defn do! [_ctx eid cell]
   (let [entity @eid

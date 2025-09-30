@@ -1,6 +1,6 @@
 (ns cdq.creature
   (:require [cdq.effect :as effect]
-            [cdq.stats :as stats]))
+            [cdq.entity.stats :as stats]))
 
 (defn skill-usable-state [entity
                           {:keys [skill/cooling-down? skill/effects] :as skill}

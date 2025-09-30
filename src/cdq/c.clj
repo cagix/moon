@@ -28,6 +28,7 @@
             [cdq.entity.body :as body]
             [cdq.entity.faction :as faction]
             [cdq.entity.inventory :as inventory]
+            [cdq.entity.stats :as stats]
             [cdq.entity.state :as state]
             cdq.entity.state.player-item-on-cursor
             [cdq.graphics :as graphics]
@@ -35,7 +36,6 @@
             [cdq.input :as input]
             [cdq.malli :as m]
             [cdq.stage]
-            [cdq.stats :as stats]
             [cdq.timer :as timer]
             [cdq.ui.action-bar]
             [cdq.ui.inventory]
