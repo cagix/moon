@@ -1,5 +1,6 @@
 (ns cdq.ctx.render
   (:require [cdq.ctx :as ctx]
+            [cdq.ctx.validate :as validate]
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity.animation :as animation]
@@ -640,7 +641,7 @@
 (defn do! [ctx]
   (-> ctx
       try-fetch-state-ctx
-      ctx/validate
+      validate/do!
       update-mouse
       update-mouseover-eid!
       check-open-debug!
@@ -660,4 +661,4 @@
       remove-destroyed-entities!
       window-and-camera-controls!
       render-stage!
-      ctx/validate))
+      validate/do!))

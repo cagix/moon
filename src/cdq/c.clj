@@ -37,7 +37,6 @@
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [cdq.malli :as m]
             [gdl.tx-handler :as tx-handler]
             [gdl.utils :as utils]))
 
@@ -612,24 +611,8 @@
                              :height 0.5
                              :z-order :z-order/effect}})
 
-(def ^:private schema
-  (m/schema
-   [:map {:closed true}
-    [:ctx/audio :some]
-    [:ctx/db :some]
-    [:ctx/graphics :some]
-    [:ctx/input :some]
-    [:ctx/stage :some]
-    [:ctx/vis-ui :some]
-    [:ctx/world :some]]))
-
 (defn create! [ctx]
   (extend-type (class ctx)
-    ctx/Validation
-    (validate [ctx]
-      (m/validate-humanize schema ctx)
-      ctx)
-
     ctx/TransactionHandler
     (handle-txs! [ctx transactions]
       (let [handled-txs (tx-handler/actions!
