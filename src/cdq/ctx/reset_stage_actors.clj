@@ -20,6 +20,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.utils :as utils]))
 
 (let [open-editor (fn [db]
@@ -60,6 +61,7 @@
                                            "world_fns/modules.edn"]]
                              {:label (str "Start " world-fn)
                               :on-click (fn [actor ctx]
+                                          (disposable/dispose! (:ctx/world ctx))
                                           (stage/set-ctx! (actor/get-stage actor)
                                                           ((requiring-resolve 'cdq.ctx.reset-game-state/do!) ctx world-fn)))})}
       update-labels [{:label "elapsed-time"

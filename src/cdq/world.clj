@@ -270,8 +270,8 @@
 
   disposable/Disposable
   (dispose! [{:keys [world/tiled-map]}]
-    (when tiled-map ; initialization
-      (disposable/dispose! tiled-map)))
+    (assert tiled-map) ; only dispose after world was created
+    (disposable/dispose! tiled-map))
 
   World
   (active-eids [this]
