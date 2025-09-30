@@ -1,6 +1,7 @@
 (ns cdq.application
   (:require [cdq.c :as c]
             [cdq.ctx.dispose :as dispose]
+            [cdq.ctx.render :as render]
             [cdq.ctx.update-viewports :as update-viewports]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
@@ -21,7 +22,7 @@
                        (dispose [_]
                          (dispose/do! @state))
                        (render [_]
-                         (swap! state c/render!))
+                         (swap! state render/do!))
                        (resize [_ width height]
                          (update-viewports/do! @state width height))
                        (pause [_])
