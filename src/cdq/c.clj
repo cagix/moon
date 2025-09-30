@@ -4,6 +4,12 @@
 ; Here _only_ 'ctx' functions create/render/dispose/resize
 ; all arguments move 1 up ?
 
+; state / defs also remove ?
+; can create even render-layeres with params for all colors
+
+; _only_ here 'ctx/' usage allowed !!!
+; this is 'cdq.ctx'
+
 (ns cdq.c
   (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
@@ -759,20 +765,18 @@
                                                                (assert avar sym)
                                                                avar)))))
 
-(defn create-db [ctx]
-  (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
-                                 :properties "properties.edn"
-                                 :schema-fn-map schema-fn-map})))
+(defn create-db [ctx params]
+  (assoc ctx :ctx/db (db/create params)))
 
 (defn- create-graphics!
   [{:keys [ctx/files
            ctx/graphics]
-    :as ctx}]
-  (assoc ctx :ctx/graphics (graphics/create! files
-                                             graphics
-                                             graphics-config)))
-(defn create-vis-ui! [ctx]
-  (assoc ctx :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})))
+    :as ctx}
+   params]
+  (assoc ctx :ctx/graphics (graphics/create! files graphics params)))
+
+(defn create-vis-ui! [ctx params]
+  (assoc ctx :ctx/vis-ui (vis-ui/load! params)))
 
 (defn- create-stage
   [{:keys [ctx/graphics]
@@ -787,7 +791,8 @@
 
 (defn- create-audio [{:keys [ctx/audio
                              ctx/files]
-                      :as ctx}]
+                      :as ctx}
+                     sound-names path-format]
   (assoc ctx :ctx/audio (audio/create audio
                                       files
                                       sound-names
@@ -796,8 +801,8 @@
 (defn- dissoc-files [ctx]
   (dissoc ctx :ctx/files))
 
-(defn- create-world [ctx]
-  (assoc ctx :ctx/world (world/create)))
+(defn- create-world [ctx params]
+  (assoc ctx :ctx/world (world/create params)))
 
 (defn- try-fetch-state-ctx
   [{:keys [ctx/stage]
@@ -1234,17 +1239,43 @@
   (stage/draw!    stage)
   (stage/get-ctx  stage))
 
+(def ^:private world-params
+  {:content-grid-cell-size 16
+   :world/factions-iterations {:good 15 :evil 5}
+   :world/max-delta 0.04
+   :world/minimum-size 0.39
+   :world/z-orders [:z-order/on-ground
+                    :z-order/ground
+                    :z-order/flying
+                    :z-order/effect]
+   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
+                                         :initial-state :npc-sleeping}
+                            :entity/faction :evil}
+   :world/player-components {:creature-id :creatures/vampire
+                             :components {:entity/fsm {:fsm :fsms/player
+                                                       :initial-state :player-idle}
+                                          :entity/faction :good
+                                          :entity/player? true
+                                          :entity/free-skill-points 3
+                                          :entity/clickable {:type :clickable/player}
+                                          :entity/click-distance-tiles 1.5}}
+   :world/effect-body-props {:width 0.5
+                             :height 0.5
+                             :z-order :z-order/effect}})
+
 (defn create! [ctx]
   (-> ctx
       create-record
-      create-db
-      create-graphics!
-      create-vis-ui!
+      (create-db {:schemas "schema.edn"
+                  :properties "properties.edn"
+                  :schema-fn-map schema-fn-map})
+      (create-graphics! graphics-config)
+      (create-vis-ui! {:skin-scale :x1})
       create-stage
       create-input!
-      create-audio
+      (create-audio sound-names path-format)
       dissoc-files
-      create-world
+      (create-world world-params)
       (ctx/reset-game-state! starting-world-fn)))
 
 (defn dispose! [{:keys [ctx/audio
