@@ -1,16 +1,14 @@
 (ns clojure.scene2d.vis-ui
-  (:require [com.kotcrab.vis.ui.vis-ui :as vis-ui]
-            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [com.badlogic.gdx.utils.disposable :as disposable]
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis.ui.widget.separator :as separator]
             [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
-            [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane])
-  (:import (clojure.lang MultiFn)
-           (com.badlogic.gdx.scenes.scene2d Actor)))
+            [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane]
+            [com.kotcrab.vis.ui.vis-ui :as vis-ui]))
 
 (doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
@@ -24,7 +22,7 @@
                          :actor.type/image        clojure.scene2d.vis-ui.image/create}
         :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))
-  (MultiFn/.addMethod com.badlogic.gdx.scenes.scene2d/build k method-var))
+  (clojure.lang.MultiFn/.addMethod com.badlogic.gdx.scenes.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (separator/horizontal))
@@ -64,7 +62,7 @@
                                   (stage/get-ctx stage))]
                         (when ctx
                           (tooltip/set-text! tooltip (tooltip-text ctx)))))))]
-  (extend-type Actor
+  (extend-type com.badlogic.gdx.scenes.scene2d.Actor
     actor/Tooltip
     (add-tooltip! [actor tooltip-text]
       (let [text? (string? tooltip-text)
