@@ -1,6 +1,6 @@
 (ns cdq.ctx.build-stage-actors
   (:require [cdq.ctx.handle-txs :as handle-txs]
-            [cdq.ctx.reset-world-state :as reset-world-state]
+            [cdq.ctx.create-world :as create-world]
             [cdq.db :as db]
             [cdq.entity.state :as state]
             [cdq.entity.stats :as stats]
@@ -68,7 +68,7 @@
                                             (stage/clear! (:ctx/stage ctx))
                                             (build-stage-actors! ctx)
                                             (disposable/dispose! (:ctx/world ctx))
-                                            (stage/set-ctx! stage (reset-world-state/do! ctx world-fn))))})}
+                                            (stage/set-ctx! stage (create-world/do! ctx world-fn))))})}
       update-labels [{:label "elapsed-time"
                       :update-fn (fn [ctx]
                                    (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
