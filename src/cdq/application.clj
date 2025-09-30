@@ -1,5 +1,7 @@
 (ns cdq.application
   (:require [cdq.c :as c]
+            cdq.scene2d.build.editor-overview-window
+            cdq.scene2d.build.editor-window
             [cdq.ctx.create-db :as create-db]
             [cdq.ctx.create-audio :as create-audio]
             [cdq.ctx.create-graphics :as create-graphics]
@@ -44,6 +46,7 @@
 
 ; TODO remov 'cdq.ctx', normal cdq.ctx.handle-txs/do!
 ; and can pass params !
+; just _functions_, transformation of data
 
 (defn -main []
   (lwjgl-system/set-glfw-library-name! "glfw_async")
