@@ -7,8 +7,6 @@
 (ns cdq.c
   (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
-            cdq.application.create.input
-            cdq.application.create.db
             [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.graphics.color :as color]
@@ -762,9 +760,9 @@
                                                                avar)))))
 
 (defn create-db [ctx]
-  (assoc ctx :ctx/db (cdq.application.create.db/create {:schemas "schema.edn"
-                                                        :properties "properties.edn"
-                                                        :schema-fn-map schema-fn-map})))
+  (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
+                                 :properties "properties.edn"
+                                 :schema-fn-map schema-fn-map})))
 
 (defn- create-graphics!
   [{:keys [ctx/files
@@ -785,7 +783,7 @@
 (defn- create-input! [{:keys [ctx/input
                               ctx/stage]
                        :as ctx}]
-  (assoc ctx :ctx/input (cdq.application.create.input/create! input stage)))
+  (assoc ctx :ctx/input (input/create! input stage)))
 
 (defn- create-audio [{:keys [ctx/audio
                              ctx/files]
