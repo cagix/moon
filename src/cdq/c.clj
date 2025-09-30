@@ -22,6 +22,7 @@
             [cdq.input :as input]
             [cdq.malli :as m]
             [cdq.stage]
+            [cdq.ui.action-bar]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
             [cdq.world.content-grid :as content-grid]
@@ -364,7 +365,7 @@
     :as ctx}]
   (stage/clear! stage)
   (let [actors [(create-dev-menu db graphics)
-                ((requiring-resolve 'cdq.application.create.stage.action-bar/create))
+                (cdq.ui.action-bar/create)
                 ((requiring-resolve 'cdq.application.create.stage.hp-mana-bar/create) stage graphics)
                 ((requiring-resolve 'cdq.application.create.stage.windows/create) stage graphics)
                 ((requiring-resolve 'cdq.application.create.stage.player-state-draw/create))
