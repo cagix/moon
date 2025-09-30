@@ -1,5 +1,5 @@
 (ns cdq.ctx.remove-destroyed-entities
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
 
@@ -25,7 +25,7 @@
       (grid/remove-from-touched-cells! grid eid)
       (when (:body/collides? (:entity/body @eid))
         (grid/remove-from-occupied-cells! grid eid))
-      (ctx/handle-txs! ctx
+      (handle-txs/do! ctx
                        (mapcat (fn [[k v]]
                                  (when-let [destroy! (:destroy! (k destroy-components))]
                                    (destroy! v eid ctx)))

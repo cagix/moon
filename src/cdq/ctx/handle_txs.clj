@@ -1,6 +1,5 @@
-(ns cdq.ctx.impl-txs
+(ns cdq.ctx.handle-txs
   (:require [cdq.audio :as audio]
-            [cdq.ctx :as ctx]
             [clj-commons.pretty.repl :as pretty-repl]
             [gdl.tx-handler :as tx-handler]))
 
@@ -88,17 +87,14 @@
    }
   )
 
-(defn do! [ctx]
-  (extend-type (class ctx)
-    ctx/TransactionHandler
-    (handle-txs! [ctx transactions]
-      (let [handled-txs (tx-handler/actions!
-                         txs-fn-map
-                         ctx  ; here pass only world ....
-                         transactions)]
-        (tx-handler/actions!
-         reaction-txs-fn-map
-         ctx
-         handled-txs
-         :strict? false))))
+(defn do! [ctx transactions]
+  (let [handled-txs (tx-handler/actions!
+                     txs-fn-map
+                     ctx  ; here pass only world ....
+                     transactions)]
+    (tx-handler/actions!
+     reaction-txs-fn-map
+     ctx
+     handled-txs
+     :strict? false))
   ctx)

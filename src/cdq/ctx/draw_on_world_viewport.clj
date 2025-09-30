@@ -1,5 +1,5 @@
 (ns cdq.ctx.draw-on-world-viewport
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.effect :as effect]
             [cdq.entity.animation :as animation]
             [cdq.entity.faction :as faction]
@@ -41,8 +41,8 @@
           (graphics/handle-draws! graphics (draw-fn v entity ctx))))
        (catch Throwable t
          (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
-         (ctx/handle-txs! ctx
-                          [[:tx/print-stacktrace t]]))))
+         (handle-txs/do! ctx
+                         [[:tx/print-stacktrace t]]))))
 
 
 (def ^:dbg-flag show-tile-grid? false)

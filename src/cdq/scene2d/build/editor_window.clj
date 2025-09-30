@@ -1,5 +1,5 @@
 (ns cdq.scene2d.build.editor-window
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.malli :as m]
@@ -26,7 +26,7 @@
        (stage/set-ctx! stage new-ctx))
      (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
-       (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
+       (handle-txs/do! ctx [[:tx/print-stacktrace  t]
                              [:tx/show-error-window t]])))))
 
 (defn- update-property-fn [get-widget-value]

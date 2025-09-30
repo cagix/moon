@@ -1,5 +1,5 @@
 (ns cdq.ctx.tick-entities
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.world :as world]))
 
 (defn do!
@@ -9,8 +9,8 @@
   (if (:world/paused? world)
     ctx
     (do (try
-         (ctx/handle-txs! ctx (world/tick-entities! world))
+         (handle-txs/do! ctx (world/tick-entities! world))
          (catch Throwable t
-           (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
+           (handle-txs/do! ctx [[:tx/print-stacktrace  t]
                                  [:tx/show-error-window t]])))
         ctx)))

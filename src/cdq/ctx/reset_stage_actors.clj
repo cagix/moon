@@ -1,5 +1,5 @@
 (ns cdq.ctx.reset-stage-actors
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]
             [cdq.entity.state :as state]
             [cdq.entity.stats :as stats]
@@ -283,7 +283,7 @@
                                         txs (state/clicked-inventory-cell [state-k (state-k entity)]
                                                                           eid
                                                                           cell)]
-                                    (ctx/handle-txs! ctx txs)))))
+                                    (handle-txs/do! ctx txs)))))
       :slot->texture-region slot->texture-region})))
 
 (defn- create-ui-windows [stage graphics]

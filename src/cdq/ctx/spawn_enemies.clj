@@ -1,5 +1,5 @@
 (ns cdq.ctx.spawn-enemies
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]
             [com.badlogic.gdx.maps.tiled :as tiled]))
 
@@ -7,7 +7,7 @@
   [{:keys [ctx/db
            ctx/world]
     :as ctx}]
-  (ctx/handle-txs!
+  (handle-txs/do!
    ctx
    (for [[position creature-id] (tiled/positions-with-property
                                  (:world/tiled-map world)

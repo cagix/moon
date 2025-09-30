@@ -1,12 +1,12 @@
 (ns cdq.ctx.spawn-player
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]))
 
 (defn do!
   [{:keys [ctx/db
            ctx/world]
     :as ctx}]
-  (ctx/handle-txs! ctx
+  (handle-txs/do! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
                                                       components]} (:world/player-components world)]
                                           {:position (mapv (partial + 0.5) (:world/start-position world))
