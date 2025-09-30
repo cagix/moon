@@ -2,6 +2,7 @@
   (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             [clj-commons.pretty.repl :as pretty-repl]
+            [cdq.ctx :as ctx]
             [clojure.edn :as edn]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.string :as str]
@@ -16,7 +17,6 @@
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.input :as input]
-            [cdq.malli :as m]
             [cdq.stage]
             [cdq.ui.action-bar]
             [cdq.ui.inventory]
@@ -37,9 +37,9 @@
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.badlogic.gdx.utils.disposable :as disposable]
+            [cdq.malli :as m]
             [gdl.tx-handler :as tx-handler]
-            [gdl.utils :as utils]
-            [qrecord.core :as q]))
+            [gdl.utils :as utils]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
@@ -76,17 +76,6 @@
                     :cursors/skill-not-usable      ["x007"         [0   0]]
                     :cursors/use-skill             ["pointer004"   [0   0]]
                     :cursors/walking               ["walking"      [16 16]]}}})
-
-(def ^:private schema
-  (m/schema
-   [:map {:closed true}
-    [:ctx/audio :some]
-    [:ctx/db :some]
-    [:ctx/graphics :some]
-    [:ctx/input :some]
-    [:ctx/stage :some]
-    [:ctx/vis-ui :some]
-    [:ctx/world :some]]))
 
 (def ^:private txs-fn-map
   '{
@@ -560,43 +549,6 @@
                                        graphics)]
     (update ctx :ctx/world world/reset-state world-fn-result)))
 
-(q/defrecord Context []
-  ctx/Validation
-  (validate [ctx]
-    (m/validate-humanize schema ctx)
-    ctx)
-
-  ctx/TransactionHandler
-  (handle-txs! [ctx transactions]
-    (let [handled-txs (tx-handler/actions!
-                       txs-fn-map
-                       ctx  ; here pass only world ....
-                       transactions)]
-      (tx-handler/actions!
-       reaction-txs-fn-map
-       ctx
-       handled-txs
-       :strict? false)))
-
-  com.badlogic.gdx.scenes.scene2d.ctx/Graphics
-  (draw! [{:keys [ctx/graphics]} draws]
-    (graphics/handle-draws! graphics draws))
-
-  ctx/ResetGameState
-  (reset-game-state! [{:keys [ctx/world]
-                       :as ctx}
-                      world-fn]
-    (disposable/dispose! world)
-    (-> ctx
-        reset-stage-actors!
-        (reset-world-state world-fn)
-        spawn-player!
-        spawn-enemies!)))
-
-(defn- create-record [ctx]
-  (merge (map->Context {})
-         ctx))
-
 (defn- create-db [ctx]
   (assoc ctx :ctx/db (db/create)))
 
@@ -660,9 +612,51 @@
                              :height 0.5
                              :z-order :z-order/effect}})
 
+(def ^:private schema
+  (m/schema
+   [:map {:closed true}
+    [:ctx/audio :some]
+    [:ctx/db :some]
+    [:ctx/graphics :some]
+    [:ctx/input :some]
+    [:ctx/stage :some]
+    [:ctx/vis-ui :some]
+    [:ctx/world :some]]))
+
 (defn create! [ctx]
+  (extend-type (class ctx)
+    ctx/Validation
+    (validate [ctx]
+      (m/validate-humanize schema ctx)
+      ctx)
+
+    ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (let [handled-txs (tx-handler/actions!
+                         txs-fn-map
+                         ctx  ; here pass only world ....
+                         transactions)]
+        (tx-handler/actions!
+         reaction-txs-fn-map
+         ctx
+         handled-txs
+         :strict? false)))
+
+    com.badlogic.gdx.scenes.scene2d.ctx/Graphics
+    (draw! [{:keys [ctx/graphics]} draws]
+      (graphics/handle-draws! graphics draws))
+
+    ctx/ResetGameState
+    (reset-game-state! [{:keys [ctx/world]
+                         :as ctx}
+                        world-fn]
+      (disposable/dispose! world)
+      (-> ctx
+          reset-stage-actors!
+          (reset-world-state world-fn)
+          spawn-player!
+          spawn-enemies!)) )
   (-> ctx
-      create-record
       create-db
       (create-graphics! graphics-config)
       (create-vis-ui! {:skin-scale :x1})

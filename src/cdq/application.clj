@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.c :as c]
+            [cdq.ctx.create-record :as create-record]
             [cdq.ctx.dispose :as dispose]
             [cdq.ctx.render :as render]
             [cdq.ctx.update-viewports :as update-viewports]
@@ -15,10 +16,12 @@
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (lwjgl/application (reify ApplicationListener
                        (create [_]
-                         (reset! state (c/create! {:ctx/audio    (gdx/audio)
-                                                   :ctx/files    (gdx/files)
-                                                   :ctx/graphics (gdx/graphics)
-                                                   :ctx/input    (gdx/input)})))
+                         (reset! state (-> {:ctx/audio    (gdx/audio)
+                                            :ctx/files    (gdx/files)
+                                            :ctx/graphics (gdx/graphics)
+                                            :ctx/input    (gdx/input)}
+                                           create-record/do!
+                                           c/create!)))
                        (dispose [_]
                          (dispose/do! @state))
                        (render [_]
