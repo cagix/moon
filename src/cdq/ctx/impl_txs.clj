@@ -1,0 +1,104 @@
+(ns cdq.ctx.impl-txs
+  (:require [cdq.audio :as audio]
+            [cdq.ctx :as ctx]
+            [clj-commons.pretty.repl :as pretty-repl]
+            [gdl.tx-handler :as tx-handler]))
+
+(def ^:private txs-fn-map
+  '{
+    :tx/assoc (fn [_ctx eid k value]
+                (swap! eid assoc k value)
+                nil)
+    :tx/assoc-in (fn [_ctx eid ks value]
+                   (swap! eid assoc-in ks value)
+                   nil)
+    :tx/dissoc (fn [_ctx eid k]
+                 (swap! eid dissoc k)
+                 nil)
+    :tx/mark-destroyed (fn [_ctx eid]
+                         (swap! eid assoc :entity/destroyed? true)
+                         nil)
+    :tx/mod-add cdq.tx.mod-add/do!
+    :tx/mod-remove cdq.tx.mod-remove/do!
+    :tx/pay-mana-cost cdq.tx.pay-mana-cost/do!
+    :tx/set-cooldown cdq.tx.set-cooldown/do!
+    :tx/add-text-effect cdq.tx.add-text-effect/do!
+    :tx/add-skill cdq.tx.add-skill/do!
+    :tx/set-item cdq.tx.set-item/do!
+    :tx/remove-item cdq.tx.remove-item/do!
+    :tx/pickup-item cdq.tx.pickup-item/do!
+    :tx/event cdq.tx.event/do!
+    :tx/state-exit cdq.tx.state-exit/do!
+    :tx/state-enter cdq.tx.state-enter/do!
+    :tx/effect cdq.tx.effect/do!
+    :tx/audiovisual cdq.tx.audiovisual/do!
+    :tx/spawn-alert cdq.tx.spawn-alert/do!
+    :tx/spawn-line cdq.tx.spawn-line/do!
+    :tx/move-entity cdq.tx.move-entity/do!
+    :tx/spawn-projectile cdq.tx.spawn-projectile/do!
+    :tx/spawn-effect cdq.tx.spawn-effect/do!
+    :tx/spawn-item     cdq.tx.spawn-item/do!
+    :tx/spawn-creature cdq.tx.spawn-creature/do!
+    :tx/spawn-entity   cdq.tx.spawn-entity/do!
+
+    :tx/sound (fn [{:keys [ctx/audio]} sound-name]
+                (audio/play-sound! audio sound-name)
+                nil)
+    :tx/print-stacktrace (let [print-level 3
+                               print-depth 24]
+                           (fn [_ctx throwable]
+                             (binding [*print-level* print-level]
+                               (pretty-repl/pretty-pst throwable print-depth))
+                             nil))
+    :tx/show-error-window        cdq.tx.stage/show-error-window!
+    :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
+    :tx/show-message             cdq.tx.stage/show-message!
+    :tx/show-modal               cdq.tx.stage/show-modal!
+    }
+  )
+
+(alter-var-root #'txs-fn-map update-vals
+                (fn [form]
+                  (if (symbol? form)
+                    (let [avar (requiring-resolve form)]
+                      (assert avar form)
+                      avar)
+                    (eval form))))
+
+
+(require 'cdq.tx.stage)
+
+(def ^:private reaction-txs-fn-map
+  {
+
+   :tx/set-item (fn [ctx eid cell item]
+                  (when (:entity/player? @eid)
+                    (cdq.tx.stage/player-set-item! ctx cell item)
+                    nil))
+
+   :tx/remove-item (fn [ctx eid cell]
+                     (when (:entity/player? @eid)
+                       (cdq.tx.stage/player-remove-item! ctx cell)
+                       nil))
+
+   :tx/add-skill (fn [ctx eid skill]
+                   (when (:entity/player? @eid)
+                     (cdq.tx.stage/player-add-skill! ctx skill)
+                     nil))
+   }
+  )
+
+(defn do! [ctx]
+  (extend-type (class ctx)
+    ctx/TransactionHandler
+    (handle-txs! [ctx transactions]
+      (let [handled-txs (tx-handler/actions!
+                         txs-fn-map
+                         ctx  ; here pass only world ....
+                         transactions)]
+        (tx-handler/actions!
+         reaction-txs-fn-map
+         ctx
+         handled-txs
+         :strict? false))))
+  ctx)

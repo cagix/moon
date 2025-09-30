@@ -9,6 +9,7 @@
             [cdq.ctx.create-vis-ui :as create-vis-ui]
             [cdq.ctx.create-world :as create-world]
             [cdq.ctx.dispose :as dispose]
+            [cdq.ctx.impl-txs :as impl-txs]
             [cdq.ctx.dissoc-files :as dissoc-files]
             [cdq.ctx.update-viewports :as update-viewports]
             [cdq.ctx.assoc-active-entities :as assoc-active-entities]
@@ -57,6 +58,7 @@
                                            create-audio/do!
                                            dissoc-files/do!
                                            create-world/do!
+                                           impl-txs/do!
                                            c/create!)))
                        (dispose [_]
                          (dispose/do! @state))
