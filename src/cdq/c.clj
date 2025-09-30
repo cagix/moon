@@ -50,8 +50,6 @@
             [gdl.utils :as utils]
             [qrecord.core :as q]))
 
-(def starting-world-fn "world_fns/vampire.edn")
-
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
 
@@ -282,26 +280,6 @@
                 [[:tx/audiovisual
                   (:body/position (:entity/body @eid))
                   audiovisuals-id]])}})
-
-(def ^:private k->tick-fn
-  (update-vals
-   '{:entity/alert-friendlies-after-duration cdq.entity.alert-friendlies-after-duration/tick
-     :entity/animation                       cdq.entity.animation/tick
-     :entity/delete-after-duration           cdq.entity.delete-after-duration/tick
-     :entity/movement                        cdq.entity.movement/tick
-     :entity/projectile-collision            cdq.entity.projectile-collision/tick
-     :entity/skills                          cdq.entity.skills/tick
-     :active-skill                           cdq.entity.state.active-skill/tick
-     :npc-idle                               cdq.entity.state.npc-idle/tick
-     :npc-moving                             cdq.entity.state.npc-moving/tick
-     :npc-sleeping                           cdq.entity.state.npc-sleeping/tick
-     :stunned                                cdq.entity.state.stunned/tick
-     :entity/string-effect                   cdq.entity.string-effect/tick
-     :entity/temp-modifier                   cdq.entity.temp-modifier/tick}
-   (fn [sym]
-     (let [avar (requiring-resolve sym)]
-       (assert avar sym)
-       avar))))
 
 (def ^:dbg-flag show-body-bounds? false)
 
@@ -1234,11 +1212,7 @@
   (if (:world/paused? world)
     ctx
     (do (try
-         (doseq [eid (:world/active-entities world)
-                 [k v] @eid
-                 :let [f (k->tick-fn k)]
-                 :when f]
-           (ctx/handle-txs! ctx (f v eid world)))
+         (ctx/handle-txs! ctx (world/tick-entities! world))
          (catch Throwable t
            (ctx/handle-txs! ctx [[:tx/print-stacktrace  t]
                                  [:tx/show-error-window t]])))
@@ -1321,7 +1295,7 @@
       (create-audio sound-names path-format)
       dissoc-files
       (create-world world-params)
-      (ctx/reset-game-state! starting-world-fn)))
+      (ctx/reset-game-state! "world_fns/vampire.edn")))
 
 (defn dispose! [{:keys [ctx/audio
                         ctx/graphics
