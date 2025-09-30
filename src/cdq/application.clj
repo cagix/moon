@@ -10,7 +10,6 @@
             [cdq.ctx.create-vis-ui :as create-vis-ui]
             [cdq.ctx.create-world :as create-world]
             [cdq.ctx.dispose :as dispose]
-            [cdq.ctx.impl-scene2d-ctx-draw :as impl-scene2d-ctx-draw]
             [cdq.ctx.dissoc-files :as dissoc-files]
             [cdq.ctx.update-viewports :as update-viewports]
             [cdq.ctx.assoc-active-entities :as assoc-active-entities]
@@ -60,7 +59,6 @@
                                            create-audio/do!
                                            dissoc-files/do!
                                            create-world/do!
-                                           impl-scene2d-ctx-draw/do!
                                            (reset-game-state/do! "world_fns/vampire.edn"))))
                        (dispose [_]
                          (dispose/do! @state))
