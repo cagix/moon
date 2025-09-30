@@ -1,15 +1,3 @@
-
-; TODO REMOVE REQUIRING-RESOLVE / unnecessary protocols / extend-type
-
-; Here _only_ 'ctx' functions create/render/dispose/resize
-; all arguments move 1 up ?
-
-; state / defs also remove ?
-; can create even render-layeres with params for all colors
-
-; _only_ here 'ctx/' usage allowed !!!
-; this is 'cdq.ctx'
-
 (ns cdq.c
   (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
