@@ -1,5 +1,6 @@
-(ns cdq.ctx.reset-stage-actors
+(ns cdq.ctx.build-stage-actors
   (:require [cdq.ctx.handle-txs :as handle-txs]
+            [cdq.ctx.reset-world-state :as reset-world-state]
             [cdq.db :as db]
             [cdq.entity.state :as state]
             [cdq.entity.stats :as stats]
@@ -22,6 +23,8 @@
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
             [com.badlogic.gdx.utils.disposable :as disposable]
             [gdl.utils :as utils]))
+
+(declare build-stage-actors!)
 
 (let [open-editor (fn [db]
                     {:label "Editor"
@@ -61,9 +64,11 @@
                                            "world_fns/modules.edn"]]
                              {:label (str "Start " world-fn)
                               :on-click (fn [actor ctx]
-                                          (disposable/dispose! (:ctx/world ctx))
-                                          (stage/set-ctx! (actor/get-stage actor)
-                                                          ((requiring-resolve 'cdq.ctx.reset-game-state/do!) ctx world-fn)))})}
+                                          (let [stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
+                                            (stage/clear! (:ctx/stage ctx))
+                                            (build-stage-actors! ctx)
+                                            (disposable/dispose! (:ctx/world ctx))
+                                            (stage/set-ctx! stage (reset-world-state/do! ctx world-fn))))})}
       update-labels [{:label "elapsed-time"
                       :update-fn (fn [ctx]
                                    (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
@@ -348,12 +353,11 @@
                                   player-eid
                                   ctx)))})
 
-(defn do!
+(defn- build-stage-actors!
   [{:keys [ctx/db
            ctx/graphics
            ctx/stage]
     :as ctx}]
-  (stage/clear! stage)
   (let [actors [(create-dev-menu db graphics)
                 (cdq.ui.action-bar/create)
                 (create-hp-mana-bar stage graphics)
@@ -363,3 +367,5 @@
     (doseq [actor actors]
       (stage/add! stage (scene2d/build actor))))
   ctx)
+
+(def do! build-stage-actors!)

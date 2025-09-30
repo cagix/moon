@@ -1,5 +1,7 @@
 (ns cdq.ctx.reset-world-state
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx.spawn-player :as spawn-player]
+            [cdq.ctx.spawn-enemies :as spawn-enemies]
+            [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
@@ -15,7 +17,7 @@
                                                                              #(graphics/texture-region graphics %))
             :textures (:graphics/textures graphics)))))
 
-(defn do!
+(defn- reset-world-state
   [{:keys [ctx/db
            ctx/graphics]
     :as ctx}
@@ -24,3 +26,11 @@
                                        (db/all-raw db :properties/creatures)
                                        graphics)]
     (update ctx :ctx/world world/reset-state world-fn-result)))
+
+(defn do! [{:keys [ctx/world]
+            :as ctx}
+           world-fn]
+  (-> ctx
+      (reset-world-state world-fn)
+      spawn-player/do!
+      spawn-enemies/do!))

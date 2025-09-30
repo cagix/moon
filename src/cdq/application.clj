@@ -22,8 +22,9 @@
             [cdq.ctx.draw-world-map :as draw-world-map]
             [cdq.ctx.get-stage-ctx :as get-stage-ctx]
             [cdq.ctx.render-stage :as render-stage]
-            [cdq.ctx.reset-game-state :as reset-game-state]
+            [cdq.ctx.build-stage-actors :as build-stage-actors]
             [cdq.ctx.remove-destroyed-entities :as remove-destroyed-entities]
+            [cdq.ctx.reset-world-state :as reset-world-state]
             [cdq.ctx.set-camera-on-player :as set-camera-on-player]
             [cdq.ctx.set-cursor :as set-cursor]
             [cdq.ctx.tick-entities :as tick-entities]
@@ -55,11 +56,12 @@
                                            create-graphics/do!
                                            create-vis-ui/do!
                                            create-stage/do!
+                                           build-stage-actors/do!
                                            create-input/do!
                                            create-audio/do!
                                            dissoc-files/do!
                                            create-world/do!
-                                           (reset-game-state/do! "world_fns/vampire.edn"))))
+                                           (reset-world-state/do! "world_fns/vampire.edn"))))
                        (dispose [_]
                          (dispose/do! @state))
                        (render [_]
