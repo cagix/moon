@@ -1,3 +1,4 @@
+; TODO REMOVE REQUIRING-RESOLVE
 (ns cdq.c
   (:require cdq.application.create.editor
             cdq.ui.editor.window
@@ -24,8 +25,10 @@
             [cdq.input :as input]
             [cdq.malli :as m]
             [cdq.stage]
+            [cdq.stats :as modifiers]
             [cdq.ui.action-bar]
             [cdq.ui.inventory]
+            [cdq.val-max :as val-max]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
             [cdq.world.content-grid :as content-grid]
@@ -549,6 +552,60 @@
    :group/actors [(create-entity-info-window stage)
                   (create-inventory-window stage graphics)]})
 
+(let [config {:rahmen-file "images/rahmen.png"
+              :rahmenw 150
+              :rahmenh 26
+              :hpcontent-file "images/hp.png"
+              :manacontent-file "images/mana.png"
+              :y-mana 80}]
+  (defn- create-hp-mana-bar
+    [stage graphics]
+    (let [{:keys [rahmen-file
+                  rahmenw
+                  rahmenh
+                  hpcontent-file
+                  manacontent-file
+                  y-mana]} config
+          [x y-mana] [(/ (cdq.stage/viewport-width stage) 2)
+                      y-mana]
+          rahmen-tex-reg (graphics/texture-region graphics {:image/file rahmen-file})
+          y-hp (+ y-mana rahmenh)
+          render-hpmana-bar (fn [x y content-file minmaxval name]
+                              [[:draw/texture-region rahmen-tex-reg [x y]]
+                               [:draw/texture-region
+                                (graphics/texture-region graphics
+                                                         {:image/file content-file
+                                                          :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
+                                [x y]]
+                               [:draw/text {:text (str (utils/readable-number (minmaxval 0))
+                                                       "/"
+                                                       (minmaxval 1)
+                                                       " "
+                                                       name)
+                                            :x (+ x 75)
+                                            :y (+ y 2)
+                                            :up? true}]])
+          create-draws (fn [{:keys [ctx/world]}]
+                         (let [stats (:entity/stats @(:world/player-eid world))
+                               x (- x (/ rahmenw 2))]
+                           (concat
+                            (render-hpmana-bar x y-hp   hpcontent-file   (modifiers/get-hitpoints stats) "HP")
+                            (render-hpmana-bar x y-mana manacontent-file (modifiers/get-mana      stats) "MP"))))]
+      {:actor/type :actor.type/actor
+       :draw (fn [_this ctx]
+               (create-draws ctx))})))
+
+(defn- create-player-state-draw-ui []
+  {:actor/type :actor.type/actor
+   :draw (fn [_this {:keys [ctx/world]
+                     :as ctx}]
+           (let [player-eid (:world/player-eid world)
+                 entity @player-eid
+                 state-k (:state (:entity/fsm entity))]
+             (state/draw-gui-view [state-k (state-k entity)]
+                                  player-eid
+                                  ctx)))})
+
 (defn- reset-stage-actors!
   [{:keys [ctx/db
            ctx/graphics
@@ -557,10 +614,10 @@
   (stage/clear! stage)
   (let [actors [(create-dev-menu db graphics)
                 (cdq.ui.action-bar/create)
-                ((requiring-resolve 'cdq.application.create.stage.hp-mana-bar/create) stage graphics)
+                (create-hp-mana-bar stage graphics)
                 (create-ui-windows stage graphics)
-                ((requiring-resolve 'cdq.application.create.stage.player-state-draw/create))
-                ((requiring-resolve 'cdq.application.create.stage.message/create))]]
+                (create-player-state-draw-ui)
+                (cdq.ui.message/create)]]
     (doseq [actor actors]
       (stage/add! stage (scene2d/build actor))))
   ctx)
