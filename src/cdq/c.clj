@@ -895,8 +895,12 @@
                                                                (assert avar sym)
                                                                avar)))))
 
-(defn create-db [ctx params]
-  (assoc ctx :ctx/db (db/create params)))
+; Cannot pass params because used by levelgen
+; Does levelgen need schema transformations or widgets ? no
+(defn create-db [ctx]
+  (assoc ctx :ctx/db (db/create {:schemas "schema.edn"
+                                 :properties "properties.edn"
+                                 :schema-fn-map schema-fn-map})))
 
 (defn- create-graphics!
   [{:keys [ctx/files
@@ -1396,9 +1400,7 @@
 (defn create! [ctx]
   (-> ctx
       create-record
-      (create-db {:schemas "schema.edn"
-                  :properties "properties.edn"
-                  :schema-fn-map schema-fn-map})
+      create-db
       (create-graphics! graphics-config)
       (create-vis-ui! {:skin-scale :x1})
       create-stage

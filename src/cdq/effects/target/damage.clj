@@ -19,7 +19,7 @@
    (effective-armor-save source* target*))
  )
 
-(defn- calc-damage
+(defn calc-damage
   ([source target damage]
    (update (calc-damage source damage)
            :damage/min-max

@@ -6,6 +6,7 @@
             [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.scene2d.vis-ui :as vis-ui]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics :as graphics]
             [clojure.graphics.orthographic-camera :as camera]
@@ -101,7 +102,7 @@
         ctx (assoc ctx :ctx/stage stage)
         ctx (-> ctx
                 cdq.c/create-db
-                cdq.c/create-vis-ui!)
+                (assoc :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (graphics/fit-viewport graphics
