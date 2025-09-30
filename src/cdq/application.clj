@@ -1,25 +1,12 @@
 (ns cdq.application
-  (:require [com.badlogic.gdx :as gdx]
+  (:require [cdq.c :as c]
+            [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [org.lwjgl.system.configuration :as lwjgl-system])
   (:import (com.badlogic.gdx ApplicationListener))
   (:gen-class))
 
 (def config '{
-              :create [cdq.application.create.record/do!
-                       cdq.application.create.validation/do!
-                       cdq.application.create.editor/do!
-                       cdq.ui.editor.window/do!
-                       cdq.application.create.handle-txs/do!
-                       cdq.application.create.db/do!
-                       cdq.application.create.vis-ui/do!
-                       cdq.application.create.graphics/do!
-                       cdq.application.create.stage/do!
-                       cdq.application.create.input/do!
-                       cdq.application.create.audio/do!
-                       cdq.application.create.remove-files/do!
-                       cdq.application.create.world/do!
-                       cdq.application.create.reset-game-state/do!]
               :dispose cdq.application.dispose/do!
               :render  [cdq.application.render.try-fetch-state-ctx/do!
                         cdq.application.render.validate/do!
@@ -49,20 +36,16 @@
 (def state (atom nil))
 
 (defn -main []
-  (let [create-pipeline (map requiring-resolve (:create config))
-        dispose (requiring-resolve (:dispose config))
+  (let [dispose (requiring-resolve (:dispose config))
         render-pipeline (map requiring-resolve (:render config))
         resize (requiring-resolve (:resize config))]
     (lwjgl-system/set-glfw-library-name! "glfw_async")
     (lwjgl/application (reify ApplicationListener
                          (create [_]
-                           (reset! state (reduce (fn [ctx f]
-                                                   (f ctx))
-                                                 {:ctx/audio    (gdx/audio)
-                                                  :ctx/files    (gdx/files)
-                                                  :ctx/graphics (gdx/graphics)
-                                                  :ctx/input    (gdx/input)}
-                                                 create-pipeline)))
+                           (reset! state (c/create! {:ctx/audio    (gdx/audio)
+                                                     :ctx/files    (gdx/files)
+                                                     :ctx/graphics (gdx/graphics)
+                                                     :ctx/input    (gdx/input)})))
                          (dispose [_]
                            (dispose @state))
                          (render [_]
