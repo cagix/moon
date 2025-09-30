@@ -1,24 +1,24 @@
 (ns cdq.application.create.graphics
   (:require [cdq.graphics]
-            [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.files.utils :as files-utils]
+            [clojure.graphics.color :refer [white]]
+            [clojure.graphics.orthographic-camera :as camera]
+            [clojure.graphics.freetype :as freetype]
+            [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.graphics.color :refer [white]]
-            [clojure.graphics.orthographic-camera :as camera]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [space.earlygrey.shape-drawer :as sd]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
-            [clojure.graphics.freetype :as freetype]
-            [gdl.math :as math]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.math :refer [degree->radians]]
+            [space.earlygrey.shape-drawer :as sd]))
 
 (defmacro ^:private with-line-width [shape-drawer width & exprs]
   `(let [old-line-width# (sd/default-line-width ~shape-drawer)]
@@ -110,16 +110,16 @@
                                      center-x
                                      center-y
                                      radius
-                                     (math/degree->radians start-angle)
-                                     (math/degree->radians degree)))
+                                     (degree->radians start-angle)
+                                     (degree->radians degree)))
    :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
                             (sd/set-color! shape-drawer (color/float-bits color))
                             (sd/sector! shape-drawer
                                         center-x
                                         center-y
                                         radius
-                                        (math/degree->radians start-angle)
-                                        (math/degree->radians degree)))
+                                        (degree->radians start-angle)
+                                        (degree->radians degree)))
    :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
                             (sd/set-color! shape-drawer (color/float-bits color))
                             (sd/line! shape-drawer sx sy ex ey))})
