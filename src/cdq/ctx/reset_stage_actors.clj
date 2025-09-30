@@ -61,7 +61,7 @@
                              {:label (str "Start " world-fn)
                               :on-click (fn [actor ctx]
                                           (stage/set-ctx! (actor/get-stage actor)
-                                                          (ctx/reset-game-state! ctx world-fn)))})}
+                                                          ((requiring-resolve 'cdq.ctx.reset-game-state/do!) ctx world-fn)))})}
       update-labels [{:label "elapsed-time"
                       :update-fn (fn [ctx]
                                    (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))

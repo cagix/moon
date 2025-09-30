@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require [cdq.c :as c]
-            cdq.scene2d.build.editor-overview-window
+  (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             [cdq.ctx.create-db :as create-db]
             [cdq.ctx.create-audio :as create-audio]
@@ -25,6 +24,7 @@
             [cdq.ctx.draw-world-map :as draw-world-map]
             [cdq.ctx.get-stage-ctx :as get-stage-ctx]
             [cdq.ctx.render-stage :as render-stage]
+            [cdq.ctx.reset-game-state :as reset-game-state]
             [cdq.ctx.remove-destroyed-entities :as remove-destroyed-entities]
             [cdq.ctx.set-camera-on-player :as set-camera-on-player]
             [cdq.ctx.set-cursor :as set-cursor]
@@ -43,10 +43,6 @@
   (:gen-class))
 
 (def state (atom nil))
-
-; TODO remov 'cdq.ctx', normal cdq.ctx.handle-txs/do!
-; and can pass params !
-; just _functions_, transformation of data
 
 (defn -main []
   (lwjgl-system/set-glfw-library-name! "glfw_async")
@@ -67,7 +63,7 @@
                                            create-world/do!
                                            impl-txs/do!
                                            impl-scene2d-ctx-draw/do!
-                                           c/create!)))
+                                           (reset-game-state/do! "world_fns/vampire.edn"))))
                        (dispose [_]
                          (dispose/do! @state))
                        (render [_]
