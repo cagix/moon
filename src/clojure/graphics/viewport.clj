@@ -1,5 +1,5 @@
 (ns clojure.graphics.viewport
-  (:require [clojure.core-ext :refer [clamp]]
+  (:require [gdl.math :refer [clamp]]
             [com.badlogic.gdx.utils.viewport :as viewport]))
 
 (defn update! [this width height {:keys [center?]}]
