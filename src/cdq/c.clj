@@ -814,7 +814,7 @@
   (merge (map->Context {})
          ctx))
 
-(defn create-db [ctx]
+(defn- create-db [ctx]
   (assoc ctx :ctx/db (db/create)))
 
 (defn- create-graphics!
@@ -824,7 +824,7 @@
    params]
   (assoc ctx :ctx/graphics (graphics/create! files graphics params)))
 
-(defn create-vis-ui! [ctx params]
+(defn- create-vis-ui! [ctx params]
   (assoc ctx :ctx/vis-ui (vis-ui/load! params)))
 
 (defn- create-stage
@@ -1101,14 +1101,12 @@
             [:draw/rectangle x y width height [0 0 1 1]])))))
 
 (defn- draw-on-world-viewport!* [{:keys [ctx/graphics]
-              :as ctx}]
-  (doseq [f [
-             draw-tile-grid
+                                  :as ctx}]
+  (doseq [f [draw-tile-grid
              draw-cell-debug
              draw-entities
              #_geom-test
-             highlight-mouseover-tile
-             ]]
+             highlight-mouseover-tile]]
     (graphics/handle-draws! graphics (f ctx))))
 
 (defn- draw-on-world-viewport!
