@@ -10,6 +10,7 @@
             [cdq.ctx.create-world :as create-world]
             [cdq.ctx.dispose :as dispose]
             [cdq.ctx.impl-txs :as impl-txs]
+            [cdq.ctx.impl-scene2d-ctx-draw :as impl-scene2d-ctx-draw]
             [cdq.ctx.dissoc-files :as dissoc-files]
             [cdq.ctx.update-viewports :as update-viewports]
             [cdq.ctx.assoc-active-entities :as assoc-active-entities]
@@ -41,6 +42,9 @@
 
 (def state (atom nil))
 
+; TODO remov 'cdq.ctx', normal cdq.ctx.handle-txs/do!
+; and can pass params !
+
 (defn -main []
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (lwjgl/application (reify ApplicationListener
@@ -59,6 +63,7 @@
                                            dissoc-files/do!
                                            create-world/do!
                                            impl-txs/do!
+                                           impl-scene2d-ctx-draw/do!
                                            c/create!)))
                        (dispose [_]
                          (dispose/do! @state))

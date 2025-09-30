@@ -429,10 +429,6 @@
 
 (defn create! [ctx]
   (extend-type (class ctx)
-    com.badlogic.gdx.scenes.scene2d.ctx/Graphics
-    (draw! [{:keys [ctx/graphics]} draws]
-      (graphics/handle-draws! graphics draws))
-
     ctx/ResetGameState
     (reset-game-state! [{:keys [ctx/world]
                          :as ctx}
