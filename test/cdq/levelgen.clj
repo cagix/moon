@@ -193,8 +193,7 @@
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (lwjgl/application (reify ApplicationListener
                        (create [_]
-                         (reset! state (create! {:ctx/audio    (gdx/audio)
-                                                 :ctx/files    (gdx/files)
+                         (reset! state (create! {:ctx/files    (gdx/files)
                                                  :ctx/graphics (gdx/graphics)
                                                  :ctx/input    (gdx/input)})))
                        (dispose [_]
