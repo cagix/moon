@@ -1,6 +1,5 @@
 (ns cdq.entity.temp-modifier
-  (:require [cdq.timer :as timer]
-            [gdl.utils :as utils]))
+  (:require [cdq.timer :as timer]))
 
 (defn tick
   [{:keys [modifiers counter]}
@@ -9,6 +8,3 @@
   (when (timer/stopped? elapsed-time counter)
     [[:tx/dissoc     eid :entity/temp-modifier]
      [:tx/mod-remove eid modifiers]]))
-
-(defn info-text [[_ {:keys [counter]}] {:keys [world/elapsed-time]}]
-  (str "Spiderweb - remaining: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))

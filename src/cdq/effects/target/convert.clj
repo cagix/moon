@@ -8,6 +8,3 @@
 
 (defn handle [_ {:keys [effect/source effect/target]} _world]
   [[:tx/assoc target :entity/faction (:entity/faction @source)]])
-
-(defn info-text [_ _world]
-  "Converts target to your side.")

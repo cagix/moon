@@ -3,8 +3,7 @@
 (ns cdq.entity.stats
   (:require [cdq.malli :as m]
             [cdq.stats.ops :as ops]
-            [cdq.val-max :as val-max]
-            [clojure.string :as str]))
+            [cdq.val-max :as val-max]))
 
 (defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
@@ -82,24 +81,3 @@
   #_(-> stats
         (update :stats/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
         (update :stats/hp   (fn [v] [v v]))))
-
-(def ^:private non-val-max-stat-ks
-  [:stats/movement-speed
-   :stats/aggro-range
-   :stats/reaction-time
-   :stats/strength
-   :stats/cast-speed
-   :stats/attack-speed
-   :stats/armor-save
-   :stats/armor-pierce])
-
-(defn info-text [[_ stats] _world]
-  (str/join "\n" (concat
-                  ["*STATS*"
-                   (str "Mana: " (if (:stats/mana stats)
-                                   (get-mana stats)
-                                   "-"))
-                   (str "Hitpoints: " (get-hitpoints stats))]
-                  (for [stat-k non-val-max-stat-ks]
-                    (str (str/capitalize (name stat-k)) ": "
-                         (get-stat-value stats stat-k))))))

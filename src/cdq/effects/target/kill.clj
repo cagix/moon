@@ -6,6 +6,3 @@
 
 (defn handle [_ {:keys [effect/target]} _world]
   [[:tx/event target :kill]])
-
-(defn info-text [_ _world]
-  "Kills target")

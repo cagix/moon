@@ -4,6 +4,3 @@
   (case faction
     :evil :good
     :good :evil))
-
-(defn info-text [[_ faction] _world]
-  (str "Faction: " (name faction)))

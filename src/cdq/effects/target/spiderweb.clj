@@ -18,6 +18,3 @@
       [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
                                                 :counter (timer/create elapsed-time duration)}]
        [:tx/mod-add target modifiers]])))
-
-(defn info-text [_ _world]
-  "Spiderweb slows 50% for 5 seconds.")

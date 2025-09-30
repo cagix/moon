@@ -14,8 +14,3 @@
 
 (defn handle [_ {:keys [effect/source] :as effect-ctx} world]
   (effect/handle (melee-damage-effect @source) effect-ctx world))
-
-(defn info-text [_ _world]
-  (str "Damage based on entity strength."
-       #_(when source
-           (str "\n" (damage-info (entity->melee-damage @source))))))

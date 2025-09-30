@@ -68,13 +68,3 @@
         [:tx/event    target (if (zero? new-hp-val) :kill :alert)]
         [:tx/audiovisual (:body/position (:entity/body target*)) :audiovisuals/damage]
         [:tx/add-text-effect target (str "[RED]" dmg-amount "[]") 0.3]]))))
-
-(defn info-text [[_ {[min max] :damage/min-max}] _world]
-  (str min "-" max " damage")
-  #_(if source
-      (let [modified (stats/damage @source damage)]
-        (if (= damage modified)
-          (damage/info-text damage)
-          (str (damage/info-text damage) "\nModified: " (damage/info modified))))
-      (damage/info-text damage)) ; property menu no source,modifiers
-  )
