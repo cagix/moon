@@ -1,4 +1,4 @@
-(ns cdq.ui.editor.window
+(ns cdq.scene2d.build.editor-window
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.db.property :as property]
@@ -17,8 +17,6 @@
             [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
-
-(defn do! [ctx] ctx)
 
 (defn- with-window-close [f]
   (fn [actor ctx]

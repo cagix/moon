@@ -1,4 +1,4 @@
-(ns cdq.application.create.editor
+(ns cdq.scene2d.build.editor-overview-window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics :as graphics]

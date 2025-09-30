@@ -1,12 +1,14 @@
-; TODO REMOVE REQUIRING-RESOLVE
+
+; TODO REMOVE REQUIRING-RESOLVE / unnecessary protocols / extend-type
+
+; Here _only_ 'ctx' functions create/render/dispose/resize
+; all arguments move 1 up ?
+
 (ns cdq.c
-  (:require cdq.application.create.editor
-            cdq.ui.editor.window
-            cdq.application.create.stage
-            cdq.application.render.update-potential-fields
+  (:require cdq.scene2d.build.editor-overview-window
+            cdq.scene2d.build.editor-window
             cdq.application.create.input
             cdq.application.create.db
-            [cdq.application.create.world]
             [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.graphics.color :as color]
@@ -797,7 +799,7 @@
   (dissoc ctx :ctx/files))
 
 (defn- create-world [ctx]
-  (assoc ctx :ctx/world (cdq.application.create.world/create)))
+  (assoc ctx :ctx/world (world/create)))
 
 (defn- try-fetch-state-ctx
   [{:keys [ctx/stage]
@@ -1172,7 +1174,7 @@
   (if (:world/paused? world)
     ctx
     (do
-     (cdq.application.render.update-potential-fields/do! world)
+     (world/update-potential-fields! world)
      ctx)))
 
 (defn- tick-entities!

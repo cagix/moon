@@ -1,4 +1,4 @@
-(ns cdq.application.render.update-potential-fields
+(ns cdq.world.update-potential-fields
   (:require [cdq.world.grid.cell :as cell]
             [gdl.position :as position]
             [cdq.world.grid :as grid]))
