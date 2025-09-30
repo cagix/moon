@@ -7,9 +7,10 @@
             [cdq.application.create.stage]
             [cdq.application.create.input]
             [cdq.application.create.audio]
-            [cdq.application.create.remove-files]
             [cdq.application.create.world]
             [cdq.application.create.reset-game-state]
+            [clj-commons.pretty.repl :as pretty-repl]
+            [cdq.audio :as audio]
             [cdq.ctx :as ctx]
             [cdq.malli :as m]
             [gdl.tx-handler :as tx-handler]
@@ -28,16 +29,12 @@
 
 (def ^:private txs-fn-map
   '{
-    :tx/sound cdq.tx.sound/do!
-
     :tx/assoc (fn [_ctx eid k value]
                 (swap! eid assoc k value)
                 nil)
-
     :tx/assoc-in (fn [_ctx eid ks value]
                    (swap! eid assoc-in ks value)
                    nil)
-
     :tx/dissoc (fn [_ctx eid k]
                  (swap! eid dissoc k)
                  nil)
@@ -50,25 +47,14 @@
     :tx/set-cooldown cdq.tx.set-cooldown/do!
     :tx/add-text-effect cdq.tx.add-text-effect/do!
     :tx/add-skill cdq.tx.add-skill/do!
-
     :tx/set-item cdq.tx.set-item/do!
     :tx/remove-item cdq.tx.remove-item/do!
-
     :tx/pickup-item cdq.tx.pickup-item/do!
     :tx/event cdq.tx.event/do!
     :tx/state-exit cdq.tx.state-exit/do!
     :tx/state-enter cdq.tx.state-enter/do!
-
     :tx/effect cdq.tx.effect/do!
-
-    :tx/print-stacktrace cdq.tx.print-stacktrace/do!
-
-    :tx/show-error-window        cdq.tx.stage/show-error-window!
-    :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
-    :tx/show-message             cdq.tx.stage/show-message!
-    :tx/show-modal               cdq.tx.stage/show-modal!
     :tx/audiovisual cdq.tx.audiovisual/do!
-
     :tx/spawn-alert cdq.tx.spawn-alert/do!
     :tx/spawn-line cdq.tx.spawn-line/do!
     :tx/move-entity cdq.tx.move-entity/do!
@@ -77,6 +63,20 @@
     :tx/spawn-item     cdq.tx.spawn-item/do!
     :tx/spawn-creature cdq.tx.spawn-creature/do!
     :tx/spawn-entity   cdq.tx.spawn-entity/do!
+
+    :tx/sound (fn [{:keys [ctx/audio]} sound-name]
+                (audio/play-sound! audio sound-name)
+                nil)
+    :tx/print-stacktrace (let [print-level 3
+                               print-depth 24]
+                           (fn [_ctx throwable]
+                             (binding [*print-level* print-level]
+                               (pretty-repl/pretty-pst throwable print-depth))
+                             nil))
+    :tx/show-error-window        cdq.tx.stage/show-error-window!
+    :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
+    :tx/show-message             cdq.tx.stage/show-message!
+    :tx/show-modal               cdq.tx.stage/show-modal!
     }
   )
 
@@ -133,15 +133,18 @@
   (merge (map->Context {})
          ctx))
 
+(defn- dissoc-files [ctx]
+  (dissoc ctx :ctx/files))
+
 (defn create! [ctx]
   (-> ctx
       create-record
-      cdq.application.create.db/do!
-      cdq.application.create.vis-ui/do!
+      cdq.application.create.db/do! ; used by levelgen
+      cdq.application.create.vis-ui/do! ; used by levelgen
       cdq.application.create.graphics/do!
       cdq.application.create.stage/do!
       cdq.application.create.input/do!
       cdq.application.create.audio/do!
-      cdq.application.create.remove-files/do!
+      dissoc-files
       cdq.application.create.world/do!
       cdq.application.create.reset-game-state/do!))
