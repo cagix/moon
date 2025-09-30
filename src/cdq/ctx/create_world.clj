@@ -1,12 +1,12 @@
 (ns cdq.ctx.create-world
-  (:require [cdq.ctx.spawn-player :as spawn-player]
-            [cdq.ctx.spawn-enemies :as spawn-enemies]
+  (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [com.badlogic.gdx.maps.tiled :as tiled]))
 
 (defn- call-world-fn
   [world-fn creature-properties graphics]
@@ -51,11 +51,40 @@
                              :height 0.5
                              :z-order :z-order/effect}})
 
+(defn- spawn-player!
+  [{:keys [ctx/db
+           ctx/world]
+    :as ctx}]
+  (handle-txs/do! ctx
+                   [[:tx/spawn-creature (let [{:keys [creature-id
+                                                      components]} (:world/player-components world)]
+                                          {:position (mapv (partial + 0.5) (:world/start-position world))
+                                           :creature-property (db/build db creature-id)
+                                           :components components})]])
+  (let [eid (get @(:world/entity-ids world) 1)]
+    (assert (:entity/player? @eid))
+    (assoc-in ctx [:ctx/world :world/player-eid] eid)))
+
+(defn- spawn-enemies!
+  [{:keys [ctx/db
+           ctx/world]
+    :as ctx}]
+  (handle-txs/do!
+   ctx
+   (for [[position creature-id] (tiled/positions-with-property
+                                 (:world/tiled-map world)
+                                 "creatures"
+                                 "id")]
+     [:tx/spawn-creature {:position (mapv (partial + 0.5) position)
+                          :creature-property (db/build db (keyword creature-id))
+                          :components (:world/enemy-components world)}]))
+  ctx)
+
 (defn do! [{:keys [ctx/world]
             :as ctx}
            world-fn]
   (-> ctx
       (assoc :ctx/world (world/create params))
       (reset-world-state world-fn)
-      spawn-player/do!
-      spawn-enemies/do!))
+      spawn-player!
+      spawn-enemies!))
