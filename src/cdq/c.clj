@@ -1297,15 +1297,6 @@
       (create-world world-params)
       (ctx/reset-game-state! "world_fns/vampire.edn")))
 
-(defn dispose! [{:keys [ctx/audio
-                        ctx/graphics
-                        ctx/vis-ui
-                        ctx/world]}]
-  (disposable/dispose! audio)
-  (disposable/dispose! graphics)
-  (disposable/dispose! vis-ui)
-  (disposable/dispose! world))
-
 (defn render! [ctx]
   (-> ctx
       try-fetch-state-ctx
@@ -1330,6 +1321,3 @@
       window-and-camera-controls!
       render-stage!
       ctx/validate))
-
-(defn resize! [{:keys [ctx/graphics]} width height]
-  (graphics/update-viewports! graphics width height))

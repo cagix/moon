@@ -1,5 +1,7 @@
 (ns cdq.application
   (:require [cdq.c :as c]
+            [cdq.ctx.dispose :as dispose]
+            [cdq.ctx.update-viewports :as update-viewports]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [org.lwjgl.system.configuration :as lwjgl-system])
@@ -17,11 +19,11 @@
                                                    :ctx/graphics (gdx/graphics)
                                                    :ctx/input    (gdx/input)})))
                        (dispose [_]
-                         (c/dispose! @state))
+                         (dispose/do! @state))
                        (render [_]
                          (swap! state c/render!))
                        (resize [_ width height]
-                         (c/resize! @state width height))
+                         (update-viewports/do! @state width height))
                        (pause [_])
                        (resume [_]))
                      {:title "Cyber Dungeon Quest"
