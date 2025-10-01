@@ -1,20 +1,9 @@
 (ns cdq.ctx.draw-on-world-viewport
   (:require [cdq.ctx.draw-entities :as draw-entities]
-            [cdq.effect :as effect]
-            [cdq.entity.animation :as animation]
-            [cdq.entity.faction :as faction]
-            [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
             [cdq.graphics.draw-on-world-viewport :as draw-on-world-viewport]
-            [cdq.input :as input]
-            [cdq.stage]
-            [cdq.timer :as timer]
-            [cdq.throwable :as throwable]
-            [cdq.val-max :as val-max]
-            [cdq.world.grid :as grid]
-            [cdq.world.raycaster :as raycaster]
-            [clojure.graphics.color :as color]))
+            [cdq.world.grid :as grid]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
