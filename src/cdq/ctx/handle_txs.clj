@@ -18,9 +18,10 @@
                                          (info/info-text skill world))})
   nil)
 
-(defn- player-set-item! [{:keys [ctx/graphics
-                                ctx/stage]}
-                        cell item]
+(defn- player-set-item!
+  [{:keys [ctx/graphics
+           ctx/stage]}
+   cell item]
   (cdq.stage/set-item! stage cell
                        {:texture-region (textures/texture-region graphics (:entity/image item))
                         :tooltip-text (info/item-info item)})
