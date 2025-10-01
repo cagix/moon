@@ -22,4 +22,4 @@
      [:tx/set-cooldown eid skill])
    (when (and (:skill/cost skill)
               (not (zero? (:skill/cost skill))))
-     [:tx/pay-mana-cost eid (:skill/cost skill)])])
+     [:tx/update eid :entity/stats stats/pay-mana-cost (:skill/cost skill)])])

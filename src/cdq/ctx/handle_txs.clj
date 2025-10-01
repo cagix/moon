@@ -61,7 +61,6 @@
     :tx/mark-destroyed (fn [_ctx eid]
                          (swap! eid assoc :entity/destroyed? true)
                          nil)
-    :tx/pay-mana-cost cdq.tx.pay-mana-cost/do!
     :tx/set-cooldown cdq.tx.set-cooldown/do!
     :tx/add-text-effect cdq.tx.add-text-effect/do!
     :tx/add-skill cdq.tx.add-skill/do!
