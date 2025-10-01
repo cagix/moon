@@ -1,5 +1,7 @@
 (ns cdq.graphics
-  (:require [clojure.graphics.color :refer [white]]
+  (:require [cdq.graphics.cursors :as cursors]
+            [cdq.graphics.shape-drawer :as shape-drawer]
+            [clojure.graphics.color :refer [white]]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.freetype :as freetype]
             [clojure.graphics.viewport :as viewport]
@@ -12,8 +14,7 @@
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.disposable :as disposable]
-            [space.earlygrey.shape-drawer :as sd]))
+            [com.badlogic.gdx.utils.disposable :refer [dispose!]]))
 
 (defprotocol PGraphics
   (clear! [_ [r g b a]])
@@ -34,25 +35,7 @@
   (unproject-ui [_ position])
   (unproject-world [_ position]))
 
-(defn- create-shape-drawer
-  [{:keys [graphics/batch
-           graphics/shape-drawer-texture]
-    :as graphics}]
-  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
-
 (defrecord RGraphics []
-  disposable/Disposable
-  (dispose! [{:keys [graphics/batch
-                     graphics/cursors
-                     graphics/default-font
-                     graphics/shape-drawer-texture
-                     graphics/textures]}]
-    (disposable/dispose! batch)
-    (run! disposable/dispose! (vals cursors))
-    (disposable/dispose! default-font)
-    (disposable/dispose! shape-drawer-texture)
-    (run! disposable/dispose! (vals textures)))
-
   PGraphics
   (clear! [{:keys [graphics/core]} [r g b a]]
     (graphics/clear! core r g b a))
@@ -131,21 +114,8 @@
                                                                 (pixmap/set-color! white)
                                                                 (pixmap/draw-pixel! 0 0))
                                                        texture (pixmap/texture pixmap)]
-                                                   (disposable/dispose! pixmap)
+                                                   (dispose! pixmap)
                                                    texture)))
-
-(defn- assoc-clojure-graphics [graphics clojure-graphics]
-  (assoc graphics :graphics/core clojure-graphics))
-
-(defn- create-cursors [{:keys [graphics/core]
-                        :as graphics}
-                       cursors]
-  (assoc graphics :graphics/cursors (update-vals cursors
-                                                 (fn [[file-handle [hotspot-x hotspot-y]]]
-                                                   (let [pixmap (graphics/pixmap core file-handle)
-                                                         cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
-                                                     (disposable/dispose! pixmap)
-                                                     cursor)))))
 
 (defn- create-default-font [graphics default-font]
   (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
@@ -200,12 +170,12 @@
            world-viewport]}
    graphics]
   (-> (map->RGraphics {})
-      (assoc-clojure-graphics graphics)
-      (create-cursors cursors)
+      (assoc :graphics/core graphics)
+      (cursors/create cursors)
       (create-default-font default-font)
       create-batch
       create-shape-drawer-texture
-      create-shape-drawer
+      shape-drawer/create
       (create-textures textures-to-load)
       (add-unit-scales world-unit-scale)
       tiled-map-renderer
