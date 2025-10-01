@@ -116,10 +116,7 @@
        (run! #(actor/set-visible! % false))))
 
 (defn actor-information [stage actor]
-  (let [inventory-slot (inventory-window/cell-with-item? (-> stage
-                                                             (stage-find "cdq.ui.windows")
-                                                             (group/find-actor "cdq.ui.windows.inventory"))
-                                                         actor)]
+  (let [inventory-slot (inventory-window/cell-with-item? actor)]
     (cond
      inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
      (window/title-bar? actor) [:mouseover-actor/window-title-bar]
