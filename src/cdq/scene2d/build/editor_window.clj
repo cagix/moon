@@ -3,6 +3,7 @@
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.stage]
+            [cdq.stage.error-window :as error-window]
             [cdq.throwable :as throwable]
             [cdq.ui.widget :as widget]
             [com.badlogic.gdx.input :as input]
@@ -21,7 +22,7 @@
      (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)
-       (cdq.stage/show-error-window! stage t)))))
+       (error-window/show! stage t)))))
 
 (defn- update-property-fn [get-widget-value]
   (fn [db]
