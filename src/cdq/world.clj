@@ -1,6 +1,5 @@
 (ns cdq.world
-  (:require cdq.world.update-potential-fields
-            cdq.potential-fields.movement
+  (:require cdq.potential-fields.movement
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity.body :as body]
@@ -38,9 +37,6 @@
   (ray-blocked? [_ start target])
   (path-blocked? [_ start target path-w])
   (line-of-sight? [_ source target]))
-
-(defn update-potential-fields! [world]
-  (cdq.world.update-potential-fields/do! world))
 
 (defn- body->occupied-cells
   [grid
