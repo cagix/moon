@@ -158,7 +158,7 @@
                                                                                    (:body/collides? (:entity/body @%))
                                                                                    (body/overlaps? (:entity/body entity)
                                                                                                    (:entity/body @%)))
-                                                                             (grid/cells->entities grid cells*)))
+                                                                             (grid/cells->entities cells*)))
                                                    destroy? (or (and hit-entity (not piercing?))
                                                                 (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]
                                                [(when destroy?
