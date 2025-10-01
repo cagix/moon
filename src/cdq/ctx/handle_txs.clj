@@ -1,7 +1,48 @@
 (ns cdq.ctx.handle-txs
   (:require [cdq.audio :as audio]
-            [cdq.tx.stage]
+            [cdq.graphics :as graphics]
+            [cdq.info :as info]
+            [cdq.stage]
+            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [gdl.tx-handler :as tx-handler]))
+
+(defn- player-add-skill!
+  [{:keys [ctx/graphics
+           ctx/stage]}
+   skill]
+  (cdq.stage/add-skill! stage
+                        {:skill-id (:property/id skill)
+                         :texture-region (graphics/texture-region graphics (:entity/image skill))
+                         :tooltip-text (fn [{:keys [ctx/world]}]
+                                         (info/info-text skill world))})
+  nil)
+
+(defn- player-set-item! [{:keys [ctx/graphics
+                                ctx/stage]}
+                        cell item]
+  (cdq.stage/set-item! stage cell
+                       {:texture-region (graphics/texture-region graphics (:entity/image item))
+                        :tooltip-text (fn [{:keys [ctx/world]}]
+                                        (info/info-text item world))})
+  nil)
+
+(defn player-remove-item! [{:keys [ctx/stage]}
+                           cell]
+  (cdq.stage/remove-item! stage cell)
+  nil)
+
+(defn toggle-inventory-visible! [{:keys [ctx/stage]}]
+  (cdq.stage/toggle-inventory-visible! stage)
+  nil)
+
+(defn show-message! [{:keys [ctx/stage]} message]
+  (cdq.stage/show-text-message! stage message)
+  nil)
+
+(defn show-modal! [{:keys [ctx/stage]} opts]
+  (cdq.stage/show-modal-window! stage (stage/viewport stage) opts)
+  nil)
 
 (def ^:private txs-fn-map
   '{
@@ -43,9 +84,9 @@
     :tx/sound (fn [{:keys [ctx/audio]} sound-name]
                 (audio/play-sound! audio sound-name)
                 nil)
-    :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
-    :tx/show-message             cdq.tx.stage/show-message!
-    :tx/show-modal               cdq.tx.stage/show-modal!
+    :tx/toggle-inventory-visible cdq.ctx.handle-txs/toggle-inventory-visible!
+    :tx/show-message             cdq.ctx.handle-txs/show-message!
+    :tx/show-modal               cdq.ctx.handle-txs/show-modal!
     }
   )
 
@@ -62,17 +103,17 @@
 
    :tx/set-item (fn [ctx eid cell item]
                   (when (:entity/player? @eid)
-                    (cdq.tx.stage/player-set-item! ctx cell item)
+                    (player-set-item! ctx cell item)
                     nil))
 
    :tx/remove-item (fn [ctx eid cell]
                      (when (:entity/player? @eid)
-                       (cdq.tx.stage/player-remove-item! ctx cell)
+                       (player-remove-item! ctx cell)
                        nil))
 
    :tx/add-skill (fn [ctx eid skill]
                    (when (:entity/player? @eid)
-                     (cdq.tx.stage/player-add-skill! ctx skill)
+                     (player-add-skill! ctx skill)
                      nil))
    }
   )
