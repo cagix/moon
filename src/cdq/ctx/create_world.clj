@@ -1,7 +1,7 @@
 (ns cdq.ctx.create-world
   (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.db :as db]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.world :as world]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
@@ -14,7 +14,7 @@
     ((requiring-resolve f)
      (assoc params
             :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
-                                                                             #(graphics/texture-region graphics %))
+                                                                             #(textures/texture-region graphics %))
             :textures (:graphics/textures graphics)))))
 
 (def ^:private params

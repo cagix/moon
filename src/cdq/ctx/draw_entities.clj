@@ -4,7 +4,7 @@
             [cdq.entity.faction :as faction]
             [cdq.entity.state.player-item-on-cursor]
             [cdq.entity.stats :as stats]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.graphics.draws :as draws]
             [cdq.input :as input]
             [cdq.stage :as stage]
@@ -57,7 +57,7 @@
                     {:keys [entity/body]}
                     {:keys [ctx/graphics]}]
                    [[:draw/texture-region
-                     (graphics/texture-region graphics image)
+                     (textures/texture-region graphics image)
                      (:body/position body)
                      {:center? true
                       :rotation (or (:body/rotation-angle body)
@@ -94,7 +94,7 @@
                                         ctx/stage]}]
                                (when (cdq.entity.state.player-item-on-cursor/world-item? (stage/mouseover-actor stage (input/mouse-position input)))
                                  [[:draw/texture-region
-                                   (graphics/texture-region graphics (:entity/image item))
+                                   (textures/texture-region graphics (:entity/image item))
                                    (cdq.entity.state.player-item-on-cursor/item-place-position (:graphics/world-mouse-position graphics)
                                                                                                entity)
                                    {:center? true}]]))}

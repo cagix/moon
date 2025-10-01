@@ -2,7 +2,7 @@
   (:require [cdq.ctx.handle-txs :as handle-txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.ui.action-bar]
             [cdq.ui.dev-menu]
             [cdq.ui.entity-info-window]
@@ -146,7 +146,7 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (graphics/texture-region graphics
+                                 (textures/texture-region graphics
                                                           {:image/file "images/items.png"
                                                            :image/bounds bounds})))]
     (create-inventory-window*

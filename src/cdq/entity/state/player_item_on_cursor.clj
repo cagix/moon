@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor
   (:require [cdq.entity.inventory :as inventory]
             [cdq.input]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.stage :as stage]
             [gdl.math.vector2 :as v]
             [com.badlogic.gdx.input :as input]))
@@ -94,6 +94,6 @@
            ctx/stage]}]
   (when (not (world-item? (stage/mouseover-actor stage (cdq.input/mouse-position input))))
     [[:draw/texture-region
-      (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
+      (textures/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
       (:graphics/ui-mouse-position graphics)
       {:center? true}]]))

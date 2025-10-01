@@ -4,14 +4,17 @@
             [cdq.graphics.shape-drawer :as shape-drawer]
             [cdq.graphics.shape-drawer-texture :as shape-drawer-texture]
             [cdq.graphics.sprite-batch :as sprite-batch]
+            [cdq.graphics.textures :as textures]
+            [cdq.graphics.tiled-map :as tiled-map]
+            [cdq.graphics.ui-viewport :as ui-viewport]
+            [cdq.graphics.unit-scale :as unit-scale]
+            [cdq.graphics.world-viewport :as world-viewport]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.files.utils :as files-utils]
             [com.badlogic.gdx.graphics :as graphics]
-            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
-            [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
@@ -30,7 +33,6 @@
   (camera-zoom [_])
   (change-zoom! [_ amount])
   (set-camera-position! [_ position])
-  (texture-region [_ image])
   (update-viewports! [_ width height])
   (unproject-ui [_ position])
   (unproject-world [_ position]))
@@ -92,56 +94,7 @@
   (update-viewports! [{:keys [graphics/ui-viewport
                               graphics/world-viewport]} width height]
     (viewport/update! ui-viewport    width height {:center? true})
-    (viewport/update! world-viewport width height {:center? false}))
-
-  (texture-region [{:keys [graphics/textures]}
-                   {:keys [image/file image/bounds]}]
-    (assert file)
-    (assert (contains? textures file))
-    (let [texture (get textures file)]
-      (if bounds
-        (texture/region texture bounds)
-        (texture/region texture)))))
-
-(defn- create-textures
-  [{:keys [graphics/core]
-    :as graphics} textures-to-load]
-  (assoc graphics :graphics/textures
-         (into {} (for [[path file-handle] textures-to-load]
-                    [path (graphics/texture core file-handle)]))))
-
-(defn- add-unit-scales [graphics world-unit-scale]
-  (assoc graphics
-         :graphics/unit-scale (atom 1)
-         :graphics/world-unit-scale world-unit-scale))
-
-(defn- tiled-map-renderer [{:keys [graphics/batch
-                                   graphics/world-unit-scale]
-                            :as graphics}]
-  (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
-
-(defn- create-ui-viewport
-  [{:keys [graphics/core]
-    :as graphics} ui-viewport]
-  (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
-                                                               (:width  ui-viewport)
-                                                               (:height ui-viewport)
-                                                               (orthographic-camera/create))))
-
-(defn- create-world-viewport
-  [{:keys [graphics/core
-           graphics/world-unit-scale]
-    :as graphics}
-   world-viewport]
-  (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
-                                                 world-height (* (:height world-viewport) world-unit-scale)]
-                                             (graphics/fit-viewport core
-                                                                    world-width
-                                                                    world-height
-                                                                    (orthographic-camera/create
-                                                                     :y-down? false
-                                                                     :world-width world-width
-                                                                     :world-height world-height)))))
+    (viewport/update! world-viewport width height {:center? false})))
 
 (defn- create*
   [{:keys [textures-to-load
@@ -158,11 +111,11 @@
       sprite-batch/create
       shape-drawer-texture/create
       shape-drawer/create
-      (create-textures textures-to-load)
-      (add-unit-scales world-unit-scale)
-      tiled-map-renderer
-      (create-ui-viewport ui-viewport)
-      (create-world-viewport world-viewport)))
+      (textures/create textures-to-load)
+      (unit-scale/create world-unit-scale)
+      tiled-map/renderer
+      (ui-viewport/create ui-viewport)
+      (world-viewport/create world-viewport)))
 
 (defn- handle-files
   [files {:keys [colors

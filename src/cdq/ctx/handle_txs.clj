@@ -1,6 +1,6 @@
 (ns cdq.ctx.handle-txs
   (:require [cdq.audio :as audio]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.info :as info]
             [cdq.stage]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
@@ -13,7 +13,7 @@
    skill]
   (cdq.stage/add-skill! stage
                         {:skill-id (:property/id skill)
-                         :texture-region (graphics/texture-region graphics (:entity/image skill))
+                         :texture-region (textures/texture-region graphics (:entity/image skill))
                          :tooltip-text (fn [{:keys [ctx/world]}]
                                          (info/info-text skill world))})
   nil)
@@ -22,7 +22,7 @@
                                 ctx/stage]}
                         cell item]
   (cdq.stage/set-item! stage cell
-                       {:texture-region (graphics/texture-region graphics (:entity/image item))
+                       {:texture-region (textures/texture-region graphics (:entity/image item))
                         :tooltip-text (fn [{:keys [ctx/world]}]
                                         (info/info-text item world))})
   nil)
