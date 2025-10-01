@@ -1,5 +1,6 @@
 (ns cdq.ctx.handle-txs
   (:require [cdq.audio :as audio]
+            [cdq.tx.stage]
             [clj-commons.pretty.repl :as pretty-repl]
             [gdl.tx-handler :as tx-handler]))
 
@@ -64,9 +65,6 @@
                       avar)
                     (eval form))))
 
-
-(require 'cdq.tx.stage)
-
 (def ^:private reaction-txs-fn-map
   {
 
@@ -90,7 +88,7 @@
 (defn do! [ctx transactions]
   (let [handled-txs (tx-handler/actions!
                      txs-fn-map
-                     ctx  ; here pass only world ....
+                     ctx
                      transactions)]
     (tx-handler/actions!
      reaction-txs-fn-map
