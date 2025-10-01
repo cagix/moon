@@ -7,20 +7,14 @@
             [com.badlogic.gdx.files.utils :as files-utils]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [gdl.math :refer [degree->radians]]
             [space.earlygrey.shape-drawer :as sd]))
-
-(defprotocol DrawHandler
-  (handle-draws! [_ draws]))
 
 (defprotocol PGraphics
   (clear! [_ [r g b a]])
@@ -42,110 +36,6 @@
   (unproject-ui [_ position])
   (unproject-world [_ position]))
 
-(defmacro ^:private with-line-width [shape-drawer width & exprs]
-  `(let [old-line-width# (sd/default-line-width ~shape-drawer)]
-     (sd/set-default-line-width! ~shape-drawer (* ~width old-line-width#))
-     ~@exprs
-     (sd/set-default-line-width! ~shape-drawer old-line-width#)))
-
-(def ^:private draw-fns
-  {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
-                                :as graphics}
-                               width
-                               draws]
-                            (with-line-width shape-drawer width
-                              (cdq.graphics/handle-draws! graphics draws)))
-   :draw/grid             (fn
-                            [graphics leftx bottomy gridw gridh cellw cellh color]
-                            (let [w (* (float gridw) (float cellw))
-                                  h (* (float gridh) (float cellh))
-                                  topy (+ (float bottomy) (float h))
-                                  rightx (+ (float leftx) (float w))]
-                              (doseq [idx (range (inc (float gridw)))
-                                      :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-                                (cdq.graphics/handle-draws! graphics
-                                                            [[:draw/line [linex topy] [linex bottomy] color]]))
-                              (doseq [idx (range (inc (float gridh)))
-                                      :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-                                (cdq.graphics/handle-draws! graphics
-                                                            [[:draw/line [leftx liney] [rightx liney] color]]))))
-   :draw/texture-region   (fn [{:keys [graphics/batch
-                                       graphics/unit-scale
-                                       graphics/world-unit-scale]}
-                               texture-region
-                               [x y]
-                               & {:keys [center? rotation]}]
-                            (let [[w h] (let [dimensions (texture-region/dimensions texture-region)]
-                                          (if (= @unit-scale 1)
-                                            dimensions
-                                            (mapv (comp float (partial * world-unit-scale))
-                                                  dimensions)))]
-                              (if center?
-                                (batch/draw! batch
-                                             texture-region
-                                             (- (float x) (/ (float w) 2))
-                                             (- (float y) (/ (float h) 2))
-                                             [w h]
-                                             (or rotation 0))
-                                (batch/draw! batch
-                                             texture-region
-                                             x
-                                             y
-                                             [w h]
-                                             0))))
-   :draw/text             (fn [{:keys [graphics/batch
-                                       graphics/unit-scale
-                                       graphics/default-font]}
-                               {:keys [font scale x y text h-align up?]}]
-                            (bitmap-font/draw! (or font default-font)
-                                               batch
-                                               {:scale (* (float @unit-scale)
-                                                          (float (or scale 1)))
-                                                :text text
-                                                :x x
-                                                :y y
-                                                :up? up?
-                                                :h-align h-align
-                                                :target-width 0
-                                                :wrap? false}))
-   :draw/ellipse          (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/ellipse! shape-drawer x y radius-x radius-y))
-   :draw/filled-ellipse   (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
-   :draw/circle           (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/circle! shape-drawer x y radius))
-   :draw/filled-circle    (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/filled-circle! shape-drawer x y radius))
-   :draw/rectangle        (fn [{:keys [graphics/shape-drawer]} x y w h color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/rectangle! shape-drawer x y w h))
-   :draw/filled-rectangle (fn [{:keys [graphics/shape-drawer]} x y w h color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/filled-rectangle! shape-drawer x y w h))
-   :draw/arc              (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/arc! shape-drawer
-                                     center-x
-                                     center-y
-                                     radius
-                                     (degree->radians start-angle)
-                                     (degree->radians degree)))
-   :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/sector! shape-drawer
-                                        center-x
-                                        center-y
-                                        radius
-                                        (degree->radians start-angle)
-                                        (degree->radians degree)))
-   :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
-                            (sd/set-color! shape-drawer (color/float-bits color))
-                            (sd/line! shape-drawer sx sy ex ey))})
-
 (defn- create-shape-drawer
   [{:keys [graphics/batch
            graphics/shape-drawer-texture]
@@ -153,12 +43,6 @@
   (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defrecord RGraphics []
-  DrawHandler
-  (handle-draws! [graphics draws]
-    (doseq [{k 0 :as component} draws
-            :when component]
-      (apply (draw-fns k) graphics (rest component))))
-
   disposable/Disposable
   (dispose! [{:keys [graphics/batch
                      graphics/cursors
@@ -187,7 +71,7 @@
     (batch/set-color! batch white)
     (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
     (batch/begin! batch)
-    (with-line-width shape-drawer world-unit-scale
+    (sd/with-line-width shape-drawer world-unit-scale
       (reset! unit-scale world-unit-scale)
       (f)
       (reset! unit-scale 1))

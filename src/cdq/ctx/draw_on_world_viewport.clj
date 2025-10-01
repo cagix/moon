@@ -4,6 +4,7 @@
             [cdq.entity.faction :as faction]
             [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
+            [cdq.graphics.draws :as draws]
             [cdq.input :as input]
             [cdq.stage]
             [cdq.timer :as timer]
@@ -31,16 +32,16 @@
    entity render-layer]
   (try (do
         (when show-body-bounds?
-          (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity)
-                                                           (if (:body/collides? (:entity/body entity))
-                                                             color/white
-                                                             color/gray))))
+          (draws/handle! graphics (draw-body-rect (:entity/body entity)
+                                                  (if (:body/collides? (:entity/body entity))
+                                                    color/white
+                                                    color/gray))))
         (doseq [[k v] entity
                 :let [draw-fn (get render-layer k)]
                 :when draw-fn]
-          (graphics/handle-draws! graphics (draw-fn v entity ctx))))
+          (draws/handle! graphics (draw-fn v entity ctx))))
        (catch Throwable t
-         (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
+         (draws/handle! graphics (draw-body-rect (:entity/body entity) color/red))
          (throwable/pretty-pst t))))
 
 (def ^:dbg-flag show-tile-grid? false)
@@ -290,7 +291,7 @@
              draw-entities
              #_geom-test
              highlight-mouseover-tile]]
-    (graphics/handle-draws! graphics (f ctx))))
+    (draws/handle! graphics (f ctx))))
 
 (defn do!
   [{:keys [ctx/graphics]
