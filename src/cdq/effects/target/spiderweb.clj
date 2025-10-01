@@ -1,7 +1,8 @@
 (ns cdq.effects.target.spiderweb
-  (:require [cdq.timer :as timer]))
+  (:require [cdq.entity.stats :as stats]
+            [cdq.timer :as timer]))
 
-(def modifiers {:modifier/movement-speed {:op/mult -0.5}})
+(def modifiers {:modifier/movement-speed {:op/mult -50}})
 (def duration 5)
 
 (defn applicable? [_ {:keys [effect/target]}]
@@ -17,4 +18,4 @@
     (when-not (:entity/temp-modifier @target)
       [[:tx/assoc target :entity/temp-modifier {:modifiers modifiers
                                                 :counter (timer/create elapsed-time duration)}]
-       [:tx/mod-add target modifiers]])))
+       [:tx/update target :entity/stats stats/add modifiers]])))
