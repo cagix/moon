@@ -1,37 +1,12 @@
 (ns cdq.world-fns.modules
-  (:require [cdq.world-fns.area-level-grid :as area-level-grid]
+  (:require [cdq.world-fns.modules.initial-grid :as initial-grid]
+            [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             cdq.world-fns.modules.place-modules
             [gdl.grid2d :as g2d]
-            [gdl.grid2d.caves :as caves]
             [gdl.grid2d.nads :as nads]
             [gdl.grid2d.utils :as helper]
             [com.badlogic.gdx.maps.tiled :as tiled]))
-
-(defn- add-scale [w]
-  (assoc w :scale [32 20]))
-
-(defn- assert-max-area-level
-  [{:keys [world/map-size
-           world/max-area-level]
-    :as world-fn-ctx}]
-  (assert (<= max-area-level map-size))
-  world-fn-ctx)
-
-(defn- cave-grid [& {:keys [size]}]
-  (let [{:keys [start grid]} (caves/create (java.util.Random.) size size :wide)
-        grid (nads/fix-nads grid)]
-    (assert (= #{:wall :ground} (set (g2d/cells grid))))
-    {:start start
-     :grid grid}))
-
-(defn- create-initial-grid
-  [{:keys [world/map-size]
-    :as world-fn-ctx}]
-  (let [{:keys [start grid]} (cave-grid :size map-size)]
-    (assoc world-fn-ctx
-           :start start
-           :grid grid)))
 
 (defn- print-grid! [{:keys [grid] :as world-fn-ctx}]
   (helper/printgrid grid)
@@ -147,11 +122,13 @@
      :area-level-grid scaled-area-level-grid}))
 
 (defn create
-  [world-fn-ctx]
+  [{:keys [world/map-size
+           world/max-area-level]
+    :as world-fn-ctx}]
+  (assert (<= max-area-level map-size))
   (-> world-fn-ctx
-      add-scale
-      assert-max-area-level
-      create-initial-grid
+      (assoc :scale [32 20])
+      initial-grid/create
       #_print-grid!
       assoc-transitions
       #_print-grid!
