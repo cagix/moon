@@ -183,8 +183,7 @@
   (let [component-info (fn [[k v]]
                          (let [s (if-let [info-fn (info-fns k)]
                                    (do
-                                    (info-fn [k v] world)
-                                    #_(str k " - " (info-fn [k v] world))))]
+                                    (str k " - " (info-fn [k v] world))))]
                            (if-let [color (k->colors k)]
                              (str "[" color "]" s "[]")
                              s)))]
