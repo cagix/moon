@@ -6,9 +6,12 @@
       nil
       idx)))
 
-(index-of :foo [:a :b :foo :c])
-(contains? [:a :b :foo :c] :foo)
 (comment
+
+ ; simpler way to do 'sort-by-k-order':
+
+ (index-of :foo [:a :b :foo :c])
+ (contains? [:a :b :foo :c] :foo)
  (def order [:low :medium :high])
  (def items [:high :low :medium :low :high])
 
