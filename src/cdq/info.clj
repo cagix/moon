@@ -154,3 +154,42 @@
                         (str "\n" (info-text v world))))))
          (str/join "\n")
          gdl.string/remove-newlines)))
+
+(defn- valid-item? [item]
+  (let [keyset (set (keys item))]
+    (or (= #{:property/id
+             :property/pretty-name
+             :entity/image
+             :item/slot
+             :stats/modifiers} keyset)
+        (= #{:property/id
+             :property/pretty-name
+             :entity/image
+             :item/slot} keyset))))
+
+(defn item-info [item]
+  (assert (valid-item? item))
+  (str/join "\n"
+            (remove nil?
+                    [(str "[PRETTY_NAME]" (:property/pretty-name item) "[]")
+                     (str "[LIME]" (str/capitalize (name (:item/slot item))) "[]")
+                     (when (seq (:stats/modifiers item))
+                       (str "[CYAN]" ((:stats/modifiers info-fns) [nil (:stats/modifiers item)] nil) "[]"))])))
+
+(comment
+ (let [item (get (:inventory.slot/shield (:entity/inventory @(:world/player-eid (:ctx/world @cdq.application/state))))
+                 [0 0])]
+   (item-info item)
+   )
+
+ {:entity/image #:image{:bounds [912 240 48 48], :file "images/items.png"},
+  :stats/modifiers {},
+  :item/slot :inventory.slot/shield,
+  :property/id :items/shield-mystic-great,
+  :property/pretty-name "Great Mystic Shield"}
+ )
+
+(defn entity-info [entity world]
+  ; dispatch entity type
+  ; assert valid? projectile/creature/item/etc?
+  )

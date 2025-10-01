@@ -23,8 +23,7 @@
                         cell item]
   (cdq.stage/set-item! stage cell
                        {:texture-region (textures/texture-region graphics (:entity/image item))
-                        :tooltip-text (fn [{:keys [ctx/world]}]
-                                        (info/info-text item world))})
+                        :tooltip-text (info/item-info item)})
   nil)
 
 (defn player-remove-item! [{:keys [ctx/stage]}
