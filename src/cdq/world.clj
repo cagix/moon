@@ -22,9 +22,6 @@
             [com.badlogic.gdx.maps.tiled :as tiled]
             [reduce-fsm :as fsm]))
 
-(defprotocol Resettable
-  (reset-state [_ world-fn-result]))
-
 (defprotocol World
   (active-eids [_]))
 
@@ -275,31 +272,30 @@
 
   World
   (active-eids [this]
-    (:world/active-entities this))
+    (:world/active-entities this)))
 
-  Resettable
-  (reset-state [world {:keys [tiled-map
-                              start-position]}]
-    (let [width  (:tiled-map/width  tiled-map)
-          height (:tiled-map/height tiled-map)
-          grid (create-world-grid width height
-                                  #(case (tiled/movement-property tiled-map %)
-                                     "none" :none
-                                     "air"  :air
-                                     "all"  :all))]
-      (assoc world
-             :world/tiled-map tiled-map
-             :world/start-position start-position
-             :world/grid grid
-             :world/content-grid (create-content-grid width height (:content-grid-cell-size world))
-             :world/explored-tile-corners (create-explored-tile-corners width height)
-             :world/raycaster (create-raycaster grid)
-             :world/elapsed-time 0
-             :world/potential-field-cache (atom nil)
-             :world/id-counter (atom 0)
-             :world/entity-ids (atom {})
-             :world/paused? false
-             :world/mouseover-eid nil))))
+(defn- assoc-state [world {:keys [tiled-map
+                                  start-position]}]
+  (let [width  (:tiled-map/width  tiled-map)
+        height (:tiled-map/height tiled-map)
+        grid (create-world-grid width height
+                                #(case (tiled/movement-property tiled-map %)
+                                   "none" :none
+                                   "air"  :air
+                                   "all"  :all))]
+    (assoc world
+           :world/tiled-map tiled-map
+           :world/start-position start-position
+           :world/grid grid
+           :world/content-grid (create-content-grid width height (:content-grid-cell-size world))
+           :world/explored-tile-corners (create-explored-tile-corners width height)
+           :world/raycaster (create-raycaster grid)
+           :world/elapsed-time 0
+           :world/potential-field-cache (atom nil)
+           :world/id-counter (atom 0)
+           :world/entity-ids (atom {})
+           :world/paused? false
+           :world/mouseover-eid nil)))
 
 (comment
 
@@ -403,12 +399,13 @@
 (defn- entity-schema [world]
   (assoc world :world/spawn-entity-schema components-schema))
 
-(defn create [initial-state]
-  (-> (merge (map->RWorld {}) initial-state)
+(defn create [initial-config world-fn-result]
+  (-> (merge (map->RWorld {}) initial-config)
       entity-schema
       create-fsms
       calculate-max-speed
-      define-render-z-order))
+      define-render-z-order
+      (assoc-state world-fn-result)))
 
 (defn- tick-entities!*
   [{:keys [world/active-entities]

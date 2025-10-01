@@ -17,16 +17,6 @@
                                                                              #(graphics/texture-region graphics %))
             :textures (:graphics/textures graphics)))))
 
-(defn- reset-world-state
-  [{:keys [ctx/db
-           ctx/graphics]
-    :as ctx}
-   world-fn]
-  (let [world-fn-result (call-world-fn world-fn
-                                       (db/all-raw db :properties/creatures)
-                                       graphics)]
-    (update ctx :ctx/world world/reset-state world-fn-result)))
-
 (def ^:private params
   {:content-grid-cell-size 16
    :world/factions-iterations {:good 15 :evil 5}
@@ -80,11 +70,17 @@
                           :components (:world/enemy-components world)}]))
   ctx)
 
-(defn do! [{:keys [ctx/world]
+(defn do! [{:keys [ctx/db
+                   ctx/graphics
+                   ctx/world]
             :as ctx}
            world-fn]
-  (-> ctx
-      (assoc :ctx/world (world/create params))
-      (reset-world-state world-fn)
-      spawn-player!
-      spawn-enemies!))
+  (let [world-fn-result (call-world-fn world-fn
+                                       (db/all-raw db :properties/creatures)
+                                       graphics)]
+    ; world/create returns txs ...
+    ; applies it first itself?!
+    (-> ctx
+        (assoc :ctx/world (world/create params world-fn-result))
+        spawn-player!
+        spawn-enemies!)))
