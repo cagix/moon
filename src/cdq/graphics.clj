@@ -6,7 +6,6 @@
             [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.files.utils :as files-utils]
             [com.badlogic.gdx.graphics :as graphics]
-            [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
@@ -18,7 +17,6 @@
 
 (defprotocol PGraphics
   (clear! [_ [r g b a]])
-  (draw-on-world-viewport! [_ f])
   (draw-tiled-map! [_ tiled-map color-setter])
   (set-cursor! [_ cursor-key])
   (delta-time [_])
@@ -58,24 +56,6 @@
   PGraphics
   (clear! [{:keys [graphics/core]} [r g b a]]
     (graphics/clear! core r g b a))
-
-  (draw-on-world-viewport!
-    [{:keys [graphics/batch
-             graphics/shape-drawer
-             graphics/unit-scale
-             graphics/world-unit-scale
-             graphics/world-viewport]}
-     f]
-    ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
-    ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch white)
-    (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
-    (batch/begin! batch)
-    (sd/with-line-width shape-drawer world-unit-scale
-      (reset! unit-scale world-unit-scale)
-      (f)
-      (reset! unit-scale 1))
-    (batch/end! batch))
 
   (draw-tiled-map!
     [{:keys [graphics/tiled-map-renderer

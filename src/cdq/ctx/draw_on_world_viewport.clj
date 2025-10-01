@@ -5,6 +5,7 @@
             [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
+            [cdq.graphics.draw-on-world-viewport :as draw-on-world-viewport]
             [cdq.input :as input]
             [cdq.stage]
             [cdq.timer :as timer]
@@ -296,7 +297,7 @@
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}]
-  (graphics/draw-on-world-viewport! graphics
-                                    (fn []
-                                      (draw-on-world-viewport!* ctx)))
+  (draw-on-world-viewport/do! graphics
+                              (fn []
+                                (draw-on-world-viewport!* ctx)))
   ctx)
