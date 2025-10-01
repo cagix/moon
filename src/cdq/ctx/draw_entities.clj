@@ -1,146 +1,36 @@
 (ns cdq.ctx.draw-entities
-  (:require cdq.entity.state.active-skill.draw
-            [cdq.entity.animation :as animation]
-            [cdq.entity.faction :as faction]
-            [cdq.entity.state.player-item-on-cursor]
-            [cdq.entity.stats :as stats]
-            [cdq.graphics.textures :as textures]
+  (:require cdq.entity.animation.draw
+            cdq.entity.clickable.draw
+            cdq.entity.state.active-skill.draw
+            cdq.entity.stats.draw
+            cdq.entity.string-effect.draw
+            cdq.entity.temp-modifier.draw
+            cdq.entity.state.npc-sleeping.draw
+            cdq.entity.state.stunned.draw
+            cdq.entity.state.player-item-on-cursor.draw
+            cdq.entity.line-render.draw
+            cdq.entity.image.draw
+            cdq.entity.animation.draw
+            cdq.entity.mouseover.draw
             [cdq.graphics.draws :as draws]
-            [cdq.input :as input]
-            [cdq.stage :as stage]
             [cdq.throwable :as throwable]
             [cdq.world.raycaster :as raycaster]
-            [cdq.val-max :as val-max]
             [clojure.graphics.color :as color]
             [gdl.utils :as utils]))
 
-(def ^:private hpbar-colors
-  {:green     [0 0.8 0 1]
-   :darkgreen [0 0.5 0 1]
-   :yellow    [0.5 0.5 0 1]
-   :red       [0.5 0 0 1]})
-
-(defn- hpbar-color [ratio]
-  (let [ratio (float ratio)
-        color (cond
-               (> ratio 0.75) :green
-               (> ratio 0.5)  :darkgreen
-               (> ratio 0.25) :yellow
-               :else          :red)]
-    (color hpbar-colors)))
-
-(def ^:private borders-px 1)
-
-(defn- draw-hpbar [world-unit-scale {:keys [body/position body/width body/height]} ratio]
-  (let [[x y] position]
-    (let [x (- x (/ width  2))
-          y (+ y (/ height 2))
-          height (* 5          world-unit-scale)
-          border (* borders-px world-unit-scale)]
-      [[:draw/filled-rectangle x y width height color/black]
-       [:draw/filled-rectangle
-        (+ x border)
-        (+ y border)
-        (- (* width ratio) (* 2 border))
-        (- height          (* 2 border))
-        (hpbar-color ratio)]])))
-
-(let [outline-alpha 0.4
-      enemy-color    [1 0 0 outline-alpha]
-      friendly-color [0 1 0 outline-alpha]
-      neutral-color  [1 1 1 outline-alpha]
-      mouseover-ellipse-width 5
-      stunned-circle-width 0.5
-      stunned-circle-color [1 1 1 0.6]
-      draw-image (fn
-                   [image
-                    {:keys [entity/body]}
-                    {:keys [ctx/graphics]}]
-                   [[:draw/texture-region
-                     (textures/texture-region graphics image)
-                     (:body/position body)
-                     {:center? true
-                      :rotation (or (:body/rotation-angle body)
-                                    0)}]])
-      ]
-  (def ^:private render-layers
-    [{:entity/mouseover?     (fn
-                               [_
-                                {:keys [entity/body
-                                        entity/faction]}
-                                {:keys [ctx/world]}]
-                               (let [player @(:world/player-eid world)]
-                                 [[:draw/with-line-width mouseover-ellipse-width
-                                   [[:draw/ellipse
-                                     (:body/position body)
-                                     (/ (:body/width  body) 2)
-                                     (/ (:body/height body) 2)
-                                     (cond (= faction (faction/enemy (:entity/faction player)))
-                                           enemy-color
-                                           (= faction (:entity/faction player))
-                                           friendly-color
-                                           :else
-                                           neutral-color)]]]]))
-      :stunned               (fn [_ {:keys [entity/body]} _ctx]
-                               [[:draw/circle
-                                 (:body/position body)
-                                 stunned-circle-width
-                                 stunned-circle-color]])
-      :player-item-on-cursor (fn
-                               [{:keys [item]}
-                                entity
-                                {:keys [ctx/graphics
-                                        ctx/input
-                                        ctx/stage]}]
-                               (when (cdq.entity.state.player-item-on-cursor/world-item? (stage/mouseover-actor stage (input/mouse-position input)))
-                                 [[:draw/texture-region
-                                   (textures/texture-region graphics (:entity/image item))
-                                   (cdq.entity.state.player-item-on-cursor/item-place-position (:graphics/world-mouse-position graphics)
-                                                                                               entity)
-                                   {:center? true}]]))}
-     {:entity/clickable      (fn
-                               [{:keys [text]}
-                                {:keys [entity/body
-                                        entity/mouseover?]}
-                                _ctx]
-                               (when (and mouseover? text)
-                                 (let [[x y] (:body/position body)]
-                                   [[:draw/text {:text text
-                                                 :x x
-                                                 :y (+ y (/ (:body/height body) 2))
-                                                 :up? true}]])))
-      :entity/animation      (fn [animation entity ctx]
-                               (draw-image (animation/current-frame animation) entity ctx))
-      :entity/image          draw-image
-      :entity/line-render    (fn [{:keys [thick? end color]} {:keys [entity/body]} _ctx]
-                               (let [position (:body/position body)]
-                                 (if thick?
-                                   [[:draw/with-line-width 4 [[:draw/line position end color]]]]
-                                   [[:draw/line position end color]])))}
-     {:npc-sleeping          (fn [_ {:keys [entity/body]} _ctx]
-                               (let [[x y] (:body/position body)]
-                                 [[:draw/text {:text "zzz"
-                                               :x x
-                                               :y (+ y (/ (:body/height body) 2))
-                                               :up? true}]]))
-      :entity/temp-modifier  (fn [_ entity _ctx]
-                               [[:draw/filled-circle (:body/position (:entity/body entity)) 0.5 [0.5 0.5 0.5 0.4]]])
-      :entity/string-effect  (fn [{:keys [text]} entity {:keys [ctx/graphics]}]
-                               (let [[x y] (:body/position (:entity/body entity))]
-                                 [[:draw/text {:text text
-                                               :x x
-                                               :y (+ y
-                                                     (/ (:body/height (:entity/body entity)) 2)
-                                                     (* 5 (:graphics/world-unit-scale graphics)))
-                                               :scale 2
-                                               :up? true}]]))}
-     {:entity/stats        (fn [_ entity {:keys [ctx/graphics]}]
-                             (let [ratio (val-max/ratio (stats/get-hitpoints (:entity/stats entity)))]
-                               (when (or (< ratio 1) (:entity/mouseover? entity))
-                                 (draw-hpbar (:graphics/world-unit-scale graphics)
-                                             (:entity/body entity)
-                                             ratio))))
-      :active-skill          cdq.entity.state.active-skill.draw/txs}]))
+(def ^:private render-layers
+  [{:entity/mouseover?     cdq.entity.mouseover.draw/txs
+    :stunned               cdq.entity.state.stunned.draw/txs
+    :player-item-on-cursor cdq.entity.state.player-item-on-cursor.draw/txs}
+   {:entity/clickable      cdq.entity.clickable.draw/txs
+    :entity/animation      cdq.entity.animation.draw/txs
+    :entity/image          cdq.entity.image.draw/txs
+    :entity/line-render    cdq.entity.line-render.draw/txs}
+   {:npc-sleeping          cdq.entity.state.npc-sleeping.draw/txs
+    :entity/temp-modifier  cdq.entity.temp-modifier.draw/txs
+    :entity/string-effect  cdq.entity.string-effect.draw/txs}
+   {:entity/stats          cdq.entity.stats.draw/txs
+    :active-skill          cdq.entity.state.active-skill.draw/txs}])
 
 (def ^:dbg-flag show-body-bounds? false)
 
