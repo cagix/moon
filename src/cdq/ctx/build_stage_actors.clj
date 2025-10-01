@@ -1,16 +1,14 @@
 (ns cdq.ctx.build-stage-actors
   (:require [cdq.ctx.handle-txs :as handle-txs]
-            [cdq.ctx.create-world :as create-world]
-            [cdq.db :as db]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar]
+            [cdq.ui.dev-menu]
             [cdq.ui.inventory]
             [cdq.ui.hp-mana-bar]
             [cdq.ui.player-state-draw]
-            [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
@@ -20,103 +18,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.badlogic.gdx.utils.disposable :as disposable]
-            [gdl.utils :as utils]))
-
-(declare build-stage-actors!)
-
-(let [open-editor (fn [db]
-                    {:label "Editor"
-                     :items (for [property-type (sort (db/property-types db))]
-                              {:label (str/capitalize (name property-type))
-                               :on-click (fn [_actor {:keys [ctx/db
-                                                             ctx/graphics
-                                                             ctx/stage]}]
-                                           (stage/add!
-                                            stage
-                                            (scene2d/build
-                                             {:actor/type :actor.type/editor-overview-window
-                                              :db db
-                                              :graphics graphics
-                                              :property-type property-type
-                                              :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
-                                                               (stage/add! stage
-                                                                           (scene2d/build
-                                                                            {:actor/type :actor.type/editor-window
-                                                                             :ctx ctx
-                                                                             :property (db/get-raw db id)})))})))})})
-      ctx-data-viewer {:label "Ctx Data"
-                       :items [{:label "Show data"
-                                :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                                            (stage/add! stage (scene2d/build
-                                                               {:actor/type :actor.type/data-viewer
-                                                                :title "Context"
-                                                                :data ctx
-                                                                :width 500
-                                                                :height 500})))}]}
-      help-str "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
-      help-info-text {:label "Help"
-                      :items [{:label help-str}]}
-      select-world {:label "Select World"
-                    :items (for [world-fn ["world_fns/vampire.edn"
-                                           "world_fns/uf_caves.edn"
-                                           "world_fns/modules.edn"]]
-                             {:label (str "Start " world-fn)
-                              :on-click (fn [actor ctx]
-                                          (let [stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
-                                            (stage/clear! (:ctx/stage ctx))
-                                            (build-stage-actors! ctx)
-                                            (disposable/dispose! (:ctx/world ctx))
-                                            (stage/set-ctx! stage (create-world/do! ctx world-fn))))})}
-      update-labels [{:label "elapsed-time"
-                      :update-fn (fn [ctx]
-                                   (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))
-                      :icon "images/clock.png"}
-                     {:label "FPS"
-                      :update-fn (fn [ctx]
-                                   (graphics/frames-per-second (:ctx/graphics ctx)))
-                      :icon "images/fps.png"}
-                     {:label "Mouseover-entity id"
-                      :update-fn (fn [{:keys [ctx/world]}]
-                                   (let [eid (:world/mouseover-eid world)]
-                                     (when-let [entity (and eid @eid)]
-                                       (:entity/id entity))))
-                      :icon "images/mouseover.png"}
-                     {:label "paused?"
-                      :update-fn (comp :world/paused? :ctx/world)}
-                     {:label "GUI"
-                      :update-fn (fn [{:keys [ctx/graphics]}]
-                                   (mapv int (:graphics/ui-mouse-position graphics)))}
-                     {:label "World"
-                      :update-fn (fn [{:keys [ctx/graphics]}]
-                                   (mapv int (:graphics/world-mouse-position graphics)))}
-                     {:label "Zoom"
-                      :update-fn (fn [ctx]
-                                   (graphics/camera-zoom (:ctx/graphics ctx)))
-                      :icon "images/zoom.png"}]]
-  (defn- create-dev-menu
-    [db graphics]
-    {:actor/type :actor.type/table
-     :rows [[{:actor {:actor/type :actor.type/menu-bar
-                      :menus [ctx-data-viewer
-                              (open-editor db)
-                              help-info-text
-                              select-world]
-                      :update-labels (for [item update-labels]
-                                       (if (:icon item)
-                                         (update item :icon #(get (:graphics/textures graphics) %))
-                                         item))}
-              :expand-x? true
-              :fill-x? true
-              :colspan 1}]
-            [{:actor {:actor/type :actor.type/label
-                      :label/text ""
-                      :actor/touchable :disabled}
-              :expand? true
-              :fill-x? true
-              :fill-y? true}]]
-     :fill-parent? true}))
+            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create-inventory-window*
   [stage
@@ -298,7 +200,7 @@
            ctx/graphics
            ctx/stage]
     :as ctx}]
-  (let [actors [(create-dev-menu db graphics)
+  (let [actors [(cdq.ui.dev-menu/create db graphics build-stage-actors!)
                 (cdq.ui.action-bar/create)
                 (cdq.ui.hp-mana-bar/create stage graphics)
                 {:actor/type :actor.type/group
