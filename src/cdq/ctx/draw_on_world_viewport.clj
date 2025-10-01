@@ -3,6 +3,7 @@
             [cdq.entity.animation :as animation]
             [cdq.entity.faction :as faction]
             [cdq.entity.stats :as stats]
+            [cdq.entity.state.player-item-on-cursor]
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
             [cdq.graphics.draw-on-world-viewport :as draw-on-world-viewport]

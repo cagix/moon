@@ -3,13 +3,13 @@
             [cdq.ctx.create-world :as create-world]
             [cdq.db :as db]
             [cdq.entity.state :as state]
-            [cdq.entity.stats :as stats]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar]
             [cdq.ui.inventory]
-            [cdq.val-max :as val-max]
+            [cdq.ui.hp-mana-bar]
+            [cdq.ui.player-state-draw]
             [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
@@ -293,66 +293,6 @@
                                     (handle-txs/do! ctx txs)))))
       :slot->texture-region slot->texture-region})))
 
-(defn- create-ui-windows [stage graphics]
-  {:actor/type :actor.type/group
-   :actor/name "cdq.ui.windows"
-   :group/actors [(create-entity-info-window stage)
-                  (create-inventory-window stage graphics)]})
-
-(let [config {:rahmen-file "images/rahmen.png"
-              :rahmenw 150
-              :rahmenh 26
-              :hpcontent-file "images/hp.png"
-              :manacontent-file "images/mana.png"
-              :y-mana 80}]
-  (defn- create-hp-mana-bar
-    [stage graphics]
-    (let [{:keys [rahmen-file
-                  rahmenw
-                  rahmenh
-                  hpcontent-file
-                  manacontent-file
-                  y-mana]} config
-          [x y-mana] [(/ (cdq.stage/viewport-width stage) 2)
-                      y-mana]
-          rahmen-tex-reg (graphics/texture-region graphics {:image/file rahmen-file})
-          y-hp (+ y-mana rahmenh)
-          render-hpmana-bar (fn [x y content-file minmaxval name]
-                              [[:draw/texture-region rahmen-tex-reg [x y]]
-                               [:draw/texture-region
-                                (graphics/texture-region graphics
-                                                         {:image/file content-file
-                                                          :image/bounds [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]})
-                                [x y]]
-                               [:draw/text {:text (str (utils/readable-number (minmaxval 0))
-                                                       "/"
-                                                       (minmaxval 1)
-                                                       " "
-                                                       name)
-                                            :x (+ x 75)
-                                            :y (+ y 2)
-                                            :up? true}]])
-          create-draws (fn [{:keys [ctx/world]}]
-                         (let [stats (:entity/stats @(:world/player-eid world))
-                               x (- x (/ rahmenw 2))]
-                           (concat
-                            (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
-                            (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP"))))]
-      {:actor/type :actor.type/actor
-       :draw (fn [_this ctx]
-               (create-draws ctx))})))
-
-(defn- create-player-state-draw-ui []
-  {:actor/type :actor.type/actor
-   :draw (fn [_this {:keys [ctx/world]
-                     :as ctx}]
-           (let [player-eid (:world/player-eid world)
-                 entity @player-eid
-                 state-k (:state (:entity/fsm entity))]
-             (state/draw-gui-view [state-k (state-k entity)]
-                                  player-eid
-                                  ctx)))})
-
 (defn- build-stage-actors!
   [{:keys [ctx/db
            ctx/graphics
@@ -360,9 +300,12 @@
     :as ctx}]
   (let [actors [(create-dev-menu db graphics)
                 (cdq.ui.action-bar/create)
-                (create-hp-mana-bar stage graphics)
-                (create-ui-windows stage graphics)
-                (create-player-state-draw-ui)
+                (cdq.ui.hp-mana-bar/create stage graphics)
+                {:actor/type :actor.type/group
+                 :actor/name "cdq.ui.windows"
+                 :group/actors [(create-entity-info-window stage)
+                                (create-inventory-window stage graphics)]}
+                (cdq.ui.player-state-draw/create)
                 (cdq.ui.message/create)]]
     (doseq [actor actors]
       (stage/add! stage (scene2d/build actor))))
