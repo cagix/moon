@@ -1,6 +1,5 @@
 (ns cdq.scene2d.build.editor-window
-  (:require [cdq.ctx.handle-txs :as handle-txs]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.malli :as m]
             [cdq.db.schema :as schema]
@@ -20,7 +19,8 @@
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn- with-window-close [f]
-  (fn [actor ctx]
+  (fn [actor {:keys [ctx/stage]
+              :as ctx}]
     (try
      (let [new-ctx (update ctx :ctx/db f)
            stage (actor/get-stage actor)]
@@ -28,7 +28,7 @@
      (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)
-       (handle-txs/do! ctx [[:tx/show-error-window t]])))))
+       (cdq.stage/show-error-window! stage t)))))
 
 (defn- update-property-fn [get-widget-value]
   (fn [db]

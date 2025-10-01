@@ -1,5 +1,6 @@
 (ns cdq.ctx.tick-entities
   (:require [cdq.ctx.handle-txs :as handle-txs]
+            [cdq.stage :as stage]
             [cdq.throwable :as throwable]
             [cdq.world :as world]))
 
@@ -13,5 +14,5 @@
          (handle-txs/do! ctx (world/tick-entities! world))
          (catch Throwable t
            (throwable/pretty-pst t)
-           (handle-txs/do! ctx [[:tx/show-error-window t]])))
+           (stage/show-error-window! stage t)))
         ctx)))

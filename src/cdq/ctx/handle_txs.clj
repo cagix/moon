@@ -43,7 +43,6 @@
     :tx/sound (fn [{:keys [ctx/audio]} sound-name]
                 (audio/play-sound! audio sound-name)
                 nil)
-    :tx/show-error-window        cdq.tx.stage/show-error-window!
     :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
     :tx/show-message             cdq.tx.stage/show-message!
     :tx/show-modal               cdq.tx.stage/show-modal!
