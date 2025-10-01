@@ -244,7 +244,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (let [entities (map deref (world/active-eids world))
+  (let [entities (map deref (:world/active-entities world))
         player @(:world/player-eid world)
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)

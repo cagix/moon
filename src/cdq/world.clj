@@ -15,9 +15,6 @@
             [com.badlogic.gdx.maps.tiled :as tiled]
             [reduce-fsm :as fsm]))
 
-(defprotocol World
-  (active-eids [_]))
-
 (defprotocol RayCaster
   (ray-blocked? [_ start target])
   (path-blocked? [_ start target path-w])
@@ -258,11 +255,7 @@
   disposable/Disposable
   (dispose! [{:keys [world/tiled-map]}]
     (assert tiled-map) ; only dispose after world was created
-    (disposable/dispose! tiled-map))
-
-  World
-  (active-eids [this]
-    (:world/active-entities this)))
+    (disposable/dispose! tiled-map)))
 
 (defn- assoc-state [world {:keys [tiled-map
                                   start-position]}]
