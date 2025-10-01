@@ -1,6 +1,5 @@
 (ns cdq.ctx.draw-on-world-viewport
-  (:require [cdq.ctx.handle-txs :as handle-txs]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity.animation :as animation]
             [cdq.entity.faction :as faction]
             [cdq.entity.stats :as stats]
@@ -8,6 +7,7 @@
             [cdq.input :as input]
             [cdq.stage]
             [cdq.timer :as timer]
+            [cdq.throwable :as throwable]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
@@ -41,9 +41,7 @@
           (graphics/handle-draws! graphics (draw-fn v entity ctx))))
        (catch Throwable t
          (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
-         (handle-txs/do! ctx
-                         [[:tx/print-stacktrace t]]))))
-
+         (throwable/pretty-pst t))))
 
 (def ^:dbg-flag show-tile-grid? false)
 

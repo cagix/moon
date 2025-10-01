@@ -6,6 +6,7 @@
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.stage]
+            [cdq.throwable :as throwable]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
@@ -26,8 +27,8 @@
        (stage/set-ctx! stage new-ctx))
      (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
-       (handle-txs/do! ctx [[:tx/print-stacktrace  t]
-                             [:tx/show-error-window t]])))))
+       (throwable/pretty-pst t)
+       (handle-txs/do! ctx [[:tx/show-error-window t]])))))
 
 (defn- update-property-fn [get-widget-value]
   (fn [db]

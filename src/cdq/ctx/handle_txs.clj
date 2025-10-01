@@ -1,7 +1,6 @@
 (ns cdq.ctx.handle-txs
   (:require [cdq.audio :as audio]
             [cdq.tx.stage]
-            [clj-commons.pretty.repl :as pretty-repl]
             [gdl.tx-handler :as tx-handler]))
 
 (def ^:private txs-fn-map
@@ -44,12 +43,6 @@
     :tx/sound (fn [{:keys [ctx/audio]} sound-name]
                 (audio/play-sound! audio sound-name)
                 nil)
-    :tx/print-stacktrace (let [print-level 3
-                               print-depth 24]
-                           (fn [_ctx throwable]
-                             (binding [*print-level* print-level]
-                               (pretty-repl/pretty-pst throwable print-depth))
-                             nil))
     :tx/show-error-window        cdq.tx.stage/show-error-window!
     :tx/toggle-inventory-visible cdq.tx.stage/toggle-inventory-visible!
     :tx/show-message             cdq.tx.stage/show-message!
