@@ -1,8 +1,6 @@
 (ns cdq.tx.set-cooldown
-  (:require [cdq.timer :as timer]))
+  (:require [cdq.entity.skills :as skills]))
 
 (defn do! [{:keys [ctx/world]} eid skill]
-  (swap! eid assoc-in
-         [:entity/skills (:property/id skill) :skill/cooling-down?]
-         (timer/create (:world/elapsed-time world) (:skill/cooldown skill)))
+  (swap! eid update :entity/skills skills/set-cooldown skill (:world/elapsed-time world))
   nil)
