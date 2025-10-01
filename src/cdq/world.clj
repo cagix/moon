@@ -15,15 +15,6 @@
             [com.badlogic.gdx.maps.tiled :as tiled]
             [reduce-fsm :as fsm]))
 
-(defn assoc-active-entities
-  [{:keys [world/content-grid
-           world/player-eid]
-    :as world}]
-  (assoc world
-         :world/active-entities
-         (content-grid/active-entities content-grid
-                                       @player-eid)))
-
 (defprotocol World
   (active-eids [_]))
 

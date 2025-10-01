@@ -1,7 +1,7 @@
 (ns cdq.ctx.assoc-active-entities
-  (:require [cdq.world :as world]))
+  (:require [cdq.world.assoc-active-entities :as assoc-active-entities]))
 
 (defn do!
   [{:keys [ctx/world]
     :as ctx}]
-  (update ctx :ctx/world world/assoc-active-entities))
+  (update ctx :ctx/world assoc-active-entities/do!))
