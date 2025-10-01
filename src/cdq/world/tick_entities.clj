@@ -1,5 +1,6 @@
 (ns cdq.world.tick-entities
-  (:require [cdq.creature :as creature]
+  (:require cdq.entity.projectile-collision.tick
+            [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity.animation :as animation]
             [cdq.entity.body :as body]
@@ -9,7 +10,6 @@
             [cdq.world.grid.cell :as cell]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-fields-movement :as potential-fields-movement]
-            [gdl.grid2d :as g2d]
             [gdl.math.vector2 :as v]
             [gdl.utils :as utils]))
 
@@ -146,34 +146,7 @@
                                                                    (move-body body movement))]
                                                    [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))
 
-   :entity/projectile-collision            (fn
-                                             [{:keys [entity-effects already-hit-bodies piercing?]}
-                                              eid
-                                              {:keys [world/grid]}]
-                                             (let [entity @eid
-                                                   cells* (map deref (g2d/get-cells grid (body/touched-tiles (:entity/body entity))))
-                                                   hit-entity (first (filter #(and (not (contains? already-hit-bodies %))
-                                                                                   (not= (:entity/faction entity)
-                                                                                         (:entity/faction @%))
-                                                                                   (:body/collides? (:entity/body @%))
-                                                                                   (body/overlaps? (:entity/body entity)
-                                                                                                   (:entity/body @%)))
-                                                                             (grid/cells->entities cells*)))
-                                                   destroy? (or (and hit-entity (not piercing?))
-                                                                (some #(cell/blocked? % (:body/z-order (:entity/body entity))) cells*))]
-                                               [(when destroy?
-                                                  [:tx/mark-destroyed eid])
-                                                (when hit-entity
-                                                  [:tx/assoc-in
-                                                   eid
-                                                   [:entity/projectile-collision
-                                                    :already-hit-bodies]
-                                                   (conj already-hit-bodies hit-entity)])
-                                                (when hit-entity
-                                                  [:tx/effect
-                                                   {:effect/source eid
-                                                    :effect/target hit-entity}
-                                                   entity-effects])]))
+   :entity/projectile-collision            cdq.entity.projectile-collision.tick/txs
 
    :entity/skills                          (fn [skills eid {:keys [world/elapsed-time]}]
                                              (for [{:keys [skill/cooling-down?] :as skill} (vals skills)

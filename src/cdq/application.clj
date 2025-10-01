@@ -1,6 +1,7 @@
 (ns cdq.application
   (:require cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
+            cdq.scene2d.build.map-widget-table
             [cdq.ctx.create-db :as create-db]
             [cdq.ctx.create-audio :as create-audio]
             [cdq.ctx.create-graphics :as create-graphics]

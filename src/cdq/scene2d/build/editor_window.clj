@@ -1,22 +1,15 @@
 (ns cdq.scene2d.build.editor-window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.malli :as m]
             [cdq.db.schema :as schema]
-            [cdq.db.schemas :as schemas]
             [cdq.stage]
             [cdq.throwable :as throwable]
-            [cdq.ui.editor.value-widget :as value-widget]
-            [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.widget :as widget]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
+            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]
@@ -89,148 +82,3 @@
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]
     (scene2d/build actor)))
-
-(defn- rebuild!
-  [{:keys [ctx/db
-           ctx/stage]
-    :as ctx}]
-  (let [window (-> stage
-                   stage/root
-                   (group/find-actor "cdq.ui.editor.window"))
-        map-widget-table (-> window
-                             (group/find-actor "cdq.ui.widget.scroll-pane-table")
-                             (group/find-actor "scroll-pane-table")
-                             (group/find-actor "cdq.db.schema.map.ui.widget"))
-        property (map-widget-table/get-value map-widget-table (:db/schemas db))]
-    (actor/remove! window)
-    (stage/add! stage
-                (scene2d/build
-                 {:actor/type :actor.type/editor-window
-                  :ctx ctx
-                  :property property}))))
-
-(defn- k->label-text [k]
-  (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-  )
-
-(defn- component-row*
-  [{:keys [editor-widget
-           display-remove-component-button?
-           k
-           table
-           label-text]}]
-  [{:actor {:actor/type :actor.type/table
-            :cell-defaults {:pad 2}
-            :rows [[{:actor (when display-remove-component-button?
-                              {:actor/type :actor.type/text-button
-                               :text "-"
-                               :on-clicked (fn [_actor ctx]
-                                             (actor/remove! (first (filter (fn [actor]
-                                                                             (and (actor/user-object actor)
-                                                                                  (= k ((actor/user-object actor) 0))))
-                                                                           (group/children table))))
-                                             (rebuild! ctx))})
-                     :left? true}
-                    {:actor {:actor/type :actor.type/label
-                             :label/text label-text}}]]}
-    :right? true}
-   {:actor {:actor/type :actor.type/separator-vertical}
-    :pad-top 2
-    :pad-bottom 2
-    :fill-y? true
-    :expand-y? true}
-   {:actor editor-widget
-    :left? true}])
-
-(defn- component-row [editor-widget k optional-key? table]
-  (component-row*
-   {:editor-widget editor-widget
-    :display-remove-component-button? optional-key?
-    :k k
-    :table table
-    :label-text (k->label-text k)}))
-
-(defn- add-component-window [schemas schema map-widget-table]
-  (let [window (scene2d/build {:actor/type :actor.type/window
-                               :title "Choose"
-                               :modal? true
-                               :close-button? true
-                               :center? true
-                               :close-on-escape? true
-                               :cell-defaults {:pad 5}})
-        remaining-ks (sort (remove (set (keys (schema/value schema map-widget-table schemas)))
-                                   (m/map-keys (schema/malli-form schema schemas))))]
-    (table/add-rows!
-     window
-     (for [k remaining-ks]
-       [{:actor {:actor/type :actor.type/text-button
-                 :text (name k)
-                 :on-clicked (fn [_actor ctx]
-                               (actor/remove! window)
-                               (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
-                                                                                                     (get schemas k)
-                                                                                                     k
-                                                                                                     (schemas/default-value schemas k))
-                                                                                 k
-                                                                                 (m/optional? k (schema/malli-form schema schemas))
-                                                                                 map-widget-table)])
-                               (rebuild! ctx))}}]))
-    (widget-group/pack! window)
-    window))
-
-(defn- horiz-sep [colspan]
-  (fn []
-    [{:actor {:actor/type :actor.type/separator-horizontal}
-      :pad-top 2
-      :pad-bottom 2
-      :colspan colspan
-      :fill-x? true
-      :expand-x? true}]))
-
-(defn- interpose-f [f coll]
-  (drop 1 (interleave (repeatedly f) coll)))
-
-(defmethod scene2d/build :actor.type/map-widget-table
-  [{:keys [schema
-           k->widget
-           k->optional?
-           ks-sorted
-           opt?]}]
-  (let [table (scene2d/build
-               {:actor/type :actor.type/table
-                :cell-defaults {:pad 5}
-                :actor/name "cdq.db.schema.map.ui.widget"})
-        colspan 3
-        component-rows (interpose-f (horiz-sep colspan)
-                                    (map (fn [k]
-                                           (component-row (k->widget k)
-                                                          k
-                                                          (k->optional? k)
-                                                          table))
-                                         ks-sorted))]
-    (table/add-rows!
-     table
-     (concat [(when opt?
-                [{:actor {:actor/type :actor.type/text-button
-                          :text "Add component"
-                          :on-clicked (fn [_actor {:keys [ctx/db
-                                                          ctx/stage]}]
-                                        (stage/add! stage (add-component-window (:db/schemas db) schema table)))}
-                  :colspan colspan}])]
-             [(when opt?
-                [{:actor {:actor/type :actor.type/separator-horizontal}
-                  :pad-top 2
-                  :pad-bottom 2
-                  :colspan colspan
-                  :fill-x? true
-                  :expand-x? true}])]
-             component-rows))
-    table))
-
-(extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
-  cdq.ui.editor.map-widget-table/MapWidgetTable
-  (get-value [table schemas]
-    (into {}
-          (for [widget (filter (comp vector? actor/user-object) (group/children table))
-                :let [[k _] (actor/user-object widget)]]
-            [k (schema/value (get schemas k) widget schemas)]))))
