@@ -628,8 +628,8 @@
                                               eid
                                               {:keys [world/elapsed-time]}]
                                              (when (timer/stopped? elapsed-time counter)
-                                               [[:tx/dissoc     eid :entity/temp-modifier]
-                                                [:tx/mod-remove eid modifiers]]))})
+                                               [[:tx/dissoc eid :entity/temp-modifier]
+                                                [:tx/update eid :entity/stats stats/remove-mods modifiers]]))})
 
 (defn tick-entities! [world]
   (tick-entities!* world k->tick-fn))
