@@ -1,3 +1,33 @@
+# Commands
+
+## Sort files by lines of code
+
+```
+sh tasks/count_locs.sh
+```
+
+~result here~
+
+## Show namespace graph
+
+```
+lein hiera :layout :horizontal
+```
+
+~ reslt here
+
+## Show package graph
+
+~~~
+...
+~~~
+
+## Show dependency tree
+
+## Open Structural Code Browser (instead of docs)
+
+# TODO
+
 * Liste dependencies with __javadoc io__ (!!!) & github (e.g. kotcrab, javadoc.io libgdx & wiki .. )
     => hidden in my browser.
     => my bookmarks.
