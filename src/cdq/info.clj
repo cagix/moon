@@ -155,6 +155,9 @@
                            "Piercing")
    :property/pretty-name (fn [[_ v] _world]
                            v)
+   :skill/cooling-down? (fn [[_ counter] {:keys [world/elapsed-time]}]
+                          (str "Cooldown: " (utils/readable-number (timer/ratio elapsed-time counter)) "/1"))
+
    :skill/action-time (fn [[_ v] _world]
                         (str "Action-Time: " (utils/readable-number v) " seconds"))
    :skill/action-time-modifier-key (fn [[_ v] _world]
@@ -168,12 +171,20 @@
                  (when-not (zero? v)
                    (str "Cost: " v " Mana")))
    :maxrange (fn [[_ v] _world]
-               v)})
+               (str "Range: " v " Meters."))})
+
+(comment
+ (:skills/death-ray (:entity/skills @(:world/player-eid (:ctx/world @cdq.application/state))))
+ ; cooling-down? is not set in the action-bar ....
+ ; so not showing as ui not updated
+ )
 
 (defn info-text [entity world]
   (let [component-info (fn [[k v]]
                          (let [s (if-let [info-fn (info-fns k)]
-                                   (info-fn [k v] world))]
+                                   (do
+                                    (info-fn [k v] world)
+                                    #_(str k " - " (info-fn [k v] world))))]
                            (if-let [color (k->colors k)]
                              (str "[" color "]" s "[]")
                              s)))]
