@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [cdq.db :as db]
+  (:require [cdq.ctx.create-db]
+            [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
             [clojure.graphics.color :as color]
@@ -100,7 +101,7 @@
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
         ctx (-> ctx
-                (assoc :ctx/db (db/create))
+                cdq.ctx.create-db/do!
                 (assoc :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]

@@ -1,9 +1,10 @@
 (ns cdq.graphics
   (:require [cdq.graphics.cursors :as cursors]
+            [cdq.graphics.font :as font]
             [cdq.graphics.shape-drawer :as shape-drawer]
-            [clojure.graphics.color :refer [white]]
+            [cdq.graphics.shape-drawer-texture :as shape-drawer-texture]
+            [cdq.graphics.sprite-batch :as sprite-batch]
             [clojure.graphics.orthographic-camera :as camera]
-            [clojure.graphics.freetype :as freetype]
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.files.utils :as files-utils]
@@ -13,8 +14,7 @@
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.disposable :refer [dispose!]]))
+            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (defprotocol PGraphics
   (clear! [_ [r g b a]])
@@ -103,24 +103,6 @@
         (texture/region texture bounds)
         (texture/region texture)))))
 
-(defn- create-batch [{:keys [graphics/core]
-                      :as graphics}]
-  (assoc graphics :graphics/batch (graphics/sprite-batch core)))
-
-(defn- create-shape-drawer-texture
-  [{:keys [graphics/core]
-    :as graphics}]
-  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
-                                                                (pixmap/set-color! white)
-                                                                (pixmap/draw-pixel! 0 0))
-                                                       texture (pixmap/texture pixmap)]
-                                                   (dispose! pixmap)
-                                                   texture)))
-
-(defn- create-default-font [graphics default-font]
-  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
-                                                                 (:params default-font))))
-
 (defn- create-textures
   [{:keys [graphics/core]
     :as graphics} textures-to-load]
@@ -172,9 +154,9 @@
   (-> (map->RGraphics {})
       (assoc :graphics/core graphics)
       (cursors/create cursors)
-      (create-default-font default-font)
-      create-batch
-      create-shape-drawer-texture
+      (font/create default-font)
+      sprite-batch/create
+      shape-drawer-texture/create
       shape-drawer/create
       (create-textures textures-to-load)
       (add-unit-scales world-unit-scale)

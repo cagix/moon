@@ -1,5 +1,5 @@
 (ns cdq.ctx.draw-entities
-  (:require [cdq.effect :as effect]
+  (:require cdq.entity.state.active-skill.draw
             [cdq.entity.animation :as animation]
             [cdq.entity.faction :as faction]
             [cdq.entity.state.player-item-on-cursor]
@@ -8,7 +8,6 @@
             [cdq.graphics.draws :as draws]
             [cdq.input :as input]
             [cdq.stage :as stage]
-            [cdq.timer :as timer]
             [cdq.throwable :as throwable]
             [cdq.world.raycaster :as raycaster]
             [cdq.val-max :as val-max]
@@ -45,27 +44,6 @@
         (- (* width ratio) (* 2 border))
         (- height          (* 2 border))
         (hpbar-color ratio)]])))
-
-(def ^:private skill-image-radius-world-units
-  (let [tile-size 48
-        image-width 32]
-    (/ (/ image-width tile-size) 2)))
-
-(defn- draw-skill-image
-  [texture-region entity [x y] action-counter-ratio]
-  (let [radius skill-image-radius-world-units
-        y (+ (float y)
-             (float (/ (:body/height (:entity/body entity)) 2))
-             (float 0.15))
-        center [x (+ y radius)]]
-    [[:draw/filled-circle center radius [1 1 1 0.125]]
-     [:draw/sector
-      center
-      radius
-      90 ; start-angle
-      (* (float action-counter-ratio) 360) ; degree
-      [1 1 1 0.5]]
-     [:draw/texture-region texture-region [(- (float x) radius) y]]]))
 
 (let [outline-alpha 0.4
       enemy-color    [1 0 0 outline-alpha]
@@ -162,19 +140,7 @@
                                  (draw-hpbar (:graphics/world-unit-scale graphics)
                                              (:entity/body entity)
                                              ratio))))
-      :active-skill          (fn
-                               [{:keys [skill effect-ctx counter]}
-                                entity
-                                {:keys [ctx/graphics
-                                        ctx/world]
-                                 :as ctx}]
-                               (let [{:keys [entity/image skill/effects]} skill]
-                                 (concat (draw-skill-image (graphics/texture-region graphics image)
-                                                           entity
-                                                           (:body/position (:entity/body entity))
-                                                           (timer/ratio (:world/elapsed-time world) counter))
-                                         (mapcat #(effect/draw % effect-ctx ctx)  ; update-effect-ctx here too ?
-                                                 effects))))}]))
+      :active-skill          cdq.entity.state.active-skill.draw/txs}]))
 
 (def ^:dbg-flag show-body-bounds? false)
 

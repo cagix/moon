@@ -1,5 +1,6 @@
 (ns cdq.world.tick-entities
-  (:require cdq.entity.projectile-collision.tick
+  (:require cdq.entity.movement.tick
+            cdq.entity.projectile-collision.tick
             [cdq.creature :as creature]
             [cdq.effect :as effect]
             [cdq.entity.animation :as animation]
@@ -9,9 +10,7 @@
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
             [cdq.world.raycaster :as raycaster]
-            [cdq.world.potential-fields-movement :as potential-fields-movement]
-            [gdl.math.vector2 :as v]
-            [gdl.utils :as utils]))
+            [cdq.world.potential-fields-movement :as potential-fields-movement]))
 
 (defn- tick-entities!*
   [{:keys [world/active-entities]
@@ -80,24 +79,6 @@
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
-(defn- move-position [position {:keys [direction speed delta-time]}]
-  (mapv #(+ %1 (* %2 speed delta-time)) position direction))
-
-(defn- move-body [body movement]
-  (update body :body/position move-position movement))
-
-(defn- try-move [grid body entity-id movement]
-  (let [new-body (move-body body movement)]
-    (when (grid/valid-position? grid new-body entity-id)
-      new-body)))
-
-(defn- try-move-solid-body [grid body entity-id {[vx vy] :direction :as movement}]
-  (let [xdir (Math/signum (float vx))
-        ydir (Math/signum (float vy))]
-    (or (try-move grid body entity-id movement)
-        (try-move grid body entity-id (assoc movement :direction [xdir 0]))
-        (try-move grid body entity-id (assoc movement :direction [0 ydir])))))
-
 (def ^:private k->tick-fn
   {:entity/alert-friendlies-after-duration (fn
                                              [{:keys [counter faction]}
@@ -122,30 +103,7 @@
                                              (when (timer/stopped? elapsed-time counter)
                                                [[:tx/mark-destroyed eid]]))
 
-   :entity/movement                        (fn
-                                             [{:keys [direction
-                                                      speed
-                                                      rotate-in-movement-direction?]
-                                               :as movement}
-                                              eid
-                                              {:keys [world/delta-time
-                                                      world/grid
-                                                      world/max-speed]}]
-                                             (assert (<= 0 speed max-speed)
-                                                     (pr-str speed))
-                                             (assert (or (zero? (v/length direction))
-                                                         (utils/nearly-equal? 1 (v/length direction)))
-                                                     (str "cannot understand direction: " (pr-str direction)))
-                                             (when-not (or (zero? (v/length direction))
-                                                           (nil? speed)
-                                                           (zero? speed))
-                                               (let [movement (assoc movement :delta-time delta-time)
-                                                     body (:entity/body @eid)]
-                                                 (when-let [body (if (:body/collides? body)
-                                                                   (try-move-solid-body grid body (:entity/id @eid) movement)
-                                                                   (move-body body movement))]
-                                                   [[:tx/move-entity eid body direction rotate-in-movement-direction?]]))))
-
+   :entity/movement                        cdq.entity.movement.tick/txs
    :entity/projectile-collision            cdq.entity.projectile-collision.tick/txs
 
    :entity/skills                          (fn [skills eid {:keys [world/elapsed-time]}]
