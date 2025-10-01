@@ -5,9 +5,9 @@
             [cdq.entity.body :as body]
             [cdq.entity.stats :as stats]
             [cdq.timer :as timer]
-            [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
+            [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-fields-movement :as potential-fields-movement]
             [gdl.grid2d :as g2d]
             [gdl.math.vector2 :as v]
@@ -64,7 +64,7 @@
   (let [entity @eid
         target (grid/nearest-enemy grid entity)
         target (when (and target
-                          (world/line-of-sight? world entity @target))
+                          (raycaster/line-of-sight? world entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -76,7 +76,7 @@
   [world {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? world @source @target))
+           (raycaster/line-of-sight? world @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 

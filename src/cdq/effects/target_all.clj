@@ -1,10 +1,10 @@
 (ns cdq.effects.target-all
-  (:require [cdq.world :as world]))
+  (:require [cdq.world.raycaster :as raycaster]))
 
 (defn- affected-targets [active-entities world entity]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(world/line-of-sight? world entity @%))
+       (filter #(raycaster/line-of-sight? world entity @%))
        (remove #(:entity/player? @%))))
 
 (comment

@@ -11,8 +11,8 @@
             [cdq.timer :as timer]
             [cdq.throwable :as throwable]
             [cdq.val-max :as val-max]
-            [cdq.world :as world]
             [cdq.world.grid :as grid]
+            [cdq.world.raycaster :as raycaster]
             [clojure.graphics.color :as color]
             [gdl.utils :as utils]))
 
@@ -248,7 +248,7 @@
         player @(:world/player-eid world)
         should-draw? (fn [entity z-order]
                        (or (= z-order :z-order/effect)
-                           (world/line-of-sight? world player entity)))]
+                           (raycaster/line-of-sight? world player entity)))]
     (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
                                                     first
                                                     (:world/render-z-order world))
