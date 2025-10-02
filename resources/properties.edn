@@ -68,13 +68,6 @@
   :property/id :audiovisuals/spawn,
   :tx/sound "bfxr_curse"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -87,20 +80,16 @@
   {:body/flying? false, :body/height 11/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/toad,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/toad-horned,
   :property/pretty-name "Toad-horned"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/armor-pierce 0,
-   :stats/armor-save 0,
-   :stats/attack-speed 3,
-   :stats/cast-speed 1,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 31,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -113,16 +102,20 @@
   {:body/flying? false, :body/height 29/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/goblin,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/armor-pierce 0,
+   :stats/armor-save 0,
+   :stats/attack-speed 3,
+   :stats/cast-speed 1,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 31,
+   :stats/strength 1},
   :property/id :creatures/goblin-warrior,
   :property/pretty-name "Goblin-warrior"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -135,9 +128,6 @@
   {:body/flying? false, :body/height 37/48, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-blue,
-  :property/id :creatures/lizardman-blue-shaman,
-  :property/pretty-name "Lizardman-blue-shaman"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -145,6 +135,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/lizardman-blue-shaman,
+  :property/pretty-name "Lizardman-blue-shaman"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -157,16 +150,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/barbarian,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/barbarian-f,
   :property/pretty-name "Barbarian-f"}
  {:creature/level 14,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -179,17 +172,16 @@
   {:body/flying? false, :body/height 31/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/mummy,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/mummy,
   :property/pretty-name "Mummy"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/armor-save 0.5,
-   :stats/hp 20,
-   :stats/mana 0,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 3,
-   :stats/strength 10},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -202,16 +194,17 @@
   {:body/flying? false, :body/height 35/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/armor-save 0.5,
+   :stats/hp 20,
+   :stats/mana 0,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 3,
+   :stats/strength 10},
   :property/id :creatures/helion,
   :property/pretty-name "Helion"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -224,9 +217,6 @@
   {:body/flying? false, :body/height 17/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/priest,
-  :property/pretty-name "Priest"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -234,6 +224,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/priest,
+  :property/pretty-name "Priest"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -246,16 +239,16 @@
   {:body/flying? false, :body/height 13/16, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-green,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lizardman-green-spear,
   :property/pretty-name "Lizardman-green-spear"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -268,16 +261,16 @@
   {:body/flying? false, :body/height 9/16, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dwarf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dwarf-cleric,
   :property/pretty-name "Dwarf-cleric"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -290,9 +283,6 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/thief,
-  :property/pretty-name "Thief"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -300,6 +290,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/thief,
+  :property/pretty-name "Thief"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -312,16 +305,16 @@
   {:body/flying? false, :body/height 37/48, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-green,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lizardman-green-shaman,
   :property/pretty-name "Lizardman-green-shaman"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 35,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -334,16 +327,16 @@
   {:body/flying? true, :body/height 19/24, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beholder,
-  :property/id :creatures/beholder,
-  :property/pretty-name "Beholder"}
- {:creature/level 1,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 35,
    :stats/mana 11,
    :stats/movement-speed 2.4,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/beholder,
+  :property/pretty-name "Beholder"}
+ {:creature/level 1,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -356,16 +349,16 @@
   {:body/flying? false, :body/height 19/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/spider,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/spider-brown,
   :property/pretty-name "Spider-brown"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 25,
-   :stats/mana 11,
-   :stats/movement-speed 6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -379,16 +372,16 @@
   :entity/inventory #{},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/vampire,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 25,
+   :stats/mana 11,
+   :stats/movement-speed 6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/vampire-lord,
   :property/pretty-name "Vampire-lord"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -401,9 +394,6 @@
   {:body/flying? false, :body/height 35/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/witch,
-  :property/pretty-name "Witch"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -411,6 +401,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/witch,
+  :property/pretty-name "Witch"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -423,16 +416,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/minstrel-f,
-  :property/pretty-name "Minstrel-f"}
- {:creature/level 6,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 2,
+   :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/minstrel-f,
+  :property/pretty-name "Minstrel-f"}
+ {:creature/level 6,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -445,16 +438,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lady-b,
   :property/pretty-name "Lady-b"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -467,16 +460,16 @@
   {:body/flying? false, :body/height 9/16, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dwarf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dwarf,
   :property/pretty-name "Dwarf"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -489,16 +482,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elemental,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elemental-air,
   :property/pretty-name "Elemental-air"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -511,16 +504,16 @@
   {:body/flying? false, :body/height 5/12, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beetle,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/beetle-fire,
   :property/pretty-name "Beetle-fire"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -533,16 +526,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/warrior-f,
   :property/pretty-name "Warrior-f"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 350,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -555,16 +548,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/golem,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 350,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/golem-mud,
   :property/pretty-name "Golem-mud"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -577,9 +570,6 @@
   {:body/flying? false, :body/height 29/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/merchant-f,
-  :property/pretty-name "Merchant-f"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -587,6 +577,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/merchant-f,
+  :property/pretty-name "Merchant-f"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -599,16 +592,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/minstrel-m,
-  :property/pretty-name "Minstrel-m"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 12,
+   :stats/hp 10,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/minstrel-m,
+  :property/pretty-name "Minstrel-m"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -620,20 +613,16 @@
   :entity/body {:body/flying? true, :body/height 5/6, :body/width 3/4},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/spirit,
-  :property/id :creatures/spirit-greater,
-  :property/pretty-name "Spirit-greater"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/armor-pierce 0,
-   :stats/armor-save 0.7,
-   :stats/attack-speed 2,
-   :stats/cast-speed 1,
-   :stats/hp 10,
+   :stats/hp 12,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
-   :stats/strength 2},
+   :stats/strength 1},
+  :property/id :creatures/spirit-greater,
+  :property/pretty-name "Spirit-greater"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -646,16 +635,20 @@
   {:body/flying? false, :body/height 19/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/armor-pierce 0,
+   :stats/armor-save 0.7,
+   :stats/attack-speed 2,
+   :stats/cast-speed 1,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 2},
   :property/id :creatures/knight,
   :property/pretty-name "Knight"}
  {:creature/level 8,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 25,
-   :stats/mana 11,
-   :stats/movement-speed 1.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -668,16 +661,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/zombie,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 25,
+   :stats/mana 11,
+   :stats/movement-speed 1.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/zombie-b,
   :property/pretty-name "Zombie-b"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 32,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -690,16 +683,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 19/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/demon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 32,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/demon-green,
   :property/pretty-name "Demon-green"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -712,16 +705,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/drow,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/drow-wizard,
   :property/pretty-name "Drow-wizard"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -734,16 +727,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/goblin,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/goblin-shaman,
   :property/pretty-name "Goblin-shaman"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -756,16 +749,16 @@
   {:body/flying? false, :body/height 13/24, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beetle,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/beetle-giant,
   :property/pretty-name "Beetle-giant"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -778,16 +771,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/prisoner-b,
   :property/pretty-name "Prisoner-b"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -800,15 +793,16 @@
   {:body/flying? false, :body/height 7/12, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dwarf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dwarf-mage,
   :property/pretty-name "Dwarf-mage"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/movement-speed 1,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -821,16 +815,15 @@
   {:body/flying? true, :body/height 35/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/bird,
-  :property/id :creatures/bird-hawk,
-  :property/pretty-name "Bird-hawk"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
+   :stats/movement-speed 1,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/bird-hawk,
+  :property/pretty-name "Bird-hawk"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -843,15 +836,16 @@
   {:body/flying? true, :body/height 3/4, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/pixie,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/pixie-b,
   :property/pretty-name "Pixie-b"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 1,
-   :stats/movement-speed 1,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -864,16 +858,15 @@
   {:body/flying? false, :body/height 3/4, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 1,
+   :stats/movement-speed 1,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lady-a,
   :property/pretty-name "Lady-a"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -886,15 +879,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/drow,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/drow,
   :property/pretty-name "Drow"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 2},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -907,16 +901,15 @@
   {:body/flying? false, :body/height 29/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/goblin,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 2},
   :property/id :creatures/goblin,
   :property/pretty-name "Goblin"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -929,15 +922,16 @@
   {:body/flying? false, :body/height 5/8, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wolf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 15,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/wolf-black,
   :property/pretty-name "Wolf-black"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 3,
-   :stats/hp 1,
-   :stats/movement-speed 6,
-   :stats/reaction-time 5,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -950,16 +944,15 @@
   {:body/flying? true, :body/height 35/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/bird,
+  :entity/stats
+  {:stats/aggro-range 3,
+   :stats/hp 1,
+   :stats/movement-speed 6,
+   :stats/reaction-time 5,
+   :stats/strength 1},
   :property/id :creatures/bird-crow,
   :property/pretty-name "Crow"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 32,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -972,16 +965,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 19/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/demon,
-  :property/id :creatures/demon-red,
-  :property/pretty-name "Demon-red"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 32,
    :stats/mana 11,
    :stats/movement-speed 3.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/demon-red,
+  :property/pretty-name "Demon-red"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -994,16 +987,16 @@
   {:body/flying? true, :body/height 3/4, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/pixie,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/pixie-a,
   :property/pretty-name "Pixie-a"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1016,16 +1009,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 2/3},
   :entity/skills #{:skills/bow :skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/archer,
   :property/pretty-name "Archer"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1038,16 +1031,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 41/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/rat,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/rat-giant,
   :property/pretty-name "Rat-giant"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1060,16 +1053,16 @@
   {:body/flying? false, :body/height 17/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lord-a,
   :property/pretty-name "Lord-a"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1082,9 +1075,6 @@
   {:body/flying? false, :body/height 3/4, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wraith,
-  :property/id :creatures/wraith-black,
-  :property/pretty-name "Wraith-black"}
- {:creature/level 6,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 22,
@@ -1092,6 +1082,9 @@
    :stats/movement-speed 3.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/wraith-black,
+  :property/pretty-name "Wraith-black"}
+ {:creature/level 6,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1104,16 +1097,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wraith,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/wraith-red,
   :property/pretty-name "Wraith-red"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 350,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1126,16 +1119,16 @@
   {:body/flying? false, :body/height 5/6, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/golem,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 350,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/golem-fire,
   :property/pretty-name "Golem-fire"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1147,16 +1140,16 @@
   :entity/body {:body/flying? true, :body/height 3/4, :body/width 5/8},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wisp,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/wisp-ancient,
   :property/pretty-name "Wisp-ancient"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 35,
-   :stats/mana 11,
-   :stats/movement-speed 1.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1169,16 +1162,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/troll,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 35,
+   :stats/mana 11,
+   :stats/movement-speed 1.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/troll,
   :property/pretty-name "Troll"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1191,16 +1184,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wraith,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/wraith-blue,
   :property/pretty-name "Wraith-blue"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1213,16 +1206,16 @@
   {:body/flying? false, :body/height 13/24, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beetle,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/beetle-fire-giant,
   :property/pretty-name "Beetle-fire-giant"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1235,9 +1228,6 @@
   {:body/flying? false, :body/height 13/16, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-blue,
-  :property/id :creatures/lizardman-blue-spear,
-  :property/pretty-name "Lizardman-blue-spear"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -1245,6 +1235,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/lizardman-blue-spear,
+  :property/pretty-name "Lizardman-blue-spear"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1257,16 +1250,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 2/3},
   :entity/skills #{:skills/spawn :skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dark-knight,
   :property/pretty-name "Dark-knight"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1279,16 +1272,16 @@
   {:body/flying? false, :body/height 7/12, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wolf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 15,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/wolf-brown,
   :property/pretty-name "Wolf-brown"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 32,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1301,16 +1294,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 19/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/demon,
-  :property/id :creatures/demon-blue,
-  :property/pretty-name "Demon-blue"}
- {:creature/level 1,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 32,
    :stats/mana 11,
    :stats/movement-speed 3.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/demon-blue,
+  :property/pretty-name "Demon-blue"}
+ {:creature/level 1,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1323,16 +1316,16 @@
   {:body/flying? true, :body/height 31/48, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/moth,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/moth-red,
   :property/pretty-name "Moth-red"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1345,16 +1338,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/prisoner-c,
   :property/pretty-name "Prisoner-c"}
  {:creature/level 17,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 25,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1367,16 +1360,16 @@
   {:body/flying? false, :body/height 9/16, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/mimic,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 25,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/mimic,
   :property/pretty-name "Mimic"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1389,9 +1382,6 @@
   {:body/flying? false, :body/height 3/4, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-green,
-  :property/id :creatures/lizardman-green,
-  :property/pretty-name "Lizardman-green"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -1399,6 +1389,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/lizardman-green,
+  :property/pretty-name "Lizardman-green"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1411,16 +1404,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/paladin,
   :property/pretty-name "Paladin"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 45,
-   :stats/mana 11,
-   :stats/movement-speed 1.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1433,16 +1426,16 @@
   {:body/flying? false, :body/height 5/6, :body/width 23/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dragon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 45,
+   :stats/mana 11,
+   :stats/movement-speed 1.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dragon-green,
   :property/pretty-name "Dragon-green"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1455,16 +1448,16 @@
   {:body/flying? false, :body/height 23/48, :body/width 31/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/rat,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/rat,
   :property/pretty-name "Rat"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1477,16 +1470,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elemental,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elemental-vorpal,
   :property/pretty-name "Elemental-vorpal"}
  {:creature/level 8,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 25,
-   :stats/mana 11,
-   :stats/movement-speed 1.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1499,16 +1492,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/zombie,
-  :property/id :creatures/zombie-a,
-  :property/pretty-name "Zombie-a"}
- {:creature/level 6,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 45,
+   :stats/hp 25,
    :stats/mana 11,
    :stats/movement-speed 1.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/zombie-a,
+  :property/pretty-name "Zombie-a"}
+ {:creature/level 6,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1521,16 +1514,16 @@
   {:body/flying? false, :body/height 5/6, :body/width 23/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dragon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 45,
+   :stats/mana 11,
+   :stats/movement-speed 1.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dragon-blue,
   :property/pretty-name "Dragon-blue"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1543,16 +1536,16 @@
   {:body/flying? false, :body/height 19/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/spider,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/spider-black,
   :property/pretty-name "Spider-black"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 28,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1565,16 +1558,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/ogre,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 28,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/ogre,
   :property/pretty-name "Ogre"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1588,16 +1581,16 @@
   :entity/skills
   #{:skills/meditation :skills/projectile :skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/wizard,
-  :property/pretty-name "Wizard"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 22,
+   :stats/hp 10,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/wizard,
+  :property/pretty-name "Wizard"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1610,15 +1603,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elemental,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elemental-earth,
   :property/pretty-name "Elemental-earth"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 100,
-   :stats/movement-speed 5.5,
-   :stats/reaction-time 3,
-   :stats/strength 100},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1631,16 +1625,15 @@
   {:body/flying? false, :body/height 5/6, :body/width 23/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dragon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 100,
+   :stats/movement-speed 5.5,
+   :stats/reaction-time 3,
+   :stats/strength 100},
   :property/id :creatures/dragon-shadow,
   :property/pretty-name "Dragon-shadow"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 1,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1653,16 +1646,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/banshee,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 1,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/banshee,
   :property/pretty-name "Banshee"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1675,16 +1668,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/warrior-m,
   :property/pretty-name "Warrior-m"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1697,15 +1690,16 @@
   {:body/flying? true, :body/height 31/48, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/moth,
-  :property/id :creatures/moth-white,
-  :property/pretty-name "Moth-white"}
- {:creature/level 1,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 8,
-   :stats/movement-speed 4,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/moth-white,
+  :property/pretty-name "Moth-white"}
+ {:creature/level 1,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1718,16 +1712,15 @@
   {:body/flying? true, :body/height 35/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/bird,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/movement-speed 4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/bird-dove,
   :property/pretty-name "Bird-dove"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1740,16 +1733,16 @@
   {:body/flying? false, :body/height 3/4, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lizardman-blue,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lizardman-blue,
   :property/pretty-name "Lizardman-blue"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 45,
-   :stats/mana 11,
-   :stats/movement-speed 1.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1762,16 +1755,16 @@
   {:body/flying? false, :body/height 5/6, :body/width 23/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dragon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 45,
+   :stats/mana 11,
+   :stats/movement-speed 1.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/dragon-red,
   :property/pretty-name "Dragon-red"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 50,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1784,16 +1777,16 @@
   {:body/flying? false, :body/height 31/48, :body/width 5/6},
   :entity/skills #{:skills/slow :skills/melee-attack},
   :entity/species :species/spider,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 50,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/spider-brown-giant,
   :property/pretty-name "Spider-brown-giant"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1805,16 +1798,16 @@
   :entity/body {:body/flying? true, :body/height 3/4, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/spirit,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/spirit,
   :property/pretty-name "Spirit"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 18,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1827,16 +1820,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/lich,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 18,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/lich,
   :property/pretty-name "Lich"}
  {:creature/level 11,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1849,16 +1842,16 @@
   {:body/flying? false, :body/height 37/48, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/skeleton,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 15,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/skeleton-archer,
   :property/pretty-name "Skeleton-archer"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 28,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1871,16 +1864,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/ogre,
-  :property/id :creatures/ogre-mystic,
-  :property/pretty-name "Ogre-mystic"}
- {:creature/level 6,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 12,
+   :stats/hp 28,
    :stats/mana 11,
    :stats/movement-speed 1.6,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/ogre-mystic,
+  :property/pretty-name "Ogre-mystic"}
+ {:creature/level 6,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1892,16 +1885,16 @@
   :entity/body {:body/flying? false, :body/height 1, :body/width 1},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/dragon,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/bone-dragon,
   :property/pretty-name "Bone-dragon"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 350,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1914,16 +1907,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/golem,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 350,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/golem-metal,
   :property/pretty-name "Golem-metal"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1936,16 +1929,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elemental,
-  :property/id :creatures/elemental-fire,
-  :property/pretty-name "Elemental-fire"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 10,
+   :stats/hp 22,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/elemental-fire,
+  :property/pretty-name "Elemental-fire"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1958,16 +1951,16 @@
   {:body/flying? false, :body/height 41/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/templar,
-  :property/pretty-name "Templar"}
- {:creature/level 4,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 10,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/templar,
+  :property/pretty-name "Templar"}
+ {:creature/level 4,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -1979,16 +1972,16 @@
   :entity/body {:body/flying? true, :body/height 5/8, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/wisp,
-  :property/id :creatures/wisp,
-  :property/pretty-name "Wisp"}
- {:creature/level 2,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 12,
+   :stats/hp 8,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/wisp,
+  :property/pretty-name "Wisp"}
+ {:creature/level 2,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2001,16 +1994,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/snake,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/snake-giant,
   :property/pretty-name "Snake-giant"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 28,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2023,16 +2016,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/minotaur,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 28,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/minotaur,
   :property/pretty-name "Minotaur"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2045,16 +2038,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/valkyrie,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 15,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/valkyrie-a,
   :property/pretty-name "Valkyrie-a"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2067,20 +2060,16 @@
   {:body/flying? false, :body/height 5/12, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/toad,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/toad-green,
   :property/pretty-name "Toad-green"}
  {:creature/level 17,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/armor-pierce 0,
-   :stats/armor-save 0,
-   :stats/attack-speed 1,
-   :stats/cast-speed 1,
-   :stats/hp 100,
-   :stats/mana 100,
-   :stats/movement-speed 6,
-   :stats/reaction-time 2,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2115,16 +2104,20 @@
     :skills/projectile
     :skills/melee-attack},
   :entity/species :species/vampire,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/armor-pierce 0,
+   :stats/armor-save 0,
+   :stats/attack-speed 1,
+   :stats/cast-speed 1,
+   :stats/hp 100,
+   :stats/mana 100,
+   :stats/movement-speed 6,
+   :stats/reaction-time 2,
+   :stats/strength 1},
   :property/id :creatures/vampire,
   :property/pretty-name "Vampire"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2137,16 +2130,16 @@
   {:body/flying? true, :body/height 31/48, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/moth,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/moth-black,
   :property/pretty-name "Moth-black"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2159,16 +2152,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 35/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/monk,
-  :property/pretty-name "Monk"}
- {:creature/level 6,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 2,
+   :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/monk,
+  :property/pretty-name "Monk"}
+ {:creature/level 6,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2181,16 +2174,16 @@
   {:body/flying? false, :body/height 17/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/lord-b,
-  :property/pretty-name "Lord-b"}
- {:creature/level 2,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 2.0,
+   :stats/movement-speed 2,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/lord-b,
+  :property/pretty-name "Lord-b"}
+ {:creature/level 2,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2203,9 +2196,6 @@
   {:body/flying? false, :body/height 2/3, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/warden,
-  :property/pretty-name "Warden"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
@@ -2213,6 +2203,9 @@
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/warden,
+  :property/pretty-name "Warden"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2225,16 +2218,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/druid,
-  :property/pretty-name "Druid"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 3.0,
+   :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/druid,
+  :property/pretty-name "Druid"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2247,16 +2240,16 @@
   {:body/flying? false, :body/height 31/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elf-wizard,
   :property/pretty-name "Elf-wizard"}
  {:creature/level 11,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2269,16 +2262,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/skeleton,
-  :property/id :creatures/skeleton-mage,
-  :property/pretty-name "Skeleton-mage"}
- {:creature/level 1,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 15,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/skeleton-mage,
+  :property/pretty-name "Skeleton-mage"}
+ {:creature/level 1,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2291,16 +2284,16 @@
   {:body/flying? false, :body/height 7/12, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/halfling,
-  :property/id :creatures/halfling-fighter,
-  :property/pretty-name "Halfling-fighter"}
- {:creature/level 11,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 15,
+   :stats/hp 8,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/halfling-fighter,
+  :property/pretty-name "Halfling-fighter"}
+ {:creature/level 11,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2313,16 +2306,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/skeleton,
-  :property/id :creatures/skeleton-warrior,
-  :property/pretty-name "Skeleton-warrior"}
- {:creature/level 1,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 8,
+   :stats/hp 15,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/skeleton-warrior,
+  :property/pretty-name "Skeleton-warrior"}
+ {:creature/level 1,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2335,16 +2328,16 @@
   {:body/flying? false, :body/height 5/8, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/halfling,
-  :property/id :creatures/halfling-thief,
-  :property/pretty-name "Halfling-thief"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 10,
+   :stats/hp 8,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/halfling-thief,
+  :property/pretty-name "Halfling-thief"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2357,16 +2350,16 @@
   {:body/flying? false, :body/height 17/24, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/barbarian,
-  :property/id :creatures/barbarian-m,
-  :property/pretty-name "Barbarian-m"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 3.0,
+   :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/barbarian-m,
+  :property/pretty-name "Barbarian-m"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2379,16 +2372,16 @@
   {:body/flying? false, :body/height 37/48, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elf-bowman,
   :property/pretty-name "Elf-bowman"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2401,16 +2394,16 @@
   {:body/flying? false, :body/height 5/12, :body/width 1/2},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beetle,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/beetle,
   :property/pretty-name "Beetle"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 5,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2422,16 +2415,16 @@
   :entity/body {:body/flying? true, :body/height 3/4, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/bat,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 5,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/bat-giant,
   :property/pretty-name "Bat-giant"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 12,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2444,16 +2437,16 @@
   {:body/flying? false, :body/height 5/12, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/toad,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 12,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/toad-blue,
   :property/pretty-name "Toad-blue"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 350,
-   :stats/modifiers {:modifier/damage-receive-max {:op/mult -90}},
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 10},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2466,16 +2459,16 @@
   {:body/flying? false, :body/height 35/48, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/golem,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 350,
+   :stats/modifiers {:modifier/damage-receive-max {:op/mult -90}},
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 10},
   :property/id :creatures/golem-stone,
   :property/pretty-name "Golem-stone"}
  {:creature/level 6,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2488,16 +2481,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/necromancer,
   :property/pretty-name "Necromancer"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2510,16 +2503,16 @@
   {:body/flying? false, :body/height 5/8, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/spider,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/spider-black-giant,
   :property/pretty-name "Spider-black-giant"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2532,16 +2525,16 @@
   {:body/flying? true, :body/height 3/4, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/valkyrie,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 15,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/valkyrie-b,
   :property/pretty-name "Valkyrie-b"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 5,
-   :stats/mana 11,
-   :stats/movement-speed 1,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2554,20 +2547,16 @@
   {:body/flying? true, :body/height 31/48, :body/width 13/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/bat,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 5,
+   :stats/mana 11,
+   :stats/movement-speed 1,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/bat,
   :property/pretty-name "Bat"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/armor-pierce 0,
-   :stats/armor-save 0,
-   :stats/attack-speed 3,
-   :stats/cast-speed 1,
-   :stats/hp 5,
-   :stats/mana 0,
-   :stats/movement-speed 3.1,
-   :stats/reaction-time 6,
-   :stats/strength 3},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2580,16 +2569,20 @@
   {:body/flying? false, :body/height 25/48, :body/width 31/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/snake,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/armor-pierce 0,
+   :stats/armor-save 0,
+   :stats/attack-speed 3,
+   :stats/cast-speed 1,
+   :stats/hp 5,
+   :stats/mana 0,
+   :stats/movement-speed 3.1,
+   :stats/reaction-time 6,
+   :stats/strength 3},
   :property/id :creatures/snake,
   :property/pretty-name "Snake"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 5,
-   :stats/mana 11,
-   :stats/movement-speed 3.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2602,16 +2595,16 @@
   {:body/flying? true, :body/height 5/8, :body/width 25/48},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/flies,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 5,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/flies,
   :property/pretty-name "Flies"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2624,16 +2617,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/prisoner-a,
   :property/pretty-name "Prisoner-a"}
  {:creature/level 5,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 35,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2646,16 +2639,16 @@
   {:body/flying? true, :body/height 19/24, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/beholder,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 35,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/beholder-deep,
   :property/pretty-name "Beholder-deep"}
  {:creature/level 11,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 15,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2668,16 +2661,16 @@
   {:body/flying? false, :body/height 5/8, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/skeleton,
-  :property/id :creatures/skeleton,
-  :property/pretty-name "Skeleton"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 22,
+   :stats/hp 15,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/skeleton,
+  :property/pretty-name "Skeleton"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2690,16 +2683,16 @@
   {:body/flying? true, :body/height 13/16, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elemental,
-  :property/id :creatures/elemental-water,
-  :property/pretty-name "Elemental-water"}
- {:creature/level 3,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 10,
+   :stats/hp 22,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/elemental-water,
+  :property/pretty-name "Elemental-water"}
+ {:creature/level 3,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2712,16 +2705,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/cultist,
   :property/pretty-name "Cultist"}
  {:creature/level 14,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 22,
-   :stats/mana 11,
-   :stats/movement-speed 1.6,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2734,16 +2727,16 @@
   {:body/flying? false, :body/height 11/16, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/mummy,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 22,
+   :stats/mana 11,
+   :stats/movement-speed 1.6,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/mummy-pharao,
   :property/pretty-name "Mummy-pharao"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2756,16 +2749,16 @@
   {:body/flying? false, :body/height 2/3, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/halfling,
-  :property/id :creatures/halfling-wizard,
-  :property/pretty-name "Halfling-wizard"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
-   :stats/hp 10,
+   :stats/hp 8,
    :stats/mana 11,
    :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/halfling-wizard,
+  :property/pretty-name "Halfling-wizard"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2778,16 +2771,16 @@
   {:body/flying? false, :body/height 19/24, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/drow,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/drow-bowman,
   :property/pretty-name "Drow-bowman"}
  {:creature/level 2,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 5,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2800,16 +2793,16 @@
   {:body/flying? false, :body/height 17/24, :body/width 5/6},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/worm,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 5,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/worm-giant,
   :property/pretty-name "Worm-giant"}
  {:creature/level 3,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 10,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2822,16 +2815,16 @@
   {:body/flying? false, :body/height 5/8, :body/width 2/3},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/human,
-  :property/id :creatures/merchant-m,
-  :property/pretty-name "Merchant-m"}
- {:creature/level 5,
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 10,
    :stats/mana 11,
-   :stats/movement-speed 3.0,
+   :stats/movement-speed 2.0,
    :stats/reaction-time 12,
    :stats/strength 1},
+  :property/id :creatures/merchant-m,
+  :property/pretty-name "Merchant-m"}
+ {:creature/level 5,
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2844,16 +2837,16 @@
   {:body/flying? false, :body/height 17/24, :body/width 11/16},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/elf,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 10,
+   :stats/mana 11,
+   :stats/movement-speed 3.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/elf,
   :property/pretty-name "Elf"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 5,
-   :stats/mana 11,
-   :stats/movement-speed 2.4,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2866,16 +2859,16 @@
   {:body/flying? false, :body/height 1/2, :body/width 7/12},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/worm,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 5,
+   :stats/mana 11,
+   :stats/movement-speed 2.4,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/worm,
   :property/pretty-name "Worm"}
  {:creature/level 1,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 8,
-   :stats/mana 11,
-   :stats/movement-speed 2.0,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2888,16 +2881,16 @@
   {:body/flying? false, :body/height 7/12, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/halfling,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 8,
+   :stats/mana 11,
+   :stats/movement-speed 2.0,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/halfling-sling,
   :property/pretty-name "Halfling-sling"}
  {:creature/level 4,
-  :entity/stats
-  {:stats/aggro-range 6,
-   :stats/hp 350,
-   :stats/mana 11,
-   :stats/movement-speed 2,
-   :stats/reaction-time 12,
-   :stats/strength 1},
   :entity/animation
   {:animation/frame-duration 0.1,
    :animation/frames
@@ -2910,1353 +2903,1360 @@
   {:body/flying? false, :body/height 3/4, :body/width 17/24},
   :entity/skills #{:skills/melee-attack},
   :entity/species :species/golem,
+  :entity/stats
+  {:stats/aggro-range 6,
+   :stats/hp 350,
+   :stats/mana 11,
+   :stats/movement-speed 2,
+   :stats/reaction-time 12,
+   :stats/strength 1},
   :property/id :creatures/golem-ice,
   :property/pretty-name "Golem-ice"}
  {:entity/image
   {:image/bounds [528 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff,
-  :property/pretty-name "Staff"}
+  :property/pretty-name "Staff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small-gold,
-  :property/pretty-name "Gold Small Skull"}
+  :property/pretty-name "Gold Small Skull",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-cloth,
-  :property/pretty-name "Cloth Cloak"}
+  :property/pretty-name "Cloth Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-heater,
-  :property/pretty-name "Heater Gold Shield"}
+  :property/pretty-name "Heater Gold Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/axe,
-  :property/pretty-name "Axe"}
+  :property/pretty-name "Axe",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-copper,
-  :property/pretty-name "Copper Coin"}
+  :property/pretty-name "Copper Coin",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-ruby,
-  :property/pretty-name "Ruby Gem"}
+  :property/pretty-name "Ruby Gem",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-dragon,
-  :property/pretty-name "Dragon Crystal"}
+  :property/pretty-name "Dragon Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/mystic-boot,
-  :property/pretty-name "Boot Mystic"}
+  :property/pretty-name "Boot Mystic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/cloth-helm,
-  :property/pretty-name "Helm Cloth"}
+  :property/pretty-name "Helm Cloth",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-blood,
-  :property/pretty-name "Blood Crystal"}
+  :property/pretty-name "Blood Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/chain-helm,
-  :property/pretty-name "Helm Chain"}
+  :property/pretty-name "Helm Chain",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-great,
-  :property/pretty-name "Great Flame Shield"}
+  :property/pretty-name "Great Flame Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/dagger,
-  :property/pretty-name "Dagger"}
+  :property/pretty-name "Dagger",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-large-open,
-  :property/pretty-name "Open Large Skull"}
+  :property/pretty-name "Open Large Skull",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/movement-speed {:op/mult 40}},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-royal,
-  :property/pretty-name "Royal Cloak"}
+  :property/pretty-name "Royal Cloak",
+  :stats/modifiers {:modifier/movement-speed {:op/mult 40}}}
  {:entity/image
   {:image/bounds [384 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/movement-speed {:op/inc 1}},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-buckler,
-  :property/pretty-name "Buckler Vorpal Shield"}
+  :property/pretty-name "Buckler Vorpal Shield",
+  :stats/modifiers {:modifier/movement-speed {:op/inc 1}}}
  {:entity/image
   {:image/bounds [288 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/gold-leg,
-  :property/pretty-name "Leg Gold"}
+  :property/pretty-name "Leg Gold",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/handaxe,
-  :property/pretty-name "Handaxe"}
+  :property/pretty-name "Handaxe",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [816 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-red,
-  :property/pretty-name "Red Flask"}
+  :property/pretty-name "Red Flask",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-great,
-  :property/pretty-name "Great Vorpal Shield"}
+  :property/pretty-name "Great Vorpal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-ruby,
-  :property/pretty-name "Ruby Ring"}
+  :property/pretty-name "Ruby Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/wild-boot,
-  :property/pretty-name "Boot Wild"}
+  :property/pretty-name "Boot Wild",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/cloth-glove,
-  :property/pretty-name "Glove Cloth"}
+  :property/pretty-name "Glove Cloth",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/studded-leg,
-  :property/pretty-name "Leg Studded"}
+  :property/pretty-name "Leg Studded",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-heater,
-  :property/pretty-name "Heater Flame Shield"}
+  :property/pretty-name "Heater Flame Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-gold,
-  :property/pretty-name "Gold Coin"}
+  :property/pretty-name "Gold Coin",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-cross,
-  :property/pretty-name "Cross Necklace"}
+  :property/pretty-name "Cross Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-eye,
-  :property/pretty-name "Eye Cloak"}
+  :property/pretty-name "Eye Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-hammer-sun,
-  :property/pretty-name "Sun Hammer Magic"}
+  :property/pretty-name "Sun Hammer Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-blue,
-  :property/pretty-name "Blue Key"}
+  :property/pretty-name "Blue Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/club-spiked,
-  :property/pretty-name "Spiked Club"}
+  :property/pretty-name "Spiked Club",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-tourmaline,
-  :property/pretty-name "Tourmaline Necklace"}
+  :property/pretty-name "Tourmaline Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/plate-leg,
-  :property/pretty-name "Leg Plate"}
+  :property/pretty-name "Leg Plate",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-buckler,
-  :property/pretty-name "Buckler Elven Shield"}
+  :property/pretty-name "Buckler Elven Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-azure,
-  :property/pretty-name "Azure Ring"}
+  :property/pretty-name "Azure Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/royal-boot,
-  :property/pretty-name "Boot Royal"}
+  :property/pretty-name "Boot Royal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-flame,
-  :property/pretty-name "Flame Sword Magic"}
+  :property/pretty-name "Flame Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/mystic-chest,
-  :property/pretty-name "Chest Mystic"}
+  :property/pretty-name "Chest Mystic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/mystic-leg,
-  :property/pretty-name "Leg Mystic"}
+  :property/pretty-name "Leg Mystic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/hammer-exotic1,
-  :property/pretty-name "Exotic1 Hammer"}
+  :property/pretty-name "Exotic1 Hammer",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/crossbow,
-  :property/pretty-name "Crossbow"}
+  :property/pretty-name "Crossbow",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/dirk,
-  :property/pretty-name "Dirk"}
+  :property/pretty-name "Dirk",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-buckler,
-  :property/pretty-name "Buckler Mystic Shield"}
+  :property/pretty-name "Buckler Mystic Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-spear-blood,
-  :property/pretty-name "Blood Spear Magic"}
+  :property/pretty-name "Blood Spear Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-ornate,
-  :property/pretty-name "Ornate Ring"}
+  :property/pretty-name "Ornate Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-diamond,
-  :property/pretty-name "Diamond Ring"}
+  :property/pretty-name "Diamond Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small-blood,
-  :property/pretty-name "Blood Small Skull"}
+  :property/pretty-name "Blood Small Skull",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/royal-helm,
-  :property/pretty-name "Helm Royal"}
+  :property/pretty-name "Helm Royal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-black,
-  :property/pretty-name "Black Potion"}
+  :property/pretty-name "Black Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/damage-deal-max {:op/mult 300}},
   :item/slot :inventory.slot/leg,
   :property/id :items/chain-leg,
-  :property/pretty-name "Leg Chain"}
+  :property/pretty-name "Leg Chain",
+  :stats/modifiers {:modifier/damage-deal-max {:op/mult 300}}}
  {:entity/image
   {:image/bounds [384 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-sapphire,
-  :property/pretty-name "Sapphire Gem"}
+  :property/pretty-name "Sapphire Gem",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-great,
-  :property/pretty-name "Great Elven Shield"}
+  :property/pretty-name "Great Elven Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/studded-glove,
-  :property/pretty-name "Glove Studded"}
+  :property/pretty-name "Glove Studded",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/cloth-leg,
-  :property/pretty-name "Leg Cloth"}
+  :property/pretty-name "Leg Cloth",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-red,
-  :property/pretty-name "Red Potion"}
+  :property/pretty-name "Red Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-emerald,
-  :property/pretty-name "Emerald Ring"}
+  :property/pretty-name "Emerald Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [864 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-kite,
-  :property/pretty-name "Kite Mystic Shield"}
+  :property/pretty-name "Kite Mystic Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/leather-boot,
-  :property/pretty-name "Boot Leather"}
+  :property/pretty-name "Boot Leather",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/hp-max {:op/inc 2}},
   :item/slot :inventory.slot/glove,
   :property/id :items/chain-glove,
-  :property/pretty-name "Glove Chain"}
+  :property/pretty-name "Glove Chain",
+  :stats/modifiers {:modifier/hp-max {:op/inc 2}}}
  {:entity/image
   {:image/bounds [0 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/spear,
-  :property/pretty-name "Spear"}
+  :property/pretty-name "Spear",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-flame,
-  :property/pretty-name "Flame Ring"}
+  :property/pretty-name "Flame Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/damage-deal-min {:op/mult 100}},
   :item/slot :inventory.slot/helm,
   :property/id :items/studded-helm,
-  :property/pretty-name "Helm Studded"}
+  :property/pretty-name "Helm Studded",
+  :stats/modifiers {:modifier/damage-deal-min {:op/mult 100}}}
  {:entity/image
   {:image/bounds [48 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-silver,
-  :property/pretty-name "Silver Key"}
+  :property/pretty-name "Silver Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [816 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-red-half,
-  :property/pretty-name "Half Red Heart"}
+  :property/pretty-name "Half Red Heart",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-empty,
-  :property/pretty-name "Empty Chest"}
+  :property/pretty-name "Empty Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-leather,
-  :property/pretty-name "Leather Cloak"}
+  :property/pretty-name "Leather Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-gold-open,
-  :property/pretty-name "Open Gold Chest"}
+  :property/pretty-name "Open Gold Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-amethyst,
-  :property/pretty-name "Amethyst Necklace"}
+  :property/pretty-name "Amethyst Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-red,
-  :property/pretty-name "Red Key"}
+  :property/pretty-name "Red Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-latch,
-  :property/pretty-name "Latch Book"}
+  :property/pretty-name "Latch Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic2,
-  :property/pretty-name "Exotic2 Sword"}
+  :property/pretty-name "Exotic2 Sword",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-bone,
-  :property/pretty-name "Bone Key"}
+  :property/pretty-name "Bone Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/hp-max {:op/inc -200}},
   :item/slot :inventory.slot/helm,
   :property/id :items/blood-helm,
-  :property/pretty-name "Helm Blood"}
+  :property/pretty-name "Helm Blood",
+  :stats/modifiers {:modifier/hp-max {:op/inc -200}}}
  {:entity/image
   {:image/bounds [912 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-great,
-  :property/pretty-name "Great Mystic Shield"}
+  :property/pretty-name "Great Mystic Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/plate-helm,
-  :property/pretty-name "Helm Plate"}
+  :property/pretty-name "Helm Plate",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/plate-boot,
-  :property/pretty-name "Boot Plate"}
+  :property/pretty-name "Boot Plate",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/shortbow,
-  :property/pretty-name "Shortbow"}
+  :property/pretty-name "Shortbow",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/mana-max {:op/mult -50}},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-copper,
-  :property/pretty-name "Copper Ring"}
+  :property/pretty-name "Copper Ring",
+  :stats/modifiers {:modifier/mana-max {:op/mult -50}}}
  {:entity/image
   {:image/bounds [384 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/wild-leg,
-  :property/pretty-name "Leg Wild"}
+  :property/pretty-name "Leg Wild",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/gem-amethyst,
-  :property/pretty-name "Amethyst Gem"}
+  :property/pretty-name "Amethyst Gem",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/leather-chest,
-  :property/pretty-name "Chest Leather"}
+  :property/pretty-name "Chest Leather",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-heater,
-  :property/pretty-name "Heater Wood Shield"}
+  :property/pretty-name "Heater Wood Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/torch-lit,
-  :property/pretty-name "Lit Torch"}
+  :property/pretty-name "Lit Torch",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/mace,
-  :property/pretty-name "Mace"}
+  :property/pretty-name "Mace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/cast-speed {:op/inc 50}},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-gold,
-  :property/pretty-name "Gold Ring"}
+  :property/pretty-name "Gold Ring",
+  :stats/modifiers {:modifier/cast-speed {:op/inc 50}}}
  {:entity/image
   {:image/bounds [0 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/hp-max {:op/inc 10, :op/mult 5}},
   :item/slot :inventory.slot/boot,
   :property/id :items/cloth-boot,
-  :property/pretty-name "Boot Cloth"}
+  :property/pretty-name "Boot Cloth",
+  :stats/modifiers {:modifier/hp-max {:op/inc 10, :op/mult 5}}}
  {:entity/image
   {:image/bounds [0 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-brown,
-  :property/pretty-name "Brown Book"}
+  :property/pretty-name "Brown Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers
-  {:modifier/damage-deal-max {:op/mult 10},
-   :modifier/strength {:op/inc 5}},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-eye,
-  :property/pretty-name "Eye Necklace"}
+  :property/pretty-name "Eye Necklace",
+  :stats/modifiers
+  {:modifier/damage-deal-max {:op/mult 10},
+   :modifier/strength {:op/inc 5}}}
  {:entity/image
   {:image/bounds [0 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-gold,
-  :property/pretty-name "Gold Key"}
+  :property/pretty-name "Gold Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/stiletto,
-  :property/pretty-name "Stiletto"}
+  :property/pretty-name "Stiletto",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-heater,
-  :property/pretty-name "Heater Elven Shield"}
+  :property/pretty-name "Heater Elven Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword,
-  :property/pretty-name "Sword"}
+  :property/pretty-name "Sword",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-evil,
-  :property/pretty-name "Evil Book"}
+  :property/pretty-name "Evil Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-,
-  :property/pretty-name "Silver Chest"}
+  :property/pretty-name "Silver Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/leather-glove,
-  :property/pretty-name "Glove Leather"}
+  :property/pretty-name "Glove Leather",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-hellfire,
-  :property/pretty-name "Hellfire Sword Magic"}
+  :property/pretty-name "Hellfire Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [864 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-blue,
-  :property/pretty-name "Blue Flask"}
+  :property/pretty-name "Blue Flask",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/wild-helm,
-  :property/pretty-name "Helm Wild"}
+  :property/pretty-name "Helm Wild",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/wild-glove,
-  :property/pretty-name "Glove Wild"}
+  :property/pretty-name "Glove Wild",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small,
-  :property/pretty-name "Small Skull"}
+  :property/pretty-name "Small Skull",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-cloud,
-  :property/pretty-name "Cloud Crystal"}
+  :property/pretty-name "Cloud Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-ornate,
-  :property/pretty-name "Ornate Necklace"}
+  :property/pretty-name "Ornate Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-great,
-  :property/pretty-name "Great Wood Shield"}
+  :property/pretty-name "Great Wood Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-buckler,
-  :property/pretty-name "Buckler Gold Shield"}
+  :property/pretty-name "Buckler Gold Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-empty,
-  :property/pretty-name "Empty Heart"}
+  :property/pretty-name "Empty Heart",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-green,
-  :property/pretty-name "Green Potion"}
+  :property/pretty-name "Green Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-great,
-  :property/pretty-name "Great Gold Shield"}
+  :property/pretty-name "Great Gold Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-ankh,
-  :property/pretty-name "Ankh Staff"}
+  :property/pretty-name "Ankh Staff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-open,
-  :property/pretty-name "Open Silver Chest"}
+  :property/pretty-name "Open Silver Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-venom,
-  :property/pretty-name "Venom Staff Magic"}
+  :property/pretty-name "Venom Staff Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greataxe,
-  :property/pretty-name "Greataxe"}
+  :property/pretty-name "Greataxe",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/blood-chest,
-  :property/pretty-name "Chest Blood"}
+  :property/pretty-name "Chest Blood",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-gold,
-  :property/pretty-name "Gold Chest"}
+  :property/pretty-name "Gold Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-vorpal,
-  :property/pretty-name "Vorpal Sword Magic"}
+  :property/pretty-name "Vorpal Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [864 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-dark,
-  :property/pretty-name "Dark Necklace"}
+  :property/pretty-name "Dark Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-winged,
-  :property/pretty-name "Winged Staff Magic"}
+  :property/pretty-name "Winged Staff Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-ruby,
-  :property/pretty-name "Ruby Necklace"}
+  :property/pretty-name "Ruby Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-buckler,
-  :property/pretty-name "Buckler Iron Shield"}
+  :property/pretty-name "Buckler Iron Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-blood,
-  :property/pretty-name "Blood Cloak"}
+  :property/pretty-name "Blood Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/chain-boot,
-  :property/pretty-name "Boot Chain"}
+  :property/pretty-name "Boot Chain",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-white,
-  :property/pretty-name "White Potion"}
+  :property/pretty-name "White Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-buckler,
-  :property/pretty-name "Buckler Wood Shield"}
+  :property/pretty-name "Buckler Wood Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/quarterstaff,
-  :property/pretty-name "Quarterstaff"}
+  :property/pretty-name "Quarterstaff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-large-closed,
-  :property/pretty-name "Closed Large Skull"}
+  :property/pretty-name "Closed Large Skull",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-cold,
-  :property/pretty-name "Cold Ring"}
+  :property/pretty-name "Cold Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/blood-boot,
-  :property/pretty-name "Boot Blood"}
+  :property/pretty-name "Boot Blood",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-ornate,
-  :property/pretty-name "Ornate Cloak"}
+  :property/pretty-name "Ornate Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [912 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-green,
-  :property/pretty-name "Green Flask"}
+  :property/pretty-name "Green Flask",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/axe-exotic1,
-  :property/pretty-name "Exotic1 Axe"}
+  :property/pretty-name "Exotic1 Axe",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/falchion,
-  :property/pretty-name "Falchion"}
+  :property/pretty-name "Falchion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/drumstick,
-  :property/pretty-name "Drumstick"}
+  :property/pretty-name "Drumstick",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-lightning,
-  :property/pretty-name "Lightning Sword Magic"}
+  :property/pretty-name "Lightning Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-heater,
-  :property/pretty-name "Heater Vorpal Shield"}
+  :property/pretty-name "Heater Vorpal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-kite,
-  :property/pretty-name "Kite Gold Shield"}
+  :property/pretty-name "Kite Gold Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-axe-frost,
-  :property/pretty-name "Frost Axe Magic"}
+  :property/pretty-name "Frost Axe Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/leather-leg,
-  :property/pretty-name "Leg Leather"}
+  :property/pretty-name "Leg Leather",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [816 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-crimson,
-  :property/pretty-name "Crimson Crystal"}
+  :property/pretty-name "Crimson Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-gold,
-  :property/pretty-name "Gold Cloak"}
+  :property/pretty-name "Gold Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic1,
-  :property/pretty-name "Exotic1 Sword"}
+  :property/pretty-name "Exotic1 Sword",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-heater,
-  :property/pretty-name "Heater Ice Shield"}
+  :property/pretty-name "Heater Ice Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sling,
-  :property/pretty-name "Sling"}
+  :property/pretty-name "Sling",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-winged,
-  :property/pretty-name "Winged Staff"}
+  :property/pretty-name "Winged Staff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/chain-chest,
-  :property/pretty-name "Chest Chain"}
+  :property/pretty-name "Chest Chain",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/hammer,
-  :property/pretty-name "Hammer"}
+  :property/pretty-name "Hammer",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [864 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-sun,
-  :property/pretty-name "Sun Crystal"}
+  :property/pretty-name "Sun Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-pearl,
-  :property/pretty-name "Pearl Ring"}
+  :property/pretty-name "Pearl Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/strength {:op/inc 3}},
   :item/slot :inventory.slot/glove,
   :property/id :items/blood-glove,
-  :property/pretty-name "Glove Blood"}
+  :property/pretty-name "Glove Blood",
+  :stats/modifiers {:modifier/strength {:op/inc 3}}}
  {:entity/image
   {:image/bounds [384 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-acid,
-  :property/pretty-name "Acid Sword Magic"}
+  :property/pretty-name "Acid Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/gold-helm,
-  :property/pretty-name "Helm Gold"}
+  :property/pretty-name "Helm Gold",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {:modifier/movement-speed {:op/inc 12}},
   :item/slot :inventory.slot/boot,
   :property/id :items/gold-boot,
-  :property/pretty-name "Boot Gold"}
+  :property/pretty-name "Boot Gold",
+  :stats/modifiers {:modifier/movement-speed {:op/inc 12}}}
  {:entity/image
   {:image/bounds [288 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-emerald,
-  :property/pretty-name "Emerald Gem"}
+  :property/pretty-name "Emerald Gem",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/blood-leg,
-  :property/pretty-name "Leg Blood"}
+  :property/pretty-name "Leg Blood",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/longbow,
-  :property/pretty-name "Longbow"}
+  :property/pretty-name "Longbow",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 624 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/studded-boot,
-  :property/pretty-name "Boot Studded"}
+  :property/pretty-name "Boot Studded",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-kite,
-  :property/pretty-name "Kite Iron Shield"}
+  :property/pretty-name "Kite Iron Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-great,
-  :property/pretty-name "Great Royal Shield"}
+  :property/pretty-name "Great Royal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-kite,
-  :property/pretty-name "Kite Elven Shield"}
+  :property/pretty-name "Kite Elven Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-glow,
-  :property/pretty-name "Glow Cloak"}
+  :property/pretty-name "Glow Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-emerald,
-  :property/pretty-name "Emerald Necklace"}
+  :property/pretty-name "Emerald Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-chaos,
-  :property/pretty-name "Chaos Staff Magic"}
+  :property/pretty-name "Chaos Staff Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/royal-chest,
-  :property/pretty-name "Chest Royal"}
+  :property/pretty-name "Chest Royal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-great,
-  :property/pretty-name "Great Ice Shield"}
+  :property/pretty-name "Great Ice Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 528 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/royal-leg,
-  :property/pretty-name "Leg Royal"}
+  :property/pretty-name "Leg Royal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers
-  {:modifier/hp-max {:op/inc 10},
-   :modifier/movement-speed {:op/mult 10}},
   :item/slot :inventory.slot/chest,
   :property/id :items/cloth-chest,
-  :property/pretty-name "Chest Cloth"}
+  :property/pretty-name "Chest Cloth",
+  :stats/modifiers
+  {:modifier/hp-max {:op/inc 10},
+   :modifier/movement-speed {:op/mult 10}}}
  {:entity/image
   {:image/bounds [576 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-bow-horned,
-  :property/pretty-name "Horned Bow Magic"}
+  :property/pretty-name "Horned Bow Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-red,
-  :property/pretty-name "Red Book"}
+  :property/pretty-name "Red Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-kite,
-  :property/pretty-name "Kite Wood Shield"}
+  :property/pretty-name "Kite Wood Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-blue,
-  :property/pretty-name "Blue Book"}
+  :property/pretty-name "Blue Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/wild-chest,
-  :property/pretty-name "Chest Wild"}
+  :property/pretty-name "Chest Wild",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [672 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-silver,
-  :property/pretty-name "Silver Coin"}
+  :property/pretty-name "Silver Coin",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-black,
-  :property/pretty-name "Black Book"}
+  :property/pretty-name "Black Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-branch,
-  :property/pretty-name "Branch Staff"}
+  :property/pretty-name "Branch Staff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/club,
-  :property/pretty-name "Club"}
+  :property/pretty-name "Club",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-buckler,
-  :property/pretty-name "Buckler Ice Shield"}
+  :property/pretty-name "Buckler Ice Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-blue,
-  :property/pretty-name "Blue Potion"}
+  :property/pretty-name "Blue Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-empty,
-  :property/pretty-name "Empty Potion"}
+  :property/pretty-name "Empty Potion",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-great,
-  :property/pretty-name "Great Iron Shield"}
+  :property/pretty-name "Great Iron Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [912 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-green-half,
-  :property/pretty-name "Half Green Heart"}
+  :property/pretty-name "Half Green Heart",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greatmace,
-  :property/pretty-name "Greatmace"}
+  :property/pretty-name "Greatmace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-jeweled,
-  :property/pretty-name "Jeweled Staff"}
+  :property/pretty-name "Jeweled Staff",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/royal-glove,
-  :property/pretty-name "Glove Royal"}
+  :property/pretty-name "Glove Royal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/trident,
-  :property/pretty-name "Trident"}
+  :property/pretty-name "Trident",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/studded-chest,
-  :property/pretty-name "Chest Studded"}
+  :property/pretty-name "Chest Studded",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-sky,
-  :property/pretty-name "Sky Crystal"}
+  :property/pretty-name "Sky Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/plate-glove,
-  :property/pretty-name "Glove Plate"}
+  :property/pretty-name "Glove Plate",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-silver,
-  :property/pretty-name "Silver Ring"}
+  :property/pretty-name "Silver Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/mystic-helm,
-  :property/pretty-name "Helm Mystic"}
+  :property/pretty-name "Helm Mystic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [816 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-mystic,
-  :property/pretty-name "Mystic Necklace"}
+  :property/pretty-name "Mystic Necklace",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/plate-chest,
-  :property/pretty-name "Chest Plate"}
+  :property/pretty-name "Chest Plate",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/maul,
-  :property/pretty-name "Maul"}
+  :property/pretty-name "Maul",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-kite,
-  :property/pretty-name "Kite Vorpal Shield"}
+  :property/pretty-name "Kite Vorpal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [768 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-onyx,
-  :property/pretty-name "Onyx Crystal"}
+  :property/pretty-name "Onyx Crystal",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/gold-glove,
-  :property/pretty-name "Glove Gold"}
+  :property/pretty-name "Glove Gold",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [384 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-buckler,
-  :property/pretty-name "Buckler Royal Shield"}
+  :property/pretty-name "Buckler Royal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [960 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-green-full,
-  :property/pretty-name "Full Green Heart"}
+  :property/pretty-name "Full Green Heart",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 384 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-tourmaline,
-  :property/pretty-name "Tourmaline Gem"}
+  :property/pretty-name "Tourmaline Gem",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [144 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/lance,
-  :property/pretty-name "Lance"}
+  :property/pretty-name "Lance",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greatspear,
-  :property/pretty-name "Greatspear"}
+  :property/pretty-name "Greatspear",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-kite,
-  :property/pretty-name "Kite Ice Shield"}
+  :property/pretty-name "Kite Ice Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [864 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-red-full,
-  :property/pretty-name "Full Red Heart"}
+  :property/pretty-name "Full Red Heart",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 336 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-amethyst,
-  :property/pretty-name "Amethyst Ring"}
+  :property/pretty-name "Amethyst Ring",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [48 432 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/leather-helm,
-  :property/pretty-name "Helm Leather"}
+  :property/pretty-name "Helm Leather",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [720 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/satchel,
-  :property/pretty-name "Satchel"}
+  :property/pretty-name "Satchel",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [528 480 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-tattered,
-  :property/pretty-name "Tattered Cloak"}
+  :property/pretty-name "Tattered Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/broadsword,
-  :property/pretty-name "Broadsword"}
+  :property/pretty-name "Broadsword",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-green,
-  :property/pretty-name "Green Book"}
+  :property/pretty-name "Green Book",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [576 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-empty,
-  :property/pretty-name "Empty Silver Chest"}
+  :property/pretty-name "Empty Silver Chest",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [624 48 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/torch,
-  :property/pretty-name "Torch"}
+  :property/pretty-name "Torch",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-heater,
-  :property/pretty-name "Heater Royal Shield"}
+  :property/pretty-name "Heater Royal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-kite,
-  :property/pretty-name "Kite Royal Shield"}
+  :property/pretty-name "Kite Royal Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 144 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/cross,
-  :property/pretty-name "Cross"}
+  :property/pretty-name "Cross",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-ornate,
-  :property/pretty-name "Ornate Key"}
+  :property/pretty-name "Ornate Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [432 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/mystic-glove,
-  :property/pretty-name "Glove Mystic"}
+  :property/pretty-name "Glove Mystic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [192 0 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-green,
-  :property/pretty-name "Green Key"}
+  :property/pretty-name "Green Key",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [336 192 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-cold,
-  :property/pretty-name "Cold Sword Magic"}
+  :property/pretty-name "Cold Sword Magic",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [96 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-kite,
-  :property/pretty-name "Kite Flame Shield"}
+  :property/pretty-name "Kite Flame Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [240 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-heater,
-  :property/pretty-name "Heater Iron Shield"}
+  :property/pretty-name "Heater Iron Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [480 576 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-fur,
-  :property/pretty-name "Fur Cloak"}
+  :property/pretty-name "Fur Cloak",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [0 288 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-buckler,
-  :property/pretty-name "Buckler Flame Shield"}
+  :property/pretty-name "Buckler Flame Shield",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [816 96 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic3,
-  :property/pretty-name "Exotic3 Sword"}
+  :property/pretty-name "Exotic3 Sword",
+  :stats/modifiers {}}
  {:entity/image
   {:image/bounds [288 480 48 48], :image/file "images/items.png"},
+  :item/slot :inventory.slot/chest,
+  :property/id :items/gold-chest,
+  :property/pretty-name "Chest Gold",
   :stats/modifiers
   {:modifier/armor-save {:op/inc 10},
    :modifier/hp-max {:op/mult 10},
-   :modifier/movement-speed {:op/mult 10}},
-  :item/slot :inventory.slot/chest,
-  :property/id :items/gold-chest,
-  :property/pretty-name "Chest Gold"}
+   :modifier/movement-speed {:op/mult 10}}}
  {:entity/image
   {:image/bounds [816 240 48 48], :image/file "images/items.png"},
-  :stats/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-heater,
-  :property/pretty-name "Heater Mystic Shield"}
+  :property/pretty-name "Heater Mystic Shield",
+  :stats/modifiers {}}
  {:entity-effects
   {:effects.target/damage {:damage/min-max [4 8]},
    :effects.target/stun 0.5},
@@ -4284,8 +4284,7 @@
   :skill/action-time-modifier-key :stats/cast-speed,
   :skill/cooldown 0,
   :skill/cost 0,
-  :skill/effects
-  {:effects/projectile :projectiles/double-fireball}
+  :skill/effects {:effects/projectile :projectiles/double-fireball},
   :skill/start-action-sound "bfxr_cast"}
  {:entity/image
   {:image/bounds [160 64 32 32], :image/file "images/skills.png"},
