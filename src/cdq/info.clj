@@ -120,12 +120,10 @@
                                        :stats/attack-speed "Attack"))
 
    :skill/cooldown (fn [[_ v] _world]
-                     (when-not (zero? v)
-                       (str "Cooldown: " (utils/readable-number v) " seconds")))
+                     (str "Cooldown: " (utils/readable-number v) " seconds"))
 
    :skill/cost (fn [[_ v] _world]
-                 (when-not (zero? v)
-                   (str "Cost: " v " Mana")))
+                 (str "Cost: " v " Mana"))
 
    :maxrange (fn [[_ v] _world]
                (str "Range: " v " Meters."))})
@@ -188,6 +186,22 @@
   :property/id :items/shield-mystic-great,
   :property/pretty-name "Great Mystic Shield"}
  )
+
+(defn- valid-skill? [skill]
+  (= #{:property/id
+       :property/pretty-name
+       :entity/image
+       :skill/action-time-modifier-key
+       :skill/action-time
+       :skill/start-action-sound
+       :skill/effects
+       :skill/cooldown
+       :skill/cost}
+     (set (keys skill))))
+
+(defn skill-info [skill]
+
+  )
 
 (defn entity-info [entity world]
   ; dispatch entity type

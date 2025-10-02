@@ -159,8 +159,8 @@
                              :skill/action-time
                              :skill/start-action-sound
                              :skill/effects
-                             [:skill/cooldown {:optional true}]
-                             [:skill/cost     {:optional true}]]],
+                             :skill/cooldown
+                             :skill/cost]],
 
  :damage/min-max [:s/val-max],
  :effects.target/damage [:s/map [:damage/min-max]],

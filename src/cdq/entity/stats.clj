@@ -60,7 +60,7 @@
     0))
 
 (defn not-enough-mana? [stats {:keys [skill/cost]}]
-  (and cost (> cost (mana-val stats))))
+  (> cost (mana-val stats)))
 
 (defn pay-mana-cost [stats cost]
   (let [mana-val (mana-val stats)]

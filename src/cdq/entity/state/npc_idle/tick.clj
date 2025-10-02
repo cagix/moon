@@ -25,7 +25,7 @@
   (->> entity
        :entity/skills
        vals
-       (sort-by #(or (:skill/cost %) 0))
+       (sort-by :skill/cost)
        reverse
        (filter #(and (= :usable (creature/skill-usable-state entity % effect-ctx))
                      (->> (:skill/effects %)

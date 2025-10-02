@@ -18,8 +18,5 @@
 
 (defn enter [{:keys [skill]} eid]
   [[:tx/sound (:skill/start-action-sound skill)]
-   (when (:skill/cooldown skill)
-     [:tx/set-cooldown eid skill])
-   (when (and (:skill/cost skill)
-              (not (zero? (:skill/cost skill))))
-     [:tx/update eid :entity/stats stats/pay-mana-cost (:skill/cost skill)])])
+   [:tx/set-cooldown eid skill]
+   [:tx/update eid :entity/stats stats/pay-mana-cost (:skill/cost skill)]])
