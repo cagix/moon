@@ -8,8 +8,6 @@
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            com.badlogic.gdx.scenes.scene2d.ui.horizontal-group
-            com.badlogic.gdx.scenes.scene2d.ui.stack
             [clojure.scene2d.vis-ui.window :as window]))
 
 (defn- stage-find [stage k]

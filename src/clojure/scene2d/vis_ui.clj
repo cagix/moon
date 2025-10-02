@@ -1,7 +1,9 @@
 (ns clojure.scene2d.vis-ui
   (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
             [com.badlogic.gdx.utils.align :as align]
             [gdl.disposable :as disposable]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
@@ -10,9 +12,12 @@
             [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]))
 
+(defmethod scene2d/build :actor.type/horizontal-group [opts]
+  (doto (horizontal-group/create opts)
+    (group/set-opts! opts)))
+
 (doseq [[k method-sym] '{:actor.type/actor            com.badlogic.gdx.scenes.scene2d.actor/create
                          :actor.type/group            com.badlogic.gdx.scenes.scene2d.group/create
-                         :actor.type/horizontal-group com.badlogic.gdx.scenes.scene2d.ui.horizontal-group/create
                          :actor.type/stack            com.badlogic.gdx.scenes.scene2d.ui.stack/create
                          :actor.type/widget           com.badlogic.gdx.scenes.scene2d.ui.widget/create
                          :actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
