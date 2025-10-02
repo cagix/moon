@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.text-field
   (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget :as widget]
+            [clojure.scene2d.widget :as widget]
             [com.kotcrab.vis.ui.widget.vis-text-field :as vis-text-field]))
 
 (defn create

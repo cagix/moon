@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.label
   (:require [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget :as widget]))
+            [clojure.scene2d.widget :as widget]))
 
 (defn create [{:keys [label/text] :as opts}]
   (doto (vis-label/create text)
