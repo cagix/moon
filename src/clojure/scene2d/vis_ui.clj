@@ -4,6 +4,7 @@
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
             [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
+            [com.badlogic.gdx.scenes.scene2d.ui.widget :as widget]
             [gdl.scene2d.actor]
             [clojure.scene2d.actor]
             [clojure.scene2d.group]
@@ -30,8 +31,13 @@
   (doto (actor/create opts)
     (clojure.scene2d.actor/set-opts! opts)))
 
-(doseq [[k method-sym] '{:actor.type/widget       com.badlogic.gdx.scenes.scene2d.ui.widget/create
-                         :actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
+(defmethod scene2d/build :actor.type/widget [opts]
+  (widget/create
+   {:actor/draw (fn [actor _batch _parent-alpha]
+                  (com.badlogic.gdx.scenes.scene2d.actor/draw! actor (:actor/draw opts)))}))
+
+
+(doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
                          :actor.type/label        clojure.scene2d.vis-ui.label/create
                          :actor.type/text-field   clojure.scene2d.vis-ui.text-field/create
