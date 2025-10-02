@@ -199,7 +199,27 @@
        :skill/cost}
      (set (keys skill))))
 
+(comment
+ (binding [*print-level* nil]
+   (clojure.pprint/pprint (:skill/effects
+                           (:skills/spawn (:entity/skills @(:world/player-eid (:ctx/world @cdq.application/state)))))))
+ )
+
 (defn skill-info [skill]
+
+  ; skill/effects is unrolled
+  ; and then effects/spawn again a creature w. again skills unrolled ... ?
+  ; and stats/e.g. not built
+  ; unlike world entities ...
+  ; what if a creature has spawn effect for its own type
+  ; which again has spawn effect
+  ; endless recursion ?
+  ; ... relationships ... ? really unroll always?
+  ; => buggy
+
+
+  :effects/spawn ; -> full creature resolveed again with skills/effects/etc.
+  ; why not every skill/action just 1 effect and the name etc inside the skill?
 
   )
 
