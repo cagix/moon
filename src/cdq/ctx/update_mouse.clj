@@ -4,8 +4,7 @@
 
 (defn do!
   [{:keys [ctx/graphics
-           ctx/input
-           ctx/stage]
+           ctx/input]
     :as ctx}]
   (let [mouse-position (input/mouse-position input)]
     (update ctx :ctx/graphics #(-> %

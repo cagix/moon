@@ -35,12 +35,7 @@
         ctx-data-viewer {:label "Ctx Data"
                          :items [{:label "Show data"
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
-                                              (stage/add! stage (scene2d/build
-                                                                 {:actor/type :actor.type/data-viewer
-                                                                  :title "Context"
-                                                                  :data ctx
-                                                                  :width 500
-                                                                  :height 500})))}]}
+                                              (ui/show-data-viewer! stage ctx))}]}
         help-str "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
         help-info-text {:label "Help"
                         :items [{:label help-str}]}
