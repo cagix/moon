@@ -45,5 +45,5 @@
                             (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
                             (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP"))))]
       {:actor/type :actor.type/actor
-       :draw (fn [_this ctx]
-               (create-draws ctx))})))
+       :actor/draw (fn [_this ctx]
+                     (create-draws ctx))})))

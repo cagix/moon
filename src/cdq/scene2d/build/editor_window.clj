@@ -43,7 +43,7 @@
                  (when (input/key-just-pressed? input :enter)
                    (clicked-save-fn actor ctx)))
         actors [{:actor/type :actor.type/actor
-                 :act act-fn}]
+                 :actor/act act-fn}]
         save-button {:actor/type :actor.type/text-button
                      :text "Save [LIGHT_GRAY](ENTER)[]"
                      :on-clicked clicked-save-fn}

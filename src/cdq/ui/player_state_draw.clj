@@ -3,11 +3,11 @@
 
 (defn create []
   {:actor/type :actor.type/actor
-   :draw (fn [_this {:keys [ctx/world]
-                     :as ctx}]
-           (let [player-eid (:world/player-eid world)
-                 entity @player-eid
-                 state-k (:state (:entity/fsm entity))]
-             (state/draw-gui-view [state-k (state-k entity)]
-                                  player-eid
-                                  ctx)))})
+   :actor/draw (fn [_this {:keys [ctx/world]
+                           :as ctx}]
+                 (let [player-eid (:world/player-eid world)
+                       entity @player-eid
+                       state-k (:state (:entity/fsm entity))]
+                   (state/draw-gui-view [state-k (state-k entity)]
+                                        player-eid
+                                        ctx)))})

@@ -14,8 +14,8 @@
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
-   :act (fn [_this _delta ctx]
-          (label/set-text! label (text-fn ctx)))})
+   :actor/act (fn [_this _delta ctx]
+                (label/set-text! label (text-fn ctx)))})
 
 (defn- add-upd-label!
   ([table text-fn icon]

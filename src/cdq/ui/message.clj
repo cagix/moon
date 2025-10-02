@@ -19,15 +19,15 @@
 
 (defn create []
   {:actor/type :actor.type/actor
-   :draw (fn [this {:keys [ctx/stage]}]
-           [(draw-message (actor/user-object this)
-                          (:viewport/width  (stage/viewport stage))
-                          (:viewport/height (stage/viewport stage)))])
-   :act (fn [this delta _ctx]
-          (let [state (actor/user-object this)]
-            (when (:text @state)
-              (swap! state update :counter + delta)
-              (when (>= (:counter @state) duration-seconds)
-                (reset! state nil)))))
+   :actor/draw (fn [this {:keys [ctx/stage]}]
+                 [(draw-message (actor/user-object this)
+                                (:viewport/width  (stage/viewport stage))
+                                (:viewport/height (stage/viewport stage)))])
+   :actor/act (fn [this delta _ctx]
+                (let [state (actor/user-object this)]
+                  (when (:text @state)
+                    (swap! state update :counter + delta)
+                    (when (>= (:counter @state) duration-seconds)
+                      (reset! state nil)))))
    :actor/name "player-message"
    :actor/user-object (atom nil)})

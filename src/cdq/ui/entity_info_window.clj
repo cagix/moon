@@ -28,7 +28,7 @@
                                :rows [[{:actor label :expand? true}]]})]
     (group/add! window (scene2d/build
                         {:actor/type :actor.type/actor
-                         :act (fn [_this _delta ctx]
-                                (label/set-text! label (str (set-label-text! ctx)))
-                                (widget-group/pack! window))}))
+                         :actor/act (fn [_this _delta ctx]
+                                      (label/set-text! label (str (set-label-text! ctx)))
+                                      (widget-group/pack! window))}))
     window))
