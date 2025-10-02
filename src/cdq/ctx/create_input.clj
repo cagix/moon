@@ -1,5 +1,6 @@
 (ns cdq.ctx.create-input
   (:require [cdq.input]
+            [clojure.string :as str]
             [com.badlogic.gdx.input :as input]
             [gdl.math.vector2 :as v]))
 
@@ -21,6 +22,17 @@
    :open-debug-button :right
    }
   )
+
+(def info-text
+  (str/join "\n"
+            ["[W][A][S][D] - Move"
+             "[ESCAPE] - Close windows"
+             "[I] - Inventory window"
+             "[E] - Entity Info window"
+             "[-]/[=] - Zoom"
+             "[P]/[SPACE] - Unpause"
+             "rightclick on tile or entity - open debug data window"
+             "Leftmouse click - use skill/drop item on cursor"]))
 
 (defn- unpause-once? [input]
   (input/key-just-pressed? input (:unpause-once controls)))
@@ -66,4 +78,13 @@
     (input/button-just-pressed? input (:open-debug-button controls)))
 
   (mouse-position [input]
-    (input/mouse-position input)))
+    (input/mouse-position input))
+
+  (left-mouse-button-just-pressed? [input]
+    (input/button-just-pressed? input :left))
+
+  (enter-just-pressed? [input]
+    (input/key-just-pressed? input :enter))
+
+  (controls-info-text [_]
+    info-text))

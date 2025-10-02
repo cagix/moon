@@ -9,4 +9,7 @@
   (toggle-entity-info? [_])
   (unpause? [_])
   (open-debug-button-pressed? [_])
-  (mouse-position [_]))
+  (mouse-position [_])
+  (left-mouse-button-just-pressed? [_])
+  (enter-just-pressed? [_])
+  (controls-info-text [_]))

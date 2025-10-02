@@ -2,11 +2,11 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
+            [cdq.input :as input]
             [cdq.stage.error-window :as error-window]
             [cdq.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
-            [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
@@ -40,7 +40,7 @@
   (let [clicked-delete-fn (with-window-close (delete-property-fn property-id))
         clicked-save-fn   (with-window-close (update-property-fn get-widget-value))
         act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
-                 (when (input/key-just-pressed? input :enter)
+                 (when (input/enter-just-pressed? input)
                    (clicked-save-fn actor ctx)))
         actors [{:actor/type :actor.type/actor
                  :actor/act act-fn}]

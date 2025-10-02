@@ -1,8 +1,7 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.entity.inventory :as inventory]
-            [cdq.input :as controls]
-            [cdq.stage :as stage]
-            [com.badlogic.gdx.input :as input]))
+            [cdq.input :as input]
+            [cdq.stage :as stage]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]
@@ -98,9 +97,9 @@
    {:keys [ctx/input
            ctx/interaction-state
            ctx/stage] :as ctx}]
-  (if-let [movement-vector (controls/player-movement-vector input)]
+  (if-let [movement-vector (input/player-movement-vector input)]
     [[:tx/event player-eid :movement-input movement-vector]]
-    (when (input/button-just-pressed? input :left)
+    (when (input/left-mouse-button-just-pressed? input)
       (interaction-state->txs interaction-state
                               stage
                               player-eid))))

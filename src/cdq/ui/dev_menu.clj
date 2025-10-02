@@ -2,6 +2,7 @@
   (:require [cdq.ctx.create-world :as create-world]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.input :as input]
             [cdq.ui :as ui]
             [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
@@ -11,7 +12,8 @@
             [gdl.utils :as utils]))
 
 (defn create [{:keys [ctx/db
-                      ctx/graphics]}]
+                      ctx/graphics
+                      ctx/input]}]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]
@@ -36,9 +38,8 @@
                          :items [{:label "Show data"
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
                                               (ui/show-data-viewer! stage ctx))}]}
-        help-str "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"
         help-info-text {:label "Help"
-                        :items [{:label help-str}]}
+                        :items [{:label (input/controls-info-text input)}]}
         select-world {:label "Select World"
                       :items (for [world-fn ["world_fns/vampire.edn"
                                              "world_fns/uf_caves.edn"
