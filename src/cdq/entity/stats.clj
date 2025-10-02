@@ -55,9 +55,7 @@
   (apply-max mana modifiers :modifier/mana-max))
 
 (defn mana-val [stats]
-  (if (:stats/mana stats)
-    ((get-mana stats) 0) ; TODO fucking optional shit
-    0))
+  ((get-mana stats) 0))
 
 (defn not-enough-mana? [stats {:keys [skill/cost]}]
   (> cost (mana-val stats)))
@@ -73,11 +71,6 @@
   (apply-max hp modifiers :modifier/hp-max))
 
 (defn create [stats _world]
-  (-> (if (:stats/mana stats)
-        (update stats :stats/mana (fn [v] [v v]))
-        stats)
-      (update :stats/hp   (fn [v] [v v])))
-
-  #_(-> stats
-        (update :stats/mana (fn [v] [v v])) ; TODO is OPTIONAL ! then making [nil nil]
-        (update :stats/hp   (fn [v] [v v]))))
+  (-> stats
+      (update :stats/mana (fn [v] [v v]))
+      (update :stats/hp   (fn [v] [v v]))))

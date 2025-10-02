@@ -74,7 +74,7 @@
 
  :entity/stats [:s/map [[:stats/modifiers    {:optional true}]
                         :stats/hp
-                        [:stats/mana         {:optional true}]
+                        :stats/mana
                         :stats/movement-speed
                         :stats/aggro-range
                         :stats/reaction-time

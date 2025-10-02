@@ -818,6 +818,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 8,
+   :stats/mana 0,
    :stats/movement-speed 1,
    :stats/reaction-time 12,
    :stats/strength 1},
@@ -861,6 +862,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 1,
+   :stats/mana 0,
    :stats/movement-speed 1,
    :stats/reaction-time 12,
    :stats/strength 1},
@@ -904,6 +906,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 8,
+   :stats/mana 0,
    :stats/movement-speed 2.4,
    :stats/reaction-time 12,
    :stats/strength 2},
@@ -947,6 +950,7 @@
   :entity/stats
   {:stats/aggro-range 3,
    :stats/hp 1,
+   :stats/mana 0,
    :stats/movement-speed 6,
    :stats/reaction-time 5,
    :stats/strength 1},
@@ -1628,6 +1632,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 100,
+   :stats/mana 0,
    :stats/movement-speed 5.5,
    :stats/reaction-time 3,
    :stats/strength 100},
@@ -1715,6 +1720,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 8,
+   :stats/mana 0,
    :stats/movement-speed 4,
    :stats/reaction-time 12,
    :stats/strength 1},
@@ -2462,6 +2468,7 @@
   :entity/stats
   {:stats/aggro-range 6,
    :stats/hp 350,
+   :stats/mana 0,
    :stats/modifiers {:modifier/damage-receive-max {:op/mult -90}},
    :stats/movement-speed 2,
    :stats/reaction-time 12,
