@@ -227,4 +227,8 @@
 (defn entity-info [entity world]
   ; dispatch entity type
   ; assert valid? projectile/creature/item/etc?
+
+  ;  Now it gets interesting!
+  ; We are not sure about the possible shape of our entities and which 'types' of shapes are there!!!
+  ; => game data state space schema
   )
