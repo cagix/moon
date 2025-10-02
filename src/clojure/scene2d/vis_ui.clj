@@ -5,7 +5,7 @@
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
             [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [clojure.scene2d.widget-group :as widget-group]
             [com.badlogic.gdx.utils.align :as align]
             [gdl.disposable :as disposable]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
