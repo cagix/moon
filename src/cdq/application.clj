@@ -35,10 +35,7 @@
             [cdq.ctx.update-world-time :as update-world-time]
             [cdq.ctx.validate :as validate]
             [cdq.ctx.window-camera-controls :as window-camera-controls]
-            [com.badlogic.gdx :as gdx]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
-            [org.lwjgl.system.configuration :as lwjgl-system])
-  (:import (com.badlogic.gdx ApplicationListener))
+            [gdl.application.lwjgl :as application])
   (:gen-class))
 
 (def graphics-config
@@ -77,55 +74,51 @@
 (def state (atom nil))
 
 (defn -main []
-  (lwjgl-system/set-glfw-library-name! "glfw_async")
-  (lwjgl/application (reify ApplicationListener
-                       (create [_]
-                         (reset! state (-> {:ctx/audio    (gdx/audio)
-                                            :ctx/files    (gdx/files)
-                                            :ctx/graphics (gdx/graphics)
-                                            :ctx/input    (gdx/input)}
-                                           create-record/do!
-                                           create-db/do!
-                                           (create-graphics/do! graphics-config)
-                                           create-vis-ui/do!
-                                           create-stage/do!
-                                           build-stage-actors/do!
-                                           create-input/do!
-                                           create-audio/do!
-                                           dissoc-files/do!
-                                           (create-world/do! "world_fns/vampire.edn"))))
-                       (dispose [_]
-                         (dispose/do! @state))
-                       (render [_]
-                         (swap! state (fn [ctx]
-                                        (-> ctx
-                                            get-stage-ctx/do!
-                                            validate/do!
-                                            update-mouse/do!
-                                            update-mouseover-eid/do!
-                                            check-open-debug/do!
-                                            assoc-active-entities/do!
-                                            set-camera-on-player/do!
-                                            clear-screen/do!
-                                            draw-world-map/do!
-                                            draw-on-world-viewport/do!
-                                            assoc-interaction-state/do!
-                                            set-cursor/do!
-                                            player-state-handle-input/do!
-                                            dissoc-interaction-state/do!
-                                            assoc-paused/do!
-                                            update-world-time/do!
-                                            update-potential-fields/do!
-                                            tick-entities/do!
-                                            remove-destroyed-entities/do!
-                                            window-camera-controls/do!
-                                            render-stage/do!
-                                            validate/do!))))
-                       (resize [_ width height]
-                         (update-viewports/do! @state width height))
-                       (pause [_])
-                       (resume [_]))
-                     {:title "Cyber Dungeon Quest"
-                      :windowed-mode {:width 1440
-                                      :height 900}
-                      :foreground-fps 60}))
+  (application/start! (reify application/Listener
+                        (create [_ context]
+                          (reset! state (-> context
+                                            create-record/do!
+                                            create-db/do!
+                                            (create-graphics/do! graphics-config)
+                                            create-vis-ui/do!
+                                            create-stage/do!
+                                            build-stage-actors/do!
+                                            create-input/do!
+                                            create-audio/do!
+                                            dissoc-files/do!
+                                            (create-world/do! "world_fns/vampire.edn"))))
+                        (dispose [_]
+                          (dispose/do! @state))
+                        (render [_]
+                          (swap! state (fn [ctx]
+                                         (-> ctx
+                                             get-stage-ctx/do!
+                                             validate/do!
+                                             update-mouse/do!
+                                             update-mouseover-eid/do!
+                                             check-open-debug/do!
+                                             assoc-active-entities/do!
+                                             set-camera-on-player/do!
+                                             clear-screen/do!
+                                             draw-world-map/do!
+                                             draw-on-world-viewport/do!
+                                             assoc-interaction-state/do!
+                                             set-cursor/do!
+                                             player-state-handle-input/do!
+                                             dissoc-interaction-state/do!
+                                             assoc-paused/do!
+                                             update-world-time/do!
+                                             update-potential-fields/do!
+                                             tick-entities/do!
+                                             remove-destroyed-entities/do!
+                                             window-camera-controls/do!
+                                             render-stage/do!
+                                             validate/do!))))
+                        (resize [_ width height]
+                          (update-viewports/do! @state width height))
+                        (pause [_])
+                        (resume [_]))
+                      {:title "Cyber Dungeon Quest"
+                       :windowed-mode {:width 1440
+                                       :height 900}
+                       :foreground-fps 60}))

@@ -8,8 +8,6 @@
             [clojure.graphics.viewport]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [com.badlogic.gdx :as gdx]
-            [com.badlogic.gdx.backends.lwjgl3 :as lwjgl]
             [com.badlogic.gdx.files.utils :as files-utils]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -21,8 +19,7 @@
             [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [com.badlogic.gdx.utils.disposable :as disposable]
-            [org.lwjgl.system.configuration :as lwjgl-system])
-  (:import (com.badlogic.gdx ApplicationListener)))
+            [gdl.application.lwjgl :as application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -191,20 +188,17 @@
 (def state (atom nil))
 
 (defn -main []
-  (lwjgl-system/set-glfw-library-name! "glfw_async")
-  (lwjgl/application (reify ApplicationListener
-                       (create [_]
-                         (reset! state (create! {:ctx/files    (gdx/files)
-                                                 :ctx/graphics (gdx/graphics)
-                                                 :ctx/input    (gdx/input)})))
-                       (dispose [_]
-                         (dispose! @state))
-                       (render [_]
-                         (swap! state render!))
-                       (resize [_ width height]
-                         (resize! @state width height))
-                       (pause [_])
-                       (resume [_]))
-                     {:title "Levelgen test"
-                      :windowed-mode {:width 1440 :height 900}
-                      :foreground-fps 60}))
+  (application/start! (reify application/Listener
+                        (create [_ context]
+                          (reset! state (create! context)))
+                        (dispose [_]
+                          (dispose! @state))
+                        (render [_]
+                          (swap! state render!))
+                        (resize [_ width height]
+                          (resize! @state width height))
+                        (pause [_])
+                        (resume [_]))
+                      {:title "Levelgen test"
+                       :windowed-mode {:width 1440 :height 900}
+                       :foreground-fps 60}))
