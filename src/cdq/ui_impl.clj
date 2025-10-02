@@ -10,8 +10,7 @@
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [gdl.scene2d.actor :as actor]
-            )
+            [gdl.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
 (defn- stage-find [stage k]
