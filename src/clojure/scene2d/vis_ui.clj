@@ -5,6 +5,7 @@
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
             [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
+            [clojure.scene2d.actor]
             [clojure.scene2d.group]
             [clojure.scene2d.widget-group :as widget-group]
             [com.badlogic.gdx.utils.align :as align]
@@ -27,8 +28,11 @@
   (doto (group/create)
     (clojure.scene2d.group/set-opts! opts)))
 
-(doseq [[k method-sym] '{:actor.type/actor            com.badlogic.gdx.scenes.scene2d.actor/create
-                         :actor.type/widget           com.badlogic.gdx.scenes.scene2d.ui.widget/create
+(defmethod scene2d/build :actor.type/actor [opts]
+  (doto (actor/create opts)
+    (clojure.scene2d.actor/set-opts! opts)))
+
+(doseq [[k method-sym] '{:actor.type/widget       com.badlogic.gdx.scenes.scene2d.ui.widget/create
                          :actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
                          :actor.type/label        clojure.scene2d.vis-ui.label/create
