@@ -25,7 +25,7 @@
    cell item]
   (ui/set-item! stage cell
                 {:texture-region (textures/texture-region graphics (:entity/image item))
-                 :tooltip-text (info/item-info item)})
+                 :tooltip-text (info/info-text item nil)})
   nil)
 
 (defn player-remove-item! [{:keys [ctx/stage]}

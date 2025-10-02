@@ -1,36 +1,25 @@
 (ns cdq.ctx.draw-entities
-  (:require cdq.entity.animation.draw
-            cdq.entity.clickable.draw
-            cdq.entity.state.active-skill.draw
-            cdq.entity.stats.draw
-            cdq.entity.string-effect.draw
-            cdq.entity.temp-modifier.draw
-            cdq.entity.state.npc-sleeping.draw
-            cdq.entity.state.stunned.draw
-            cdq.entity.state.player-item-on-cursor.draw
-            cdq.entity.line-render.draw
-            cdq.entity.image.draw
-            cdq.entity.animation.draw
-            cdq.entity.mouseover.draw
-            [cdq.graphics.draws :as draws]
+  (:require [cdq.graphics.draws :as draws]
             [cdq.throwable :as throwable]
             [cdq.world.raycaster :as raycaster]
             [clojure.graphics.color :as color]
             [gdl.utils :as utils]))
 
 (def ^:private render-layers
-  [{:entity/mouseover?     cdq.entity.mouseover.draw/txs
-    :stunned               cdq.entity.state.stunned.draw/txs
-    :player-item-on-cursor cdq.entity.state.player-item-on-cursor.draw/txs}
-   {:entity/clickable      cdq.entity.clickable.draw/txs
-    :entity/animation      cdq.entity.animation.draw/txs
-    :entity/image          cdq.entity.image.draw/txs
-    :entity/line-render    cdq.entity.line-render.draw/txs}
-   {:npc-sleeping          cdq.entity.state.npc-sleeping.draw/txs
-    :entity/temp-modifier  cdq.entity.temp-modifier.draw/txs
-    :entity/string-effect  cdq.entity.string-effect.draw/txs}
-   {:entity/stats          cdq.entity.stats.draw/txs
-    :active-skill          cdq.entity.state.active-skill.draw/txs}])
+  (map
+   #(update-vals % requiring-resolve)
+   '[{:entity/mouseover?     cdq.entity.mouseover.draw/txs
+      :stunned               cdq.entity.state.stunned.draw/txs
+      :player-item-on-cursor cdq.entity.state.player-item-on-cursor.draw/txs}
+     {:entity/clickable      cdq.entity.clickable.draw/txs
+      :entity/animation      cdq.entity.animation.draw/txs
+      :entity/image          cdq.entity.image.draw/txs
+      :entity/line-render    cdq.entity.line-render.draw/txs}
+     {:npc-sleeping          cdq.entity.state.npc-sleeping.draw/txs
+      :entity/temp-modifier  cdq.entity.temp-modifier.draw/txs
+      :entity/string-effect  cdq.entity.string-effect.draw/txs}
+     {:entity/stats          cdq.entity.stats.draw/txs
+      :active-skill          cdq.entity.state.active-skill.draw/txs}]))
 
 (def ^:dbg-flag show-body-bounds? false)
 
