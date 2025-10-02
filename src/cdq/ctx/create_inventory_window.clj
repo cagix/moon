@@ -3,6 +3,7 @@
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics.textures :as textures]
+            [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
@@ -114,8 +115,8 @@
     (create-inventory-window*
      {:title "Inventory"
       :actor/visible? false
-      :position [(:viewport/width  (stage/viewport stage))
-                 (:viewport/height (stage/viewport stage))]
+      :position [(ui/viewport-width  stage)
+                 (ui/viewport-height stage)]
       :clicked-cell-listener (fn [cell]
                                (listener/click
                                 (fn [event _x _y]
