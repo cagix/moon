@@ -1,5 +1,5 @@
 (ns clojure.scene2d.widget-group
-  (:require [com.badlogic.gdx.scenes.scene2d.group :as group]
+  (:require [clojure.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn set-opts!
