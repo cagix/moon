@@ -17,7 +17,7 @@
 
 (def duration-seconds 0.5)
 
-(defn create []
+(defn create [_ctx]
   {:actor/type :actor.type/actor
    :actor/draw (fn [this {:keys [ctx/stage]}]
                  [(draw-message (actor/user-object this)

@@ -87,7 +87,8 @@
                :pad 4}]]})))
 
 (defn create
-  [stage graphics]
+  [{:keys [ctx/graphics
+           ctx/stage]}]
   (let [slot->y-sprite-idx #:inventory.slot {:weapon   0
                                              :shield   1
                                              :rings    2

@@ -10,7 +10,8 @@
             [gdl.disposable :as disposable]
             [gdl.utils :as utils]))
 
-(defn create [db graphics]
+(defn create [{:keys [ctx/db
+                      ctx/graphics]}]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]

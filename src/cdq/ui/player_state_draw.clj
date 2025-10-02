@@ -1,7 +1,7 @@
 (ns cdq.ui.player-state-draw
   (:require [cdq.entity.state :as state]))
 
-(defn create []
+(defn create [_ctx]
   {:actor/type :actor.type/actor
    :actor/draw (fn [_this {:keys [ctx/world]
                            :as ctx}]

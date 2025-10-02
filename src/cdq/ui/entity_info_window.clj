@@ -6,7 +6,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
-(defn create [stage]
+(defn create [{:keys [ctx/stage]}]
   (let [title "info"
         actor-name "cdq.ui.windows.entity-info"
         visible? false
