@@ -1,8 +1,8 @@
 (ns cdq.audio
-  (:require [com.badlogic.gdx.audio :as audio]
-            [com.badlogic.gdx.audio.sound :as sound]
-            [com.badlogic.gdx.files :as files]
-            [com.badlogic.gdx.utils.disposable :as disposable]))
+  (:require [gdl.audio :as audio]
+            [gdl.audio.sound :as sound]
+            [gdl.disposable :as disposable]
+            [gdl.files :as files]))
 
 (defprotocol Audio
   (all-sounds [_])

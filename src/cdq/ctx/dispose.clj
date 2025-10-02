@@ -1,6 +1,6 @@
 (ns cdq.ctx.dispose
   (:require [cdq.graphics.dispose :as dispose-graphics]
-            [com.badlogic.gdx.utils.disposable :as disposable]))
+            [gdl.disposable :as disposable]))
 
 (defn do! [{:keys [ctx/audio
                    ctx/graphics

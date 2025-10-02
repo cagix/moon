@@ -3,14 +3,19 @@
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis.ui.widget.separator :as separator]
             [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
             [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]))
 
-(doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
+(doseq [[k method-sym] '{:actor.type/actor            com.badlogic.gdx.scenes.scene2d.actor/create
+                         :actor.type/group            com.badlogic.gdx.scenes.scene2d.group/create
+                         :actor.type/horizontal-group com.badlogic.gdx.scenes.scene2d.ui.horizontal-group/create
+                         :actor.type/stack            com.badlogic.gdx.scenes.scene2d.ui.stack/create
+                         :actor.type/widget           com.badlogic.gdx.scenes.scene2d.ui.widget/create
+                         :actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
                          :actor.type/label        clojure.scene2d.vis-ui.label/create
                          :actor.type/text-field   clojure.scene2d.vis-ui.text-field/create

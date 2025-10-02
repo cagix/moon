@@ -8,7 +8,7 @@
             [clojure.graphics.viewport]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [com.badlogic.gdx.files.utils :as files-utils]
+            [gdl.files.utils :as files-utils]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics :as graphics]
@@ -18,7 +18,7 @@
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [gdl.application.lwjgl :as application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")

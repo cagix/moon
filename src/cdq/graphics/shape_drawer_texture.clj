@@ -2,7 +2,7 @@
   (:require [clojure.graphics.color :as color]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
-            [com.badlogic.gdx.utils.disposable :refer [dispose!]]))
+            [gdl.disposable :refer [dispose!]]))
 
 (defn create
   [{:keys [graphics/core]

@@ -13,7 +13,38 @@
   (pause [_])
   (resume [_]))
 
+(defn- extend-types [impls]
+  (doseq [[atype-sym implementation-ns-sym protocol-sym] impls]
+    (try (let [atype (eval atype-sym)
+               _ (assert (class atype))
+               protocol-var (requiring-resolve protocol-sym)
+               protocol @protocol-var
+               method-map (update-vals (:sigs protocol)
+                                       (fn [{:keys [name]}]
+                                         (requiring-resolve (symbol (str implementation-ns-sym "/" name)))))]
+           ;(println "extend ")
+           ;(println "atype: " atype)
+           ;(println "protocol: " protocol)
+           ;(println "method-map:")
+           ;(clojure.pprint/pprint method-map)
+           (extend atype protocol method-map))
+         (catch Throwable t
+           (throw (ex-info "Cant extend"
+                           {:atype-sym atype-sym
+                            :implementation-ns-sym implementation-ns-sym
+                            :protocol-sym protocol-sym}
+                           t))))))
+
 (defn start! [listener config]
+  (extend-types
+   [
+    ['com.badlogic.gdx.Audio            'com.badlogic.gdx.audio             'gdl.audio/Audio]
+    ['com.badlogic.gdx.audio.Sound      'com.badlogic.gdx.audio.sound       'gdl.audio.sound/Sound]
+    ['com.badlogic.gdx.Files            'com.badlogic.gdx.files             'gdl.files/Files]
+    ['com.badlogic.gdx.files.FileHandle 'com.badlogic.gdx.files.file-handle 'gdl.files.file-handle/FileHandle]
+    ['com.badlogic.gdx.utils.Disposable 'com.badlogic.gdx.utils.disposable  'gdl.disposable/Disposable]
+    ]
+   )
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (application/start! (reify ApplicationListener
                         (create [_]

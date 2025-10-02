@@ -1,6 +1,6 @@
 (ns cdq.graphics.cursors
   (:require [com.badlogic.gdx.graphics :as graphics]
-            [com.badlogic.gdx.utils.disposable :as disposable]))
+            [gdl.disposable :as disposable]))
 
 (defn create
   [{:keys [graphics/core]

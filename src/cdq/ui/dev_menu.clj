@@ -6,7 +6,7 @@
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [gdl.utils :as utils]))
 
 (defn create [db graphics build-stage-actors!]

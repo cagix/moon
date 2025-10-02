@@ -4,7 +4,7 @@
             [cdq.world.create-fsms :as create-fsms]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [com.badlogic.gdx.utils.disposable :as disposable]
+            [gdl.disposable :as disposable]
             [com.badlogic.gdx.maps.tiled :as tiled]
             [gdl.grid2d :as g2d]
             [gdl.utils :as utils]))
