@@ -206,6 +206,7 @@
  )
 
 (defn skill-info [skill]
+  ; The core problem is that you’re eagerly unrolling your graph into nested maps (tree form). That guarantees infinite recursion if there are cycles.
 
   ; skill/effects is unrolled
   ; and then effects/spawn again a creature w. again skills unrolled ... ?
