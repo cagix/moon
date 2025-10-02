@@ -1,12 +1,11 @@
 (ns dev.scratch
   (:require [cdq.application :refer [state]]
             [cdq.ctx.handle-txs :as handle-txs]
-            [cdq.db :as db]
-            [com.badlogic.gdx :as gdx]))
+            [cdq.db :as db]))
 
 (comment
 
- (gdx/post-runnable!
+ (.postRunnable com.badlogic.gdx.Gdx/app
   (fn []
     (let [{:keys [ctx/db]
            :as ctx} @state]

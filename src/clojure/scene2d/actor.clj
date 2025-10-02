@@ -1,5 +1,7 @@
 (ns clojure.scene2d.actor
-  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]))
+  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
+            [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (def opts-fn-map
   {:actor/name actor/set-name!
@@ -20,3 +22,15 @@
           :when f]
     (f actor v))
   actor)
+
+(defn- get-ctx [actor]
+  (when-let [stage (actor/get-stage actor)]
+    (stage/get-ctx stage)))
+
+(defn act! [actor delta f]
+  (when-let [ctx (get-ctx actor)]
+    (f actor delta ctx)))
+
+(defn draw! [actor f]
+  (when-let [ctx (get-ctx actor)]
+    (ctx/draw! ctx (f actor ctx))))

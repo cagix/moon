@@ -27,15 +27,22 @@
   (doto (group/create)
     (clojure.scene2d.group/set-opts! opts)))
 
-(defmethod scene2d/build :actor.type/actor [opts]
-  (doto (actor/create opts)
+(defmethod scene2d/build :actor.type/actor [{:keys [actor/act
+                                                    actor/draw]
+                                             :as opts}]
+  (doto (actor/create
+         {:actor/act (fn [this delta]
+                       (when act
+                         (clojure.scene2d.actor/act! this delta act)))
+          :actor/draw (fn [this _batch _parent-alpha]
+                        (when draw
+                          (clojure.scene2d.actor/draw! this draw)))})
     (clojure.scene2d.actor/set-opts! opts)))
 
 (defmethod scene2d/build :actor.type/widget [opts]
   (widget/create
    {:actor/draw (fn [actor _batch _parent-alpha]
-                  (com.badlogic.gdx.scenes.scene2d.actor/draw! actor (:actor/draw opts)))}))
-
+                  (clojure.scene2d.actor/draw! actor (:actor/draw opts)))}))
 
 (doseq [[k method-sym] '{:actor.type/menu-bar     clojure.scene2d.vis-ui.menu/create
                          :actor.type/select-box   com.kotcrab.vis.ui.widget.vis-select-box/create
