@@ -14,7 +14,7 @@
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]

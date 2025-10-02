@@ -2,18 +2,15 @@
   (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
             [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
             [gdl.scene2d.actor]
             [clojure.scene2d.actor]
             [clojure.scene2d.group]
             [clojure.scene2d.widget-group :as widget-group]
-            [com.badlogic.gdx.utils.align :as align]
             [gdl.disposable :as disposable]
             [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis.ui.widget.separator :as separator]
-            [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
             [com.kotcrab.vis.ui.widget.vis-scroll-pane :as vis-scroll-pane]
             [com.kotcrab.vis.ui.vis-ui :as vis-ui]))
 
@@ -77,26 +74,3 @@
   (reify disposable/Disposable
     (dispose! [_]
       (vis-ui/dispose!))))
-
-(let [update-fn (fn [tooltip-text]
-                  (fn [tooltip]
-                    (when-not (string? tooltip-text)
-                      (let [actor (tooltip/target tooltip)
-                            ctx (when-let [stage (actor/get-stage actor)]
-                                  (stage/get-ctx stage))]
-                        (when ctx
-                          (tooltip/set-text! tooltip (tooltip-text ctx)))))))]
-  (extend-type com.badlogic.gdx.scenes.scene2d.Actor
-    gdl.scene2d.actor/Tooltip
-    (add-tooltip! [actor tooltip-text]
-      (let [text? (string? tooltip-text)
-            label (doto (vis-label/create (if text? tooltip-text ""))
-                    (.setAlignment (align/k->value :center)))
-            update-text! (update-fn tooltip-text)]
-        (tooltip/create {:update-fn update-text!
-                         :target actor
-                         :content label}))
-      actor)
-
-    (remove-tooltip! [actor]
-      (tooltip/remove! actor))))
