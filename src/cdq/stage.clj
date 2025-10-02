@@ -1,5 +1,6 @@
 (ns cdq.stage
-  (:require [cdq.ui.message]
+  (:require [cdq.ui :as ui]
+            [cdq.ui.message]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [clojure.graphics.viewport :as viewport]
@@ -8,7 +9,8 @@
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [clojure.scene2d.vis-ui.window :as window]))
+            [clojure.scene2d.vis-ui.window :as window])
+  (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
 (defn- stage-find [stage k]
   (-> stage
@@ -87,12 +89,6 @@
       (group/find-actor "cdq.ui.action-bar")
       (action-bar/remove-skill! skill-id)))
 
-(defn action-bar-selected-skill [stage]
-  (-> stage
-      stage/root
-      (group/find-actor "cdq.ui.action-bar")
-      action-bar/selected-skill))
-
 (defn show-text-message!
   [stage message]
   (-> stage
@@ -111,14 +107,22 @@
        group/children
        (run! #(actor/set-visible! % false))))
 
-(defn actor-information [stage actor]
-  (let [inventory-slot (inventory-window/cell-with-item? actor)]
-    (cond
-     inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
-     (window/title-bar? actor) [:mouseover-actor/window-title-bar]
-     (button/is?        actor) [:mouseover-actor/button]
-     :else                     [:mouseover-actor/unspecified])))
+(extend-type CtxStage
+  ui/Stage
+  (mouseover-actor [this position]
+    (stage/hit this
+               (viewport/unproject (stage/viewport this) position)))
 
-(defn mouseover-actor [stage mouse-position]
-  (stage/hit stage
-             (viewport/unproject (stage/viewport stage) mouse-position)))
+  (actor-information [_ actor]
+    (let [inventory-slot (inventory-window/cell-with-item? actor)]
+      (cond
+       inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
+       (window/title-bar? actor) [:mouseover-actor/window-title-bar]
+       (button/is?        actor) [:mouseover-actor/button]
+       :else                     [:mouseover-actor/unspecified])))
+
+  (action-bar-selected-skill [this]
+    (-> this
+        stage/root
+        (group/find-actor "cdq.ui.action-bar")
+        action-bar/selected-skill)))

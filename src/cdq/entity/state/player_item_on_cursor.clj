@@ -2,7 +2,7 @@
   (:require [cdq.entity.inventory :as inventory]
             [cdq.input]
             [cdq.graphics.textures :as textures]
-            [cdq.stage :as stage]
+            [cdq.ui :as ui]
             [gdl.math.vector2 :as v]
             [com.badlogic.gdx.input :as input]))
 
@@ -48,7 +48,7 @@
 (defn handle-input
   [eid {:keys [ctx/input
                ctx/stage]}]
-  (let [mouseover-actor (stage/mouseover-actor stage (cdq.input/mouse-position input))]
+  (let [mouseover-actor (ui/mouseover-actor stage (cdq.input/mouse-position input))]
     (when (and (input/button-just-pressed? input :left)
                (world-item? mouseover-actor))
       [[:tx/event eid :drop-item]])))
@@ -92,7 +92,7 @@
    {:keys [ctx/graphics
            ctx/input
            ctx/stage]}]
-  (when (not (world-item? (stage/mouseover-actor stage (cdq.input/mouse-position input))))
+  (when (not (world-item? (ui/mouseover-actor stage (cdq.input/mouse-position input))))
     [[:draw/texture-region
       (textures/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
       (:graphics/ui-mouse-position graphics)

@@ -1,6 +1,6 @@
 (ns cdq.ctx.update-mouseover-eid
   (:require [cdq.input :as input]
-            [cdq.stage :as stage]
+            [cdq.ui :as ui]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
             [gdl.utils :as utils]))
@@ -11,7 +11,7 @@
            ctx/stage
            ctx/world]
     :as ctx}]
-  (let [mouseover-actor (stage/mouseover-actor stage (input/mouse-position input))
+  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))
         {:keys [world/grid
                 world/mouseover-eid
                 world/player-eid]} world
