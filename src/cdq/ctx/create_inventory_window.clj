@@ -1,5 +1,5 @@
 (ns cdq.ctx.create-inventory-window
-  (:require [cdq.ctx.handle-txs :as handle-txs]
+  (:require [gdl.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics.textures :as textures]
@@ -127,5 +127,5 @@
                                         txs (state/clicked-inventory-cell [state-k (state-k entity)]
                                                                           eid
                                                                           cell)]
-                                    (handle-txs/do! ctx txs)))))
+                                    (txs/handle! ctx txs)))))
       :slot->texture-region slot->texture-region})))

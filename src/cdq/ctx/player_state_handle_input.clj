@@ -1,5 +1,5 @@
 (ns cdq.ctx.player-state-handle-input
-  (:require [cdq.ctx.handle-txs :as handle-txs]
+  (:require [gdl.txs :as txs]
             [cdq.entity.state :as state]))
 
 (defn do!
@@ -9,5 +9,5 @@
         entity @eid
         state-k (:state (:entity/fsm entity))
         txs (state/handle-input [state-k (state-k entity)] eid ctx)]
-    (handle-txs/do! ctx txs))
+    (txs/handle! ctx txs))
   ctx)

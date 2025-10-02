@@ -9,6 +9,7 @@
             cdq.scene2d.build.map-widget-table]
  :sym-format "cdq.ctx.%s/do!"
  :create-pipeline [[create-record]
+                   [handle-txs]
                    [create-db]
                    [create-graphics {:tile-size 48
                                      :ui-viewport {:width 1440
@@ -42,7 +43,13 @@
                                                       :cursors/use-skill             ["pointer004"   [0   0]]
                                                       :cursors/walking               ["walking"      [16 16]]}}}]
                    [create-vis-ui]
-                   [create-stage]
+                   [create-stage [[cdq.ui.dev-menu/create cdq.ctx.create-world/do!]
+                                  [cdq.ui.action-bar/create]
+                                  [cdq.ui.hp-mana-bar/create]
+                                  [cdq.ctx.create-stage/create-windows [[cdq.ui.entity-info-window/create]
+                                                                        [cdq.ctx.create-inventory-window/create]]]
+                                  [cdq.ui.player-state-draw/create]
+                                  [cdq.ui.message/create]]]
                    [build-stage-actors]
                    [create-input]
                    [create-audio]

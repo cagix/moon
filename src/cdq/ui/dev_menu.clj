@@ -1,6 +1,5 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.ctx.create-world :as create-world]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
@@ -13,7 +12,8 @@
 
 (defn create [{:keys [ctx/db
                       ctx/graphics
-                      ctx/input]}]
+                      ctx/input]}
+              create-world]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]
@@ -50,7 +50,7 @@
                                                   stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
                                               (disposable/dispose! (:ctx/world ctx))
-                                              (stage/set-ctx! stage (create-world/do! ctx world-fn))))})}
+                                              (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}
         update-labels [{:label "elapsed-time"
                         :update-fn (fn [ctx]
                                      (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))

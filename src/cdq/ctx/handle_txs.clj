@@ -5,7 +5,8 @@
             [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
-            [gdl.tx-handler :as tx-handler]))
+            [gdl.tx-handler :as tx-handler]
+            [gdl.txs :as txs]))
 
 (defn- player-add-skill!
   [{:keys [ctx/graphics
@@ -118,14 +119,15 @@
    }
   )
 
-(defn do! [ctx transactions]
-  (let [handled-txs (tx-handler/actions!
-                     txs-fn-map
-                     ctx
-                     transactions)]
-    (tx-handler/actions!
-     reaction-txs-fn-map
-     ctx
-     handled-txs
-     :strict? false))
+(defn do! [ctx]
+  (extend-type (class ctx)
+    txs/TransactionHandler
+    (handle! [ctx txs]
+      (let [handled-txs (tx-handler/actions! txs-fn-map
+                                             ctx
+                                             txs)]
+        (tx-handler/actions! reaction-txs-fn-map
+                             ctx
+                             handled-txs
+                             :strict? false))))
   ctx)

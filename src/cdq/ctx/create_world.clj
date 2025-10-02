@@ -1,5 +1,5 @@
 (ns cdq.ctx.create-world
-  (:require [cdq.ctx.handle-txs :as handle-txs]
+  (:require [gdl.txs :as txs]
             [cdq.db :as db]
             [cdq.graphics.textures :as textures]
             [cdq.world :as world]
@@ -45,7 +45,7 @@
   [{:keys [ctx/db
            ctx/world]
     :as ctx}]
-  (handle-txs/do! ctx
+  (txs/handle! ctx
                    [[:tx/spawn-creature (let [{:keys [creature-id
                                                       components]} (:world/player-components world)]
                                           {:position (mapv (partial + 0.5) (:world/start-position world))
@@ -59,7 +59,7 @@
   [{:keys [ctx/db
            ctx/world]
     :as ctx}]
-  (handle-txs/do!
+  (txs/handle!
    ctx
    (for [[position creature-id] (tiled/positions-with-property
                                  (:world/tiled-map world)

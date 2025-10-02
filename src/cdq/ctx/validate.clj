@@ -9,6 +9,7 @@
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]
+    [:ctx/actor-fns :some]
     [:ctx/vis-ui :some]
     [:ctx/world :some]]))
 
