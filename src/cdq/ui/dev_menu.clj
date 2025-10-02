@@ -2,6 +2,7 @@
   (:require [cdq.ctx.create-world :as create-world]
             [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.ui :as ui]
             [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
@@ -9,7 +10,7 @@
             [gdl.disposable :as disposable]
             [gdl.utils :as utils]))
 
-(defn create [db graphics build-stage-actors!]
+(defn create [db graphics]
   (let [open-editor (fn [db]
                       {:label "Editor"
                        :items (for [property-type (sort (db/property-types db))]
@@ -49,8 +50,7 @@
                                {:label (str "Start " world-fn)
                                 :on-click (fn [actor ctx]
                                             (let [stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
-                                              (stage/clear! (:ctx/stage ctx))
-                                              (build-stage-actors! ctx)
+                                              (ui/rebuild-actors! stage ctx)
                                               (disposable/dispose! (:ctx/world ctx))
                                               (stage/set-ctx! stage (create-world/do! ctx world-fn))))})}
         update-labels [{:label "elapsed-time"

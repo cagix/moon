@@ -1,5 +1,6 @@
 (ns cdq.ui-impl
-  (:require [cdq.ui :as ui]
+  (:require cdq.ctx.build-stage-actors
+            [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [clojure.graphics.viewport :as viewport]
@@ -27,4 +28,9 @@
     (-> this
         stage/root
         (group/find-actor "cdq.ui.action-bar")
-        action-bar/selected-skill)))
+        action-bar/selected-skill))
+
+  (rebuild-actors! [this ctx]
+    (stage/clear! this)
+    (cdq.ctx.build-stage-actors/do! ctx))
+  )
