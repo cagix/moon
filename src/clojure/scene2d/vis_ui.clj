@@ -5,6 +5,7 @@
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
             [com.badlogic.gdx.scenes.scene2d.ui.horizontal-group :as horizontal-group]
+            [gdl.scene2d.actor]
             [clojure.scene2d.actor]
             [clojure.scene2d.group]
             [clojure.scene2d.widget-group :as widget-group]
@@ -86,7 +87,7 @@
                         (when ctx
                           (tooltip/set-text! tooltip (tooltip-text ctx)))))))]
   (extend-type com.badlogic.gdx.scenes.scene2d.Actor
-    actor/Tooltip
+    gdl.scene2d.actor/Tooltip
     (add-tooltip! [actor tooltip-text]
       (let [text? (string? tooltip-text)
             label (doto (vis-label/create (if text? tooltip-text ""))

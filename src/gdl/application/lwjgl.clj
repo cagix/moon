@@ -43,6 +43,7 @@
     ['com.badlogic.gdx.Files            'com.badlogic.gdx.files             'gdl.files/Files]
     ['com.badlogic.gdx.files.FileHandle 'com.badlogic.gdx.files.file-handle 'gdl.files.file-handle/FileHandle]
     ['com.badlogic.gdx.utils.Disposable 'com.badlogic.gdx.utils.disposable  'gdl.disposable/Disposable]
+    ['com.badlogic.gdx.scenes.scene2d.Actor 'com.badlogic.gdx.scenes.scene2d.actor 'gdl.scene2d.actor/Actor]
     ]
    )
   (lwjgl-system/set-glfw-library-name! "glfw_async")

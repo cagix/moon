@@ -1,5 +1,5 @@
 (ns clojure.scene2d.vis-ui.text-button
-  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+  (:require [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [clojure.scene2d.vis-ui.table :as table]
