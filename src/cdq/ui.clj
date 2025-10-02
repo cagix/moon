@@ -17,7 +17,8 @@
   (remove-skill! [_ skill-id])
   (show-text-message! [_ message])
   (toggle-entity-info-window! [_])
-  (close-all-windows! [_]))
+  (close-all-windows! [_])
+  (show-error-window! [_ throwable]))
 
 (defprotocol DataViewer
   (show-data-viewer! [_ data]))

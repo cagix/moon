@@ -5,12 +5,14 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message]
             [clojure.graphics.viewport :as viewport]
+            [clojure.repl]
             [clojure.scene2d.vis-ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
-            [gdl.scene2d.actor :as actor])
+            [gdl.scene2d.actor :as actor]
+            [gdl.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
 (defn- stage-find [stage k]
@@ -135,4 +137,19 @@
   (close-all-windows! [stage]
     (->> (stage-find stage "cdq.ui.windows")
          group/children
-         (run! #(actor/set-visible! % false)))))
+         (run! #(actor/set-visible! % false))))
+
+  (show-error-window! [stage throwable]
+    (stage/add! stage (scene2d/build
+                       {:actor/type :actor.type/window
+                        :title "Error"
+                        :rows [[{:actor {:actor/type :actor.type/label
+                                         :label/text (binding [*print-level* 3]
+                                                       (utils/with-err-str
+                                                         (clojure.repl/pst throwable)))}}]]
+                        :modal? true
+                        :close-button? true
+                        :close-on-escape? true
+                        :center? true
+                        :pack? true})))
+  )
