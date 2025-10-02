@@ -54,14 +54,11 @@
            stats/modifiers]}]
   (apply-max mana modifiers :modifier/mana-max))
 
-(defn mana-val [stats]
-  ((get-mana stats) 0))
-
 (defn not-enough-mana? [stats {:keys [skill/cost]}]
-  (> cost (mana-val stats)))
+  (> cost ((get-mana stats) 0)))
 
 (defn pay-mana-cost [stats cost]
-  (let [mana-val (mana-val stats)]
+  (let [mana-val ((get-mana stats) 0)]
     (assert (<= cost mana-val))
     (assoc-in stats [:stats/mana 0] (- mana-val cost))))
 
