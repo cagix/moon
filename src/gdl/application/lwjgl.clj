@@ -17,14 +17,22 @@
   (lwjgl-system/set-glfw-library-name! "glfw_async")
   (application/start! (reify ApplicationListener
                         (create [_]
-                          ; TODO set all globals nil !?
-                          ; pass all globals ?
-                          ; no 'ctx' ?
-                          (create listener
-                                  {:ctx/audio    Gdx/audio
-                                   :ctx/files    Gdx/files
-                                   :ctx/graphics Gdx/graphics
-                                   :ctx/input    Gdx/input}))
+                          (let [state {:ctx/audio    Gdx/audio
+                                       :ctx/files    Gdx/files
+                                       :ctx/graphics Gdx/graphics
+                                       :ctx/input    Gdx/input}]
+                            ;(set! Gdx/app      nil)
+                            ;(set! Gdx/graphics nil)
+                            ;(set! Gdx/audio    nil)
+                            ;(set! Gdx/input    nil)
+                            ;(set! Gdx/files    nil)
+                            ;(set! Gdx/net      nil)
+                            ;(set! Gdx/gl       nil)
+                            ;(set! Gdx/gl20     nil)
+                            ;(set! Gdx/gl30     nil)
+                            ;(set! Gdx/gl31     nil)
+                            ;(set! Gdx/gl32     nil)
+                            (create listener state)))
                         (dispose [_]
                           (dispose listener))
                         (render [_]
