@@ -19,8 +19,10 @@
    k->tick-fn]
   (mapcat (fn [eid]
             (mapcat (fn [[k v]]
-                      (when-let [f (k->tick-fn k)]
-                        (f v eid world)))
+                      (try (when-let [f (k->tick-fn k)]
+                             (f v eid world))
+                           (catch Throwable t
+                             (throw (ex-info "" {:eid eid} t)))))
                     @eid))
           active-entities))
 
