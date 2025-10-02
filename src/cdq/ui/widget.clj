@@ -53,11 +53,12 @@
   (if (map? v)
     (scene2d/build {:actor/type :actor.type/text-button
                     :text "Map"
-                    :on-clicked (fn [_actor {:keys [ctx/stage]}]
-                                  (stage/add! stage (data-viewer {:title "title"
-                                                                  :data v
-                                                                  :width 500
-                                                                  :height 500})))})
+                    :on-clicked (fn [actor _ctx]
+                                  (stage/add! (actor/get-stage actor)
+                                              (data-viewer {:title "title"
+                                                            :data v
+                                                            :width 500
+                                                            :height 500})))})
     {:actor/type :actor.type/label
      :label/text (v->text v)}))
 

@@ -11,8 +11,8 @@
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create-inventory-window*
-  [stage
-   {:keys [title
+  [{:keys [position
+           title
            actor/visible?
            clicked-cell-listener
            slot->texture-region]}]
@@ -62,8 +62,7 @@
       :actor/name "cdq.ui.windows.inventory"
       :actor/visible? visible?
       :pack? true
-      :actor/position [(:viewport/width  (stage/viewport stage))
-                       (:viewport/height (stage/viewport stage))]
+      :actor/position position
       :rows [[{:actor {:actor/name "inventory-cell-table"
                        :actor/type :actor.type/table
                        :rows (concat [[nil nil
@@ -113,9 +112,10 @@
                                                           {:image/file "images/items.png"
                                                            :image/bounds bounds})))]
     (create-inventory-window*
-     stage
      {:title "Inventory"
       :actor/visible? false
+      :position [(:viewport/width  (stage/viewport stage))
+                 (:viewport/height (stage/viewport stage))]
       :clicked-cell-listener (fn [cell]
                                (listener/click
                                 (fn [event _x _y]

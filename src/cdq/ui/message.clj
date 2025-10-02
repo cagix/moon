@@ -2,7 +2,6 @@
   (:require [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
-
 (defn show! [message-actor text]
   (actor/set-user-object! message-actor (atom {:text text
                                                :counter 0})))
@@ -19,10 +18,10 @@
 
 (defn create [_ctx]
   {:actor/type :actor.type/actor
-   :actor/draw (fn [this {:keys [ctx/stage]}]
+   :actor/draw (fn [this _ctx]
                  [(draw-message (actor/user-object this)
-                                (:viewport/width  (stage/viewport stage))
-                                (:viewport/height (stage/viewport stage)))])
+                                (:viewport/width  (stage/viewport (actor/get-stage this)))
+                                (:viewport/height (stage/viewport (actor/get-stage this))))])
    :actor/act (fn [this delta _ctx]
                 (let [state (actor/user-object this)]
                   (when (:text @state)

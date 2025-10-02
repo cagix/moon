@@ -12,9 +12,6 @@
       stage/root
       (group/find-actor k)))
 
-(defn viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
-(defn viewport-height [stage] (:viewport/height (stage/viewport stage)))
-
 (defn inventory-window-visible? [stage]
   (-> stage
       (stage-find "cdq.ui.windows")

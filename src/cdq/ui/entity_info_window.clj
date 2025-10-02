@@ -1,6 +1,6 @@
 (ns cdq.ui.entity-info-window
   (:require [cdq.info :as info]
-            [cdq.stage]
+            [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
@@ -10,7 +10,7 @@
   (let [title "info"
         actor-name "cdq.ui.windows.entity-info"
         visible? false
-        position [(cdq.stage/viewport-width stage) 0]
+        position [(ui/viewport-width stage) 0]
         set-label-text! (fn [{:keys [ctx/world]}]
                           (if-let [eid (:world/mouseover-eid world)]
                             (info/info-text (apply dissoc @eid [:entity/skills

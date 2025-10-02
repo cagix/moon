@@ -13,6 +13,9 @@
 
 (extend-type CtxStage
   ui/Stage
+  (viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
+  (viewport-height [stage] (:viewport/height (stage/viewport stage)))
+
   (get-ctx [this]
     (stage/get-ctx this))
 

@@ -2,9 +2,9 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
-            [cdq.stage]
             [cdq.stage.error-window :as error-window]
             [cdq.throwable :as throwable]
+            [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
@@ -78,7 +78,7 @@
         ; or find a way to find the widget from the context @ save button
         ; should be possible
         widget (scene2d/build (schema/create schema property ctx))
-        actor (create* {:scroll-pane-height (cdq.stage/viewport-height stage)
+        actor (create* {:scroll-pane-height (ui/viewport-height stage)
                         :widget widget
                         :get-widget-value #(schema/value schema widget schemas)
                         :property-id (:property/id property)})]

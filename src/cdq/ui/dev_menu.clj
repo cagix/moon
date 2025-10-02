@@ -44,9 +44,10 @@
                                              "world_fns/uf_caves.edn"
                                              "world_fns/modules.edn"]]
                                {:label (str "Start " world-fn)
-                                :on-click (fn [actor ctx]
-                                            (let [stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
-                                              (ui/rebuild-actors! stage ctx)
+                                :on-click (fn [actor {:keys [ctx/stage] :as ctx}]
+                                            (let [ui stage
+                                                  stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
+                                              (ui/rebuild-actors! ui ctx)
                                               (disposable/dispose! (:ctx/world ctx))
                                               (stage/set-ctx! stage (create-world/do! ctx world-fn))))})}
         update-labels [{:label "elapsed-time"

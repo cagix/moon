@@ -2,6 +2,8 @@
 
 (defprotocol Stage
   (get-ctx [_])
+  (viewport-width [_])
+  (viewport-height [_])
   (mouseover-actor [_ [x y]])
   (actor-information [_ actor])
   (action-bar-selected-skill [_])

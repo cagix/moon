@@ -1,7 +1,7 @@
 (ns cdq.ui.hp-mana-bar
   (:require [cdq.entity.stats :as stats]
             [cdq.graphics.textures :as textures]
-            [cdq.stage :as stage]
+            [cdq.ui :as ui]
             [cdq.val-max :as val-max]
             [gdl.utils :as utils]))
 
@@ -19,7 +19,7 @@
                   hpcontent-file
                   manacontent-file
                   y-mana]} config
-          [x y-mana] [(/ (stage/viewport-width stage) 2)
+          [x y-mana] [(/ (ui/viewport-width stage) 2)
                       y-mana]
           rahmen-tex-reg (textures/texture-region graphics {:image/file rahmen-file})
           y-hp (+ y-mana rahmenh)
