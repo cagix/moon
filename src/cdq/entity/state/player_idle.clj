@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.entity.inventory :as inventory]
             [cdq.input :as input]
-            [cdq.stage :as stage]))
+            [cdq.ui :as ui]))
 
 (defn cursor [player-eid {:keys [ctx/interaction-state]}]
   (let [[k params] interaction-state]
@@ -60,7 +60,7 @@
           :clickable/item
           (let [item (:entity/item @clicked-eid)]
             (cond
-             (stage/inventory-window-visible? stage)
+             (ui/inventory-window-visible? stage)
              [[:tx/sound "bfxr_takeit"]
               [:tx/mark-destroyed clicked-eid]
               [:tx/event player-eid :pickup-item item]]
