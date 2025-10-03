@@ -1,7 +1,7 @@
 (ns cdq.entity.state.npc-idle.tick
-  (:require [cdq.creature :as creature]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity.body :as body]
+            [cdq.entity.skills.skill :as skill]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
             [cdq.world.potential-fields-movement :as potential-fields-movement]))
@@ -27,7 +27,7 @@
        vals
        (sort-by :skill/cost)
        reverse
-       (filter #(and (= :usable (creature/skill-usable-state entity % effect-ctx))
+       (filter #(and (= :usable (skill/usable-state % entity effect-ctx))
                      (->> (:skill/effects %)
                           (filter (fn [e] (effect/applicable? e effect-ctx)))
                           (some (fn [e] (effect/useful? e effect-ctx world))))))

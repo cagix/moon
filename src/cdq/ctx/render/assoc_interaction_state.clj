@@ -1,7 +1,7 @@
 (ns cdq.ctx.render.assoc-interaction-state
-  (:require [cdq.creature :as creature]
+  (:require [cdq.entity.body :as body]
+            [cdq.entity.skills.skill :as skill]
             [cdq.input :as input]
-            [cdq.entity.body :as body]
             [cdq.ui :as ui]
             [gdl.math.vector2 :as v]))
 
@@ -38,7 +38,7 @@
      (let [entity @player-eid
            skill (skill-id (:entity/skills entity))
            effect-ctx (player-effect-ctx mouseover-eid world-mouse-position player-eid)
-           state (creature/skill-usable-state entity skill effect-ctx)]
+           state (skill/usable-state skill entity effect-ctx)]
        (if (= state :usable)
          [:interaction-state.skill/usable [skill effect-ctx]]
          [:interaction-state.skill/not-usable state]))
