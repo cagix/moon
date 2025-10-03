@@ -1,6 +1,10 @@
 (ns gdl.application.lwjgl
+  (:require gdl.audio
+            gdl.audio.sound)
   (:import (com.badlogic.gdx ApplicationListener
+                             Audio
                              Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration)))
@@ -33,12 +37,6 @@
 (defn start! [listener config]
   (extend-types
    [
-    ['com.badlogic.gdx.Audio
-     'com.badlogic.gdx.audio
-     'gdl.audio/Audio]
-    ['com.badlogic.gdx.audio.Sound
-     'com.badlogic.gdx.audio.sound
-     'gdl.audio.sound/Sound]
     ['com.badlogic.gdx.Files
      'com.badlogic.gdx.files
      'gdl.files/Files]
@@ -85,3 +83,14 @@
                                           (:height (:windowed-mode config)))
                         (.setTitle (:title config))
                         (.setForegroundFPS (:foreground-fps config)))))
+
+
+(extend-type Audio
+  gdl.audio/Audio
+  (new-sound [this file-handle]
+    (.newSound this file-handle)))
+
+(extend-type Sound
+  gdl.audio.sound/Sound
+  (play! [this]
+    (.play this)))
