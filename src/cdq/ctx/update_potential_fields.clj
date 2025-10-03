@@ -1,5 +1,5 @@
 (ns cdq.ctx.update-potential-fields
-  (:require [cdq.world.update-potential-fields :as update-potential-fields]))
+  (:require [cdq.world :as world]))
 
 (defn do!
   [{:keys [ctx/world]
@@ -7,5 +7,5 @@
   (if (:world/paused? world)
     ctx
     (do
-     (update-potential-fields/do! world)
+     (world/update-potential-fields! world)
      ctx)))

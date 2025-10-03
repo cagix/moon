@@ -2,7 +2,7 @@
   (:require [gdl.txs :as txs]
             [cdq.throwable :as throwable]
             [cdq.ui :as ui]
-            [cdq.world.tick-entities :as tick-entities]))
+            [cdq.world :as world]))
 
 (defn do!
   [{:keys [ctx/stage
@@ -11,7 +11,7 @@
   (if (:world/paused? world)
     ctx
     (do (try
-         (txs/handle! ctx (tick-entities/do! world))
+         (txs/handle! ctx (world/tick-entities! world))
          (catch Throwable t
            (throwable/pretty-pst t)
            (ui/show-error-window! stage t)))

@@ -1,11 +1,14 @@
 (ns cdq.ctx.create-world
   (:require [cdq.db :as db]
             [cdq.graphics.textures :as textures]
+            [cdq.world :as world]
             [cdq.world.assoc-entity-spawn-schema :as assoc-entity-spawn-schema]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.create-fsms :as create-fsms]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
+            [cdq.world.tick-entities :as tick-entities]
+            [cdq.world.update-potential-fields :as update-potential-fields]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -84,7 +87,23 @@
   disposable/Disposable
   (dispose! [{:keys [world/tiled-map]}]
     (assert tiled-map) ; only dispose after world was created
-    (disposable/dispose! tiled-map)))
+    (disposable/dispose! tiled-map))
+
+  world/World
+  (cache-active-entities [{:keys [world/content-grid
+                                  world/player-eid]
+                           :as world}]
+    (assoc world
+           :world/active-entities
+           (content-grid/active-entities content-grid
+                                         @player-eid)))
+
+  (update-potential-fields! [this]
+    (update-potential-fields/do! this))
+
+  (tick-entities! [this]
+    (tick-entities/do! this))
+  )
 
 (defn- assoc-state [world {:keys [tiled-map
                                   start-position]}]
@@ -166,11 +185,11 @@
            ctx/world]
     :as ctx}]
   (txs/handle! ctx
-                   [[:tx/spawn-creature (let [{:keys [creature-id
-                                                      components]} (:world/player-components world)]
-                                          {:position (mapv (partial + 0.5) (:world/start-position world))
-                                           :creature-property (db/build db creature-id)
-                                           :components components})]])
+               [[:tx/spawn-creature (let [{:keys [creature-id
+                                                  components]} (:world/player-components world)]
+                                      {:position (mapv (partial + 0.5) (:world/start-position world))
+                                       :creature-property (db/build db creature-id)
+                                       :components components})]])
   (let [eid (get @(:world/entity-ids world) 1)]
     (assert (:entity/player? @eid))
     (assoc-in ctx [:ctx/world :world/player-eid] eid)))
