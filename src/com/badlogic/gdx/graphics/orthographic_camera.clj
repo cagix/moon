@@ -1,5 +1,6 @@
 (ns com.badlogic.gdx.graphics.orthographic-camera
-  (:require [com.badlogic.gdx.math.vector3 :as vector3])
+  (:require [com.badlogic.gdx.math.vector3 :as vector3]
+            [gdl.graphics.orthographic-camera])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics OrthographicCamera)))
 
@@ -19,11 +20,13 @@
    (doto (create)
      (OrthographicCamera/.setToOrtho y-down? world-width world-height))))
 
-(defn set-position! [^OrthographicCamera this [x y]]
-  (set! (.x (.position this)) (float x))
-  (set! (.y (.position this)) (float y))
-  (.update this))
+(extend-type OrthographicCamera
+  gdl.graphics.orthographic-camera/Camera
+  (set-position! [this [x y]]
+    (set! (.x (.position this)) (float x))
+    (set! (.y (.position this)) (float y))
+    (.update this))
 
-(defn set-zoom! [^OrthographicCamera this amount]
-  (set! (.zoom this) amount)
-  (.update this))
+  (set-zoom! [this amount]
+    (set! (.zoom this) amount)
+    (.update this)))
