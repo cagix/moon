@@ -1,14 +1,18 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [com.badlogic.gdx "0.1"]
-                 [com.badlogic.gdx.backends.lwjgl3 "0.1"]
-                 [com.badlogic.gdx.graphics.g2d.freetype "0.1"]
-                 [com.kotcrab.vis.ui "0.1"]
-                 [space.earlygrey.shape-drawer "0.1"]
+                 [com.badlogicgames.gdx/gdx                   "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-platform          "1.13.5" :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
+                 [com.kotcrab.vis/vis-ui "1.5.2"]
+                 [space.earlygrey/shapedrawer "2.5.0"]
 
-                 [cdq.malli "0.1"]
+                 [metosin/malli "0.13.0"]
+
                  [clojure.rand "0.1"]
+
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
                  [org.clj-commons/pretty "3.2.0"]

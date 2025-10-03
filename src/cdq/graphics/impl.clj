@@ -18,9 +18,9 @@
             [gdl.files.utils :as files-utils]
             [gdl.graphics.color]
             [gdl.graphics.orthographic-camera :as camera]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.viewport :as viewport]
-            [gdl.math :refer [degree->radians]]
-            [space.earlygrey.shape-drawer :as sd]))
+            [gdl.math :refer [degree->radians]]))
 
 (defn- create-world-viewport
   [{:keys [graphics/core
