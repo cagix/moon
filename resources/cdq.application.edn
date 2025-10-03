@@ -65,7 +65,11 @@
                    [set-camera-on-player]
                    [clear-screen]
                    [draw-world-map]
-                   [draw-on-world-viewport]
+                   [draw-on-world-viewport [cdq.ctx.draw-tile-grid/do!
+                                            cdq.ctx.draw-cell-debug/do!
+                                            cdq.ctx.draw-entities/do!
+                                            cdq.ctx.geom-test/do!
+                                            cdq.ctx.highlight-mouseover-tile/do!]]
                    [assoc-interaction-state]
                    [set-cursor]
                    [player-state-handle-input]
