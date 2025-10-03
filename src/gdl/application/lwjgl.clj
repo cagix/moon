@@ -44,6 +44,9 @@
     ['com.badlogic.gdx.graphics.OrthographicCamera
      'com.badlogic.gdx.graphics.orthographic-camera
      'gdl.graphics.orthographic-camera/Camera]
+    ['com.badlogic.gdx.utils.viewport.Viewport
+     'com.badlogic.gdx.utils.viewport
+     'gdl.graphics.viewport/Viewport]
     ['com.badlogic.gdx.files.FileHandle 'com.badlogic.gdx.files.file-handle 'gdl.files.file-handle/FileHandle]
     ['com.badlogic.gdx.utils.Disposable 'com.badlogic.gdx.utils.disposable  'gdl.disposable/Disposable]
     ['com.badlogic.gdx.scenes.scene2d.Actor 'com.badlogic.gdx.scenes.scene2d.actor 'gdl.scene2d.actor/Actor]

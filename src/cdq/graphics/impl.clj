@@ -1,6 +1,5 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
@@ -19,6 +18,7 @@
             [gdl.files.utils :as files-utils]
             [gdl.graphics.color]
             [gdl.graphics.orthographic-camera :as camera]
+            [gdl.graphics.viewport :as viewport]
             [gdl.math :refer [degree->radians]]
             [space.earlygrey.shape-drawer :as sd]))
 
@@ -305,12 +305,12 @@
   (unproject-ui [{:keys [graphics/ui-viewport]
                   :as graphics}
                  position]
-    (assoc graphics :graphics/ui-mouse-position (viewport/unproject ui-viewport position)))
+    (assoc graphics :graphics/ui-mouse-position (viewport/unproject-clamp ui-viewport position)))
 
   (unproject-world [{:keys [graphics/world-viewport]
                      :as graphics}
                     position]
-    (assoc graphics :graphics/world-mouse-position (viewport/unproject world-viewport position)))
+    (assoc graphics :graphics/world-mouse-position (viewport/unproject-clamp world-viewport position)))
 
   (update-viewports! [{:keys [graphics/ui-viewport
                               graphics/world-viewport]} width height]

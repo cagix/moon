@@ -5,7 +5,7 @@
             [clojure.edn :as edn]
             [gdl.graphics.color :as color]
             [gdl.graphics.orthographic-camera :as camera]
-            [clojure.graphics.viewport]
+            [gdl.graphics.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
             [gdl.files.utils :as files-utils]
@@ -182,8 +182,8 @@
   [{:keys [ctx/ui-viewport
            ctx/world-viewport]}
    width height]
-  (clojure.graphics.viewport/update! ui-viewport    width height {:center? true})
-  (clojure.graphics.viewport/update! world-viewport width height {:center? false}))
+  (viewport/update! ui-viewport    width height {:center? true})
+  (viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
 

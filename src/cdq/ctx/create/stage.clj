@@ -4,7 +4,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
-            [clojure.graphics.viewport :as viewport]
+            [gdl.graphics.viewport :as viewport]
             [clojure.repl]
             [clojure.scene2d.vis-ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
@@ -61,7 +61,7 @@
 
   (mouseover-actor [this position]
     (stage/hit this
-               (viewport/unproject (stage/viewport this) position)))
+               (viewport/unproject-clamp (stage/viewport this) position)))
 
   (actor-information [_ actor]
     (let [inventory-slot (inventory-window/cell-with-item? actor)]
