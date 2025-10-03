@@ -12,6 +12,7 @@
             [cdq.graphics.world-viewport :as world-viewport]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
+            [gdl.disposable :as disposable]
             [gdl.files :as files]
             [gdl.files.utils :as files-utils]
             [com.badlogic.gdx.graphics :as graphics]
@@ -21,6 +22,17 @@
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]))
 
 (defrecord RGraphics []
+  disposable/Disposable
+  (dispose! [{:keys [graphics/batch
+                     graphics/cursors
+                     graphics/default-font
+                     graphics/shape-drawer-texture
+                     graphics/textures]}]
+    (disposable/dispose! batch)
+    (run! disposable/dispose! (vals cursors))
+    (disposable/dispose! default-font)
+    (disposable/dispose! shape-drawer-texture)
+    (run! disposable/dispose! (vals textures)))
   cdq.graphics/PGraphics
   (clear! [{:keys [graphics/core]} [r g b a]]
     (graphics/clear! core r g b a))
