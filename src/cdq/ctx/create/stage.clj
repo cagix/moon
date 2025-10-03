@@ -5,12 +5,10 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [gdl.graphics.viewport :as viewport]
-            [clojure.scene2d.vis-ui.window :as window]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
@@ -62,14 +60,6 @@
   (mouseover-actor [this position]
     (stage/hit this
                (viewport/unproject (stage/viewport this) position)))
-
-  (actor-information [_ actor]
-    (let [inventory-slot (inventory-window/cell-with-item? actor)]
-      (cond
-       inventory-slot            [:mouseover-actor/inventory-cell inventory-slot]
-       (window/title-bar? actor) [:mouseover-actor/window-title-bar]
-       (button/is?        actor) [:mouseover-actor/button]
-       :else                     [:mouseover-actor/unspecified])))
 
   (action-bar-selected-skill [this]
     (-> this

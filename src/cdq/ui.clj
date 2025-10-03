@@ -5,7 +5,6 @@
   (viewport-width [_])
   (viewport-height [_])
   (mouseover-actor [_ [x y]])
-  (actor-information [_ actor])
   (action-bar-selected-skill [_])
   (rebuild-actors! [_ ctx])
   (inventory-window-visible? [_])
@@ -18,6 +17,9 @@
   (show-text-message! [_ message])
   (toggle-entity-info-window! [_])
   (close-all-windows! [_]))
+
+(defprotocol ActorInformation
+  (actor-information [_ actor]))
 
 (defprotocol ErrorWindow
   (show-error-window! [_ throwable]))
