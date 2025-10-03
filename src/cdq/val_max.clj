@@ -1,11 +1,6 @@
 (ns cdq.val-max
   (:require [cdq.malli :as m]))
 
-; What is the use case of this ?
-; How is it used?
-; Maybe I can find another way
-; stats ops pre/post conditions ? after-effects ?
-; ask chatpt?
 (def schema
   (m/schema [:and
              [:vector {:min 2 :max 2} [:int {:min 0}]]
