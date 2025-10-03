@@ -26,8 +26,3 @@
         image-widget (group/find-actor cell-widget "image-widget")]
     (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
     (actor/remove-tooltip! cell-widget)))
-
-(defn cell-with-item? [actor]
-  (and (actor/parent actor)
-       (= "inventory-cell" (actor/get-name (actor/parent actor)))
-       (actor/user-object (actor/parent actor))))
