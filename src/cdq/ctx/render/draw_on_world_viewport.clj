@@ -1,13 +1,12 @@
 (ns cdq.ctx.render.draw-on-world-viewport
-  (:require [cdq.graphics.draws :as draws]
-            [cdq.graphics.draw-on-world-viewport :as draw-on-world-viewport]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}
    draw-fns]
-  (draw-on-world-viewport/do! graphics
-                              (fn []
-                                (doseq [f (map requiring-resolve draw-fns)]
-                                  (draws/handle! graphics (f ctx)))))
+  (graphics/draw-on-world-viewport! graphics
+                                    (fn []
+                                      (doseq [f (map requiring-resolve draw-fns)]
+                                        (graphics/handle-draws! graphics (f ctx)))))
   ctx)

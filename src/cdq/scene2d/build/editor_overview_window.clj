@@ -1,7 +1,7 @@
 (ns cdq.scene2d.build.editor-overview-window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.graphics.textures :as textures]
+            [cdq.graphics :as graphics]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]))
 
 (def ^:private property-type->overview-table-props
@@ -57,7 +57,7 @@
     (->> (db/all-raw db property-type)
          (sort-by sort-by-fn)
          (map (fn [property]
-                {:texture-region (textures/texture-region graphics (property/image property))
+                {:texture-region (graphics/texture-region graphics (property/image property))
                  :on-clicked (fn [actor ctx]
                                (clicked-id-fn actor (:property/id property) ctx))
                  :tooltip (property/tooltip property)

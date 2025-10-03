@@ -1,7 +1,7 @@
 (ns cdq.db.schema.one-to-one
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.graphics.textures :as textures]
+            [cdq.graphics :as graphics]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
@@ -46,7 +46,7 @@
                                                     (redo-rows ctx id))})))}})]
       [(when property-id
          (let [property (db/get-raw db property-id)
-               texture-region (textures/texture-region graphics (property/image property))
+               texture-region (graphics/texture-region graphics (property/image property))
                image-widget (scene2d/build
                              {:actor/type :actor.type/image
                               :image/object texture-region

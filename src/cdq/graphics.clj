@@ -17,3 +17,12 @@
   (update-viewports! [_ width height])
   (unproject-ui [_ position])
   (unproject-world [_ position]))
+
+(defprotocol Textures
+  (texture-region [_ image]))
+
+(defprotocol DrawOnWorldViewport
+  (draw-on-world-viewport! [_ f]))
+
+(defprotocol Draws
+  (handle-draws! [_ draws]))

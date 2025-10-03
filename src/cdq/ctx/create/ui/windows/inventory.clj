@@ -2,7 +2,7 @@
   (:require [gdl.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
-            [cdq.graphics.textures :as textures]
+            [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
@@ -109,7 +109,7 @@
                                              (* sprite-y height)
                                              width
                                              height]]
-                                 (textures/texture-region graphics
+                                 (graphics/texture-region graphics
                                                           {:image/file "images/items.png"
                                                            :image/bounds bounds})))]
     (create-inventory-window*

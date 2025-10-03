@@ -1,5 +1,5 @@
 (ns cdq.ctx.create.stage
-  (:require [cdq.graphics.draws :as draws]
+  (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -27,7 +27,7 @@
   (extend-type (class ctx)
     ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
-      (draws/handle! graphics draws)))
+      (graphics/handle-draws! graphics draws)))
   (let [stage (stage/create (:graphics/ui-viewport graphics)
                             (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)

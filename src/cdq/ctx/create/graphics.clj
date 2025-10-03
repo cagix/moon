@@ -1,6 +1,8 @@
 (ns cdq.ctx.create.graphics
   (:require [cdq.graphics]
             [cdq.graphics.cursors :as cursors]
+            cdq.graphics.draws
+            [cdq.graphics.draw-on-world-viewport :as draw-on-world-viewport]
             [cdq.graphics.font :as font]
             [cdq.graphics.shape-drawer :as shape-drawer]
             [cdq.graphics.shape-drawer-texture :as shape-drawer-texture]
@@ -110,7 +112,9 @@
       (unit-scale/create world-unit-scale)
       tiled-map/renderer
       (ui-viewport/create ui-viewport)
-      (world-viewport/create world-viewport)))
+      (world-viewport/create world-viewport)
+      draw-on-world-viewport/create
+      cdq.graphics.draws/create))
 
 (defn- handle-files
   [files {:keys [colors

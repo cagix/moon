@@ -1,12 +1,11 @@
 (ns cdq.graphics.draws
-  (:require [space.earlygrey.shape-drawer :as sd]
+  (:require [cdq.graphics :as graphics]
+            [space.earlygrey.shape-drawer :as sd]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.math :refer [degree->radians]]))
-
-(declare handle!)
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn [{:keys [graphics/shape-drawer]
@@ -14,7 +13,7 @@
                                width
                                draws]
                             (sd/with-line-width shape-drawer width
-                              (handle! graphics draws)))
+                              (graphics/handle-draws! graphics draws)))
    :draw/grid             (fn
                             [graphics leftx bottomy gridw gridh cellw cellh color]
                             (let [w (* (float gridw) (float cellw))
@@ -23,12 +22,12 @@
                                   rightx (+ (float leftx) (float w))]
                               (doseq [idx (range (inc (float gridw)))
                                       :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-                                (handle! graphics
-                                         [[:draw/line [linex topy] [linex bottomy] color]]))
+                                (graphics/handle-draws! graphics
+                                                        [[:draw/line [linex topy] [linex bottomy] color]]))
                               (doseq [idx (range (inc (float gridh)))
                                       :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-                                (handle! graphics
-                                         [[:draw/line [leftx liney] [rightx liney] color]]))))
+                                (graphics/handle-draws! graphics
+                                                        [[:draw/line [leftx liney] [rightx liney] color]]))))
    :draw/texture-region   (fn [{:keys [graphics/batch
                                        graphics/unit-scale
                                        graphics/world-unit-scale]}
@@ -106,7 +105,11 @@
                             (sd/set-color! shape-drawer (color/float-bits color))
                             (sd/line! shape-drawer sx sy ex ey))})
 
-(defn handle! [graphics draws]
-  (doseq [{k 0 :as component} draws
-          :when component]
-    (apply (draw-fns k) graphics (rest component))))
+(defn create [graphics]
+  (extend-type (class graphics)
+    graphics/Draws
+    (handle-draws! [graphics draws]
+      (doseq [{k 0 :as component} draws
+              :when component]
+        (apply (draw-fns k) graphics (rest component)))))
+  graphics)
