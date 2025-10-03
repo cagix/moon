@@ -4,6 +4,7 @@
                           :height 900}
           :foreground-fps 60}
  :requires [cdq.info-impl
+            clojure.scene2d.builds
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table
