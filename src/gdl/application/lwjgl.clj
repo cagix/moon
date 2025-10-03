@@ -23,31 +23,7 @@
   (pause [_])
   (resume [_]))
 
-(defn- extend-types [impls]
-  (doseq [[atype-sym implementation-ns-sym protocol-sym] impls]
-    (try (let [atype (eval atype-sym)
-               _ (assert (class atype))
-               protocol-var (requiring-resolve protocol-sym)
-               protocol @protocol-var
-               method-map (update-vals (:sigs protocol)
-                                       (fn [{:keys [name]}]
-                                         (requiring-resolve (symbol (str implementation-ns-sym "/" name)))))]
-           (extend atype protocol method-map))
-         (catch Throwable t
-           (throw (ex-info "Cant extend"
-                           {:atype-sym atype-sym
-                            :implementation-ns-sym implementation-ns-sym
-                            :protocol-sym protocol-sym}
-                           t))))))
-
 (defn start! [listener config]
-  (extend-types
-   [
-    ['com.badlogic.gdx.scenes.scene2d.Actor
-     'clojure.scene2d.tooltip
-     'gdl.scene2d.actor/Tooltip]
-    ]
-   )
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]

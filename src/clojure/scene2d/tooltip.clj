@@ -5,20 +5,22 @@
             [com.badlogic.gdx.utils.align :as align]
             [gdl.scene2d.actor :as actor]))
 
-(defn add-tooltip! [actor tooltip-text]
-  (tooltip/create {:update-fn (fn [tooltip]
-                                (when-not (string? tooltip-text)
-                                  (let [actor (tooltip/target tooltip)
-                                        ctx (when-let [stage (actor/get-stage actor)]
-                                              (stage/get-ctx stage))]
-                                    (when ctx
-                                      (tooltip/set-text! tooltip (tooltip-text ctx))))))
-                   :target actor
-                   :content (doto (vis-label/create (if (string? tooltip-text)
-                                                      tooltip-text
-                                                      ""))
-                              (.setAlignment (align/k->value :center)))})
-  actor)
+(extend-type com.badlogic.gdx.scenes.scene2d.Actor
+  gdl.scene2d.actor/Tooltip
+  (add-tooltip! [actor tooltip-text]
+    (tooltip/create {:update-fn (fn [tooltip]
+                                  (when-not (string? tooltip-text)
+                                    (let [actor (tooltip/target tooltip)
+                                          ctx (when-let [stage (actor/get-stage actor)]
+                                                (stage/get-ctx stage))]
+                                      (when ctx
+                                        (tooltip/set-text! tooltip (tooltip-text ctx))))))
+                     :target actor
+                     :content (doto (vis-label/create (if (string? tooltip-text)
+                                                        tooltip-text
+                                                        ""))
+                                (.setAlignment (align/k->value :center)))})
+    actor)
 
-(defn remove-tooltip! [actor]
-  (tooltip/remove! actor))
+  (remove-tooltip! [actor]
+    (tooltip/remove! actor)))

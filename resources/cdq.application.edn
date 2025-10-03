@@ -6,7 +6,9 @@
  :requires [cdq.info-impl
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
-            cdq.scene2d.build.map-widget-table]
+            cdq.scene2d.build.map-widget-table
+            clojure.scene2d.tooltip
+            ]
  :create-pipeline [[record]
                    [handle-txs]
                    [db]
