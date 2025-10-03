@@ -35,6 +35,7 @@
     (disposable/dispose! default-font)
     (disposable/dispose! shape-drawer-texture)
     (run! disposable/dispose! (vals textures)))
+
   cdq.graphics/PGraphics
   (clear! [{:keys [graphics/core]} [r g b a]]
     (graphics/clear! core r g b a))

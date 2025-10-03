@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
+            [cdq.world.create.grid]
             [cdq.world.assoc-entity-spawn-schema :as assoc-entity-spawn-schema]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.create-fsms :as create-fsms]
