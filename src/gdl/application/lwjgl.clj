@@ -1,12 +1,16 @@
 (ns gdl.application.lwjgl
   (:require gdl.audio
-            gdl.audio.sound)
+            gdl.audio.sound
+            gdl.files
+            gdl.files.file-handle)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
+                             Files
                              Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
            (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
@@ -37,18 +41,12 @@
 (defn start! [listener config]
   (extend-types
    [
-    ['com.badlogic.gdx.Files
-     'com.badlogic.gdx.files
-     'gdl.files/Files]
     ['com.badlogic.gdx.graphics.OrthographicCamera
      'com.badlogic.gdx.graphics.orthographic-camera
      'gdl.graphics.orthographic-camera/Camera]
     ['com.badlogic.gdx.utils.viewport.Viewport
      'com.badlogic.gdx.utils.viewport
      'gdl.graphics.viewport/Viewport]
-    ['com.badlogic.gdx.files.FileHandle
-     'com.badlogic.gdx.files.file-handle
-     'gdl.files.file-handle/FileHandle]
     ['com.badlogic.gdx.utils.Disposable
      'com.badlogic.gdx.utils.disposable
      'gdl.disposable/Disposable]
@@ -94,3 +92,15 @@
   gdl.audio.sound/Sound
   (play! [this]
     (.play this)))
+
+(extend-type Files
+  gdl.files/Files
+  (internal [this path]
+    (.internal this path)))
+
+(extend FileHandle
+  gdl.files.file-handle/FileHandle
+  {:list       FileHandle/.list
+   :directory? FileHandle/.isDirectory
+   :extension  FileHandle/.extension
+   :path       FileHandle/.path})
