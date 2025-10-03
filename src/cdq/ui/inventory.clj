@@ -1,6 +1,6 @@
 (ns cdq.ui.inventory
   (:require [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]))
 

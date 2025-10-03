@@ -5,7 +5,7 @@
             [com.kotcrab.vis.ui.widget.popup-menu :as popup-menu]
             [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [com.badlogic.gdx.scenes.scene2d.ui.table :as table]

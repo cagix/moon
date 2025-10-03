@@ -7,7 +7,7 @@
             [gdl.graphics.viewport :as viewport]
             [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])

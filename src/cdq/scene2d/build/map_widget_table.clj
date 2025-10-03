@@ -6,7 +6,7 @@
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))

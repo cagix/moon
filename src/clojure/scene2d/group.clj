@@ -1,7 +1,7 @@
 (ns clojure.scene2d.group
   (:require [gdl.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]))
+            [gdl.scene2d.group :as group]))
 
 (defn set-opts! [group opts]
   (run! (fn [actor-or-decl]

@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.map-widget-table
   (:require [cdq.db.schema :as schema]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]))
+            [gdl.scene2d.group :as group]))
 
 (defn get-value [table schemas]
   (into {}

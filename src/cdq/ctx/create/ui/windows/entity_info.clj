@@ -2,7 +2,7 @@
   (:require [cdq.info :as info]
             [cdq.ui :as ui]
             [gdl.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 

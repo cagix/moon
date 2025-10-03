@@ -2,7 +2,7 @@
   (:require [cdq.ui.action-bar :as action-bar]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [gdl.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx]
@@ -54,4 +54,3 @@
       (actor/remove!                     button)
       (button-group/remove! button-group button)
       nil)))
-
