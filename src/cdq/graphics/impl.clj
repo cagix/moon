@@ -1,6 +1,6 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [clojure.graphics.color]
+            [gdl.graphics.color]
             [clojure.graphics.freetype :as freetype]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
@@ -81,7 +81,7 @@
   [{:keys [graphics/core]
     :as graphics}]
   (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
-                                                                (pixmap/set-color! clojure.graphics.color/white)
+                                                                (pixmap/set-color! gdl.graphics.color/white)
                                                                 (pixmap/draw-pixel! 0 0))
                                                        texture (pixmap/texture pixmap)]
                                                    (dispose! pixmap)
@@ -234,7 +234,7 @@
                             f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch clojure.graphics.color/white)
+    (batch/set-color! batch gdl.graphics.color/white)
     (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale

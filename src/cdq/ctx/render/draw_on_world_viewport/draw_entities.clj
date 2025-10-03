@@ -1,7 +1,7 @@
 (ns cdq.ctx.render.draw-on-world-viewport.draw-entities
   (:require [cdq.graphics :as graphics]
             [cdq.world.raycaster :as raycaster]
-            [clojure.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [gdl.throwable :as throwable]
             [gdl.utils :as utils]))
 
