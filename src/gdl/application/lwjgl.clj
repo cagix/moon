@@ -1,9 +1,9 @@
 (ns gdl.application.lwjgl
   (:require [com.badlogic.gdx.backends.lwjgl3.application :as application]
-            [com.badlogic.gdx.backends.lwjgl3.application.configuration :as config]
-            [org.lwjgl.system.configuration :as lwjgl-system])
+            [com.badlogic.gdx.backends.lwjgl3.application.configuration :as config])
   (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)))
+                             Gdx)
+           (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
   (create [_ context])
@@ -62,7 +62,7 @@
      'gdl.scene2d.actor/Tooltip]
     ]
    )
-  (lwjgl-system/set-glfw-library-name! "glfw_async")
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (application/start! (reify ApplicationListener
                         (create [_]
                           (let [state {:ctx/audio    Gdx/audio
