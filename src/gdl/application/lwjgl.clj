@@ -1,8 +1,8 @@
 (ns gdl.application.lwjgl
-  (:require [com.badlogic.gdx.backends.lwjgl3.application :as application]
-            [com.badlogic.gdx.backends.lwjgl3.application.configuration :as config])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
@@ -63,7 +63,7 @@
     ]
    )
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (application/start! (reify ApplicationListener
+  (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
                           (let [state {:ctx/audio    Gdx/audio
                                        :ctx/files    Gdx/files
@@ -80,4 +80,8 @@
                           (pause listener))
                         (resume [_]
                           (resume listener)))
-                      (config/create config)))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setWindowedMode (:width (:windowed-mode config))
+                                          (:height (:windowed-mode config)))
+                        (.setTitle (:title config))
+                        (.setForegroundFPS (:foreground-fps config)))))
