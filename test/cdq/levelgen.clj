@@ -3,7 +3,7 @@
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [clojure.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport]
             [clojure.java.io :as io]

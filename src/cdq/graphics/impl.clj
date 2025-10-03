@@ -1,22 +1,24 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [gdl.graphics.color]
-            [clojure.graphics.freetype :as freetype]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
+            [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
+            [com.badlogic.gdx.graphics.g2d.freetype.parameter :as parameter]
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
             [com.badlogic.gdx.graphics.texture :as texture]
+            [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [gdl.disposable :as disposable :refer [dispose!]]
             [gdl.files :as files]
             [gdl.files.utils :as files-utils]
+            [gdl.graphics.color]
             [gdl.math :refer [degree->radians]]
             [space.earlygrey.shape-drawer :as sd]))
 
@@ -94,8 +96,22 @@
   (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defn- create-font [graphics default-font]
-  (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
-                                                                 (:params default-font))))
+  (assoc graphics :graphics/default-font
+         (let [file-handle (:file-handle default-font)
+               {:keys [size
+                       quality-scaling
+                       enable-markup?
+                       use-integer-positions?
+                       min-filter
+                       mag-filter]} (:params default-font)]
+           (let [generator (generator/create file-handle)
+                 font (generator/generate-font generator
+                                               (parameter/create {:size (* size quality-scaling)
+                                                                  :min-filter (texture-filter/k->value min-filter)
+                                                                  :mag-filter (texture-filter/k->value mag-filter)}))]
+             (bitmap-font/configure! font {:scale (/ quality-scaling)
+                                           :enable-markup? enable-markup?
+                                           :use-integer-positions? use-integer-positions?})))))
 
 (defn- create-cursors
   [{:keys [graphics/core]
