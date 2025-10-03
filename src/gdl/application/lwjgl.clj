@@ -49,20 +49,17 @@
                         (.setForegroundFPS (:foreground-fps config)))))
 
 
-(extend-type Audio
+(extend Audio
   gdl.audio/Audio
-  (new-sound [this file-handle]
-    (.newSound this file-handle)))
+  {:new-sound Audio/.newSound})
 
-(extend-type Sound
+(extend Sound
   gdl.audio.sound/Sound
-  (play! [this]
-    (.play this)))
+  {:play! Sound/.play})
 
-(extend-type Files
+(extend Files
   gdl.files/Files
-  (internal [this path]
-    (.internal this path)))
+  {:internal Files/.internal})
 
 (extend FileHandle
   gdl.files.file-handle/FileHandle
