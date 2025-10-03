@@ -7,7 +7,9 @@
   (enter        [_ eid])
   (exit         [_ eid ctx])
   (clicked-inventory-cell [_ eid cell])
-  (draw-gui-view [_ eid ctx]))
+  ; cdq.ctx.create.ui.player-state-draw/state->draw-ui-view
+  ; cdq.ctx.render.assoc-paused/state->pause-game?
+  )
 
 (def ^:private fn->k->var
   '{
@@ -36,14 +38,12 @@
              :player-moving :cursors/walking
              :stunned :cursors/denied}
 
-    :handle-input {:player-idle           cdq.entity.state.player-idle/handle-input
-                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor/handle-input
-                   :player-moving         cdq.entity.state.player-moving/handle-input}
+    :handle-input {:player-idle           cdq.entity.state.player-idle.handle-input/txs
+                   :player-item-on-cursor cdq.entity.state.player-item-on-cursor.handle-input/txs
+                   :player-moving         cdq.entity.state.player-moving.handle-input/txs}
 
-    :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle/clicked-inventory-cell
-                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor/clicked-inventory-cell}
-
-    :draw-gui-view {:player-item-on-cursor cdq.entity.state.player-item-on-cursor/draw-gui-view}
+    :clicked-inventory-cell {:player-idle           cdq.entity.state.player-idle.clicked-inventory-cell/txs
+                             :player-item-on-cursor cdq.entity.state.player-item-on-cursor.clicked-inventory-cell/txs}
     })
 
 (alter-var-root #'fn->k->var update-vals
@@ -85,8 +85,4 @@
 
    :clicked-inventory-cell (fn [[k v] eid cell]
                              (when-let [f (k (:clicked-inventory-cell fn->k->var))]
-                               (f eid cell)))
-
-   :draw-gui-view (fn [[k] eid ctx]
-                    (when-let [f (k (:draw-gui-view fn->k->var))]
-                      (f eid ctx)))})
+                               (f eid cell)))})

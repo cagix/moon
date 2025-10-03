@@ -3,7 +3,7 @@
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
-            [cdq.ui.message]
+            [cdq.ui.message :as message]
             [clojure.graphics.viewport :as viewport]
             [clojure.repl]
             [clojure.scene2d.vis-ui.window :as window]
@@ -148,7 +148,7 @@
     (-> stage
         stage/root
         (group/find-actor "player-message")
-        (cdq.ui.message/show! message)))
+        (message/show! message)))
 
   (toggle-entity-info-window! [stage]
     (-> stage

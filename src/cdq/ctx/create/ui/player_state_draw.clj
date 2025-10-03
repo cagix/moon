@@ -1,5 +1,8 @@
-(ns cdq.ctx.create.ui.player-state-draw
-  (:require [cdq.entity.state :as state]))
+(ns cdq.ctx.create.ui.player-state-draw)
+
+(def state->draw-ui-view
+  (update-vals {:player-item-on-cursor 'cdq.ctx.create.ui.player-state-draw.player-item-on-cursor/draws}
+               requiring-resolve))
 
 (defn create [_ctx]
   {:actor/type :actor.type/actor
@@ -8,6 +11,5 @@
                  (let [player-eid (:world/player-eid world)
                        entity @player-eid
                        state-k (:state (:entity/fsm entity))]
-                   (state/draw-gui-view [state-k (state-k entity)]
-                                        player-eid
-                                        ctx)))})
+                   (when-let [f (state->draw-ui-view state-k)]
+                     (f player-eid ctx))))})

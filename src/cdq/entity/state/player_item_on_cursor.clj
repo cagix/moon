@@ -1,9 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [cdq.entity.inventory :as inventory]
-            [cdq.input :as input]
-            [cdq.graphics.textures :as textures]
-            [cdq.ui :as ui]
-            [gdl.math.vector2 :as v]))
+  (:require [gdl.math.vector2 :as v]))
 
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))
@@ -43,56 +39,3 @@
          (:graphics/world-mouse-position graphics)
          entity)
         (:entity/item-on-cursor entity)]])))
-
-(defn handle-input
-  [eid {:keys [ctx/input
-               ctx/stage]}]
-  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))]
-    (when (and (input/left-mouse-button-just-pressed? input)
-               (world-item? mouseover-actor))
-      [[:tx/event eid :drop-item]])))
-
-(defn clicked-inventory-cell [eid cell]
-  (let [entity @eid
-        inventory (:entity/inventory entity)
-        item-in-cell (get-in inventory cell)
-        item-on-cursor (:entity/item-on-cursor entity)]
-    (cond
-     ; PUT ITEM IN EMPTY CELL
-     (and (not item-in-cell)
-          (inventory/valid-slot? cell item-on-cursor))
-     [[:tx/sound "bfxr_itemput"]
-      [:tx/dissoc eid :entity/item-on-cursor]
-      [:tx/set-item eid cell item-on-cursor]
-      [:tx/event eid :dropped-item]]
-
-     ; STACK ITEMS
-     (and item-in-cell
-          (inventory/stackable? item-in-cell item-on-cursor))
-     [[:tx/sound "bfxr_itemput"]
-      [:tx/dissoc eid :entity/item-on-cursor]
-      [:tx/stack-item eid cell item-on-cursor]
-      [:tx/event eid :dropped-item]]
-
-     ; SWAP ITEMS
-     (and item-in-cell
-          (inventory/valid-slot? cell item-on-cursor))
-     [[:tx/sound "bfxr_itemput"]
-      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-      ; TODO? coud handle pickup-item from item-on-cursor state also
-      [:tx/dissoc eid :entity/item-on-cursor]
-      [:tx/remove-item eid cell]
-      [:tx/set-item eid cell item-on-cursor]
-      [:tx/event eid :dropped-item]
-      [:tx/event eid :pickup-item item-in-cell]])))
-
-(defn draw-gui-view
-  [eid
-   {:keys [ctx/graphics
-           ctx/input
-           ctx/stage]}]
-  (when (not (world-item? (ui/mouseover-actor stage (input/mouse-position input))))
-    [[:draw/texture-region
-      (textures/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
-      (:graphics/ui-mouse-position graphics)
-      {:center? true}]]))
