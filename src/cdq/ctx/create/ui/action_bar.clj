@@ -3,8 +3,7 @@
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Table)))
+            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx]
   {:actor/type :actor.type/table
