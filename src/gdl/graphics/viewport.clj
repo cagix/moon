@@ -2,4 +2,4 @@
 
 (defprotocol Viewport
   (update! [_ width height {:keys [center?]}])
-  (unproject [_ x y]))
+  (unproject [_ [x y]]))

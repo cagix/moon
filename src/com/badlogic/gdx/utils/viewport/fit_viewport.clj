@@ -25,7 +25,7 @@
 
 (extend-type FitViewport
   gdl.graphics.viewport/Viewport
-  (unproject [this x y]
+  (unproject [this [x y]]
     (let [[x y] (unproject* this x y)]
       [(clamp x
               (:viewport/left-gutter-width this)
