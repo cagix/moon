@@ -1,4 +1,4 @@
-(ns cdq.ui.entity-info-window
+(ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.info :as info]
             [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]

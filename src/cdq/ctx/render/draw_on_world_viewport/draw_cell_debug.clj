@@ -1,4 +1,4 @@
-(ns cdq.ctx.draw-cell-debug
+(ns cdq.ctx.render.draw-on-world-viewport.draw-cell-debug
   (:require [cdq.graphics :as graphics]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil

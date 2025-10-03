@@ -1,4 +1,4 @@
-(ns cdq.ctx.create-inventory-window
+(ns cdq.ctx.create.ui.windows.inventory
   (:require [gdl.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]

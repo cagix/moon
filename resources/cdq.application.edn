@@ -46,8 +46,8 @@
                    [stage [[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
                            [cdq.ctx.create.ui.action-bar/create]
                            [cdq.ctx.create.ui.hp-mana-bar/create]
-                           [cdq.ctx.create.ui.windows/create [[cdq.ui.entity-info-window/create]
-                                                              [cdq.ctx.create-inventory-window/create]]]
+                           [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                                              [cdq.ctx.create.ui.windows.inventory/create]]]
                            [cdq.ctx.create.ui.player-state-draw/create]
                            [cdq.ctx.create.ui.message/create]]]
                    [stage-actors]
@@ -64,11 +64,11 @@
                    [set-camera-on-player]
                    [clear-screen]
                    [draw-world-map]
-                   [draw-on-world-viewport [cdq.ctx.draw-tile-grid/do!
-                                            cdq.ctx.draw-cell-debug/do!
-                                            cdq.ctx.draw-entities/do!
-                                            cdq.ctx.geom-test/do!
-                                            cdq.ctx.highlight-mouseover-tile/do!]]
+                   [draw-on-world-viewport [cdq.ctx.render.draw-on-world-viewport.draw-tile-grid/do!
+                                            cdq.ctx.render.draw-on-world-viewport.draw-cell-debug/do!
+                                            cdq.ctx.render.draw-on-world-viewport.draw-entities/do!
+                                            #_cdq.ctx.render.draw-on-world-viewport.geom-test/do!
+                                            cdq.ctx.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
                    [assoc-interaction-state]
                    [set-cursor]
                    [player-state-handle-input]

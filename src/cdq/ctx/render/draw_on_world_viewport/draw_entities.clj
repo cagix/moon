@@ -1,4 +1,4 @@
-(ns cdq.ctx.draw-entities
+(ns cdq.ctx.render.draw-on-world-viewport.draw-entities
   (:require [cdq.graphics.draws :as draws]
             [gdl.throwable :as throwable]
             [cdq.world.raycaster :as raycaster]

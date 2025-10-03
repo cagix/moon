@@ -1,4 +1,4 @@
-(ns cdq.ctx.highlight-mouseover-tile)
+(ns cdq.ctx.render.draw-on-world-viewport.highlight-mouseover-tile)
 
 (defn do!
   [{:keys [ctx/graphics
