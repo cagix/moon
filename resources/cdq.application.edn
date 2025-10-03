@@ -4,7 +4,6 @@
                           :height 900}
           :foreground-fps 60}
  :requires [cdq.info-impl
-            cdq.ui-impl
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table]
@@ -50,7 +49,6 @@
                                                               [cdq.ctx.create.ui.windows.inventory/create]]]
                            [cdq.ctx.create.ui.player-state-draw/create]
                            [cdq.ctx.create.ui.message/create]]]
-                   [stage-actors]
                    [input]
                    [audio]
                    [dissoc-files]
