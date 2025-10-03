@@ -2,7 +2,8 @@
   (:require gdl.audio
             gdl.audio.sound
             gdl.files
-            gdl.files.file-handle)
+            gdl.files.file-handle
+            gdl.disposable)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -11,6 +12,7 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
@@ -47,9 +49,6 @@
     ['com.badlogic.gdx.utils.viewport.Viewport
      'com.badlogic.gdx.utils.viewport
      'gdl.graphics.viewport/Viewport]
-    ['com.badlogic.gdx.utils.Disposable
-     'com.badlogic.gdx.utils.disposable
-     'gdl.disposable/Disposable]
     ['com.badlogic.gdx.scenes.scene2d.Actor
      'com.badlogic.gdx.scenes.scene2d.actor
      'gdl.scene2d.actor/Actor]
@@ -104,3 +103,7 @@
    :directory? FileHandle/.isDirectory
    :extension  FileHandle/.extension
    :path       FileHandle/.path})
+
+(extend Disposable
+  gdl.disposable/Disposable
+  {:dispose! Disposable/.dispose})
