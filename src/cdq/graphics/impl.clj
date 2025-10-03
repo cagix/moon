@@ -1,6 +1,5 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
@@ -19,6 +18,7 @@
             [gdl.files :as files]
             [gdl.files.utils :as files-utils]
             [gdl.graphics.color]
+            [gdl.graphics.orthographic-camera :as camera]
             [gdl.math :refer [degree->radians]]
             [space.earlygrey.shape-drawer :as sd]))
 

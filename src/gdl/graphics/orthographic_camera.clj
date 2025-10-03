@@ -1,8 +1,8 @@
-(ns clojure.graphics.orthographic-camera
-  (:require [com.badlogic.gdx.graphics.orthographic-camera :as camera]))
+(ns gdl.graphics.orthographic-camera)
 
-(def set-position! camera/set-position!)
-(def set-zoom!     camera/set-zoom!)
+(defprotocol Camera
+  (set-position! [_ [x y]])
+  (set-zoom! [_ amount]))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))

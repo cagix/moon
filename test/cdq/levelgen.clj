@@ -4,7 +4,7 @@
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
             [gdl.graphics.color :as color]
-            [clojure.graphics.orthographic-camera :as camera]
+            [gdl.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
