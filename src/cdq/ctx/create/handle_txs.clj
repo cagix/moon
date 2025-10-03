@@ -4,7 +4,7 @@
             [cdq.info :as info]
             [cdq.ui :as ui]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [gdl.tx-handler :as tx-handler]
             [gdl.txs :as txs]))
 

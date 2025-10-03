@@ -1,7 +1,7 @@
 (ns clojure.scene2d.tooltip
   (:require [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [gdl.scene2d.actor :as actor]))
 

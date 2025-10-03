@@ -1,32 +1,35 @@
 (ns com.badlogic.gdx.scenes.scene2d.stage
+  (:require [gdl.scene2d.stage])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
 (defn create [viewport batch]
   (CtxStage. viewport batch))
 
-(defn set-ctx! [^CtxStage stage ctx]
-  (set! (.ctx stage) ctx))
+(extend-type CtxStage
+  gdl.scene2d.stage/Stage
+  (set-ctx! [stage ctx]
+    (set! (.ctx stage) ctx))
 
-(defn get-ctx [^CtxStage stage]
-  (.ctx stage))
+  (get-ctx [stage]
+    (.ctx stage))
 
-(defn act! [^CtxStage stage]
-  (.act stage))
+  (act! [stage]
+    (.act stage))
 
-(defn draw! [^CtxStage stage]
-  (.draw stage))
+  (draw! [stage]
+    (.draw stage))
 
-(defn add! [^CtxStage stage actor]
-  (.addActor stage actor))
+  (add! [stage actor]
+    (.addActor stage actor))
 
-(defn clear! [^CtxStage stage]
-  (.clear stage))
+  (clear! [stage]
+    (.clear stage))
 
-(defn root [^CtxStage stage]
-  (.getRoot stage))
+  (root [stage]
+    (.getRoot stage))
 
-(defn hit [^CtxStage stage [x y]]
-  (.hit stage x y true))
+  (hit [stage [x y]]
+    (.hit stage x y true))
 
-(defn viewport [^CtxStage stage]
-  (.getViewport stage))
+  (viewport [stage]
+    (.getViewport stage)))

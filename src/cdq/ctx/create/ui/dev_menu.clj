@@ -6,7 +6,7 @@
             [clojure.string :as str]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [gdl.disposable :as disposable]
             [gdl.utils :as utils]))
 

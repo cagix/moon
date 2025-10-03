@@ -10,9 +10,10 @@
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.scenes.scene2d.ui.button :as button]
             [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
             [gdl.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
@@ -28,8 +29,9 @@
     ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (let [stage (stage/create (:graphics/ui-viewport graphics)
-                            (:graphics/batch       graphics))
+  (let [stage (com.badlogic.gdx.scenes.scene2d.stage/create
+               (:graphics/ui-viewport graphics)
+               (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
         ctx (assoc ctx
                    :ctx/stage stage

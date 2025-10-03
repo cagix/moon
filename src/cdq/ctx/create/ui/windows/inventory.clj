@@ -7,7 +7,7 @@
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
 

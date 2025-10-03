@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.render-stage
-  (:require [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
+  (:require [gdl.scene2d.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]

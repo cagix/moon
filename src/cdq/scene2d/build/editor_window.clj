@@ -8,7 +8,7 @@
             [cdq.ui.widget :as widget]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]

@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.ui.message
   (:require [cdq.ui.message :as message]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage])
+            [gdl.scene2d.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (extend-type Actor

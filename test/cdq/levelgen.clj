@@ -15,7 +15,8 @@
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
+            [com.badlogic.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [gdl.disposable :as disposable]
@@ -92,7 +93,9 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (graphics/fit-viewport graphics 1440 900 (orthographic-camera/create))
         sprite-batch (graphics/sprite-batch graphics)
-        stage (stage/create ui-viewport sprite-batch)
+        stage (com.badlogic.gdx.scenes.scene2d.stage/create
+               ui-viewport
+               sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
