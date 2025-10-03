@@ -1,13 +1,5 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [cdq.graphics.shape-drawer :as shape-drawer]
-            [cdq.graphics.shape-drawer-texture :as shape-drawer-texture]
-            [cdq.graphics.sprite-batch :as sprite-batch]
-            [cdq.graphics.textures :as textures]
-            [cdq.graphics.tiled-map :as tiled-map]
-            [cdq.graphics.ui-viewport :as ui-viewport]
-            [cdq.graphics.unit-scale :as unit-scale]
-            [cdq.graphics.world-viewport :as world-viewport]
             [clojure.graphics.color]
             [clojure.graphics.freetype :as freetype]
             [clojure.graphics.orthographic-camera :as camera]
@@ -19,12 +11,87 @@
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [com.badlogic.gdx.graphics.pixmap :as pixmap]
+            [com.badlogic.gdx.graphics.texture :as texture]
+            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [gdl.disposable :as disposable]
+            [gdl.disposable :as disposable :refer [dispose!]]
             [gdl.files :as files]
             [gdl.files.utils :as files-utils]
             [gdl.math :refer [degree->radians]]
             [space.earlygrey.shape-drawer :as sd]))
+
+(defn- create-world-viewport
+  [{:keys [graphics/core
+           graphics/world-unit-scale]
+    :as graphics}
+   world-viewport]
+  (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                                                 world-height (* (:height world-viewport) world-unit-scale)]
+                                             (graphics/fit-viewport core
+                                                                    world-width
+                                                                    world-height
+                                                                    (orthographic-camera/create
+                                                                     :y-down? false
+                                                                     :world-width world-width
+                                                                     :world-height world-height)))))
+
+(defn- create-unit-scales [graphics world-unit-scale]
+  (assoc graphics
+         :graphics/unit-scale (atom 1)
+         :graphics/world-unit-scale world-unit-scale))
+
+(defn- create-ui-viewport
+  [{:keys [graphics/core]
+    :as graphics} ui-viewport]
+  (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
+                                                               (:width  ui-viewport)
+                                                               (:height ui-viewport)
+                                                               (orthographic-camera/create))))
+
+(defn- create-tm-renderer
+  [{:keys [graphics/batch
+           graphics/world-unit-scale]
+    :as graphics}]
+  (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
+
+(defn- create-textures
+  [{:keys [graphics/core]
+    :as graphics}
+   textures-to-load]
+  (extend-type (class graphics)
+    cdq.graphics/Textures
+    (texture-region [{:keys [graphics/textures]}
+                     {:keys [image/file image/bounds]}]
+      (assert file)
+      (assert (contains? textures file))
+      (let [texture (get textures file)]
+        (if bounds
+          (texture/region texture bounds)
+          (texture/region texture)))))
+  (assoc graphics :graphics/textures
+         (into {} (for [[path file-handle] textures-to-load]
+                    [path (graphics/texture core file-handle)]))))
+
+(defn- create-sprite-batch
+  [{:keys [graphics/core]
+    :as graphics}]
+  (assoc graphics :graphics/batch (graphics/sprite-batch core)))
+
+(defn- create-shape-drawer-texture
+  [{:keys [graphics/core]
+    :as graphics}]
+  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
+                                                                (pixmap/set-color! clojure.graphics.color/white)
+                                                                (pixmap/draw-pixel! 0 0))
+                                                       texture (pixmap/texture pixmap)]
+                                                   (dispose! pixmap)
+                                                   texture)))
+
+(defn- create-shape-drawer
+  [{:keys [graphics/batch
+           graphics/shape-drawer-texture]
+    :as graphics}]
+  (assoc graphics :graphics/shape-drawer (sd/create batch (texture/region shape-drawer-texture 1 0 1 1))))
 
 (defn- create-font [graphics default-font]
   (assoc graphics :graphics/default-font (freetype/generate-font (:file-handle default-font)
@@ -38,7 +105,7 @@
                                                  (fn [[file-handle [hotspot-x hotspot-y]]]
                                                    (let [pixmap (graphics/pixmap core file-handle)
                                                          cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
-                                                     (disposable/dispose! pixmap)
+                                                     (dispose! pixmap)
                                                      cursor)))))
 
 (def ^:private draw-fns
@@ -146,11 +213,11 @@
                      graphics/default-font
                      graphics/shape-drawer-texture
                      graphics/textures]}]
-    (disposable/dispose! batch)
-    (run! disposable/dispose! (vals cursors))
-    (disposable/dispose! default-font)
-    (disposable/dispose! shape-drawer-texture)
-    (run! disposable/dispose! (vals textures)))
+    (dispose! batch)
+    (run! dispose! (vals cursors))
+    (dispose! default-font)
+    (dispose! shape-drawer-texture)
+    (run! dispose! (vals textures)))
 
   cdq.graphics/Draws
   (handle-draws! [graphics draws]
@@ -246,14 +313,14 @@
       (assoc :graphics/core graphics)
       (create-cursors cursors)
       (create-font default-font)
-      sprite-batch/create
-      shape-drawer-texture/create
-      shape-drawer/create
-      (textures/create textures-to-load)
-      (unit-scale/create world-unit-scale)
-      tiled-map/renderer
-      (ui-viewport/create ui-viewport)
-      (world-viewport/create world-viewport)))
+      create-sprite-batch
+      create-shape-drawer-texture
+      create-shape-drawer
+      (create-textures textures-to-load)
+      (create-unit-scales world-unit-scale)
+      create-tm-renderer
+      (create-ui-viewport ui-viewport)
+      (create-world-viewport world-viewport)))
 
 (defn- handle-files
   [files {:keys [colors
