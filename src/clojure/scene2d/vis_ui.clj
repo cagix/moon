@@ -70,7 +70,7 @@
   (doto (vis-scroll-pane/create actor
                                 {:flick-scroll? false
                                  :fade-scroll-bars? false})
-    (actor/set-name! name)))
+    (gdl.scene2d.actor/set-name! name)))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before vis-ui/dispose!

@@ -44,9 +44,6 @@
   (extend-types
    [
     ['com.badlogic.gdx.scenes.scene2d.Actor
-     'com.badlogic.gdx.scenes.scene2d.actor
-     'gdl.scene2d.actor/Actor]
-    ['com.badlogic.gdx.scenes.scene2d.Actor
      'clojure.scene2d.tooltip
      'gdl.scene2d.actor/Tooltip]
     ]

@@ -1,20 +1,20 @@
 (ns clojure.scene2d.actor
-  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+  (:require [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.stage :as stage]))
 
 (def opts-fn-map
-  {:actor/name actor/set-name!
-   :actor/user-object actor/set-user-object!
-   :actor/visible?  actor/set-visible!
-   :actor/touchable actor/set-touchable!
-   :actor/listener actor/add-listener!
-   :actor/position (fn [actor [x y]]
-                     (actor/set-position! actor x y))
-   :actor/center-position (fn [actor [x y]]
-                            (actor/set-position! actor
-                                           (- x (/ (actor/get-width  actor) 2))
-                                           (- y (/ (actor/get-height actor) 2))))})
+  {:actor/name (fn [a name] (actor/set-name! a name))
+   :actor/user-object (fn [a object] (actor/set-user-object! a object))
+   :actor/visible?  (fn [a visible?] (actor/set-visible! a visible?))
+   :actor/touchable (fn [a touchable] (actor/set-touchable! a touchable))
+   :actor/listener (fn [a listener] (actor/add-listener! a listener))
+   :actor/position (fn [a [x y]]
+                     (actor/set-position! a x y))
+   :actor/center-position (fn [a [x y]]
+                            (actor/set-position! a
+                                                 (- x (/ (actor/get-width  a) 2))
+                                                 (- y (/ (actor/get-height a) 2))))})
 
 (defn set-opts! [actor opts]
   (doseq [[k v] opts
