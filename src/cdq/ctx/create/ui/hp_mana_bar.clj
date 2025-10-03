@@ -1,4 +1,4 @@
-(ns cdq.ui.hp-mana-bar
+(ns cdq.ctx.create.ui.hp-mana-bar
   (:require [cdq.entity.stats :as stats]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]

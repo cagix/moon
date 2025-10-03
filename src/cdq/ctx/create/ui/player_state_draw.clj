@@ -1,4 +1,4 @@
-(ns cdq.ui.player-state-draw
+(ns cdq.ctx.create.ui.player-state-draw
   (:require [cdq.entity.state :as state]))
 
 (defn create [_ctx]
