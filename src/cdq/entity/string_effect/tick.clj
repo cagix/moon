@@ -1,5 +1,5 @@
 (ns cdq.entity.string-effect.tick
-  (:require [cdq.timer :as timer]))
+  (:require [gdl.timer :as timer]))
 
 (defn txs
   [{:keys [counter]}

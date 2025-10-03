@@ -1,4 +1,4 @@
-(ns cdq.val-max
+(ns gdl.val-max
   (:require [cdq.malli :as m]))
 
 (def schema

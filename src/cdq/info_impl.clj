@@ -2,7 +2,7 @@
   (:require [cdq.info :refer [info-text]]
             [cdq.entity.stats.info]
             [cdq.stats.ops.info :as ops]
-            [cdq.timer :as timer]
+            [gdl.timer :as timer]
             [clojure.string :as str]
             [gdl.string]
             [gdl.utils :as utils]))

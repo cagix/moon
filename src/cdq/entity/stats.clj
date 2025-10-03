@@ -3,7 +3,7 @@
 (ns cdq.entity.stats
   (:require [cdq.malli :as m]
             [cdq.stats.ops :as ops]
-            [cdq.val-max :as val-max]))
+            [gdl.val-max :as val-max]))
 
 (defn- get-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}

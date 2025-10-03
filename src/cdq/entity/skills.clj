@@ -1,5 +1,5 @@
 (ns cdq.entity.skills
-  (:require [cdq.timer :as timer]))
+  (:require [gdl.timer :as timer]))
 
 (defn create! [skills eid _world]
   (cons [:tx/assoc eid :entity/skills nil]

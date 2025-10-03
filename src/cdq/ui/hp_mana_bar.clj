@@ -2,7 +2,7 @@
   (:require [cdq.entity.stats :as stats]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
-            [cdq.val-max :as val-max]
+            [gdl.val-max :as val-max]
             [gdl.utils :as utils]))
 
 (let [config {:rahmen-file "images/rahmen.png"

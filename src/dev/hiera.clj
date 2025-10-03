@@ -46,7 +46,7 @@
      cdq.ctx
      ;cdq.stats
      cdq.input
-     cdq.timer
+     gdl.timer
      ;cdq.world
      gdl.utils
      ;cdq.entity

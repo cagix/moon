@@ -1,6 +1,6 @@
 (ns cdq.ctx.tick-entities
   (:require [gdl.txs :as txs]
-            [cdq.throwable :as throwable]
+            [gdl.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.world :as world]))
 

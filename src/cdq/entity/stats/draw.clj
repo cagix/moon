@@ -1,6 +1,6 @@
 (ns cdq.entity.stats.draw
   (:require [cdq.entity.stats :as stats]
-            [cdq.val-max :as val-max]
+            [gdl.val-max :as val-max]
             [clojure.graphics.color :as color]))
 
 (def ^:private hpbar-colors

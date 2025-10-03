@@ -1,5 +1,5 @@
 (ns cdq.tx.add-text-effect
-  (:require [cdq.timer :as timer]))
+  (:require [gdl.timer :as timer]))
 
 (defn do! [{:keys [ctx/world]} eid text duration]
   [[:tx/assoc

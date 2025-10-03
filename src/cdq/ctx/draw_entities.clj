@@ -1,6 +1,6 @@
 (ns cdq.ctx.draw-entities
   (:require [cdq.graphics.draws :as draws]
-            [cdq.throwable :as throwable]
+            [gdl.throwable :as throwable]
             [cdq.world.raycaster :as raycaster]
             [clojure.graphics.color :as color]
             [gdl.utils :as utils]))

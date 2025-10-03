@@ -1,7 +1,7 @@
 (ns cdq.entity.state.active-skill.draw
   (:require [cdq.effect :as effect]
             [cdq.graphics.textures :as textures]
-            [cdq.timer :as timer]))
+            [gdl.timer :as timer]))
 
 (def ^:private skill-image-radius-world-units
   (let [tile-size 48

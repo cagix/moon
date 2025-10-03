@@ -3,7 +3,7 @@
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.input :as input]
-            [cdq.throwable :as throwable]
+            [gdl.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [com.badlogic.gdx.scenes.scene2d :as scene2d]

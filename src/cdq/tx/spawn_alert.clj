@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-alert
-  (:require [cdq.timer :as timer]))
+  (:require [gdl.timer :as timer]))
 
 (defn do! [{:keys [ctx/world]} position faction duration]
   [[:tx/spawn-effect
