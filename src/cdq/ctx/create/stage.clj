@@ -5,7 +5,7 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [gdl.graphics.viewport :as viewport]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.stage]

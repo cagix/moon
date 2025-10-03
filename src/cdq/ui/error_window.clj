@@ -1,7 +1,7 @@
 (ns cdq.ui.error-window
   (:require [cdq.ui :as ui]
             [clojure.repl]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.stage :as stage]
             [gdl.utils :as utils]))
 

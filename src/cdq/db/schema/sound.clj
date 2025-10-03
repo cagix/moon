@@ -1,7 +1,7 @@
 (ns cdq.db.schema.sound
   (:require [cdq.audio :as audio]
             [cdq.ui :as ui]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]

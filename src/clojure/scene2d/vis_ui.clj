@@ -1,5 +1,5 @@
 (ns clojure.scene2d.vis-ui
-  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+  (:require [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.stack :as stack]
@@ -56,7 +56,7 @@
                          :actor.type/image        clojure.scene2d.vis-ui.image/create}
         :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))
-  (clojure.lang.MultiFn/.addMethod com.badlogic.gdx.scenes.scene2d/build k method-var))
+  (clojure.lang.MultiFn/.addMethod gdl.scene2d/build k method-var))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
   (separator/horizontal))

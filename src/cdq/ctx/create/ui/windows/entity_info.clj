@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.info :as info]
             [cdq.ui :as ui]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))

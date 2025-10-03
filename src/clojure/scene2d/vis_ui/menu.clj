@@ -3,7 +3,7 @@
             [com.kotcrab.vis.ui.widget.menu-bar :as menu-bar]
             [com.kotcrab.vis.ui.widget.menu-item :as menu-item]
             [com.kotcrab.vis.ui.widget.popup-menu :as popup-menu]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]

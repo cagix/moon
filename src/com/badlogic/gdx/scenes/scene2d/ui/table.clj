@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.table
-  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+  (:require [gdl.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

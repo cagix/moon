@@ -1,6 +1,6 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group])

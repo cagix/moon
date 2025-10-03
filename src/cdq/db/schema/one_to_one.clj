@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]

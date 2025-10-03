@@ -13,7 +13,7 @@
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
             [com.badlogic.gdx.graphics :as graphics]
             [com.badlogic.gdx.input :as input]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.stage]

@@ -4,7 +4,7 @@
             [cdq.input :as input]
             [cdq.ui :as ui]
             [clojure.string :as str]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.disposable :as disposable]

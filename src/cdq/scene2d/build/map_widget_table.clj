@@ -4,7 +4,7 @@
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
-            [com.badlogic.gdx.scenes.scene2d :as scene2d]
+            [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]

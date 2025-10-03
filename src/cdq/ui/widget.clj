@@ -1,5 +1,5 @@
 (ns cdq.ui.widget
-  (:require [com.badlogic.gdx.scenes.scene2d :as scene2d]
+  (:require [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]))
 
