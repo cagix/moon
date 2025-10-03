@@ -8,54 +8,53 @@
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table]
- :sym-format "cdq.ctx.%s/do!"
- :create-pipeline [[create-record]
+ :create-pipeline [[record]
                    [handle-txs]
-                   [create-db]
-                   [create-graphics {:tile-size 48
-                                     :ui-viewport {:width 1440
-                                                   :height 900}
-                                     :world-viewport {:width 1440
-                                                      :height 900}
-                                     :texture-folder {:folder "resources/"
-                                                      :extensions #{"png" "bmp"}}
-                                     :default-font {:path "exocet/films.EXL_____.ttf"
-                                                    :params {:size 16
-                                                             :quality-scaling 2
-                                                             :enable-markup? true
-                                                             :use-integer-positions? false
-                                                             ; :texture-filter/linear because scaling to world-units
-                                                             :min-filter :linear
-                                                             :mag-filter :linear}}
-                                     :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-                                     :cursors {:path-format "cursors/%s.png"
-                                               :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                      :cursors/black-x               ["black_x"      [0   0]]
-                                                      :cursors/default               ["default"      [0   0]]
-                                                      :cursors/denied                ["denied"       [16 16]]
-                                                      :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                      :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                      :cursors/hand-grab             ["hand003"      [4  16]]
-                                                      :cursors/move-window           ["move002"      [16 16]]
-                                                      :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                      :cursors/over-button           ["hand002"      [0   0]]
-                                                      :cursors/sandclock             ["sandclock"    [16 16]]
-                                                      :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                      :cursors/use-skill             ["pointer004"   [0   0]]
-                                                      :cursors/walking               ["walking"      [16 16]]}}}]
-                   [create-vis-ui]
-                   [create-stage [[cdq.ui.dev-menu/create cdq.ctx.create-world/do!]
-                                  [cdq.ui.action-bar/create]
-                                  [cdq.ui.hp-mana-bar/create]
-                                  [cdq.ctx.create-stage/create-windows [[cdq.ui.entity-info-window/create]
-                                                                        [cdq.ctx.create-inventory-window/create]]]
-                                  [cdq.ui.player-state-draw/create]
-                                  [cdq.ui.message/create]]]
-                   [build-stage-actors]
-                   [create-input]
-                   [create-audio]
+                   [db]
+                   [graphics {:tile-size 48
+                              :ui-viewport {:width 1440
+                                            :height 900}
+                              :world-viewport {:width 1440
+                                               :height 900}
+                              :texture-folder {:folder "resources/"
+                                               :extensions #{"png" "bmp"}}
+                              :default-font {:path "exocet/films.EXL_____.ttf"
+                                             :params {:size 16
+                                                      :quality-scaling 2
+                                                      :enable-markup? true
+                                                      :use-integer-positions? false
+                                                      ; :texture-filter/linear because scaling to world-units
+                                                      :min-filter :linear
+                                                      :mag-filter :linear}}
+                              :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
+                              :cursors {:path-format "cursors/%s.png"
+                                        :data {:cursors/bag                   ["bag001"       [0   0]]
+                                               :cursors/black-x               ["black_x"      [0   0]]
+                                               :cursors/default               ["default"      [0   0]]
+                                               :cursors/denied                ["denied"       [16 16]]
+                                               :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                               :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                               :cursors/hand-grab             ["hand003"      [4  16]]
+                                               :cursors/move-window           ["move002"      [16 16]]
+                                               :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                               :cursors/over-button           ["hand002"      [0   0]]
+                                               :cursors/sandclock             ["sandclock"    [16 16]]
+                                               :cursors/skill-not-usable      ["x007"         [0   0]]
+                                               :cursors/use-skill             ["pointer004"   [0   0]]
+                                               :cursors/walking               ["walking"      [16 16]]}}}]
+                   [vis-ui]
+                   [stage [[cdq.ui.dev-menu/create cdq.ctx.create-world/do!]
+                           [cdq.ui.action-bar/create]
+                           [cdq.ui.hp-mana-bar/create]
+                           [cdq.ctx.create.stage/create-windows [[cdq.ui.entity-info-window/create]
+                                                                 [cdq.ctx.create-inventory-window/create]]]
+                           [cdq.ui.player-state-draw/create]
+                           [cdq.ui.message/create]]]
+                   [stage-actors]
+                   [input]
+                   [audio]
                    [dissoc-files]
-                   [create-world "world_fns/vampire.edn"]]
+                   [world "world_fns/vampire.edn"]]
  :render-pipeline [[get-stage-ctx]
                    [validate]
                    [update-mouse]
@@ -82,6 +81,6 @@
                    [window-camera-controls]
                    [render-stage]
                    [validate]]
- :dispose dispose
- :resize update-viewports
+ :dispose cdq.ctx.dispose/do!
+ :resize cdq.ctx.resize/do!
  }

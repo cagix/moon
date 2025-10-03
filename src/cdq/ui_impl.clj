@@ -1,5 +1,5 @@
 (ns cdq.ui-impl
-  (:require cdq.ctx.build-stage-actors
+  (:require cdq.ctx.create.stage-actors
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -57,7 +57,7 @@
 
   (rebuild-actors! [this ctx]
     (stage/clear! this)
-    (cdq.ctx.build-stage-actors/do! ctx))
+    (cdq.ctx.create.stage-actors/do! ctx))
 
   (inventory-window-visible? [stage]
     (-> stage

@@ -17,12 +17,12 @@
                 io/resource
                 slurp
                 edn/read-string)
-        req-resolve (fn [sym]
-                      (requiring-resolve (symbol (format (:sym-format app) sym))))
-        create-pipeline (map #(update % 0 req-resolve) (:create-pipeline app))
-        render-pipeline (map #(update % 0 req-resolve) (:render-pipeline app))
-        dispose (req-resolve (:dispose app))
-        resize (req-resolve (:resize app))]
+        req-resolve (fn [sym sym-format]
+                      (requiring-resolve (symbol (format sym-format sym))))
+        create-pipeline (map #(update % 0 req-resolve "cdq.ctx.create.%s/do!") (:create-pipeline app))
+        render-pipeline (map #(update % 0 req-resolve "cdq.ctx.render.%s/do!") (:render-pipeline app))
+        dispose (requiring-resolve (:dispose app))
+        resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
     (application/start! (reify application/Listener
                           (create [_ context]
