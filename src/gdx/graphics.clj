@@ -1,5 +1,5 @@
 (ns gdx.graphics
-  (:require [com.badlogic.gdx.math.vector2 :as vector2]
+  (:require [com.badlogic.gdx.utils.viewport :as vp]
             [gdl.graphics.viewport]
             [gdl.math :refer [clamp]])
   (:import (com.badlogic.gdx.utils.viewport FitViewport)))
@@ -7,33 +7,24 @@
 (defn fit-viewport [width height camera]
   (FitViewport. width height camera))
 
-(defn- unproject* [this x y]
-  (-> this
-      (.unproject (vector2/->java x y))
-      vector2/->clj))
-
-(extend-type FitViewport
+(extend FitViewport
   gdl.graphics.viewport/Viewport
-  (camera [this]
-    (.getCamera this))
+  {:camera vp/camera
+   :world-width vp/world-width
+   :world-height vp/world-height
 
-  (world-width [this]
-    (.getWorldWidth this))
+   ; TODO this only done @ my update-input, does not belong here ?
+   ; so need to save it in the 'ctx/input' record
+   :unproject (fn [this [x y]]
+                (vp/unproject this
+                              (clamp x
+                                     (.getLeftGutterWidth this)
+                                     (.getRightGutterX    this))
+                              (clamp y
+                                     (.getTopGutterHeight this)
+                                     (.getTopGutterY      this))))
 
-  (world-height [this]
-    (.getWorldHeight this))
-
-  (unproject [this [x y]]
-    (unproject* this
-                (clamp x
-                       (.getLeftGutterWidth this)
-                       (.getRightGutterX    this))
-                (clamp y
-                       (.getTopGutterHeight this)
-                       (.getTopGutterY      this))))
-
-  (update! [viewport width height {:keys [center?]}]
-    (.update viewport width height (boolean center?))))
+   :update! vp/update!})
 
 (comment
 
