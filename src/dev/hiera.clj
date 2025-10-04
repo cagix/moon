@@ -44,6 +44,10 @@
      }
   )
 
+; TODO !
+; size relative to lines of code !
+; bigger, heavyer , slower
+
 (comment
 
  ; java heap space 512m required
@@ -53,7 +57,7 @@
    :layout :horizontal
    :external false
    ;:ignore #_(set (mapv symbol (locked-namespaces)))
-   :ignore finished
+   ;:ignore '#{clojure, dev, gdl, com}
    })
 
  (hiera/graph
@@ -63,4 +67,30 @@
    :external false
    :cluster-depth 1})
 
+
+ ; TODO MAKE COLORS !!
+
+ ; hiera.main/render-node
+ ; dot node->descriptor
+
+ ; https://github.com/ztellman/rhizome
+ ; https://www.graphviz.org/docs/nodes/
+
+ )
+
+(comment
+ (defn- render-node
+   "Render graph options for a node."
+   [data node]
+   (let [internal? (contains? (:namespaces data) node)
+         cluster (node-cluster data node)]
+     {:label (if (seq cluster)
+               (subs (str node) (inc (count cluster)))
+               (str node))
+      :color "red"
+      :bgcolor "red"
+      :style (if internal? :solid :dashed)}))
+
+ ; :color doesnt work
+ ; :bgcolor works
  )

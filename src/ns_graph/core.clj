@@ -1,20 +1,20 @@
 (ns ns-graph.core
+  (:require
+
+    [clojure.java.io :as io]
+    [clojure.tools.namespace.find :as ns-find]
+    [clojure.tools.namespace.file :as ns-file]
+    [clojure.tools.namespace.parse :as ns-parse]
+   )
   (:import
     [com.badlogic.gdx ApplicationAdapter Gdx InputAdapter]
     [com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration]
     [com.badlogic.gdx.graphics GL20 OrthographicCamera Color]
     [com.badlogic.gdx.graphics.glutils ShapeRenderer ShapeRenderer$ShapeType]
     [com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont]
-    [com.badlogic.gdx.math Vector2 Vector3]))
+    [com.badlogic.gdx.math Vector2 Vector3]
 
-; TODO -
-; * external imports
-; * java imports
-; * change color, icon
-
-;; ------------------------------------------------------------
-;; Graph simulation (force-directed layout)
-;; ------------------------------------------------------------
+    ))
 
 (defn vec-add [[x1 y1] [x2 y2]] [(+ x1 x2) (+ y1 y2)])
 (defn vec-sub [[x1 y1] [x2 y2]] [(- x1 x2) (- y1 y2)])
@@ -23,6 +23,63 @@
 (defn vec-norm [v]
   (let [len (vec-len v)]
     (if (zero? len) [0 0] (vec-scale v (/ 1 len)))))
+
+
+
+; TODO -
+; * external imports
+; * java imports
+; * change color, icon
+
+(comment
+ ; form:
+ (let [form '(ns clojure.java.awt (:require [clojure.java.io :as io]) (:import (java.awt Taskbar Toolkit)))]
+
+   (ns-parse/deps-from-ns-decl form)
+   ; => #{clojure.java.io}
+   )
+
+ )
+
+(defn ns-deps-in-dir [dir]
+  (for [file (ns-find/find-clojure-sources-in-dir (io/file dir))
+        :let [form (ns-file/read-file-ns-decl file)
+              ns-name (second form)
+              requires (ns-parse/deps-from-ns-decl form)]]
+    {:ns ns-name
+     :requires requires}))
+
+(comment
+ (binding [*print-level* nil]
+   (clojure.pprint/pprint
+    (ns-deps-in-dir "src/clojure/")))
+
+ ; {:ns clojure.java.awt, :requires #{clojure.java.io}}
+
+ )
+
+(defn ns-graph []
+  (let [namespaces (ns-deps-in-dir "src/")]
+    {:nodes (mapv (fn [n]
+                    {:id (str (:ns n))
+                     :pos [(- (rand 800) 400) (- (rand 800) 400)]
+                     :vel [0 0]})
+                  namespaces)
+     :edges (->> namespaces
+                 (mapcat (fn [{:keys [ns requires]}]
+                           (for [r requires
+                                 :when (some (fn [n]
+                                               (= r (:ns n))
+                                               )
+                                             namespaces)
+                                 ]
+                             [(str ns) (str r)]))))}))
+
+(comment
+ (binding [*print-level* nil]
+   (clojure.pprint/pprint
+    (ns-graph)
+    )))
 
 (defn random-graph [n]
   {:nodes (mapv (fn [i]
@@ -65,7 +122,7 @@
             :when (not= (:id a) (:id b))]
       (let [delta (vec-sub (:pos a) (:pos b))
             dist (max 1.0 (vec-len delta))
-            force (/ 3000 (* dist dist))
+            force (/ 6000 (* dist dist))
             dir   (vec-norm delta)
             fvec  (vec-scale dir force)
             old-f (@forces (:id a))]
@@ -100,7 +157,8 @@
 ;; ------------------------------------------------------------
 
 (defn new-state []
-  {:graph (random-graph 20)
+  {:graph (ns-graph)
+   #_(random-graph 20)
    :camera (doto (OrthographicCamera. 1280 720)
              (.translate 0 0 0)
              (.update))
@@ -187,7 +245,7 @@
       (reset! state (new-state))
       (.setInputProcessor Gdx/input input-processor))
     (render []
-      (update! 0.016)
+      (update! 0.032)
       (render!))
     (resize [w h]
       (let [{:keys [^OrthographicCamera camera]} @state]
