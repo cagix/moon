@@ -12,7 +12,7 @@
             [gdl.files.utils :as files-utils]
             [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [com.badlogic.gdx.graphics :as graphics]
+            [gdl.graphics :as graphics]
             [com.badlogic.gdx.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]

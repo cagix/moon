@@ -1,7 +1,5 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [com.badlogic.gdx.graphics :as graphics]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
             [com.badlogic.gdx.graphics.g2d.freetype.parameter :as parameter]
@@ -15,7 +13,9 @@
             [gdl.disposable :as disposable :refer [dispose!]]
             [gdl.files :as files]
             [gdl.files.utils :as files-utils]
+            [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
+            [gdl.graphics.bitmap-font :as bitmap-font]
             [gdl.graphics.color]
             [gdl.graphics.orthographic-camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
