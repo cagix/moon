@@ -11,7 +11,7 @@
 (defn world-height [^Viewport this]
   (.getWorldHeight this))
 
-(defn unproject [^Viewport this x y]
+(defn unproject [^Viewport this [x y]]
   (-> this
       (.unproject (vector2/->java x y))
       vector2/->clj))
