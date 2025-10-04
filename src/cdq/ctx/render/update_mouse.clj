@@ -6,7 +6,4 @@
   [{:keys [ctx/graphics
            ctx/input]
     :as ctx}]
-  (let [mouse-position (input/mouse-position input)]
-    (update ctx :ctx/graphics #(-> %
-                                   (graphics/unproject-ui    mouse-position)
-                                   (graphics/unproject-world mouse-position)))))
+  (update ctx :ctx/graphics graphics/unproject-world (input/mouse-position input)))

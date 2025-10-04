@@ -12,5 +12,5 @@
   (when (not (player-item-on-cursor/world-item? (ui/mouseover-actor stage (input/mouse-position input))))
     [[:draw/texture-region
       (graphics/texture-region graphics (:entity/image (:entity/item-on-cursor @eid)))
-      (:graphics/ui-mouse-position graphics)
+      (graphics/unproject-ui graphics (input/mouse-position input))
       {:center? true}]]))
