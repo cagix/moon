@@ -4,4 +4,5 @@
   (add! [_ actor])
   (find-actor [_ name])
   (clear-children! [_])
-  (children [_]))
+  (children [_])
+  (set-opts! [_ opts]))
