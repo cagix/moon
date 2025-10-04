@@ -1,10 +1,10 @@
 (ns clojure.scene2d.vis-ui.text-button
-  (:require [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [gdl.scene2d.stage :as stage]
-            [clojure.scene2d.vis-ui.table :as table]
+  (:require [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.kotcrab.vis.ui.widget.vis-text-button :as vis-text-button]))
+            [com.kotcrab.vis.ui.widget.vis-text-button :as vis-text-button]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]))
 
 (defn create
   ([text on-clicked]

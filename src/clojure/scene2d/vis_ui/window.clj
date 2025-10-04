@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.window
-  (:require [clojure.scene2d.vis-ui.table :as table]
-            [com.kotcrab.vis.ui.widget.vis-window :as vis-window]))
+  (:require [com.kotcrab.vis.ui.widget.vis-window :as vis-window]
+            [gdl.scene2d.ui.table :as table]))
 
 (defn create
   [{:keys [title

@@ -5,7 +5,7 @@
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
 
