@@ -55,7 +55,7 @@
                                                 :cursors/skill-not-usable      ["x007"         [0   0]]
                                                 :cursors/use-skill             ["pointer004"   [0   0]]
                                                 :cursors/walking               ["walking"      [16 16]]}}}]]
-                   [vis-ui]
+                   [vis-ui {:skin-scale :x1}]
                    [stage [[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
                            [cdq.ctx.create.ui.action-bar/create]
                            [cdq.ctx.create.ui.hp-mana-bar/create]
