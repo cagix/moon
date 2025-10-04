@@ -1,13 +1,27 @@
 (ns com.badlogic.gdx.scenes.scene2d.actor
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
+            [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
-            [gdl.scene2d.actor :as actor])
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (extend-type Actor
   actor/Actor
   (get-stage [actor]
     (.getStage actor))
+
+  (get-ctx [actor]
+    (when-let [stage (actor/get-stage actor)]
+      (stage/get-ctx stage)))
+
+  (act! [actor delta f]
+    (when-let [ctx (actor/get-ctx actor)]
+      (f actor delta ctx)))
+
+  (draw! [actor f]
+    (when-let [ctx (actor/get-ctx actor)]
+      (ctx/draw! ctx (f actor ctx))))
 
   (get-x [actor]
     (.getX actor))
