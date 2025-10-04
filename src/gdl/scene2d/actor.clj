@@ -20,6 +20,9 @@
   (get-height [actor])
   (add-listener! [actor listener]))
 
+(defprotocol Opts
+  (set-opts! [_ opts]))
+
 (defprotocol Tooltip
   (add-tooltip! [actor tooltip-text])
   (remove-tooltip! [actor]))

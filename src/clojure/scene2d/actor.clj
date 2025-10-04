@@ -3,31 +3,15 @@
             [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
             [gdl.scene2d.stage :as stage]))
 
-(def opts-fn-map
-  {:actor/name (fn [a name] (actor/set-name! a name))
-   :actor/user-object (fn [a object] (actor/set-user-object! a object))
-   :actor/visible?  (fn [a visible?] (actor/set-visible! a visible?))
-   :actor/touchable (fn [a touchable] (actor/set-touchable! a touchable))
-   :actor/listener (fn [a listener] (actor/add-listener! a listener))
-   :actor/position (fn [a [x y]]
-                     (actor/set-position! a x y))
-   :actor/center-position (fn [a [x y]]
-                            (actor/set-position! a
-                                                 (- x (/ (actor/get-width  a) 2))
-                                                 (- y (/ (actor/get-height a) 2))))})
-
-(defn set-opts! [actor opts]
-  (doseq [[k v] opts
-          :let [f (get opts-fn-map k)]
-          :when f]
-    (f actor v))
-  actor)
-
 (defn- get-ctx [actor]
   (when-let [stage (actor/get-stage actor)]
     (stage/get-ctx stage)))
 
-(defn act! [actor delta f]
+(defn act!
+  "If actor is not part of a stage, returns nil.
+  Otherwise applies the function `f` to `(f actor delta ctx)`.
+  Use in actor implementations to have a context fuuzubazol."
+  [actor delta f]
   (when-let [ctx (get-ctx actor)]
     (f actor delta ctx)))
 
