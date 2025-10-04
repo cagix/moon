@@ -1,9 +1,8 @@
-(ns cdq.ctx.create.graphics
-  (:require [cdq.graphics.impl :as graphics]))
+(ns cdq.ctx.create.graphics)
 
 (defn do!
   [{:keys [ctx/files
            ctx/graphics]
     :as ctx}
-   params]
-  (assoc ctx :ctx/graphics (graphics/create graphics files params)))
+   [impl params]]
+  (assoc ctx :ctx/graphics ((requiring-resolve impl) graphics files params)))
