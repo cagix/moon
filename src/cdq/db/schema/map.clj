@@ -1,5 +1,5 @@
 (ns cdq.db.schema.map
-  (:require [cdq.malli :as m]
+  (:require [gdl.malli :as m]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]

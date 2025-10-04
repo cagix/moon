@@ -7,7 +7,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [cdq.malli :as m]
+            [gdl.malli :as m]
             [gdl.utils :as utils]))
 
 (defn- save!

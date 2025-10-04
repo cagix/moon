@@ -1,5 +1,5 @@
 (ns cdq.scene2d.build.map-widget-table
-  (:require [cdq.malli :as m]
+  (:require [gdl.malli :as m]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]

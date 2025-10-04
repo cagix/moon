@@ -1,7 +1,7 @@
 ; Use schema, pre/post, tests for understanding.
 ; e.g. ops just :ops/inc/:ops/mult?
 (ns cdq.entity.stats
-  (:require [cdq.malli :as m]
+  (:require [gdl.malli :as m]
             [cdq.stats.ops :as ops]
             [gdl.val-max :as val-max]))
 

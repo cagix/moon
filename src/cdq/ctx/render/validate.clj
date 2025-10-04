@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.validate
-  (:require [cdq.malli :as m]))
+  (:require [gdl.malli :as m]))
 
 (def ^:private schema
   (m/schema
