@@ -1,4 +1,4 @@
-(ns clojure.scene2d.vis-ui.table
+(ns gdl.scene2d.build.table
   (:require [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
             [com.kotcrab.vis.ui.widget.vis-table :as vis-table]
             [clojure.scene2d.widget-group :as widget-group]
