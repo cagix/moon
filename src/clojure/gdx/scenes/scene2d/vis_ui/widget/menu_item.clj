@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.menu-item
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.menu-item
   (:import (com.kotcrab.vis.ui.widget MenuItem)))
 
 (defn create [actor]

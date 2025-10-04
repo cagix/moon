@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-image-button
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-image-button
   (:import (com.badlogic.gdx.scenes.scene2d.utils Drawable)
            (com.kotcrab.vis.ui.widget VisImageButton)))
 

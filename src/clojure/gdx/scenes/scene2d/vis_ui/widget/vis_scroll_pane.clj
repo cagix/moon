@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-scroll-pane
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-scroll-pane
   (:import (com.kotcrab.vis.ui.widget VisScrollPane)))
 
 (defn create [actor

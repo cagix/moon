@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.tooltip
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.tooltip
   (:import (com.kotcrab.vis.ui.widget Tooltip)))
 
 (defn set-default-appear-delay-time! [amount]

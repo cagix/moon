@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-label
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-label
   (:import (com.kotcrab.vis.ui.widget VisLabel)))
 
 (defn create [text]

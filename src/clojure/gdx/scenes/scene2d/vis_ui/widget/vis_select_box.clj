@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-select-box
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-select-box
   (:import (clojure.lang ILookup)
            (com.kotcrab.vis.ui.widget VisSelectBox)))
 

@@ -1,9 +1,9 @@
-(ns gdx.graphics
+(ns clojure.gdx.utils.viewport.fit-viewport
   (:require [clojure.gdx.utils.viewport :as vp]
             [gdl.graphics.viewport])
   (:import (com.badlogic.gdx.utils.viewport FitViewport)))
 
-(defn fit-viewport [width height camera]
+(defn create [width height camera]
   (FitViewport. width height camera))
 
 (extend FitViewport

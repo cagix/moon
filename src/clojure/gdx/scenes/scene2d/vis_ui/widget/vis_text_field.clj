@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-text-field
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-text-field
   (:import (clojure.lang ILookup)
            (com.kotcrab.vis.ui.widget VisTextField)))
 

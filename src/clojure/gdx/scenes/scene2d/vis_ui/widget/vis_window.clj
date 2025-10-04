@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-window
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-window
   (:import (com.kotcrab.vis.ui.widget VisWindow)))
 
 (defn create [{:keys [title

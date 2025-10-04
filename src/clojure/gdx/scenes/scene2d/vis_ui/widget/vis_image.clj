@@ -1,4 +1,4 @@
-(ns com.kotcrab.vis.ui.widget.vis-image
+(ns clojure.gdx.scenes.scene2d.vis-ui.widget.vis-image
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable)

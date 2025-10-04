@@ -3,7 +3,7 @@
             [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener]
-            [com.kotcrab.vis.ui.widget.vis-image-button :as vis-image-button]
+            [clojure.gdx.scenes.scene2d.vis-ui.widget.vis-image-button :as vis-image-button]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]))
