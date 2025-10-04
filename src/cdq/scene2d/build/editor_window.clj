@@ -9,7 +9,7 @@
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]

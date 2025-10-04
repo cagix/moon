@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.input
   (:require [cdq.input]
             [clojure.string :as str]
-            [com.badlogic.gdx.input :as input]
+            [clojure.gdx.input :as input]
             [gdl.math.vector2 :as v]))
 
 (defn do! [{:keys [ctx/input

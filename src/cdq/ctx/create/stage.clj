@@ -6,9 +6,9 @@
             [cdq.ui.message :as message]
             [gdl.graphics.viewport :as viewport]
             [gdl.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.ctx :as ctx]
+            [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [gdl.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.stage]
+            [clojure.gdx.scenes.scene2d.stage]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
@@ -25,7 +25,7 @@
     ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (graphics/handle-draws! graphics draws)))
-  (let [stage (com.badlogic.gdx.scenes.scene2d.stage/create
+  (let [stage (clojure.gdx.scenes.scene2d.stage/create
                (:graphics/ui-viewport graphics)
                (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)

@@ -9,7 +9,7 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn- rebuild!
   [{:keys [ctx/db

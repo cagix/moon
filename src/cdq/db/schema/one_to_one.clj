@@ -7,8 +7,8 @@
             [gdl.scene2d.group :as group]
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [com.badlogic.gdx.scenes.scene2d.ui.window :as window]))
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn malli-form [[_ property-type] _schemas]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])

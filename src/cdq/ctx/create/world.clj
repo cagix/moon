@@ -13,7 +13,7 @@
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.badlogic.gdx.maps.tiled :as tiled]
+            [clojure.gdx.maps.tiled :as tiled]
             [gdl.disposable :as disposable]
             [gdl.grid2d :as g2d]
             [gdl.txs :as txs]

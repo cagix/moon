@@ -3,7 +3,7 @@
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
+            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx]
   {:actor/type :actor.type/table

@@ -1,5 +1,5 @@
 (ns gdl.scene2d.build.widget
-  (:require [com.badlogic.gdx.scenes.scene2d.ui.widget :as widget]
+  (:require [clojure.gdx.scenes.scene2d.ui.widget :as widget]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]))
 

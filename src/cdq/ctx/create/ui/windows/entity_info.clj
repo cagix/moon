@@ -3,8 +3,8 @@
             [cdq.ui :as ui]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
-            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
+            [clojure.gdx.scenes.scene2d.ui.label :as label]
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn create [{:keys [ctx/stage]}]
   (let [title "info"

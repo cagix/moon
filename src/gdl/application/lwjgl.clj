@@ -1,6 +1,6 @@
 (ns gdl.application.lwjgl
   (:require [clojure.string :as str]
-            [com.badlogic.gdx.utils.align :as align]
+            [clojure.gdx.utils.align :as align]
             gdl.audio
             gdl.audio.sound
             gdl.files

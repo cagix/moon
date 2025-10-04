@@ -11,16 +11,16 @@
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
             [gdl.files.utils :as files-utils]
-            [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [gdl.graphics :as graphics]
-            [com.badlogic.gdx.input :as input]
+            [clojure.gdx.input :as input]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.stage]
-            [com.badlogic.gdx.maps.tiled :as tiled]
-            [com.badlogic.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [clojure.gdx.scenes.scene2d.stage]
+            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [gdl.disposable :as disposable]
             [gdl.application.lwjgl :as application]))
 
@@ -95,7 +95,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (gdx.graphics/fit-viewport 1440 900 (orthographic-camera/create))
         sprite-batch (graphics/sprite-batch graphics)
-        stage (com.badlogic.gdx.scenes.scene2d.stage/create
+        stage (clojure.gdx.scenes.scene2d.stage/create
                ui-viewport
                sprite-batch)
         _  (input/set-processor! input stage)

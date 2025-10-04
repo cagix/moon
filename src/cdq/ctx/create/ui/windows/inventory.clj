@@ -6,10 +6,10 @@
             [cdq.ui :as ui]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.event :as event]
+            [clojure.gdx.scenes.scene2d.event :as event]
             [gdl.scene2d.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [com.badlogic.gdx.scenes.scene2d.utils.listener :as listener]))
+            [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [clojure.gdx.scenes.scene2d.utils.listener :as listener]))
 
 (defn- create-inventory-window*
   [{:keys [position
