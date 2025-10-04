@@ -24,6 +24,26 @@
  (clojure.pprint/pprint
   (mapv symbol (locked-namespaces))))
 
+(def finished
+  '#{
+     dev,
+
+     com.badlogic.gdx.math.vector2
+     com.badlogic.gdx.utils.align
+
+     com.kotcrab,
+
+     gdl.throwable
+     gdl.utils
+     gdl.malli
+     gdl.math
+     gdl.scene2d.actor,
+     gdl.graphics.viewport
+
+
+     }
+  )
+
 (comment
 
  ; java heap space 512m required
@@ -32,33 +52,15 @@
    :output "target/hiera"
    :layout :horizontal
    :external false
-   :ignore #_(set (mapv symbol (locked-namespaces)))
-   '#{cdq.application
-     ;cdq.db.schema
-     cdq.db.schemas
-     cdq.db
-     cdq.malli
-     cdq.files
-     cdq.graphics
-     clojure.rand
-     ;gdl.grid2d
-     cdq.stage
-     cdq.ctx
-     ;cdq.stats
-     cdq.input
-     gdl.timer
-     ;cdq.world
-     gdl.utils
-     ;cdq.entity
-     cdq.entity.faction
-     gdl.math.vector2
-     cdq.world.grid.cell
-     cdq.world.grid
-     cdq.world.content-grid
-     ;cdq.creature
-     gdl.tx-handler
-     dev
-     }
+   ;:ignore #_(set (mapv symbol (locked-namespaces)))
+   :ignore finished
    })
+
+ (hiera/graph
+  {:sources #{"src"}
+   :output "target/hiera"
+   :layout :horizontal
+   :external false
+   :cluster-depth 1})
 
  )

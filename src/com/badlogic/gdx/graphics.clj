@@ -1,5 +1,6 @@
 (ns com.badlogic.gdx.graphics
-  (:require [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport])
+  (:require [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            gdl.graphics.batch)
   (:import (com.badlogic.gdx Graphics)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
@@ -45,3 +46,30 @@
 
 (defn sprite-batch [_]
   (SpriteBatch.))
+
+(extend-type SpriteBatch
+  gdl.graphics.batch/Batch
+  (draw! [this texture-region x y [w h] rotation]
+    (.draw this
+           texture-region
+           x
+           y
+           (/ (float w) 2) ; origin-x
+           (/ (float h) 2) ; origin-y
+           w
+           h
+           1 ; scale-x
+           1 ; scale-y
+           rotation))
+
+  (set-color! [this [r g b a]]
+    (.setColor this r g b a))
+
+  (set-projection-matrix! [this matrix]
+    (.setProjectionMatrix this matrix))
+
+  (begin! [this]
+    (.begin this))
+
+  (end! [this]
+    (.end this)))
