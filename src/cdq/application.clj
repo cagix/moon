@@ -1,8 +1,11 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
+            [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
+            [clojure.gdx.backends.lwjgl.application.configuration :as config]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl])
+  (:import (com.badlogic.gdx Gdx))
   (:gen-class))
 
 (def state (atom nil))
@@ -26,14 +29,19 @@
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
     (lwjgl/set-glfw-library-name! "glfw_async")
-    (application/start! {:create (fn [context]
-                                   (reset! state (pipeline context create-pipeline)))
-                         :dispose (fn []
-                                    (dispose @state))
-                         :render (fn []
-                                   (swap! state pipeline render-pipeline))
-                         :resize (fn [width height]
-                                   (resize @state width height))
-                         :pause (fn [])
-                         :resume (fn [])}
-                        (:config app))))
+    (application/create (listener/create
+                         {:create (fn []
+                                    (reset! state (pipeline {:ctx/audio    Gdx/audio
+                                                             :ctx/files    Gdx/files
+                                                             :ctx/graphics Gdx/graphics
+                                                             :ctx/input    Gdx/input}
+                                                            create-pipeline)))
+                          :dispose (fn []
+                                     (dispose @state))
+                          :render (fn []
+                                    (swap! state pipeline render-pipeline))
+                          :resize (fn [width height]
+                                    (resize @state width height))
+                          :pause (fn [])
+                          :resume (fn [])})
+                        (config/create (:config app)))))
