@@ -22,7 +22,7 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [gdl.disposable :as disposable]
-            [gdl.application.lwjgl :as application]))
+            [clojure.gdx.backends.lwjgl :as application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 

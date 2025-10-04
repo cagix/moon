@@ -1,4 +1,4 @@
-(ns gdl.application.lwjgl
+(ns clojure.gdx.backends.lwjgl
   (:require [clojure.string :as str]
             [clojure.gdx.utils.align :as align]
             gdl.audio

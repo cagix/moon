@@ -1,7 +1,7 @@
 (ns cdq.application
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [gdl.application.lwjgl :as application])
+            [clojure.gdx.backends.lwjgl :as application])
   (:gen-class))
 
 (def state (atom nil))
