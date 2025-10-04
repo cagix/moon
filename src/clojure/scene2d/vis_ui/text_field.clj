@@ -1,5 +1,5 @@
 (ns clojure.scene2d.vis-ui.text-field
-  (:require [gdl.scene2d.actor :as actor]
+  (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.widget :as widget]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.vis-text-field :as vis-text-field]))
 

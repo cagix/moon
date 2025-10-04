@@ -1,10 +1,10 @@
 (ns cdq.db.schema.map
-  (:require [gdl.malli :as m]
+  (:require [clojure.malli :as m]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
-            [gdl.utils :as utils]
+            [clojure.utils :as utils]
             [clojure.set :as set]))
 
 (defn malli-form [[_ ks] schemas]

@@ -1,13 +1,13 @@
 (ns cdq.ctx.create.ui.windows.inventory
-  (:require [gdl.txs :as txs]
+  (:require [clojure.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics :as graphics]
             [cdq.ui :as ui]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.event :as event]
-            [gdl.scene2d.stage :as stage]
+            [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener]))
 

@@ -1,7 +1,7 @@
 (ns clojure.gdx.maps.tiled.renderers.orthogonal
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.maps.tiled :as tiled]
-            [gdl.graphics.viewport :as viewport])
+            [clojure.graphics.viewport :as viewport])
   (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)
            (com.badlogic.gdx.maps.tiled.renderers.orthogonal ColorSetter)))
 

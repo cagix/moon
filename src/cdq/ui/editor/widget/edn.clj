@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.widget.edn
   (:require [clojure.edn :as edn]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn create [schema  v _ctx]
   {:actor/type :actor.type/text-field

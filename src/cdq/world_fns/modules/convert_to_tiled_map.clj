@@ -1,6 +1,6 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
   (:require [clojure.gdx.maps.tiled :as tiled]
-            [gdl.grid2d :as g2d]))
+            [clojure.grid2d :as g2d]))
 
 (defn- grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.

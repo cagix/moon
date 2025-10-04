@@ -1,5 +1,5 @@
 (ns cdq.entity.skills.tick
-  (:require [gdl.timer :as timer]))
+  (:require [clojure.timer :as timer]))
 
 (defn txs [skills eid {:keys [world/elapsed-time]}]
   (for [{:keys [skill/cooling-down?] :as skill} (vals skills)

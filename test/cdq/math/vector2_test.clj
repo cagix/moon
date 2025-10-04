@@ -1,6 +1,6 @@
 (ns cdq.math.vector2-test
-  (:require [gdl.utils :as utils]
-            [gdl.math.vector2 :as v]
+  (:require [clojure.utils :as utils]
+            [clojure.math.vector2 :as v]
             [clojure.test :refer :all]))
 
 (set! *unchecked-math* :warn-on-boxed)

@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.player-state-handle-input
-  (:require [gdl.txs :as txs]
+  (:require [clojure.txs :as txs]
             [cdq.entity.state :as state]))
 
 (defn do!

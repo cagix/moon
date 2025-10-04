@@ -1,7 +1,7 @@
 (ns cdq.tx.move-entity
   (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
-            [gdl.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 (defn do!
   [{:keys [ctx/world]} eid body direction rotate-in-movement-direction?]

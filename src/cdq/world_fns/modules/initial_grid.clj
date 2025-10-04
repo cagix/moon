@@ -1,7 +1,7 @@
 (ns cdq.world-fns.modules.initial-grid
-  (:require [gdl.grid2d :as g2d]
-            [gdl.grid2d.caves :as caves]
-            [gdl.grid2d.nads :as nads]))
+  (:require [clojure.grid2d :as g2d]
+            [clojure.grid2d.caves :as caves]
+            [clojure.grid2d.nads :as nads]))
 
 (defn- cave-grid [& {:keys [size]}]
   (let [{:keys [start grid]} (caves/create (java.util.Random.) size size :wide)

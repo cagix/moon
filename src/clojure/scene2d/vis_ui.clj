@@ -1,7 +1,7 @@
 (ns clojure.scene2d.vis-ui
   (:require [clojure.gdx.scenes.scene2d.vis-ui.core :as vis-ui]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.tooltip :as tooltip]
-            [gdl.disposable :as disposable]))
+            [clojure.disposable :as disposable]))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before vis-ui/dispose!

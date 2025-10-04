@@ -1,6 +1,6 @@
 (ns cdq.entity.temp-modifier.tick
   (:require [cdq.entity.stats :as stats]
-            [gdl.timer :as timer]))
+            [clojure.timer :as timer]))
 
 (defn txs
   [{:keys [modifiers counter]}

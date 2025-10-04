@@ -3,10 +3,10 @@
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui :as ui]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]
-            [gdl.tx-handler :as tx-handler]
-            [gdl.txs :as txs]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]
+            [clojure.tx-handler :as tx-handler]
+            [clojure.txs :as txs]))
 
 (defn- player-add-skill!
   [{:keys [ctx/graphics

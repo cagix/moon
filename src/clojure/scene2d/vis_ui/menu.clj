@@ -3,12 +3,12 @@
             [clojure.gdx.scenes.scene2d.vis-ui.widget.menu-bar :as menu-bar]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.menu-item :as menu-item]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.popup-menu :as popup-menu]
-            [gdl.scene2d :as scene2d]
+            [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.event :as event]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.label :as label]
-            [gdl.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 

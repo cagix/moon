@@ -2,9 +2,9 @@
   (:require [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.vis-text-button :as vis-text-button]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.table :as table]))
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.table :as table]))
 
 (defn create
   ([text on-clicked]

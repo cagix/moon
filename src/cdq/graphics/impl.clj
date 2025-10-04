@@ -10,17 +10,17 @@
             [clojure.gdx.graphics.texture.filter :as texture-filter]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [gdl.disposable :as disposable :refer [dispose!]]
-            [gdl.files :as files]
-            [gdl.files.utils :as files-utils]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.batch :as batch]
-            [gdl.graphics.bitmap-font :as bitmap-font]
-            [gdl.graphics.color]
-            [gdl.graphics.orthographic-camera :as camera]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.viewport :as viewport]
-            [gdl.math :refer [degree->radians]]
+            [clojure.disposable :as disposable :refer [dispose!]]
+            [clojure.files :as files]
+            [clojure.files.utils :as files-utils]
+            [clojure.graphics :as graphics]
+            [clojure.graphics.batch :as batch]
+            [clojure.graphics.bitmap-font :as bitmap-font]
+            [clojure.graphics.color]
+            [clojure.graphics.orthographic-camera :as camera]
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.viewport :as viewport]
+            [clojure.math-ext :refer [degree->radians]]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]))
 
 (defn- create-world-viewport
@@ -81,7 +81,7 @@
   [{:keys [graphics/core]
     :as graphics}]
   (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
-                                                                (pixmap/set-color! gdl.graphics.color/white)
+                                                                (pixmap/set-color! clojure.graphics.color/white)
                                                                 (pixmap/draw-pixel! 0 0))
                                                        texture (pixmap/texture pixmap)]
                                                    (dispose! pixmap)
@@ -248,7 +248,7 @@
                             f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch gdl.graphics.color/white)
+    (batch/set-color! batch clojure.graphics.color/white)
     (batch/set-projection-matrix! batch (:camera/combined (viewport/camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale

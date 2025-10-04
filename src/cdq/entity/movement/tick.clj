@@ -1,7 +1,7 @@
 (ns cdq.entity.movement.tick
   (:require [cdq.world.grid :as grid]
-            [gdl.math.vector2 :as v]
-            [gdl.utils :as utils]))
+            [clojure.math.vector2 :as v]
+            [clojure.utils :as utils]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

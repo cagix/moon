@@ -4,11 +4,11 @@
             [cdq.input :as input]
             [cdq.ui :as ui]
             [clojure.string :as str]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
-            [gdl.disposable :as disposable]
-            [gdl.utils :as utils]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
+            [clojure.disposable :as disposable]
+            [clojure.utils :as utils]))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics

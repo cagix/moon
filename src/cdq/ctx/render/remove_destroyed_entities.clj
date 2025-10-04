@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.remove-destroyed-entities
-  (:require [gdl.txs :as txs]
+  (:require [clojure.txs :as txs]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]))
 

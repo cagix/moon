@@ -1,5 +1,5 @@
 (ns cdq.entity.alert-friendlies-after-duration.tick
-  (:require [gdl.timer :as timer]
+  (:require [clojure.timer :as timer]
             [cdq.world.grid :as grid]))
 
 (defn txs

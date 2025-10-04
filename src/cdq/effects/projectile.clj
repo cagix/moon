@@ -1,6 +1,6 @@
 (ns cdq.effects.projectile
   (:require [cdq.world.raycaster :as raycaster]
-            [gdl.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 (defn- proj-start-point [body direction size]
   (v/add (:body/position body)

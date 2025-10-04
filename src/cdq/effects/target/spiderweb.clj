@@ -1,6 +1,6 @@
 (ns cdq.effects.target.spiderweb
   (:require [cdq.entity.stats :as stats]
-            [gdl.timer :as timer]))
+            [clojure.timer :as timer]))
 
 (def modifiers {:modifier/movement-speed {:op/mult -50}})
 (def duration 5)

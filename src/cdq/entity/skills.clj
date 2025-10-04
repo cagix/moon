@@ -2,7 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity.stats :as stats]
             [cdq.entity.skills.skill :as skill]
-            [gdl.timer :as timer]))
+            [clojure.timer :as timer]))
 
 (extend-type clojure.lang.PersistentHashMap
   skill/Skill

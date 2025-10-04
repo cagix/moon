@@ -1,5 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [gdl.math.vector2 :as v]))
+  (:require [clojure.math.vector2 :as v]))
 
 (defn world-item? [mouseover-actor]
   (not mouseover-actor))

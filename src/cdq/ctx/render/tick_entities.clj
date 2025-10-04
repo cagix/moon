@@ -1,6 +1,6 @@
 (ns cdq.ctx.render.tick-entities
-  (:require [gdl.txs :as txs]
-            [gdl.throwable :as throwable]
+  (:require [clojure.txs :as txs]
+            [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.world :as world]))
 

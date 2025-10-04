@@ -2,10 +2,18 @@
   (:require [cdq.info :refer [info-text]]
             [cdq.entity.stats.info]
             [cdq.stats.ops.info :as ops]
-            [gdl.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.string :as str]
-            [gdl.string]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
+
+(defn- remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
 
 (def ^:private k->colors
   {:property/pretty-name "PRETTY_NAME"
@@ -152,7 +160,7 @@
                       (when (map? v)
                         (str "\n" (info-text v world))))))
          (str/join "\n")
-         gdl.string/remove-newlines)))
+         remove-newlines)))
 
 (defn- valid-item? [item]
   (let [keyset (set (keys item))]

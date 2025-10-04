@@ -7,8 +7,8 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [gdl.malli :as m]
-            [gdl.utils :as utils]))
+            [clojure.malli :as m]
+            [clojure.utils :as utils]))
 
 (defn- save!
   [{:keys [db/data db/file]}]

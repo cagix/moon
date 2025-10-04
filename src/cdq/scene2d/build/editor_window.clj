@@ -3,12 +3,12 @@
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.input :as input]
-            [gdl.throwable :as throwable]
+            [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))
 
 (defn- with-window-close [f]

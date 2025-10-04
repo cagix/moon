@@ -8,15 +8,15 @@
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table
-            gdl.scene2d.build.actor
-            gdl.scene2d.build.actor.tooltip
-            gdl.scene2d.build.group
-            gdl.scene2d.build.horizontal-group
-            gdl.scene2d.build.scroll-pane
-            gdl.scene2d.build.separator-horizontal
-            gdl.scene2d.build.separator-vertical
-            gdl.scene2d.build.stack
-            gdl.scene2d.build.widget
+            clojure.scene2d.build.actor
+            clojure.scene2d.build.actor.tooltip
+            clojure.scene2d.build.group
+            clojure.scene2d.build.horizontal-group
+            clojure.scene2d.build.scroll-pane
+            clojure.scene2d.build.separator-horizontal
+            clojure.scene2d.build.separator-vertical
+            clojure.scene2d.build.stack
+            clojure.scene2d.build.widget
             cdq.ui.actor-information
             cdq.ui.error-window
             ]

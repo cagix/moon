@@ -1,6 +1,6 @@
 (ns cdq.world.raycaster
-  (:require [gdl.math.raycaster :as raycaster]
-            [gdl.math.vector2 :as v]))
+  (:require [clojure.math.raycaster :as raycaster]
+            [clojure.math.vector2 :as v]))
 
 (defn blocked? [{:keys [world/raycaster]} start target]
   (raycaster/blocked? raycaster start target))

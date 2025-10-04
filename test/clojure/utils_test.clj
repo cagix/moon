@@ -1,4 +1,4 @@
-#_(ns gdl.utils-test)
+#_(ns clojure.utils-test)
 
 #_(defn order-contains? [order k]
     ((apply hash-set (keys order)) k))

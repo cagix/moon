@@ -1,6 +1,6 @@
 (ns cdq.ctx.render.draw-on-world-viewport.geom-test
   (:require [cdq.world.grid :as grid]
-            [gdl.math.geom :as geom]))
+            [clojure.math.geom :as geom]))
 
 (defn do!
   [{:keys [ctx/graphics

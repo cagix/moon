@@ -1,14 +1,14 @@
 (ns cdq.scene2d.build.map-widget-table
-  (:require [gdl.malli :as m]
+  (:require [clojure.malli :as m]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.group :as group]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.table :as table]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.group :as group]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
 
 (defn- rebuild!

@@ -2,7 +2,7 @@
   (:require [cdq.input]
             [clojure.string :as str]
             [clojure.gdx.input :as input]
-            [gdl.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 (defn do! [{:keys [ctx/input
                    ctx/stage]

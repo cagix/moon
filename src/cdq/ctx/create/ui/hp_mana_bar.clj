@@ -2,8 +2,8 @@
   (:require [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
             [cdq.ui :as ui]
-            [gdl.val-max :as val-max]
-            [gdl.utils :as utils]))
+            [clojure.val-max :as val-max]
+            [clojure.utils :as utils]))
 
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150

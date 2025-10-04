@@ -1,5 +1,5 @@
 (ns cdq.entity.delete-after-duration.tick
-  (:require [gdl.timer :as timer]))
+  (:require [clojure.timer :as timer]))
 
 (defn txs [counter eid {:keys [world/elapsed-time]}]
   (when (timer/stopped? elapsed-time counter)

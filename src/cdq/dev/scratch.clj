@@ -1,6 +1,6 @@
 (ns dev.scratch
   (:require [cdq.application :refer [state]]
-            [gdl.txs :as txs]
+            [clojure.txs :as txs]
             [cdq.db :as db]))
 
 (comment

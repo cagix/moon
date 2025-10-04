@@ -1,6 +1,6 @@
 (ns cdq.world-fns.modules.place-modules
-  (:require [gdl.grid2d :as g2d]
-            [gdl.grid2d.utils :as helper]))
+  (:require [clojure.grid2d :as g2d]
+            [clojure.grid2d.utils :as helper]))
 
 (def ^:private number-modules-x 8)
 (def ^:private number-modules-y 4)

@@ -1,14 +1,14 @@
 (ns clojure.gdx.backends.lwjgl
   (:require [clojure.string :as str]
             [clojure.gdx.utils.align :as align]
-            gdl.audio
-            gdl.audio.sound
-            gdl.files
-            gdl.files.file-handle
-            gdl.graphics
-            gdl.graphics.batch
-            gdl.graphics.bitmap-font
-            gdl.disposable)
+            clojure.audio
+            clojure.audio.sound
+            clojure.files
+            clojure.files.file-handle
+            clojure.graphics
+            clojure.graphics.batch
+            clojure.graphics.bitmap-font
+            clojure.disposable)
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -62,30 +62,30 @@
 
 
 (extend Audio
-  gdl.audio/Audio
+  clojure.audio/Audio
   {:new-sound Audio/.newSound})
 
 (extend Sound
-  gdl.audio.sound/Sound
+  clojure.audio.sound/Sound
   {:play! Sound/.play})
 
 (extend Files
-  gdl.files/Files
+  clojure.files/Files
   {:internal Files/.internal})
 
 (extend FileHandle
-  gdl.files.file-handle/FileHandle
+  clojure.files.file-handle/FileHandle
   {:list       FileHandle/.list
    :directory? FileHandle/.isDirectory
    :extension  FileHandle/.extension
    :path       FileHandle/.path})
 
 (extend Disposable
-  gdl.disposable/Disposable
+  clojure.disposable/Disposable
   {:dispose! Disposable/.dispose})
 
 (extend-type Graphics
-  gdl.graphics/Graphics
+  clojure.graphics/Graphics
   (delta-time [this]
     (.getDeltaTime this))
 
@@ -100,7 +100,7 @@
 
   (clear!
     ([this [r g b a]]
-     (gdl.graphics/clear! this r g b a))
+     (clojure.graphics/clear! this r g b a))
 
     ([this r g b a]
      (let [clear-depth? false
@@ -130,7 +130,7 @@
     (SpriteBatch.)))
 
 (extend-type SpriteBatch
-  gdl.graphics.batch/Batch
+  clojure.graphics.batch/Batch
   (draw! [this texture-region x y [w h] rotation]
     (.draw this
            texture-region
@@ -162,7 +162,7 @@
                         count
                         (* (.getLineHeight font))))]
   (extend-type BitmapFont
-    gdl.graphics.bitmap-font/BitmapFont
+    clojure.graphics.bitmap-font/BitmapFont
     (configure! [font {:keys [scale enable-markup?  use-integer-positions?]}]
       (.setScale (.getData font) scale)
       (set! (.markupEnabled (.getData font)) enable-markup?)

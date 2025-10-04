@@ -1,6 +1,6 @@
 (ns cdq.effects.target-entity
   (:require [cdq.effect :as effect]
-            [gdl.math.vector2 :as v]))
+            [clojure.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [body target-body]

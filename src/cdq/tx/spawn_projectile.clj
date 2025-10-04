@@ -1,5 +1,5 @@
 (ns cdq.tx.spawn-projectile
-  (:require [gdl.math.vector2 :as v]))
+  (:require [clojure.math.vector2 :as v]))
 
 (defn do! [_ctx
            {:keys [position direction faction]}

@@ -33,12 +33,12 @@
 
      com.kotcrab,
 
-     gdl.throwable
-     gdl.utils
-     gdl.malli
-     gdl.math
-     gdl.scene2d.actor,
-     gdl.graphics.viewport
+     clojure.throwable
+     clojure.utils
+     clojure.malli
+     clojure.math
+     clojure.scene2d.actor,
+     clojure.graphics.viewport
 
 
      }
@@ -57,7 +57,7 @@
    :layout :horizontal
    :external false
    ;:ignore #_(set (mapv symbol (locked-namespaces)))
-   ;:ignore '#{clojure, dev, gdl, com}
+   ;:ignore '#{clojure, dev, clojure, com}
    })
 
  (hiera/graph

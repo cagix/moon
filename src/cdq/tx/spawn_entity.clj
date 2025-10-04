@@ -1,7 +1,7 @@
 (ns cdq.tx.spawn-entity
   (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
-            [gdl.malli :as m]
+            [clojure.malli :as m]
             [qrecord.core :as q]))
 
 (def ^:private create-fns

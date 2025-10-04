@@ -2,7 +2,7 @@
   (:require [cdq.entity.body :as body]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [gdl.grid2d :as g2d]))
+            [clojure.grid2d :as g2d]))
 
 (defn txs
   [{:keys [entity-effects already-hit-bodies piercing?]}

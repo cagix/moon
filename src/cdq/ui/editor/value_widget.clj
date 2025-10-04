@@ -1,7 +1,7 @@
 (ns cdq.ui.editor.value-widget
   (:require [cdq.db.schema :as schema]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.actor :as actor]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.actor :as actor]))
 
 (defn build [ctx schema k v]
   (let [widget (schema/create schema v ctx)

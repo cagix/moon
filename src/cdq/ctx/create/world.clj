@@ -14,10 +14,10 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.gdx.maps.tiled :as tiled]
-            [gdl.disposable :as disposable]
-            [gdl.grid2d :as g2d]
-            [gdl.txs :as txs]
-            [gdl.utils :as utils]))
+            [clojure.disposable :as disposable]
+            [clojure.grid2d :as g2d]
+            [clojure.txs :as txs]
+            [clojure.utils :as utils]))
 
 (defn- create-world-grid [width height cell-movement]
   (g2d/create-grid width

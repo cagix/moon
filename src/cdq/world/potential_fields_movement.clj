@@ -3,10 +3,10 @@
             [cdq.entity.faction :as faction]
             [cdq.world.grid :as grid]
             [cdq.world.grid.cell :as cell]
-            [gdl.grid2d :as g2d]
-            [gdl.math.vector2 :as v]
-            [gdl.position :as position]
-            [gdl.utils :as utils]))
+            [clojure.grid2d :as g2d]
+            [clojure.math.vector2 :as v]
+            [clojure.position :as position]
+            [clojure.utils :as utils]))
 
 (let [order (position/get-8-neighbours [0 0])]
   (def ^:private diagonal-check-indizes

@@ -1,6 +1,6 @@
 (ns cdq.entity.state.active-skill.tick
   (:require [cdq.effect :as effect]
-            [gdl.timer :as timer]
+            [clojure.timer :as timer]
             [cdq.world.raycaster :as raycaster]))
 
 (defn- update-effect-ctx

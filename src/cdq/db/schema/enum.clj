@@ -1,6 +1,6 @@
 (ns cdq.db.schema.enum
   (:require [clojure.edn :as edn]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn malli-form [[_ & params] _schemas]
   (apply vector :enum params))

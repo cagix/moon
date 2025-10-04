@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-moving.tick
-  (:require [gdl.timer :as timer]))
+  (:require [clojure.timer :as timer]))
 
 (defn txs [{:keys [timer]} eid {:keys [world/elapsed-time]}]
   (when (timer/stopped? elapsed-time timer)

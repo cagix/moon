@@ -4,13 +4,13 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
-            [gdl.graphics.viewport :as viewport]
-            [gdl.scene2d :as scene2d]
+            [clojure.graphics.viewport :as viewport]
+            [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
-            [gdl.scene2d.group :as group]
+            [clojure.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.stage :as stage])
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
 
 (defn- add-actors! [stage actor-fns ctx]

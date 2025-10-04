@@ -1,9 +1,9 @@
 (ns cdq.ctx.render.draw-on-world-viewport.draw-entities
   (:require [cdq.graphics :as graphics]
             [cdq.world.raycaster :as raycaster]
-            [gdl.graphics.color :as color]
-            [gdl.throwable :as throwable]
-            [gdl.utils :as utils]))
+            [clojure.graphics.color :as color]
+            [clojure.throwable :as throwable]
+            [clojure.utils :as utils]))
 
 (def ^:private render-layers
   (map

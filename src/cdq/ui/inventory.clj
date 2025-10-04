@@ -1,6 +1,6 @@
 (ns cdq.ui.inventory
-  (:require [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.group :as group]
+  (:require [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]))
 

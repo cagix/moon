@@ -1,7 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.effect :as effect]
             [cdq.entity.stats :as stats]
-            [gdl.timer :as timer]))
+            [clojure.timer :as timer]))
 
 (defn- apply-action-speed-modifier [{:keys [entity/stats]} skill action-time]
   (/ action-time

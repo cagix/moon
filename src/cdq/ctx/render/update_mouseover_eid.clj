@@ -3,7 +3,7 @@
             [cdq.ui :as ui]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
-            [gdl.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn- get-mouseover-entity
   [{:keys [world/grid

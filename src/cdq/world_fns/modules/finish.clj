@@ -2,8 +2,8 @@
   (:require [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
             [clojure.gdx.maps.tiled :as tiled]
-            [gdl.grid2d :as g2d]
-            [gdl.grid2d.utils :as helper]))
+            [clojure.grid2d :as g2d]
+            [clojure.grid2d.utils :as helper]))
 
 (defn step
   [{:keys [

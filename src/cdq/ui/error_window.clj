@@ -1,9 +1,9 @@
 (ns cdq.ui.error-window
   (:require [cdq.ui :as ui]
             [clojure.repl]
-            [gdl.scene2d :as scene2d]
-            [gdl.scene2d.stage :as stage]
-            [gdl.utils :as utils]))
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.stage :as stage]
+            [clojure.utils :as utils]))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
   ui/ErrorWindow

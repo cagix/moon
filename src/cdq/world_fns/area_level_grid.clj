@@ -1,5 +1,5 @@
 (ns cdq.world-fns.area-level-grid
-  (:require [gdl.grid2d :as g2d]))
+  (:require [clojure.grid2d :as g2d]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)
