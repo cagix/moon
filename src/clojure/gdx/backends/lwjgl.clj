@@ -1,7 +1,6 @@
 (ns clojure.gdx.backends.lwjgl
   (:require [clojure.string :as str]
             [clojure.gdx.utils.align :as align]
-            clojure.audio
             clojure.audio.sound
             clojure.files
             clojure.files.file-handle
@@ -60,10 +59,6 @@
                         (.setTitle (:title config))
                         (.setForegroundFPS (:foreground-fps config)))))
 
-
-(extend Audio
-  clojure.audio/Audio
-  {:new-sound Audio/.newSound})
 
 (extend Sound
   clojure.audio.sound/Sound

@@ -3,7 +3,9 @@
           :windowed-mode {:width 1440
                           :height 900}
           :foreground-fps 60}
- :requires [cdq.info-impl
+ :requires [
+            clojure.gdx.audio
+            cdq.info-impl
             clojure.scene2d.builds
             cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
