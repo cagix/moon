@@ -51,4 +51,16 @@
 	;	if (centerCamera) camera.position.set(worldWidth / 2, worldHeight / 2, 0);
 	;	camera.update();
 	;}
+
+
+	; /** Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
+	;  * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
+	; public static void glViewport (int x, int y, int width, int height) {
+	; 	if (mode == HdpiMode.Logical && (Gdx.graphics.getWidth() != Gdx.graphics.getBackBufferWidth()
+	; 		|| Gdx.graphics.getHeight() != Gdx.graphics.getBackBufferHeight())) {
+	; 		Gdx.gl.glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+	; 	} else {
+	; 		Gdx.gl.glViewport(x, y, width, height);
+	; 	}
+	; }
  )
