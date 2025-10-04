@@ -85,8 +85,8 @@
                            {:actor {:actor/type :actor.type/scroll-pane
                                     :actor/name "dbg scroll pane"
                                     :scroll-pane/actor table}
-                            :width width ; (- (:viewport/width viewport) 100) ; (+ 100 (/ (:viewport/width viewport) 2))
-                            :height height ; (- (:viewport/height viewport) 200) ; (- (:viewport/height viewport) 50) #_(min (- (:height viewport) 50) (height table))
+                            :width width ; (- (viewport/world-width viewport) 100) ; (+ 100 (/ (viewport/world-width viewport) 2))
+                            :height height ; (- (viewport/world-height viewport) 200) ; (- (viewport/world-height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
     (scene2d/build {:actor/type :actor.type/window
                     :title title

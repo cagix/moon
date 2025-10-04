@@ -120,7 +120,7 @@
                                                                                        {:folder "resources/"
                                                                                         :extensions #{"png" "bmp"}})]
                                             [path (graphics/texture graphics file-handle)]))
-                   :ctx/camera (:viewport/camera world-viewport)
+                   :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
                    :ctx/camera-movement-speed 1

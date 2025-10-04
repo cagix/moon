@@ -51,8 +51,8 @@
                        :height 500})))
 
   ui/Stage
-  (viewport-width  [stage] (:viewport/width  (stage/viewport stage)))
-  (viewport-height [stage] (:viewport/height (stage/viewport stage)))
+  (viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
+  (viewport-height [stage] (viewport/world-height (stage/viewport stage)))
 
   (get-ctx [this]
     (stage/get-ctx this))
@@ -106,8 +106,8 @@
                                                  (on-click))}}]]
                   :actor/name "cdq.ui.modal-window"
                   :modal? true
-                  :actor/center-position [(/ (:viewport/width  ui-viewport) 2)
-                                          (* (:viewport/height ui-viewport) (/ 3 4))]
+                  :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
+                                          (* (viewport/world-height ui-viewport) (/ 3 4))]
                   :pack? true})))
 
   (set-item! [stage cell item-properties]

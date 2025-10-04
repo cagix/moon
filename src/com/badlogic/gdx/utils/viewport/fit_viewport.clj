@@ -2,21 +2,10 @@
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [gdl.graphics.viewport]
             [gdl.math :refer [clamp]])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+  (:import (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn create [width height camera]
-  (proxy [FitViewport ILookup] [width height camera]
-    (valAt [k]
-      (let [^FitViewport this this]
-        (case k
-          :viewport/width             (.getWorldWidth      this)
-          :viewport/height            (.getWorldHeight     this)
-          :viewport/camera            (.getCamera          this)
-          :viewport/left-gutter-width (.getLeftGutterWidth this)
-          :viewport/right-gutter-x    (.getRightGutterX    this)
-          :viewport/top-gutter-height (.getTopGutterHeight this)
-          :viewport/top-gutter-y      (.getTopGutterY      this))))))
+  (FitViewport. width height camera))
 
 (defn- unproject* [this x y]
   (-> this
@@ -25,14 +14,23 @@
 
 (extend-type FitViewport
   gdl.graphics.viewport/Viewport
+  (camera [this]
+    (.getCamera this))
+
+  (world-width [this]
+    (.getWorldWidth this))
+
+  (world-height [this]
+    (.getWorldHeight this))
+
   (unproject [this [x y]]
     (unproject* this
                 (clamp x
-                       (:viewport/left-gutter-width this)
-                       (:viewport/right-gutter-x    this))
+                       (.getLeftGutterWidth this)
+                       (.getRightGutterX    this))
                 (clamp y
-                       (:viewport/top-gutter-height this)
-                       (:viewport/top-gutter-y      this))))
+                       (.getTopGutterHeight this)
+                       (.getTopGutterY      this))))
 
   (update! [viewport width height {:keys [center?]}]
     (.update viewport width height (boolean center?))))

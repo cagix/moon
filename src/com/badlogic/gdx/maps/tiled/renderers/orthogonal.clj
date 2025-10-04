@@ -1,12 +1,13 @@
 (ns com.badlogic.gdx.maps.tiled.renderers.orthogonal
   (:require [com.badlogic.gdx.graphics.color :as color]
-            [com.badlogic.gdx.maps.tiled :as tiled])
+            [com.badlogic.gdx.maps.tiled :as tiled]
+            [gdl.graphics.viewport :as viewport])
   (:import (com.badlogic.gdx.maps.tiled.renderers Orthogonal)
            (com.badlogic.gdx.maps.tiled.renderers.orthogonal ColorSetter)))
 
 (defn draw! [tiled-map-renderer world-viewport tiled-map color-setter]
   (let [^Orthogonal renderer (tiled-map-renderer tiled-map)
-        camera (:viewport/camera world-viewport)]
+        camera (viewport/camera world-viewport)]
     (.setColorSetter renderer (reify ColorSetter
                                 (apply [_ color x y]
                                   (color/float-bits (color-setter color x y)))))

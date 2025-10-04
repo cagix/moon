@@ -251,7 +251,7 @@
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
     (batch/set-color! batch gdl.graphics.color/white)
-    (batch/set-projection-matrix! batch (:camera/combined (:viewport/camera world-viewport)))
+    (batch/set-projection-matrix! batch (:camera/combined (viewport/camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale
       (reset! unit-scale world-unit-scale)
@@ -288,19 +288,19 @@
     [{:keys [graphics/core]}]
     (graphics/frames-per-second core))
 
-  (world-viewport-width  [{:keys [graphics/world-viewport]}] (:viewport/width  world-viewport))
-  (world-viewport-height [{:keys [graphics/world-viewport]}] (:viewport/height world-viewport))
+  (world-viewport-width  [{:keys [graphics/world-viewport]}] (viewport/world-width  world-viewport))
+  (world-viewport-height [{:keys [graphics/world-viewport]}] (viewport/world-height world-viewport))
 
-  (camera-position [{:keys [graphics/world-viewport]}] (:camera/position     (:viewport/camera world-viewport)))
-  (visible-tiles   [{:keys [graphics/world-viewport]}] (camera/visible-tiles (:viewport/camera world-viewport)))
-  (camera-frustum  [{:keys [graphics/world-viewport]}] (camera/frustum       (:viewport/camera world-viewport)))
-  (camera-zoom     [{:keys [graphics/world-viewport]}] (:camera/zoom         (:viewport/camera world-viewport)))
+  (camera-position [{:keys [graphics/world-viewport]}] (:camera/position     (viewport/camera world-viewport)))
+  (visible-tiles   [{:keys [graphics/world-viewport]}] (camera/visible-tiles (viewport/camera world-viewport)))
+  (camera-frustum  [{:keys [graphics/world-viewport]}] (camera/frustum       (viewport/camera world-viewport)))
+  (camera-zoom     [{:keys [graphics/world-viewport]}] (:camera/zoom         (viewport/camera world-viewport)))
 
   (change-zoom! [{:keys [graphics/world-viewport]} amount]
-    (camera/inc-zoom! (:viewport/camera world-viewport) amount))
+    (camera/inc-zoom! (viewport/camera world-viewport) amount))
 
   (set-camera-position! [{:keys [graphics/world-viewport]} position]
-    (camera/set-position! (:viewport/camera world-viewport) position))
+    (camera/set-position! (viewport/camera world-viewport) position))
 
   (unproject-ui [{:keys [graphics/ui-viewport]} position]
     (viewport/unproject ui-viewport position))
