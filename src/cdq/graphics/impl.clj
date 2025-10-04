@@ -20,22 +20,21 @@
             [gdl.graphics.orthographic-camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.viewport :as viewport]
-            [gdl.math :refer [degree->radians]]))
+            [gdl.math :refer [degree->radians]]
+            [gdx.graphics]))
 
 (defn- create-world-viewport
-  [{:keys [graphics/core
-           graphics/world-unit-scale]
+  [{:keys [graphics/world-unit-scale]
     :as graphics}
    world-viewport]
   (assoc graphics :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                                  world-height (* (:height world-viewport) world-unit-scale)]
-                                             (graphics/fit-viewport core
-                                                                    world-width
-                                                                    world-height
-                                                                    (orthographic-camera/create
-                                                                     :y-down? false
-                                                                     :world-width world-width
-                                                                     :world-height world-height)))))
+                                             (gdx.graphics/fit-viewport world-width
+                                                                        world-height
+                                                                        (orthographic-camera/create
+                                                                         :y-down? false
+                                                                         :world-width world-width
+                                                                         :world-height world-height)))))
 
 (defn- create-unit-scales [graphics world-unit-scale]
   (assoc graphics
@@ -45,10 +44,9 @@
 (defn- create-ui-viewport
   [{:keys [graphics/core]
     :as graphics} ui-viewport]
-  (assoc graphics :graphics/ui-viewport (graphics/fit-viewport core
-                                                               (:width  ui-viewport)
-                                                               (:height ui-viewport)
-                                                               (orthographic-camera/create))))
+  (assoc graphics :graphics/ui-viewport (gdx.graphics/fit-viewport (:width  ui-viewport)
+                                                                   (:height ui-viewport)
+                                                                   (orthographic-camera/create))))
 
 (defn- create-tm-renderer
   [{:keys [graphics/batch

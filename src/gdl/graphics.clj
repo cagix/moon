@@ -10,5 +10,4 @@
   (texture [_ file-handle])
   (pixmap [_ file-handle]
           [_ width height pixmap-format])
-  (fit-viewport [_ width height camera])
   (sprite-batch [_]))

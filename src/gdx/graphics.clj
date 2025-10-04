@@ -1,10 +1,10 @@
-(ns com.badlogic.gdx.utils.viewport.fit-viewport
+(ns gdx.graphics
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [gdl.graphics.viewport]
             [gdl.math :refer [clamp]])
   (:import (com.badlogic.gdx.utils.viewport FitViewport)))
 
-(defn create [width height camera]
+(defn fit-viewport [width height camera]
   (FitViewport. width height camera))
 
 (defn- unproject* [this x y]

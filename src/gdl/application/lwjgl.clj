@@ -1,7 +1,6 @@
 (ns gdl.application.lwjgl
   (:require [clojure.string :as str]
             [com.badlogic.gdx.utils.align :as align]
-            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]
             gdl.audio
             gdl.audio.sound
             gdl.files
@@ -126,9 +125,6 @@
               (int height)
               (case pixmap-format
                 :pixmap.format/RGBA8888 Pixmap$Format/RGBA8888))))
-
-  (fit-viewport [_ width height camera]
-    (fit-viewport/create width height camera))
 
   (sprite-batch [_]
     (SpriteBatch.)))

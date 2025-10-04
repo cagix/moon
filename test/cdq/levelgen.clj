@@ -7,6 +7,7 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.orthographic-camera :as camera]
             [gdl.graphics.viewport :as viewport]
+            [gdx.graphics]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
             [gdl.files.utils :as files-utils]
@@ -92,7 +93,7 @@
            ctx/graphics
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (graphics/fit-viewport graphics 1440 900 (orthographic-camera/create))
+        ui-viewport (gdx.graphics/fit-viewport 1440 900 (orthographic-camera/create))
         sprite-batch (graphics/sprite-batch graphics)
         stage (com.badlogic.gdx.scenes.scene2d.stage/create
                ui-viewport
@@ -106,12 +107,11 @@
                 (assoc :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (graphics/fit-viewport graphics
-                                                world-width
-                                                world-height
-                                                (orthographic-camera/create :y-down? false
-                                                                            :world-width world-width
-                                                                            :world-height world-height)))
+                         (gdx.graphics/fit-viewport world-width
+                                                    world-height
+                                                    (orthographic-camera/create :y-down? false
+                                                                                :world-width world-width
+                                                                                :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
