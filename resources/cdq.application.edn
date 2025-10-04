@@ -9,6 +9,7 @@
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table
             gdl.scene2d.build.actor
+            gdl.scene2d.build.actor.tooltip
             gdl.scene2d.build.group
             gdl.scene2d.build.horizontal-group
             gdl.scene2d.build.scroll-pane
@@ -18,7 +19,6 @@
             gdl.scene2d.build.widget
             cdq.ui.actor-information
             cdq.ui.error-window
-            clojure.scene2d.tooltip
             ]
  :create-pipeline [[record]
                    [handle-txs]

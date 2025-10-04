@@ -1,12 +1,13 @@
-(ns clojure.scene2d.tooltip
-  (:require [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
+(ns gdl.scene2d.build.actor.tooltip
+  (:require [com.badlogic.gdx.utils.align :as align]
+            [com.kotcrab.vis.ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis.ui.widget.vis-label :as vis-label]
-            [gdl.scene2d.stage :as stage]
-            [com.badlogic.gdx.utils.align :as align]
-            [gdl.scene2d.actor :as actor]))
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(extend-type com.badlogic.gdx.scenes.scene2d.Actor
-  gdl.scene2d.actor/Tooltip
+(extend-type Actor
+  actor/Tooltip
   (add-tooltip! [actor tooltip-text]
     (tooltip/create {:update-fn (fn [tooltip]
                                   (when-not (string? tooltip-text)
