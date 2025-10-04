@@ -3,26 +3,30 @@
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
+            [clojure.disposable :as disposable]
             [clojure.edn :as edn]
+            [clojure.files.utils :as files-utils]
+            [clojure.gdx.backends.lwjgl.application :as application]
+            [clojure.gdx.files]
+            [clojure.gdx.graphics]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.input :as input]
+            [clojure.gdx.maps.tiled :as tiled]
+            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [clojure.gdx.scenes.scene2d.stage]
+            [clojure.gdx.utils.viewport]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
+            [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.java.io :as io]
-            [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.files.utils :as files-utils]
-            [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.graphics :as graphics]
-            [clojure.gdx.input :as input]
+            [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.stage]
-            [clojure.gdx.maps.tiled :as tiled]
-            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.disposable :as disposable]
-            [clojure.gdx.backends.lwjgl :as application]))
+            [clojure.scene2d.vis-ui :as vis-ui]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -192,17 +196,17 @@
 (def state (atom nil))
 
 (defn -main []
-  (application/start! (reify application/Listener
-                        (create [_ context]
-                          (reset! state (create! context)))
-                        (dispose [_]
-                          (dispose! @state))
-                        (render [_]
-                          (swap! state render!))
-                        (resize [_ width height]
-                          (resize! @state width height))
-                        (pause [_])
-                        (resume [_]))
+  (lwjgl/set-glfw-library-name! "glfw_async")
+  (application/start! {:create (fn [context]
+                                 (reset! state (create! context)))
+                       :dispose (fn []
+                                  (dispose! @state))
+                       :render (fn []
+                                 (swap! state render!))
+                       :resize (fn [width height]
+                                 (resize! @state width height))
+                       :pause (fn [])
+                       :resume (fn [])}
                       {:title "Levelgen test"
                        :windowed-mode {:width 1440 :height 900}
                        :foreground-fps 60}))

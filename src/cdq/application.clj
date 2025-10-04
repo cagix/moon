@@ -1,7 +1,8 @@
 (ns cdq.application
-  (:require [clojure.java.io :as io]
-            [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl :as application])
+  (:require [clojure.edn :as edn]
+            [clojure.gdx.backends.lwjgl.application :as application]
+            [clojure.java.io :as io]
+            [clojure.lwjgl.system.configuration :as lwjgl])
   (:gen-class))
 
 (def state (atom nil))
@@ -24,15 +25,15 @@
         dispose (requiring-resolve (:dispose app))
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
-    (application/start! (reify application/Listener
-                          (create [_ context]
-                            (reset! state (pipeline context create-pipeline)))
-                          (dispose [_]
-                            (dispose @state))
-                          (render [_]
-                            (swap! state pipeline render-pipeline))
-                          (resize [_ width height]
-                            (resize @state width height))
-                          (pause [_])
-                          (resume [_]))
+    (lwjgl/set-glfw-library-name! "glfw_async")
+    (application/start! {:create (fn [context]
+                                   (reset! state (pipeline context create-pipeline)))
+                         :dispose (fn []
+                                    (dispose @state))
+                         :render (fn []
+                                   (swap! state pipeline render-pipeline))
+                         :resize (fn [width height]
+                                   (resize @state width height))
+                         :pause (fn [])
+                         :resume (fn [])}
                         (:config app))))
