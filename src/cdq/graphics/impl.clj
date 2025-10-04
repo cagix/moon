@@ -303,10 +303,8 @@
   (unproject-ui [{:keys [graphics/ui-viewport]} position]
     (viewport/unproject ui-viewport position))
 
-  (unproject-world [{:keys [graphics/world-viewport]
-                     :as graphics}
-                    position]
-    (assoc graphics :graphics/world-mouse-position (viewport/unproject world-viewport position)))
+  (unproject-world [{:keys [graphics/world-viewport]} position]
+    (viewport/unproject world-viewport position))
 
   (update-viewports! [{:keys [graphics/ui-viewport
                               graphics/world-viewport]} width height]

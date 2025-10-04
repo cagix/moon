@@ -3,7 +3,6 @@
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
             [cdq.graphics :as graphics]
-            [cdq.input :as input]
             [cdq.ui :as ui]
             [gdl.scene2d :as scene2d]
             [gdl.scene2d.actor :as actor]
@@ -38,14 +37,14 @@
         draw-rect-actor (fn []
                           {:actor/type :actor.type/widget
                            :actor/draw (fn [actor {:keys [ctx/graphics
-                                                          ctx/input
                                                           ctx/world]}]
-                                         (let [ui-mouse (graphics/unproject-ui graphics (input/mouse-position input))]
+                                         (let [ui-mouse (:graphics/ui-mouse-position graphics)]
                                            (draw-cell-rect @(:world/player-eid world)
                                                            (actor/get-x actor)
                                                            (actor/get-y actor)
                                                            (actor/hit actor
-                                                                      (actor/stage->local-coordinates actor ui-mouse))
+                                                                      (actor/stage->local-coordinates actor
+                                                                                                      ui-mouse))
                                                            (actor/user-object (actor/parent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
