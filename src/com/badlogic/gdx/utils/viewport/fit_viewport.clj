@@ -26,13 +26,13 @@
 (extend-type FitViewport
   gdl.graphics.viewport/Viewport
   (unproject [this [x y]]
-    (let [[x y] (unproject* this x y)]
-      [(clamp x
-              (:viewport/left-gutter-width this)
-              (:viewport/right-gutter-x    this))
-       (clamp y
-              (:viewport/top-gutter-height this)
-              (:viewport/top-gutter-y      this))]))
+    (unproject* this
+                (clamp x
+                       (:viewport/left-gutter-width this)
+                       (:viewport/right-gutter-x    this))
+                (clamp y
+                       (:viewport/top-gutter-height this)
+                       (:viewport/top-gutter-y      this))))
 
   (update! [viewport width height {:keys [center?]}]
     (.update viewport width height (boolean center?))))
