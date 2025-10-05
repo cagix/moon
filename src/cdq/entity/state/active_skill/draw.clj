@@ -1,6 +1,6 @@
 (ns cdq.entity.state.active-skill.draw
   (:require [cdq.effect :as effect]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [clojure.timer :as timer]))
 
 (def ^:private skill-image-radius-world-units
@@ -31,7 +31,7 @@
            ctx/world]
     :as ctx}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (concat (draw-skill-image (graphics/texture-region graphics image)
+    (concat (draw-skill-image (textures/texture-region graphics image)
                               entity
                               (:body/position (:entity/body entity))
                               (timer/ratio (:world/elapsed-time world) counter))

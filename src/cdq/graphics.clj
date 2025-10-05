@@ -8,6 +8,3 @@
   (frames-per-second [_])
   (update-viewports! [_ width height])
   (unproject-ui [_ position]))
-
-(defprotocol Textures
-  (texture-region [_ image]))

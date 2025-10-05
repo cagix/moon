@@ -1,6 +1,6 @@
 (ns cdq.ctx.create.world
   (:require [cdq.db :as db]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [cdq.world :as world]
             [cdq.world.create.grid]
             [cdq.world.assoc-entity-spawn-schema :as assoc-entity-spawn-schema]
@@ -154,7 +154,7 @@
     ((requiring-resolve f)
      (assoc params
             :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
-                                                                             #(graphics/texture-region graphics %))
+                                                                             #(textures/texture-region graphics %))
             :textures (:graphics/textures graphics)))))
 
 (def ^:private params

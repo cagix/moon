@@ -1,7 +1,7 @@
 (ns cdq.db.schema.one-to-many
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.graphics :as graphics]
+            [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
@@ -45,7 +45,7 @@
                                                   (redo-rows ctx (conj property-ids id)))})))}}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
-              texture-region (graphics/texture-region graphics (property/image property))
+              texture-region (textures/texture-region graphics (property/image property))
               image-widget (scene2d/build
                             {:actor/type :actor.type/image
                              :image/object texture-region

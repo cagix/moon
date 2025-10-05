@@ -2,6 +2,7 @@
   (:require [cdq.graphics]
             [cdq.graphics.camera]
             [cdq.graphics.draws :as draws]
+            [cdq.graphics.textures]
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
@@ -62,7 +63,7 @@
     :as graphics}
    textures-to-load]
   (extend-type (class graphics)
-    cdq.graphics/Textures
+    cdq.graphics.textures/Textures
     (texture-region [{:keys [graphics/textures]}
                      {:keys [image/file image/bounds]}]
       (assert file)
