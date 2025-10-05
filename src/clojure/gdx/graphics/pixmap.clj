@@ -22,3 +22,6 @@
 
 (defn texture [^Pixmap pixmap]
   (Texture. pixmap))
+
+(defn dispose! [^Pixmap pixmap]
+  (.dispose pixmap))
