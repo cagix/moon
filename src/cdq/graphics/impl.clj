@@ -162,14 +162,14 @@
                                              texture-region
                                              (- (float x) (/ (float w) 2))
                                              (- (float y) (/ (float h) 2))
-                                             [w h]
+                                             (/ (float w) 2) ; origin-x
+                                             (/ (float h) 2) ; origin-y
+                                             w
+                                             h
+                                             1 ; scale-x
+                                             1 ; scale-y
                                              (or rotation 0))
-                                (batch/draw! batch
-                                             texture-region
-                                             x
-                                             y
-                                             [w h]
-                                             0))))
+                                (batch/draw! batch texture-region x y w h))))
    :draw/text             (fn [{:keys [graphics/batch
                                        graphics/unit-scale
                                        graphics/default-font]}

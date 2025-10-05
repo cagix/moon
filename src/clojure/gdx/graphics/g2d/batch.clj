@@ -1,18 +1,26 @@
 (ns clojure.gdx.graphics.g2d.batch
   (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
-(defn draw! [^Batch batch texture-region x y [w h] rotation]
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; origin-x
-         (/ (float h) 2) ; origin-y
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation))
+(defn draw!
+  ([^Batch batch texture-region x y w h]
+   (.draw batch
+          texture-region
+          (float x)
+          (float y)
+          (float w)
+          (float h)))
+  ([^Batch batch texture-region x y origin-x origin-y width height scale-x scale-y rotation]
+   (.draw batch
+          texture-region
+          x
+          y
+          origin-x
+          origin-y
+          width
+          height
+          scale-x
+          scale-y
+          rotation)))
 
 (defn set-color! [^Batch batch [r g b a]]
   (.setColor batch r g b a))
