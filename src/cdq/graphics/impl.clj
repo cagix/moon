@@ -3,6 +3,8 @@
             [cdq.graphics.camera]
             [cdq.graphics.draws :as draws]
             [cdq.graphics.textures]
+            [cdq.graphics.tiled-map-renderer]
+            [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
@@ -224,7 +226,7 @@
                             (sd/set-color! shape-drawer (color/float-bits color))
                             (sd/line! shape-drawer sx sy ex ey))})
 
-(defrecord RGraphics []
+(defrecord Graphics []
   cdq.graphics.camera/Camera
   (position [{:keys [graphics/world-viewport]}]
     (:camera/position (viewport/camera world-viewport)))
@@ -262,6 +264,44 @@
             :when component]
       (apply (draw-fns k) graphics (rest component))))
 
+  cdq.graphics.tiled-map-renderer/TiledMapRenderer
+  (draw!
+    [{:keys [graphics/tiled-map-renderer
+             graphics/world-viewport]}
+     tiled-map
+     color-setter]
+    (tm-renderer/draw! tiled-map-renderer
+                       world-viewport
+                       tiled-map
+                       color-setter))
+
+  cdq.graphics.ui-viewport/UIViewport
+  (unproject [{:keys [graphics/ui-viewport]} position]
+    (viewport/unproject ui-viewport position))
+
+  (update! [{:keys [graphics/ui-viewport]} width height]
+    (viewport/update! ui-viewport width height {:center? true}))
+
+  cdq.graphics/Graphics
+  (clear! [{:keys [graphics/core]} [r g b a]]
+    (graphics/clear! core r g b a))
+
+  (set-cursor!
+    [{:keys [graphics/cursors
+             graphics/core]}
+     cursor-key]
+    (assert (contains? cursors cursor-key))
+    (graphics/set-cursor! core (get cursors cursor-key)))
+
+  (delta-time
+    [{:keys [graphics/core]}]
+    (graphics/delta-time core))
+
+  (frames-per-second
+    [{:keys [graphics/core]}]
+    (graphics/frames-per-second core)))
+
+(extend-type Graphics
   cdq.graphics.world-viewport/WorldViewport
   (width [{:keys [graphics/world-viewport]}]
     (viewport/world-width world-viewport))
@@ -271,6 +311,9 @@
 
   (unproject [{:keys [graphics/world-viewport]} position]
     (viewport/unproject world-viewport position))
+
+  (update! [{:keys [graphics/world-viewport]} width height]
+    (viewport/update! world-viewport width height {:center? false}))
 
   (draw! [{:keys [graphics/batch
                   graphics/shape-drawer
@@ -287,45 +330,7 @@
       (reset! unit-scale world-unit-scale)
       (f)
       (reset! unit-scale 1))
-    (batch/end! batch))
-
-  cdq.graphics/PGraphics
-  (clear! [{:keys [graphics/core]} [r g b a]]
-    (graphics/clear! core r g b a))
-
-  (draw-tiled-map!
-    [{:keys [graphics/tiled-map-renderer
-             graphics/world-viewport]}
-     tiled-map
-     color-setter]
-    (tm-renderer/draw! tiled-map-renderer
-                       world-viewport
-                       tiled-map
-                       color-setter))
-
-  (set-cursor!
-    [{:keys [graphics/cursors
-             graphics/core]}
-     cursor-key]
-    (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! core (get cursors cursor-key)))
-
-  (delta-time
-    [{:keys [graphics/core]}]
-    (graphics/delta-time core))
-
-  (frames-per-second
-    [{:keys [graphics/core]}]
-    (graphics/frames-per-second core))
-
-  (unproject-ui [{:keys [graphics/ui-viewport]} position]
-    (viewport/unproject ui-viewport position))
-
-
-  (update-viewports! [{:keys [graphics/ui-viewport
-                              graphics/world-viewport]} width height]
-    (viewport/update! ui-viewport    width height {:center? true})
-    (viewport/update! world-viewport width height {:center? false})))
+    (batch/end! batch)))
 
 (defn- create*
   [{:keys [textures-to-load
@@ -335,7 +340,7 @@
            cursors
            world-viewport]}
    graphics]
-  (-> (map->RGraphics {})
+  (-> (map->Graphics {})
       (assoc :graphics/core graphics)
       (create-cursors cursors)
       (create-font default-font)

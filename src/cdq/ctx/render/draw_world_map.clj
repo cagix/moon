@@ -1,6 +1,6 @@
 (ns cdq.ctx.render.draw-world-map
-  (:require [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]
+  (:require [cdq.graphics.camera :as camera]
+            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.world.raycaster :as raycaster]))
 
 (defn- tile-color-setter
@@ -53,7 +53,7 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (graphics/draw-tiled-map! graphics
+  (tiled-map-renderer/draw! graphics
                             (:world/tiled-map world)
                             (tile-color-setter
                              {:ray-blocked? (partial raycaster/blocked? world)
