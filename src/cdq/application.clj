@@ -14,18 +14,34 @@
    [com.badlogic.gdx.Audio
     clojure.gdx.audio
     clojure.audio/Audio]
+
    [com.badlogic.gdx.audio.Sound
     clojure.gdx.audio.sound
     clojure.audio.sound/Sound]
+
    [com.badlogic.gdx.Files
     clojure.gdx.files
     clojure.files/Files]
+
    [com.badlogic.gdx.files.FileHandle
     clojure.gdx.files.file-handle
     clojure.files.file-handle/FileHandle]
+
    [com.badlogic.gdx.Graphics
     clojure.gdx.graphics
     clojure.graphics/Graphics]
+
+   [com.badlogic.gdx.graphics.g2d.Batch
+    clojure.gdx.graphics.g2d.batch
+    clojure.graphics.batch/Batch]
+
+   [com.badlogic.gdx.graphics.g2d.BitmapFont
+    clojure.gdx.graphics.g2d.bitmap-font
+    clojure.graphics.bitmap-font/BitmapFont]
+
+   [com.badlogic.gdx.utils.Disposable
+    clojure.gdx.utils.disposable
+    clojure.disposable/Disposable]
    ]
  )
 

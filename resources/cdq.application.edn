@@ -4,9 +4,6 @@
                           :height 900}
           :foreground-fps 60}
  :requires [
-            clojure.gdx.graphics.g2d.batch
-            clojure.gdx.graphics.g2d.bitmap-font
-            clojure.gdx.utils.disposable
             cdq.info-impl
             clojure.scene2d.builds
             cdq.scene2d.build.editor-overview-window

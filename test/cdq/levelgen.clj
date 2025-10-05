@@ -3,14 +3,14 @@
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
+            [clojure.core-ext :refer [extend-by-ns]]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files.utils :as files-utils]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.configuration :as config]
-            [clojure.gdx.files]
-            [clojure.gdx.graphics]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -20,7 +20,6 @@
             [clojure.gdx.scenes.scene2d.stage]
             [clojure.gdx.utils.viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.viewport :as viewport]
@@ -31,6 +30,19 @@
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx Gdx)))
+
+(extend-by-ns
+ '[
+   [com.badlogic.gdx.Files
+    clojure.gdx.files
+    clojure.files/Files]
+
+   [com.badlogic.gdx.files.FileHandle
+    clojure.gdx.files.file-handle
+    clojure.files.file-handle/FileHandle]
+   ]
+ )
+
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
