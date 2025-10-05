@@ -23,6 +23,9 @@
    [com.badlogic.gdx.files.FileHandle
     clojure.gdx.files.file-handle
     clojure.files.file-handle/FileHandle]
+   [com.badlogic.gdx.Graphics
+    clojure.gdx.graphics
+    clojure.graphics/Graphics]
    ]
  )
 

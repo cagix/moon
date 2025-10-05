@@ -13,6 +13,7 @@
             [clojure.gdx.graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -101,7 +102,7 @@
            ctx/input]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
-        sprite-batch (graphics/sprite-batch graphics)
+        sprite-batch (sprite-batch/create)
         stage (clojure.gdx.scenes.scene2d.stage/create
                ui-viewport
                sprite-batch)
@@ -126,7 +127,7 @@
                    :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
                                                                                        {:folder "resources/"
                                                                                         :extensions #{"png" "bmp"}})]
-                                            [path (graphics/texture graphics file-handle)]))
+                                            [path (texture/create file-handle)]))
                    :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1

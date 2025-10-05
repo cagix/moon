@@ -9,6 +9,7 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
             [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -61,9 +62,7 @@
   (assoc graphics :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch)))
 
 (defn- create-textures
-  [{:keys [graphics/core]
-    :as graphics}
-   textures-to-load]
+  [graphics textures-to-load]
   (extend-type (class graphics)
     cdq.graphics.textures/Textures
     (texture-region [{:keys [graphics/textures]}
@@ -76,17 +75,15 @@
           (texture/region texture)))))
   (assoc graphics :graphics/textures
          (into {} (for [[path file-handle] textures-to-load]
-                    [path (graphics/texture core file-handle)]))))
+                    [path (texture/create file-handle)]))))
 
 (defn- create-sprite-batch
-  [{:keys [graphics/core]
-    :as graphics}]
-  (assoc graphics :graphics/batch (graphics/sprite-batch core)))
+  [graphics]
+  (assoc graphics :graphics/batch (sprite-batch/create)))
 
 (defn- create-shape-drawer-texture
-  [{:keys [graphics/core]
-    :as graphics}]
-  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (graphics/pixmap core 1 1 :pixmap.format/RGBA8888)
+  [graphics]
+  (assoc graphics :graphics/shape-drawer-texture (let [pixmap (doto (pixmap/create 1 1 :pixmap.format/RGBA8888)
                                                                 (pixmap/set-color! clojure.graphics.color/white)
                                                                 (pixmap/draw-pixel! 0 0))
                                                        texture (pixmap/texture pixmap)]
@@ -123,7 +120,7 @@
    cursors]
   (assoc graphics :graphics/cursors (update-vals cursors
                                                  (fn [[file-handle [hotspot-x hotspot-y]]]
-                                                   (let [pixmap (graphics/pixmap core file-handle)
+                                                   (let [pixmap (pixmap/create file-handle)
                                                          cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
                                                      (dispose! pixmap)
                                                      cursor)))))
@@ -283,8 +280,8 @@
     (viewport/update! ui-viewport width height {:center? true}))
 
   cdq.graphics/Graphics
-  (clear! [{:keys [graphics/core]} [r g b a]]
-    (graphics/clear! core r g b a))
+  (clear! [{:keys [graphics/core]} color]
+    (graphics/clear! core color))
 
   (set-cursor!
     [{:keys [graphics/cursors
