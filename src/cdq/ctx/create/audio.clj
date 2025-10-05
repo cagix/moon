@@ -1,5 +1,5 @@
 (ns cdq.ctx.create.audio
-  (:require [cdq.audio]
+  (:require [clojure.audio.sounds]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.audio :as audio]
@@ -15,11 +15,11 @@
                             (fn [file-handle]
                               (audio/new-sound audio file-handle)))]
     (reify
-      cdq.audio/Audio
-      (all-sounds [_]
+      clojure.audio.sounds/Sounds
+      (all-names [_]
         (map first sounds))
 
-      (play-sound! [_ sound-name]
+      (play! [_ sound-name]
         (assert (contains? sounds sound-name) (str sound-name))
         (sound/play! (get sounds sound-name)))
 
