@@ -49,7 +49,7 @@
    {:actor {:actor/type :actor.type/text-button
             :text "play!"
             :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                          (audio/play-sound! audio sound-name))}}])
+                          (sounds/play! audio sound-name))}}])
 
 (defn create [_  sound-name _ctx]
   (let [table (scene2d/build

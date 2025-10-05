@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.map-widget-table
-  (:require [cdq.db.schema :as schema]
+  (:require [cdq.ui.editor.schema :as schema]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]))
 

@@ -1,7 +1,7 @@
 (ns cdq.scene2d.build.editor-window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.db.schema :as schema]
+            [cdq.ui.editor.schema :as schema]
             [cdq.input :as input]
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]

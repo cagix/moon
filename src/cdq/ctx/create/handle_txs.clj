@@ -1,5 +1,5 @@
 (ns cdq.ctx.create.handle-txs
-  (:require [cdq.audio :as audio]
+  (:require [clojure.audio.sounds :as sounds]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.info :as info]
@@ -83,7 +83,7 @@
     :tx/spawn-entity   cdq.tx.spawn-entity/do!
 
     :tx/sound (fn [{:keys [ctx/audio]} sound-name]
-                (audio/play-sound! audio sound-name)
+                (sounds/play! audio sound-name)
                 nil)
     :tx/toggle-inventory-visible cdq.ctx.create.handle-txs/toggle-inventory-visible!
     :tx/show-message             cdq.ctx.create.handle-txs/show-message!

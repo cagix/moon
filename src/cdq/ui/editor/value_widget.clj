@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.value-widget
-  (:require [cdq.db.schema :as schema]
+  (:require [cdq.ui.editor.schema :as schema]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]))
 
