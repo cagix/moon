@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [clojure.edn :as edn]
+  (:require [clojure.core-ext :refer [extend-by-ns]]
+            [clojure.edn :as edn]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.configuration :as config]
@@ -7,6 +8,23 @@
             [clojure.lwjgl.system.configuration :as lwjgl])
   (:import (com.badlogic.gdx Gdx))
   (:gen-class))
+
+(extend-by-ns
+ '[
+   [com.badlogic.gdx.Audio
+    clojure.gdx.audio
+    clojure.audio/Audio]
+   [com.badlogic.gdx.audio.Sound
+    clojure.gdx.audio.sound
+    clojure.audio.sound/Sound]
+   [com.badlogic.gdx.Files
+    clojure.gdx.files
+    clojure.files/Files]
+   [com.badlogic.gdx.files.FileHandle
+    clojure.gdx.files.file-handle
+    clojure.files.file-handle/FileHandle]
+   ]
+ )
 
 (def state (atom nil))
 

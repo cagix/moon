@@ -13,7 +13,7 @@
 (defn- audio-impl [audio sound-names->file-handles]
   (let [sounds (update-vals sound-names->file-handles
                             (fn [file-handle]
-                              (audio/new-sound audio file-handle)))]
+                              (audio/sound audio file-handle)))]
     (reify
       clojure.audio.sounds/Sounds
       (all-names [_]

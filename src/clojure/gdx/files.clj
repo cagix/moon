@@ -1,7 +1,5 @@
 (ns clojure.gdx.files
-  (:require clojure.files))
+  (:import (com.badlogic.gdx Files)))
 
-(extend-type com.badlogic.gdx.Files
-  clojure.files/Files
-  (internal [this path]
-    (.internal this path)))
+(defn internal [^Files files path]
+  (.internal files path))

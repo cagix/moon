@@ -1,4 +1,4 @@
 (ns clojure.audio)
 
 (defprotocol Audio
-  (new-sound [_ file-handle]))
+  (sound [_ file-handle]))

@@ -1,7 +1,5 @@
 (ns clojure.gdx.audio.sound
-  (:require clojure.audio.sound))
+  (:import (com.badlogic.gdx.audio Sound)))
 
-(extend-type com.badlogic.gdx.audio.Sound
-  clojure.audio.sound/Sound
-  (play! [this]
-    (.play this)))
+(defn play! [^Sound sound]
+  (.play sound))
