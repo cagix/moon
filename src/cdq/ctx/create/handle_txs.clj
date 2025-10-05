@@ -1,8 +1,8 @@
 (ns cdq.ctx.create.handle-txs
   (:require [cdq.audio :as audio]
             [cdq.graphics.textures :as textures]
-            [cdq.info :as info]
             [cdq.ui :as ui]
+            [clojure.info :as info]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.stage :as stage]
             [clojure.tx-handler :as tx-handler]
@@ -16,7 +16,7 @@
                  {:skill-id (:property/id skill)
                   :texture-region (textures/texture-region graphics (:entity/image skill))
                   :tooltip-text (fn [{:keys [ctx/world]}]
-                                  (info/info-text skill world))})
+                                  (info/text skill world))})
   nil)
 
 (defn- player-set-item!
@@ -25,7 +25,7 @@
    cell item]
   (ui/set-item! stage cell
                 {:texture-region (textures/texture-region graphics (:entity/image item))
-                 :tooltip-text (info/info-text item nil)})
+                 :tooltip-text (info/text item nil)})
   nil)
 
 (defn player-remove-item! [{:keys [ctx/stage]}

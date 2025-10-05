@@ -1,10 +1,10 @@
 (ns cdq.ctx.create.ui.windows.entity-info
-  (:require [cdq.info :as info]
-            [cdq.ui :as ui]
-            [clojure.scene2d :as scene2d]
-            [clojure.scene2d.group :as group]
+  (:require [cdq.ui :as ui]
             [clojure.gdx.scenes.scene2d.ui.label :as label]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [clojure.info :as info]
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.group :as group]))
 
 (defn create [{:keys [ctx/stage]}]
   (let [title "info"
@@ -13,10 +13,10 @@
         position [(ui/viewport-width stage) 0]
         set-label-text! (fn [{:keys [ctx/world]}]
                           (if-let [eid (:world/mouseover-eid world)]
-                            (info/info-text (apply dissoc @eid [:entity/skills
-                                                                :entity/faction
-                                                                :active-skill])
-                                            world)
+                            (info/text (apply dissoc @eid [:entity/skills
+                                                           :entity/faction
+                                                           :active-skill])
+                                       world)
                             ""))
         label (scene2d/build {:actor/type :actor.type/label
                               :label/text ""})
