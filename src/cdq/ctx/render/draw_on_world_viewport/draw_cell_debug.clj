@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.draw-on-world-viewport.draw-cell-debug
-  (:require [cdq.graphics :as graphics]))
+  (:require [cdq.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
 (def ^:dbg-flag show-cell-entities? false)
@@ -9,7 +9,7 @@
   [{:keys [ctx/graphics
            ctx/world]}]
   (apply concat
-         (for [[x y] (graphics/visible-tiles graphics)
+         (for [[x y] (camera/visible-tiles graphics)
                :let [cell ((:world/grid world) [x y])]
                :when cell
                :let [cell* @cell]]

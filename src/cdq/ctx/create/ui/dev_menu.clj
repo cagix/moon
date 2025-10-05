@@ -1,6 +1,7 @@
 (ns cdq.ctx.create.ui.dev-menu
   (:require [cdq.db :as db]
             [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.input :as input]
             [cdq.ui :as ui]
             [clojure.string :as str]
@@ -75,7 +76,7 @@
                                      (mapv int (:graphics/world-mouse-position graphics)))}
                        {:label "Zoom"
                         :update-fn (fn [ctx]
-                                     (graphics/camera-zoom (:ctx/graphics ctx)))
+                                     (camera/zoom (:ctx/graphics ctx)))
                         :icon "images/zoom.png"}]]
     {:actor/type :actor.type/table
      :rows [[{:actor {:actor/type :actor.type/menu-bar

@@ -1,12 +1,13 @@
 (ns cdq.ctx.render.draw-on-world-viewport.draw-tile-grid
-  (:require [cdq.graphics :as graphics]))
+  (:require [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]))
 
 (def ^:dbg-flag show-tile-grid? false)
 
 (defn do!
   [{:keys [ctx/graphics]}]
   (when show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (graphics/camera-frustum graphics)]
+    (let [[left-x _right-x bottom-y _top-y] (camera/frustum graphics)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)

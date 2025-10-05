@@ -1,5 +1,6 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
+            [cdq.graphics.camera]
             [cdq.graphics.draws :as draws]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
@@ -222,6 +223,25 @@
                             (sd/line! shape-drawer sx sy ex ey))})
 
 (defrecord RGraphics []
+  cdq.graphics.camera/Camera
+  (position [{:keys [graphics/world-viewport]}]
+    (:camera/position (viewport/camera world-viewport)))
+
+  (visible-tiles [{:keys [graphics/world-viewport]}]
+    (camera/visible-tiles (viewport/camera world-viewport)))
+
+  (frustum [{:keys [graphics/world-viewport]}]
+    (camera/frustum (viewport/camera world-viewport)))
+
+  (zoom [{:keys [graphics/world-viewport]}]
+    (:camera/zoom (viewport/camera world-viewport)))
+
+  (change-zoom! [{:keys [graphics/world-viewport]} amount]
+    (camera/inc-zoom! (viewport/camera world-viewport) amount))
+
+  (set-position! [{:keys [graphics/world-viewport]} position]
+    (camera/set-position! (viewport/camera world-viewport) position))
+
   disposable/Disposable
   (dispose! [{:keys [graphics/batch
                      graphics/cursors
@@ -289,17 +309,6 @@
 
   (world-viewport-width  [{:keys [graphics/world-viewport]}] (viewport/world-width  world-viewport))
   (world-viewport-height [{:keys [graphics/world-viewport]}] (viewport/world-height world-viewport))
-
-  (camera-position [{:keys [graphics/world-viewport]}] (:camera/position     (viewport/camera world-viewport)))
-  (visible-tiles   [{:keys [graphics/world-viewport]}] (camera/visible-tiles (viewport/camera world-viewport)))
-  (camera-frustum  [{:keys [graphics/world-viewport]}] (camera/frustum       (viewport/camera world-viewport)))
-  (camera-zoom     [{:keys [graphics/world-viewport]}] (:camera/zoom         (viewport/camera world-viewport)))
-
-  (change-zoom! [{:keys [graphics/world-viewport]} amount]
-    (camera/inc-zoom! (viewport/camera world-viewport) amount))
-
-  (set-camera-position! [{:keys [graphics/world-viewport]} position]
-    (camera/set-position! (viewport/camera world-viewport) position))
 
   (unproject-ui [{:keys [graphics/ui-viewport]} position]
     (viewport/unproject ui-viewport position))
