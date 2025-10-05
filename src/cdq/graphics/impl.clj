@@ -1,6 +1,5 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [cdq.graphics.camera]
             [cdq.graphics.create.batch]
             [cdq.graphics.create.cursors]
             [cdq.graphics.create.default-font]
@@ -11,89 +10,21 @@
             [cdq.graphics.create.ui-viewport]
             [cdq.graphics.create.unit-scales]
             [cdq.graphics.create.world-viewport]
-            [cdq.graphics.draw.arc]
-            [cdq.graphics.draw.circle]
-            [cdq.graphics.draw.ellipse]
-            [cdq.graphics.draw.filled-circle]
-            [cdq.graphics.draw.filled-ellipse]
-            [cdq.graphics.draw.filled-rectangle]
-            [cdq.graphics.draw.grid]
-            [cdq.graphics.draw.line]
-            [cdq.graphics.draw.rectangle]
-            [cdq.graphics.draw.sector]
-            [cdq.graphics.draw.text]
-            [cdq.graphics.draw.texture-region]
-            [cdq.graphics.draw.with-line-width]
-            [cdq.graphics.draws :as draws]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.disposable :as disposable :refer [dispose!]]
             [clojure.files :as files]
             [clojure.files.utils :as files-utils]
             [clojure.graphics :as graphics]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.color]
-            [clojure.graphics.orthographic-camera :as camera]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.viewport :as viewport]))
 
-(def ^:private draw-fns
-  {:draw/with-line-width  cdq.graphics.draw.with-line-width/do!
-   :draw/grid             cdq.graphics.draw.grid/do!
-   :draw/texture-region   cdq.graphics.draw.texture-region/do!
-   :draw/text             cdq.graphics.draw.text/do!
-   :draw/ellipse          cdq.graphics.draw.ellipse/do!
-   :draw/filled-ellipse   cdq.graphics.draw.filled-ellipse/do!
-   :draw/circle           cdq.graphics.draw.circle/do!
-   :draw/filled-circle    cdq.graphics.draw.filled-circle/do!
-   :draw/rectangle        cdq.graphics.draw.rectangle/do!
-   :draw/filled-rectangle cdq.graphics.draw.filled-rectangle/do!
-   :draw/arc              cdq.graphics.draw.arc/do!
-   :draw/sector           cdq.graphics.draw.sector/do!
-   :draw/line             cdq.graphics.draw.line/do!})
-
 (defrecord Graphics []
-  cdq.graphics.camera/Camera
-  (position [{:keys [graphics/world-viewport]}]
-    (:camera/position (viewport/camera world-viewport)))
-
-  (visible-tiles [{:keys [graphics/world-viewport]}]
-    (camera/visible-tiles (viewport/camera world-viewport)))
-
-  (frustum [{:keys [graphics/world-viewport]}]
-    (camera/frustum (viewport/camera world-viewport)))
-
-  (zoom [{:keys [graphics/world-viewport]}]
-    (:camera/zoom (viewport/camera world-viewport)))
-
-  (change-zoom! [{:keys [graphics/world-viewport]} amount]
-    (camera/inc-zoom! (viewport/camera world-viewport) amount))
-
-  (set-position! [{:keys [graphics/world-viewport]} position]
-    (camera/set-position! (viewport/camera world-viewport) position))
-
-  disposable/Disposable
-  (dispose! [{:keys [graphics/batch
-                     graphics/cursors
-                     graphics/default-font
-                     graphics/shape-drawer-texture
-                     graphics/textures]}]
-    (dispose! batch)
-    (run! dispose! (vals cursors))
-    (dispose! default-font)
-    (dispose! shape-drawer-texture)
-    (run! dispose! (vals textures)))
-
-  draws/Draws
-  (handle! [graphics draws]
-    (doseq [{k 0 :as component} draws
-            :when component]
-      (apply (draw-fns k) graphics (rest component))))
-
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
   (draw!
     [{:keys [graphics/tiled-map-renderer

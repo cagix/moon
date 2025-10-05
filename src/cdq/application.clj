@@ -9,6 +9,8 @@
   (:import (com.badlogic.gdx Gdx))
   (:gen-class))
 
+(require 'cdq.graphics.impl) ; for the record class
+
 (extend-by-ns
  '[
    [com.badlogic.gdx.Audio
@@ -42,6 +44,18 @@
    [com.badlogic.gdx.utils.Disposable
     clojure.gdx.utils.disposable
     clojure.disposable/Disposable]
+
+   [cdq.graphics.impl.Graphics
+    cdq.graphics.impl.camera
+    cdq.graphics.camera/Camera]
+
+   [cdq.graphics.impl.Graphics
+    cdq.graphics.impl.disposable
+    clojure.disposable/Disposable]
+
+   [cdq.graphics.impl.Graphics
+    cdq.graphics.impl.draws
+    cdq.graphics.draws/Draws]
    ]
  )
 
