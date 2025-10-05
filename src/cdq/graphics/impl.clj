@@ -2,6 +2,7 @@
   (:require [cdq.graphics]
             [cdq.graphics.camera]
             [cdq.graphics.draws :as draws]
+            [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
             [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
@@ -260,13 +261,22 @@
             :when component]
       (apply (draw-fns k) graphics (rest component))))
 
-  cdq.graphics/DrawOnWorldViewport
-  (draw-on-world-viewport! [{:keys [graphics/batch
-                                    graphics/shape-drawer
-                                    graphics/unit-scale
-                                    graphics/world-unit-scale
-                                    graphics/world-viewport]}
-                            f]
+  cdq.graphics.world-viewport/WorldViewport
+  (width [{:keys [graphics/world-viewport]}]
+    (viewport/world-width world-viewport))
+
+  (height [{:keys [graphics/world-viewport]}]
+    (viewport/world-height world-viewport))
+
+  (unproject [{:keys [graphics/world-viewport]} position]
+    (viewport/unproject world-viewport position))
+
+  (draw! [{:keys [graphics/batch
+                  graphics/shape-drawer
+                  graphics/unit-scale
+                  graphics/world-unit-scale
+                  graphics/world-viewport]}
+          f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
     (batch/set-color! batch clojure.graphics.color/white)
@@ -307,14 +317,9 @@
     [{:keys [graphics/core]}]
     (graphics/frames-per-second core))
 
-  (world-viewport-width  [{:keys [graphics/world-viewport]}] (viewport/world-width  world-viewport))
-  (world-viewport-height [{:keys [graphics/world-viewport]}] (viewport/world-height world-viewport))
-
   (unproject-ui [{:keys [graphics/ui-viewport]} position]
     (viewport/unproject ui-viewport position))
 
-  (unproject-world [{:keys [graphics/world-viewport]} position]
-    (viewport/unproject world-viewport position))
 
   (update-viewports! [{:keys [graphics/ui-viewport
                               graphics/world-viewport]} width height]
