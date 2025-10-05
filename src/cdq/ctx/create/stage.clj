@@ -1,5 +1,5 @@
 (ns cdq.ctx.create.stage
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.graphics.draws :as draws]
             [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
@@ -24,7 +24,7 @@
   (extend-type (class ctx)
     ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
-      (graphics/handle-draws! graphics draws)))
+      (draws/handle! graphics draws)))
   (let [stage (clojure.gdx.scenes.scene2d.stage/create
                (:graphics/ui-viewport graphics)
                (:graphics/batch       graphics))

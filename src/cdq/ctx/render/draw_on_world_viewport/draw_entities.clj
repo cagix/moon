@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.draw-on-world-viewport.draw-entities
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.graphics.draws :as draws]
             [cdq.world.raycaster :as raycaster]
             [clojure.graphics.color :as color]
             [clojure.throwable :as throwable]
@@ -34,16 +34,16 @@
    entity render-layer]
   (try (do
         (when show-body-bounds?
-          (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity)
-                                                           (if (:body/collides? (:entity/body entity))
-                                                             color/white
-                                                             color/gray))))
+          (draws/handle! graphics (draw-body-rect (:entity/body entity)
+                                                  (if (:body/collides? (:entity/body entity))
+                                                    color/white
+                                                    color/gray))))
         (doseq [[k v] entity
                 :let [draw-fn (get render-layer k)]
                 :when draw-fn]
-          (graphics/handle-draws! graphics (draw-fn v entity ctx))))
+          (draws/handle! graphics (draw-fn v entity ctx))))
        (catch Throwable t
-         (graphics/handle-draws! graphics (draw-body-rect (:entity/body entity) color/red))
+         (draws/handle! graphics (draw-body-rect (:entity/body entity) color/red))
          (throwable/pretty-pst t))))
 
 (defn do!

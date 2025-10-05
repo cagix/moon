@@ -23,6 +23,3 @@
 
 (defprotocol DrawOnWorldViewport
   (draw-on-world-viewport! [_ f]))
-
-(defprotocol Draws
-  (handle-draws! [_ draws]))

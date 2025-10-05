@@ -1,5 +1,6 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
+            [cdq.graphics.draws :as draws]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.g2d.freetype.generator :as generator]
             [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]
@@ -128,7 +129,7 @@
                                width
                                draws]
                             (sd/with-line-width shape-drawer width
-                              (cdq.graphics/handle-draws! graphics draws)))
+                              (draws/handle! graphics draws)))
    :draw/grid             (fn
                             [graphics leftx bottomy gridw gridh cellw cellh color]
                             (let [w (* (float gridw) (float cellw))
@@ -137,12 +138,12 @@
                                   rightx (+ (float leftx) (float w))]
                               (doseq [idx (range (inc (float gridw)))
                                       :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-                                (cdq.graphics/handle-draws! graphics
-                                                            [[:draw/line [linex topy] [linex bottomy] color]]))
+                                (draws/handle! graphics
+                                               [[:draw/line [linex topy] [linex bottomy] color]]))
                               (doseq [idx (range (inc (float gridh)))
                                       :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-                                (cdq.graphics/handle-draws! graphics
-                                                            [[:draw/line [leftx liney] [rightx liney] color]]))))
+                                (draws/handle! graphics
+                                               [[:draw/line [leftx liney] [rightx liney] color]]))))
    :draw/texture-region   (fn [{:keys [graphics/batch
                                        graphics/unit-scale
                                        graphics/world-unit-scale]}
@@ -233,8 +234,8 @@
     (dispose! shape-drawer-texture)
     (run! dispose! (vals textures)))
 
-  cdq.graphics/Draws
-  (handle-draws! [graphics draws]
+  draws/Draws
+  (handle! [graphics draws]
     (doseq [{k 0 :as component} draws
             :when component]
       (apply (draw-fns k) graphics (rest component))))
