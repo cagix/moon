@@ -110,9 +110,10 @@
                                                (parameter/create {:size (* size quality-scaling)
                                                                   :min-filter (texture-filter/k->value min-filter)
                                                                   :mag-filter (texture-filter/k->value mag-filter)}))]
-             (bitmap-font/configure! font {:scale (/ quality-scaling)
-                                           :enable-markup? enable-markup?
-                                           :use-integer-positions? use-integer-positions?})))))
+             (bitmap-font/set-scale!                 font (/ quality-scaling))
+             (bitmap-font/enable-markup!             font enable-markup?)
+             (bitmap-font/set-use-integer-positions! font use-integer-positions?)
+             font))))
 
 (defn- create-cursors
   [{:keys [graphics/core]
