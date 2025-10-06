@@ -12,6 +12,7 @@
                  [metosin/malli "0.13.0"]
                  [malli.utils "0.1"]
 
+                 [clojure.math.raycaster "0.1"]
                  [clojure.math.vector2 "0.1"]
                  [clojure.rand "0.1"]
 
