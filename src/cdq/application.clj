@@ -31,10 +31,6 @@
       cdq.graphics.camera/Camera]
 
      [cdq.graphics.impl.Graphics
-      cdq.graphics.impl.disposable
-      clojure.disposable/Disposable]
-
-     [cdq.graphics.impl.Graphics
       cdq.graphics.impl.draws
       cdq.graphics.draws/Draws]
      ]
