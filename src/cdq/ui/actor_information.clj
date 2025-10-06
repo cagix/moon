@@ -35,7 +35,7 @@
       (and (actor/parent actor)
            (button-class? (actor/parent actor)))))
 
-(extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
+(extend-type cdq.ui.Stage
   ui/ActorInformation
   (actor-information [_ actor]
     (let [inventory-slot (inventory-cell-with-item? actor)]

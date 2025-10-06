@@ -5,7 +5,7 @@
             [cdq.ui.stage :as stage]
             [clojure.utils :as utils]))
 
-(extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
+(extend-type cdq.ui.Stage
   ui/ErrorWindow
   (show-error-window! [stage throwable]
     (stage/add! stage (scene2d/build

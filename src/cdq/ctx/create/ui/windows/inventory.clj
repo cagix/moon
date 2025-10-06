@@ -5,10 +5,11 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
+            [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [cdq.ui.stage :as stage]
-            [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
 
@@ -21,9 +22,9 @@
   (let [cell-size 48
         slot->drawable (fn [slot]
                          (drawable/create (slot->texture-region slot)
-                                         :width cell-size
-                                         :height cell-size
-                                         :tint-color [1 1 1 0.4]))
+                                          :width cell-size
+                                          :height cell-size
+                                          :tint-color (color/create [1 1 1 0.4])))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]

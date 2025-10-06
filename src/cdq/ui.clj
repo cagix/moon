@@ -1,6 +1,6 @@
 (ns cdq.ui)
 
-(defprotocol Stage
+(defprotocol PStage
   (get-ctx [_])
   (viewport-width [_])
   (viewport-height [_])

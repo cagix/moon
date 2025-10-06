@@ -3,7 +3,7 @@
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
-            [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]))
+            [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]))
 
 (defn- find-cell [group cell]
   (first (filter #(= (actor/user-object % ) cell)

@@ -7,7 +7,7 @@
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
-            [clojure.gdx.scenes.scene2d.ui.window :as window]))
+            [cdq.ui.window :as window]))
 
 (defn malli-form [_ _schemas]
   :string)

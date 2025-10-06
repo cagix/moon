@@ -2,7 +2,7 @@
   (:require [cdq.ui.tooltip :as tooltip]
             [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [com.kotcrab.vis-ui.widget.vis-image-button :as vis-image-button]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]

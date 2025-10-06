@@ -1,12 +1,10 @@
 (ns cdq.ctx.create.stage
-  (:require [cdq.graphics.draws :as draws]
-            [cdq.ui :as ui]
+  (:require [cdq.ui :as ui]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [clojure.graphics.viewport :as viewport]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]))
@@ -22,10 +20,6 @@
   [{:keys [ctx/graphics]
     :as ctx}
    actor-fns]
-  (extend-type (class ctx)
-    ctx/Graphics
-    (draw! [{:keys [ctx/graphics]} draws]
-      (draws/handle! graphics draws)))
   (let [stage (stage/create (:graphics/ui-viewport graphics)
                             (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
@@ -40,7 +34,7 @@
       stage/root
       (group/find-actor k)))
 
-(extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
+(extend-type cdq.ui.Stage
   ui/DataViewer
   (show-data-viewer! [this data]
     (stage/add! this (scene2d/build
@@ -50,7 +44,7 @@
                        :width 500
                        :height 500})))
 
-  ui/Stage
+  ui/PStage
   (viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
   (viewport-height [stage] (viewport/world-height (stage/viewport stage)))
 

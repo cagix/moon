@@ -1,45 +1,32 @@
 (ns cdq.ui.stage
-  (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
+  (:import (cdq.ui Stage)))
 
 (defn create [viewport batch]
-  (CtxStage. viewport batch))
+  (Stage. viewport batch))
 
-(defprotocol Stage
-  (set-ctx! [_ ctx])
-  (get-ctx [_])
-  (act! [_])
-  (draw! [_])
-  (add! [_ actor])
-  (clear! [_])
-  (root [_])
-  (hit [_ [x y]])
-  (viewport [_]))
+(defn set-ctx! [^Stage stage ctx]
+  (set! (.ctx stage) ctx))
 
-(extend-type CtxStage
-  Stage
-  (set-ctx! [stage ctx]
-    (set! (.ctx stage) ctx))
+(defn get-ctx [^Stage stage]
+  (.ctx stage))
 
-  (get-ctx [stage]
-    (.ctx stage))
+(defn act! [^Stage stage]
+  (.act stage))
 
-  (act! [stage]
-    (.act stage))
+(defn draw! [^Stage stage]
+  (.draw stage))
 
-  (draw! [stage]
-    (.draw stage))
+(defn add! [^Stage stage actor]
+  (.addActor stage actor))
 
-  (add! [stage actor]
-    (.addActor stage actor))
+(defn clear! [^Stage stage]
+  (.clear stage))
 
-  (clear! [stage]
-    (.clear stage))
+(defn root [^Stage stage]
+  (.getRoot stage))
 
-  (root [stage]
-    (.getRoot stage))
+(defn hit [^Stage stage [x y]]
+  (.hit stage x y true))
 
-  (hit [stage [x y]]
-    (.hit stage x y true))
-
-  (viewport [stage]
-    (.getViewport stage)))
+(defn viewport [^Stage stage]
+  (.getViewport stage))
