@@ -16,11 +16,11 @@
 
    [com.badlogic.gdx.Files
     com.badlogic.gdx.files
-    clojure.files/Files]
+    clojure.gdx.files/Files]
 
    [com.badlogic.gdx.files.FileHandle
     com.badlogic.gdx.files.file-handle
-    clojure.files.file-handle/FileHandle]
+    clojure.gdx.files.file-handle/FileHandle]
 
    [com.badlogic.gdx.Graphics
     clojure.gdx.graphics

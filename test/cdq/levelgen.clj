@@ -8,7 +8,7 @@
             [clojure.core-ext :refer [extend-by-ns]]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
-            [clojure.files.utils :as files-utils]
+            [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
@@ -34,11 +34,11 @@
  '[
    [com.badlogic.gdx.Files
     com.badlogic.gdx.files
-    clojure.files/Files]
+    clojure.gdx.files/Files]
 
    [com.badlogic.gdx.files.FileHandle
     com.badlogic.gdx.files.file-handle
-    clojure.files.file-handle/FileHandle]
+    clojure.gdx.files.file-handle/FileHandle]
    ]
  )
 
