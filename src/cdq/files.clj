@@ -1,6 +1,6 @@
 (ns cdq.files
-  (:require [com.badlogic.gdx.files :as files]
-            [com.badlogic.gdx.files.file-handle :as file-handle]
+  (:require [clojure.gdx.files :as files]
+            [clojure.gdx.files.file-handle :as file-handle]
             [clojure.string :as str]))
 
 (defn- recursively-search

@@ -16,7 +16,7 @@
             [com.badlogic.gdx.graphics.color :as color]
             [com.badlogic.gdx.graphics.colors :as colors]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [com.badlogic.gdx.files :as files]
+            [clojure.gdx.files :as files]
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]

@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [com.badlogic.gdx.audio :as audio]
-            [com.badlogic.gdx.files :as files]))
+            [clojure.gdx.files :as files]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
