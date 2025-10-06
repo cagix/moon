@@ -1,5 +1,6 @@
 (ns clojure.scene2d.vis-ui.text-button
-  (:require [com.badlogic.gdx.scenes.scene2d.event :as event]
+  (:require [cdq.ui.tooltip :as tooltip]
+            [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [com.kotcrab.vis-ui.widget.vis-text-button :as vis-text-button]
             [clojure.scene2d.actor :as actor]
@@ -19,5 +20,5 @@
                                   (on-clicked actor (stage/get-ctx (event/stage event))))))
                  (table/set-opts! opts))]
      (when-let [tooltip (:tooltip opts)]
-       (actor/add-tooltip! actor tooltip))
+       (tooltip/add! actor tooltip))
      actor)))

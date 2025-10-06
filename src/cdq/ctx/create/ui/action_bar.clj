@@ -1,5 +1,6 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.tooltip :as tooltip]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
@@ -43,7 +44,7 @@
                    :actor/user-object skill-id
                    :drawable/texture-region texture-region
                    :drawable/scale 2})]
-      (actor/add-tooltip! button tooltip-text)
+      (tooltip/add! button tooltip-text)
       (group/add-actor! horizontal-group button)
       (button-group/add! button-group     button)
       nil))

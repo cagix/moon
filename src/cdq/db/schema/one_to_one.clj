@@ -1,6 +1,7 @@
 (ns cdq.db.schema.one-to-one
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
+            [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
@@ -51,7 +52,7 @@
                              {:actor/type :actor.type/image
                               :image/object texture-region
                               :actor/user-object property-id})]
-           {:actor (actor/add-tooltip! image-widget (property/tooltip property))}
+           {:actor (tooltip/add! image-widget (property/tooltip property))}
            image-widget))]
       [(when property-id
          {:actor {:actor/type :actor.type/text-button

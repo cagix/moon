@@ -1,5 +1,6 @@
 (ns cdq.ui.inventory
-  (:require [clojure.scene2d.actor :as actor]
+  (:require [cdq.ui.tooltip :as tooltip]
+            [clojure.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]))
@@ -19,10 +20,10 @@
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (drawable/create texture-region :width cell-size :height cell-size)]
     (image/set-drawable! image-widget drawable)
-    (actor/add-tooltip! cell-widget tooltip-text)))
+    (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (window->cell inventory-window cell)
         image-widget (group/find-actor cell-widget "image-widget")]
     (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
-    (actor/remove-tooltip! cell-widget)))
+    (tooltip/remove! cell-widget)))

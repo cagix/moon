@@ -1,5 +1,6 @@
 (ns clojure.scene2d.vis-ui.text-field
-  (:require [clojure.scene2d.actor :as actor]
+  (:require [cdq.ui.tooltip :as tooltip]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.widget :as widget]
             [com.kotcrab.vis-ui.widget.vis-text-field :as vis-text-field]))
 
@@ -9,5 +10,5 @@
   (let [actor (-> (vis-text-field/create text)
                   (widget/set-opts! opts))]
     (when-let [tooltip (:tooltip opts)]
-      (actor/add-tooltip! actor tooltip))
+      (tooltip/add! actor tooltip))
     actor))

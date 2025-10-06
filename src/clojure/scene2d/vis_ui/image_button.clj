@@ -1,5 +1,6 @@
 (ns clojure.scene2d.vis-ui.image-button
-  (:require [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
+  (:require [cdq.ui.tooltip :as tooltip]
+            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
@@ -24,5 +25,5 @@
                                   (fn [event actor]
                                     (on-clicked actor (stage/get-ctx (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
-      (actor/add-tooltip! image-button tooltip))
+      (tooltip/add! image-button tooltip))
     (table/set-opts! image-button opts)))
