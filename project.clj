@@ -2,7 +2,7 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [clojure.gdx "1.13.5"]
-                 [com.badlogic.gdx.backends.lwjgl3       "1.13.5"]
+                 [clojure.gdx.lwjgl "1.13.5"]
                  [clojure.gdx.freetype "1.13.5"]
                  [clojure.gdx.shape-drawer "1.0"]
                  [clojure.gdx.vis-ui "1.0"]

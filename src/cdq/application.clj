@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
-            [clojure.gdx.backends.lwjgl :as application])
+            [clojure.gdx.lwjgl.application :as application])
   (:gen-class))
 
 (def state (atom nil))

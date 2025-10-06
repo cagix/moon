@@ -26,7 +26,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.gdx.backends.lwjgl :as application]))
+            [clojure.gdx.lwjgl.application :as application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
