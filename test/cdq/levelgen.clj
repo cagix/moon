@@ -7,6 +7,7 @@
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files.utils :as files-utils]
+            [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.configuration :as config]
@@ -28,8 +29,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx Gdx)))
+            [clojure.scene2d.vis-ui :as vis-ui]))
 
 (extend-by-ns
  '[
@@ -215,9 +215,10 @@
   (lwjgl/set-glfw-library-name! "glfw_async")
   (application/create (listener/create
                        {:create (fn []
-                                  (reset! state (create! {:ctx/files    Gdx/files
-                                                          :ctx/graphics Gdx/graphics
-                                                          :ctx/input    Gdx/input})))
+                                  (let [gdx (gdx/context)]
+                                    (reset! state (create! {:ctx/files    (:files    gdx)
+                                                            :ctx/graphics (:graphics gdx)
+                                                            :ctx/input    (:input    gdx)}))))
                         :dispose (fn []
                                    (dispose! @state))
                         :render (fn []

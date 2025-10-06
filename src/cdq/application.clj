@@ -1,12 +1,12 @@
 (ns cdq.application
   (:require [clojure.core-ext :refer [extend-by-ns]]
             [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.configuration :as config]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl])
-  (:import (com.badlogic.gdx Gdx))
   (:gen-class))
 
 (require 'cdq.graphics.impl) ; for the record class
@@ -82,11 +82,12 @@
     (lwjgl/set-glfw-library-name! "glfw_async")
     (application/create (listener/create
                          {:create (fn []
-                                    (reset! state (pipeline {:ctx/audio    Gdx/audio
-                                                             :ctx/files    Gdx/files
-                                                             :ctx/graphics Gdx/graphics
-                                                             :ctx/input    Gdx/input}
-                                                            create-pipeline)))
+                                    (let [gdx (gdx/context)]
+                                      (reset! state (pipeline {:ctx/audio    (:audio    gdx)
+                                                               :ctx/files    (:files    gdx)
+                                                               :ctx/graphics (:graphics gdx)
+                                                               :ctx/input    (:input    gdx)}
+                                                              create-pipeline))))
                           :dispose (fn []
                                      (dispose @state))
                           :render (fn []
