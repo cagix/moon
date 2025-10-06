@@ -1,5 +1,12 @@
-(ns cdq.audio)
+(ns cdq.audio
+  (:require [com.badlogic.gdx.audio.sound :as sound]))
 
-(defprotocol Audio
-  (sound-names [_])
-  (play! [_ sound-name]))
+(defn sound-names [sounds]
+  (map first sounds))
+
+(defn play! [sounds sound-name]
+  (assert (contains? sounds sound-name) (str sound-name))
+  (sound/play! (get sounds sound-name)))
+
+(defn dispose! [sounds]
+  (run! sound/dispose! (vals sounds)))

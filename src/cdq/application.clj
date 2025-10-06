@@ -8,26 +8,7 @@
 
 (require 'cdq.graphics.impl) ; for the record class
 
-(extend-by-ns
- '[
 
-   [com.badlogic.gdx.utils.Disposable
-    com.badlogic.gdx.utils.disposable
-    clojure.disposable/Disposable]
-
-   [cdq.graphics.impl.Graphics
-    cdq.graphics.impl.camera
-    cdq.graphics.camera/Camera]
-
-   [cdq.graphics.impl.Graphics
-    cdq.graphics.impl.disposable
-    clojure.disposable/Disposable]
-
-   [cdq.graphics.impl.Graphics
-    cdq.graphics.impl.draws
-    cdq.graphics.draws/Draws]
-   ]
- )
 
 (def state (atom nil))
 
@@ -38,6 +19,26 @@
           pipeline))
 
 (defn -main []
+  (extend-by-ns
+   '[
+
+     [com.badlogic.gdx.utils.Disposable
+      com.badlogic.gdx.utils.disposable
+      clojure.disposable/Disposable]
+
+     [cdq.graphics.impl.Graphics
+      cdq.graphics.impl.camera
+      cdq.graphics.camera/Camera]
+
+     [cdq.graphics.impl.Graphics
+      cdq.graphics.impl.disposable
+      clojure.disposable/Disposable]
+
+     [cdq.graphics.impl.Graphics
+      cdq.graphics.impl.draws
+      cdq.graphics.draws/Draws]
+     ]
+   )
   (let [app (-> "cdq.application.edn"
                 io/resource
                 slurp
