@@ -1,5 +1,4 @@
 (ns clojure.gdx.audio)
 
-(defprotocol Sound
-  (play! [_]))
-
+(defprotocol Audio
+  (sound [_ path]))

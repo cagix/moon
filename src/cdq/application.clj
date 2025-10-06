@@ -12,7 +12,7 @@
  '[
    [com.badlogic.gdx.audio.Sound
     com.badlogic.gdx.audio.sound
-    clojure.gdx.audio/Sound]
+    clojure.gdx.audio.sound/Sound]
 
    [com.badlogic.gdx.Files
     com.badlogic.gdx.files

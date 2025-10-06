@@ -1,8 +1,8 @@
 (ns cdq.ctx.create.audio
   (:require [cdq.audio]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.java.io :as io]
             [clojure.disposable :as disposable]))
 
@@ -13,7 +13,7 @@
   (let [sounds (into {}
                      (for [sound-name sound-names]
                        [sound-name
-                        (gdx/sound gdx (format path-format sound-name))]))]
+                        (audio/sound gdx (format path-format sound-name))]))]
     (reify
       cdq.audio/Audio
       (sound-names [_]
@@ -21,7 +21,7 @@
 
       (play! [_ sound-name]
         (assert (contains? sounds sound-name) (str sound-name))
-        (audio/play! (get sounds sound-name)))
+        (sound/play! (get sounds sound-name)))
 
       disposable/Disposable
       (dispose! [_]
