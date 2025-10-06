@@ -10,8 +10,7 @@
             [clojure.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d CtxStage)))
+            [clojure.scene2d.stage :as stage]))
 
 (defn- add-actors! [stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -40,7 +39,7 @@
       stage/root
       (group/find-actor k)))
 
-(extend-type CtxStage
+(extend-type com.badlogic.gdx.scenes.scene2d.CtxStage
   ui/DataViewer
   (show-data-viewer! [this data]
     (stage/add! this (scene2d/build

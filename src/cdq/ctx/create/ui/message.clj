@@ -2,10 +2,9 @@
   (:require [cdq.ui.message :as message]
             [clojure.graphics.viewport :as viewport]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [clojure.scene2d.stage :as stage]))
 
-(extend-type Actor
+(extend-type com.badlogic.gdx.scenes.scene2d.Actor
   message/Message
   (show! [this text]
     (actor/set-user-object! this (atom {:text text
