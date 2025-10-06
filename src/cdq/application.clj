@@ -15,10 +15,6 @@
     com.badlogic.gdx.graphics.g2d.batch
     clojure.graphics.batch/Batch]
 
-   [com.badlogic.gdx.graphics.g2d.BitmapFont
-    clojure.gdx.graphics.g2d.bitmap-font
-    clojure.graphics.bitmap-font/BitmapFont]
-
    [com.badlogic.gdx.utils.Disposable
     com.badlogic.gdx.utils.disposable
     clojure.disposable/Disposable]
