@@ -2,8 +2,7 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.badlogicgames.gdx/gdx                   "1.13.5"]
-                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    "1.13.5"]
-                 [com.badlogicgames.gdx/gdx-platform          "1.13.5" :classifier "natives-desktop"]
+                 [com.badlogic.gdx.backends.lwjgl3 "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]

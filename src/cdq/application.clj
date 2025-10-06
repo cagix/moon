@@ -3,7 +3,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
-            [com.badlogic.gdx.backends.lwjgl3.application :as application])
+            [clojure.gdx.backends.lwjgl :as application])
   (:gen-class))
 
 (require 'cdq.graphics.impl) ; for the record class

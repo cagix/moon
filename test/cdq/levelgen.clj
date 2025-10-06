@@ -28,7 +28,7 @@
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [com.badlogic.gdx.backends.lwjgl3.application :as application]))
+            [clojure.gdx.backends.lwjgl :as application]))
 
 (extend-by-ns
  '[
