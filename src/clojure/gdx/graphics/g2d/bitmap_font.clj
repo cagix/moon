@@ -1,44 +1,35 @@
 (ns clojure.gdx.graphics.g2d.bitmap-font
-  (:require [com.badlogic.gdx.utils.align :as align]
+  (:require [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [com.badlogic.gdx.utils.align :as align]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont
                                           BitmapFont$BitmapFontData)))
 
-(defn line-height
-  "Returns the line height, which is the distance from one line of text to the next."
-  [^BitmapFont font]
-  (.getLineHeight font))
+(def set-use-integer-positions! bitmap-font/set-use-integer-positions!)
 
-(defn data
-  "Gets the underlying {@link BitmapFontData} for this BitmapFont."
-  ^BitmapFont$BitmapFontData [^BitmapFont font]
-  (.getData font))
-
-(defn set-use-integer-positions!
-  "Specifies whether to use integer positions. Default is to use them so filtering doesn't kick in as badly."
-  [^BitmapFont font boolean]
-  (.setUseIntegerPositions font boolean))
-
+; used
 (defn set-scale!
   "Scales the font by the specified amount in both directions.
   throws IllegalArgumentException if scaleX or scaleY is zero."
   [font scale-xy]
-  (.setScale (data font) scale-xy))
+  (.setScale (bitmap-font/data font) scale-xy))
 
-(defn text-height [font text]
+(defn- text-height [font text]
   (-> text
       (str/split #"\n")
       count
-      (* (line-height font))))
+      (* (bitmap-font/line-height font))))
 
+; used
 (defn enable-markup!
   [font boolean]
-  (set! (.markupEnabled (data font)) boolean))
+  (set! (.markupEnabled (bitmap-font/data font)) boolean))
 
 (defn scale-x
   [font]
-  (.scaleX (data font)))
+  (.scaleX (bitmap-font/data font)))
 
+; used
 (defn draw! [^BitmapFont font batch {:keys [scale text x y up? h-align target-width wrap?]}]
   {:pre [(or (nil? h-align)
              (contains? align/k->value h-align))]}
