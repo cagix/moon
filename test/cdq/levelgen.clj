@@ -12,7 +12,7 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]

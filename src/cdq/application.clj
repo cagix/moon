@@ -27,7 +27,7 @@
     clojure.graphics/Graphics]
 
    [com.badlogic.gdx.graphics.g2d.Batch
-    clojure.gdx.graphics.g2d.batch
+    com.badlogic.gdx.graphics.g2d.batch
     clojure.graphics.batch/Batch]
 
    [com.badlogic.gdx.graphics.g2d.BitmapFont

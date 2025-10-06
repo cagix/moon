@@ -1,5 +1,5 @@
 (ns clojure.scene2d.build.actor
-  (:require [clojure.gdx.math.vector2 :as vector2]
+  (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [clojure.gdx.scenes.scene2d.touchable :as touchable]
             [clojure.scene2d :as scene2d]

@@ -1,5 +1,5 @@
 (ns clojure.scene2d.vis-ui.image-button
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+  (:require [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener]
