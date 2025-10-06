@@ -22,7 +22,7 @@
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [clojure.graphics.color]
             [space.earlygrey.shape-drawer :as sd]
-            [clojure.graphics.viewport :as viewport]))
+            [clojure.gdx.viewport :as viewport]))
 
 (defrecord Graphics []
   cdq.graphics.tiled-map-renderer/TiledMapRenderer

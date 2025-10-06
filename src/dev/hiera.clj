@@ -37,7 +37,6 @@
      clojure.utils
      clojure.math
      clojure.scene2d.actor,
-     clojure.graphics.viewport
 
 
      }

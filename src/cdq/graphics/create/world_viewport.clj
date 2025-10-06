@@ -1,6 +1,6 @@
 (ns cdq.graphics.create.world-viewport
   (:require [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]))
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]))
 
 (defn create
   [{:keys [graphics/world-unit-scale]

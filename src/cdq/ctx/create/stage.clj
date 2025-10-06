@@ -3,7 +3,7 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
-            [clojure.graphics.viewport :as viewport]
+            [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
