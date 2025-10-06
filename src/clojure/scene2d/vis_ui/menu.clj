@@ -5,7 +5,7 @@
             [com.kotcrab.vis-ui.widget.popup-menu :as popup-menu]
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
@@ -26,12 +26,12 @@
                      :rows [[{:actor {:actor/type :actor.type/image
                                       :image/object icon}}
                              label]]})]
-     (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
+     (group/add-actor! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (Cell/.right (table/add! table sub-table)))))
   ([table text-fn]
    (let [label (scene2d/build {:actor/type :actor.type/label
                                :label/text ""})]
-     (group/add! table (scene2d/build (set-label-text-actor label text-fn)))
+     (group/add-actor! table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (Cell/.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]

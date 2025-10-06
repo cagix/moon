@@ -4,7 +4,7 @@
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.info :as info]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.group :as group]))
+            [com.badlogic.gdx.scenes.scene2d.group :as group]))
 
 (defn create [{:keys [ctx/stage]}]
   (let [title "info"
@@ -26,9 +26,10 @@
                                :actor/visible? visible?
                                :actor/position position
                                :rows [[{:actor label :expand? true}]]})]
-    (group/add! window (scene2d/build
-                        {:actor/type :actor.type/actor
-                         :actor/act (fn [_this _delta ctx]
-                                      (label/set-text! label (str (set-label-text! ctx)))
-                                      (widget-group/pack! window))}))
+    (group/add-actor! window
+                      (scene2d/build
+                       {:actor/type :actor.type/actor
+                        :actor/act (fn [_this _delta ctx]
+                                     (label/set-text! label (str (set-label-text! ctx)))
+                                     (widget-group/pack! window))}))
     window))

@@ -2,7 +2,7 @@
   (:require [cdq.ui.action-bar :as action-bar]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 
 (defn create [_ctx]
@@ -44,7 +44,7 @@
                    :drawable/texture-region texture-region
                    :drawable/scale 2})]
       (actor/add-tooltip! button tooltip-text)
-      (group/add!        horizontal-group button)
+      (group/add-actor! horizontal-group button)
       (button-group/add! button-group     button)
       nil))
 

@@ -7,7 +7,7 @@
             [clojure.graphics.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
-            [clojure.scene2d.group :as group]
+            [com.badlogic.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
