@@ -1,7 +1,7 @@
 (ns clojure.scene2d.build.actor
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
-            [clojure.gdx.scenes.scene2d.touchable :as touchable]
+            [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage])
