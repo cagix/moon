@@ -1,6 +1,7 @@
 (ns clojure.gdx.backends.lwjgl
   (:require [clojure.gdx.audio]
             [clojure.gdx.input]
+            [clojure.gdx.graphics]
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.audio :as audio]
             [com.badlogic.gdx.files :as files]
@@ -9,7 +10,8 @@
             [com.badlogic.gdx.input.keys    :as input-keys]
             [com.badlogic.gdx.application.listener :as listener]
             [com.badlogic.gdx.backends.lwjgl3.application :as application]
-            [com.badlogic.gdx.backends.lwjgl3.application.config :as config]))
+            [com.badlogic.gdx.backends.lwjgl3.application.config :as config])
+  (:import (com.badlogic.gdx.graphics GL20)))
 
 (defrecord Context []
   clojure.gdx.audio/Audio
@@ -51,3 +53,28 @@
   (mouse-position [this]
     [(input/x this)
      (input/y this)]))
+
+(extend-type com.badlogic.gdx.Graphics
+  clojure.gdx.graphics/Graphics
+  (delta-time [graphics]
+    (.getDeltaTime graphics))
+
+  (frames-per-second [graphics]
+    (.getFramesPerSecond graphics))
+
+  (set-cursor! [graphics cursor]
+    (.setCursor graphics cursor))
+
+  (cursor [graphics pixmap hotspot-x hotspot-y]
+    (.newCursor graphics pixmap hotspot-x hotspot-y))
+
+  (clear! [graphics [r g b a]]
+    (let [clear-depth? false
+          apply-antialiasing? false
+          gl20 (.getGL20 graphics)]
+      (GL20/.glClearColor gl20 r g b a)
+      (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
+                   clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
+                   (and apply-antialiasing? (.coverageSampling (.getBufferFormat graphics)))
+                   (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
+        (GL20/.glClear gl20 mask)))))

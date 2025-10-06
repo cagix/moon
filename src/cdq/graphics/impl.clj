@@ -18,7 +18,7 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.files :as files]
             [cdq.files :as files-utils]
-            [clojure.graphics :as graphics]
+            [clojure.gdx.graphics :as graphics]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.color]
             [space.earlygrey.shape-drawer :as sd]

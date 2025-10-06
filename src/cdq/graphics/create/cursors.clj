@@ -1,5 +1,5 @@
 (ns cdq.graphics.create.cursors
-  (:require [clojure.graphics :as graphics]
+  (:require [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.pixmap :as pixmap]))
 
 (defn create

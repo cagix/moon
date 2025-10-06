@@ -22,10 +22,6 @@
     com.badlogic.gdx.files.file-handle
     clojure.gdx.files.file-handle/FileHandle]
 
-   [com.badlogic.gdx.Graphics
-    clojure.gdx.graphics
-    clojure.graphics/Graphics]
-
    [com.badlogic.gdx.graphics.g2d.Batch
     com.badlogic.gdx.graphics.g2d.batch
     clojure.graphics.batch/Batch]
