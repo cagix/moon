@@ -1,5 +1,6 @@
 (ns cdq.ctx.render.validate
-  (:require [clojure.malli :as m]))
+  (:require [malli.core :as m]
+            [malli.utils :as mu]))
 
 (def ^:private schema
   (m/schema
@@ -15,5 +16,5 @@
     [:ctx/world :some]]))
 
 (defn do! [ctx]
-  (m/validate-humanize schema ctx)
+  (mu/validate-humanize schema ctx)
   ctx)

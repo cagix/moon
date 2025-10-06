@@ -10,6 +10,7 @@
                  [clojure.gdx "1.0-alpha"]
 
                  [metosin/malli "0.13.0"]
+                 [malli.utils "0.1"]
 
                  [clojure.rand "0.1"]
 

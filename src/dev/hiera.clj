@@ -35,7 +35,6 @@
 
      clojure.throwable
      clojure.utils
-     clojure.malli
      clojure.math
      clojure.scene2d.actor,
      clojure.graphics.viewport

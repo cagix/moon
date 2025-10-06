@@ -7,8 +7,9 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [clojure.malli :as m]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [malli.core :as m]
+            [malli.utils :as mu]))
 
 (defn- save!
   [{:keys [db/data db/file]}]
@@ -44,11 +45,11 @@
     (-> (get schemas k)
         (schema/malli-form schemas)
         m/schema
-        (m/validate-humanize value)))
+        (mu/validate-humanize value)))
 
   (create-map-schema [schemas ks]
-    (m/create-map-schema ks (fn [k]
-                              (schema/malli-form (get schemas k) schemas)))))
+    (mu/create-map-schema ks (fn [k]
+                               (schema/malli-form (get schemas k) schemas)))))
 
 (defrecord DB []
   db/DB

@@ -1,5 +1,5 @@
 (ns cdq.db.schema.map
-  (:require [clojure.malli :as m]
+  (:require [malli.utils :as mu]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
@@ -42,9 +42,9 @@
      :k->widget (into {}
                       (for [[k v] m]
                         [k (value-widget/build ctx (get schemas k) k v)]))
-     :k->optional? #(m/optional? % (schema/malli-form schema schemas))
+     :k->optional? #(mu/optional? % (schema/malli-form schema schemas))
      :ks-sorted (map first (utils/sort-by-k-order property-k-sort-order m))
-     :opt? (seq (set/difference (m/optional-keyset (schema/malli-form schema schemas))
+     :opt? (seq (set/difference (mu/optional-keyset (schema/malli-form schema schemas))
                                 (set (keys m))))}))
 
 (defn value [_ table schemas]

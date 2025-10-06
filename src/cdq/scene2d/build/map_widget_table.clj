@@ -1,5 +1,5 @@
 (ns cdq.scene2d.build.map-widget-table
-  (:require [clojure.malli :as m]
+  (:require [malli.utils :as mu]
             [cdq.ui.editor.schema]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
@@ -81,7 +81,7 @@
                                :close-on-escape? true
                                :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (cdq.ui.editor.schema/value schema map-widget-table schemas)))
-                                   (m/map-keys (schema/malli-form schema schemas))))]
+                                   (mu/map-keys (schema/malli-form schema schemas))))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -94,7 +94,7 @@
                                                                                                      k
                                                                                                      (schemas/default-value schemas k))
                                                                                  k
-                                                                                 (m/optional? k (schema/malli-form schema schemas))
+                                                                                 (mu/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (rebuild! ctx))}}]))
     (widget-group/pack! window)

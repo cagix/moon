@@ -1,7 +1,7 @@
 (ns cdq.tx.spawn-entity
   (:require [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
-            [clojure.malli :as m]
+            [malli.utils :as mu]
             [qrecord.core :as q]))
 
 (def ^:private create-fns
@@ -41,7 +41,7 @@
                 world/grid
                 world/id-counter
                 world/spawn-entity-schema]} world
-        _ (m/validate-humanize spawn-entity-schema entity)
+        _ (mu/validate-humanize spawn-entity-schema entity)
         entity (reduce (fn [m [k v]]
                          (assoc m k (create-component [k v] world)))
                        {}

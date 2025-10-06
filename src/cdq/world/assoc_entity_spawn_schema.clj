@@ -1,5 +1,5 @@
 (ns cdq.world.assoc-entity-spawn-schema
-  (:require [clojure.malli :as m]))
+  (:require [malli.core :as m]))
 
 (def ^:private components-schema
   (m/schema [:map {:closed true}

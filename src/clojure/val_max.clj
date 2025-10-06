@@ -1,5 +1,5 @@
 (ns clojure.val-max
-  (:require [clojure.malli :as m]))
+  (:require [malli.core :as m]))
 
 (def schema
   (m/schema [:and
