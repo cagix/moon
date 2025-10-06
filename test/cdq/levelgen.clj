@@ -10,7 +10,8 @@
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.texture :as texture]
+            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
+            [com.badlogic.gdx.graphics.texture :as texture]
             [com.badlogic.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
@@ -67,8 +68,8 @@
                                                       (assert (contains? textures file))
                                                       (let [texture (get textures file)]
                                                         (if bounds
-                                                          (texture/region texture bounds)
-                                                          (texture/region texture)))))
+                                                          (texture-region/create texture bounds)
+                                                          (texture-region/create texture)))))
                         :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
