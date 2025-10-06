@@ -1,5 +1,5 @@
 (ns clojure.scene2d.build.actor.tooltip
-  (:require [clojure.gdx.utils.align :as align]
+  (:require [com.badlogic.gdx.utils.align :as align]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.vis-label :as vis-label]
             [clojure.scene2d.actor :as actor]

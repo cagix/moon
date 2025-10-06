@@ -1,7 +1,7 @@
 (ns cdq.ui.inventory
   (:require [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.image :as image]
+            [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]))
 
 (defn- find-cell [group cell]

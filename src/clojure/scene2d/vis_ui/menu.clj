@@ -7,7 +7,7 @@
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.label :as label]
+            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))

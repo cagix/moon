@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.ui :as ui]
-            [clojure.gdx.scenes.scene2d.ui.label :as label]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
+            [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.info :as info]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.group :as group]))

@@ -35,7 +35,7 @@
     clojure.graphics.bitmap-font/BitmapFont]
 
    [com.badlogic.gdx.utils.Disposable
-    clojure.gdx.utils.disposable
+    com.badlogic.gdx.utils.disposable
     clojure.disposable/Disposable]
 
    [cdq.graphics.impl.Graphics
