@@ -1,6 +1,6 @@
-(ns clojure.gdx.backends.lwjgl.application
-  (:require [clojure.gdx.application.listener :as listener]
-            [clojure.gdx.backends.lwjgl.application.configuration :as config])
+(ns com.badlogic.gdx.backends.lwjgl3.application
+  (:require [com.badlogic.gdx.application.listener :as listener]
+            [com.badlogic.gdx.backends.lwjgl3.application.config :as config])
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)))
 
 (defn create [listener config]

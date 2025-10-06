@@ -1,4 +1,4 @@
-(ns clojure.gdx.backends.lwjgl.application.configuration
+(ns com.badlogic.gdx.backends.lwjgl3.application.config
   (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3ApplicationConfiguration)))
 
 (defn create [config]

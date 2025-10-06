@@ -1,9 +1,9 @@
 (ns cdq.application
   (:require [clojure.core-ext :refer [extend-by-ns]]
             [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.java.io :as io]
-            [clojure.lwjgl.system.configuration :as lwjgl])
+            [clojure.lwjgl.system.configuration :as lwjgl]
+            [com.badlogic.gdx.backends.lwjgl3.application :as application])
   (:gen-class))
 
 (require 'cdq.graphics.impl) ; for the record class

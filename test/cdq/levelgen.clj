@@ -9,7 +9,6 @@
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files.utils :as files-utils]
-            [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
@@ -28,7 +27,8 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
-            [clojure.scene2d.vis-ui :as vis-ui]))
+            [clojure.scene2d.vis-ui :as vis-ui]
+            [com.badlogic.gdx.backends.lwjgl3.application :as application]))
 
 (extend-by-ns
  '[
