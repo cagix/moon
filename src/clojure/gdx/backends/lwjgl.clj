@@ -1,24 +1,16 @@
 (ns clojure.gdx.backends.lwjgl
   (:require [clojure.gdx.input]
             [clojure.gdx.graphics]
-            [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
-            [com.badlogic.gdx.application.listener :as listener]
+            [clojure.gdx.application :as app]
             [com.badlogic.gdx.backends.lwjgl3.application :as application]
             [com.badlogic.gdx.backends.lwjgl3.application.config :as config])
   (:import (com.badlogic.gdx.graphics GL20)))
 
-(defn create [{:keys [create] :as listener} config]
-  (application/create (listener/create
-                       (assoc listener :create
-                              (fn []
-                                (create (let [{:keys [audio files graphics input]} (gdx/context)]
-                                          {:clojure.gdx/audio    audio
-                                           :clojure.gdx/files    files
-                                           :clojure.gdx/graphics graphics
-                                           :clojure.gdx/input    input})))))
+(defn create [listener config]
+  (application/create (app/listener listener)
                       (config/create config)))
 
 (extend-type com.badlogic.gdx.Input
