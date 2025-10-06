@@ -108,9 +108,9 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [ctx/files
-           ctx/graphics
-           ctx/input]}]
+  [{:keys [files
+           graphics
+           input]}]
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
         sprite-batch (sprite-batch/create)
@@ -213,9 +213,7 @@
 (defn -main []
   (lwjgl/set-glfw-library-name! "glfw_async")
   (application/create {:create (fn [gdx]
-                                 (reset! state (create! {:ctx/files    (:files    gdx)
-                                                         :ctx/graphics (:graphics gdx)
-                                                         :ctx/input    (:input    gdx)})))
+                                 (reset! state (create! gdx)))
                        :dispose (fn []
                                   (dispose! @state))
                        :render (fn []
