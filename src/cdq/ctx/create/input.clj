@@ -4,11 +4,12 @@
             [clojure.gdx.input :as input]
             [clojure.math.vector2 :as v]))
 
-(defn do! [{:keys [ctx/input
+(defn do! [{:keys [ctx/gdx
                    ctx/stage]
             :as ctx}]
-  (input/set-processor! input stage)
-  (assoc ctx :ctx/input input))
+  (let [input (:clojure.gdx/input gdx)]
+    (input/set-processor! input stage)
+    (assoc ctx :ctx/input input)))
 
 (def controls
   {

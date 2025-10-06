@@ -6,6 +6,7 @@
    [:map {:closed true}
     [:ctx/audio :some]
     [:ctx/db :some]
+    [:ctx/gdx :some]
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]

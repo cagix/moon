@@ -134,7 +134,10 @@
    :world-viewport world-viewport
    :textures-to-load (files-utils/search files texture-folder)})
 
-(defn create [graphics files params]
+(defn create
+  [{:keys [clojure.gdx/graphics
+           clojure.gdx/files]}
+   params]
   (doseq [[name rgba] (:colors params)]
     (colors/put! name (color/create rgba)))
   (-> (handle-files files params)

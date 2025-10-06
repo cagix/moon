@@ -40,7 +40,8 @@
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
                                               (ui/show-data-viewer! stage ctx))}]}
         help-info-text {:label "Help"
-                        :items [{:label (input/controls-info-text input)}]}
+                        :items [{:label "foobar we dont have input yet as created after stage"
+                                 #_(input/controls-info-text input)}]}
         select-world {:label "Select World"
                       :items (for [world-fn ["world_fns/vampire.edn"
                                              "world_fns/uf_caves.edn"

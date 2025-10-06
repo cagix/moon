@@ -66,7 +66,6 @@
                            [cdq.ctx.create.ui.message/create]]]
                    [input]
                    [audio]
-                   [dissoc-files]
                    [world "world_fns/vampire.edn"]]
  :render-pipeline [[get-stage-ctx]
                    [validate]

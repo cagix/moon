@@ -78,10 +78,7 @@
     (run! require (:requires app))
     (lwjgl/set-glfw-library-name! "glfw_async")
     (application/create {:create (fn [gdx]
-                                   (reset! state (pipeline {:ctx/audio    (:audio    gdx)
-                                                            :ctx/files    (:files    gdx)
-                                                            :ctx/graphics (:graphics gdx)
-                                                            :ctx/input    (:input    gdx)}
+                                   (reset! state (pipeline {:ctx/gdx gdx}
                                                            create-pipeline)))
                          :dispose (fn []
                                     (dispose @state))

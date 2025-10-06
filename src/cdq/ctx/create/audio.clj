@@ -28,7 +28,9 @@
         (run! disposable/dispose! (vals sounds))))))
 
 (defn- create
-  [audio files sound-names path-format]
+  [{:keys [clojure.gdx/audio
+           clojure.gdx/files]}
+   sound-names path-format]
   (let [sound-names->file-handles
         (into {}
               (for [sound-name sound-names]
@@ -36,7 +38,6 @@
                  (files/internal files (format path-format sound-name))]))]
     (audio-impl audio sound-names->file-handles)))
 
-(defn do! [{:keys [ctx/audio
-                   ctx/files]
+(defn do! [{:keys [ctx/gdx]
             :as ctx}]
-  (assoc ctx :ctx/audio (create audio files sound-names path-format)))
+  (assoc ctx :ctx/audio (create gdx sound-names path-format)))
