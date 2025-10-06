@@ -90,14 +90,12 @@
                                                  (- x (/ (actor/get-width  a) 2))
                                                  (- y (/ (actor/get-height a) 2))))})
 
-(extend-type Actor
-  actor/Opts
-  (set-opts! [actor opts]
-    (doseq [[k v] opts
-            :let [f (get opts-fn-map k)]
-            :when f]
-      (f actor v))
-    actor))
+(defn set-opts! [actor opts]
+  (doseq [[k v] opts
+          :let [f (get opts-fn-map k)]
+          :when f]
+    (f actor v))
+  actor)
 
 (defmethod scene2d/build :actor.type/actor
   [{:keys [actor/act
@@ -111,4 +109,4 @@
           (draw [batch parent-alpha]
             (when draw
               (draw! this draw))))
-    (actor/set-opts! opts)))
+    (set-opts! opts)))

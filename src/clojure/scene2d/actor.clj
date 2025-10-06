@@ -20,9 +20,6 @@
   (get-height [_])
   (add-listener! [_ listener]))
 
-(defprotocol Opts
-  (set-opts! [_ opts]))
-
 (defprotocol Tooltip
   (add-tooltip! [_ tooltip-text])
   (remove-tooltip! [_]))
