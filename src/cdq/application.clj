@@ -15,7 +15,7 @@
     clojure.gdx.audio/Sound]
 
    [com.badlogic.gdx.Files
-    clojure.gdx.files
+    com.badlogic.gdx.files
     clojure.files/Files]
 
    [com.badlogic.gdx.files.FileHandle
