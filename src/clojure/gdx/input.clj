@@ -1,24 +1,24 @@
 (ns clojure.gdx.input
-  (:require [com.badlogic.gdx.input.buttons :as input-buttons]
-            [com.badlogic.gdx.input.keys    :as input-keys])
-  (:import (com.badlogic.gdx Input)))
+  (:require [com.badlogic.gdx.input :as input]
+            [com.badlogic.gdx.input.buttons :as input-buttons]
+            [com.badlogic.gdx.input.keys    :as input-keys]))
 
-(defn button-just-pressed? [^Input this button]
+(defn button-just-pressed? [this button]
   {:pre [(contains? input-buttons/k->value button)]}
-  (.isButtonJustPressed this (input-buttons/k->value button)))
+  (input/button-just-pressed? this (input-buttons/k->value button)))
 
-(defn key-pressed? [^Input this key]
+(defn key-pressed? [this key]
   (assert (contains? input-keys/k->value key)
           (str "(pr-str key): "(pr-str key)))
-  (.isKeyPressed this (input-keys/k->value key)))
+  (input/key-pressed? this (input-keys/k->value key)))
 
-(defn key-just-pressed? [^Input this key]
+(defn key-just-pressed? [this key]
   {:pre [(contains? input-keys/k->value key)]}
-  (.isKeyJustPressed this (input-keys/k->value key)))
+  (input/key-just-pressed? this (input-keys/k->value key)))
 
-(defn set-processor! [^Input this input-processor]
-  (.setInputProcessor this input-processor))
+(defn set-processor! [this input-processor]
+  (input/set-processor! this input-processor))
 
-(defn mouse-position [^Input this]
-  [(.getX this)
-   (.getY this)])
+(defn mouse-position [this]
+  [(input/x this)
+   (input/y this)])
