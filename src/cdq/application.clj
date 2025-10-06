@@ -11,12 +11,12 @@
 (extend-by-ns
  '[
    [com.badlogic.gdx.Audio
-    clojure.gdx.audio
-    clojure.audio/Audio]
+    com.badlogic.gdx.audio
+    clojure.gdx.audio/Audio]
 
    [com.badlogic.gdx.audio.Sound
-    clojure.gdx.audio.sound
-    clojure.audio.sound/Sound]
+    com.badlogic.gdx.audio.sound
+    clojure.gdx.audio.sound/Sound]
 
    [com.badlogic.gdx.Files
     clojure.gdx.files

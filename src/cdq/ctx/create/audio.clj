@@ -1,9 +1,9 @@
 (ns cdq.ctx.create.audio
-  (:require [clojure.audio.sounds]
+  (:require [cdq.audio]
             [clojure.edn :as edn]
+            [clojure.gdx.audio :as audio]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.java.io :as io]
-            [clojure.audio :as audio]
-            [clojure.audio.sound :as sound]
             [clojure.disposable :as disposable]
             [clojure.files :as files]))
 
@@ -15,8 +15,8 @@
                             (fn [file-handle]
                               (audio/sound audio file-handle)))]
     (reify
-      clojure.audio.sounds/Sounds
-      (all-names [_]
+      cdq.audio/Audio
+      (sound-names [_]
         (map first sounds))
 
       (play! [_ sound-name]

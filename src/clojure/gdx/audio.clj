@@ -1,5 +1,5 @@
-(ns clojure.gdx.audio
-  (:import (com.badlogic.gdx Audio)))
+(ns clojure.gdx.audio)
 
-(defn sound [^Audio audio file-handle]
-  (.newSound audio file-handle))
+(defprotocol Audio
+  (sound [_ file-handle]))
+
