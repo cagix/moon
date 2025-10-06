@@ -1,11 +1,7 @@
 (ns clojure.gdx.backends.lwjgl
-  (:require [clojure.core-ext :refer [extend-by-ns]]
-            [clojure.gdx.audio]
-            [clojure.gdx.input]
+  (:require [clojure.gdx.input]
             [clojure.gdx.graphics]
             [com.badlogic.gdx :as gdx]
-            [com.badlogic.gdx.audio :as audio]
-            [com.badlogic.gdx.files :as files]
             [com.badlogic.gdx.input :as input]
             [com.badlogic.gdx.input.buttons :as input-buttons]
             [com.badlogic.gdx.input.keys    :as input-keys]
@@ -14,23 +10,15 @@
             [com.badlogic.gdx.backends.lwjgl3.application.config :as config])
   (:import (com.badlogic.gdx.graphics GL20)))
 
-(defrecord Context []
-  clojure.gdx.audio/Audio
-  (sound [{:keys [clojure.gdx/audio
-                  clojure.gdx/files]}
-          path]
-    (audio/sound audio (files/internal files path))))
-
 (defn create [{:keys [create] :as listener} config]
   (application/create (listener/create
                        (assoc listener :create
                               (fn []
-                                (create (map->Context
-                                         (let [{:keys [audio files graphics input]} (gdx/context)]
-                                           {:clojure.gdx/audio    audio
-                                            :clojure.gdx/files    files
-                                            :clojure.gdx/graphics graphics
-                                            :clojure.gdx/input    input}))))))
+                                (create (let [{:keys [audio files graphics input]} (gdx/context)]
+                                          {:clojure.gdx/audio    audio
+                                           :clojure.gdx/files    files
+                                           :clojure.gdx/graphics graphics
+                                           :clojure.gdx/input    input})))))
                       (config/create config)))
 
 (extend-type com.badlogic.gdx.Input
@@ -79,19 +67,3 @@
                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat graphics)))
                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
         (GL20/.glClear gl20 mask)))))
-
-(extend-by-ns
- '[
-   [com.badlogic.gdx.audio.Sound
-    com.badlogic.gdx.audio.sound
-    clojure.gdx.audio.sound/Sound]
-
-   [com.badlogic.gdx.Files
-    com.badlogic.gdx.files
-    clojure.gdx.files/Files]
-
-   [com.badlogic.gdx.files.FileHandle
-    com.badlogic.gdx.files.file-handle
-    clojure.gdx.files.file-handle/FileHandle]
-   ]
- )

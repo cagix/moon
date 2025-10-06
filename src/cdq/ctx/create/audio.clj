@@ -1,19 +1,24 @@
 (ns cdq.ctx.create.audio
   (:require [cdq.audio]
             [clojure.edn :as edn]
-            [clojure.gdx.audio :as audio]
-            [clojure.gdx.audio.sound :as sound]
             [clojure.java.io :as io]
-            [clojure.disposable :as disposable]))
+            [clojure.disposable :as disposable]
+            [com.badlogic.gdx.audio :as audio]
+            [com.badlogic.gdx.audio.sound :as sound]
+            [com.badlogic.gdx.files :as files]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
 
-(defn- audio-impl [gdx]
+(defn- audio-impl [{:keys [clojure.gdx/audio
+                           clojure.gdx/files]}]
   (let [sounds (into {}
                      (for [sound-name sound-names]
                        [sound-name
-                        (audio/sound gdx (format path-format sound-name))]))]
+                        (->> sound-name
+                             (format path-format)
+                             (files/internal files)
+                             (audio/sound audio))]))]
     (reify
       cdq.audio/Audio
       (sound-names [_]
