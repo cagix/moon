@@ -9,7 +9,7 @@
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scenes.scene2d.utils.listener :as listener]))
+            [clojure.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
 
 (defn- create-inventory-window*
   [{:keys [position
@@ -120,7 +120,7 @@
       :position [(ui/viewport-width  stage)
                  (ui/viewport-height stage)]
       :clicked-cell-listener (fn [cell]
-                               (listener/click
+                               (click-listener/create
                                 (fn [event _x _y]
                                   (let [{:keys [ctx/world] :as ctx} (stage/get-ctx (event/stage event))
                                         eid (:world/player-eid world)

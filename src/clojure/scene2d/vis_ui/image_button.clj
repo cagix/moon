@@ -2,7 +2,7 @@
   (:require [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scenes.scene2d.utils.listener :as listener]
+            [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [com.kotcrab.vis-ui.widget.vis-image-button :as vis-image-button]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
@@ -20,7 +20,7 @@
                                   :height (* scale h))
         image-button (vis-image-button/create drawable)]
     (when on-clicked
-      (.addListener image-button (listener/change
+      (.addListener image-button (change-listener/create
                                   (fn [event actor]
                                     (on-clicked actor (stage/get-ctx (event/stage event)))))))
     (when-let [tooltip (:tooltip opts)]
