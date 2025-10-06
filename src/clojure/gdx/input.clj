@@ -1,6 +1,6 @@
 (ns clojure.gdx.input
-  (:require [clojure.gdx.input.buttons :as input-buttons]
-            [clojure.gdx.input.keys    :as input-keys])
+  (:require [com.badlogic.gdx.input.buttons :as input-buttons]
+            [com.badlogic.gdx.input.keys    :as input-keys])
   (:import (com.badlogic.gdx Input)))
 
 (defn button-just-pressed? [^Input this button]
