@@ -1,6 +1,6 @@
 (ns cdq.ui.tooltip
   (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
             [com.kotcrab.vis-ui.widget.tooltip :as tooltip]
             [com.kotcrab.vis-ui.widget.vis-label :as vis-label])

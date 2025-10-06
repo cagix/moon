@@ -2,7 +2,7 @@
   (:require [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]))
 
 (defn- get-ctx [actor]

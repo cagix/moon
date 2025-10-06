@@ -16,7 +16,6 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.gdx.scenes.scene2d.stage]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]
@@ -25,7 +24,7 @@
             [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.gdx.backends.lwjgl :as application]))
 
@@ -100,9 +99,7 @@
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
         sprite-batch (sprite-batch/create)
-        stage (clojure.gdx.scenes.scene2d.stage/create
-               ui-viewport
-               sprite-batch)
+        stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

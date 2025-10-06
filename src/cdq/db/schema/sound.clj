@@ -4,7 +4,7 @@
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [com.badlogic.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.gdx.scenes.scene2d.ui.window :as window]))

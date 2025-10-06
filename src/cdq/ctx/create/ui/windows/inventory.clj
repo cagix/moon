@@ -7,7 +7,7 @@
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]))

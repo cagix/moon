@@ -4,7 +4,7 @@
             [cdq.ui :as ui]
             [clojure.info :as info]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]))
 

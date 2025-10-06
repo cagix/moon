@@ -1,5 +1,5 @@
 (ns cdq.ctx.render.render-stage
-  (:require [clojure.scene2d.stage :as stage]))
+  (:require [cdq.ui.stage :as stage]))
 
 (defn do!
   [{:keys [ctx/stage]

@@ -2,7 +2,7 @@
   (:require [cdq.ui :as ui]
             [clojure.repl]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.utils :as utils]))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.CtxStage

@@ -8,9 +8,8 @@
             [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.stage]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]))
+            [cdq.ui.stage :as stage]))
 
 (defn- toggle-visible! [actor]
   (actor/set-visible! actor (not (actor/visible? actor))))
@@ -27,9 +26,8 @@
     ctx/Graphics
     (draw! [{:keys [ctx/graphics]} draws]
       (draws/handle! graphics draws)))
-  (let [stage (clojure.gdx.scenes.scene2d.stage/create
-               (:graphics/ui-viewport graphics)
-               (:graphics/batch       graphics))
+  (let [stage (stage/create (:graphics/ui-viewport graphics)
+                            (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
         ctx (assoc ctx
                    :ctx/stage stage

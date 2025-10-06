@@ -4,7 +4,7 @@
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [com.kotcrab.vis-ui.widget.vis-text-button :as vis-text-button]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [clojure.scene2d.stage :as stage]
+            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]))
 
 (defn create
