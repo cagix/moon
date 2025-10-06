@@ -1,7 +1,6 @@
 (ns cdq.graphics.create.default-font
-  (:require [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font.data :as data]
-            [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+  (:require [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
             [com.badlogic.gdx.graphics.g2d.freetype.parameter :as parameter]))
 
@@ -19,7 +18,7 @@
                                                (parameter/create {:size (* size quality-scaling)
                                                                   :min-filter (texture-filter/k->value min-filter)
                                                                   :mag-filter (texture-filter/k->value mag-filter)}))]
-             (data/set-scale!     (bitmap-font/data font) (/ quality-scaling))
-             (data/enable-markup! (bitmap-font/data font) enable-markup?)
+             (bitmap-font/set-scale!                 font (/ quality-scaling))
+             (bitmap-font/enable-markup!             font enable-markup?)
              (bitmap-font/set-use-integer-positions! font use-integer-positions?)
              font))))
