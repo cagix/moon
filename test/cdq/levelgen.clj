@@ -5,7 +5,7 @@
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
-            [clojure.disposable :as disposable]
+            [com.badlogic.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]

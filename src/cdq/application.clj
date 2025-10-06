@@ -1,14 +1,9 @@
 (ns cdq.application
-  (:require [clojure.core-ext :refer [extend-by-ns]]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.gdx.backends.lwjgl :as application])
   (:gen-class))
-
-(require 'cdq.graphics.impl) ; for the record class
-
-
 
 (def state (atom nil))
 
@@ -19,22 +14,6 @@
           pipeline))
 
 (defn -main []
-  (extend-by-ns
-   '[
-
-     [com.badlogic.gdx.utils.Disposable
-      com.badlogic.gdx.utils.disposable
-      clojure.disposable/Disposable]
-
-     [cdq.graphics.impl.Graphics
-      cdq.graphics.impl.camera
-      cdq.graphics.camera/Camera]
-
-     [cdq.graphics.impl.Graphics
-      cdq.graphics.impl.draws
-      cdq.graphics.draws/Draws]
-     ]
-   )
   (let [app (-> "cdq.application.edn"
                 io/resource
                 slurp

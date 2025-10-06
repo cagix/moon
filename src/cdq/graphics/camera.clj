@@ -1,9 +1,21 @@
-(ns cdq.graphics.camera)
+(ns cdq.graphics.camera
+  (:require [clojure.graphics.orthographic-camera :as camera]
+            [clojure.graphics.viewport :as viewport]))
 
-(defprotocol Camera
-  (position [_])
-  (visible-tiles [_])
-  (frustum [_])
-  (zoom [_])
-  (change-zoom! [_ amount])
-  (set-position! [_ position]))
+(defn position [{:keys [graphics/world-viewport]}]
+  (:camera/position (viewport/camera world-viewport)))
+
+(defn visible-tiles [{:keys [graphics/world-viewport]}]
+  (camera/visible-tiles (viewport/camera world-viewport)))
+
+(defn frustum [{:keys [graphics/world-viewport]}]
+  (camera/frustum (viewport/camera world-viewport)))
+
+(defn zoom [{:keys [graphics/world-viewport]}]
+  (:camera/zoom (viewport/camera world-viewport)))
+
+(defn change-zoom! [{:keys [graphics/world-viewport]} amount]
+  (camera/inc-zoom! (viewport/camera world-viewport) amount))
+
+(defn set-position! [{:keys [graphics/world-viewport]} position]
+  (camera/set-position! (viewport/camera world-viewport) position))

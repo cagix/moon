@@ -1,5 +1,5 @@
 (ns cdq.world
-  (:require [clojure.disposable :as disposable]))
+  (:require [com.badlogic.gdx.utils.disposable :as disposable]))
 
 (defn dispose! [{:keys [world/tiled-map]}]
   (assert tiled-map) ; only dispose after world was created
