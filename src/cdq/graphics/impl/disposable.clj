@@ -1,5 +1,5 @@
 (ns cdq.graphics.impl.disposable
-  (:require [clojure.disposable :refer [dispose!]]))
+  (:require [clojure.disposable :as d]))
 
 (defn dispose!
   [{:keys [graphics/batch
@@ -7,8 +7,8 @@
            graphics/default-font
            graphics/shape-drawer-texture
            graphics/textures]}]
-  (dispose! batch)
-  (run! dispose! (vals cursors))
-  (dispose! default-font)
-  (dispose! shape-drawer-texture)
-  (run! dispose! (vals textures)))
+  (d/dispose! batch)
+  (run! d/dispose! (vals cursors))
+  (d/dispose! default-font)
+  (d/dispose! shape-drawer-texture)
+  (run! d/dispose! (vals textures)))
