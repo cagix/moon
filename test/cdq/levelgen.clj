@@ -8,7 +8,7 @@
             [clojure.core-ext :refer [extend-by-ns]]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
-            [clojure.gdx.files.utils :as files-utils]
+            [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
