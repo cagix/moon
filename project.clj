@@ -4,7 +4,7 @@
                  [com.badlogic.gdx                       "1.13.5"]
                  [com.badlogic.gdx.backends.lwjgl3       "1.13.5"]
                  [com.badlogic.gdx.graphics.g2d.freetype "1.13.5"]
-                 [com.kotcrab.vis/vis-ui "1.5.2"]
+                 [com.kotcrab.vis-ui "1.5.2"]
                  [space.earlygrey.shape-drawer "2.5.0"]
 
                  [metosin/malli "0.13.0"]

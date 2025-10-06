@@ -1,5 +1,5 @@
 (ns clojure.scene2d.build.scroll-pane
-  (:require [clojure.gdx.scenes.scene2d.vis-ui.widget.vis-scroll-pane :as vis-scroll-pane]
+  (:require [com.kotcrab.vis-ui.widget.vis-scroll-pane :as vis-scroll-pane]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]))
 

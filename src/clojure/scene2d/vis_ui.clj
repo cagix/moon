@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui
-  (:require [clojure.gdx.scenes.scene2d.vis-ui.core :as vis-ui]
-            [clojure.gdx.scenes.scene2d.vis-ui.widget.tooltip :as tooltip]
+  (:require [com.kotcrab.vis-ui :as vis-ui]
+            [com.kotcrab.vis-ui.widget.tooltip :as tooltip]
             [clojure.disposable :as disposable]))
 
 (defn load! [{:keys [skin-scale]}]
