@@ -4,7 +4,7 @@
             [clojure.gdx.scenes.scene2d.vis-ui.widget.menu-item :as menu-item]
             [clojure.gdx.scenes.scene2d.vis-ui.widget.popup-menu :as popup-menu]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.event :as event]
+            [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.ui.label :as label]

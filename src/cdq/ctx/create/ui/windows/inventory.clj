@@ -6,7 +6,7 @@
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.event :as event]
+            [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [clojure.gdx.scenes.scene2d.utils.listener :as listener]))
