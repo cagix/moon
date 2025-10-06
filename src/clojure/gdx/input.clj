@@ -8,13 +8,13 @@
   (.isButtonJustPressed this (input-buttons/k->value button)))
 
 (defn key-pressed? [^Input this key]
-  (assert (contains? input-keys/keyword->value key)
+  (assert (contains? input-keys/k->value key)
           (str "(pr-str key): "(pr-str key)))
-  (.isKeyPressed this (input-keys/keyword->value key)))
+  (.isKeyPressed this (input-keys/k->value key)))
 
 (defn key-just-pressed? [^Input this key]
-  {:pre [(contains? input-keys/keyword->value key)]}
-  (.isKeyJustPressed this (input-keys/keyword->value key)))
+  {:pre [(contains? input-keys/k->value key)]}
+  (.isKeyJustPressed this (input-keys/k->value key)))
 
 (defn set-processor! [^Input this input-processor]
   (.setInputProcessor this input-processor))
