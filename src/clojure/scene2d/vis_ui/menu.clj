@@ -9,7 +9,7 @@
             [clojure.scene2d.stage :as stage]
             [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener])
+            [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
 (defn- set-label-text-actor [label text-fn]

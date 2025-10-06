@@ -9,7 +9,7 @@
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
-            [clojure.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
+            [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
 
 (defn- create-inventory-window*
   [{:keys [position
