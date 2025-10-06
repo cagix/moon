@@ -1,12 +1,12 @@
 (ns clojure.math.vector2
-  (:require [clojure.math-ext :refer [radians-to-degrees]]))
+  (:require [clojure.math :as math]))
 
 (defn scale [[x y] scalar]
   [(* x scalar)
    (* y scalar)])
 
 (defn length [[x y]]
-  (Math/sqrt (+ (* x x)
+  (math/sqrt (+ (* x x)
                 (* y y))))
 
 (defn normalise [[x y :as v]]
@@ -24,7 +24,7 @@
    [x2 y2]]
   (let [x-d (- x2 x1)
         y-d (- y2 y1)]
-   (Math/sqrt (+ (* x-d x-d)
+   (math/sqrt (+ (* x-d x-d)
                  (* y-d y-d))) ))
 
 (defn direction [[sx sy] [tx ty]]
@@ -47,9 +47,9 @@
   "Returns the angle in degrees of this vector relative to the given reference vector.
   Angles are towards the positive y-axis (counter-clockwise) in the `[0, 360-` range."
   [this reference]
-  (let [angle (* (Math/atan2 (crs reference this)
+  (let [angle (* (math/atan2 (crs reference this)
                              (dot reference this))
-                 radians-to-degrees)]
+                 math/to-degrees)]
     (if (neg? angle)
       (+ angle 360)
       angle)))

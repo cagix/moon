@@ -1,7 +1,7 @@
 (ns cdq.graphics.draw.arc
-  (:require [com.badlogic.gdx.graphics.color :as color]
-            [space.earlygrey.shape-drawer :as sd]
-            [clojure.math-ext :refer [degree->radians]]))
+  (:require [clojure.math :as math]
+            [com.badlogic.gdx.graphics.color :as color]
+            [space.earlygrey.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}
@@ -11,5 +11,5 @@
            center-x
            center-y
            radius
-           (degree->radians start-angle)
-           (degree->radians degree)))
+           (math/to-radians start-angle)
+           (math/to-radians degree)))

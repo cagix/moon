@@ -1,4 +1,5 @@
-(ns clojure.utils)
+(ns clojure.utils
+  (:require [clojure.math :as math]))
 
 (defn- index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -43,13 +44,13 @@
   (<= (Math/abs (- x y)) float-rounding-error))
 
 (defn- approx-numbers [a b epsilon]
-  (<= (Math/abs (float (- a b))) epsilon))
+  (<= (Math/abs (- a b)) epsilon))
 
 (defn- round-n-decimals [^double x n]
-  (let [z (Math/pow 10 n)]
+  (let [z (math/pow 10 n)]
     (float
      (/
-      (Math/round (float (* x z)))
+      (math/round (* x z))
       z))))
 
 (defn readable-number [^double x]
