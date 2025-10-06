@@ -1,5 +1,5 @@
 (ns cdq.graphics.draw.filled-circle
-  (:require [com.badlogic.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.shape-drawer :as sd]))
 
 (defn do!

@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.audio
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.badlogic.gdx.audio :as audio]
+            [clojure.gdx.audio :as audio]
             [clojure.gdx.files :as files]))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))

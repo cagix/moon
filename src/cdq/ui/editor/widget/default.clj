@@ -1,5 +1,5 @@
 (ns cdq.ui.editor.widget.default
-  (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.utils :as utils]))
 
 (defn create [_ v _ctx]

@@ -1,9 +1,9 @@
 (ns cdq.ui.inventory
   (:require [cdq.ui.tooltip :as tooltip]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
-            [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]))
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.ui.image :as image]
+            [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]))
 
 (defn- find-cell [group cell]
   (first (filter #(= (actor/user-object % ) cell)

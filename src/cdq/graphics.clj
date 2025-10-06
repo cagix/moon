@@ -1,5 +1,5 @@
 (ns cdq.graphics
-  (:require [com.badlogic.gdx.utils.disposable :as d]))
+  (:require [clojure.gdx.utils.disposable :as d]))
 
 (defn dispose!
   [{:keys [graphics/batch

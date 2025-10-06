@@ -1,8 +1,8 @@
 (ns clojure.math.geom
   (:refer-clojure :exclude [contains?])
-  (:require [com.badlogic.gdx.math.circle :as circle]
-            [com.badlogic.gdx.math.intersector :as intersector]
-            [com.badlogic.gdx.math.rectangle :as rectangle]))
+  (:require [clojure.gdx.math.circle :as circle]
+            [clojure.gdx.math.intersector :as intersector]
+            [clojure.gdx.math.rectangle :as rectangle]))
 
 (def circle    circle/create)
 (def rectangle rectangle/create)

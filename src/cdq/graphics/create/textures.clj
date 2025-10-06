@@ -1,7 +1,7 @@
 (ns cdq.graphics.create.textures
   (:require [cdq.graphics.textures]
-            [com.badlogic.gdx.graphics.texture :as texture]
-            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]))
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
 
 (defn create
   [graphics textures-to-load]

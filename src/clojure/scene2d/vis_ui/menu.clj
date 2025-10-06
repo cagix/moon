@@ -4,12 +4,12 @@
             [clojure.gdx.vis-ui.widget.menu-item :as menu-item]
             [clojure.gdx.vis-ui.widget.popup-menu :as popup-menu]
             [clojure.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.event :as event]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.event :as event]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.ui.label :as label]
+            [clojure.gdx.scenes.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
-            [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener])
+            [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
 (defn- set-label-text-actor [label text-fn]

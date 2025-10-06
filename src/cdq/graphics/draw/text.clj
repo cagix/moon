@@ -1,7 +1,7 @@
 (ns cdq.graphics.draw.text
-  (:require [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [com.badlogic.gdx.graphics.g2d.bitmap-font.data :as data]
-            [com.badlogic.gdx.utils.align :as align]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
+            [clojure.gdx.utils.align :as align]
             [clojure.string :as str]))
 
 (defn- text-height [font text]

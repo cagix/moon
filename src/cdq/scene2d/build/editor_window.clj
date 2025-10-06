@@ -7,7 +7,7 @@
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.ui.window :as window]))
 

@@ -1,6 +1,6 @@
 (ns cdq.graphics.create.cursors
   (:require [clojure.gdx.graphics :as graphics]
-            [com.badlogic.gdx.graphics.pixmap :as pixmap]))
+            [clojure.gdx.graphics.pixmap :as pixmap]))
 
 (defn create
   [{:keys [graphics/core]

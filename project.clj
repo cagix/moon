@@ -1,7 +1,7 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [com.badlogic.gdx                       "1.13.5"]
+                 [clojure.gdx "1.13.5"]
                  [com.badlogic.gdx.backends.lwjgl3       "1.13.5"]
                  [clojure.gdx.freetype "1.13.5"]
                  [clojure.gdx.shape-drawer "1.0"]

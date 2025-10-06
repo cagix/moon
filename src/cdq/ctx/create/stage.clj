@@ -5,8 +5,8 @@
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.group :as group]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]))
 
 (defn- toggle-visible! [actor]

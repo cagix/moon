@@ -5,13 +5,13 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [com.badlogic.gdx.graphics.color :as color]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
-            [com.badlogic.gdx.scenes.scene2d.event :as event]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.event :as event]
             [cdq.ui.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
-            [com.badlogic.gdx.math.vector2 :as vector2]
-            [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
+            [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
 
 (defn- create-inventory-window*
   [{:keys [position

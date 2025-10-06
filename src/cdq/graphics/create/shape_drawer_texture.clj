@@ -1,7 +1,7 @@
 (ns cdq.graphics.create.shape-drawer-texture
   (:require [clojure.graphics.color :as color]
-            [com.badlogic.gdx.graphics.pixmap :as pixmap]
-            [com.badlogic.gdx.graphics.texture :as texture]))
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.texture :as texture]))
 
 (defn create
   [graphics]

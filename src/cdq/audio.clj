@@ -1,5 +1,5 @@
 (ns cdq.audio
-  (:require [com.badlogic.gdx.audio.sound :as sound]))
+  (:require [clojure.gdx.audio.sound :as sound]))
 
 (defn sound-names [sounds]
   (map first sounds))

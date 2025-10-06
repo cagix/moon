@@ -1,6 +1,6 @@
 (ns cdq.world-fns.uf-caves
   (:require [clojure.gdx.maps.tiled :as tiled]
-            [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]))
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
 
 (defn create
   [{:keys [level/creature-properties

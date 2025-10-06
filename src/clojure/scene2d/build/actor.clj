@@ -1,9 +1,9 @@
 (ns clojure.scene2d.build.actor
   (:require [cdq.graphics.draws :as draws]
             [clojure.scene2d :as scene2d]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]))
+            [clojure.gdx.scenes.scene2d.touchable :as touchable]))
 
 (defn- get-ctx [actor]
   (when-let [stage (actor/get-stage actor)]

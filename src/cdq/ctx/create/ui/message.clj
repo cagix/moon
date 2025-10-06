@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.ui.message
   (:require [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
-            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Actor
