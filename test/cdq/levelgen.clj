@@ -37,7 +37,7 @@
     clojure.files/Files]
 
    [com.badlogic.gdx.files.FileHandle
-    clojure.gdx.files.file-handle
+    com.badlogic.gdx.files.file-handle
     clojure.files.file-handle/FileHandle]
    ]
  )

@@ -1,8 +1,8 @@
 (ns cdq.graphics.create.default-font
   (:require [clojure.gdx.graphics.texture.filter :as texture-filter]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.freetype.generator :as generator]
-            [clojure.gdx.graphics.g2d.freetype.parameter :as parameter]))
+            [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
+            [com.badlogic.gdx.graphics.g2d.freetype.parameter :as parameter]))
 
 (defn create [graphics default-font]
   (assoc graphics :graphics/default-font
