@@ -1,5 +1,6 @@
 (ns cdq.ctx.dispose
   (:require [cdq.audio :as audio]
+            [cdq.world :as world]
             [clojure.disposable :refer [dispose!]]))
 
 (defn do! [{:keys [ctx/audio
@@ -9,4 +10,4 @@
   (audio/dispose! audio)
   (dispose! graphics)
   (dispose! vis-ui)
-  (dispose! world))
+  (world/dispose! world))

@@ -14,7 +14,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.gdx.maps.tiled :as tiled]
-            [clojure.disposable :as disposable]
             [clojure.grid2d :as g2d]
             [clojure.txs :as txs]
             [clojure.utils :as utils]))
@@ -85,11 +84,6 @@
       [arr width height])))
 
 (defrecord RWorld []
-  disposable/Disposable
-  (dispose! [{:keys [world/tiled-map]}]
-    (assert tiled-map) ; only dispose after world was created
-    (disposable/dispose! tiled-map))
-
   world/World
   (cache-active-entities [{:keys [world/content-grid
                                   world/player-eid]

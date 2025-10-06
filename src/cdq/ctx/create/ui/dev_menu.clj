@@ -8,7 +8,7 @@
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [clojure.disposable :as disposable]
+            [cdq.world :as world]
             [clojure.utils :as utils]))
 
 (defn create [{:keys [ctx/db
@@ -51,7 +51,7 @@
                                             (let [ui stage
                                                   stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
-                                              (disposable/dispose! (:ctx/world ctx))
+                                              (world/dispose! (:ctx/world ctx))
                                               (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}
         update-labels [{:label "elapsed-time"
                         :update-fn (fn [ctx]
