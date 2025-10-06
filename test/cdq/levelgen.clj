@@ -96,6 +96,7 @@
   [{:keys [clojure.gdx/files
            clojure.gdx/graphics
            clojure.gdx/input]}]
+  (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
         sprite-batch (sprite-batch/create)
@@ -105,8 +106,7 @@
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
         ctx (-> ctx
-                cdq.ctx.create.db/do!
-                (assoc :ctx/vis-ui (vis-ui/load! {:skin-scale :x1})))
+                cdq.ctx.create.db/do!)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (fit-viewport/create world-width
@@ -134,9 +134,8 @@
 
 (defn dispose!
   [{:keys [ctx/sprite-batch
-           ctx/tiled-map
-           ctx/vis-ui]}]
-  (disposable/dispose! vis-ui)
+           ctx/tiled-map ]}]
+  (vis-ui/dispose!)
   (disposable/dispose! sprite-batch)
   (disposable/dispose! tiled-map))
 

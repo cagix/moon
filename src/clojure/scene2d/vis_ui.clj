@@ -1,7 +1,6 @@
 (ns clojure.scene2d.vis-ui
   (:require [com.kotcrab.vis-ui :as vis-ui]
-            [com.kotcrab.vis-ui.widget.tooltip :as tooltip]
-            [clojure.disposable :as disposable]))
+            [com.kotcrab.vis-ui.widget.tooltip :as tooltip]))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before vis-ui/dispose!
@@ -14,7 +13,7 @@
       .getData
       .markupEnabled
       (set! true))
-  (tooltip/set-default-appear-delay-time! 0)
-  (reify disposable/Disposable
-    (dispose! [_]
-      (vis-ui/dispose!))))
+  (tooltip/set-default-appear-delay-time! 0))
+
+(defn dispose! []
+  (vis-ui/dispose!))
