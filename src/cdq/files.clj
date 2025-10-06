@@ -1,4 +1,4 @@
-(ns clojure.gdx.files.utils
+(ns cdq.files
   (:require [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.string :as str]))
