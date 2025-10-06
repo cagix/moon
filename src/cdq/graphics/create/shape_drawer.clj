@@ -1,6 +1,6 @@
 (ns cdq.graphics.create.shape-drawer
   (:require [clojure.gdx.graphics.texture :as texture]
-            [clojure.graphics.shape-drawer :as sd]))
+            [space.earlygrey.shape-drawer :as sd]))
 
 (defn create
   [{:keys [graphics/batch

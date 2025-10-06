@@ -1,6 +1,6 @@
 (ns cdq.graphics.draw.ellipse
   (:require [com.badlogic.gdx.graphics.color :as color]
-            [clojure.graphics.shape-drawer :as sd]))
+            [space.earlygrey.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

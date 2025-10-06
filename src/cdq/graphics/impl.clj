@@ -21,7 +21,7 @@
             [clojure.graphics :as graphics]
             [clojure.graphics.batch :as batch]
             [clojure.graphics.color]
-            [clojure.graphics.shape-drawer :as sd]
+            [space.earlygrey.shape-drawer :as sd]
             [clojure.graphics.viewport :as viewport]))
 
 (defrecord Graphics []
