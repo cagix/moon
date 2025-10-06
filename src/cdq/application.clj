@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [clojure.core-ext :refer [extend-by-ns]]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl])
@@ -78,13 +77,12 @@
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
     (lwjgl/set-glfw-library-name! "glfw_async")
-    (application/create {:create (fn []
-                                   (let [gdx (gdx/context)]
-                                     (reset! state (pipeline {:ctx/audio    (:audio    gdx)
-                                                              :ctx/files    (:files    gdx)
-                                                              :ctx/graphics (:graphics gdx)
-                                                              :ctx/input    (:input    gdx)}
-                                                             create-pipeline))))
+    (application/create {:create (fn [gdx]
+                                   (reset! state (pipeline {:ctx/audio    (:audio    gdx)
+                                                            :ctx/files    (:files    gdx)
+                                                            :ctx/graphics (:graphics gdx)
+                                                            :ctx/input    (:input    gdx)}
+                                                           create-pipeline)))
                          :dispose (fn []
                                     (dispose @state))
                          :render (fn []

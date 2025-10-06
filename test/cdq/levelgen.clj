@@ -9,7 +9,6 @@
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [clojure.files.utils :as files-utils]
-            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -213,11 +212,10 @@
 
 (defn -main []
   (lwjgl/set-glfw-library-name! "glfw_async")
-  (application/create {:create (fn []
-                                 (let [gdx (gdx/context)]
-                                   (reset! state (create! {:ctx/files    (:files    gdx)
-                                                           :ctx/graphics (:graphics gdx)
-                                                           :ctx/input    (:input    gdx)}))))
+  (application/create {:create (fn [gdx]
+                                 (reset! state (create! {:ctx/files    (:files    gdx)
+                                                         :ctx/graphics (:graphics gdx)
+                                                         :ctx/input    (:input    gdx)})))
                        :dispose (fn []
                                   (dispose! @state))
                        :render (fn []
