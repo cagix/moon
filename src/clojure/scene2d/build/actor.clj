@@ -12,18 +12,6 @@
   (get-stage [actor]
     (.getStage actor))
 
-  (get-ctx [actor]
-    (when-let [stage (actor/get-stage actor)]
-      (stage/get-ctx stage)))
-
-  (act! [actor delta f]
-    (when-let [ctx (actor/get-ctx actor)]
-      (f actor delta ctx)))
-
-  (draw! [actor f]
-    (when-let [ctx (actor/get-ctx actor)]
-      (ctx/draw! ctx (f actor ctx))))
-
   (get-x [actor]
     (.getX actor))
 
@@ -77,6 +65,18 @@
   (add-listener! [actor listener]
     (.addListener actor listener)))
 
+(defn- get-ctx [actor]
+  (when-let [stage (actor/get-stage actor)]
+    (stage/get-ctx stage)))
+
+(defn act! [actor delta f]
+  (when-let [ctx (get-ctx actor)]
+    (f actor delta ctx)))
+
+(defn draw! [actor f]
+  (when-let [ctx (get-ctx actor)]
+    (ctx/draw! ctx (f actor ctx))))
+
 (def opts-fn-map
   {:actor/name        actor/set-name!
    :actor/user-object actor/set-user-object!
@@ -106,9 +106,9 @@
   (doto (proxy [Actor] []
           (act [delta]
             (when act
-              (actor/act! this delta act))
+              (act! this delta act))
             (proxy-super act delta))
           (draw [batch parent-alpha]
             (when draw
-              (actor/draw! this draw))))
+              (draw! this draw))))
     (actor/set-opts! opts)))

@@ -2,9 +2,6 @@
 
 (defprotocol Actor
   (get-stage [_])
-  (get-ctx [_])
-  (act! [_ delta f])
-  (draw! [_ f])
   (get-x [_])
   (get-y [_])
   (get-name [_])
