@@ -19,7 +19,7 @@
             [clojure.gdx.files :as files]
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
-            [clojure.graphics.batch :as batch]
+            [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [clojure.graphics.color]
             [space.earlygrey.shape-drawer :as sd]
             [clojure.graphics.viewport :as viewport]))

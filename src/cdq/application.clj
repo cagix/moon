@@ -11,10 +11,6 @@
 (extend-by-ns
  '[
 
-   [com.badlogic.gdx.graphics.g2d.Batch
-    com.badlogic.gdx.graphics.g2d.batch
-    clojure.graphics.batch/Batch]
-
    [com.badlogic.gdx.utils.Disposable
     com.badlogic.gdx.utils.disposable
     clojure.disposable/Disposable]
