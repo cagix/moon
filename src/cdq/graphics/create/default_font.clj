@@ -2,8 +2,8 @@
   (:require [com.badlogic.gdx.graphics.texture.filter :as texture-filter]
             [com.badlogic.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [com.badlogic.gdx.graphics.g2d.bitmap-font.data :as data]
-            [com.badlogic.gdx.graphics.g2d.freetype.generator :as generator]
-            [com.badlogic.gdx.graphics.g2d.freetype.parameter :as parameter]))
+            [clojure.gdx.freetype.generator :as generator]
+            [clojure.gdx.freetype.parameter :as parameter]))
 
 (defn create [graphics default-font]
   (assoc graphics :graphics/default-font
