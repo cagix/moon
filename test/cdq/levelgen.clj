@@ -10,9 +10,7 @@
             [clojure.edn :as edn]
             [clojure.files.utils :as files-utils]
             [clojure.gdx :as gdx]
-            [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
-            [clojure.gdx.backends.lwjgl.application.configuration :as config]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.texture :as texture]
@@ -215,21 +213,19 @@
 
 (defn -main []
   (lwjgl/set-glfw-library-name! "glfw_async")
-  (application/create (listener/create
-                       {:create (fn []
-                                  (let [gdx (gdx/context)]
-                                    (reset! state (create! {:ctx/files    (:files    gdx)
-                                                            :ctx/graphics (:graphics gdx)
-                                                            :ctx/input    (:input    gdx)}))))
-                        :dispose (fn []
-                                   (dispose! @state))
-                        :render (fn []
-                                  (swap! state render!))
-                        :resize (fn [width height]
-                                  (resize! @state width height))
-                        :pause (fn [])
-                        :resume (fn [])})
-                      (config/create
-                       {:title "Levelgen test"
-                        :windowed-mode {:width 1440 :height 900}
-                        :foreground-fps 60})))
+  (application/create {:create (fn []
+                                 (let [gdx (gdx/context)]
+                                   (reset! state (create! {:ctx/files    (:files    gdx)
+                                                           :ctx/graphics (:graphics gdx)
+                                                           :ctx/input    (:input    gdx)}))))
+                       :dispose (fn []
+                                  (dispose! @state))
+                       :render (fn []
+                                 (swap! state render!))
+                       :resize (fn [width height]
+                                 (resize! @state width height))
+                       :pause (fn [])
+                       :resume (fn [])}
+                      {:title "Levelgen test"
+                       :windowed-mode {:width 1440 :height 900}
+                       :foreground-fps 60}))
