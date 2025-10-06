@@ -17,7 +17,6 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.scenes.scene2d.stage]
-            [clojure.gdx.utils.viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics.color :as color]
             [clojure.graphics.orthographic-camera :as camera]

@@ -1,15 +1,19 @@
 (ns clojure.gdx.utils.viewport.fit-viewport
-  (:require [clojure.gdx.utils.viewport :as vp]
-            [clojure.graphics.viewport])
-  (:import (com.badlogic.gdx.utils.viewport FitViewport)))
+  (:require [clojure.graphics.viewport]
+            [com.badlogic.gdx.math.vector2 :as vector2]
+            [com.badlogic.gdx.utils.viewport :as viewport]
+            [com.badlogic.gdx.utils.viewport.fit-viewport :as fit-viewport]))
 
 (defn create [width height camera]
-  (FitViewport. width height camera))
+  (fit-viewport/create width height camera))
 
-(extend FitViewport
+(extend com.badlogic.gdx.utils.viewport.Viewport
   clojure.graphics.viewport/Viewport
-  {:camera       vp/camera
-   :world-width  vp/world-width
-   :world-height vp/world-height
-   :unproject    vp/unproject
-   :update!      vp/update!})
+  {:camera       viewport/camera
+   :world-width  viewport/world-width
+   :world-height viewport/world-height
+   :update!      viewport/update!
+   :unproject    (fn [viewport [x y]]
+                   (-> viewport
+                       (viewport/unproject (vector2/->java x y))
+                       vector2/->clj))})
