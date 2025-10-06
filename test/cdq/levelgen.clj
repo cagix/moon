@@ -5,7 +5,6 @@
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
-            [clojure.core-ext :refer [extend-by-ns]]
             [clojure.disposable :as disposable]
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
@@ -28,19 +27,6 @@
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.gdx.backends.lwjgl :as application]))
-
-(extend-by-ns
- '[
-   [com.badlogic.gdx.Files
-    com.badlogic.gdx.files
-    clojure.gdx.files/Files]
-
-   [com.badlogic.gdx.files.FileHandle
-    com.badlogic.gdx.files.file-handle
-    clojure.gdx.files.file-handle/FileHandle]
-   ]
- )
-
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 

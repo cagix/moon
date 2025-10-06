@@ -10,17 +10,6 @@
 
 (extend-by-ns
  '[
-   [com.badlogic.gdx.audio.Sound
-    com.badlogic.gdx.audio.sound
-    clojure.gdx.audio.sound/Sound]
-
-   [com.badlogic.gdx.Files
-    com.badlogic.gdx.files
-    clojure.gdx.files/Files]
-
-   [com.badlogic.gdx.files.FileHandle
-    com.badlogic.gdx.files.file-handle
-    clojure.gdx.files.file-handle/FileHandle]
 
    [com.badlogic.gdx.graphics.g2d.Batch
     com.badlogic.gdx.graphics.g2d.batch

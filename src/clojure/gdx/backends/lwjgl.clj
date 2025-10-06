@@ -1,5 +1,6 @@
 (ns clojure.gdx.backends.lwjgl
-  (:require [clojure.gdx.audio]
+  (:require [clojure.core-ext :refer [extend-by-ns]]
+            [clojure.gdx.audio]
             [clojure.gdx.input]
             [clojure.gdx.graphics]
             [com.badlogic.gdx :as gdx]
@@ -78,3 +79,19 @@
                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat graphics)))
                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
         (GL20/.glClear gl20 mask)))))
+
+(extend-by-ns
+ '[
+   [com.badlogic.gdx.audio.Sound
+    com.badlogic.gdx.audio.sound
+    clojure.gdx.audio.sound/Sound]
+
+   [com.badlogic.gdx.Files
+    com.badlogic.gdx.files
+    clojure.gdx.files/Files]
+
+   [com.badlogic.gdx.files.FileHandle
+    com.badlogic.gdx.files.file-handle
+    clojure.gdx.files.file-handle/FileHandle]
+   ]
+ )
