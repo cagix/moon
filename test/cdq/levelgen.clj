@@ -1,5 +1,7 @@
 (ns cdq.levelgen
   (:require clojure.scene2d.builds
+            clojure.scene2d.build.actor
+            clojure.scene2d.build.group
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
