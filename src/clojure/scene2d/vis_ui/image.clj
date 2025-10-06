@@ -1,5 +1,5 @@
 (ns clojure.scene2d.vis-ui.image
-  (:require [com.kotcrab.vis-ui.widget.vis-image :as vis-image]
+  (:require [clojure.gdx.vis-ui.widget.vis-image :as vis-image]
             [clojure.scene2d.widget :as widget])
   (:import (com.badlogic.gdx.utils Align
                                    Scaling)))

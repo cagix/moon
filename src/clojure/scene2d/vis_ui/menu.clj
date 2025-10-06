@@ -1,8 +1,8 @@
 (ns clojure.scene2d.vis-ui.menu
-  (:require [com.kotcrab.vis-ui.widget.menu :as menu]
-            [com.kotcrab.vis-ui.widget.menu-bar :as menu-bar]
-            [com.kotcrab.vis-ui.widget.menu-item :as menu-item]
-            [com.kotcrab.vis-ui.widget.popup-menu :as popup-menu]
+  (:require [clojure.gdx.vis-ui.widget.menu :as menu]
+            [clojure.gdx.vis-ui.widget.menu-bar :as menu-bar]
+            [clojure.gdx.vis-ui.widget.menu-item :as menu-item]
+            [clojure.gdx.vis-ui.widget.popup-menu :as popup-menu]
             [clojure.scene2d :as scene2d]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.group :as group]

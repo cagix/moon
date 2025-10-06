@@ -4,7 +4,7 @@
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [com.badlogic.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
-            [com.kotcrab.vis-ui.widget.vis-image-button :as vis-image-button]
+            [clojure.gdx.vis-ui.widget.vis-image-button :as vis-image-button]
             [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]))

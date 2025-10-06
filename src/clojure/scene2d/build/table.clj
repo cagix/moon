@@ -1,6 +1,6 @@
 (ns clojure.scene2d.build.table
   (:require [com.badlogic.gdx.scenes.scene2d.ui.cell :as cell]
-            [com.kotcrab.vis-ui.widget.vis-table :as vis-table]
+            [clojure.gdx.vis-ui.widget.vis-table :as vis-table]
             [clojure.scene2d.widget-group :as widget-group]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table])

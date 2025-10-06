@@ -2,8 +2,8 @@
   (:require [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [com.badlogic.gdx.utils.align :as align]
-            [com.kotcrab.vis-ui.widget.tooltip :as tooltip]
-            [com.kotcrab.vis-ui.widget.vis-label :as vis-label])
+            [clojure.gdx.vis-ui.widget.tooltip :as tooltip]
+            [clojure.gdx.vis-ui.widget.vis-label :as vis-label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn add! [actor tooltip-text]
