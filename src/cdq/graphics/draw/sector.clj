@@ -1,7 +1,7 @@
 (ns cdq.graphics.draw.sector
   (:require [clojure.math :as math]
             [com.badlogic.gdx.graphics.color :as color]
-            [space.earlygrey.shape-drawer :as sd]))
+            [clojure.gdx.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

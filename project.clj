@@ -5,7 +5,7 @@
                  [com.badlogic.gdx.backends.lwjgl3       "1.13.5"]
                  [com.badlogic.gdx.graphics.g2d.freetype "1.13.5"]
                  [com.kotcrab.vis-ui "1.5.2"]
-                 [space.earlygrey.shape-drawer "2.5.0"]
+                 [clojure.gdx.shape-drawer "1.0"]
 
                  [metosin/malli "0.13.0"]
                  [malli.utils "0.1"]

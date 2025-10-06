@@ -1,6 +1,6 @@
 (ns cdq.graphics.draw.filled-rectangle
   (:require [com.badlogic.gdx.graphics.color :as color]
-            [space.earlygrey.shape-drawer :as sd]))
+            [clojure.gdx.shape-drawer :as sd]))
 
 (defn do!
   [{:keys [graphics/shape-drawer]}

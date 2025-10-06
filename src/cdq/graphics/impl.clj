@@ -21,7 +21,7 @@
             [clojure.gdx.graphics :as graphics]
             [com.badlogic.gdx.graphics.g2d.batch :as batch]
             [clojure.graphics.color]
-            [space.earlygrey.shape-drawer :as sd]
+            [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.viewport :as viewport]))
 
 (defrecord Graphics []

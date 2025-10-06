@@ -1,6 +1,6 @@
 (ns cdq.graphics.create.shape-drawer
   (:require [com.badlogic.gdx.graphics.g2d.texture-region :as texture-region]
-            [space.earlygrey.shape-drawer :as sd]))
+            [clojure.gdx.shape-drawer :as sd]))
 
 (defn create
   [{:keys [graphics/batch

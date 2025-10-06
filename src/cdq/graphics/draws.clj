@@ -1,6 +1,6 @@
 (ns cdq.graphics.draws
   (:require #_[clojure.tx-handler :as tx-handler]
-            [space.earlygrey.shape-drawer :as sd]
+            [clojure.gdx.shape-drawer :as sd]
             [cdq.graphics.draw.arc]
             [cdq.graphics.draw.circle]
             [cdq.graphics.draw.ellipse]
