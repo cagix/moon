@@ -23,6 +23,11 @@
 (defn- button-class? [actor]
   (some #(= Button %) (supers (class actor))))
 
+(comment
+ ; maybe use this?
+ (isa? (class actor) Button)
+ )
+
 (defn- button?
   "Returns true if the actor or its parent is a button."
   [actor]
