@@ -2,7 +2,7 @@
   (:require [cdq.ui.action-bar :as action-bar]
             [cdq.ui.tooltip :as tooltip]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.button-group :as button-group]))
 

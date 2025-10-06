@@ -5,7 +5,7 @@
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
             [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [com.kotcrab.vis-ui.widget.vis-image-button :as vis-image-button]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]))
 

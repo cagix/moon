@@ -1,6 +1,6 @@
 (ns cdq.ui.inventory
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [com.badlogic.gdx.scenes.scene2d.ui.image :as image]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]))

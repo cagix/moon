@@ -6,7 +6,7 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]

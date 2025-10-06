@@ -1,6 +1,6 @@
 (ns cdq.ui.editor.map-widget-table
   (:require [cdq.ui.editor.schema :as schema]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]))
 
 (defn get-value [table schemas]

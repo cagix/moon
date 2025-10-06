@@ -5,10 +5,11 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.event :as event]
             [clojure.scene2d.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.drawable :as drawable]
+            [com.badlogic.gdx.math.vector2 :as vector2]
             [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
 
 (defn- create-inventory-window*
@@ -43,8 +44,9 @@
                                                            (actor/get-x actor)
                                                            (actor/get-y actor)
                                                            (actor/hit actor
-                                                                      (actor/stage->local-coordinates actor
-                                                                                                      ui-mouse))
+                                                                      (-> actor
+                                                                          (actor/stage->local-coordinates (vector2/->java ui-mouse))
+                                                                          vector2/->clj))
                                                            (actor/user-object (actor/parent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]

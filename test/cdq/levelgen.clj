@@ -24,7 +24,7 @@
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.gdx.backends.lwjgl :as application]))

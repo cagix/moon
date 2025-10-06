@@ -9,8 +9,11 @@
             [clojure.gdx.scenes.scene2d.ctx :as ctx]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.scenes.scene2d.stage]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [clojure.scene2d.stage :as stage]))
+
+(defn- toggle-visible! [actor]
+  (actor/set-visible! actor (not (actor/visible? actor))))
 
 (defn- add-actors! [stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -80,7 +83,7 @@
     (-> stage
         (stage-find "cdq.ui.windows")
         (group/find-actor "cdq.ui.windows.inventory")
-        actor/toggle-visible!))
+        toggle-visible!))
 
   ; no window movable type cursor appears here like in player idle
   ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -143,7 +146,7 @@
     (-> stage
         (stage-find "cdq.ui.windows")
         (group/find-actor "cdq.ui.windows.entity-info")
-        actor/toggle-visible!))
+        toggle-visible!))
 
   (close-all-windows! [stage]
     (->> (stage-find stage "cdq.ui.windows")

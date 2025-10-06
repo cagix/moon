@@ -4,7 +4,7 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.actor :as actor]
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor]
             [com.badlogic.gdx.scenes.scene2d.group :as group]
             [clojure.scene2d.stage :as stage]
             [clojure.scene2d.ui.table :as table]

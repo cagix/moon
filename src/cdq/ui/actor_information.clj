@@ -1,6 +1,6 @@
 (ns cdq.ui.actor-information
   (:require [cdq.ui :as ui]
-            [clojure.scene2d.actor :as actor])
+            [com.badlogic.gdx.scenes.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
                                                Window)))
