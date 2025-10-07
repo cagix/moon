@@ -9,7 +9,7 @@
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -18,7 +18,6 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics.color :as color]
-            [clojure.graphics.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
@@ -98,7 +97,7 @@
            clojure.gdx/input]}]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
+        ui-viewport (fit-viewport/create 1440 900 (camera/create))
         sprite-batch (sprite-batch/create)
         stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -111,9 +110,9 @@
                              world-height (* 900  world-unit-scale)]
                          (fit-viewport/create world-width
                                               world-height
-                                              (orthographic-camera/create :y-down? false
-                                                                          :world-width world-width
-                                                                          :world-height world-height)))
+                                              (camera/create :y-down? false
+                                                             :world-width world-width
+                                                             :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport

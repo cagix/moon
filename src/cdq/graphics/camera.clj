@@ -1,5 +1,5 @@
 (ns cdq.graphics.camera
-  (:require [clojure.graphics.orthographic-camera :as camera]
+  (:require [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport]))
 
 (defn position [{:keys [graphics/world-viewport]}]
