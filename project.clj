@@ -7,6 +7,7 @@
                  [com.github.damn/clojure.gdx.lwjgl "1528b683b8"]
                  [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
+                 [com.github.damn/clojure.grid2d "5e7b413b6d"]
                  [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
                  [com.github.damn/clojure.math.vector2 "9b3fd73f9b"]
                  [com.github.damn/clojure.rand "6a273c942b"]
