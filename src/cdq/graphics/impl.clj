@@ -19,7 +19,8 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.gdx.viewport :as viewport]))
+            [clojure.gdx.viewport :as viewport])
+  (:import (com.badlogic.gdx.graphics Color)))
 
 (defrecord Graphics []
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
@@ -101,8 +102,8 @@
            cursors
            world-viewport]}
    graphics]
-  (doseq [[name rgba] colors]
-    (colors/put! name (color/create rgba)))
+  (doseq [[name [r g b a]] colors]
+    (colors/put! name (Color. r g b a)))
   (-> (map->Graphics {})
       (assoc :graphics/core graphics)
       (cdq.graphics.create.cursors/create cursors)

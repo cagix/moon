@@ -5,13 +5,13 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.event :as event]
             [cdq.ui.stage :as stage]
             [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
             [clojure.gdx.math.vector2 :as vector2]
-            [clojure.gdx.scenes.scene2d.utils.click-listener :as click-listener]))
+            [clojure.gdx.scenes.scene2d.utils.click-listener :as click-listener])
+  (:import (com.badlogic.gdx.graphics Color)))
 
 (defn- create-inventory-window*
   [{:keys [position
@@ -24,7 +24,7 @@
                          (drawable/create (slot->texture-region slot)
                                           :width cell-size
                                           :height cell-size
-                                          :tint-color (color/create [1 1 1 0.4])))
+                                          :tint-color (Color. 1 1 1 0.4)))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]
