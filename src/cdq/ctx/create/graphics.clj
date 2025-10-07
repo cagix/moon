@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.graphics
   (:require [cdq.graphics.impl :as graphics]
-            [clojure.gdx.files :as files]
-            [cdq.files :as files-utils]))
+            [cdq.files :as files-utils])
+  (:import (com.badlogic.gdx Files)))
 
 (defn- handle-files
   [files {:keys [colors
@@ -12,12 +12,12 @@
                  ui-viewport
                  world-viewport]}]
   {:ui-viewport ui-viewport
-   :default-font {:file-handle (files/internal files (:path default-font))
+   :default-font {:file-handle (Files/.internal files (:path default-font))
                   :params (:params default-font)}
    :colors colors
    :cursors (update-vals (:data cursors)
                          (fn [[short-path hotspot]]
-                           [(files/internal files (format (:path-format cursors) short-path))
+                           [(Files/.internal files (format (:path-format cursors) short-path))
                             hotspot]))
    :world-unit-scale (float (/ tile-size))
    :world-viewport world-viewport

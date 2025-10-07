@@ -1,26 +1,26 @@
 (ns cdq.files
-  (:require [clojure.gdx.files :as files]
-            [clojure.gdx.files.file-handle :as file-handle]
-            [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:import (com.badlogic.gdx Files)
+           (com.badlogic.gdx.files FileHandle)))
 
 (defn- recursively-search
   "Returns all files in the folder (a file-handle) which match the set of extensions e.g. `#{\"png\" \"bmp\"}`."
-  [folder extensions]
-  (loop [[file & remaining] (file-handle/list folder)
+  [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
 
-          (file-handle/directory? file)
-          (recur (concat remaining (file-handle/list file)) result)
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
 
-          (extensions (file-handle/extension file))
-          (recur remaining (conj result (file-handle/path file)))
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
 
           :else
           (recur remaining result))))
 
 (defn search [files {:keys [folder extensions]}]
   (map (fn [path]
-         [(str/replace-first path folder "") (files/internal files path)])
-       (recursively-search (files/internal files folder) extensions)))
+         [(str/replace-first path folder "") (Files/.internal files path)])
+       (recursively-search (Files/.internal files folder) extensions)))

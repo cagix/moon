@@ -1,8 +1,8 @@
 (ns cdq.ctx.create.audio
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.gdx.audio :as audio]
-            [clojure.gdx.files :as files]))
+            [clojure.java.io :as io])
+  (:import (com.badlogic.gdx Audio
+                             Files)))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
@@ -14,8 +14,8 @@
           [sound-name
            (->> sound-name
                 (format path-format)
-                (files/internal files)
-                (audio/sound audio))])))
+                (Files/.internal files)
+                (Audio/.newSound audio))])))
 
 (defn do! [{:keys [ctx/gdx]
             :as ctx}]
