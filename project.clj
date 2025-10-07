@@ -3,10 +3,11 @@
   :dependencies [
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.gdx "d6cdfa466c"]
+                 [com.badlogicgames.gdx/gdx-backend-lwjgl3    "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-platform          "1.13.5" :classifier "natives-desktop"]
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [space.earlygrey/shapedrawer "2.5.0"]
-                 [com.github.damn/clojure.gdx.backends.lwjgl "e25e12e2dc"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
                  [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
