@@ -5,7 +5,7 @@
                  [com.github.damn/clojure.gdx "d6cdfa466c"]
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
-                 [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
+                 [space.earlygrey/shapedrawer "2.5.0"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "e25e12e2dc"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
