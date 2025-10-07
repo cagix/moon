@@ -1,8 +1,8 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx ApplicationListener)
+            [clojure.java.io :as io])
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration))
@@ -31,7 +31,10 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (Lwjgl3Application. (reify ApplicationListener
                           (create [_]
-                            (reset! state (pipeline {:ctx/gdx (gdx/context)}
+                            (reset! state (pipeline {:ctx/gdx {:clojure.gdx/audio    Gdx/audio
+                                                               :clojure.gdx/files    Gdx/files
+                                                               :clojure.gdx/graphics Gdx/graphics
+                                                               :clojure.gdx/input    Gdx/input}}
                                                     create-pipeline)))
                           (dispose [_]
                             (dispose @state))

@@ -7,7 +7,6 @@
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
-            [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.input :as input]
@@ -19,7 +18,8 @@
             [clojure.scene2d :as scene2d]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationListener)
+  (:import (com.badlogic.gdx ApplicationListener
+                             Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Texture)
@@ -95,12 +95,9 @@
 
 (defrecord Context [])
 
-(defn create!
-  [{:keys [clojure.gdx/files
-           clojure.gdx/graphics
-           clojure.gdx/input]}]
+(defn create! []
   (vis-ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/input input})
+  (let [ctx (map->Context {:ctx/input Gdx/input})
         ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
         stage (stage/create ui-viewport sprite-batch)
@@ -118,10 +115,10 @@
                                                       :world-width world-width
                                                       :world-height world-height)))
         ctx (assoc ctx
-                   :ctx/graphics graphics
+                   :ctx/graphics Gdx/graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
+                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search Gdx/files
                                                                                        {:folder "resources/"
                                                                                         :extensions #{"png" "bmp"}})]
                                             [path (Texture. file-handle)]))
@@ -199,7 +196,7 @@
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (reset! state (create! (gdx/context))))
+                          (reset! state (create!)))
                         (dispose [_]
                           (dispose! @state))
                         (render [_]
