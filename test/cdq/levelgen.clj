@@ -153,7 +153,7 @@
                                           ctx/camera-movement-speed]}]
   (let [apply-position (fn [idx f]
                          (camera/set-position! camera
-                                               (update (:camera/position camera)
+                                               (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
     (if (input/key-pressed? input :left)  (apply-position 0 -))

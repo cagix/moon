@@ -3,7 +3,7 @@
             [clojure.gdx.viewport :as viewport]))
 
 (defn position [{:keys [graphics/world-viewport]}]
-  (:camera/position (viewport/camera world-viewport)))
+  (camera/position (viewport/camera world-viewport)))
 
 (defn visible-tiles [{:keys [graphics/world-viewport]}]
   (camera/visible-tiles (viewport/camera world-viewport)))
@@ -12,7 +12,7 @@
   (camera/frustum (viewport/camera world-viewport)))
 
 (defn zoom [{:keys [graphics/world-viewport]}]
-  (:camera/zoom (viewport/camera world-viewport)))
+  (camera/zoom (viewport/camera world-viewport)))
 
 (defn change-zoom! [{:keys [graphics/world-viewport]} amount]
   (camera/inc-zoom! (viewport/camera world-viewport) amount))

@@ -1,17 +1,20 @@
-(ns clojure.graphics.orthographic-camera)
+(ns clojure.graphics.orthographic-camera
+  (:require [clojure.gdx.graphics.orthographic-camera :as cam]))
 
-(defprotocol Camera
-  (set-position! [_ [x y]])
-  (set-zoom! [_ amount]))
+(def set-position! cam/set-position!)
+(def set-zoom! cam/set-zoom!)
+
+(def position cam/position)
+(def zoom cam/zoom)
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))
 
 (defn inc-zoom! [cam by]
-  (set-zoom! cam (max 0.1 (+ (:camera/zoom cam) by))))
+  (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
 
 (defn frustum [camera]
-  (let [frustum-points (take 4 (:frustum/plane-points (:camera/frustum camera)))
+  (let [frustum-points (take 4 (:frustum/plane-points (cam/frustum camera)))
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
@@ -27,9 +30,9 @@
 (defn calculate-zoom
   "calculates the zoom value for camera to see all the 4 points."
   [camera & {:keys [left top right bottom]}]
-  (let [viewport-width  (:camera/viewport-width  camera)
-        viewport-height (:camera/viewport-height camera)
-        [px py] (:camera/position camera)
+  (let [viewport-width  (cam/viewport-width  camera)
+        viewport-height (cam/viewport-height camera)
+        [px py] (cam/position camera)
         px (float px)
         py (float py)
         leftx (float (left 0))
