@@ -1,7 +1,8 @@
 (ns cdq.graphics.create.textures
   (:require [cdq.graphics.textures]
-            [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
+            [clojure.gdx.graphics.texture :as texture])
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn create
   [graphics textures-to-load]
@@ -11,10 +12,11 @@
                      {:keys [image/file image/bounds]}]
       (assert file)
       (assert (contains? textures file))
-      (let [texture (get textures file)]
+      (let [^Texture texture (get textures file)]
         (if bounds
-          (texture-region/create texture bounds)
-          (texture-region/create texture)))))
+          (let [[x y w h] bounds]
+            (TextureRegion. texture (int x) (int y) (int w) (int h)))
+          (TextureRegion. texture)))))
   (assoc graphics :graphics/textures
          (into {} (for [[path file-handle] textures-to-load]
                     [path (texture/create file-handle)]))))

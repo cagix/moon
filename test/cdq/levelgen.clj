@@ -11,9 +11,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -28,6 +26,8 @@
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
            (org.lwjgl.system Configuration)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
@@ -69,8 +69,9 @@
                                                       (assert (contains? textures file))
                                                       (let [texture (get textures file)]
                                                         (if bounds
-                                                          (texture-region/create texture bounds)
-                                                          (texture-region/create texture)))))
+                                                          (let [[x y w h] bounds]
+                                                            (TextureRegion. texture x y w h))
+                                                          (TextureRegion. texture)))))
                         :textures textures)))
         tiled-map (:tiled-map level)
         ctx (assoc ctx :ctx/tiled-map tiled-map)]
@@ -101,7 +102,7 @@
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (fit-viewport/create 1440 900 (camera/create))
-        sprite-batch (sprite-batch/create)
+        sprite-batch (SpriteBatch.)
         stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
         tile-size 48
@@ -203,7 +204,7 @@
                           (dispose! @state))
                         (render [_]
                           (swap! state render!))
-                        (resize [_width height]
+                        (resize [_ width height]
                           (resize! @state width height))
                         (pause [_])
                         (resume [_]))

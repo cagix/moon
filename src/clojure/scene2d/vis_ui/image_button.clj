@@ -1,21 +1,22 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]
             [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener]
             [clojure.gdx.vis-ui.widget.vis-image-button :as vis-image-button]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.ui.table :as table]))
+            [clojure.scene2d.ui.table :as table])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn create
-  [{:keys [drawable/texture-region
+  [{:keys [^TextureRegion drawable/texture-region
            on-clicked
            drawable/scale]
     :as opts}]
   (let [scale (or scale 1)
-        [w h] (texture-region/dimensions texture-region)
+        [w h] [(.getRegionWidth  texture-region)
+               (.getRegionHeight texture-region)]
         drawable (drawable/create texture-region
                                   :width  (* scale w)
                                   :height (* scale h))

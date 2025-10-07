@@ -13,14 +13,13 @@
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics Color)))
+  (:import (com.badlogic.gdx.graphics Color
+                                      Colors)
+           (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defrecord Graphics []
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
@@ -82,16 +81,16 @@
           f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch color/white)
-    (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
-    (batch/begin! batch)
+    (.setColor batch Color/WHITE)
+    (.setProjectionMatrix batch (camera/combined (viewport/camera world-viewport)))
+    (.begin batch)
     (let [old-line-width (.getDefaultLineWidth shape-drawer)]
       (.setDefaultLineWidth shape-drawer (* world-unit-scale old-line-width))
       (reset! unit-scale world-unit-scale)
       (f)
       (reset! unit-scale 1)
       (.setDefaultLineWidth shape-drawer old-line-width))
-    (batch/end! batch)))
+    (.end batch)))
 
 (defn create!
   [{:keys [colors
@@ -103,7 +102,7 @@
            world-viewport]}
    graphics]
   (doseq [[name [r g b a]] colors]
-    (colors/put! name (Color. r g b a)))
+    (Colors/put name (Color. r g b a)))
   (-> (map->Graphics {})
       (assoc :graphics/core graphics)
       (cdq.graphics.create.cursors/create cursors)

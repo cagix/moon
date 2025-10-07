@@ -1,20 +1,19 @@
 (ns cdq.graphics.draw.text
-  (:require [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
-            [clojure.gdx.utils.align :as align]
-            [clojure.string :as str]))
+  (:require [clojure.gdx.utils.align :as align]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
-(defn- text-height [font text]
+(defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
       count
-      (* (bitmap-font/line-height font))))
+      (* (.getLineHeight font))))
 
-(defn- draw! [font batch {:keys [scale text x y up? h-align target-width wrap?]}]
+(defn- draw! [^BitmapFont font batch {:keys [scale text x y up? h-align target-width wrap?]}]
   {:pre [(or (nil? h-align)
              (contains? align/k->value h-align))]}
-  (let [old-scale (data/scale-x (bitmap-font/data font))]
-    (data/set-scale! (bitmap-font/data font) (* old-scale scale))
+  (let [old-scale (.scaleX (.getData font))]
+    (.setScale (.getData font) (* old-scale scale))
     (.draw font
            batch
            text
@@ -23,7 +22,7 @@
            (float target-width)
            (get align/k->value (or h-align :center))
            wrap?)
-    (data/set-scale! (bitmap-font/data font) old-scale)))
+    (.setScale (.getData font) old-scale)))
 
 (defn do!
   [{:keys [graphics/batch
