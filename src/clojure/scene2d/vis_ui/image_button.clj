@@ -1,7 +1,6 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.event :as event]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)

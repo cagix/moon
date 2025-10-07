@@ -1,7 +1,7 @@
 (ns cdq.ui.widget
   (:require [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.stage :as stage]))
+            [cdq.ui.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn scroll-pane-cell [viewport-height rows]
   (let [table (scene2d/build
@@ -13,9 +13,9 @@
     {:actor {:actor/type :actor.type/scroll-pane
              :actor/name "cdq.ui.widget.scroll-pane-table"
              :scroll-pane/actor table}
-     :width  (+ (actor/get-width table) 50)
+     :width  (+ (Actor/.getWidth table) 50)
      :height (min (- viewport-height 50)
-                  (actor/get-height table))}))
+                  (Actor/.getHeight table))}))
 
 (defmethod scene2d/build :actor.type/scroll-pane-window
   [{:keys [viewport-height rows]}]
@@ -54,7 +54,7 @@
     (scene2d/build {:actor/type :actor.type/text-button
                     :text "Map"
                     :on-clicked (fn [actor _ctx]
-                                  (stage/add! (actor/get-stage actor)
+                                  (stage/add! (Actor/.getStage actor)
                                               (data-viewer {:title "title"
                                                             :data v
                                                             :width 500

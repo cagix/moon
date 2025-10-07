@@ -17,7 +17,6 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx ApplicationListener)
@@ -26,6 +25,7 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)))
@@ -88,7 +88,7 @@
            [{:actor {:actor/type :actor.type/text-button
                      :text (str "Generate " level-fn)
                      :on-clicked (fn [actor ctx]
-                                   (let [stage (actor/get-stage actor)
+                                   (let [stage (Actor/.getStage actor)
                                          new-ctx (generate-level ctx level-fn)]
                                      (stage/set-ctx! stage new-ctx)))}}])
    :pack? true})

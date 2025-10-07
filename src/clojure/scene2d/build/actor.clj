@@ -1,12 +1,12 @@
 (ns clojure.scene2d.build.actor
   (:require [cdq.graphics.draws :as draws]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [clojure.gdx.scenes.scene2d.touchable :as touchable]))
+            [clojure.gdx.scenes.scene2d.touchable :as touchable])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- get-ctx [actor]
-  (when-let [stage (actor/get-stage actor)]
+  (when-let [stage (Actor/.getStage actor)]
     (stage/get-ctx stage)))
 
 (defn act! [actor delta f]
@@ -18,19 +18,19 @@
     (draws/handle! (:ctx/graphics ctx) (f actor ctx))))
 
 (def opts-fn-map
-  {:actor/name        actor/set-name!
-   :actor/user-object actor/set-user-object!
-   :actor/visible?    actor/set-visible!
+  {:actor/name        Actor/.setName
+   :actor/user-object Actor/.setUserObject
+   :actor/visible?    Actor/.setVisible
    :actor/touchable   (fn [actor touchable]
-                        (actor/set-touchable! actor
+                        (Actor/.setTouchable actor
                                               (touchable/k->value touchable)))
-   :actor/listener    actor/add-listener!
+   :actor/listener    Actor/.addListener
    :actor/position (fn [a [x y]]
-                     (actor/set-position! a x y))
+                     (Actor/.setPosition a x y))
    :actor/center-position (fn [a [x y]]
-                            (actor/set-position! a
-                                                 (- x (/ (actor/get-width  a) 2))
-                                                 (- y (/ (actor/get-height a) 2))))})
+                            (Actor/.setPosition a
+                                                 (- x (/ (Actor/.getWidth  a) 2))
+                                                 (- y (/ (Actor/.getHeight a) 2))))})
 
 (defn set-opts! [actor opts]
   (doseq [[k v] opts
@@ -43,11 +43,12 @@
   [{:keys [actor/act
            actor/draw]
     :as opts}]
-  (doto (actor/create
-         (fn [this delta]
+  (doto (proxy [Actor] []
+         (act [delta]
            (when act
-             (act! this delta act)))
-         (fn [this _batch _parent-alpha]
+             (act! this delta act))
+           (proxy-super act delta))
+         (draw [_batch _parent-alpha]
            (when draw
              (draw! this draw))))
     (set-opts! opts)))

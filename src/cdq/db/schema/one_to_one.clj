@@ -4,11 +4,11 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [cdq.ui.window :as window]))
+            [cdq.ui.window :as window])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn malli-form [[_ property-type] _schemas]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
@@ -42,7 +42,7 @@
                                    :graphics graphics
                                    :property-type property-type
                                    :clicked-id-fn (fn [actor id ctx]
-                                                    (actor/remove! (window/find-ancestor actor))
+                                                    (Actor/.remove (window/find-ancestor actor))
                                                     (redo-rows ctx id))})))}})]
       [(when property-id
          (let [property (db/get-raw db property-id)
@@ -68,5 +68,5 @@
 
 (defn value [_  widget _schemas]
   (->> (group/children widget)
-       (keep actor/user-object)
+       (keep Actor/.getUserObject)
        first))

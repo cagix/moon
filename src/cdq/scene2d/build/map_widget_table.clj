@@ -6,10 +6,10 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.ui.table :as table]))
+            [clojure.scene2d.ui.table :as table])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -23,7 +23,7 @@
                              (group/find-actor "scroll-pane-table")
                              (group/find-actor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
-    (actor/remove! window)
+    (Actor/.remove window)
     (stage/add! stage
                 (scene2d/build
                  {:actor/type :actor.type/editor-window
@@ -46,9 +46,9 @@
                               {:actor/type :actor.type/text-button
                                :text "-"
                                :on-clicked (fn [_actor ctx]
-                                             (actor/remove! (first (filter (fn [actor]
-                                                                             (and (actor/user-object actor)
-                                                                                  (= k ((actor/user-object actor) 0))))
+                                             (Actor/.remove (first (filter (fn [actor]
+                                                                             (and (Actor/.getUserObject actor)
+                                                                                  (= k ((Actor/.getUserObject actor) 0))))
                                                                            (group/children table))))
                                              (rebuild! ctx))})
                      :left? true}
@@ -87,7 +87,7 @@
        [{:actor {:actor/type :actor.type/text-button
                  :text (name k)
                  :on-clicked (fn [_actor ctx]
-                               (actor/remove! window)
+                               (Actor/.remove window)
                                (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
                                                                                                      (get schemas k)
                                                                                                      k

@@ -6,11 +6,11 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.stage :as stage]))
+            [cdq.ui.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn- toggle-visible! [actor]
-  (actor/set-visible! actor (not (actor/visible? actor))))
+(defn- toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
 
 (defn- add-actors! [stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -69,7 +69,7 @@
     (-> stage
         (stage-find "cdq.ui.windows")
         (group/find-actor "cdq.ui.windows.inventory")
-        actor/visible?))
+        Actor/.isVisible))
 
   (toggle-inventory-visible! [stage]
     (-> stage
@@ -94,7 +94,7 @@
                          [{:actor {:actor/type :actor.type/text-button
                                    :text button-text
                                    :on-clicked (fn [_actor _ctx]
-                                                 (actor/remove! (-> stage
+                                                 (Actor/.remove (-> stage
                                                                     stage/root
                                                                     (group/find-actor "cdq.ui.modal-window")))
                                                  (on-click))}}]]
@@ -143,5 +143,5 @@
   (close-all-windows! [stage]
     (->> (stage-find stage "cdq.ui.windows")
          group/children
-         (run! #(actor/set-visible! % false))))
+         (run! #(Actor/.setVisible % false))))
   )

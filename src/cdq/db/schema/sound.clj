@@ -2,11 +2,11 @@
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [cdq.ui.window :as window]))
+            [cdq.ui.window :as window])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn malli-form [_ _schemas]
   :string)
@@ -20,10 +20,10 @@
   (fn [actor _ctx]
     (group/clear-children! table)
     (table/add-rows! table [(sound-columns table sound-name)])
-    (actor/remove! (window/find-ancestor actor))
+    (Actor/.remove (window/find-ancestor actor))
     (.pack (window/find-ancestor table))
-    (let [[k _] (actor/user-object table)]
-      (actor/set-user-object! table [k sound-name]))))
+    (let [[k _] (Actor/.getUserObject table)]
+      (Actor/.setUserObject table [k sound-name]))))
 
 (defn- open-select-sounds-handler [table]
   (fn [_actor {:keys [ctx/audio

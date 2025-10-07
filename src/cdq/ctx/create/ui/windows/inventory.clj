@@ -5,11 +5,11 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.event :as event]
             [cdq.ui.stage :as stage]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener
                                                   TextureRegionDrawable)))
 
@@ -41,13 +41,14 @@
                                                           ctx/world]}]
                                          (let [ui-mouse (:graphics/ui-mouse-position graphics)]
                                            (draw-cell-rect @(:world/player-eid world)
-                                                           (actor/get-x actor)
-                                                           (actor/get-y actor)
-                                                           (actor/hit actor
-                                                                      (-> actor
-                                                                          (actor/stage->local-coordinates (vector2/->java ui-mouse))
-                                                                          vector2/->clj))
-                                                           (actor/user-object (actor/parent actor)))))})
+                                                           (Actor/.getX actor)
+                                                           (Actor/.getY actor)
+                                                           (Actor/.hit actor
+                                                                       (-> actor
+                                                                           (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
+                                                                           vector2/->clj)
+                                                                       true)
+                                                           (Actor/.getUserObject (Actor/.getParent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]

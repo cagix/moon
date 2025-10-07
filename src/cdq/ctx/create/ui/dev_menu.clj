@@ -6,10 +6,10 @@
             [cdq.ui :as ui]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics
@@ -49,7 +49,7 @@
                                {:label (str "Start " world-fn)
                                 :on-click (fn [actor {:keys [ctx/stage] :as ctx}]
                                             (let [ui stage
-                                                  stage (actor/get-stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
+                                                  stage (Actor/.getStage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
                                               (world/dispose! (:ctx/world ctx))
                                               (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}

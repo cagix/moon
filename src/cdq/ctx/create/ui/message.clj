@@ -1,13 +1,13 @@
 (ns cdq.ctx.create.ui.message
   (:require [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [cdq.ui.stage :as stage]))
+            [cdq.ui.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Actor
   message/Message
   (show! [this text]
-    (actor/set-user-object! this (atom {:text text
+    (Actor/.setUserObject this (atom {:text text
                                         :counter 0}))))
 
 (defn- draw-message [state vp-width vp-height]
@@ -23,11 +23,11 @@
 (defn create [_ctx]
   {:actor/type :actor.type/actor
    :actor/draw (fn [this _ctx]
-                 [(draw-message (actor/user-object this)
-                                (viewport/world-width  (stage/viewport (actor/get-stage this)))
-                                (viewport/world-height (stage/viewport (actor/get-stage this))))])
+                 [(draw-message (Actor/.getUserObject this)
+                                (viewport/world-width  (stage/viewport (Actor/.getStage this)))
+                                (viewport/world-height (stage/viewport (Actor/.getStage this))))])
    :actor/act (fn [this delta _ctx]
-                (let [state (actor/user-object this)]
+                (let [state (Actor/.getUserObject this)]
                   (when (:text @state)
                     (swap! state update :counter + delta)
                     (when (>= (:counter @state) duration-seconds)

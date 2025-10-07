@@ -7,18 +7,18 @@
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [cdq.ui.window :as window]))
+            [cdq.ui.window :as window])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]
               :as ctx}]
     (try
      (let [new-ctx (update ctx :ctx/db f)
-           stage (actor/get-stage actor)]
+           stage (Actor/.getStage actor)]
        (stage/set-ctx! stage new-ctx))
-     (actor/remove! (window/find-ancestor actor))
+     (Actor/.remove (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)
        (ui/show-error-window! stage t)))))
