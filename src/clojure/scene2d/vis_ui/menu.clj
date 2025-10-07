@@ -7,10 +7,10 @@
             [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener])
+            [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
-                                               Label)))
+                                               Label)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
@@ -46,10 +46,10 @@
   (let [app-menu (menu/create label)]
     (doseq [{:keys [label on-click]} items]
       (popup-menu/add-item! app-menu (doto (menu-item/create label)
-                                       (.addListener (change-listener/create
-                                                      (fn [event actor]
-                                                        (when on-click
-                                                          (on-click actor (stage/get-ctx (event/stage event))))))))))
+                                       (.addListener (proxy [ChangeListener] []
+                                                       (changed [event actor]
+                                                         (when on-click
+                                                           (on-click actor (stage/get-ctx (event/stage event))))))))))
     (menu-bar/add-menu! menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]
