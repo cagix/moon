@@ -101,7 +101,7 @@
         ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
         stage (stage/create ui-viewport sprite-batch)
-        _  (input/set-processor! input stage)
+        _  (input/set-processor! Gdx/input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
