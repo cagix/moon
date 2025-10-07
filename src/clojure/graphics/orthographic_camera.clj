@@ -1,5 +1,6 @@
 (ns clojure.graphics.orthographic-camera
-  (:require [clojure.gdx.graphics.orthographic-camera :as cam]))
+  (:require [clojure.gdx.graphics.orthographic-camera :as cam]
+            [clojure.gdx.math.vector3 :as vector3]))
 
 (def set-position! cam/set-position!)
 (def set-zoom! cam/set-zoom!)
@@ -14,7 +15,8 @@
   (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
 
 (defn frustum [camera]
-  (let [frustum-points (take 4 (:frustum/plane-points (cam/frustum camera)))
+  (let [plane-points (mapv vector3/clojurize (.planePoints (cam/frustum camera)))
+        frustum-points (take 4 plane-points)
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
