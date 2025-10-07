@@ -1,6 +1,6 @@
 (ns cdq.graphics.create.cursors
-  (:require [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.pixmap :as pixmap]))
+  (:require [clojure.gdx.graphics :as graphics])
+  (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (defn create
   [{:keys [graphics/core]
@@ -8,7 +8,7 @@
    cursors]
   (assoc graphics :graphics/cursors (update-vals cursors
                                                  (fn [[file-handle [hotspot-x hotspot-y]]]
-                                                   (let [pixmap (pixmap/create file-handle)
+                                                   (let [pixmap (Pixmap. file-handle)
                                                          cursor (graphics/cursor core pixmap hotspot-x hotspot-y)]
-                                                     (pixmap/dispose! pixmap)
+                                                     (.dispose pixmap)
                                                      cursor)))))

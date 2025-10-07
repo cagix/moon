@@ -1,6 +1,4 @@
 (ns cdq.graphics.create.textures
-  (:require [cdq.graphics.textures]
-            [clojure.gdx.graphics.texture :as texture])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
@@ -19,4 +17,4 @@
           (TextureRegion. texture)))))
   (assoc graphics :graphics/textures
          (into {} (for [[path file-handle] textures-to-load]
-                    [path (texture/create file-handle)]))))
+                    [path (Texture. file-handle)]))))

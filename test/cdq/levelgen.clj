@@ -11,11 +11,9 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
@@ -27,7 +25,9 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          Texture
                                           TextureRegion)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
@@ -101,7 +101,7 @@
            clojure.gdx/input]}]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (fit-viewport/create 1440 900 (camera/create))
+        ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
         stage (stage/create ui-viewport sprite-batch)
         _  (input/set-processor! input stage)
@@ -112,11 +112,11 @@
                 cdq.ctx.create.db/do!)
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (fit-viewport/create world-width
-                                              world-height
-                                              (camera/create :y-down? false
-                                                             :world-width world-width
-                                                             :world-height world-height)))
+                         (FitViewport. world-width
+                                       world-height
+                                       (camera/create :y-down? false
+                                                      :world-width world-width
+                                                      :world-height world-height)))
         ctx (assoc ctx
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
@@ -124,7 +124,7 @@
                    :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
                                                                                        {:folder "resources/"
                                                                                         :extensions #{"png" "bmp"}})]
-                                            [path (texture/create file-handle)]))
+                                            [path (Texture. file-handle)]))
                    :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
