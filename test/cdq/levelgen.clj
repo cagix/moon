@@ -17,7 +17,7 @@
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics.color :as color]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]

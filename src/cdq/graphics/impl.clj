@@ -21,7 +21,6 @@
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.graphics.color]
             [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.viewport :as viewport]))
 
@@ -85,7 +84,7 @@
           f]
     ; fix scene2d.ui.tooltip flickering ( maybe because I dont call super at act Actor which is required ...)
     ; -> also Widgets, etc. ? check.
-    (batch/set-color! batch clojure.graphics.color/white)
+    (batch/set-color! batch color/white)
     (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
     (batch/begin! batch)
     (sd/with-line-width shape-drawer world-unit-scale

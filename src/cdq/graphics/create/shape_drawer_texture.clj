@@ -1,5 +1,5 @@
 (ns cdq.graphics.create.shape-drawer-texture
-  (:require [clojure.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]))
 

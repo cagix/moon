@@ -1,16 +1,8 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-
-                 ; cdq.graphics
-                 ; clojure.gdx (but only graphics!?)
-                 ; clojure.gdx.freetype
-                 ; clojure.graphics.color !?
-                 ; clojure.gdx.maps.tiled.renderers.orthogonal
-                 ; clojure.gdx.shape-drawer
-                 ; cdq.files
-
-                 [com.github.damn/clojure.gdx "6a74b07668"]
+                 [com.github.cdorrat/reduce-fsm "fe1c914d68"]
+                 [com.github.damn/clojure.gdx "531d06d2d7"]
                  [com.github.damn/clojure.gdx.freetype "5a719b264d"]
                  [com.github.damn/clojure.gdx.lwjgl "1528b683b8"]
                  [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
@@ -19,7 +11,6 @@
                  [com.github.damn/clojure.math.vector2 "9b3fd73f9b"]
                  [com.github.damn/clojure.rand "6a273c942b"]
                  [com.github.damn/malli.utils "5da493efcb"]
-                 [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]

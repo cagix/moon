@@ -1,6 +1,6 @@
 (ns cdq.ctx.render.clear-screen
   (:require [cdq.graphics :as graphics]
-            [clojure.graphics.color :as color]))
+            [clojure.gdx.graphics.color :as color]))
 
 (defn do!
   [{:keys [ctx/graphics] :as ctx}]
