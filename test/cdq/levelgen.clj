@@ -8,6 +8,7 @@
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -25,7 +26,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.gdx.lwjgl.application :as application]))
+            [clojure.gdx.backends.lwjgl.application :as application]))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -193,8 +194,8 @@
 
 (defn -main []
   (lwjgl/set-glfw-library-name! "glfw_async")
-  (application/create {:create (fn [gdx]
-                                 (reset! state (create! gdx)))
+  (application/create {:create (fn []
+                                 (reset! state (create! (gdx/context))))
                        :dispose (fn []
                                   (dispose! @state))
                        :render (fn []

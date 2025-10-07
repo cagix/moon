@@ -2,7 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.lwjgl.system.configuration :as lwjgl]
-            [clojure.gdx.lwjgl.application :as application])
+            [clojure.gdx :as gdx]
+            [clojure.gdx.backends.lwjgl.application :as application])
   (:gen-class))
 
 (def state (atom nil))
@@ -26,8 +27,8 @@
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
     (lwjgl/set-glfw-library-name! "glfw_async")
-    (application/create {:create (fn [gdx]
-                                   (reset! state (pipeline {:ctx/gdx gdx}
+    (application/create {:create (fn []
+                                   (reset! state (pipeline {:ctx/gdx (gdx/context)}
                                                            create-pipeline)))
                          :dispose (fn []
                                     (dispose @state))
