@@ -1,9 +1,11 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl.application :as application])
+            [clojure.gdx.application.listener :as listener])
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
+           (org.lwjgl.system Configuration))
   (:gen-class))
 
 (def state (atom nil))
@@ -26,16 +28,20 @@
         dispose (requiring-resolve (:dispose app))
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
-    (lwjgl/set-glfw-library-name! "glfw_async")
-    (application/create {:create (fn []
-                                   (reset! state (pipeline {:ctx/gdx (gdx/context)}
-                                                           create-pipeline)))
-                         :dispose (fn []
-                                    (dispose @state))
-                         :render (fn []
-                                   (swap! state pipeline render-pipeline))
-                         :resize (fn [width height]
-                                   (resize @state width height))
-                         :pause (fn [])
-                         :resume (fn [])}
-                        (:config app))))
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (Lwjgl3Application. (listener/create
+                         {:create (fn []
+                                    (reset! state (pipeline {:ctx/gdx (gdx/context)}
+                                                            create-pipeline)))
+                          :dispose (fn []
+                                     (dispose @state))
+                          :render (fn []
+                                    (swap! state pipeline render-pipeline))
+                          :resize (fn [width height]
+                                    (resize @state width height))
+                          :pause (fn [])
+                          :resume (fn [])})
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle "Cyber Dungeon Quest")
+                          (.setWindowedMode 1440 900)
+                          (.setForegroundFPS 60)))))

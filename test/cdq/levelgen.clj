@@ -9,6 +9,7 @@
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
             [clojure.gdx :as gdx]
+            [clojure.gdx.application.listener :as listener]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -21,12 +22,13 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
-            [clojure.lwjgl.system.configuration :as lwjgl]
             [clojure.scene2d :as scene2d]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.vis-ui :as vis-ui]
-            [clojure.gdx.backends.lwjgl.application :as application]))
+            [clojure.scene2d.vis-ui :as vis-ui])
+  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
+           (org.lwjgl.system Configuration)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -193,17 +195,19 @@
 (def state (atom nil))
 
 (defn -main []
-  (lwjgl/set-glfw-library-name! "glfw_async")
-  (application/create {:create (fn []
-                                 (reset! state (create! (gdx/context))))
-                       :dispose (fn []
-                                  (dispose! @state))
-                       :render (fn []
-                                 (swap! state render!))
-                       :resize (fn [width height]
-                                 (resize! @state width height))
-                       :pause (fn [])
-                       :resume (fn [])}
-                      {:title "Levelgen test"
-                       :windowed-mode {:width 1440 :height 900}
-                       :foreground-fps 60}))
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+  (Lwjgl3Application. (listener/create
+                       {:create (fn []
+                                  (reset! state (create! (gdx/context))))
+                        :dispose (fn []
+                                   (dispose! @state))
+                        :render (fn []
+                                  (swap! state render!))
+                        :resize (fn [width height]
+                                  (resize! @state width height))
+                        :pause (fn [])
+                        :resume (fn [])})
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setWindowedMode 1440 900)
+                        (.setTitle "Levelgen test")
+                        (.setForegroundFPS 60))))
