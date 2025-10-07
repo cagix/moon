@@ -41,7 +41,11 @@
             [clojure.scene2d :as scene2d]
 
             [cdq.effect :as effect]
+            cdq.entity.animation
             [cdq.entity.body :as body]
+            cdq.entity.delete-after-duration
+            cdq.entity.projectile-collision
+            cdq.entity.fsm
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.entity.stats :as stats]
@@ -52,6 +56,7 @@
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
+            [clojure.math.geom :as geom]
             [clojure.math.vector2 :as v]
 
             [clojure.tx-handler :as tx-handler]
@@ -73,16 +78,70 @@
            (org.lwjgl.system Configuration))
   (:gen-class))
 
+(def ^:private render-layers
+  (map
+   #(update-vals % requiring-resolve)
+   '[{:entity/mouseover?     cdq.entity.mouseover.draw/txs
+      :stunned               cdq.entity.state.stunned.draw/txs
+      :player-item-on-cursor cdq.entity.state.player-item-on-cursor.draw/txs}
+     {:entity/clickable      cdq.entity.clickable.draw/txs
+      :entity/animation      cdq.entity.animation.draw/txs
+      :entity/image          cdq.entity.image.draw/txs
+      :entity/line-render    cdq.entity.line-render.draw/txs}
+     {:npc-sleeping          cdq.entity.state.npc-sleeping.draw/txs
+      :entity/temp-modifier  cdq.entity.temp-modifier.draw/txs
+      :entity/string-effect  cdq.entity.string-effect.draw/txs}
+     {:entity/stats          cdq.entity.stats.draw/txs
+      :active-skill          cdq.entity.state.active-skill.draw/txs}]))
+
+(def ^:dbg-flag show-body-bounds? false)
+
+(defn- draw-body-rect [{:keys [body/position body/width body/height]} color]
+  (let [[x y] [(- (position 0) (/ width  2))
+               (- (position 1) (/ height 2))]]
+    [[:draw/rectangle x y width height color]]))
+
+(defn- draw-entity
+  [{:keys [ctx/graphics]
+    :as ctx}
+   entity render-layer]
+  (try (do
+        (when show-body-bounds?
+          (draws/handle! graphics (draw-body-rect (:entity/body entity)
+                                                  (if (:body/collides? (:entity/body entity))
+                                                    color/white
+                                                    color/gray))))
+        (doseq [[k v] entity
+                :let [draw-fn (get render-layer k)]
+                :when draw-fn]
+          (draws/handle! graphics (draw-fn v entity ctx))))
+       (catch Throwable t
+         (draws/handle! graphics (draw-body-rect (:entity/body entity) color/red))
+         (throwable/pretty-pst t))))
+
+(defn draw-entities
+  [{:keys [ctx/graphics
+           ctx/world]
+    :as ctx}]
+  (let [entities (map deref (:world/active-entities world))
+        player @(:world/player-eid world)
+        should-draw? (fn [entity z-order]
+                       (or (= z-order :z-order/effect)
+                           (raycaster/line-of-sight? world player entity)))]
+    (doseq [[z-order entities] (utils/sort-by-order (group-by (comp :body/z-order :entity/body) entities)
+                                                    first
+                                                    (:world/render-z-order world))
+            render-layer render-layers
+            entity entities
+            :when (should-draw? entity z-order)]
+      (draw-entity ctx entity render-layer))))
+
 (def ^:private create-fns
-  (update-vals '{:entity/animation             cdq.entity.animation/create
-                 :entity/body                  cdq.entity.body/create
-                 :entity/delete-after-duration cdq.entity.delete-after-duration/create
-                 :entity/projectile-collision  cdq.entity.projectile-collision/create
-                 :entity/stats               cdq.entity.stats/create}
-               (fn [sym]
-                 (let [avar (requiring-resolve sym)]
-                   (assert avar sym)
-                   avar))))
+  {:entity/animation             cdq.entity.animation/create
+   :entity/body                  cdq.entity.body/create
+   :entity/delete-after-duration cdq.entity.delete-after-duration/create
+   :entity/projectile-collision  cdq.entity.projectile-collision/create
+   :entity/stats                 cdq.entity.stats/create})
 
 (defn- create-component [[k v] world]
   (if-let [f (create-fns k)]
@@ -90,13 +149,9 @@
     v))
 
 (def ^:private create!-fns
-  (update-vals '{:entity/fsm                             cdq.entity.fsm/create!
-                 :entity/inventory                       cdq.entity.inventory/create!
-                 :entity/skills                          cdq.entity.skills/create!}
-               (fn [sym]
-                 (let [avar (requiring-resolve sym)]
-                   (assert avar sym)
-                   avar))))
+  {:entity/fsm                             cdq.entity.fsm/create!
+   :entity/inventory                       cdq.entity.inventory/create!
+   :entity/skills                          cdq.entity.skills/create!})
 
 (defn- after-create-component [[k v] eid world]
   (when-let [f (create!-fns k)]
@@ -534,63 +589,55 @@
                            handled-txs
                            :strict? false))))
 
-(defn pipeline [ctx pipeline]
-  (reduce (fn [ctx [f & args]]
-            (apply f ctx args))
-          ctx
-          pipeline))
-
 (defn- create! []
   (vis-ui/load! {:skin-scale :x1})
-  (pipeline {:ctx/gdx {:clojure.gdx/audio    Gdx/audio
-                       :clojure.gdx/files    Gdx/files
-                       :clojure.gdx/graphics Gdx/graphics
-                       :clojure.gdx/input    Gdx/input}}
-            [[(fn [ctx]
-                (merge (map->Context {})
-                       ctx))]
-             [cdq.ctx.create.db/do!]
-             [cdq.ctx.create.graphics/do! {:tile-size 48
-                                           :ui-viewport {:width 1440
-                                                         :height 900}
-                                           :world-viewport {:width 1440
-                                                            :height 900}
-                                           :texture-folder {:folder "resources/"
-                                                            :extensions #{"png" "bmp"}}
-                                           :default-font {:path "exocet/films.EXL_____.ttf"
-                                                          :params {:size 16
-                                                                   :quality-scaling 2
-                                                                   :enable-markup? true
-                                                                   :use-integer-positions? false
-                                                                   ; :texture-filter/linear because scaling to world-units
-                                                                   :min-filter :linear
-                                                                   :mag-filter :linear}}
-                                           :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-                                           :cursors {:path-format "cursors/%s.png"
-                                                     :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                            :cursors/black-x               ["black_x"      [0   0]]
-                                                            :cursors/default               ["default"      [0   0]]
-                                                            :cursors/denied                ["denied"       [16 16]]
-                                                            :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                            :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                            :cursors/hand-grab             ["hand003"      [4  16]]
-                                                            :cursors/move-window           ["move002"      [16 16]]
-                                                            :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                            :cursors/over-button           ["hand002"      [0   0]]
-                                                            :cursors/sandclock             ["sandclock"    [16 16]]
-                                                            :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                            :cursors/use-skill             ["pointer004"   [0   0]]
-                                                            :cursors/walking               ["walking"      [16 16]]}}}]
-             [cdq.ctx.create.stage/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
-                                         [cdq.ctx.create.ui.action-bar/create]
-                                         [cdq.ctx.create.ui.hp-mana-bar/create]
-                                         [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
-                                                                            [cdq.ctx.create.ui.windows.inventory/create]]]
-                                         [cdq.ctx.create.ui.player-state-draw/create]
-                                         [cdq.ctx.create.ui.message/create]]]
-             [cdq.ctx.create.input/do!]
-             [cdq.ctx.create.audio/do!]
-             [cdq.ctx.create.world/do! "world_fns/vampire.edn"]]))
+  (-> (merge (map->Context {})
+             {:ctx/gdx {:clojure.gdx/audio    Gdx/audio
+                        :clojure.gdx/files    Gdx/files
+                        :clojure.gdx/graphics Gdx/graphics
+                        :clojure.gdx/input    Gdx/input}})
+      cdq.ctx.create.db/do!
+      (cdq.ctx.create.graphics/do! {:tile-size 48
+                                    :ui-viewport {:width 1440
+                                                  :height 900}
+                                    :world-viewport {:width 1440
+                                                     :height 900}
+                                    :texture-folder {:folder "resources/"
+                                                     :extensions #{"png" "bmp"}}
+                                    :default-font {:path "exocet/films.EXL_____.ttf"
+                                                   :params {:size 16
+                                                            :quality-scaling 2
+                                                            :enable-markup? true
+                                                            :use-integer-positions? false
+                                                            ; :texture-filter/linear because scaling to world-units
+                                                            :min-filter :linear
+                                                            :mag-filter :linear}}
+                                    :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
+                                    :cursors {:path-format "cursors/%s.png"
+                                              :data {:cursors/bag                   ["bag001"       [0   0]]
+                                                     :cursors/black-x               ["black_x"      [0   0]]
+                                                     :cursors/default               ["default"      [0   0]]
+                                                     :cursors/denied                ["denied"       [16 16]]
+                                                     :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                     :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                     :cursors/hand-grab             ["hand003"      [4  16]]
+                                                     :cursors/move-window           ["move002"      [16 16]]
+                                                     :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                     :cursors/over-button           ["hand002"      [0   0]]
+                                                     :cursors/sandclock             ["sandclock"    [16 16]]
+                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                     :cursors/use-skill             ["pointer004"   [0   0]]
+                                                     :cursors/walking               ["walking"      [16 16]]}}})
+      (cdq.ctx.create.stage/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
+                                  [cdq.ctx.create.ui.action-bar/create]
+                                  [cdq.ctx.create.ui.hp-mana-bar/create]
+                                  [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                                                     [cdq.ctx.create.ui.windows.inventory/create]]]
+                                  [cdq.ctx.create.ui.player-state-draw/create]
+                                  [cdq.ctx.create.ui.message/create]])
+      cdq.ctx.create.input/do!
+      cdq.ctx.create.audio/do!
+      (cdq.ctx.create.world/do! "world_fns/vampire.edn")))
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
   (ui-viewport/update!    graphics width height)
@@ -748,13 +795,77 @@
                               :invisible-tile-color [0 0 0 1]}))
   ctx)
 
+(def ^:dbg-flag show-tile-grid? false)
+
+(defn draw-tile-grid
+  [{:keys [ctx/graphics]}]
+  (when show-tile-grid?
+    (let [[left-x _right-x bottom-y _top-y] (camera/frustum graphics)]
+      [[:draw/grid
+        (int left-x)
+        (int bottom-y)
+        (inc (int (world-viewport/width  graphics)))
+        (+ 2 (int (world-viewport/height graphics)))
+        1
+        1
+        [1 1 1 0.8]]])))
+
+(def ^:dbg-flag show-potential-field-colors? false) ; :good, :evil
+(def ^:dbg-flag show-cell-entities? false)
+(def ^:dbg-flag show-cell-occupied? false)
+
+(defn draw-cell-debug
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (apply concat
+         (for [[x y] (camera/visible-tiles graphics)
+               :let [cell ((:world/grid world) [x y])]
+               :when cell
+               :let [cell* @cell]]
+           [(when (and show-cell-entities? (seq (:entities cell*)))
+              [:draw/filled-rectangle x y 1 1 [1 0 0 0.6]])
+            (when (and show-cell-occupied? (seq (:occupied cell*)))
+              [:draw/filled-rectangle x y 1 1 [0 0 1 0.6]])
+            (when-let [faction show-potential-field-colors?]
+              (let [{:keys [distance]} (faction cell*)]
+                (when distance
+                  (let [ratio (/ distance ((:world/factions-iterations world) faction))]
+                    [:draw/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]]))))])))
+
+(defn geom-test
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (let [position (:graphics/world-mouse-position graphics)
+        radius 0.8
+        circle {:position position
+                :radius radius}]
+    (conj (cons [:draw/circle position radius [1 0 0 0.5]]
+                (for [[x y] (map #(:position @%) (grid/circle->cells (:world/grid world) circle))]
+                  [:draw/rectangle x y 1 1 [1 0 0 0.5]]))
+          (let [{:keys [x y width height]} (geom/circle->outer-rectangle circle)]
+            [:draw/rectangle x y width height [0 0 1 1]]))))
+
+(defn highlight-mouseover-tile
+  [{:keys [ctx/graphics
+           ctx/world]}]
+  (let [[x y] (mapv int (:graphics/world-mouse-position graphics))
+        cell ((:world/grid world) [x y])]
+    (when (and cell (#{:air :none} (:movement @cell)))
+      [[:draw/rectangle x y 1 1
+        (case (:movement @cell)
+          :air  [1 1 0 0.5]
+          :none [1 0 0 0.5])]])))
+
 (defn- draw-on-world-viewport!
   [{:keys [ctx/graphics]
-    :as ctx}
-   draw-fns]
+    :as ctx} ]
   (world-viewport/draw! graphics
                         (fn []
-                          (doseq [f (map requiring-resolve draw-fns)]
+                          (doseq [f [draw-tile-grid
+                                     draw-cell-debug
+                                     draw-entities
+                                     #_geom-test
+                                     highlight-mouseover-tile]]
                             (draws/handle! graphics (f ctx)))))
   ctx)
 
@@ -827,33 +938,29 @@
      ctx)))
 
 (defn- render! [ctx]
-  (pipeline ctx
-            [[get-stage-ctx]
-             [validate]
-             [update-mouse]
-             [update-mouseover-eid]
-             [check-open-debug]
-             [assoc-active-entities]
-             [set-camera-on-player!]
-             [clear-screen!]
-             [draw-world-map!]
-             [draw-on-world-viewport! '[cdq.ctx.render.draw-on-world-viewport.draw-tile-grid/do!
-                                        cdq.ctx.render.draw-on-world-viewport.draw-cell-debug/do!
-                                        cdq.ctx.render.draw-on-world-viewport.draw-entities/do!
-                                        #_cdq.ctx.render.draw-on-world-viewport.geom-test/do!
-                                        cdq.ctx.render.draw-on-world-viewport.highlight-mouseover-tile/do!]]
-             [assoc-interaction-state]
-             [set-cursor!]
-             [player-state-handle-input]
-             [dissoc-interaction-state]
-             [assoc-paused]
-             [update-world-time]
-             [update-potential-fields]
-             [tick-entities]
-             [remove-destroyed-entities]
-             [window-camera-controls]
-             [render-stage]
-             [validate]]))
+  (-> ctx
+      get-stage-ctx
+      validate
+      update-mouse
+      update-mouseover-eid
+      check-open-debug
+      assoc-active-entities
+      set-camera-on-player!
+      clear-screen!
+      draw-world-map!
+      draw-on-world-viewport!
+      assoc-interaction-state
+      set-cursor!
+      player-state-handle-input
+      dissoc-interaction-state
+      assoc-paused
+      update-world-time
+      update-potential-fields
+      tick-entities
+      remove-destroyed-entities
+      window-camera-controls
+      render-stage
+      validate))
 
 (def state (atom nil))
 
