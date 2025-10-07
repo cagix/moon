@@ -2,7 +2,8 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
-            [clojure.scene2d :as scene2d]))
+            [clojure.scene2d :as scene2d])
+  (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
 
 (def ^:private property-type->overview-table-props
   {:properties/audiovisuals {:columns 10
@@ -43,7 +44,7 @@
                                :tooltip tooltip}
                               {:actor/type :actor.type/label
                                :label/text extra-info-text
-                               :actor/touchable :disabled}]}})))
+                               :actor/touchable Touchable/disabled}]}})))
 
 (defn- overview-table-rows
   [db

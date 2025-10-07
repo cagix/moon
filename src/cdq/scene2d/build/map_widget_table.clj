@@ -6,10 +6,10 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group)))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -17,11 +17,11 @@
     :as ctx}]
   (let [window (-> stage
                    stage/root
-                   (group/find-actor "cdq.ui.editor.window"))
+                   (Group/.findActor "cdq.ui.editor.window"))
         map-widget-table (-> window
-                             (group/find-actor "cdq.ui.widget.scroll-pane-table")
-                             (group/find-actor "scroll-pane-table")
-                             (group/find-actor "cdq.db.schema.map.ui.widget"))
+                             (Group/.findActor "cdq.ui.widget.scroll-pane-table")
+                             (Group/.findActor "scroll-pane-table")
+                             (Group/.findActor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (Actor/.remove window)
     (stage/add! stage
@@ -49,7 +49,7 @@
                                              (Actor/.remove (first (filter (fn [actor]
                                                                              (and (Actor/.getUserObject actor)
                                                                                   (= k ((Actor/.getUserObject actor) 0))))
-                                                                           (group/children table))))
+                                                                           (Group/.getChildren table))))
                                              (rebuild! ctx))})
                      :left? true}
                     {:actor {:actor/type :actor.type/label

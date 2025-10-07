@@ -4,7 +4,6 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
@@ -23,7 +22,7 @@
    property-type
    property-ids]
   (let [redo-rows (fn [ctx property-ids]
-                    (group/clear-children! table)
+                    (.clearChildren table)
                     (add-one-to-many-rows ctx table property-type property-ids)
                     (.pack (window/find-ancestor table)))]
     (table/add-rows!
@@ -65,6 +64,6 @@
     table))
 
 (defn value [_  widget _schemas]
-  (->> (group/children widget)
+  (->> (.getChildren widget)
        (keep Actor/.getUserObject)
        set))

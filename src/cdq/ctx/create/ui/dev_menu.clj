@@ -9,7 +9,8 @@
             [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Touchable)))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics
@@ -94,7 +95,7 @@
               :colspan 1}]
             [{:actor {:actor/type :actor.type/label
                       :label/text ""
-                      :actor/touchable :disabled}
+                      :actor/touchable Touchable/disabled}
               :expand? true
               :fill-x? true
               :fill-y? true}]]

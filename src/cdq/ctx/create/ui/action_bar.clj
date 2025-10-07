@@ -1,9 +1,9 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
             [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+            [clojure.scene2d :as scene2d])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 
@@ -25,9 +25,9 @@
    :fill-parent? true})
 
 (defn- get-data [action-bar]
-  (let [group (group/find-actor action-bar "cdq.ui.action-bar.horizontal-group")]
+  (let [group (Group/.findActor action-bar "cdq.ui.action-bar.horizontal-group")]
     {:horizontal-group group
-     :button-group (Actor/.getUserObject (group/find-actor group "button-group-container"))}))
+     :button-group (Actor/.getUserObject (Group/.findActor group "button-group-container"))}))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
   action-bar/ActionBar
@@ -47,7 +47,7 @@
                    :drawable/texture-region texture-region
                    :drawable/scale 2})]
       (tooltip/add! button tooltip-text)
-      (group/add-actor! horizontal-group button)
+      (Group/.addActor horizontal-group button)
       (ButtonGroup/.add button-group ^Button button)
       nil))
 

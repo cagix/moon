@@ -5,9 +5,9 @@
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group)))
 
 (defn- toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
@@ -32,7 +32,7 @@
 (defn- stage-find [stage k]
   (-> stage
       stage/root
-      (group/find-actor k)))
+      (Group/.findActor k)))
 
 (extend-type cdq.ui.Stage
   ui/DataViewer
@@ -58,7 +58,7 @@
   (action-bar-selected-skill [this]
     (-> this
         stage/root
-        (group/find-actor "cdq.ui.action-bar")
+        (Group/.findActor "cdq.ui.action-bar")
         action-bar/selected-skill))
 
   (rebuild-actors! [stage ctx]
@@ -68,13 +68,13 @@
   (inventory-window-visible? [stage]
     (-> stage
         (stage-find "cdq.ui.windows")
-        (group/find-actor "cdq.ui.windows.inventory")
+        (Group/.findActor "cdq.ui.windows.inventory")
         Actor/.isVisible))
 
   (toggle-inventory-visible! [stage]
     (-> stage
         (stage-find "cdq.ui.windows")
-        (group/find-actor "cdq.ui.windows.inventory")
+        (Group/.findActor "cdq.ui.windows.inventory")
         toggle-visible!))
 
   ; no window movable type cursor appears here like in player idle
@@ -84,7 +84,7 @@
   (show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}]
     (assert (not (-> stage
                      stage/root
-                     (group/find-actor "cdq.ui.modal-window"))))
+                     (Group/.findActor "cdq.ui.modal-window"))))
     (stage/add! stage
                 (scene2d/build
                  {:actor/type :actor.type/window
@@ -96,7 +96,7 @@
                                    :on-clicked (fn [_actor _ctx]
                                                  (Actor/.remove (-> stage
                                                                     stage/root
-                                                                    (group/find-actor "cdq.ui.modal-window")))
+                                                                    (Group/.findActor "cdq.ui.modal-window")))
                                                  (on-click))}}]]
                   :actor/name "cdq.ui.modal-window"
                   :modal? true
@@ -107,41 +107,41 @@
   (set-item! [stage cell item-properties]
     (-> stage
         (stage-find "cdq.ui.windows")
-        (group/find-actor "cdq.ui.windows.inventory")
+        (Group/.findActor "cdq.ui.windows.inventory")
         (inventory-window/set-item! cell item-properties)))
 
   (remove-item! [stage inventory-cell]
     (-> stage
         (stage-find "cdq.ui.windows")
-        (group/find-actor "cdq.ui.windows.inventory")
+        (Group/.findActor "cdq.ui.windows.inventory")
         (inventory-window/remove-item! inventory-cell)))
 
   (add-skill! [stage skill-properties]
     (-> stage
         stage/root
-        (group/find-actor "cdq.ui.action-bar")
+        (Group/.findActor "cdq.ui.action-bar")
         (action-bar/add-skill! skill-properties)))
 
   (remove-skill! [stage skill-id]
     (-> stage
         stage/root
-        (group/find-actor "cdq.ui.action-bar")
+        (Group/.findActor "cdq.ui.action-bar")
         (action-bar/remove-skill! skill-id)))
 
   (show-text-message! [stage message]
     (-> stage
         stage/root
-        (group/find-actor "player-message")
+        (Group/.findActor "player-message")
         (message/show! message)))
 
   (toggle-entity-info-window! [stage]
     (-> stage
         (stage-find "cdq.ui.windows")
-        (group/find-actor "cdq.ui.windows.entity-info")
+        (Group/.findActor "cdq.ui.windows.entity-info")
         toggle-visible!))
 
   (close-all-windows! [stage]
     (->> (stage-find stage "cdq.ui.windows")
-         group/children
+         Group/.getChildren
          (run! #(Actor/.setVisible % false))))
   )

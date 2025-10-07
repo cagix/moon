@@ -2,7 +2,6 @@
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
@@ -18,7 +17,7 @@
 
 (defn- rebuild! [table sound-name]
   (fn [actor _ctx]
-    (group/clear-children! table)
+    (.clearChildren table)
     (table/add-rows! table [(sound-columns table sound-name)])
     (Actor/.remove (window/find-ancestor actor))
     (.pack (window/find-ancestor table))

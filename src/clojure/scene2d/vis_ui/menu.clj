@@ -1,7 +1,5 @@
 (ns clojure.scene2d.vis-ui.menu
   (:require [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.event :as event]
-            [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
@@ -26,12 +24,12 @@
                      :rows [[{:actor {:actor/type :actor.type/image
                                       :image/object icon}}
                              label]]})]
-     (group/add-actor! table (scene2d/build (set-label-text-actor label text-fn)))
+     (.addActor table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (Cell/.right (table/add! table sub-table)))))
   ([table text-fn]
    (let [label (scene2d/build {:actor/type :actor.type/label
                                :label/text ""})]
-     (group/add-actor! table (scene2d/build (set-label-text-actor label text-fn)))
+     (.addActor table (scene2d/build (set-label-text-actor label text-fn)))
      (.expandX (Cell/.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
@@ -49,7 +47,7 @@
                                      (.addListener (proxy [ChangeListener] []
                                                      (changed [event actor]
                                                        (when on-click
-                                                         (on-click actor (stage/get-ctx (event/stage event))))))))))
+                                                         (on-click actor (stage/get-ctx (.getStage event))))))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]

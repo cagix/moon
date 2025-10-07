@@ -1,8 +1,7 @@
 (ns clojure.scene2d.build.actor
   (:require [cdq.graphics.draws :as draws]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
-            [clojure.gdx.scenes.scene2d.touchable :as touchable])
+            [cdq.ui.stage :as stage])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- get-ctx [actor]
@@ -21,9 +20,7 @@
   {:actor/name        Actor/.setName
    :actor/user-object Actor/.setUserObject
    :actor/visible?    Actor/.setVisible
-   :actor/touchable   (fn [actor touchable]
-                        (Actor/.setTouchable actor
-                                              (touchable/k->value touchable)))
+   :actor/touchable   Actor/.setTouchable
    :actor/listener    Actor/.addListener
    :actor/position (fn [a [x y]]
                      (Actor/.setPosition a x y))

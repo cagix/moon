@@ -1,9 +1,9 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.ui :as ui]
             [clojure.info :as info]
-            [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Label)))
+            [clojure.scene2d :as scene2d])
+  (:import (com.badlogic.gdx.scenes.scene2d Group)
+           (com.badlogic.gdx.scenes.scene2d.ui Label)))
 
 (defn create [{:keys [ctx/stage]}]
   (let [title "info"
@@ -25,10 +25,10 @@
                                :actor/visible? visible?
                                :actor/position position
                                :rows [[{:actor label :expand? true}]]})]
-    (group/add-actor! window
-                      (scene2d/build
-                       {:actor/type :actor.type/actor
-                        :actor/act (fn [_this _delta ctx]
-                                     (.setText label (str (set-label-text! ctx)))
-                                     (.pack window))}))
+    (Group/.addActor window
+                     (scene2d/build
+                      {:actor/type :actor.type/actor
+                       :actor/act (fn [_this _delta ctx]
+                                    (.setText label (str (set-label-text! ctx)))
+                                    (.pack window))}))
     window))
