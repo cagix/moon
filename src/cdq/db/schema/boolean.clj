@@ -1,4 +1,5 @@
-(ns cdq.db.schema.boolean)
+(ns cdq.db.schema.boolean
+  (:require [clojure.scene2d.vis-ui.check-box :as check-box]))
 
 (defn malli-form [[_ & params] _schemas]
   :boolean)
@@ -8,10 +9,10 @@
 
 (defn create [_ checked? _ctx]
   (assert (boolean? checked?))
-  {:actor/type :actor.type/check-box
+  (check-box/create
    :text ""
    :on-clicked (fn [_])
-   :checked? checked?})
+   :checked? checked?))
 
 (defn value [_ widget _schemas]
-  (:check-box/checked? widget))
+  (check-box/checked? widget))

@@ -5,7 +5,6 @@
                          :actor.type/select-box   clojure.gdx.vis-ui.widget.vis-select-box/create
                          :actor.type/label        clojure.scene2d.vis-ui.label/create
                          :actor.type/text-field   clojure.scene2d.vis-ui.text-field/create
-                         :actor.type/check-box    clojure.scene2d.vis-ui.check-box/create
                          :actor.type/table        clojure.scene2d.build.table/create
                          :actor.type/image-button clojure.scene2d.vis-ui.image-button/create
                          :actor.type/text-button  clojure.scene2d.vis-ui.text-button/create
