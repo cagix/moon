@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.db :as db]
             cdq.ctx.create.db
-            cdq.ctx.create.graphics
             cdq.ctx.create.stage
             cdq.ctx.create.audio
             cdq.ctx.create.input
@@ -24,11 +23,14 @@
 
             [cdq.audio :as audio]
 
+            [cdq.files :as files-utils]
+
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.textures :as textures]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [cdq.graphics.impl]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             [clojure.gdx.graphics.color :as color]
@@ -72,6 +74,7 @@
             [qrecord.core :as q]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationListener
+                             Files
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -589,6 +592,35 @@
                            handled-txs
                            :strict? false))))
 
+(defn- handle-files
+  [files {:keys [colors
+                 cursors
+                 default-font
+                 tile-size
+                 texture-folder
+                 ui-viewport
+                 world-viewport]}]
+  {:ui-viewport ui-viewport
+   :default-font {:file-handle (Files/.internal files (:path default-font))
+                  :params (:params default-font)}
+   :colors colors
+   :cursors (update-vals (:data cursors)
+                         (fn [[short-path hotspot]]
+                           [(Files/.internal files (format (:path-format cursors) short-path))
+                            hotspot]))
+   :world-unit-scale (float (/ tile-size))
+   :world-viewport world-viewport
+   :textures-to-load (files-utils/search files texture-folder)})
+
+(defn create-graphics
+  [{:keys [ctx/gdx]
+    :as ctx}
+   params]
+  (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/graphics
+                                         clojure.gdx/files]} gdx]
+                             (cdq.graphics.impl/create! (handle-files files params)
+                                                        graphics))))
+
 (defn- create! []
   (vis-ui/load! {:skin-scale :x1})
   (-> (merge (map->Context {})
@@ -597,37 +629,37 @@
                         :clojure.gdx/graphics Gdx/graphics
                         :clojure.gdx/input    Gdx/input}})
       cdq.ctx.create.db/do!
-      (cdq.ctx.create.graphics/do! {:tile-size 48
-                                    :ui-viewport {:width 1440
-                                                  :height 900}
-                                    :world-viewport {:width 1440
-                                                     :height 900}
-                                    :texture-folder {:folder "resources/"
-                                                     :extensions #{"png" "bmp"}}
-                                    :default-font {:path "exocet/films.EXL_____.ttf"
-                                                   :params {:size 16
-                                                            :quality-scaling 2
-                                                            :enable-markup? true
-                                                            :use-integer-positions? false
-                                                            ; :texture-filter/linear because scaling to world-units
-                                                            :min-filter :linear
-                                                            :mag-filter :linear}}
-                                    :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
-                                    :cursors {:path-format "cursors/%s.png"
-                                              :data {:cursors/bag                   ["bag001"       [0   0]]
-                                                     :cursors/black-x               ["black_x"      [0   0]]
-                                                     :cursors/default               ["default"      [0   0]]
-                                                     :cursors/denied                ["denied"       [16 16]]
-                                                     :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                     :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                     :cursors/hand-grab             ["hand003"      [4  16]]
-                                                     :cursors/move-window           ["move002"      [16 16]]
-                                                     :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                     :cursors/over-button           ["hand002"      [0   0]]
-                                                     :cursors/sandclock             ["sandclock"    [16 16]]
-                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                     :cursors/use-skill             ["pointer004"   [0   0]]
-                                                     :cursors/walking               ["walking"      [16 16]]}}})
+      (create-graphics {:tile-size 48
+                        :ui-viewport {:width 1440
+                                      :height 900}
+                        :world-viewport {:width 1440
+                                         :height 900}
+                        :texture-folder {:folder "resources/"
+                                         :extensions #{"png" "bmp"}}
+                        :default-font {:path "exocet/films.EXL_____.ttf"
+                                       :params {:size 16
+                                                :quality-scaling 2
+                                                :enable-markup? true
+                                                :use-integer-positions? false
+                                                ; :texture-filter/linear because scaling to world-units
+                                                :min-filter :linear
+                                                :mag-filter :linear}}
+                        :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
+                        :cursors {:path-format "cursors/%s.png"
+                                  :data {:cursors/bag                   ["bag001"       [0   0]]
+                                         :cursors/black-x               ["black_x"      [0   0]]
+                                         :cursors/default               ["default"      [0   0]]
+                                         :cursors/denied                ["denied"       [16 16]]
+                                         :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                         :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                         :cursors/hand-grab             ["hand003"      [4  16]]
+                                         :cursors/move-window           ["move002"      [16 16]]
+                                         :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                         :cursors/over-button           ["hand002"      [0   0]]
+                                         :cursors/sandclock             ["sandclock"    [16 16]]
+                                         :cursors/skill-not-usable      ["x007"         [0   0]]
+                                         :cursors/use-skill             ["pointer004"   [0   0]]
+                                         :cursors/walking               ["walking"      [16 16]]}}})
       (cdq.ctx.create.stage/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
                                   [cdq.ctx.create.ui.action-bar/create]
                                   [cdq.ctx.create.ui.hp-mana-bar/create]
