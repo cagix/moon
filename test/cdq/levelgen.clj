@@ -9,7 +9,6 @@
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
             [clojure.gdx :as gdx]
-            [clojure.gdx.application.listener :as listener]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -26,7 +25,8 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+  (:import (com.badlogic.gdx ApplicationListener)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration)))
 
@@ -196,17 +196,17 @@
 
 (defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application. (listener/create
-                       {:create (fn []
-                                  (reset! state (create! (gdx/context))))
-                        :dispose (fn []
-                                   (dispose! @state))
-                        :render (fn []
-                                  (swap! state render!))
-                        :resize (fn [width height]
-                                  (resize! @state width height))
-                        :pause (fn [])
-                        :resume (fn [])})
+  (Lwjgl3Application. (reify ApplicationListener
+                        (create [_]
+                          (reset! state (create! (gdx/context))))
+                        (dispose [_]
+                          (dispose! @state))
+                        (render [_]
+                          (swap! state render!))
+                        (resize [_width height]
+                          (resize! @state width height))
+                        (pause [_])
+                        (resume [_]))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setWindowedMode 1440 900)
                         (.setTitle "Levelgen test")

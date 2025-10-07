@@ -1,9 +1,9 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.application.listener :as listener])
-  (:import (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+            [clojure.gdx :as gdx])
+  (:import (com.badlogic.gdx ApplicationListener)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration))
   (:gen-class))
@@ -29,18 +29,18 @@
         resize  (requiring-resolve (:resize app))]
     (run! require (:requires app))
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (Lwjgl3Application. (listener/create
-                         {:create (fn []
-                                    (reset! state (pipeline {:ctx/gdx (gdx/context)}
-                                                            create-pipeline)))
-                          :dispose (fn []
-                                     (dispose @state))
-                          :render (fn []
-                                    (swap! state pipeline render-pipeline))
-                          :resize (fn [width height]
-                                    (resize @state width height))
-                          :pause (fn [])
-                          :resume (fn [])})
+    (Lwjgl3Application. (reify ApplicationListener
+                          (create [_]
+                            (reset! state (pipeline {:ctx/gdx (gdx/context)}
+                                                    create-pipeline)))
+                          (dispose [_]
+                            (dispose @state))
+                          (render [_]
+                            (swap! state pipeline render-pipeline))
+                          (resize [_ width height]
+                            (resize @state width height))
+                          (pause [_])
+                          (resume [_]))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle "Cyber Dungeon Quest")
                           (.setWindowedMode 1440 900)
