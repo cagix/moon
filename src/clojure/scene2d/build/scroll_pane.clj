@@ -1,12 +1,12 @@
 (ns clojure.scene2d.build.scroll-pane
-  (:require [clojure.gdx.vis-ui.widget.vis-scroll-pane :as vis-scroll-pane]
-            [clojure.scene2d :as scene2d]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+  (:require [clojure.scene2d :as scene2d]
+            [clojure.gdx.scenes.scene2d.actor :as actor])
+  (:import (com.kotcrab.vis.ui.widget VisScrollPane)))
 
 (defmethod scene2d/build :actor.type/scroll-pane
   [{:keys [scroll-pane/actor
            actor/name]}]
-  (doto (vis-scroll-pane/create actor
-                                {:flick-scroll? false
-                                 :fade-scroll-bars? false})
+  (doto (doto (VisScrollPane. actor)
+          (.setFlickScroll false)
+          (.setFadeScrollBars false))
     (actor/set-name! name)))

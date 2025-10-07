@@ -1,11 +1,11 @@
 (ns clojure.scene2d.vis-ui.text-button
   (:require [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.event :as event]
-            [clojure.gdx.vis-ui.widget.vis-text-button :as vis-text-button]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
-  (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))
+  (:import (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
+           (com.kotcrab.vis.ui.widget VisTextButton)))
 
 (defn create
   ([text on-clicked]
@@ -14,7 +14,7 @@
   ([{:keys [text
             on-clicked]
      :as opts}]
-   (let [actor (doto (vis-text-button/create text)
+   (let [actor (doto (VisTextButton. (str text))
                  (.addListener (proxy [ChangeListener] []
                                  (changed [event actor]
                                    (on-clicked actor (stage/get-ctx (event/stage event))))))

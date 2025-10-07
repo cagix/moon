@@ -1,6 +1,6 @@
 (ns clojure.scene2d.build.separator-horizontal
-  (:require [clojure.gdx.vis-ui.widget.separator :as separator]
-            [clojure.scene2d :as scene2d]))
+  (:require [clojure.scene2d :as scene2d])
+  (:import (com.kotcrab.vis.ui.widget Separator)))
 
 (defmethod scene2d/build :actor.type/separator-horizontal [_]
-  (separator/horizontal))
+  (Separator. "default"))

@@ -1,6 +1,6 @@
 (ns clojure.scene2d.vis-ui.window
-  (:require [clojure.gdx.vis-ui.widget.vis-window :as vis-window]
-            [clojure.scene2d.ui.table :as table]))
+  (:require [clojure.scene2d.ui.table :as table])
+  (:import (com.kotcrab.vis.ui.widget VisWindow)))
 
 (defn create
   [{:keys [title
@@ -9,11 +9,11 @@
            center?
            close-on-escape?]
     :as opts}]
-  (let [window (vis-window/create
-                {:title title
-                 :close-button? close-button?
-                 :center? center?
-                 :close-on-escape? close-on-escape?
-                 :show-window-border? true})]
+  (let [show-window-border? true
+        window (let [window (VisWindow. ^String title (boolean show-window-border?))]
+                 (when close-button?    (.addCloseButton window))
+                 (when center?          (.centerWindow   window))
+                 (when close-on-escape? (.closeOnEscape  window))
+                 window)]
     (.setModal window (boolean modal?))
     (table/set-opts! window opts)))
