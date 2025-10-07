@@ -1,5 +1,5 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.utils.disposable :as d]))
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn dispose!
   [{:keys [graphics/batch
@@ -7,11 +7,11 @@
            graphics/default-font
            graphics/shape-drawer-texture
            graphics/textures]}]
-  (d/dispose! batch)
-  (run! d/dispose! (vals cursors))
-  (d/dispose! default-font)
-  (d/dispose! shape-drawer-texture)
-  (run! d/dispose! (vals textures)))
+  (Disposable/.dispose batch)
+  (run! Disposable/.dispose (vals cursors))
+  (Disposable/.dispose default-font)
+  (Disposable/.dispose shape-drawer-texture)
+  (run! Disposable/.dispose (vals textures)))
 
 (defprotocol Graphics
   (clear! [_ [r g b a]])

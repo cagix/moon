@@ -5,7 +5,6 @@
             [cdq.ctx.create.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
-            [clojure.gdx.utils.disposable :as disposable]
             [clojure.edn :as edn]
             [cdq.files :as files-utils]
             [clojure.gdx :as gdx]
@@ -24,9 +23,10 @@
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          Texture
                                           TextureRegion)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)))
 
@@ -55,7 +55,7 @@
                                ctx/textures
                                ctx/tiled-map] :as ctx} level-fn]
   (when tiled-map
-    (disposable/dispose! tiled-map))
+    (Disposable/.dispose tiled-map))
   (let [level (let [[f params] (-> level-fn
                                    io/resource
                                    slurp
@@ -139,8 +139,8 @@
   [{:keys [ctx/sprite-batch
            ctx/tiled-map ]}]
   (vis-ui/dispose!)
-  (disposable/dispose! sprite-batch)
-  (disposable/dispose! tiled-map))
+  (Disposable/.dispose sprite-batch)
+  (Disposable/.dispose tiled-map))
 
 (defn- draw-tiled-map! [{:keys [ctx/color-setter
                                 ctx/tiled-map
