@@ -2,7 +2,9 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
-                 [com.github.damn/cdq.graphics "74e0af2286"]
+                 [com.github.damn/clojure.gdx "d6cdfa466c"]
+                 [com.github.damn/clojure.gdx.freetype "5a719b264d"]
+                 [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "e25e12e2dc"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
                  [com.github.damn/clojure.grid2d "538fc4c44b"]
