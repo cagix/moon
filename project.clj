@@ -3,7 +3,8 @@
   :dependencies [
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [com.github.damn/clojure.gdx "d6cdfa466c"]
-                 [com.github.damn/clojure.gdx.freetype "5a719b264d"]
+                 [com.badlogicgames.gdx/gdx-freetype          "1.13.5"]
+                 [com.badlogicgames.gdx/gdx-freetype-platform "1.13.5" :classifier "natives-desktop"]
                  [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
                  [com.github.damn/clojure.gdx.backends.lwjgl "e25e12e2dc"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]

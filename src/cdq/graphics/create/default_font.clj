@@ -1,25 +1,28 @@
 (ns cdq.graphics.create.default-font
-  (:require [clojure.gdx.graphics.texture.filter :as texture-filter]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.g2d.bitmap-font.data :as data]
-            [clojure.gdx.freetype.generator :as generator]
-            [clojure.gdx.freetype.parameter :as parameter]))
+  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
+
+(defn- generate-font [file-handle params]
+  (let [{:keys [size
+                quality-scaling
+                enable-markup?
+                use-integer-positions?
+                min-filter
+                mag-filter]} params]
+    (let [generator (FreeTypeFontGenerator. file-handle)
+          font (.generateFont generator
+                              (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+                                (set! (.size params) (* size quality-scaling))
+                                (set! (.minFilter params) Texture$TextureFilter/Linear)
+                                (set! (.magFilter params) Texture$TextureFilter/Linear)
+                                params))]
+      (.setScale (.getData font) (/ quality-scaling))
+      (set! (.markupEnabled (.getData font)) enable-markup?)
+      (.setUseIntegerPositions font use-integer-positions?)
+      font)))
 
 (defn create [graphics default-font]
   (assoc graphics :graphics/default-font
-         (let [file-handle (:file-handle default-font)
-               {:keys [size
-                       quality-scaling
-                       enable-markup?
-                       use-integer-positions?
-                       min-filter
-                       mag-filter]} (:params default-font)]
-           (let [generator (generator/create file-handle)
-                 font (generator/generate-font generator
-                                               (parameter/create {:size (* size quality-scaling)
-                                                                  :min-filter (texture-filter/k->value min-filter)
-                                                                  :mag-filter (texture-filter/k->value mag-filter)}))]
-             (data/set-scale!     (bitmap-font/data font) (/ quality-scaling))
-             (data/enable-markup! (bitmap-font/data font) enable-markup?)
-             (bitmap-font/set-use-integer-positions! font use-integer-positions?)
-             font))))
+         (generate-font (:file-handle default-font)
+                        (:params default-font))))
