@@ -3,7 +3,7 @@
   :dependencies [
                  [com.github.damn/clojure.gdx "3fe8752869"]
                  [com.github.damn/clojure.gdx.freetype "5a719b264d"]
-                 [com.github.damn/clojure.gdx.lwjgl "a8a2362360"]
+                 [com.github.damn/clojure.gdx.lwjgl "1528b683b8"]
                  [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
                  [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
                  [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
