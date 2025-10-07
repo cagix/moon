@@ -1,9 +1,9 @@
 (ns cdq.graphics.draw.filled-ellipse
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.shape-drawer :as sd]))
+  (:require [clojure.gdx.graphics.color :as color])
+  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn do!
-  [{:keys [graphics/shape-drawer]}
+  [{:keys [^ShapeDrawer graphics/shape-drawer]}
    [x y] radius-x radius-y color]
-  (sd/set-color! shape-drawer (color/float-bits color))
-  (sd/filled-ellipse! shape-drawer x y radius-x radius-y))
+  (.setColor shape-drawer (color/float-bits color))
+  (.filledEllipse shape-drawer x y radius-x radius-y))

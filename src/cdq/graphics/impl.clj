@@ -19,7 +19,6 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.gdx.shape-drawer :as sd]
             [clojure.gdx.viewport :as viewport]))
 
 (defrecord Graphics []
@@ -85,10 +84,12 @@
     (batch/set-color! batch color/white)
     (batch/set-projection-matrix! batch (camera/combined (viewport/camera world-viewport)))
     (batch/begin! batch)
-    (sd/with-line-width shape-drawer world-unit-scale
+    (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+      (.setDefaultLineWidth shape-drawer (* world-unit-scale old-line-width))
       (reset! unit-scale world-unit-scale)
       (f)
-      (reset! unit-scale 1))
+      (reset! unit-scale 1)
+      (.setDefaultLineWidth shape-drawer old-line-width))
     (batch/end! batch)))
 
 (defn create!

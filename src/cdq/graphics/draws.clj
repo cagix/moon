@@ -1,7 +1,5 @@
 (ns cdq.graphics.draws
-  (:require #_[clojure.tx-handler :as tx-handler]
-            [clojure.gdx.shape-drawer :as sd]
-            [cdq.graphics.draw.arc]
+  (:require [cdq.graphics.draw.arc]
             [cdq.graphics.draw.circle]
             [cdq.graphics.draw.ellipse]
             [cdq.graphics.draw.filled-circle]
@@ -11,18 +9,21 @@
             [cdq.graphics.draw.rectangle]
             [cdq.graphics.draw.sector]
             [cdq.graphics.draw.text]
-            [cdq.graphics.draw.texture-region]))
+            [cdq.graphics.draw.texture-region])
+  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (declare handle!)
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn
-                            [{:keys [graphics/shape-drawer]
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]
                               :as graphics}
                              width
                              draws]
-                            (sd/with-line-width shape-drawer width
-                              (handle! graphics draws)))
+                            (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+                              (.setDefaultLineWidth shape-drawer (* width old-line-width))
+                              (handle! graphics draws)
+                              (.setDefaultLineWidth shape-drawer old-line-width)))
 
    :draw/grid             (fn do!
                             [graphics leftx bottomy gridw gridh cellw cellh color]
@@ -51,7 +52,6 @@
    :draw/line             cdq.graphics.draw.line/do!})
 
 (defn handle! [graphics draws]
-  #_(tx-handler/actions! draw-fns graphics draws :strict? true)
   (doseq [{k 0 :as component} draws
           :when component]
     (apply (draw-fns k) graphics (rest component))))

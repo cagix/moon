@@ -1,9 +1,9 @@
 (ns cdq.graphics.draw.filled-rectangle
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.shape-drawer :as sd]))
+  (:require [clojure.gdx.graphics.color :as color])
+  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn do!
-  [{:keys [graphics/shape-drawer]}
+  [{:keys [^ShapeDrawer graphics/shape-drawer]}
    x y w h color]
-  (sd/set-color! shape-drawer (color/float-bits color))
-  (sd/filled-rectangle! shape-drawer x y w h))
+  (.setColor shape-drawer (color/float-bits color))
+  (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
