@@ -9,8 +9,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
-            [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]))
+            [clojure.scene2d.ui.table :as table]))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -97,7 +96,7 @@
                                                                                  (mu/optional? k (schema/malli-form schema schemas))
                                                                                  map-widget-table)])
                                (rebuild! ctx))}}]))
-    (widget-group/pack! window)
+    (.pack window)
     window))
 
 (defn- horiz-sep [colspan]

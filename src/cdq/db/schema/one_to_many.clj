@@ -8,7 +8,6 @@
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [cdq.ui.window :as window]))
 
 (defn malli-form [[_ property-type] _schemas]
@@ -26,7 +25,7 @@
   (let [redo-rows (fn [ctx property-ids]
                     (group/clear-children! table)
                     (add-one-to-many-rows ctx table property-type property-ids)
-                    (widget-group/pack! (window/find-ancestor table)))]
+                    (.pack (window/find-ancestor table)))]
     (table/add-rows!
      table
      [[{:actor {:actor/type :actor.type/text-button

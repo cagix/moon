@@ -7,15 +7,15 @@
             [clojure.gdx.scenes.scene2d.event :as event]
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.label :as label]
             [clojure.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.utils.change-listener :as change-listener])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
+                                               Label)))
 
 (defn- set-label-text-actor [label text-fn]
   {:actor/type :actor.type/actor
    :actor/act (fn [_this _delta ctx]
-                (label/set-text! label (text-fn ctx)))})
+                (Label/.setText label (text-fn ctx)))})
 
 (defn- add-upd-label!
   ([table text-fn icon]

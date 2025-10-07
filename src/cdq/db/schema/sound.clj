@@ -6,7 +6,6 @@
             [clojure.gdx.scenes.scene2d.group :as group]
             [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [cdq.ui.window :as window]))
 
 (defn malli-form [_ _schemas]
@@ -22,7 +21,7 @@
     (group/clear-children! table)
     (table/add-rows! table [(sound-columns table sound-name)])
     (actor/remove! (window/find-ancestor actor))
-    (widget-group/pack! (window/find-ancestor table))
+    (.pack (window/find-ancestor table))
     (let [[k _] (actor/user-object table)]
       (actor/set-user-object! table [k sound-name]))))
 

@@ -2,8 +2,8 @@
   (:require [cdq.ui.tooltip :as tooltip]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.scenes.scene2d.ui.image :as image]
-            [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable]))
+            [clojure.gdx.scenes.scene2d.utils.texture-region-drawable :as drawable])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Image)))
 
 (defn- find-cell [group cell]
   (first (filter #(= (actor/user-object % ) cell)
@@ -19,11 +19,11 @@
         image-widget (group/find-actor cell-widget "image-widget")
         cell-size (:cell-size (actor/user-object image-widget))
         drawable (drawable/create texture-region :width cell-size :height cell-size)]
-    (image/set-drawable! image-widget drawable)
+    (Image/.setDrawable image-widget drawable)
     (tooltip/add! cell-widget tooltip-text)))
 
 (defn remove-item! [inventory-window cell]
   (let [cell-widget (window->cell inventory-window cell)
         image-widget (group/find-actor cell-widget "image-widget")]
-    (image/set-drawable! image-widget (:background-drawable (actor/user-object image-widget)))
+    (Image/.setDrawable image-widget (:background-drawable (actor/user-object image-widget)))
     (tooltip/remove! cell-widget)))
