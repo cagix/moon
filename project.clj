@@ -1,24 +1,19 @@
 (defproject cdq "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [
-                 [clojure.gdx "1.13.5"]
-                 [clojure.gdx.lwjgl "1.13.5"]
-                 [clojure.gdx.freetype "1.13.5"]
-                 [clojure.gdx.shape-drawer "1.0"]
-                 [clojure.gdx.vis-ui "1.0"]
-
-                 [metosin/malli "0.13.0"]
-                 [malli.utils "0.1"]
-
-                 [clojure.math.raycaster "0.1"]
-                 [clojure.math.vector2 "0.1"]
-                 [clojure.rand "0.1"]
-
+                 [com.github.damn/clojure.gdx "3fe8752869"]
+                 [com.github.damn/clojure.gdx.freetype "5a719b264d"]
+                 [com.github.damn/clojure.gdx.lwjgl "a8a2362360"]
+                 [com.github.damn/clojure.gdx.shape-drawer "238904d145"]
+                 [com.github.damn/clojure.gdx.vis-ui "faf2eb48fe"]
+                 [com.github.damn/clojure.math.raycaster "0956fc0e9b"]
+                 [com.github.damn/clojure.math.vector2 "9b3fd73f9b"]
+                 [com.github.damn/clojure.rand "6a273c942b"]
+                 [com.github.damn/malli.utils "5da493efcb"]
                  [com.github.cdorrat/reduce-fsm "fe1c914d68"]
                  [fr.reuz/qrecord "0.1.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [org.clojure/clojure "1.12.0"]
-
                  ; dev-only
                  [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]
