@@ -491,7 +491,11 @@
   (.setInputProcessor input stage)
   (assoc ctx :ctx/input input))
 
-(defn do! [{:keys [audio files graphics input]}]
+(def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
+(def ^:private path-format "sounds/%s.wav")
+
+(defn do! [{:keys [files graphics input]
+            :as gdx}]
   (-> {}
       map->Context
       (assoc :ctx/db (cdq.impl.db/create))
@@ -505,5 +509,5 @@
                     [cdq.ctx.create.ui.player-state-draw/create]
                     [cdq.ctx.create.ui.message/create]])
       (create-input input)
-      (assoc :ctx/audio (audio/create audio (files/sound-names->file-handles files)))
+      (assoc :ctx/audio (audio/create gdx sound-names path-format))
       (create-world "world_fns/vampire.edn")))
