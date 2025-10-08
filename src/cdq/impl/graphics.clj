@@ -5,42 +5,21 @@
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx :as gdx]
+            [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.math :as math]
-            [clojure.string :as str])
+            [clojure.math :as math])
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d Batch
-                                          BitmapFont
                                           TextureRegion)
-           (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- draw! [^BitmapFont font batch {:keys [scale text x y up? h-align target-width wrap?]}]
-  (let [old-scale (.scaleX (.getData font))]
-    (.setScale (.getData font) (* old-scale scale))
-    (.draw font
-           batch
-           text
-           (float x)
-           (float (+ y (if up? (text-height font text) 0)))
-           (float target-width)
-           (or h-align Align/center)
-           wrap?)
-    (.setScale (.getData font) old-scale)))
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn
@@ -103,17 +82,17 @@
                                      graphics/unit-scale
                                      graphics/default-font]}
                              {:keys [font scale x y text h-align up?]}]
-                            (draw! (or font default-font)
-                                   batch
-                                   {:scale (* (float @unit-scale)
-                                              (float (or scale 1)))
-                                    :text text
-                                    :x x
-                                    :y y
-                                    :up? up?
-                                    :h-align h-align
-                                    :target-width 0
-                                    :wrap? false}))
+                            (bitmap-font/draw! (or font default-font)
+                                               batch
+                                               {:scale (* (float @unit-scale)
+                                                          (float (or scale 1)))
+                                                :text text
+                                                :x x
+                                                :y y
+                                                :up? up?
+                                                :h-align h-align
+                                                :target-width 0
+                                                :wrap? false}))
    :draw/ellipse          (fn
                             [{:keys [^ShapeDrawer graphics/shape-drawer]}
                              [x y] radius-x radius-y color]

@@ -1,6 +1,8 @@
 (ns clojure.gdx.application
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.audio :as audio])
+            [clojure.gdx.audio :as audio]
+            [clojure.gdx.bitmap-font :as bitmap-font]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -14,11 +16,34 @@
                                       Pixmap
                                       Texture
                                       Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d BitmapFont
+                                          SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.utils Align)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(extend-type BitmapFont
+  bitmap-font/BitmapFont
+  (draw! [font batch {:keys [scale text x y up? h-align target-width wrap?]}]
+    (let [old-scale (.scaleX (.getData font))]
+      (.setScale (.getData font) (* old-scale scale))
+      (.draw font
+             batch
+             text
+             (float x)
+             (float (+ y (if up? (text-height font text) 0)))
+             (float target-width)
+             (or h-align Align/center)
+             wrap?)
+      (.setScale (.getData font) old-scale))))
 
 (extend-type Sound
   audio/Sound
