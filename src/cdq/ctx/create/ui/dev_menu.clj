@@ -12,8 +12,7 @@
                                             Touchable)))
 
 (defn create [{:keys [ctx/db
-                      ctx/graphics
-                      ctx/input]}
+                      ctx/graphics]}
               create-world]
   (let [open-editor (fn [db]
                       {:label "Editor"
@@ -40,8 +39,7 @@
                                   :on-click (fn [_actor {:keys [ctx/stage] :as ctx}]
                                               (ui/show-data-viewer! stage ctx))}]}
         help-info-text {:label "Help"
-                        :items [{:label "foobar we dont have input yet as created after stage"
-                                 #_(input/controls-info-text input)}]}
+                        :items [{:label input/info-text}]}
         select-world {:label "Select World"
                       :items (for [world-fn ["world_fns/vampire.edn"
                                              "world_fns/uf_caves.edn"

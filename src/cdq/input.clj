@@ -79,6 +79,3 @@
 
 (defn enter-just-pressed? [^Input input]
   (.isKeyJustPressed input Input$Keys/ENTER))
-
-(defn controls-info-text [_]
-  info-text)
