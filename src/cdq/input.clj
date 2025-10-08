@@ -73,6 +73,3 @@
 (defn mouse-position [^Input input]
   [(.getX input)
    (.getY input)])
-
-(defn left-mouse-button-just-pressed? [^Input input]
-  (.isButtonJustPressed input Input$Buttons/LEFT))

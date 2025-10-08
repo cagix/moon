@@ -128,6 +128,9 @@
 
   (key-just-pressed? [_ key]
     (.isKeyJustPressed input key))
+
+  (button-just-pressed? [_ button]
+    (.isButtonJustPressed input button))
   )
 
 (defn context []
