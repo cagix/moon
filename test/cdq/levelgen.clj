@@ -20,7 +20,8 @@
   (:import (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.utils Disposable)))
+           (com.badlogic.gdx.utils Disposable)
+           (org.lwjgl.system Configuration)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -186,6 +187,7 @@
 (def state (atom nil))
 
 (defn -main []
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (lwjgl/application
    {
     :title "Levelgen test"

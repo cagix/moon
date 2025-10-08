@@ -8,6 +8,7 @@
             [com.badlogic.gdx :as gdx]
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             [qrecord.core :as q])
+  (:import (org.lwjgl.system Configuration))
   (:gen-class))
 
 (q/defrecord Context [])
@@ -65,7 +66,8 @@
 (def state (atom nil))
 
 (defn -main []
-  (gdx/def-colors! colors)
+  (gdx/def-colors! {"PRETTY_NAME" [0.84 0.8 0.52 1]})
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (lwjgl/application
    {
     :title "Cyber Dungeon Quest"
@@ -88,6 +90,4 @@
 
     :resize! (fn [width height]
                (resize/do! @state width height))
-
-    :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
     }))
