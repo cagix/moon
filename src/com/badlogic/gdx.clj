@@ -18,9 +18,7 @@
                              Input)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Colors
-                                      GL20
+           (com.badlogic.gdx.graphics GL20
                                       Pixmap
                                       Texture
                                       Texture$TextureFilter
@@ -49,10 +47,6 @@
 
           :else
           (recur remaining result))))
-
-(defn def-colors! [colors]
-  (doseq [[name [r g b a]] colors]
-    (Colors/put name (Color. r g b a))))
 
 (defrecord Context [^Audio audio
                     ^Files files
