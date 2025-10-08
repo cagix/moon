@@ -270,7 +270,6 @@
    [:map {:closed true}
     [:ctx/audio :some]
     [:ctx/db :some]
-    [:ctx/gdx :some]
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]
@@ -601,27 +600,19 @@
    :textures-to-load (files/search files texture-folder)})
 
 (defn create-graphics
-  [{:keys [ctx/gdx]
-    :as ctx}
+  [ctx
    params]
-  (assoc ctx :ctx/graphics (let [{:keys [clojure.gdx/graphics
-                                         clojure.gdx/files]} gdx]
-                             (cdq.graphics.impl/create! (handle-files files params)
-                                                        graphics))))
+  (assoc ctx :ctx/graphics (cdq.graphics.impl/create! (handle-files Gdx/files params)
+                                                      Gdx/graphics)))
 
-(defn create-input [{:keys [ctx/gdx
-                            ctx/stage]
+(defn create-input [{:keys [ctx/stage]
                      :as ctx}]
-  (let [input (:clojure.gdx/input gdx)]
+  (let [input Gdx/input]
     (.setInputProcessor input stage)
     (assoc ctx :ctx/input input)))
 
 (defn- create! []
-  (-> (merge (map->Context {})
-             {:ctx/gdx {:clojure.gdx/audio    Gdx/audio
-                        :clojure.gdx/files    Gdx/files
-                        :clojure.gdx/graphics Gdx/graphics
-                        :clojure.gdx/input    Gdx/input}})
+  (-> (map->Context {})
       cdq.ctx.create.db/do!
       (create-graphics {:tile-size 48
                         :ui-viewport {:width 1440
