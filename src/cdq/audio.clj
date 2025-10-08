@@ -1,5 +1,10 @@
 (ns cdq.audio
-  (:import (com.badlogic.gdx.audio Sound)))
+  (:import (com.badlogic.gdx Audio)
+           (com.badlogic.gdx.audio Sound)))
+
+(defn create [^Audio audio sound-names->file-handles]
+  (update-vals sound-names->file-handles
+               (partial Audio/.newSound audio)))
 
 (defn sound-names [sounds]
   (map first sounds))

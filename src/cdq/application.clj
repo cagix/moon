@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.db :as db]
             cdq.ctx.create.db
-            cdq.ctx.create.audio
             cdq.ctx.create.world
             cdq.info-impl
             clojure.scene2d.builds
@@ -21,7 +20,7 @@
 
             [cdq.audio :as audio]
 
-            [cdq.files :as files-utils]
+            [cdq.files :as files]
 
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
@@ -608,7 +607,7 @@
                             hotspot]))
    :world-unit-scale (float (/ tile-size))
    :world-viewport world-viewport
-   :textures-to-load (files-utils/search files texture-folder)})
+   :textures-to-load (files/search files texture-folder)})
 
 (defn create-graphics
   [{:keys [ctx/gdx]
@@ -673,7 +672,7 @@
                    [cdq.ctx.create.ui.player-state-draw/create]
                    [cdq.ctx.create.ui.message/create]])
       create-input
-      cdq.ctx.create.audio/do!
+      (assoc :ctx/audio (audio/create Gdx/audio (files/sound-names->file-handles Gdx/files)))
       (cdq.ctx.create.world/do! "world_fns/vampire.edn")))
 
 (defn- resize! [{:keys [ctx/graphics]} width height]
