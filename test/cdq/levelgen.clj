@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require clojure.scene2d.builds
+  (:require [clojure.gdx.application :as application]
+            clojure.scene2d.builds
             clojure.scene2d.build.actor
             clojure.scene2d.build.group
             [cdq.impl.db]
@@ -17,18 +18,13 @@
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (cdq.ui Stage)
-           (com.badlogic.gdx ApplicationListener
-                             Gdx
-                             Input$Keys)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (org.lwjgl.system Configuration)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -95,13 +91,17 @@
 
 (defrecord Context [])
 
-(defn create! []
+(defn create!
+  [{:keys [files
+           graphics
+           input]
+    :as gdx}]
   (vis-ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/input Gdx/input})
+  (let [ctx (map->Context {:ctx/input input})
         ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
         stage (Stage. ui-viewport sprite-batch)
-        _  (.setInputProcessor Gdx/input stage)
+        _  (.setInputProcessor input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
@@ -115,10 +115,10 @@
                                                       :world-width world-width
                                                       :world-height world-height)))
         ctx (assoc ctx
-                   :ctx/graphics Gdx/graphics
+                   :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search Gdx/files
+                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
                                                                                        {:folder "resources/"
                                                                                         :extensions #{"png" "bmp"}})]
                                             [path (Texture. file-handle)]))
@@ -193,19 +193,18 @@
 (def state (atom nil))
 
 (defn -main []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application. (reify ApplicationListener
-                        (create [_]
-                          (reset! state (create!)))
-                        (dispose [_]
-                          (dispose! @state))
-                        (render [_]
-                          (swap! state render!))
-                        (resize [_ width height]
-                          (resize! @state width height))
-                        (pause [_])
-                        (resume [_]))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setWindowedMode 1440 900)
-                        (.setTitle "Levelgen test")
-                        (.setForegroundFPS 60))))
+  (application/start!
+   {
+    :title "Levelgen test"
+    :window {:width 1440 :height 900}
+    :fps 60
+    :create! (fn [gdx]
+               (reset! state (create! gdx)))
+    :dispose! (fn []
+                (dispose! @state))
+    :render! (fn []
+               (swap! state render!))
+    :resize! (fn [width height]
+               (resize! @state width height))
+    }
+   ))
