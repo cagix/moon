@@ -9,4 +9,4 @@
   (truetype-font [_ path params])
   (shape-drawer [_ batch texture-region])
   (texture [_ path])
-  )
+  (viewport [_ world-width world-height camera]))

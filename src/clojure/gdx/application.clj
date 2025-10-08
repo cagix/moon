@@ -24,6 +24,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -142,6 +143,9 @@
 
   (texture [_ path]
     (Texture. (.internal files path)))
+
+  (viewport [_ world-width world-height camera]
+    (FitViewport. world-width world-height camera))
   )
 
 (defn start!

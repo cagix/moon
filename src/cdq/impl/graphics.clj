@@ -16,8 +16,7 @@
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d Batch
-                                          TextureRegion)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+                                          TextureRegion)))
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn
@@ -242,12 +241,14 @@
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
-        (assoc :graphics/ui-viewport (FitViewport. (:width  ui-viewport)
+        (assoc :graphics/ui-viewport (gdx/viewport gdx
+                                                   (:width  ui-viewport)
                                                    (:height ui-viewport)
                                                    (camera/create)))
         (assoc :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                               world-height (* (:height world-viewport) world-unit-scale)]
-                                          (FitViewport. world-width
+                                          (gdx/viewport gdx
+                                                        world-width
                                                         world-height
                                                         (camera/create
                                                          :y-down? false
