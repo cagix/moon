@@ -1,7 +1,7 @@
 (ns cdq.game.create
-  (:require [cdq.audio :as audio]
+  (:require [clojure.gdx :as gdx]
+            [cdq.audio :as audio]
             [cdq.db :as db]
-            [cdq.files :as files]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [cdq.world.info :as info]
@@ -466,13 +466,14 @@
                     :cursors/walking               ["walking"      [16 16]]}}})
 
 (defn- handle-files
-  [files {:keys [colors
-                 cursors
-                 default-font
-                 tile-size
-                 texture-folder
-                 ui-viewport
-                 world-viewport]}]
+  [gdx
+   {:keys [colors
+           cursors
+           default-font
+           tile-size
+           texture-folder
+           ui-viewport
+           world-viewport]}]
   {:ui-viewport ui-viewport
    :default-font default-font
    :colors colors
@@ -482,7 +483,7 @@
                             hotspot]))
    :world-unit-scale (float (/ tile-size))
    :world-viewport world-viewport
-   :textures-to-load (files/search files texture-folder)})
+   :textures-to-load (gdx/search-files gdx texture-folder)})
 
 (defn create-input [{:keys [ctx/stage]
                      :as ctx} input]
@@ -492,12 +493,12 @@
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
 
-(defn do! [{:keys [files graphics input]
+(defn do! [{:keys [graphics input]
             :as gdx}]
   (-> {}
       map->Context
       (assoc :ctx/db (cdq.impl.db/create))
-      (assoc :ctx/graphics (cdq.impl.graphics/create! (handle-files files graphics-params)
+      (assoc :ctx/graphics (cdq.impl.graphics/create! (handle-files gdx graphics-params)
                                                       graphics
                                                       gdx))
       (ui/create! '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create/create-world]

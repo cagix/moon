@@ -8,7 +8,6 @@
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled :as tiled]
@@ -90,8 +89,7 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [files
-           graphics
+  [{:keys [graphics
            input]
     :as gdx}]
   (vis-ui/load! {:skin-scale :x1})
@@ -117,9 +115,8 @@
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path _file-handle] (files-utils/search files
-                                                                                        {:folder "resources/"
-                                                                                         :extensions #{"png" "bmp"}})]
+                   :ctx/textures (into {} (for [path (gdx/search-files gdx {:folder "resources/"
+                                                                            :extensions #{"png" "bmp"}})]
                                             [path (gdx/texture gdx path)]))
                    :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])

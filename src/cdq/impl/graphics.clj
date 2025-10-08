@@ -236,7 +236,7 @@
                                                                         0
                                                                         1
                                                                         1)))
-        (assoc :graphics/textures (into {} (for [[path _file-handle] textures-to-load]
+        (assoc :graphics/textures (into {} (for [path textures-to-load]
                                              [path (gdx/texture gdx path)])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)

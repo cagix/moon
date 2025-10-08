@@ -13,6 +13,7 @@
                              Gdx
                              Graphics)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
@@ -26,6 +27,22 @@
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- recursively-search
+  [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
 
 (defn def-colors! [colors]
   (doseq [[name [r g b a]] colors]
@@ -73,6 +90,13 @@
 
   (viewport [_ world-width world-height camera]
     (FitViewport. world-width world-height camera))
+
+  gdx/Files
+  (search-files [_ {:keys [folder extensions]}]
+    (map (fn [path]
+         (str/replace-first path folder ""))
+       (recursively-search (.internal files folder) extensions)))
+
   )
 
 (defn context []
