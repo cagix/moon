@@ -1,26 +1,28 @@
 (ns cdq.ctx.create.input
   (:require [cdq.input]
             [clojure.string :as str]
-            [clojure.gdx.input :as input]
-            [clojure.math.vector2 :as v]))
+            [clojure.math.vector2 :as v])
+  (:import (com.badlogic.gdx Input
+                             Input$Buttons
+                             Input$Keys)))
 
 (defn do! [{:keys [ctx/gdx
                    ctx/stage]
             :as ctx}]
   (let [input (:clojure.gdx/input gdx)]
-    (input/set-processor! input stage)
+    (.setInputProcessor input stage)
     (assoc ctx :ctx/input input)))
 
 (def controls
   {
-   :zoom-in :minus
-   :zoom-out :equals
-   :unpause-once :p
-   :unpause-continously :space
-   :close-windows-key :escape
-   :toggle-inventory  :i
-   :toggle-entity-info :e
-   :open-debug-button :right
+   :zoom-in Input$Keys/MINUS
+   :zoom-out Input$Keys/EQUALS
+   :unpause-once Input$Keys/P
+   :unpause-continously Input$Keys/SPACE
+   :close-windows-key Input$Keys/ESCAPE
+   :toggle-inventory  Input$Keys/I
+   :toggle-entity-info Input$Keys/E
+   :open-debug-button Input$Buttons/RIGHT
    }
   )
 
@@ -36,16 +38,16 @@
              "Leftmouse click - use skill/drop item on cursor"]))
 
 (defn- unpause-once? [input]
-  (input/key-just-pressed? input (:unpause-once controls)))
+  (.isKeyJustPressed input (:unpause-once controls)))
 
 (defn- unpause-continously? [input]
-  (input/key-pressed?      input (:unpause-continously controls)))
+  (.isKeyPressed      input (:unpause-continously controls)))
 
 (defn- WASD-movement-vector [input]
-  (let [r (when (input/key-pressed? input :d) [1  0])
-        l (when (input/key-pressed? input :a) [-1 0])
-        u (when (input/key-pressed? input :w) [0  1])
-        d (when (input/key-pressed? input :s) [0 -1])]
+  (let [r (when (.isKeyPressed input Input$Keys/D) [1  0])
+        l (when (.isKeyPressed input Input$Keys/A) [-1 0])
+        u (when (.isKeyPressed input Input$Keys/W) [0  1])
+        d (when (.isKeyPressed input Input$Keys/S) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
@@ -57,35 +59,36 @@
     (WASD-movement-vector input))
 
   (zoom-in? [input]
-    (input/key-pressed? input (:zoom-in  controls)))
+    (.isKeyPressed input (:zoom-in  controls)))
 
   (zoom-out? [input]
-    (input/key-pressed? input (:zoom-out controls)))
+    (.isKeyPressed input (:zoom-out controls)))
 
   (close-windows? [input]
-    (input/key-just-pressed? input (:close-windows-key controls)))
+    (.isKeyJustPressed input (:close-windows-key controls)))
 
   (toggle-inventory? [input]
-    (input/key-just-pressed? input (:toggle-inventory controls) ))
+    (.isKeyJustPressed input (:toggle-inventory controls) ))
 
   (toggle-entity-info? [input]
-    (input/key-just-pressed? input (:toggle-entity-info controls)))
+    (.isKeyJustPressed input (:toggle-entity-info controls)))
 
   (unpause? [input]
     (or (unpause-once?        input)
         (unpause-continously? input)))
 
   (open-debug-button-pressed? [input]
-    (input/button-just-pressed? input (:open-debug-button controls)))
+    (.isButtonJustPressed input (:open-debug-button controls)))
 
   (mouse-position [input]
-    (input/mouse-position input))
+    [(.getX input)
+     (.getY input)])
 
   (left-mouse-button-just-pressed? [input]
-    (input/button-just-pressed? input :left))
+    (.isButtonJustPressed input Input$Buttons/LEFT))
 
   (enter-just-pressed? [input]
-    (input/key-just-pressed? input :enter))
+    (.isKeyJustPressed input Input$Keys/ENTER))
 
   (controls-info-text [_]
     info-text))

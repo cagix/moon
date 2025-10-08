@@ -9,7 +9,6 @@
             [cdq.files :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
-            [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics.color :as color]
@@ -19,7 +18,8 @@
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx ApplicationListener
-                             Gdx)
+                             Gdx
+                             Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Texture)
@@ -101,7 +101,7 @@
         ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
         stage (Stage. ui-viewport sprite-batch)
-        _  (input/set-processor! Gdx/input stage)
+        _  (.setInputProcessor Gdx/input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
@@ -156,16 +156,16 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (input/key-pressed? input :left)  (apply-position 0 -))
-    (if (input/key-pressed? input :right) (apply-position 0 +))
-    (if (input/key-pressed? input :up)    (apply-position 1 +))
-    (if (input/key-pressed? input :down)  (apply-position 1 -))))
+    (if (.isKeyPressed input Input$Keys/LEFT)  (apply-position 0 -))
+    (if (.isKeyPressed input Input$Keys/RIGHT) (apply-position 0 +))
+    (if (.isKeyPressed input Input$Keys/UP)    (apply-position 1 +))
+    (if (.isKeyPressed input Input$Keys/DOWN)  (apply-position 1 -))))
 
 (defn- camera-zoom-controls! [{:keys [ctx/input
                                       ctx/camera
                                       ctx/zoom-speed]}]
-  (when (input/key-pressed? input :minus)  (camera/inc-zoom! camera zoom-speed))
-  (when (input/key-pressed? input :equals) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (.isKeyPressed input Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
+  (when (.isKeyPressed input Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
   [{:keys [ctx/graphics
