@@ -7,7 +7,6 @@
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.shape-drawer :as sd])
@@ -153,23 +152,23 @@
             :when component]
       (apply (draw-fns k) graphics (rest component))))
 
-  (clear! [{:keys [graphics/core]} color]
-    (graphics/clear! core color))
+  (clear! [{:keys [graphics/gdx]} color]
+    (gdx/clear! gdx color))
 
   (set-cursor!
     [{:keys [graphics/cursors
-             graphics/core]}
+             graphics/gdx]}
      cursor-key]
     (assert (contains? cursors cursor-key))
-    (graphics/set-cursor! core (get cursors cursor-key)))
+    (gdx/set-cursor! gdx (get cursors cursor-key)))
 
   (delta-time
-    [{:keys [graphics/core]}]
-    (graphics/delta-time core))
+    [{:keys [graphics/gdx]}]
+    (gdx/delta-time gdx))
 
   (frames-per-second
-    [{:keys [graphics/core]}]
-    (graphics/frames-per-second core)))
+    [{:keys [graphics/gdx]}]
+    (gdx/frames-per-second gdx)))
 
 (extend-type Graphics
   cdq.graphics.world-viewport/WorldViewport
@@ -219,7 +218,7 @@
                                texture)
         world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
-        (assoc :graphics/core (:graphics gdx))
+        (assoc :graphics/gdx gdx)
         (assoc :graphics/cursors (update-vals (:data cursors)
                                               (fn [[path hotspot]]
                                                 (gdx/cursor gdx

@@ -8,7 +8,6 @@
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -112,7 +111,7 @@
                                                       :world-width world-width
                                                       :world-height world-height)))
         ctx (assoc ctx
-                   :ctx/graphics graphics
+                   :ctx/gdx gdx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
                    :ctx/textures (into {} (for [path (gdx/search-files gdx {:folder "resources/"
@@ -164,13 +163,13 @@
   (when (.isKeyPressed input Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
-  [{:keys [ctx/graphics
+  [{:keys [ctx/gdx
            ctx/stage]
     :as ctx}]
   (let [ctx (if-let [new-ctx (.ctx stage)]
               new-ctx
               ctx)]
-    (graphics/clear! graphics color/black)
+    (gdx/clear! gdx color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)
