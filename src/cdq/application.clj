@@ -612,7 +612,8 @@
     (assoc ctx :ctx/input input)))
 
 (defn- create! []
-  (-> (map->Context {})
+  (-> {}
+      map->Context
       cdq.ctx.create.db/do!
       (create-graphics {:tile-size 48
                         :ui-viewport {:width 1440
