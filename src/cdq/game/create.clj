@@ -474,7 +474,7 @@
 (def ^:private path-format "sounds/%s.wav")
 
 (defn do! [gdx]
-  (-> {}
+  (-> {:ctx/gdx gdx}
       map->Context
       (assoc :ctx/db (cdq.impl.db/create))
       (assoc :ctx/graphics (cdq.impl.graphics/create! gdx graphics-params))

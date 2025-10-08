@@ -3,6 +3,7 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
             [cdq.world :as world]
@@ -58,7 +59,7 @@
                         :icon "images/clock.png"}
                        {:label "FPS"
                         :update-fn (fn [ctx]
-                                     (graphics/frames-per-second (:ctx/graphics ctx)))
+                                     (gdx/frames-per-second (:ctx/gdx ctx)))
                         :icon "images/fps.png"}
                        {:label "Mouseover-entity id"
                         :update-fn (fn [{:keys [ctx/world]}]

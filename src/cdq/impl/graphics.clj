@@ -150,25 +150,7 @@
   (draw! [graphics draws]
     (doseq [{k 0 :as component} draws
             :when component]
-      (apply (draw-fns k) graphics (rest component))))
-
-  (clear! [{:keys [graphics/gdx]} color]
-    (gdx/clear! gdx color))
-
-  (set-cursor!
-    [{:keys [graphics/cursors
-             graphics/gdx]}
-     cursor-key]
-    (assert (contains? cursors cursor-key))
-    (gdx/set-cursor! gdx (get cursors cursor-key)))
-
-  (delta-time
-    [{:keys [graphics/gdx]}]
-    (gdx/delta-time gdx))
-
-  (frames-per-second
-    [{:keys [graphics/gdx]}]
-    (gdx/frames-per-second gdx)))
+      (apply (draw-fns k) graphics (rest component)))))
 
 (extend-type Graphics
   cdq.graphics.world-viewport/WorldViewport
@@ -218,7 +200,6 @@
                                texture)
         world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
-        (assoc :graphics/gdx gdx)
         (assoc :graphics/cursors (update-vals (:data cursors)
                                               (fn [[path hotspot]]
                                                 (gdx/cursor gdx

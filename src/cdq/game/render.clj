@@ -1,5 +1,6 @@
 (ns cdq.game.render
-  (:require [cdq.audio :as audio]
+  (:require [clojure.gdx :as gdx]
+            [cdq.audio :as audio]
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
@@ -203,6 +204,7 @@
    [:map {:closed true}
     [:ctx/audio :some]
     [:ctx/db :some]
+    [:ctx/gdx :some]
     [:ctx/graphics :some]
     [:ctx/input :some]
     [:ctx/stage :some]
@@ -290,8 +292,8 @@
   ctx)
 
 (defn- clear-screen!
-  [{:keys [ctx/graphics] :as ctx}]
-  (graphics/clear! graphics color/black)
+  [{:keys [ctx/gdx] :as ctx}]
+  (gdx/clear! gdx color/black)
   ctx)
 
 (defn- tile-color-setter
@@ -431,14 +433,17 @@
   ctx)
 
 (defn set-cursor!
-  [{:keys [ctx/graphics
+  [{:keys [ctx/gdx
+           ctx/graphics
            ctx/world]
     :as ctx}]
-  (let [eid (:world/player-eid world)
+  (let [cursors (:graphics/cursors graphics)
+        eid (:world/player-eid world)
         entity @eid
         state-k (:state (:entity/fsm entity))
         cursor-key (state/cursor [state-k (state-k entity)] eid ctx)]
-    (graphics/set-cursor! graphics cursor-key))
+    (assert (contains? cursors cursor-key))
+    (gdx/set-cursor! gdx (get cursors cursor-key)))
   ctx)
 
 (defn player-state-handle-input
@@ -482,12 +487,12 @@
         (update :world/elapsed-time + delta-ms))))
 
 (defn update-world-time
-  [{:keys [ctx/graphics
+  [{:keys [ctx/gdx
            ctx/world]
     :as ctx}]
   (if (:world/paused? (:ctx/world ctx))
     ctx
-    (update ctx :ctx/world update-world-time* (graphics/delta-time graphics))))
+    (update ctx :ctx/world update-world-time* (gdx/delta-time gdx))))
 
 (defn update-potential-fields
   [{:keys [ctx/world]
