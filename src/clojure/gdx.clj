@@ -8,4 +8,5 @@
   (cursor [_ file-handle [hotspot-x hotspot-y]])
   (truetype-font [_ path params])
   (shape-drawer [_ batch texture-region])
+  (texture [_ path])
   )

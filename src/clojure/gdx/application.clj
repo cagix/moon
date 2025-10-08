@@ -12,6 +12,7 @@
            (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
+                                      Texture
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -62,6 +63,9 @@
 
   (shape-drawer [_ batch texture-region]
     (ShapeDrawer. batch texture-region))
+
+  (texture [_ path]
+    (Texture. (.internal files path)))
   )
 
 (defn start!

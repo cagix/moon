@@ -290,8 +290,8 @@
                                                                         0
                                                                         1
                                                                         1)))
-        (assoc :graphics/textures (into {} (for [[path file-handle] textures-to-load]
-                                             [path (Texture. file-handle)])))
+        (assoc :graphics/textures (into {} (for [[path _file-handle] textures-to-load]
+                                             [path (gdx/texture gdx path)])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
