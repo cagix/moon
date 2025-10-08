@@ -12,7 +12,6 @@
             [clojure.math :as math]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics Color
-                                      Colors
                                       Pixmap
                                       Pixmap$Format
                                       Texture
@@ -289,8 +288,6 @@
            world-viewport]}
    graphics
    gdx]
-  (doseq [[name [r g b a]] colors]
-    (Colors/put name (Color. r g b a)))
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)

@@ -8,6 +8,8 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics Color
+                                      Colors)
            (org.lwjgl.system Configuration)))
 
 (extend-type Sound
@@ -33,7 +35,10 @@
            create!
            dispose!
            render!
-           resize!]}]
+           resize!
+           colors]}]
+  (doseq [[name [r g b a]] colors]
+    (Colors/put name (Color. r g b a)))
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]

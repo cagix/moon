@@ -449,7 +449,6 @@
                            ; :texture-filter/linear because scaling to world-units
                            :min-filter :linear
                            :mag-filter :linear}}
-   :colors {"PRETTY_NAME" [0.84 0.8 0.52 1]}
    :cursors {:path-format "cursors/%s.png"
              :data {:cursors/bag                   ["bag001"       [0   0]]
                     :cursors/black-x               ["black_x"      [0   0]]
