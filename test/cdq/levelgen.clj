@@ -1,6 +1,6 @@
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.application :as application]
+            [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             clojure.scene2d.builds
             clojure.scene2d.build.actor
             clojure.scene2d.build.group
@@ -192,7 +192,7 @@
 (def state (atom nil))
 
 (defn -main []
-  (application/start!
+  (lwjgl/application
    {
     :title "Levelgen test"
     :window {:width 1440 :height 900}

@@ -3,13 +3,13 @@
             [cdq.game.dispose :as dispose]
             [cdq.game.render :as render]
             [cdq.game.resize :as resize]
-            [clojure.gdx.application :as application])
+            [com.badlogic.gdx.backends.lwjgl :as lwjgl])
   (:gen-class))
 
 (def state (atom nil))
 
 (defn -main []
-  (application/start!
+  (lwjgl/application
    {
     :title "Cyber Dungeon Quest"
 
