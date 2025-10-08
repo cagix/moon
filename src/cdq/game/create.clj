@@ -1,5 +1,6 @@
 (ns cdq.game.create
-  (:require [cdq.audio :as audio]
+  (:require [clojure.gdx :as gdx]
+            [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
@@ -465,15 +466,14 @@
                     :cursors/walking               ["walking"      [16 16]]}}})
 
 (defn create-input [{:keys [ctx/stage]
-                     :as ctx} input]
-  (.setInputProcessor input stage)
-  (assoc ctx :ctx/input input))
+                     :as ctx} gdx]
+  (gdx/set-input-processor! gdx stage)
+  (assoc ctx :ctx/input (:input gdx)))
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
 
-(defn do! [{:keys [input]
-            :as gdx}]
+(defn do! [gdx]
   (-> {}
       map->Context
       (assoc :ctx/db (cdq.impl.db/create))

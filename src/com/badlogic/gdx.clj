@@ -11,7 +11,8 @@
   (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
-                             Graphics)
+                             Graphics
+                             Input)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color
@@ -52,7 +53,7 @@
 (defrecord Context [^Audio audio
                     ^Files files
                     ^Graphics graphics
-                    input]
+                    ^Input input]
   gdx/Audio
   (sound [_ path]
     (.newSound audio (.internal files path)))
@@ -118,6 +119,9 @@
          (str/replace-first path folder ""))
        (recursively-search (.internal files folder) extensions)))
 
+  gdx/Input
+  (set-input-processor! [_ input-processor]
+    (.setInputProcessor input input-processor))
   )
 
 (defn context []

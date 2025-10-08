@@ -17,3 +17,6 @@
   (frames-per-second [_])
   (set-cursor! [_ cursor])
   (clear! [_ [r g b a]]))
+
+(defprotocol Input
+  (set-input-processor! [_ input-processor]))
