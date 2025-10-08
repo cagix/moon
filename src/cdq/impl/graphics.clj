@@ -4,6 +4,7 @@
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
@@ -18,7 +19,6 @@
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
-                                          SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
@@ -288,7 +288,7 @@
            world-viewport]}
    graphics
    gdx]
-  (let [batch (SpriteBatch.)
+  (let [batch (gdx/sprite-batch gdx)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
                                             (.drawPixel 0 0))

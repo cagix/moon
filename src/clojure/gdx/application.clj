@@ -10,6 +10,7 @@
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color
                                       Colors)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (org.lwjgl.system Configuration)))
 
 (extend-type Sound
@@ -26,6 +27,10 @@
   gdx/Audio
   (sound [_ path]
     (.newSound audio (.internal files path)))
+
+  gdx/Graphics
+  (sprite-batch [_]
+    (SpriteBatch.))
   )
 
 (defn start!
