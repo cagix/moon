@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require clojure.lwjgl.system.configuration
-            [cdq.game.create.record :as create-record]
+  (:require [cdq.game.create.record :as create-record]
             [cdq.game.create.get-gdx :as get-gdx]
             [cdq.game.create.tx-handler :as create-tx-handler]
             [cdq.game.create.db :as create-db]
@@ -14,7 +13,6 @@
             [cdq.game.resize :as resize]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.gdx.graphics.colors]
             [com.badlogic.gdx.backends.lwjgl])
   (:gen-class))
 
@@ -29,8 +27,10 @@
 (def config (edn-resource "config.edn"))
 
 (defn -main []
-  (clojure.gdx.graphics.colors/put! {"PRETTY_NAME" [0.84 0.8 0.52 1]})
-  (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+  (let [runs (edn-resource "runs.edn")]
+    (doseq [[f & params] runs]
+      (println [f params])
+      (apply (requiring-resolve f) params)))
   (com.badlogic.gdx.backends.lwjgl/application
    {
     :title "Cyber Dungeon Quest"
