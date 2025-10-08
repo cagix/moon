@@ -20,7 +20,6 @@
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx Input$Keys)
-           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)))
@@ -118,10 +117,10 @@
                    :ctx/graphics graphics
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [[path file-handle] (files-utils/search files
-                                                                                       {:folder "resources/"
-                                                                                        :extensions #{"png" "bmp"}})]
-                                            [path (Texture. file-handle)]))
+                   :ctx/textures (into {} (for [[path _file-handle] (files-utils/search files
+                                                                                        {:folder "resources/"
+                                                                                         :extensions #{"png" "bmp"}})]
+                                            [path (gdx/texture gdx path)]))
                    :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1
