@@ -1,27 +1,57 @@
 (ns cdq.graphics.impl
   (:require [cdq.graphics]
-            [cdq.graphics.create.batch]
-            [cdq.graphics.create.cursors]
-            [cdq.graphics.create.default-font]
-            [cdq.graphics.create.shape-drawer]
-            [cdq.graphics.create.shape-drawer-texture]
-            [cdq.graphics.create.textures]
-            [cdq.graphics.create.tiled-map-renderer]
-            [cdq.graphics.create.ui-viewport]
-            [cdq.graphics.create.unit-scales]
-            [cdq.graphics.create.world-viewport]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.viewport :as viewport])
+            [clojure.gdx.viewport :as viewport]
+            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer])
   (:import (com.badlogic.gdx.graphics Color
-                                      Colors)
-           (com.badlogic.gdx.graphics.g2d Batch)))
+                                      Colors
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture
+                                      Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          SpriteBatch
+                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.utils.viewport FitViewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- generate-font [file-handle params]
+  (let [{:keys [size
+                quality-scaling
+                enable-markup?
+                use-integer-positions?
+                min-filter
+                mag-filter]} params]
+    (let [generator (FreeTypeFontGenerator. file-handle)
+          font (.generateFont generator
+                              (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+                                (set! (.size params) (* size quality-scaling))
+                                (set! (.minFilter params) Texture$TextureFilter/Linear)
+                                (set! (.magFilter params) Texture$TextureFilter/Linear)
+                                params))]
+      (.setScale (.getData font) (/ quality-scaling))
+      (set! (.markupEnabled (.getData font)) enable-markup?)
+      (.setUseIntegerPositions font use-integer-positions?)
+      font)))
 
 (defrecord Graphics []
+  cdq.graphics.textures/Textures
+  (texture-region [{:keys [graphics/textures]}
+                   {:keys [image/file image/bounds]}]
+    (assert file)
+    (assert (contains? textures file))
+    (let [^Texture texture (get textures file)]
+      (if bounds
+        (let [[x y w h] bounds]
+          (TextureRegion. texture (int x) (int y) (int w) (int h)))
+        (TextureRegion. texture))))
   cdq.graphics.tiled-map-renderer/TiledMapRenderer
   (draw!
     [{:keys [graphics/tiled-map-renderer
@@ -103,15 +133,44 @@
    graphics]
   (doseq [[name [r g b a]] colors]
     (Colors/put name (Color. r g b a)))
-  (-> (map->Graphics {})
-      (assoc :graphics/core graphics)
-      (cdq.graphics.create.cursors/create cursors)
-      (cdq.graphics.create.default-font/create default-font)
-      cdq.graphics.create.batch/create
-      cdq.graphics.create.shape-drawer-texture/create
-      cdq.graphics.create.shape-drawer/create
-      (cdq.graphics.create.textures/create textures-to-load)
-      (cdq.graphics.create.unit-scales/create world-unit-scale)
-      cdq.graphics.create.tiled-map-renderer/create
-      (cdq.graphics.create.ui-viewport/create ui-viewport)
-      (cdq.graphics.create.world-viewport/create world-viewport)))
+  (let [batch (SpriteBatch.)
+        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                            (.setColor Color/WHITE)
+                                            (.drawPixel 0 0))
+                                   texture (Texture. pixmap)]
+                               (.dispose pixmap)
+                               texture)]
+    (-> (map->Graphics {})
+        (assoc :graphics/core graphics)
+        (assoc :graphics/cursors (update-vals cursors
+                                              (fn [[file-handle [hotspot-x hotspot-y]]]
+                                                (let [pixmap (Pixmap. file-handle)
+                                                      cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
+                                                  (.dispose pixmap)
+                                                  cursor))))
+        (assoc :graphics/default-font (generate-font (:file-handle default-font)
+                                                     (:params default-font)))
+        (assoc :graphics/batch batch)
+        (assoc :graphics/shape-drawer-texture shape-drawer-texture)
+        (assoc :graphics/shape-drawer (ShapeDrawer. batch
+                                                    (TextureRegion. shape-drawer-texture
+                                                                    1
+                                                                    0
+                                                                    1
+                                                                    1)))
+        (assoc :graphics/textures (into {} (for [[path file-handle] textures-to-load]
+                                             [path (Texture. file-handle)])))
+        (assoc :graphics/unit-scale (atom 1)
+               :graphics/world-unit-scale world-unit-scale)
+        (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
+        (assoc :graphics/ui-viewport (FitViewport. (:width  ui-viewport)
+                                                   (:height ui-viewport)
+                                                   (camera/create)))
+        (assoc :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
+                                              world-height (* (:height world-viewport) world-unit-scale)]
+                                          (FitViewport. world-width
+                                                        world-height
+                                                        (camera/create
+                                                         :y-down? false
+                                                         :world-width world-width
+                                                         :world-height world-height)))))))
