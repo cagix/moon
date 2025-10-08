@@ -16,8 +16,7 @@
             [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (cdq.ui Stage)
-           (com.badlogic.gdx Input$Keys)
+  (:import (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)))
@@ -93,7 +92,7 @@
   (let [ctx (map->Context {:ctx/gdx gdx})
         ui-viewport (gdx/viewport gdx 1440 900 (gdx/orthographic-camera gdx))
         sprite-batch (gdx/sprite-batch gdx)
-        stage (Stage. ui-viewport sprite-batch)
+        stage (gdx/stage gdx ui-viewport sprite-batch)
         _  (gdx/set-input-processor! gdx stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))

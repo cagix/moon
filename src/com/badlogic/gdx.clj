@@ -10,7 +10,8 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.string :as str]
             [clojure.math :as math])
-  (:import (com.badlogic.gdx Audio
+  (:import (cdq.ui Stage)
+           (com.badlogic.gdx Audio
                              Files
                              Gdx
                              Graphics
@@ -145,6 +146,10 @@
   (mouse-position [_]
     [(.getX input)
      (.getY input)])
+
+  gdx/Scene2d
+  (stage [_ viewport batch]
+    (Stage. viewport batch))
   )
 
 (defn context []

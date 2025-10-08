@@ -26,3 +26,6 @@
   (key-just-pressed? [_ key])
   (button-just-pressed? [_ button])
   (mouse-position [_]))
+
+(defprotocol Scene2d
+  (stage [_ viewport batch]))
