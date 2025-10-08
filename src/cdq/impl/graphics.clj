@@ -1,5 +1,6 @@
 (ns cdq.impl.graphics
   (:require [cdq.graphics]
+            [cdq.graphics.color :as color]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
@@ -7,7 +8,9 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer])
+            [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [clojure.math :as math]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics Color
                                       Colors
                                       Pixmap
@@ -15,10 +18,12 @@
                                       Texture
                                       Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch
+                                          BitmapFont
                                           SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -40,6 +45,153 @@
       (set! (.markupEnabled (.getData font)) enable-markup?)
       (.setUseIntegerPositions font use-integer-positions?)
       font)))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn- draw! [^BitmapFont font batch {:keys [scale text x y up? h-align target-width wrap?]}]
+  (let [old-scale (.scaleX (.getData font))]
+    (.setScale (.getData font) (* old-scale scale))
+    (.draw font
+           batch
+           text
+           (float x)
+           (float (+ y (if up? (text-height font text) 0)))
+           (float target-width)
+           (or h-align Align/center)
+           wrap?)
+    (.setScale (.getData font) old-scale)))
+
+(def ^:private draw-fns
+  {:draw/with-line-width  (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]
+                              :as graphics}
+                             width
+                             draws]
+                            (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+                              (.setDefaultLineWidth shape-drawer (* width old-line-width))
+                              (cdq.graphics/draw! graphics draws)
+                              (.setDefaultLineWidth shape-drawer old-line-width)))
+
+   :draw/grid             (fn do!
+                            [graphics leftx bottomy gridw gridh cellw cellh color]
+                            (let [w (* (float gridw) (float cellw))
+                                  h (* (float gridh) (float cellh))
+                                  topy (+ (float bottomy) (float h))
+                                  rightx (+ (float leftx) (float w))]
+                              (doseq [idx (range (inc (float gridw)))
+                                      :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+                                (cdq.graphics/draw! graphics
+                                                    [[:draw/line [linex topy] [linex bottomy] color]]))
+                              (doseq [idx (range (inc (float gridh)))
+                                      :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+                                (cdq.graphics/draw! graphics
+                                                    [[:draw/line [leftx liney] [rightx liney] color]]))))
+   :draw/texture-region   (fn
+                            [{:keys [^Batch graphics/batch
+                                     graphics/unit-scale
+                                     graphics/world-unit-scale]}
+                             ^TextureRegion texture-region
+                             [x y]
+                             & {:keys [center? rotation]}]
+                            (let [[w h] (let [dimensions [(.getRegionWidth  texture-region)
+                                                          (.getRegionHeight texture-region)]]
+                                          (if (= @unit-scale 1)
+                                            dimensions
+                                            (mapv (comp float (partial * world-unit-scale))
+                                                  dimensions)))]
+                              (if center?
+                                (.draw batch
+                                       texture-region
+                                       (- (float x) (/ (float w) 2))
+                                       (- (float y) (/ (float h) 2))
+                                       (/ (float w) 2) ; origin-x
+                                       (/ (float h) 2) ; origin-y
+                                       w
+                                       h
+                                       1 ; scale-x
+                                       1 ; scale-y
+                                       (or rotation 0))
+                                (.draw batch
+                                       texture-region
+                                       (float x)
+                                       (float y)
+                                       (float w)
+                                       (float h)))))
+   :draw/text             (fn
+                            [{:keys [graphics/batch
+                                     graphics/unit-scale
+                                     graphics/default-font]}
+                             {:keys [font scale x y text h-align up?]}]
+                            (draw! (or font default-font)
+                                   batch
+                                   {:scale (* (float @unit-scale)
+                                              (float (or scale 1)))
+                                    :text text
+                                    :x x
+                                    :y y
+                                    :up? up?
+                                    :h-align h-align
+                                    :target-width 0
+                                    :wrap? false}))
+   :draw/ellipse          (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [x y] radius-x radius-y color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.ellipse shape-drawer x y radius-x radius-y))
+   :draw/filled-ellipse   (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [x y] radius-x radius-y color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.filledEllipse shape-drawer x y radius-x radius-y))
+   :draw/circle           (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [x y] radius color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.circle shape-drawer x y radius))
+   :draw/filled-circle    (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [x y] radius color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.filledCircle shape-drawer (float x) (float y) (float radius)))
+   :draw/rectangle        (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             x y w h color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.rectangle shape-drawer x y w h))
+   :draw/filled-rectangle (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             x y w h color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
+   :draw/arc              (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [center-x center-y] radius start-angle degree color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.arc shape-drawer
+                                  center-x
+                                  center-y
+                                  radius
+                                  (math/to-radians start-angle)
+                                  (math/to-radians degree)))
+   :draw/sector           (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [center-x center-y] radius start-angle degree color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.sector shape-drawer
+                                     center-x
+                                     center-y
+                                     radius
+                                     (math/to-radians start-angle)
+                                     (math/to-radians degree)))
+   :draw/line             (fn
+                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
+                             [sx sy] [ex ey] color]
+                            (.setColor shape-drawer (color/float-bits color))
+                            (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))})
 
 (defrecord Graphics []
   cdq.graphics.textures/Textures
@@ -71,6 +223,11 @@
     (viewport/update! ui-viewport width height {:center? true}))
 
   cdq.graphics/Graphics
+  (draw! [graphics draws]
+    (doseq [{k 0 :as component} draws
+            :when component]
+      (apply (draw-fns k) graphics (rest component))))
+
   (clear! [{:keys [graphics/core]} color]
     (graphics/clear! core color))
 

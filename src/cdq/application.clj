@@ -7,7 +7,6 @@
             [cdq.db :as db]
             [cdq.files :as files]
             [cdq.graphics :as graphics]
-            [cdq.graphics.draws :as draws]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.textures :as textures]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
@@ -162,16 +161,16 @@
    entity render-layer]
   (try (do
         (when show-body-bounds?
-          (draws/handle! graphics (draw-body-rect (:entity/body entity)
-                                                  (if (:body/collides? (:entity/body entity))
-                                                    color/white
-                                                    color/gray))))
+          (graphics/draw! graphics (draw-body-rect (:entity/body entity)
+                                                   (if (:body/collides? (:entity/body entity))
+                                                     color/white
+                                                     color/gray))))
         (doseq [[k v] entity
                 :let [draw-fn (get render-layer k)]
                 :when draw-fn]
-          (draws/handle! graphics (draw-fn v entity ctx))))
+          (graphics/draw! graphics (draw-fn v entity ctx))))
        (catch Throwable t
-         (draws/handle! graphics (draw-body-rect (:entity/body entity) color/red))
+         (graphics/draw! graphics (draw-body-rect (:entity/body entity) color/red))
          (throwable/pretty-pst t))))
 
 (defn draw-entities
@@ -948,7 +947,7 @@
                                      draw-entities
                                      #_geom-test
                                      highlight-mouseover-tile]]
-                            (draws/handle! graphics (f ctx)))))
+                            (graphics/draw! graphics (f ctx)))))
   ctx)
 
 (defn set-cursor!

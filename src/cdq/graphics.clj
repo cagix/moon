@@ -17,4 +17,5 @@
   (clear! [_ [r g b a]])
   (set-cursor! [_ cursor-key])
   (delta-time [_])
-  (frames-per-second [_]))
+  (frames-per-second [_])
+  (draw! [_ draws]))

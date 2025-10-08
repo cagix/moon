@@ -1,5 +1,5 @@
 (ns clojure.scene2d.build.actor
-  (:require [cdq.graphics.draws :as draws]
+  (:require [cdq.graphics :as graphics]
             [clojure.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -13,7 +13,7 @@
 
 (defn draw! [actor f]
   (when-let [ctx (get-ctx actor)]
-    (draws/handle! (:ctx/graphics ctx) (f actor ctx))))
+    (graphics/draw! (:ctx/graphics ctx) (f actor ctx))))
 
 (def opts-fn-map
   {:actor/name        Actor/.setName
