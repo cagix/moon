@@ -4,6 +4,8 @@
             [clojure.gdx.audio :as audio]
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.shape-drawer :as shape-drawer]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.viewport :as viewport]
             [clojure.string :as str]
             [clojure.math :as math])
   (:import (com.badlogic.gdx ApplicationListener
@@ -24,9 +26,29 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport FitViewport)
+           (com.badlogic.gdx.utils.viewport FitViewport
+                                            Viewport)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(extend-type Viewport
+  viewport/Viewport
+  (camera [this]
+    (.getCamera this))
+
+  (update! [viewport width height {:keys [center?]}]
+    (.update viewport width height (boolean center?)))
+
+  (world-width [this]
+    (.getWorldWidth this))
+
+  (world-height [this]
+    (.getWorldHeight this))
+
+  (unproject [viewport [x y]]
+    (-> viewport
+        (.unproject (vector2/->java x y))
+        vector2/->clj)))
 
 (extend-type ShapeDrawer
   shape-drawer/ShapeDrawer
