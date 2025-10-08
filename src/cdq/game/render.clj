@@ -1,4 +1,4 @@
-(ns cdq.game
+(ns cdq.game.render
   (:require [cdq.audio :as audio]
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
@@ -212,19 +212,6 @@
 (defn- validate [ctx]
   (mu/validate-humanize schema ctx)
   ctx)
-
-(defn resize! [{:keys [ctx/graphics]} width height]
-  (ui-viewport/update!    graphics width height)
-  (world-viewport/update! graphics width height))
-
-(defn dispose!
-  [{:keys [ctx/audio
-           ctx/graphics
-           ctx/world]}]
-  (audio/dispose! audio)
-  (graphics/dispose! graphics)
-  (ui/dispose!)
-  (world/dispose! world))
 
 (defn- get-stage-ctx
   [{:keys [ctx/stage]
@@ -511,7 +498,7 @@
      (world/update-potential-fields! world)
      ctx)))
 
-(defn render! [ctx]
+(defn do! [ctx]
   (-> ctx
       get-stage-ctx
       validate

@@ -1,6 +1,8 @@
 (ns cdq.application
-  (:require [cdq.game :as game]
-            [cdq.game.create :as create])
+  (:require [cdq.game.create :as create]
+            [cdq.game.dispose :as dispose]
+            [cdq.game.render :as render]
+            [cdq.game.resize :as resize])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -20,13 +22,13 @@
                                                      :input    Gdx/input})))
 
                         (dispose [_]
-                          (game/dispose! @state))
+                          (dispose/do! @state))
 
                         (render [_]
-                          (swap! state game/render!))
+                          (swap! state render/do!))
 
                         (resize [_ width height]
-                          (game/resize! @state width height))
+                          (resize/do! @state width height))
 
                         (pause [_])
 
