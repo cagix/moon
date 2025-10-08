@@ -16,9 +16,9 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationListener
+  (:import (cdq.ui Stage)
+           (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -90,7 +90,7 @@
                      :on-clicked (fn [actor ctx]
                                    (let [stage (Actor/.getStage actor)
                                          new-ctx (generate-level ctx level-fn)]
-                                     (stage/set-ctx! stage new-ctx)))}}])
+                                     (set! (.ctx stage) new-ctx)))}}])
    :pack? true})
 
 (defrecord Context [])
@@ -100,7 +100,7 @@
   (let [ctx (map->Context {:ctx/input Gdx/input})
         ui-viewport (FitViewport. 1440 900 (camera/create))
         sprite-batch (SpriteBatch.)
-        stage (stage/create ui-viewport sprite-batch)
+        stage (Stage. ui-viewport sprite-batch)
         _  (input/set-processor! Gdx/input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -129,7 +129,7 @@
                    :ctx/sprite-batch sprite-batch
                    :ctx/tiled-map-renderer (tm-renderer/create world-unit-scale sprite-batch))
         ctx (generate-level ctx initial-level-fn)]
-    (stage/add! (:ctx/stage ctx) (scene2d/build (edit-window)))
+    (.addActor (:ctx/stage ctx) (scene2d/build (edit-window)))
     ctx))
 
 (defn dispose!
@@ -171,17 +171,17 @@
   [{:keys [ctx/graphics
            ctx/stage]
     :as ctx}]
-  (let [ctx (if-let [new-ctx (stage/get-ctx stage)]
+  (let [ctx (if-let [new-ctx (.ctx stage)]
               new-ctx
               ctx)]
     (graphics/clear! graphics color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)
-    (stage/set-ctx! stage ctx)
-    (stage/act!     stage)
-    (stage/draw!    stage)
-    (stage/get-ctx  stage)))
+    (set! (.ctx stage) ctx)
+    (.act     stage)
+    (.draw    stage)
+    (.ctx  stage)))
 
 (defn resize!
   [{:keys [ctx/ui-viewport

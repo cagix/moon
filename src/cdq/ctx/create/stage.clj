@@ -4,24 +4,24 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
-            [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
+            [clojure.scene2d :as scene2d])
+  (:import (cdq.ui Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
 (defn- toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
 
-(defn- add-actors! [stage actor-fns ctx]
+(defn- add-actors! [^Stage stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
-    (stage/add! stage (scene2d/build (apply actor-fn ctx params)))))
+    (.addActor stage (scene2d/build (apply actor-fn ctx params)))))
 
 (defn do!
   [{:keys [ctx/graphics]
     :as ctx}
    actor-fns]
-  (let [stage (stage/create (:graphics/ui-viewport graphics)
-                            (:graphics/batch       graphics))
+  (let [stage (Stage. (:graphics/ui-viewport graphics)
+                      (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
         ctx (assoc ctx
                    :ctx/stage stage
@@ -29,40 +29,40 @@
     (add-actors! stage actor-fns ctx)
     ctx))
 
-(defn- stage-find [stage k]
+(defn- stage-find [^Stage stage k]
   (-> stage
-      stage/root
-      (Group/.findActor k)))
+      .getRoot
+      (.findActor k)))
 
 (extend-type cdq.ui.Stage
   ui/DataViewer
   (show-data-viewer! [this data]
-    (stage/add! this (scene2d/build
-                      {:actor/type :actor.type/data-viewer
-                       :title "Data View"
-                       :data data
-                       :width 500
-                       :height 500})))
+    (.addActor this (scene2d/build
+                     {:actor/type :actor.type/data-viewer
+                      :title "Data View"
+                      :data data
+                      :width 500
+                      :height 500})))
 
   ui/PStage
-  (viewport-width  [stage] (viewport/world-width  (stage/viewport stage)))
-  (viewport-height [stage] (viewport/world-height (stage/viewport stage)))
+  (viewport-width  [stage] (viewport/world-width  (.getViewport stage)))
+  (viewport-height [stage] (viewport/world-height (.getViewport stage)))
 
   (get-ctx [this]
-    (stage/get-ctx this))
+    (.ctx this))
 
   (mouseover-actor [this position]
-    (stage/hit this
-               (viewport/unproject (stage/viewport this) position)))
+    (let [[x y] (viewport/unproject (.getViewport this) position)]
+      (.hit this x y true)))
 
   (action-bar-selected-skill [this]
     (-> this
-        stage/root
-        (Group/.findActor "cdq.ui.action-bar")
+        .getRoot
+        (.findActor "cdq.ui.action-bar")
         action-bar/selected-skill))
 
   (rebuild-actors! [stage ctx]
-    (stage/clear! stage)
+    (.clear stage)
     (add-actors! stage (:ctx/actor-fns ctx) ctx))
 
   (inventory-window-visible? [stage]
@@ -83,26 +83,26 @@
   ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
   (show-modal-window! [stage ui-viewport {:keys [title text button-text on-click]}]
     (assert (not (-> stage
-                     stage/root
+                     .getRoot
                      (Group/.findActor "cdq.ui.modal-window"))))
-    (stage/add! stage
-                (scene2d/build
-                 {:actor/type :actor.type/window
-                  :title title
-                  :rows [[{:actor {:actor/type :actor.type/label
-                                   :label/text text}}]
-                         [{:actor {:actor/type :actor.type/text-button
-                                   :text button-text
-                                   :on-clicked (fn [_actor _ctx]
-                                                 (Actor/.remove (-> stage
-                                                                    stage/root
-                                                                    (Group/.findActor "cdq.ui.modal-window")))
-                                                 (on-click))}}]]
-                  :actor/name "cdq.ui.modal-window"
-                  :modal? true
-                  :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
-                                          (* (viewport/world-height ui-viewport) (/ 3 4))]
-                  :pack? true})))
+    (.addActor stage
+               (scene2d/build
+                {:actor/type :actor.type/window
+                 :title title
+                 :rows [[{:actor {:actor/type :actor.type/label
+                                  :label/text text}}]
+                        [{:actor {:actor/type :actor.type/text-button
+                                  :text button-text
+                                  :on-clicked (fn [_actor _ctx]
+                                                (.remove (-> stage
+                                                             .getRoot
+                                                             (.findActor "cdq.ui.modal-window")))
+                                                (on-click))}}]]
+                 :actor/name "cdq.ui.modal-window"
+                 :modal? true
+                 :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)
+                                         (* (viewport/world-height ui-viewport) (/ 3 4))]
+                 :pack? true})))
 
   (set-item! [stage cell item-properties]
     (-> stage
@@ -118,19 +118,19 @@
 
   (add-skill! [stage skill-properties]
     (-> stage
-        stage/root
+        .getRoot
         (Group/.findActor "cdq.ui.action-bar")
         (action-bar/add-skill! skill-properties)))
 
   (remove-skill! [stage skill-id]
     (-> stage
-        stage/root
+        .getRoot
         (Group/.findActor "cdq.ui.action-bar")
         (action-bar/remove-skill! skill-id)))
 
   (show-text-message! [stage message]
     (-> stage
-        stage/root
+        .getRoot
         (Group/.findActor "player-message")
         (message/show! message)))
 

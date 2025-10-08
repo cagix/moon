@@ -1,6 +1,5 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage])
+  (:require [clojure.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn scroll-pane-cell [viewport-height rows]
@@ -54,11 +53,11 @@
     (scene2d/build {:actor/type :actor.type/text-button
                     :text "Map"
                     :on-clicked (fn [actor _ctx]
-                                  (stage/add! (Actor/.getStage actor)
-                                              (data-viewer {:title "title"
-                                                            :data v
-                                                            :width 500
-                                                            :height 500})))})
+                                  (.addActor (Actor/.getStage actor)
+                                             (data-viewer {:title "title"
+                                                           :data v
+                                                           :width 500
+                                                           :height 500})))})
     {:actor/type :actor.type/label
      :label/text (v->text v)}))
 

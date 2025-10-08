@@ -5,7 +5,6 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor)
@@ -124,7 +123,7 @@
       :clicked-cell-listener (fn [cell]
                                (proxy [ClickListener] []
                                  (clicked [event x y]
-                                   (let [{:keys [ctx/world] :as ctx} (stage/get-ctx (.getStage event))
+                                   (let [{:keys [ctx/world] :as ctx} (.ctx (.getStage event))
                                          eid (:world/player-eid world)
                                          entity @eid
                                          state-k (:state (:entity/fsm entity))

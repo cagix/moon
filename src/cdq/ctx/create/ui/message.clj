@@ -1,7 +1,6 @@
 (ns cdq.ctx.create.ui.message
   (:require [cdq.ui.message :as message]
-            [clojure.gdx.viewport :as viewport]
-            [cdq.ui.stage :as stage])
+            [clojure.gdx.viewport :as viewport])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.Actor
@@ -24,8 +23,8 @@
   {:actor/type :actor.type/actor
    :actor/draw (fn [this _ctx]
                  [(draw-message (Actor/.getUserObject this)
-                                (viewport/world-width  (stage/viewport (Actor/.getStage this)))
-                                (viewport/world-height (stage/viewport (Actor/.getStage this))))])
+                                (viewport/world-width  (.getViewport (Actor/.getStage this)))
+                                (viewport/world-height (.getViewport (Actor/.getStage this))))])
    :actor/act (fn [this delta _ctx]
                 (let [state (Actor/.getUserObject this)]
                   (when (:text @state)

@@ -6,7 +6,6 @@
             [cdq.ui :as ui]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
@@ -23,7 +22,7 @@
                                  :on-click (fn [_actor {:keys [ctx/db
                                                                ctx/graphics
                                                                ctx/stage]}]
-                                             (stage/add!
+                                             (.addActor
                                               stage
                                               (scene2d/build
                                                {:actor/type :actor.type/editor-overview-window
@@ -31,7 +30,7 @@
                                                 :graphics graphics
                                                 :property-type property-type
                                                 :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
-                                                                 (stage/add! stage
+                                                                 (.addActor stage
                                                                              (scene2d/build
                                                                               {:actor/type :actor.type/editor-window
                                                                                :ctx ctx
@@ -53,7 +52,7 @@
                                                   stage (Actor/.getStage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
                                               (world/dispose! (:ctx/world ctx))
-                                              (stage/set-ctx! stage ((requiring-resolve create-world) ctx world-fn))))})}
+                                              (set! (.ctx stage) ((requiring-resolve create-world) ctx world-fn))))})}
         update-labels [{:label "elapsed-time"
                         :update-fn (fn [ctx]
                                      (str (utils/readable-number (:world/elapsed-time (:ctx/world ctx))) " seconds"))

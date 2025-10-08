@@ -4,7 +4,6 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -33,7 +32,7 @@
                   :on-clicked (fn [_actor {:keys [ctx/db
                                                   ctx/graphics
                                                   ctx/stage]}]
-                                (stage/add!
+                                (.addActor
                                  stage
                                  (scene2d/build
                                   {:actor/type :actor.type/editor-overview-window

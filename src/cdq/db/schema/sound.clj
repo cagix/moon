@@ -2,7 +2,6 @@
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -27,18 +26,18 @@
 (defn- open-select-sounds-handler [table]
   (fn [_actor {:keys [ctx/audio
                       ctx/stage]}]
-    (stage/add! stage
-                (scene2d/build
-                 {:actor/type :actor.type/scroll-pane-window
-                  :viewport-height (ui/viewport-width stage)
-                  :rows (for [sound-name (sounds/sound-names audio)]
-                          [{:actor {:actor/type :actor.type/text-button
-                                    :text sound-name
-                                    :on-clicked (rebuild! table sound-name)}}
-                           {:actor {:actor/type :actor.type/text-button
-                                    :text "play!"
-                                    :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                                                  (sounds/play! audio sound-name))}}])}))))
+    (.addActor stage
+               (scene2d/build
+                {:actor/type :actor.type/scroll-pane-window
+                 :viewport-height (ui/viewport-width stage)
+                 :rows (for [sound-name (sounds/sound-names audio)]
+                         [{:actor {:actor/type :actor.type/text-button
+                                   :text sound-name
+                                   :on-clicked (rebuild! table sound-name)}}
+                          {:actor {:actor/type :actor.type/text-button
+                                   :text "play!"
+                                   :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                                 (sounds/play! audio sound-name))}}])}))))
 
 (defn- sound-columns [table sound-name]
   [{:actor {:actor/type :actor.type/text-button

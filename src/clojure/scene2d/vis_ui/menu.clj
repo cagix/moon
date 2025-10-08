@@ -1,6 +1,5 @@
 (ns clojure.scene2d.vis-ui.menu
   (:require [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
                                                Label)
@@ -47,7 +46,7 @@
                                      (.addListener (proxy [ChangeListener] []
                                                      (changed [event actor]
                                                        (when on-click
-                                                         (on-click actor (stage/get-ctx (.getStage event))))))))))
+                                                         (on-click actor (.ctx (.getStage event))))))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]

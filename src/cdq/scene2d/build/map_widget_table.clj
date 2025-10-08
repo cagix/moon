@@ -6,7 +6,6 @@
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
@@ -16,7 +15,7 @@
            ctx/stage]
     :as ctx}]
   (let [window (-> stage
-                   stage/root
+                   .getRoot
                    (Group/.findActor "cdq.ui.editor.window"))
         map-widget-table (-> window
                              (Group/.findActor "cdq.ui.widget.scroll-pane-table")
@@ -24,11 +23,11 @@
                              (Group/.findActor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (Actor/.remove window)
-    (stage/add! stage
-                (scene2d/build
-                 {:actor/type :actor.type/editor-window
-                  :ctx ctx
-                  :property property}))))
+    (.addActor stage
+               (scene2d/build
+                {:actor/type :actor.type/editor-window
+                 :ctx ctx
+                 :property property}))))
 
 (defn- k->label-text [k]
   (name k) ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -136,7 +135,7 @@
                           :text "Add component"
                           :on-clicked (fn [_actor {:keys [ctx/db
                                                           ctx/stage]}]
-                                        (stage/add! stage (add-component-window (:db/schemas db) schema table)))}
+                                        (.addActor stage (add-component-window (:db/schemas db) schema table)))}
                   :colspan colspan}])]
              [(when opt?
                 [{:actor {:actor/type :actor.type/separator-horizontal}

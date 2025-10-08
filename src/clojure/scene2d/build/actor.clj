@@ -1,12 +1,11 @@
 (ns clojure.scene2d.build.actor
   (:require [cdq.graphics.draws :as draws]
-            [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage])
+            [clojure.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- get-ctx [actor]
   (when-let [stage (Actor/.getStage actor)]
-    (stage/get-ctx stage)))
+    (.ctx stage)))
 
 (defn act! [actor delta f]
   (when-let [ctx (get-ctx actor)]

@@ -7,7 +7,6 @@
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
-            [cdq.ui.stage :as stage]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -17,7 +16,7 @@
     (try
      (let [new-ctx (update ctx :ctx/db f)
            stage (Actor/.getStage actor)]
-       (stage/set-ctx! stage new-ctx))
+       (set! (.ctx stage) new-ctx))
      (Actor/.remove (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)

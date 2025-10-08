@@ -1,6 +1,5 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
@@ -22,7 +21,7 @@
     (when on-clicked
       (.addListener image-button (proxy [ChangeListener] []
                                    (changed [event actor]
-                                     (on-clicked actor (stage/get-ctx (.getStage event)))))))
+                                     (on-clicked actor (.ctx (.getStage event)))))))
     (when-let [tooltip (:tooltip opts)]
       (tooltip/add! image-button tooltip))
     (table/set-opts! image-button opts)))

@@ -39,7 +39,6 @@
 
             [clojure.scene2d.vis-ui :as vis-ui]
             [cdq.ui :as ui]
-            [cdq.ui.stage :as stage]
             [clojure.scene2d :as scene2d]
 
             [cdq.effect :as effect]
@@ -73,7 +72,8 @@
             [malli.utils :as mu]
             [qrecord.core :as q]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationListener
+  (:import (cdq.ui Stage)
+           (com.badlogic.gdx ApplicationListener
                              Files
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -163,12 +163,12 @@
 (q/defrecord Entity [entity/body])
 
 (defn render-stage
-  [{:keys [ctx/stage]
+  [{:keys [^Stage ctx/stage]
     :as ctx}]
-  (stage/set-ctx! stage ctx)
-  (stage/act!     stage)
-  (stage/draw!    stage)
-  (stage/get-ctx  stage))
+  (set! (.ctx stage) ctx)
+  (.act  stage)
+  (.draw stage)
+  (.ctx  stage))
 
 (def zoom-speed 0.025)
 
@@ -328,8 +328,8 @@
   (ui/show-text-message! stage message)
   nil)
 
-(defn show-modal! [{:keys [ctx/stage]} opts]
-  (ui/show-modal-window! stage (stage/viewport stage) opts)
+(defn show-modal! [{:keys [^Stage ctx/stage]} opts]
+  (ui/show-modal-window! stage (.getViewport stage) opts)
   nil)
 
 (defn handle-event
