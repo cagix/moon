@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.db :as db]
             cdq.ctx.create.db
-            cdq.ctx.create.stage
             cdq.ctx.create.audio
             cdq.ctx.create.world
             cdq.info-impl
@@ -666,13 +665,13 @@
                                          :cursors/skill-not-usable      ["x007"         [0   0]]
                                          :cursors/use-skill             ["pointer004"   [0   0]]
                                          :cursors/walking               ["walking"      [16 16]]}}})
-      (cdq.ctx.create.stage/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
-                                  [cdq.ctx.create.ui.action-bar/create]
-                                  [cdq.ctx.create.ui.hp-mana-bar/create]
-                                  [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
-                                                                     [cdq.ctx.create.ui.windows.inventory/create]]]
-                                  [cdq.ctx.create.ui.player-state-draw/create]
-                                  [cdq.ctx.create.ui.message/create]])
+      (ui/create '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
+                   [cdq.ctx.create.ui.action-bar/create]
+                   [cdq.ctx.create.ui.hp-mana-bar/create]
+                   [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                                      [cdq.ctx.create.ui.windows.inventory/create]]]
+                   [cdq.ctx.create.ui.player-state-draw/create]
+                   [cdq.ctx.create.ui.message/create]])
       create-input
       cdq.ctx.create.audio/do!
       (cdq.ctx.create.world/do! "world_fns/vampire.edn")))
