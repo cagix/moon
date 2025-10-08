@@ -11,6 +11,7 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
+            [clojure.gdx.shape-drawer :as sd]
             [clojure.math :as math])
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
@@ -23,14 +24,12 @@
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]
+                            [{:keys [graphics/shape-drawer]
                               :as graphics}
                              width
                              draws]
-                            (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-                              (.setDefaultLineWidth shape-drawer (* width old-line-width))
-                              (cdq.graphics/draw! graphics draws)
-                              (.setDefaultLineWidth shape-drawer old-line-width)))
+                            (sd/with-line-width shape-drawer width
+                              (cdq.graphics/draw! graphics draws)) )
 
    :draw/grid             (fn do!
                             [graphics leftx bottomy gridw gridh cellw cellh color]
@@ -227,12 +226,10 @@
     (.setColor batch Color/WHITE)
     (.setProjectionMatrix batch (camera/combined (viewport/camera world-viewport)))
     (.begin batch)
-    (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-      (.setDefaultLineWidth shape-drawer (* world-unit-scale old-line-width))
+    (sd/with-line-width shape-drawer world-unit-scale
       (reset! unit-scale world-unit-scale)
       (f)
-      (reset! unit-scale 1)
-      (.setDefaultLineWidth shape-drawer old-line-width))
+      (reset! unit-scale 1))
     (.end batch)))
 
 (defn create!
