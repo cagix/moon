@@ -16,12 +16,13 @@
   (delta-time [_])
   (frames-per-second [_])
   (set-cursor! [_ cursor])
-  (clear! [_ [r g b a]]))
+  (clear! [_ [r g b a]])
+  (orthographic-camera [_]
+                       [_ {:keys [y-down? world-width world-height]}]))
 
 (defprotocol Input
   (set-input-processor! [_ input-processor])
   (key-pressed? [_ key])
   (key-just-pressed? [_ key])
   (button-just-pressed? [_ button])
-  (mouse-position [_])
-  )
+  (mouse-position [_]))

@@ -5,7 +5,7 @@
             [cdq.graphics.world-viewport]
             [clojure.gdx :as gdx]
             [clojure.gdx.bitmap-font :as bitmap-font]
-            [clojure.gdx.graphics.orthographic-camera :as camera]
+            [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -225,13 +225,13 @@
         (assoc :graphics/ui-viewport (gdx/viewport gdx
                                                    (:width  ui-viewport)
                                                    (:height ui-viewport)
-                                                   (camera/create)))
+                                                   (gdx/orthographic-camera gdx)))
         (assoc :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                               world-height (* (:height world-viewport) world-unit-scale)]
                                           (gdx/viewport gdx
                                                         world-width
                                                         world-height
-                                                        (camera/create
-                                                         :y-down? false
-                                                         :world-width world-width
-                                                         :world-height world-height)))))))
+                                                        (gdx/orthographic-camera gdx
+                                                                                 {:y-down? false
+                                                                                  :world-width world-width
+                                                                                  :world-height world-height})))))))

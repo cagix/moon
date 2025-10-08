@@ -1,42 +1,14 @@
-(ns clojure.gdx.graphics.orthographic-camera
-  "A camera with orthographic projection."
-  (:require [clojure.gdx.math.vector3 :as vector3])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)))
+(ns clojure.gdx.orthographic-camera)
 
-(defn create
-  ([]
-   (OrthographicCamera.))
-  ([& {:keys [y-down? world-width world-height]}]
-   (doto (OrthographicCamera.)
-     (.setToOrtho y-down? world-width world-height))))
-
-(defn viewport-height [^OrthographicCamera camera]
-  (.viewportHeight camera))
-
-(defn viewport-width [^OrthographicCamera camera]
-  (.viewportWidth camera))
-
-(defn position [^OrthographicCamera camera]
-  (vector3/clojurize (.position camera)))
-
-(defn zoom
-  "the zoom of the camera (default `1`)."
-  [^OrthographicCamera camera]
-  (.zoom camera))
-
-(defn combined
-  "the combined projection and view matrix"
-  [^OrthographicCamera camera]
-  (.combined camera))
-
-(defn set-position! [^OrthographicCamera this [x y]]
-  (set! (.x (.position this)) (float x))
-  (set! (.y (.position this)) (float y))
-  (.update this))
-
-(defn set-zoom! [^OrthographicCamera this amount]
-  (set! (.zoom this) amount)
-  (.update this))
+(defprotocol OrthographicCamera
+  (viewport-height [_])
+  (viewport-width [_])
+  (position [_])
+  (zoom [_])
+  (combined [_])
+  (set-position! [_ [x y]])
+  (set-zoom! [_ amount])
+  (frustum-bounds [_]))
 
 (defn reset-zoom! [cam]
   (set-zoom! cam 1))
@@ -44,8 +16,8 @@
 (defn inc-zoom! [cam by]
   (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
 
-(defn frustum [^OrthographicCamera camera]
-  (let [plane-points (mapv vector3/clojurize (.planePoints (.frustum camera)))
+(defn frustum [camera]
+  (let [plane-points (frustum-bounds camera)
         frustum-points (take 4 plane-points)
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))

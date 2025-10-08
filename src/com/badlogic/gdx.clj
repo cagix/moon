@@ -5,6 +5,8 @@
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.math.vector3 :as vector3]
+            [clojure.gdx.orthographic-camera :as orthographic-camera]
             [clojure.gdx.viewport :as viewport]
             [clojure.string :as str]
             [clojure.math :as math])
@@ -20,7 +22,8 @@
                                       GL20
                                       Pixmap
                                       Texture
-                                      Texture$TextureFilter)
+                                      Texture$TextureFilter
+                                      OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont
                                           SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -112,6 +115,13 @@
                    (and apply-antialiasing? (.coverageSampling (.getBufferFormat graphics)))
                    (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
         (GL20/.glClear gl20 mask))))
+
+  (orthographic-camera [_]
+    (OrthographicCamera.))
+
+  (orthographic-camera[_ {:keys [y-down? world-width world-height]}]
+    (doto (OrthographicCamera.)
+      (.setToOrtho y-down? world-width world-height)))
 
   gdx/Files
   (search-files [_ {:keys [folder extensions]}]
@@ -238,3 +248,32 @@
              radius
              (math/to-radians start-angle)
              (math/to-radians degree))))
+
+(extend-type OrthographicCamera
+  orthographic-camera/OrthographicCamera
+  (viewport-height [camera]
+    (.viewportHeight camera))
+
+  (viewport-width [camera]
+    (.viewportWidth camera))
+
+  (position [camera]
+    (vector3/clojurize (.position camera)))
+
+  (zoom [camera]
+    (.zoom camera))
+
+  (combined [camera]
+    (.combined camera))
+
+  (set-position! [this [x y]]
+    (set! (.x (.position this)) (float x))
+    (set! (.y (.position this)) (float y))
+    (.update this))
+
+  (set-zoom! [this amount]
+    (set! (.zoom this) amount)
+    (.update this))
+
+  (frustum-bounds [this]
+    (mapv vector3/clojurize (.planePoints (.frustum this)))))

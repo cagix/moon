@@ -1,5 +1,5 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.graphics.orthographic-camera :as camera]
+  (:require [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport])
   (:import (com.badlogic.gdx.utils Disposable)))
 

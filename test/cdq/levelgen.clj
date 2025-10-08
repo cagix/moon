@@ -8,7 +8,7 @@
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [clojure.gdx.graphics.orthographic-camera :as camera]
+            [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [cdq.graphics.color :as color]
@@ -91,7 +91,7 @@
   [gdx]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/gdx gdx})
-        ui-viewport (gdx/viewport gdx 1440 900 (camera/create))
+        ui-viewport (gdx/viewport gdx 1440 900 (gdx/orthographic-camera gdx))
         sprite-batch (gdx/sprite-batch gdx)
         stage (Stage. ui-viewport sprite-batch)
         _  (gdx/set-input-processor! gdx stage)
@@ -105,9 +105,10 @@
                          (gdx/viewport gdx
                                        world-width
                                        world-height
-                                       (camera/create :y-down? false
-                                                      :world-width world-width
-                                                      :world-height world-height)))
+                                       (gdx/orthographic-camera gdx
+                                                                {:y-down? false
+                                                                 :world-width world-width
+                                                                 :world-height world-height})))
         ctx (assoc ctx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
