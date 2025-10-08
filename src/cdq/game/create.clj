@@ -485,6 +485,6 @@
                                                        [cdq.ctx.create.ui.windows.inventory/create]]]
                     [cdq.ctx.create.ui.player-state-draw/create]
                     [cdq.ctx.create.ui.message/create]])
-      (create-input input)
+      (create-input gdx)
       (assoc :ctx/audio (audio/create gdx sound-names path-format))
       (create-world "world_fns/vampire.edn")))
