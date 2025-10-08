@@ -15,35 +15,13 @@
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
-                                      Texture
-                                      Texture$TextureFilter)
+                                      Texture)
            (com.badlogic.gdx.graphics.g2d Batch
                                           BitmapFont
                                           TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- generate-font [file-handle params]
-  (let [{:keys [size
-                quality-scaling
-                enable-markup?
-                use-integer-positions?
-                min-filter
-                mag-filter]} params]
-    (let [generator (FreeTypeFontGenerator. file-handle)
-          font (.generateFont generator
-                              (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-                                (set! (.size params) (* size quality-scaling))
-                                (set! (.minFilter params) Texture$TextureFilter/Linear)
-                                (set! (.magFilter params) Texture$TextureFilter/Linear)
-                                params))]
-      (.setScale (.getData font) (/ quality-scaling))
-      (set! (.markupEnabled (.getData font)) enable-markup?)
-      (.setUseIntegerPositions font use-integer-positions?)
-      font)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -300,8 +278,9 @@
         (assoc :graphics/cursors (update-vals cursors
                                               (fn [[path hotspot]]
                                                 (gdx/cursor gdx path hotspot))))
-        (assoc :graphics/default-font (generate-font (:file-handle default-font)
-                                                     (:params default-font)))
+        (assoc :graphics/default-font (gdx/truetype-font gdx
+                                                         (:path default-font)
+                                                         (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
         (assoc :graphics/shape-drawer (ShapeDrawer. batch

@@ -474,8 +474,7 @@
                  ui-viewport
                  world-viewport]}]
   {:ui-viewport ui-viewport
-   :default-font {:file-handle (Files/.internal files (:path default-font))
-                  :params (:params default-font)}
+   :default-font default-font
    :colors colors
    :cursors (update-vals (:data cursors)
                          (fn [[short-path hotspot]]

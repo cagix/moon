@@ -11,8 +11,11 @@
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color
                                       Colors
-                                      Pixmap)
+                                      Pixmap
+                                      Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (org.lwjgl.system Configuration)))
 
 (extend-type Sound
@@ -39,6 +42,22 @@
           cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
       (.dispose pixmap)
       cursor))
+
+  (truetype-font [_ path {:keys [size
+                                 quality-scaling
+                                 enable-markup?
+                                 use-integer-positions?]}]
+    (let [generator (FreeTypeFontGenerator. (.internal files path))
+          font (.generateFont generator
+                              (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+                                (set! (.size params) (* size quality-scaling))
+                                (set! (.minFilter params) Texture$TextureFilter/Linear)
+                                (set! (.magFilter params) Texture$TextureFilter/Linear)
+                                params))]
+      (.setScale (.getData font) (/ quality-scaling))
+      (set! (.markupEnabled (.getData font)) enable-markup?)
+      (.setUseIntegerPositions font use-integer-positions?)
+      font))
   )
 
 (defn start!
