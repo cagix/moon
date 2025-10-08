@@ -45,6 +45,16 @@
                                :cursors/skill-not-usable      ["x007"         [0   0]]
                                :cursors/use-skill             ["pointer004"   [0   0]]
                                :cursors/walking               ["walking"      [16 16]]}}}
+
+   :ui '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create.world/do!]
+         [cdq.ctx.create.ui.action-bar/create]
+         [cdq.ctx.create.ui.hp-mana-bar/create]
+         [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                            [cdq.ctx.create.ui.windows.inventory/create]]]
+         [cdq.ctx.create.ui.player-state-draw/create]
+         [cdq.ctx.create.ui.message/create]]
+
+   :world "world_fns/vampire.edn"
    }
   )
 

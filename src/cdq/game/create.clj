@@ -16,13 +16,7 @@
       create-tx-handler/do!
       create-db/do!
       (create-graphics/do! (:graphics config))
-      (create-ui/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create.world/do!]
-                       [cdq.ctx.create.ui.action-bar/create]
-                       [cdq.ctx.create.ui.hp-mana-bar/create]
-                       [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
-                                                          [cdq.ctx.create.ui.windows.inventory/create]]]
-                       [cdq.ctx.create.ui.player-state-draw/create]
-                       [cdq.ctx.create.ui.message/create]])
+      (create-ui/do! (:ui config))
       create-input-processor/do!
       (create-audio/do! (:audio config))
-      (create-world/do! "world_fns/vampire.edn")))
+      (create-world/do! (:world config))))
