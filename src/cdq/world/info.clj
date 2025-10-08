@@ -1,22 +1,16 @@
-(ns cdq.info-impl
+(ns cdq.world.info
   (:require [cdq.stats.ops.info :as ops]
-            [clojure.info :as info]
             [clojure.string :as str]
             [clojure.timer :as timer]
             [clojure.utils :as utils]))
 
-(defmulti ->text (fn [object world]
-                   (cond (:item/slot object)
-                         :info/item
-                         ;(:skill/action-time object)
-                         ;:info/skill
-                         :else
-                         :info/entity)))
-
-(extend-type clojure.lang.IPersistentMap
-  info/Text
-  (text [object context]
-    (->text object context)))
+(defmulti text (fn [object world]
+                 (cond (:item/slot object)
+                       :info/item
+                       ;(:skill/action-time object)
+                       ;:info/skill
+                       :else
+                       :info/entity)))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
@@ -155,7 +149,7 @@
  ; so not showing as ui not updated
  )
 
-(defmethod ->text :info/entity [entity world]
+(defmethod text :info/entity [entity world]
   (let [component-info (fn [[k v]]
                          (let [s (if-let [info-fn (info-fns k)]
                                    (do
@@ -170,7 +164,7 @@
                            (catch Throwable t
                              (str "*info-error* " k)))
                       (when (map? v)
-                        (str "\n" (->text v world))))))
+                        (str "\n" (text v world))))))
          (str/join "\n")
          remove-newlines)))
 
@@ -186,7 +180,7 @@
              :entity/image
              :item/slot} keyset))))
 
-(defmethod ->text :info/item [item _world]
+(defmethod text :info/item [item _world]
   (assert (valid-item? item))
   (str/join "\n"
             (remove nil?

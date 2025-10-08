@@ -1,6 +1,6 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.ui :as ui]
-            [clojure.info :as info]
+            [cdq.world.info :as info]
             [clojure.scene2d :as scene2d])
   (:import (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label)))

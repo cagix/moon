@@ -2,7 +2,6 @@
   (:require cdq.impl.db
             cdq.impl.ui
             cdq.impl.world
-            cdq.info-impl
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.files :as files]
@@ -41,7 +40,7 @@
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
             [clojure.throwable :as throwable]
-            [clojure.info :as info]
+            [cdq.world.info :as info]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
