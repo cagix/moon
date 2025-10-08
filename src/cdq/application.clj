@@ -17,11 +17,8 @@
             clojure.scene2d.build.widget
             cdq.ui.actor-information
             cdq.ui.error-window
-
             [cdq.audio :as audio]
-
             [cdq.files :as files]
-
             [cdq.graphics :as graphics]
             [cdq.graphics.draws :as draws]
             [cdq.graphics.camera :as camera]
@@ -31,13 +28,9 @@
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             [clojure.gdx.graphics.color :as color]
-
             [cdq.input :as input]
-
-            [clojure.scene2d.vis-ui :as vis-ui]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
-
             [cdq.effect :as effect]
             cdq.entity.animation
             [cdq.entity.body :as body]
@@ -56,12 +49,10 @@
             [cdq.world.raycaster :as raycaster]
             [clojure.math.geom :as geom]
             [clojure.math.vector2 :as v]
-
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
             [clojure.throwable :as throwable]
             [clojure.info :as info]
-
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.utils :as utils]
@@ -626,7 +617,6 @@
     (assoc ctx :ctx/input input)))
 
 (defn- create! []
-  (vis-ui/load! {:skin-scale :x1})
   (-> (merge (map->Context {})
              {:ctx/gdx {:clojure.gdx/audio    Gdx/audio
                         :clojure.gdx/files    Gdx/files
@@ -664,13 +654,13 @@
                                          :cursors/skill-not-usable      ["x007"         [0   0]]
                                          :cursors/use-skill             ["pointer004"   [0   0]]
                                          :cursors/walking               ["walking"      [16 16]]}}})
-      (ui/create '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
-                   [cdq.ctx.create.ui.action-bar/create]
-                   [cdq.ctx.create.ui.hp-mana-bar/create]
-                   [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
-                                                      [cdq.ctx.create.ui.windows.inventory/create]]]
-                   [cdq.ctx.create.ui.player-state-draw/create]
-                   [cdq.ctx.create.ui.message/create]])
+      (ui/create! '[[cdq.ctx.create.ui.dev-menu/create cdq.ctx.create.world/do!]
+                    [cdq.ctx.create.ui.action-bar/create]
+                    [cdq.ctx.create.ui.hp-mana-bar/create]
+                    [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                                       [cdq.ctx.create.ui.windows.inventory/create]]]
+                    [cdq.ctx.create.ui.player-state-draw/create]
+                    [cdq.ctx.create.ui.message/create]])
       create-input
       (assoc :ctx/audio (audio/create Gdx/audio (files/sound-names->file-handles Gdx/files)))
       (cdq.ctx.create.world/do! "world_fns/vampire.edn")))
@@ -683,9 +673,9 @@
   [{:keys [ctx/audio
            ctx/graphics
            ctx/world]}]
-  (vis-ui/dispose!)
   (audio/dispose! audio)
   (graphics/dispose! graphics)
+  (ui/dispose!)
   (world/dispose! world))
 
 (defn- get-stage-ctx

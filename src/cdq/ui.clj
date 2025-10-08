@@ -3,7 +3,8 @@
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
-            [clojure.scene2d :as scene2d])
+            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui :as vis-ui])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
@@ -12,10 +13,11 @@
   (doseq [[actor-fn & params] actor-fns]
     (.addActor stage (scene2d/build (apply actor-fn ctx params)))))
 
-(defn create
+(defn create!
   [{:keys [ctx/graphics]
     :as ctx}
    actor-fns]
+  (vis-ui/load! {:skin-scale :x1})
   (let [stage (Stage. (:graphics/ui-viewport graphics)
                       (:graphics/batch       graphics))
         actor-fns (map #(update % 0 requiring-resolve) actor-fns)
@@ -24,6 +26,9 @@
                    :ctx/actor-fns actor-fns)]
     (add-actors! stage actor-fns ctx)
     ctx))
+
+(defn dispose! []
+  (vis-ui/dispose!))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
