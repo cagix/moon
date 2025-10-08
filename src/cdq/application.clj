@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require cdq.impl.db
+            cdq.impl.graphics
             cdq.impl.ui
             cdq.impl.world
             [cdq.audio :as audio]
@@ -10,13 +11,11 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics.textures :as textures]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [cdq.graphics.impl]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
             [clojure.gdx.graphics.color :as color]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [clojure.scene2d :as scene2d]
             [cdq.effect :as effect]
             cdq.entity.animation
             [cdq.entity.body :as body]
@@ -667,7 +666,7 @@
 (defn create-graphics
   [ctx
    params]
-  (assoc ctx :ctx/graphics (cdq.graphics.impl/create! (handle-files Gdx/files params)
+  (assoc ctx :ctx/graphics (cdq.impl.graphics/create! (handle-files Gdx/files params)
                                                       Gdx/graphics)))
 
 (defn create-input [{:keys [ctx/stage]

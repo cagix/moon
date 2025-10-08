@@ -1,4 +1,4 @@
-(ns cdq.graphics.impl
+(ns cdq.impl.graphics
   (:require [cdq.graphics]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
