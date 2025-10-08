@@ -283,12 +283,13 @@
                                                          (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
-        (assoc :graphics/shape-drawer (ShapeDrawer. batch
-                                                    (TextureRegion. shape-drawer-texture
-                                                                    1
-                                                                    0
-                                                                    1
-                                                                    1)))
+        (assoc :graphics/shape-drawer (gdx/shape-drawer gdx
+                                                        batch
+                                                        (TextureRegion. shape-drawer-texture
+                                                                        1
+                                                                        0
+                                                                        1
+                                                                        1)))
         (assoc :graphics/textures (into {} (for [[path file-handle] textures-to-load]
                                              [path (Texture. file-handle)])))
         (assoc :graphics/unit-scale (atom 1)

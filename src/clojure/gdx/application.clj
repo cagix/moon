@@ -16,7 +16,8 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (org.lwjgl.system Configuration)))
+           (org.lwjgl.system Configuration)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (extend-type Sound
   audio/Sound
@@ -58,6 +59,9 @@
       (set! (.markupEnabled (.getData font)) enable-markup?)
       (.setUseIntegerPositions font use-integer-positions?)
       font))
+
+  (shape-drawer [_ batch texture-region]
+    (ShapeDrawer. batch texture-region))
   )
 
 (defn start!
