@@ -41,11 +41,10 @@
                                            (draw-cell-rect @(:world/player-eid world)
                                                            (Actor/.getX actor)
                                                            (Actor/.getY actor)
-                                                           (Actor/.hit actor
-                                                                       (-> actor
+                                                           (let [[x y] (-> actor
                                                                            (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
-                                                                           vector2/->clj)
-                                                                       true)
+                                                                           vector2/->clj)]
+                                                             (Actor/.hit actor x y true))
                                                            (Actor/.getUserObject (Actor/.getParent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
