@@ -500,7 +500,8 @@
       map->Context
       (assoc :ctx/db (cdq.impl.db/create))
       (assoc :ctx/graphics (cdq.impl.graphics/create! (handle-files files graphics-params)
-                                                      graphics))
+                                                      graphics
+                                                      gdx))
       (ui/create! '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create/create-world]
                     [cdq.ctx.create.ui.action-bar/create]
                     [cdq.ctx.create.ui.hp-mana-bar/create]

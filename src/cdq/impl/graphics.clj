@@ -287,7 +287,8 @@
            default-font
            cursors
            world-viewport]}
-   graphics]
+   graphics
+   gdx]
   (doseq [[name [r g b a]] colors]
     (Colors/put name (Color. r g b a)))
   (let [batch (SpriteBatch.)
