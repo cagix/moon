@@ -122,6 +122,9 @@
   gdx/Input
   (set-input-processor! [_ input-processor]
     (.setInputProcessor input input-processor))
+
+  (key-pressed? [_ key]
+    (.isKeyPressed input key))
   )
 
 (defn context []

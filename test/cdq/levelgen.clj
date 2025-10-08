@@ -88,9 +88,9 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [input] :as gdx}]
+  [gdx]
   (vis-ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/input input})
+  (let [ctx (map->Context {:ctx/gdx gdx})
         ui-viewport (gdx/viewport gdx 1440 900 (camera/create))
         sprite-batch (gdx/sprite-batch gdx)
         stage (Stage. ui-viewport sprite-batch)
@@ -109,7 +109,6 @@
                                                       :world-width world-width
                                                       :world-height world-height)))
         ctx (assoc ctx
-                   :ctx/gdx gdx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
                    :ctx/textures (into {} (for [path (gdx/search-files gdx {:folder "resources/"
@@ -141,7 +140,7 @@
                      tiled-map
                      color-setter))
 
-(defn- camera-movement-controls! [{:keys [ctx/input
+(defn- camera-movement-controls! [{:keys [ctx/gdx
                                           ctx/camera
                                           ctx/camera-movement-speed]}]
   (let [apply-position (fn [idx f]
@@ -149,16 +148,16 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (.isKeyPressed input Input$Keys/LEFT)  (apply-position 0 -))
-    (if (.isKeyPressed input Input$Keys/RIGHT) (apply-position 0 +))
-    (if (.isKeyPressed input Input$Keys/UP)    (apply-position 1 +))
-    (if (.isKeyPressed input Input$Keys/DOWN)  (apply-position 1 -))))
+    (if (gdx/key-pressed? gdx Input$Keys/LEFT)  (apply-position 0 -))
+    (if (gdx/key-pressed? gdx Input$Keys/RIGHT) (apply-position 0 +))
+    (if (gdx/key-pressed? gdx Input$Keys/UP)    (apply-position 1 +))
+    (if (gdx/key-pressed? gdx Input$Keys/DOWN)  (apply-position 1 -))))
 
-(defn- camera-zoom-controls! [{:keys [ctx/input
+(defn- camera-zoom-controls! [{:keys [ctx/gdx
                                       ctx/camera
                                       ctx/zoom-speed]}]
-  (when (.isKeyPressed input Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
-  (when (.isKeyPressed input Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (gdx/key-pressed? gdx Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
+  (when (gdx/key-pressed? gdx Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
   [{:keys [ctx/gdx

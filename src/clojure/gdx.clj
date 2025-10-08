@@ -19,4 +19,5 @@
   (clear! [_ [r g b a]]))
 
 (defprotocol Input
-  (set-input-processor! [_ input-processor]))
+  (set-input-processor! [_ input-processor])
+  (key-pressed? [_ key]))
