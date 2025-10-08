@@ -3,7 +3,6 @@
             cdq.ctx.create.db
             cdq.ctx.create.stage
             cdq.ctx.create.audio
-            cdq.ctx.create.input
             cdq.ctx.create.world
             cdq.info-impl
             clojure.scene2d.builds
@@ -621,6 +620,13 @@
                              (cdq.graphics.impl/create! (handle-files files params)
                                                         graphics))))
 
+(defn create-input [{:keys [ctx/gdx
+                            ctx/stage]
+                     :as ctx}]
+  (let [input (:clojure.gdx/input gdx)]
+    (.setInputProcessor input stage)
+    (assoc ctx :ctx/input input)))
+
 (defn- create! []
   (vis-ui/load! {:skin-scale :x1})
   (-> (merge (map->Context {})
@@ -667,7 +673,7 @@
                                                                      [cdq.ctx.create.ui.windows.inventory/create]]]
                                   [cdq.ctx.create.ui.player-state-draw/create]
                                   [cdq.ctx.create.ui.message/create]])
-      cdq.ctx.create.input/do!
+      create-input
       cdq.ctx.create.audio/do!
       (cdq.ctx.create.world/do! "world_fns/vampire.edn")))
 
