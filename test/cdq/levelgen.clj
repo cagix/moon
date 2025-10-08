@@ -88,9 +88,7 @@
 (defrecord Context [])
 
 (defn create!
-  [{:keys [graphics
-           input]
-    :as gdx}]
+  [{:keys [input] :as gdx}]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
         ui-viewport (gdx/viewport gdx 1440 900 (camera/create))
