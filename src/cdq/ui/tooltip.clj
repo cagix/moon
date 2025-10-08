@@ -1,7 +1,7 @@
 (ns cdq.ui.tooltip
-  (:require [clojure.gdx.utils.align :as align]
-            [clojure.gdx.vis-ui.widget.tooltip :as tooltip])
+  (:require [clojure.gdx.vis-ui.widget.tooltip :as tooltip])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.utils Align)
            (com.kotcrab.vis.ui.widget VisLabel)))
 
 (defn add! [actor tooltip-text]
@@ -17,7 +17,7 @@
                                              (str (if (string? tooltip-text)
                                                     tooltip-text
                                                     "")))
-                              (.setAlignment (align/k->value :center)))})
+                              (.setAlignment Align/center))})
   actor)
 
 (defn remove! [actor]
