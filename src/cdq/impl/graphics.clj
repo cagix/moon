@@ -1,6 +1,5 @@
 (ns cdq.impl.graphics
   (:require [cdq.graphics]
-            [cdq.graphics.color :as color]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
@@ -11,16 +10,14 @@
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.gdx.shape-drawer :as sd]
-            [clojure.math :as math])
+            [clojure.gdx.shape-drawer :as sd])
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
                                       Texture)
            (com.badlogic.gdx.graphics.g2d Batch
                                           TextureRegion)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (def ^:private draw-fns
   {:draw/with-line-width  (fn
@@ -45,6 +42,7 @@
                                       :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
                                 (cdq.graphics/draw! graphics
                                                     [[:draw/line [leftx liney] [rightx liney] color]]))))
+
    :draw/texture-region   (fn
                             [{:keys [^Batch graphics/batch
                                      graphics/unit-scale
@@ -76,6 +74,7 @@
                                        (float y)
                                        (float w)
                                        (float h)))))
+
    :draw/text             (fn
                             [{:keys [graphics/batch
                                      graphics/unit-scale
@@ -92,61 +91,33 @@
                                                 :h-align h-align
                                                 :target-width 0
                                                 :wrap? false}))
-   :draw/ellipse          (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [x y] radius-x radius-y color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.ellipse shape-drawer x y radius-x radius-y))
-   :draw/filled-ellipse   (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [x y] radius-x radius-y color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.filledEllipse shape-drawer x y radius-x radius-y))
-   :draw/circle           (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [x y] radius color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.circle shape-drawer x y radius))
-   :draw/filled-circle    (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [x y] radius color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.filledCircle shape-drawer (float x) (float y) (float radius)))
-   :draw/rectangle        (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             x y w h color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.rectangle shape-drawer x y w h))
-   :draw/filled-rectangle (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             x y w h color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
-   :draw/arc              (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [center-x center-y] radius start-angle degree color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.arc shape-drawer
-                                  center-x
-                                  center-y
-                                  radius
-                                  (math/to-radians start-angle)
-                                  (math/to-radians degree)))
-   :draw/sector           (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [center-x center-y] radius start-angle degree color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.sector shape-drawer
-                                     center-x
-                                     center-y
-                                     radius
-                                     (math/to-radians start-angle)
-                                     (math/to-radians degree)))
-   :draw/line             (fn
-                            [{:keys [^ShapeDrawer graphics/shape-drawer]}
-                             [sx sy] [ex ey] color]
-                            (.setColor shape-drawer (color/float-bits color))
-                            (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))})
+
+   :draw/ellipse          (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
+                            (sd/ellipse! shape-drawer [x y] radius-x radius-y color))
+
+   :draw/filled-ellipse   (fn [{:keys [graphics/shape-drawer]} [x y] radius-x radius-y color]
+                            (sd/filled-ellipse! shape-drawer [x y] radius-x radius-y color))
+
+   :draw/circle           (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
+                            (sd/circle! shape-drawer [x y] radius color))
+
+   :draw/filled-circle    (fn [{:keys [graphics/shape-drawer]} [x y] radius color]
+                            (sd/filled-circle! shape-drawer [x y] radius color))
+
+   :draw/rectangle        (fn [{:keys [graphics/shape-drawer]} x y w h color]
+                            (sd/rectangle! shape-drawer x y w h color))
+
+   :draw/filled-rectangle (fn [{:keys [graphics/shape-drawer]} x y w h color]
+                            (sd/filled-rectangle! shape-drawer x y w h color))
+
+   :draw/arc              (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
+                            (sd/arc! shape-drawer [center-x center-y] radius start-angle degree color))
+
+   :draw/sector           (fn [{:keys [graphics/shape-drawer]} [center-x center-y] radius start-angle degree color]
+                            (sd/sector! shape-drawer [center-x center-y] radius start-angle degree color))
+
+   :draw/line             (fn [{:keys [graphics/shape-drawer]} [sx sy] [ex ey] color]
+                            (sd/line! shape-drawer [sx sy] [ex ey] color))})
 
 (defrecord Graphics []
   cdq.graphics.textures/Textures

@@ -1,8 +1,11 @@
 (ns clojure.gdx.application
-  (:require [clojure.gdx :as gdx]
+  (:require [cdq.graphics.color :as color]
+            [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
             [clojure.gdx.bitmap-font :as bitmap-font]
-            [clojure.string :as str])
+            [clojure.gdx.shape-drawer :as shape-drawer]
+            [clojure.string :as str]
+            [clojure.math :as math])
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
@@ -23,6 +26,54 @@
            (com.badlogic.gdx.utils Align)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(extend-type ShapeDrawer
+  shape-drawer/ShapeDrawer
+  (arc! [this [center-x center-y] radius start-angle degree color]
+    (.setColor this (color/float-bits color))
+    (.arc this
+          center-x
+          center-y
+          radius
+          (math/to-radians start-angle)
+          (math/to-radians degree)) )
+
+  (circle! [this [x y] radius color]
+    (.setColor this (color/float-bits color))
+    (.circle this x y radius))
+
+  (ellipse! [this [x y] radius-x radius-y color]
+    (.setColor this (color/float-bits color))
+    (.ellipse this x y radius-x radius-y))
+
+  (filled-ellipse! [this [x y] radius-x radius-y color]
+    (.setColor this (color/float-bits color))
+    (.filledEllipse this x y radius-x radius-y) )
+
+  (filled-circle! [this [x y] radius color]
+    (.setColor this (color/float-bits color))
+    (.filledCircle this (float x) (float y) (float radius)))
+
+  (filled-rectangle! [this x y w h color]
+    (.setColor this (color/float-bits color))
+    (.filledRectangle this (float x) (float y) (float w) (float h)) )
+
+  (line! [this [sx sy] [ex ey] color]
+    (.setColor this (color/float-bits color))
+    (.line this (float sx) (float sy) (float ex) (float ey)))
+
+  (rectangle! [this x y w h color]
+    (.setColor this (color/float-bits color))
+    (.rectangle this x y w h) )
+
+  (sector! [this [center-x center-y] radius start-angle degree color]
+    (.setColor this (color/float-bits color))
+    (.sector this
+             center-x
+             center-y
+             radius
+             (math/to-radians start-angle)
+             (math/to-radians degree))))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
