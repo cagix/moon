@@ -1,10 +1,15 @@
 [
  [clojure.gdx.graphics.colors/put! {"PRETTY_NAME" [0.84 0.8 0.52 1]}]
  [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
- [cdq.application/gdx-app
+ [clojure.gdx.backends.lwjgl.application/create
   {
-   :listener [cdq.application.listener/create]
-   :config [cdq.application.config/create
+   :listener [clojure.gdx.application.listener/create
+              {:state cdq.application/state
+               :create cdq.game.create/do!
+               :dispose cdq.game.dispose/do!
+               :render cdq.game.render/do!
+               :resize cdq.game.resize/do!}]
+   :config [clojure.gdx.backends.lwjgl.application.config/create
             {:title "Cyber Dungeon Quest"
              :window {:width 1440
                       :height 900}

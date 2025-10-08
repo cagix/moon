@@ -7,16 +7,18 @@
             [cdq.game.create.ui :as create-ui]
             [cdq.game.create.input-processor :as create-input-processor]
             [cdq.game.create.audio :as create-audio]
-            [cdq.game.create.world :as create-world]))
+            [cdq.game.create.world :as create-world]
+            [clojure.config :as config]))
 
-(defn do! [config]
-  (-> {}
-      create-record/do!
-      get-gdx/do!
-      create-tx-handler/do!
-      create-db/do!
-      (create-graphics/do! (:graphics config))
-      (create-ui/do! (:ui config))
-      create-input-processor/do!
-      (create-audio/do! (:audio config))
-      (create-world/do! (:world config))))
+(defn do! []
+  (let [config (config/edn-resource "config.edn")]
+    (-> {}
+        create-record/do!
+        get-gdx/do!
+        create-tx-handler/do!
+        create-db/do!
+        (create-graphics/do! (:graphics config))
+        (create-ui/do! (:ui config))
+        create-input-processor/do!
+        (create-audio/do! (:audio config))
+        (create-world/do! (:world config)))))
