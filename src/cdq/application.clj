@@ -7,7 +7,6 @@
             [cdq.db :as db]
             [cdq.files :as files]
             [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]
             [cdq.graphics.textures :as textures]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.graphics.ui-viewport :as ui-viewport]
@@ -228,8 +227,8 @@
            ctx/input
            ctx/stage]
     :as ctx}]
-  (when (input/zoom-in?            input) (camera/change-zoom! graphics zoom-speed))
-  (when (input/zoom-out?           input) (camera/change-zoom! graphics (- zoom-speed)))
+  (when (input/zoom-in?            input) (graphics/change-zoom! graphics zoom-speed))
+  (when (input/zoom-out?           input) (graphics/change-zoom! graphics (- zoom-speed)))
   (when (input/close-windows?      input) (ui/close-all-windows!         stage))
   (when (input/toggle-inventory?   input) (ui/toggle-inventory-visible!  stage))
   (when (input/toggle-entity-info? input) (ui/toggle-entity-info-window! stage))
@@ -803,10 +802,10 @@
   [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
-  (camera/set-position! graphics
-                        (:body/position
-                         (:entity/body
-                          @(:world/player-eid world))))
+  (graphics/set-position! graphics
+                          (:body/position
+                           (:entity/body
+                            @(:world/player-eid world))))
   ctx)
 
 (defn- clear-screen!
@@ -869,7 +868,7 @@
                             (tile-color-setter
                              {:ray-blocked? (partial raycaster/blocked? world)
                               :explored-tile-corners (:world/explored-tile-corners world)
-                              :light-position (camera/position graphics)
+                              :light-position (graphics/position graphics)
                               :see-all-tiles? false
                               :explored-tile-color  [0.5 0.5 0.5 1]
                               :visible-tile-color   [1 1 1 1]
@@ -881,7 +880,7 @@
 (defn draw-tile-grid
   [{:keys [ctx/graphics]}]
   (when show-tile-grid?
-    (let [[left-x _right-x bottom-y _top-y] (camera/frustum graphics)]
+    (let [[left-x _right-x bottom-y _top-y] (graphics/frustum graphics)]
       [[:draw/grid
         (int left-x)
         (int bottom-y)
@@ -899,7 +898,7 @@
   [{:keys [ctx/graphics
            ctx/world]}]
   (apply concat
-         (for [[x y] (camera/visible-tiles graphics)
+         (for [[x y] (graphics/visible-tiles graphics)
                :let [cell ((:world/grid world) [x y])]
                :when cell
                :let [cell* @cell]]

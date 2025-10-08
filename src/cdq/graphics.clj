@@ -1,4 +1,6 @@
 (ns cdq.graphics
+  (:require [clojure.gdx.graphics.orthographic-camera :as camera]
+            [clojure.gdx.viewport :as viewport])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn dispose!
@@ -19,3 +21,21 @@
   (delta-time [_])
   (frames-per-second [_])
   (draw! [_ draws]))
+
+(defn position [{:keys [graphics/world-viewport]}]
+  (camera/position (viewport/camera world-viewport)))
+
+(defn visible-tiles [{:keys [graphics/world-viewport]}]
+  (camera/visible-tiles (viewport/camera world-viewport)))
+
+(defn frustum [{:keys [graphics/world-viewport]}]
+  (camera/frustum (viewport/camera world-viewport)))
+
+(defn zoom [{:keys [graphics/world-viewport]}]
+  (camera/zoom (viewport/camera world-viewport)))
+
+(defn change-zoom! [{:keys [graphics/world-viewport]} amount]
+  (camera/inc-zoom! (viewport/camera world-viewport) amount))
+
+(defn set-position! [{:keys [graphics/world-viewport]} position]
+  (camera/set-position! (viewport/camera world-viewport) position))
