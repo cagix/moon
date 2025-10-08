@@ -69,7 +69,3 @@
 
 (defn open-debug-button-pressed? [^Input input]
   (.isButtonJustPressed input (:open-debug-button controls)))
-
-(defn mouse-position [^Input input]
-  [(.getX input)
-   (.getY input)])

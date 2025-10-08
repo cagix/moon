@@ -131,6 +131,10 @@
 
   (button-just-pressed? [_ button]
     (.isButtonJustPressed input button))
+
+  (mouse-position [_]
+    [(.getX input)
+     (.getY input)])
   )
 
 (defn context []

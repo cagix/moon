@@ -189,7 +189,7 @@
 
 (defn assoc-interaction-state
   [{:keys [ctx/graphics
-           ctx/input
+           ctx/gdx
            ctx/stage
            ctx/world]
     :as ctx}]
@@ -197,7 +197,7 @@
                                                        (:graphics/world-mouse-position graphics)
                                                        (:world/mouseover-eid world)
                                                        (:world/player-eid    world)
-                                                       (ui/mouseover-actor stage (input/mouse-position input)))))
+                                                       (ui/mouseover-actor stage (gdx/mouse-position gdx)))))
 
 (def ^:private schema
   (m/schema
@@ -222,10 +222,10 @@
       ctx)) ; first render stage does not have ctx set.
 
 (defn- update-mouse
-  [{:keys [ctx/graphics
-           ctx/input]
+  [{:keys [ctx/gdx
+           ctx/graphics]
     :as ctx}]
-  (let [mp (input/mouse-position input)]
+  (let [mp (gdx/mouse-position gdx)]
     (-> ctx
         (assoc-in [:ctx/graphics :graphics/world-mouse-position] (world-viewport/unproject graphics mp))
         (assoc-in [:ctx/graphics :graphics/ui-mouse-position   ] (ui-viewport/unproject    graphics mp))
@@ -249,11 +249,11 @@
 
 (defn- update-mouseover-eid
   [{:keys [ctx/graphics
-           ctx/input
+           ctx/gdx
            ctx/stage
            ctx/world]
     :as ctx}]
-  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))
+  (let [mouseover-actor (ui/mouseover-actor stage (gdx/mouse-position gdx))
         mouseover-eid (:world/mouseover-eid world)
         new-eid (if mouseover-actor
                   nil
