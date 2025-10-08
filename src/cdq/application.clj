@@ -2,38 +2,25 @@
   (:require [cdq.game.create :as create]
             [cdq.game.dispose :as dispose]
             [cdq.game.render :as render]
-            [cdq.game.resize :as resize])
-  (:import (com.badlogic.gdx ApplicationListener
-                             Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
-           (org.lwjgl.system Configuration))
+            [cdq.game.resize :as resize]
+            [clojure.gdx.application :as application])
   (:gen-class))
 
 (def state (atom nil))
 
 (defn -main []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application. (reify ApplicationListener
-                        (create [_]
-                          (reset! state (create/do! {:audio    Gdx/audio
-                                                     :files    Gdx/files
-                                                     :graphics Gdx/graphics
-                                                     :input    Gdx/input})))
-
-                        (dispose [_]
-                          (dispose/do! @state))
-
-                        (render [_]
-                          (swap! state render/do!))
-
-                        (resize [_ width height]
-                          (resize/do! @state width height))
-
-                        (pause [_])
-
-                        (resume [_]))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Cyber Dungeon Quest")
-                        (.setWindowedMode 1440 900)
-                        (.setForegroundFPS 60))))
+  (application/start!
+   {
+    :title "Cyber Dungeon Quest"
+    :window {:width 1440
+             :height 900}
+    :fps 60
+    :create! (fn [gdx]
+               (reset! state (create/do! gdx)))
+    :dispose! (fn []
+                (dispose/do! @state))
+    :render! (fn []
+               (swap! state render/do!))
+    :resize! (fn [width height]
+               (resize/do! @state width height))
+    }))
