@@ -1,99 +1,16 @@
 (ns cdq.game.create
   (:require [cdq.game.create.tx-handler :as create-tx-handler]
-            [clojure.gdx :as gdx]
-            [cdq.audio :as audio]
-            [cdq.db :as db]
-            [cdq.graphics.textures :as textures]
-            [cdq.ui :as ui]
-            cdq.impl.db
-            cdq.impl.graphics
-            cdq.impl.ui
-            cdq.impl.world
-            [cdq.world-fns.creature-tiles]
-            [cdq.ui :as ui]
-            [clojure.gdx.maps.tiled :as tiled]
+            [cdq.game.create.db :as create-db]
+            [cdq.game.create.graphics :as create-graphics]
+            [cdq.game.create.ui :as create-ui]
+            [cdq.game.create.input-processor :as create-input-processor]
+            [cdq.game.create.audio :as create-audio]
+            [cdq.game.create.world :as create-world]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.txs :as txs]
             [qrecord.core :as q]))
 
 (q/defrecord Context [])
-
-(defn- spawn-player!
-  [{:keys [ctx/db
-           ctx/world]
-    :as ctx}]
-  (txs/handle! ctx
-               [[:tx/spawn-creature (let [{:keys [creature-id
-                                                  components]} (:world/player-components world)]
-                                      {:position (mapv (partial + 0.5) (:world/start-position world))
-                                       :creature-property (db/build db creature-id)
-                                       :components components})]])
-  (let [eid (get @(:world/entity-ids world) 1)]
-    (assert (:entity/player? @eid))
-    (assoc-in ctx [:ctx/world :world/player-eid] eid)))
-
-(defn- spawn-enemies!
-  [{:keys [ctx/db
-           ctx/world]
-    :as ctx}]
-  (txs/handle!
-   ctx
-   (for [[position creature-id] (tiled/positions-with-property
-                                 (:world/tiled-map world)
-                                 "creatures"
-                                 "id")]
-     [:tx/spawn-creature {:position (mapv (partial + 0.5) position)
-                          :creature-property (db/build db (keyword creature-id))
-                          :components (:world/enemy-components world)}]))
-  ctx)
-
-(defn- call-world-fn
-  [world-fn creature-properties graphics]
-  (let [[f params] (-> world-fn io/resource slurp edn/read-string)]
-    ((requiring-resolve f)
-     (assoc params
-            :level/creature-properties (cdq.world-fns.creature-tiles/prepare creature-properties
-                                                                             #(textures/texture-region graphics %))
-            :textures (:graphics/textures graphics)))))
-
-(def ^:private world-params
-  {:content-grid-cell-size 16
-   :world/factions-iterations {:good 15 :evil 5}
-   :world/max-delta 0.04
-   :world/minimum-size 0.39
-   :world/z-orders [:z-order/on-ground
-                    :z-order/ground
-                    :z-order/flying
-                    :z-order/effect]
-   :world/enemy-components {:entity/fsm {:fsm :fsms/npc
-                                         :initial-state :npc-sleeping}
-                            :entity/faction :evil}
-   :world/player-components {:creature-id :creatures/vampire
-                             :components {:entity/fsm {:fsm :fsms/player
-                                                       :initial-state :player-idle}
-                                          :entity/faction :good
-                                          :entity/player? true
-                                          :entity/free-skill-points 3
-                                          :entity/clickable {:type :clickable/player}
-                                          :entity/click-distance-tiles 1.5}}
-   :world/effect-body-props {:width 0.5
-                             :height 0.5
-                             :z-order :z-order/effect}})
-
-(defn create-world
-  [{:keys [ctx/db
-           ctx/graphics
-           ctx/world]
-    :as ctx}
-   world-fn]
-  (let [world-fn-result (call-world-fn world-fn
-                                       (db/all-raw db :properties/creatures)
-                                       graphics)]
-    (-> ctx
-        (assoc :ctx/world (cdq.impl.world/create world-params world-fn-result))
-        spawn-player!
-        spawn-enemies!)))
 
 (def graphics-params
   {:tile-size 48
@@ -127,13 +44,6 @@
                     :cursors/use-skill             ["pointer004"   [0   0]]
                     :cursors/walking               ["walking"      [16 16]]}}})
 
-(defn create-input
-  [{:keys [ctx/stage]
-    :as ctx}
-   gdx]
-  (gdx/set-input-processor! gdx stage)
-  ctx)
-
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")
 
@@ -141,15 +51,15 @@
   (-> {:ctx/gdx gdx}
       map->Context
       create-tx-handler/do!
-      (assoc :ctx/db (cdq.impl.db/create))
-      (assoc :ctx/graphics (cdq.impl.graphics/create! gdx graphics-params))
-      (ui/create! '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create/create-world]
-                    [cdq.ctx.create.ui.action-bar/create]
-                    [cdq.ctx.create.ui.hp-mana-bar/create]
-                    [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
-                                                       [cdq.ctx.create.ui.windows.inventory/create]]]
-                    [cdq.ctx.create.ui.player-state-draw/create]
-                    [cdq.ctx.create.ui.message/create]])
-      (create-input gdx)
-      (assoc :ctx/audio (audio/create gdx sound-names path-format))
-      (create-world "world_fns/vampire.edn")))
+      create-db/do!
+      (create-graphics/do! graphics-params)
+      (create-ui/do! '[[cdq.ctx.create.ui.dev-menu/create cdq.game.create.world/do!]
+                       [cdq.ctx.create.ui.action-bar/create]
+                       [cdq.ctx.create.ui.hp-mana-bar/create]
+                       [cdq.ctx.create.ui.windows/create [[cdq.ctx.create.ui.windows.entity-info/create]
+                                                          [cdq.ctx.create.ui.windows.inventory/create]]]
+                       [cdq.ctx.create.ui.player-state-draw/create]
+                       [cdq.ctx.create.ui.message/create]])
+      create-input-processor/do!
+      (create-audio/do! sound-names path-format)
+      (create-world/do! "world_fns/vampire.edn")))
