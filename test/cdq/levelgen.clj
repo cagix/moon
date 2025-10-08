@@ -2,7 +2,7 @@
   (:require clojure.scene2d.builds
             clojure.scene2d.build.actor
             clojure.scene2d.build.group
-            [cdq.ctx.create.db]
+            [cdq.impl.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
@@ -106,7 +106,7 @@
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
         ctx (-> ctx
-                (assoc :ctx/db (cdq.ctx.create.db/create)))
+                (assoc :ctx/db (cdq.impl.db/create)))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
                          (FitViewport. world-width
