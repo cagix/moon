@@ -44,8 +44,10 @@
                     :cursors/use-skill             ["pointer004"   [0   0]]
                     :cursors/walking               ["walking"      [16 16]]}}})
 
-(def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
-(def ^:private path-format "sounds/%s.wav")
+(def audio-config {
+                   :sound-names (->> "sounds.edn" io/resource slurp edn/read-string)
+                   :path-format "sounds/%s.wav"
+                   })
 
 (defn do! [gdx]
   (-> {:ctx/gdx gdx}
@@ -61,5 +63,5 @@
                        [cdq.ctx.create.ui.player-state-draw/create]
                        [cdq.ctx.create.ui.message/create]])
       create-input-processor/do!
-      (create-audio/do! sound-names path-format)
+      (create-audio/do! audio-config)
       (create-world/do! "world_fns/vampire.edn")))
