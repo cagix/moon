@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [cdq.game :as game])
+  (:require [cdq.game :as game]
+            [cdq.game.create :as create])
   (:import (com.badlogic.gdx ApplicationListener
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -13,10 +14,10 @@
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (reset! state (game/create! {:audio    Gdx/audio
-                                                       :files    Gdx/files
-                                                       :graphics Gdx/graphics
-                                                       :input    Gdx/input})))
+                          (reset! state (create/do! {:audio    Gdx/audio
+                                                     :files    Gdx/files
+                                                     :graphics Gdx/graphics
+                                                     :input    Gdx/input})))
 
                         (dispose [_]
                           (game/dispose! @state))
