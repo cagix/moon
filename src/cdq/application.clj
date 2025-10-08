@@ -1,14 +1,14 @@
 (ns cdq.application
-  (:require [cdq.game.create :as create]
+  (:require clojure.lwjgl.system.configuration
+            [cdq.game.create :as create]
             [cdq.game.dispose :as dispose]
             [cdq.game.render :as render]
             [cdq.game.resize :as resize]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.badlogic.gdx :as gdx]
-            [com.badlogic.gdx.backends.lwjgl :as lwjgl]
+            [com.badlogic.gdx]
+            [com.badlogic.gdx.backends.lwjgl]
             [qrecord.core :as q])
-  (:import (org.lwjgl.system Configuration))
   (:gen-class))
 
 (q/defrecord Context [])
@@ -24,9 +24,9 @@
 (def config (edn-resource "config.edn"))
 
 (defn -main []
-  (gdx/def-colors! {"PRETTY_NAME" [0.84 0.8 0.52 1]})
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (lwjgl/application
+  (com.badlogic.gdx/def-colors! {"PRETTY_NAME" [0.84 0.8 0.52 1]})
+  (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+  (com.badlogic.gdx.backends.lwjgl/application
    {
     :title "Cyber Dungeon Quest"
 
@@ -37,7 +37,7 @@
 
     :create! (fn []
                (reset! state (create/do! (assoc (map->Context {})
-                                                :ctx/gdx (gdx/context))
+                                                :ctx/gdx (com.badlogic.gdx/context))
                                          config)))
 
     :dispose! (fn []
