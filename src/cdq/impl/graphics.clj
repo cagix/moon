@@ -203,27 +203,28 @@
     (.end batch)))
 
 (defn create!
-  [{:keys [colors
-           textures-to-load
-           world-unit-scale
-           ui-viewport
+  [gdx
+   {:keys [cursors
            default-font
-           cursors
-           world-viewport]}
-   graphics
-   gdx]
+           texture-folder
+           tile-size
+           ui-viewport
+           world-viewport]}]
   (let [batch (gdx/sprite-batch gdx)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
                                             (.drawPixel 0 0))
                                    texture (Texture. pixmap)]
                                (.dispose pixmap)
-                               texture)]
+                               texture)
+        world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
-        (assoc :graphics/core graphics)
-        (assoc :graphics/cursors (update-vals cursors
+        (assoc :graphics/core (:graphics gdx))
+        (assoc :graphics/cursors (update-vals (:data cursors)
                                               (fn [[path hotspot]]
-                                                (gdx/cursor gdx path hotspot))))
+                                                (gdx/cursor gdx
+                                                            (format (:path-format cursors) path)
+                                                            hotspot))))
         (assoc :graphics/default-font (gdx/truetype-font gdx
                                                          (:path default-font)
                                                          (:params default-font)))
@@ -236,7 +237,7 @@
                                                                         0
                                                                         1
                                                                         1)))
-        (assoc :graphics/textures (into {} (for [path textures-to-load]
+        (assoc :graphics/textures (into {} (for [path (gdx/search-files gdx texture-folder)]
                                              [path (gdx/texture gdx path)])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
