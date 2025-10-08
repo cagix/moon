@@ -11,7 +11,7 @@
             [clojure.gdx.graphics.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.gdx.graphics.color :as color]
+            [cdq.graphics.color :as color]
             [clojure.gdx.viewport :as viewport]
             [clojure.java.io :as io]
             [clojure.scene2d :as scene2d]

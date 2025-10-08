@@ -13,7 +13,7 @@
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
-            [clojure.gdx.graphics.color :as color]
+            [cdq.graphics.color :as color]
             [cdq.input :as input]
             [cdq.ui :as ui]
             [cdq.effect :as effect]

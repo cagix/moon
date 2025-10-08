@@ -1,5 +1,5 @@
 (ns cdq.graphics.draws
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [cdq.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d Batch
