@@ -2,13 +2,14 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.ui.editor.schema :as schema]
-            [cdq.input :as input]
+            [clojure.gdx :as gdx]
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
             [cdq.ui.window :as window])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx Input$Keys)
+           (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]
@@ -37,8 +38,8 @@
            property-id]}]
   (let [clicked-delete-fn (with-window-close (delete-property-fn property-id))
         clicked-save-fn   (with-window-close (update-property-fn get-widget-value))
-        act-fn (fn [actor _delta {:keys [ctx/input] :as ctx}]
-                 (when (input/enter-just-pressed? input)
+        act-fn (fn [actor _delta {:keys [ctx/gdx] :as ctx}]
+                 (when (gdx/key-just-pressed? gdx Input$Keys/ENTER)
                    (clicked-save-fn actor ctx)))
         actors [{:actor/type :actor.type/actor
                  :actor/act act-fn}]

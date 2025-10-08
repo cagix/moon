@@ -76,6 +76,3 @@
 
 (defn left-mouse-button-just-pressed? [^Input input]
   (.isButtonJustPressed input Input$Buttons/LEFT))
-
-(defn enter-just-pressed? [^Input input]
-  (.isKeyJustPressed input Input$Keys/ENTER))

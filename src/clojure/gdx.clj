@@ -20,4 +20,5 @@
 
 (defprotocol Input
   (set-input-processor! [_ input-processor])
-  (key-pressed? [_ key]))
+  (key-pressed? [_ key])
+  (key-just-pressed? [_ key]))
