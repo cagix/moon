@@ -1,5 +1,6 @@
 (ns cdq.levelgen
-  (:require [clojure.gdx.application :as application]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.application :as application]
             clojure.scene2d.builds
             clojure.scene2d.build.actor
             clojure.scene2d.build.group
@@ -20,11 +21,9 @@
   (:import (cdq.ui Stage)
            (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+           (com.badlogic.gdx.utils Disposable)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -98,8 +97,8 @@
     :as gdx}]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/input input})
-        ui-viewport (FitViewport. 1440 900 (camera/create))
-        sprite-batch (SpriteBatch.)
+        ui-viewport (gdx/viewport gdx 1440 900 (camera/create))
+        sprite-batch (gdx/sprite-batch gdx)
         stage (Stage. ui-viewport sprite-batch)
         _  (.setInputProcessor input stage)
         tile-size 48
@@ -109,7 +108,8 @@
                 (assoc :ctx/db (cdq.impl.db/create)))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (FitViewport. world-width
+                         (gdx/viewport gdx
+                                       world-width
                                        world-height
                                        (camera/create :y-down? false
                                                       :world-width world-width
