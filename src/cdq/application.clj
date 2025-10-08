@@ -614,7 +614,7 @@
 (defn- create! []
   (-> {}
       map->Context
-      cdq.ctx.create.db/do!
+      (assoc :ctx/db (cdq.ctx.create.db/create))
       (create-graphics {:tile-size 48
                         :ui-viewport {:width 1440
                                       :height 900}

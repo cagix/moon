@@ -95,15 +95,12 @@
     (map #(schemas/build-values schemas % this)
          (db/all-raw this property-type))))
 
-(defn- create-db
-  [{:keys [schemas
-           properties
-           schema-fn-map]}]
-  (let [schemas (update-vals (-> schemas io/resource slurp edn/read-string)
+(defn create []
+  (let [schemas (update-vals (-> "schema.edn" io/resource slurp edn/read-string)
                              (fn [[k :as schema]]
-                               (with-meta schema (get schema-fn-map k))))
+                               (with-meta schema (get schema-fn-map/fn-map k))))
         schemas (map->Schemas schemas)
-        properties-file (io/resource properties)
+        properties-file (io/resource "properties.edn")
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
@@ -113,8 +110,3 @@
            {:db/data (zipmap (map :property/id properties) properties)
             :db/file properties-file
             :db/schemas schemas})))
-
-(defn do! [ctx]
-  (assoc ctx :ctx/db (create-db {:schemas "schema.edn"
-                                 :properties "properties.edn"
-                                 :schema-fn-map schema-fn-map/fn-map})))
