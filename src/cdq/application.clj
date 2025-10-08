@@ -5,8 +5,12 @@
             [cdq.game.resize :as resize]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.badlogic.gdx.backends.lwjgl :as lwjgl])
+            [com.badlogic.gdx :as gdx]
+            [com.badlogic.gdx.backends.lwjgl :as lwjgl]
+            [qrecord.core :as q])
   (:gen-class))
+
+(q/defrecord Context [])
 
 (def config
   {
@@ -61,6 +65,7 @@
 (def state (atom nil))
 
 (defn -main []
+  (gdx/def-colors! colors)
   (lwjgl/application
    {
     :title "Cyber Dungeon Quest"
@@ -70,8 +75,10 @@
 
     :fps 60
 
-    :create! (fn [gdx]
-               (reset! state (create/do! gdx config)))
+    :create! (fn []
+               (reset! state (create/do! (assoc (map->Context {})
+                                                :ctx/gdx (gdx/context))
+                                         config)))
 
     :dispose! (fn []
                 (dispose/do! @state))

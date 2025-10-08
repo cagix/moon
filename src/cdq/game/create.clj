@@ -5,14 +5,10 @@
             [cdq.game.create.ui :as create-ui]
             [cdq.game.create.input-processor :as create-input-processor]
             [cdq.game.create.audio :as create-audio]
-            [cdq.game.create.world :as create-world]
-            [qrecord.core :as q]))
+            [cdq.game.create.world :as create-world]))
 
-(q/defrecord Context [])
-
-(defn do! [gdx config]
-  (-> {:ctx/gdx gdx}
-      map->Context
+(defn do! [ctx config]
+  (-> ctx
       create-tx-handler/do!
       create-db/do!
       (create-graphics/do! (:graphics config))

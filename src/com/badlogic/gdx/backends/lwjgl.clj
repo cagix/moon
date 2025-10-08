@@ -1,5 +1,4 @@
 (ns com.badlogic.gdx.backends.lwjgl
-  (:require [com.badlogic.gdx :as gdx])
   (:import (com.badlogic.gdx ApplicationListener)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -14,11 +13,10 @@
            render!
            resize!
            colors]}]
-  (gdx/def-colors! colors)
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (create! (gdx/context)))
+                          (create!))
 
                         (dispose [_]
                           (dispose!))

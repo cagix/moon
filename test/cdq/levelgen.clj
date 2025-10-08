@@ -1,5 +1,6 @@
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
+            [com.badlogic.gdx]
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             clojure.scene2d.builds
             clojure.scene2d.build.actor
@@ -190,8 +191,8 @@
     :title "Levelgen test"
     :window {:width 1440 :height 900}
     :fps 60
-    :create! (fn [gdx]
-               (reset! state (create! gdx)))
+    :create! (fn []
+               (reset! state (create! (com.badlogic.gdx/context))))
     :dispose! (fn []
                 (dispose! @state))
     :render! (fn []
