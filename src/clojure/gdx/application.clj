@@ -1,12 +1,21 @@
 (ns clojure.gdx.application
-  (:require [clojure.gdx :as gdx])
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.audio :as audio])
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
                              Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (org.lwjgl.system Configuration)))
+
+(extend-type Sound
+  audio/Sound
+  (play! [this]
+    (.play this))
+  (dispose! [this]
+    (.dispose this)))
 
 (defrecord Context [^Audio audio
                     ^Files files

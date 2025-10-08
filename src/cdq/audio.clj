@@ -1,6 +1,6 @@
 (ns cdq.audio
-  (:require [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx.audio Sound)))
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.audio :as audio]))
 
 (defn create [gdx sound-names path-format]
   (into {}
@@ -15,7 +15,7 @@
 
 (defn play! [sounds sound-name]
   (assert (contains? sounds sound-name) (str sound-name))
-  (Sound/.play (get sounds sound-name)))
+  (audio/play! (get sounds sound-name)))
 
 (defn dispose! [sounds]
-  (run! Sound/.dispose (vals sounds)))
+  (run! audio/dispose! (vals sounds)))
