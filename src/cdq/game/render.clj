@@ -95,15 +95,24 @@
 (def zoom-speed 0.025)
 
 (defn window-camera-controls
-  [{:keys [ctx/graphics
-           ctx/input
+  [{:keys [ctx/gdx
+           ctx/graphics
            ctx/stage]
     :as ctx}]
-  (when (input/zoom-in?            input) (graphics/change-zoom! graphics zoom-speed))
-  (when (input/zoom-out?           input) (graphics/change-zoom! graphics (- zoom-speed)))
-  (when (input/close-windows?      input) (ui/close-all-windows!         stage))
-  (when (input/toggle-inventory?   input) (ui/toggle-inventory-visible!  stage))
-  (when (input/toggle-entity-info? input) (ui/toggle-entity-info-window! stage))
+  (when (gdx/key-pressed? gdx (:zoom-in input/controls))
+    (graphics/change-zoom! graphics zoom-speed))
+
+  (when (gdx/key-pressed? gdx (:zoom-out input/controls))
+    (graphics/change-zoom! graphics (- zoom-speed)))
+
+  (when (gdx/key-just-pressed? gdx (:close-windows-key input/controls))
+    (ui/close-all-windows! stage))
+
+  (when (gdx/key-just-pressed? gdx (:toggle-inventory input/controls))
+    (ui/toggle-inventory-visible! stage))
+
+  (when (gdx/key-just-pressed? gdx (:toggle-entity-info input/controls))
+    (ui/toggle-entity-info-window! stage))
   ctx)
 
 (def destroy-components
@@ -206,7 +215,6 @@
     [:ctx/db :some]
     [:ctx/gdx :some]
     [:ctx/graphics :some]
-    [:ctx/input :some]
     [:ctx/stage :some]
     [:ctx/actor-fns :some]
     [:ctx/world :some]]))
@@ -266,11 +274,11 @@
 
 (defn- check-open-debug
   [{:keys [ctx/graphics
-           ctx/input
+           ctx/gdx
            ctx/stage
            ctx/world]
     :as ctx}]
-  (when (input/open-debug-button-pressed? input)
+  (when (gdx/button-just-pressed? gdx (:open-debug-button input/controls))
     (let [data (or (and (:world/mouseover-eid world) @(:world/mouseover-eid world))
                    @((:world/grid world) (mapv int (:graphics/world-mouse-position graphics))))]
       (ui/show-data-viewer! stage data)))
@@ -469,14 +477,15 @@
                          :active-skill false})
 
 (defn assoc-paused
-  [{:keys [ctx/input
+  [{:keys [ctx/gdx
            ctx/world]
     :as ctx}]
   (assoc-in ctx [:ctx/world :world/paused?]
             (or #_error
                 (and pausing?
                      (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
-                     (not (input/unpause? input))))))
+                     (not (or (gdx/key-just-pressed? gdx (:unpause-once input/controls))
+                              (gdx/key-pressed? gdx (:unpause-continously input/controls))))))))
 
 (defn- update-world-time* [{:keys [world/max-delta]
                            :as world}

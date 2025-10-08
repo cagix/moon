@@ -465,10 +465,12 @@
                     :cursors/use-skill             ["pointer004"   [0   0]]
                     :cursors/walking               ["walking"      [16 16]]}}})
 
-(defn create-input [{:keys [ctx/stage]
-                     :as ctx} gdx]
+(defn create-input
+  [{:keys [ctx/stage]
+    :as ctx}
+   gdx]
   (gdx/set-input-processor! gdx stage)
-  (assoc ctx :ctx/input (:input gdx)))
+  ctx)
 
 (def ^:private sound-names (->> "sounds.edn" io/resource slurp edn/read-string))
 (def ^:private path-format "sounds/%s.wav")

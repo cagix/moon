@@ -1,8 +1,8 @@
 (ns cdq.input
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :as gdx]
+            [clojure.string :as str]
             [clojure.math.vector2 :as v])
-  (:import (com.badlogic.gdx Input
-                             Input$Buttons
+  (:import (com.badlogic.gdx Input$Buttons
                              Input$Keys)))
 
 (def controls
@@ -29,43 +29,15 @@
              "rightclick on tile or entity - open debug data window"
              "Leftmouse click - use skill/drop item on cursor"]))
 
-(defn- unpause-once? [^Input input]
-  (.isKeyJustPressed input (:unpause-once controls)))
-
-(defn- unpause-continously? [^Input input]
-  (.isKeyPressed      input (:unpause-continously controls)))
-
-(defn- WASD-movement-vector [^Input input]
-  (let [r (when (.isKeyPressed input Input$Keys/D) [1  0])
-        l (when (.isKeyPressed input Input$Keys/A) [-1 0])
-        u (when (.isKeyPressed input Input$Keys/W) [0  1])
-        d (when (.isKeyPressed input Input$Keys/S) [0 -1])]
+(defn- WASD-movement-vector [gdx]
+  (let [r (when (gdx/key-pressed? gdx Input$Keys/D) [1  0])
+        l (when (gdx/key-pressed? gdx Input$Keys/A) [-1 0])
+        u (when (gdx/key-pressed? gdx Input$Keys/W) [0  1])
+        d (when (gdx/key-pressed? gdx Input$Keys/S) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
           v)))))
 
-(defn player-movement-vector [input]
-  (WASD-movement-vector input))
-
-(defn zoom-in? [^Input input]
-  (.isKeyPressed input (:zoom-in  controls)))
-
-(defn zoom-out? [^Input input]
-  (.isKeyPressed input (:zoom-out controls)))
-
-(defn close-windows? [^Input input]
-  (.isKeyJustPressed input (:close-windows-key controls)))
-
-(defn toggle-inventory? [^Input input]
-  (.isKeyJustPressed input (:toggle-inventory controls) ))
-
-(defn toggle-entity-info? [^Input input]
-  (.isKeyJustPressed input (:toggle-entity-info controls)))
-
-(defn unpause? [input]
-  (or (unpause-once?        input)
-      (unpause-continously? input)))
-
-(defn open-debug-button-pressed? [^Input input]
-  (.isButtonJustPressed input (:open-debug-button controls)))
+(defn player-movement-vector [gdx]
+  (WASD-movement-vector gdx))
