@@ -298,11 +298,8 @@
     (-> (map->Graphics {})
         (assoc :graphics/core graphics)
         (assoc :graphics/cursors (update-vals cursors
-                                              (fn [[file-handle [hotspot-x hotspot-y]]]
-                                                (let [pixmap (Pixmap. file-handle)
-                                                      cursor (graphics/cursor graphics pixmap hotspot-x hotspot-y)]
-                                                  (.dispose pixmap)
-                                                  cursor))))
+                                              (fn [[path hotspot]]
+                                                (gdx/cursor gdx path hotspot))))
         (assoc :graphics/default-font (generate-font (:file-handle default-font)
                                                      (:params default-font)))
         (assoc :graphics/batch batch)

@@ -479,7 +479,7 @@
    :colors colors
    :cursors (update-vals (:data cursors)
                          (fn [[short-path hotspot]]
-                           [(Files/.internal files (format (:path-format cursors) short-path))
+                           [(format (:path-format cursors) short-path)
                             hotspot]))
    :world-unit-scale (float (/ tile-size))
    :world-viewport world-viewport

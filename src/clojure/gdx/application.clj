@@ -4,12 +4,14 @@
   (:import (com.badlogic.gdx ApplicationListener
                              Audio
                              Files
-                             Gdx)
+                             Gdx
+                             Graphics)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color
-                                      Colors)
+                                      Colors
+                                      Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (org.lwjgl.system Configuration)))
 
@@ -22,7 +24,7 @@
 
 (defrecord Context [^Audio audio
                     ^Files files
-                    graphics
+                    ^Graphics graphics
                     input]
   gdx/Audio
   (sound [_ path]
@@ -31,6 +33,12 @@
   gdx/Graphics
   (sprite-batch [_]
     (SpriteBatch.))
+
+  (cursor [_ path [hotspot-x hotspot-y]]
+    (let [pixmap (Pixmap. (.internal files path))
+          cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
+      (.dispose pixmap)
+      cursor))
   )
 
 (defn start!

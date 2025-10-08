@@ -11,9 +11,6 @@
 (defn set-cursor! [^Graphics graphics cursor]
   (.setCursor graphics cursor))
 
-(defn cursor [^Graphics graphics pixmap hotspot-x hotspot-y]
-  (.newCursor graphics pixmap hotspot-x hotspot-y))
-
 (defn clear! [^Graphics graphics [r g b a]]
   (let [clear-depth? false
         apply-antialiasing? false
