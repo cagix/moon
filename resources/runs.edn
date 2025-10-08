@@ -1,4 +1,14 @@
 [
  [clojure.gdx.graphics.colors/put! {"PRETTY_NAME" [0.84 0.8 0.52 1]}]
  [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
+ [cdq.application/gdx-app
+  {
+   :listener [cdq.application.listener/create]
+   :config [cdq.application.config/create
+            {:title "Cyber Dungeon Quest"
+             :window {:width 1440
+                      :height 900}
+             :fps 60}]
+   }
+  ]
  ]
