@@ -1,6 +1,6 @@
 (ns cdq.game.render.assoc-paused
   (:require [cdq.input :as input]
-            [clojure.gdx :as gdx]))
+            [clojure.input]))
 
 (def pausing? true)
 
@@ -19,5 +19,5 @@
             (or #_error
                 (and pausing?
                      (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
-                     (not (or (gdx/key-just-pressed? gdx (:unpause-once input/controls))
-                              (gdx/key-pressed? gdx (:unpause-continously input/controls))))))))
+                     (not (or (clojure.input/key-just-pressed? gdx (:unpause-once input/controls))
+                              (clojure.input/key-pressed? gdx (:unpause-continously input/controls))))))))

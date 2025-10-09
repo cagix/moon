@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.ui.editor.schema :as schema]
-            [clojure.gdx :as gdx]
+            [clojure.input :as input]
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
@@ -44,7 +44,7 @@
                     (when-let [stage (.getStage this)]
                       (let [{:keys [ctx/gdx]
                              :as ctx} (.ctx stage)]
-                        (when (gdx/key-just-pressed? gdx Input$Keys/ENTER)
+                        (when (input/key-just-pressed? gdx Input$Keys/ENTER)
                           (clicked-save-fn this ctx))))))]
         save-button (text-button/create
                      {:text "Save [LIGHT_GRAY](ENTER)[]"

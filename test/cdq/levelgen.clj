@@ -2,6 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
             [clojure.scene2d.vis-ui.text-button :as text-button]
+            [clojure.input :as input]
             [cdq.impl.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
@@ -95,7 +96,7 @@
         ui-viewport (gdx/viewport gdx 1440 900 (gdx/orthographic-camera gdx))
         sprite-batch (gdx/sprite-batch gdx)
         stage (gdx/stage gdx ui-viewport sprite-batch)
-        _  (gdx/set-input-processor! gdx stage)
+        _  (input/set-processor! gdx stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
@@ -150,16 +151,16 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (gdx/key-pressed? gdx Input$Keys/LEFT)  (apply-position 0 -))
-    (if (gdx/key-pressed? gdx Input$Keys/RIGHT) (apply-position 0 +))
-    (if (gdx/key-pressed? gdx Input$Keys/UP)    (apply-position 1 +))
-    (if (gdx/key-pressed? gdx Input$Keys/DOWN)  (apply-position 1 -))))
+    (if (input/key-pressed? gdx Input$Keys/LEFT)  (apply-position 0 -))
+    (if (input/key-pressed? gdx Input$Keys/RIGHT) (apply-position 0 +))
+    (if (input/key-pressed? gdx Input$Keys/UP)    (apply-position 1 +))
+    (if (input/key-pressed? gdx Input$Keys/DOWN)  (apply-position 1 -))))
 
 (defn- camera-zoom-controls! [{:keys [ctx/gdx
                                       ctx/camera
                                       ctx/zoom-speed]}]
-  (when (gdx/key-pressed? gdx Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
-  (when (gdx/key-pressed? gdx Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (input/key-pressed? gdx Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
+  (when (input/key-pressed? gdx Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
   [{:keys [ctx/gdx

@@ -17,12 +17,5 @@
   (orthographic-camera [_]
                        [_ {:keys [y-down? world-width world-height]}]))
 
-(defprotocol Input
-  (set-input-processor! [_ input-processor])
-  (key-pressed? [_ key])
-  (key-just-pressed? [_ key])
-  (button-just-pressed? [_ button])
-  (mouse-position [_]))
-
 (defprotocol Scene2d
   (stage [_ viewport batch]))

@@ -22,7 +22,7 @@
            [sound-name
             (->> sound-name
                  (format path-format)
-                 (audio/sound gdx))]))) )
+                 (audio/sound gdx))]))))
 
 (defn do!
   [{:keys [ctx/gdx]

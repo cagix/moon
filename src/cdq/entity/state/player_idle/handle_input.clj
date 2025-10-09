@@ -2,7 +2,7 @@
   (:require [cdq.entity.inventory :as inventory]
             [cdq.input :as input]
             [cdq.ui :as ui]
-            [clojure.gdx :as gdx])
+            [clojure.input])
   (:import (com.badlogic.gdx Input$Buttons)))
 
 (defn- interaction-state->txs [[k params] stage player-eid]
@@ -59,7 +59,7 @@
            ctx/stage] :as ctx}]
   (if-let [movement-vector (input/player-movement-vector gdx)]
     [[:tx/event player-eid :movement-input movement-vector]]
-    (when (gdx/button-just-pressed? gdx Input$Buttons/LEFT)
+    (when (clojure.input/button-just-pressed? gdx Input$Buttons/LEFT)
       (interaction-state->txs interaction-state
                               stage
                               player-eid))))

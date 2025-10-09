@@ -2,7 +2,7 @@
   (:require [cdq.ui :as ui]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
-            [clojure.gdx :as gdx]
+            [clojure.input :as input]
             [clojure.utils :as utils]))
 
 (defn- get-mouseover-entity
@@ -27,7 +27,7 @@
            ctx/stage
            ctx/world]
     :as ctx}]
-  (let [mouseover-actor (ui/mouseover-actor stage (gdx/mouse-position gdx))
+  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position gdx))
         mouseover-eid (:world/mouseover-eid world)
         new-eid (if mouseover-actor
                   nil

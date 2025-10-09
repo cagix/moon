@@ -1,9 +1,9 @@
 (ns cdq.game.create.input-processor
-  (:require [clojure.gdx :as gdx]))
+  (:require [clojure.input :as input]))
 
 (defn do!
   [{:keys [ctx/gdx
            ctx/stage]
     :as ctx}]
-  (gdx/set-input-processor! gdx stage)
+  (input/set-processor! gdx stage)
   ctx)

@@ -1,6 +1,7 @@
 (ns com.badlogic.gdx
   (:require [clojure.audio]
             [clojure.color :as color]
+            [clojure.input]
             [clojure.sound]
             [clojure.gdx :as gdx]
             [clojure.gdx.bitmap-font :as bitmap-font]
@@ -125,8 +126,8 @@
          (str/replace-first path folder ""))
        (recursively-search (.internal files folder) extensions)))
 
-  gdx/Input
-  (set-input-processor! [_ input-processor]
+  clojure.input/Input
+  (set-processor! [_ input-processor]
     (.setInputProcessor input input-processor))
 
   (key-pressed? [_ key]

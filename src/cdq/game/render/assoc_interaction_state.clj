@@ -2,7 +2,7 @@
   (:require [cdq.entity.body :as body]
             [cdq.entity.skills.skill :as skill]
             [cdq.ui :as ui]
-            [clojure.gdx :as gdx]
+            [clojure.input :as input]
             [clojure.math.vector2 :as v]))
 
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]
@@ -54,4 +54,4 @@
                                                        (:graphics/world-mouse-position graphics)
                                                        (:world/mouseover-eid world)
                                                        (:world/player-eid    world)
-                                                       (ui/mouseover-actor stage (gdx/mouse-position gdx)))))
+                                                       (ui/mouseover-actor stage (input/mouse-position gdx)))))

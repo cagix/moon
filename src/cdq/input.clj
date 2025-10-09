@@ -1,5 +1,5 @@
 (ns cdq.input
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.input :as input]
             [clojure.string :as str]
             [clojure.math.vector2 :as v])
   (:import (com.badlogic.gdx Input$Buttons
@@ -30,10 +30,10 @@
              "Leftmouse click - use skill/drop item on cursor"]))
 
 (defn- WASD-movement-vector [gdx]
-  (let [r (when (gdx/key-pressed? gdx Input$Keys/D) [1  0])
-        l (when (gdx/key-pressed? gdx Input$Keys/A) [-1 0])
-        u (when (gdx/key-pressed? gdx Input$Keys/W) [0  1])
-        d (when (gdx/key-pressed? gdx Input$Keys/S) [0 -1])]
+  (let [r (when (input/key-pressed? gdx Input$Keys/D) [1  0])
+        l (when (input/key-pressed? gdx Input$Keys/A) [-1 0])
+        u (when (input/key-pressed? gdx Input$Keys/W) [0  1])
+        d (when (input/key-pressed? gdx Input$Keys/S) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
