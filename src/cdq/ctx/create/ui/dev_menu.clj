@@ -4,6 +4,7 @@
             [cdq.input :as input]
             [cdq.ui :as ui]
             [cdq.ui.editor.overview-window :as editor-overview-window]
+            [cdq.ui.editor.window :as editor-window]
             [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
@@ -30,9 +31,8 @@
                                                 :property-type property-type
                                                 :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]
                                                                  (.addActor stage
-                                                                             (scene2d/build
-                                                                              {:actor/type :actor.type/editor-window
-                                                                               :ctx ctx
+                                                                             (editor-window/create
+                                                                              {:ctx ctx
                                                                                :property (db/get-raw db id)})))})))})})
         ctx-data-viewer {:label "Ctx Data"
                          :items [{:label "Show data"

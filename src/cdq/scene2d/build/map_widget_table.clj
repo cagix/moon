@@ -5,6 +5,7 @@
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
+            [cdq.ui.editor.window :as editor-window]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
@@ -24,9 +25,8 @@
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
     (Actor/.remove window)
     (.addActor stage
-               (scene2d/build
-                {:actor/type :actor.type/editor-window
-                 :ctx ctx
+               (editor-window/create
+                {:ctx ctx
                  :property property}))))
 
 (defn- k->label-text [k]

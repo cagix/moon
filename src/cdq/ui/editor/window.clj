@@ -1,4 +1,4 @@
-(ns cdq.scene2d.build.editor-window
+(ns cdq.ui.editor.window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.ui.editor.schema :as schema]
@@ -66,7 +66,7 @@
      :cell-defaults {:pad 5}
      :pack? true}))
 
-(defmethod scene2d/build :actor.type/editor-window
+(defn create
   [{:keys [ctx
            property]}]
   (let [{:keys [ctx/db
