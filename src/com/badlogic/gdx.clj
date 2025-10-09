@@ -1,7 +1,8 @@
 (ns com.badlogic.gdx
-  (:require [clojure.color :as color]
+  (:require [clojure.audio]
+            [clojure.color :as color]
+            [clojure.sound]
             [clojure.gdx :as gdx]
-            [clojure.gdx.audio :as audio]
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.math.vector2 :as vector2]
@@ -52,7 +53,7 @@
                     ^Files files
                     ^Graphics graphics
                     ^Input input]
-  gdx/Audio
+  clojure.audio/Audio
   (sound [_ path]
     (.newSound audio (.internal files path)))
 
@@ -154,7 +155,7 @@
     :input    Gdx/input}))
 
 (extend-type Sound
-  audio/Sound
+  clojure.sound/Sound
   (play! [this]
     (.play this))
   (dispose! [this]

@@ -1,8 +1,5 @@
 (ns clojure.gdx)
 
-(defprotocol Audio
-  (sound [_ path]))
-
 (defprotocol Files
   (search-files [_ {:keys [folder extensions]}]))
 

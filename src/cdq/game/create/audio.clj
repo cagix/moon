@@ -1,7 +1,7 @@
 (ns cdq.game.create.audio
   (:require [cdq.audio]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.audio :as audio]))
+            [clojure.audio :as audio]
+            [clojure.sound :as sound]))
 
 (deftype Audio [sounds]
   cdq.audio/Audio
@@ -10,10 +10,10 @@
 
   (play! [_ sound-name]
     (assert (contains? sounds sound-name) (str sound-name))
-    (audio/play! (get sounds sound-name)))
+    (sound/play! (get sounds sound-name)))
 
   (dispose! [_]
-    (run! audio/dispose! (vals sounds))))
+    (run! sound/dispose! (vals sounds))))
 
 (defn- create-impl [gdx {:keys [sound-names path-format]}]
   (->Audio
@@ -22,7 +22,7 @@
            [sound-name
             (->> sound-name
                  (format path-format)
-                 (gdx/sound gdx))]))) )
+                 (audio/sound gdx))]))) )
 
 (defn do!
   [{:keys [ctx/gdx]
