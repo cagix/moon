@@ -1,0 +1,4 @@
+{
+ :sound-names #edn/resource "sounds.edn"
+ :path-format "sounds/%s.wav"
+ }
