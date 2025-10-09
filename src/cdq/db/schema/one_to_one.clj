@@ -4,7 +4,6 @@
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
-            [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.build.table :as build-table]

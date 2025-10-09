@@ -7,7 +7,6 @@
             [cdq.ui.editor.window :as editor-window]
             [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [clojure.scene2d :as scene2d]
             [clojure.vis-ui.label :as label]
             [cdq.world :as world]
             [clojure.scene2d.vis-ui.menu :as menu]

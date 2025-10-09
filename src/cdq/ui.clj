@@ -1,9 +1,9 @@
 (ns cdq.ui
-  (:require [cdq.ui.action-bar :as action-bar]
+  (:require cdq.ui.widget
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
-            [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]
@@ -13,11 +13,8 @@
                                             Group)))
 
 (defn- add-actors! [^Stage stage actor-fns ctx]
-  (doseq [[actor-fn & params] actor-fns
-          :let [actor-or-decl (apply actor-fn ctx params)]]
-    (.addActor stage (if (instance? Actor actor-or-decl)
-                       actor-or-decl
-                       (scene2d/build actor-or-decl)))))
+  (doseq [[actor-fn & params] actor-fns]
+    (.addActor stage (apply actor-fn ctx params))))
 
 (defn create!
   [{:keys [ctx/graphics]
@@ -45,9 +42,8 @@
       (.findActor k)))
 
 (defn show-data-viewer! [this data]
-  (.addActor this (scene2d/build
-                   {:actor/type :actor.type/data-viewer
-                    :title "Data View"
+  (.addActor this (cdq.ui.widget/data-viewer
+                   {:title "Data View"
                     :data data
                     :width 500
                     :height 500})))

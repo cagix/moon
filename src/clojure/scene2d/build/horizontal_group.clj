@@ -1,10 +1,8 @@
 (ns clojure.scene2d.build.horizontal-group
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.build.group :as group])
+  (:require [clojure.scene2d.build.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d.ui HorizontalGroup)))
 
-(defmethod scene2d/build :actor.type/horizontal-group
-  [{:keys [space pad] :as opts}]
+(defn create [{:keys [space pad] :as opts}]
   (doto (let [group (HorizontalGroup.)]
           (when space (.space group (float space)))
           (when pad   (.pad   group (float pad)))

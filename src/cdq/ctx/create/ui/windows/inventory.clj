@@ -5,6 +5,7 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
+            [clojure.scene2d.build.stack :as stack]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
@@ -57,16 +58,16 @@
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
-                   {:actor {:actor/type :actor.type/stack
-                            :actor/name "inventory-cell"
-                            :actor/user-object cell
-                            :actor/listener (clicked-cell-listener cell)
-                            :group/actors [(draw-cell-rect-actor draw-cell-rect)
-                                           (image/create
-                                            {:image/object background-drawable
-                                             :actor/name "image-widget"
-                                             :actor/user-object {:background-drawable background-drawable
-                                                                 :cell-size cell-size}})]}}))]
+                   {:actor (stack/create
+                            {:actor/name "inventory-cell"
+                             :actor/user-object cell
+                             :actor/listener (clicked-cell-listener cell)
+                             :group/actors [(draw-cell-rect-actor draw-cell-rect)
+                                            (image/create
+                                             {:image/object background-drawable
+                                              :actor/name "image-widget"
+                                              :actor/user-object {:background-drawable background-drawable
+                                                                  :cell-size cell-size}})]})}))]
     (window/create
      {:title title
       :actor/name "cdq.ui.windows.inventory"

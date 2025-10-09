@@ -2,7 +2,6 @@
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
-            clojure.scene2d.build.group
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.impl.db]
             [cdq.db :as db]
@@ -15,7 +14,6 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.java.io :as io]
-            [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

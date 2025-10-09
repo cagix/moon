@@ -1,6 +1,6 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d :as scene2d]
-            [clojure.scene2d.vis-ui.window :as window]
+  (:require [clojure.scene2d.vis-ui.window :as window]
+            [clojure.scene2d.build.scroll-pane :as scroll-pane]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.vis-ui.label :as label])
@@ -12,14 +12,14 @@
                 :actor/name "scroll-pane-table"
                 :cell-defaults {:pad 5}
                 :pack? true})]
-    {:actor {:actor/type :actor.type/scroll-pane
-             :actor/name "cdq.ui.widget.scroll-pane-table"
-             :scroll-pane/actor table}
+    {:actor (scroll-pane/create
+             {:actor/name "cdq.ui.widget.scroll-pane-table"
+              :scroll-pane/actor table})
      :width  (+ (Actor/.getWidth table) 50)
      :height (min (- viewport-height 50)
                   (Actor/.getHeight table))}))
 
-(defmethod scene2d/build :actor.type/scroll-pane-window
+(defn scroll-pane-window
   [{:keys [viewport-height rows]}]
   (window/create
    {:title "Choose"
@@ -79,9 +79,9 @@
                                       {:rows [[scroll-pane-table]]
                                        :cell-defaults {:pad 1}
                                        :pack? true})]
-                           {:actor {:actor/type :actor.type/scroll-pane
-                                    :actor/name "dbg scroll pane"
-                                    :scroll-pane/actor table}
+                           {:actor (scroll-pane/create
+                                    {:actor/name "dbg scroll pane"
+                                     :scroll-pane/actor table})
                             :width width ; (- (viewport/world-width viewport) 100) ; (+ 100 (/ (viewport/world-width viewport) 2))
                             :height height ; (- (viewport/world-height viewport) 200) ; (- (viewport/world-height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
@@ -91,6 +91,3 @@
                     :center? true
                     :rows [[scroll-pane-cell]]
                     :pack? true})))
-
-(defmethod scene2d/build :actor.type/data-viewer [opts]
-  (data-viewer opts))
