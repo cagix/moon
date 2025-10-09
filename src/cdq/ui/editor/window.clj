@@ -7,6 +7,7 @@
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.window :as vis-window]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -56,8 +57,7 @@
                            {:actor delete-button :center? true}]]
         rows [[(widget/scroll-pane-cell scroll-pane-height
                                         scroll-pane-rows)]]]
-    {:actor/type :actor.type/window
-     :title "[SKY]Property[]"
+    {:title "[SKY]Property[]"
      :actor/name "cdq.ui.editor.window"
      :modal? true
      :close-button? true
@@ -78,9 +78,9 @@
         ; build for get-widget-value
         ; or find a way to find the widget from the context @ save button
         ; should be possible
-        widget (scene2d/build (schema/create schema property ctx))
-        actor (create* {:scroll-pane-height (ui/viewport-height stage)
-                        :widget widget
-                        :get-widget-value #(schema/value schema widget schemas)
-                        :property-id (:property/id property)})]
-    (scene2d/build actor)))
+        widget (scene2d/build (schema/create schema property ctx))]
+    (vis-window/create
+     (create* {:scroll-pane-height (ui/viewport-height stage)
+               :widget widget
+               :get-widget-value #(schema/value schema widget schemas)
+               :property-id (:property/id property)}))))

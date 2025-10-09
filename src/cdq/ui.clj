@@ -5,6 +5,7 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui]
+            [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
@@ -91,9 +92,8 @@
                    .getRoot
                    (Group/.findActor "cdq.ui.modal-window"))))
   (.addActor stage
-             (scene2d/build
-              {:actor/type :actor.type/window
-               :title title
+             (window/create
+              {:title title
                :rows [[{:actor (label/create text)}]
                       [{:actor {:actor/type :actor.type/text-button
                                 :text button-text

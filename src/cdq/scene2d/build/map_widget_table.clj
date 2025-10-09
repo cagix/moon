@@ -8,6 +8,7 @@
             [cdq.ui.editor.window :as editor-window]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
@@ -71,8 +72,7 @@
     :label-text (k->label-text k)}))
 
 (defn- add-component-window [schemas schema map-widget-table]
-  (let [window (scene2d/build {:actor/type :actor.type/window
-                               :title "Choose"
+  (let [window (window/create {:title "Choose"
                                :modal? true
                                :close-button? true
                                :center? true

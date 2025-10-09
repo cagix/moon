@@ -1,5 +1,6 @@
 (ns cdq.ui.widget
   (:require [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -19,9 +20,8 @@
 
 (defmethod scene2d/build :actor.type/scroll-pane-window
   [{:keys [viewport-height rows]}]
-  (scene2d/build
-   {:actor/type :actor.type/window
-    :title "Choose"
+  (window/create
+   {:title "Choose"
     :modal? true
     :close-button? true
     :center? true
@@ -86,8 +86,7 @@
                             :width width ; (- (viewport/world-width viewport) 100) ; (+ 100 (/ (viewport/world-width viewport) 2))
                             :height height ; (- (viewport/world-height viewport) 200) ; (- (viewport/world-height viewport) 50) #_(min (- (:height viewport) 50) (height table))
                             })]
-    (scene2d/build {:actor/type :actor.type/window
-                    :title title
+    (window/create {:title title
                     :close-button? true
                     :close-on-escape? true
                     :center? true

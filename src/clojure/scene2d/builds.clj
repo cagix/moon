@@ -7,7 +7,6 @@
                          :actor.type/table        clojure.scene2d.build.table/create
                          :actor.type/image-button clojure.scene2d.vis-ui.image-button/create
                          :actor.type/text-button  clojure.scene2d.vis-ui.text-button/create
-                         :actor.type/window       clojure.scene2d.vis-ui.window/create
                          :actor.type/image        clojure.scene2d.vis-ui.image/create}
         :let [method-var (requiring-resolve method-sym)]]
   (assert (keyword? k))

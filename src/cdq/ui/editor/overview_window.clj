@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
-            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
 
@@ -71,9 +71,8 @@
            graphics
            property-type
            clicked-id-fn]}]
-  (scene2d/build
-   {:actor/type :actor.type/window
-    :title "Edit"
+  (window/create
+   {:title "Edit"
     :modal? true
     :close-button? true
     :center? true

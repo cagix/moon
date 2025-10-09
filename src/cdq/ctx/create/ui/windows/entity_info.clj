@@ -1,7 +1,7 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.ui :as ui]
             [cdq.world.info :as info]
-            [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
@@ -20,16 +20,16 @@
                                        world)
                             ""))
         label (label/create "")
-        window (scene2d/build {:actor/type :actor.type/window
-                               :title title
+        window (window/create {:title title
                                :actor/name actor-name
                                :actor/visible? visible?
                                :actor/position position
-                               :rows [[{:actor label :expand? true}]]})]
-    (Group/.addActor window
-                     (proxy [Actor] []
-                       (act [_delta]
-                         (when-let [stage (.getStage this)]
-                           (.setText label (str (set-label-text! (.ctx stage)))))
-                         (.pack window))))
+                               :rows [[{:actor label
+                                        :expand? true}]]})]
+    (.addActor window
+               (proxy [Actor] []
+                 (act [_delta]
+                   (when-let [stage (.getStage this)]
+                     (.setText label (str (set-label-text! (.ctx stage)))))
+                   (.pack window))))
     window))
