@@ -1,7 +1,6 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d :as scene2d])
+            [clojure.scene2d.vis-ui.image-button :as image-button])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
@@ -41,12 +40,11 @@
              texture-region
              tooltip-text]}]
     (let [{:keys [horizontal-group button-group]} (get-data action-bar)
-          button (scene2d/build
-                  {:actor/type :actor.type/image-button
-                   :actor/user-object skill-id
+          button (image-button/create
+                  {:actor/user-object skill-id
                    :drawable/texture-region texture-region
-                   :drawable/scale 2})]
-      (tooltip/add! button tooltip-text)
+                   :drawable/scale 2
+                   :tooltip tooltip-text})]
       (Group/.addActor horizontal-group button)
       (ButtonGroup/.add button-group ^Button button)
       nil))
