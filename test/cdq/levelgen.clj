@@ -1,3 +1,8 @@
+; 1. more tests - I have heard they improve design
+; 2. I do not need any application level abstractions here
+; like com.badlogic.gdx
+; or vis-ui
+; and why full db, etc ?
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
