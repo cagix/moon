@@ -1,8 +1,7 @@
 (ns clojure.scene2d.builds
   (:require [clojure.scene2d :as scene2d]))
 
-(doseq [[k method-sym] '{:actor.type/text-field   clojure.scene2d.vis-ui.text-field/create
-                         :actor.type/table        clojure.scene2d.build.table/create
+(doseq [[k method-sym] '{:actor.type/table        clojure.scene2d.build.table/create
                          :actor.type/image-button clojure.scene2d.vis-ui.image-button/create
                          :actor.type/text-button  clojure.scene2d.vis-ui.text-button/create
                          :actor.type/image        clojure.scene2d.vis-ui.image/create}
