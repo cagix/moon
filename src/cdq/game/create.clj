@@ -1,5 +1,4 @@
-(ns cdq.game.create
-  (:require [clojure.config :as config]))
+(ns cdq.game.create)
 
 (defn pipeline [ctx steps]
   (reduce (fn [ctx [f & params]]
@@ -7,6 +6,6 @@
           ctx
           steps))
 
-(defn do! []
+(defn do! [steps]
   (pipeline {}
-            (config/edn-resource "create-pipeline.edn")))
+            steps))

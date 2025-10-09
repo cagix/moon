@@ -5,7 +5,7 @@
   {
    :listener [clojure.gdx.application.listener/create
               {:state cdq.application/state
-               :create cdq.game.create/do!
+               :create [cdq.game.create/do! #edn/resource "create-pipeline.edn"]
                :dispose cdq.game.dispose/do!
                :render cdq.game.render/do!
                :resize cdq.game.resize/do!}]

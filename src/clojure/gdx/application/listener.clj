@@ -9,7 +9,8 @@
   (let [state @(requiring-resolve state)]
     (reify ApplicationListener
       (create [_]
-        (reset! state ((requiring-resolve create))))
+        (reset! state (let [[f params] create]
+                        ((requiring-resolve f) params))))
 
       (dispose [_]
         ((requiring-resolve dispose) @state))
