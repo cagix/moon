@@ -3,6 +3,7 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.ui :as ui]
+            [cdq.ui.editor.overview-window :as editor-overview-window]
             [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
@@ -23,9 +24,8 @@
                                                                ctx/stage]}]
                                              (.addActor
                                               stage
-                                              (scene2d/build
-                                               {:actor/type :actor.type/editor-overview-window
-                                                :db db
+                                              (editor-overview-window/create
+                                               {:db db
                                                 :graphics graphics
                                                 :property-type property-type
                                                 :clicked-id-fn (fn [_actor id {:keys [ctx/stage] :as ctx}]

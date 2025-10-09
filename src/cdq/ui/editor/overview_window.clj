@@ -1,4 +1,4 @@
-(ns cdq.scene2d.build.editor-overview-window
+(ns cdq.ui.editor.overview-window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
@@ -66,7 +66,7 @@
          (partition-all columns)
          (overview-table-rows* image-scale))))
 
-(defmethod scene2d/build :actor.type/editor-overview-window
+(defn create
   [{:keys [db
            graphics
            property-type

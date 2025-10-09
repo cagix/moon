@@ -1,6 +1,5 @@
 (ns cdq.game.create.ui
   (:require clojure.scene2d.builds
-            cdq.scene2d.build.editor-overview-window
             cdq.scene2d.build.editor-window
             cdq.scene2d.build.map-widget-table
             clojure.scene2d.build.actor

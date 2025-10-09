@@ -1,6 +1,7 @@
 (ns cdq.db.schema.one-to-many
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
+            [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
@@ -33,9 +34,8 @@
                                                 ctx/stage]}]
                               (.addActor
                                stage
-                               (scene2d/build
-                                {:actor/type :actor.type/editor-overview-window
-                                 :db db
+                               (editor-overview-window/create
+                                {:db db
                                  :graphics graphics
                                  :property-type property-type
                                  :clicked-id-fn (fn [actor id ctx]
