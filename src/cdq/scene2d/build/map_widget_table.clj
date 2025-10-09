@@ -7,7 +7,6 @@
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
-            [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
@@ -112,7 +111,7 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(defmethod scene2d/build :actor.type/map-widget-table
+(defn create
   [{:keys [schema
            k->widget
            k->optional?

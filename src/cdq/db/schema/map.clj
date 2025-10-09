@@ -2,6 +2,7 @@
   (:require [malli.utils :as mu]
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
+            [cdq.scene2d.build.map-widget-table :as bmap-widget-table]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
             [clojure.utils :as utils]
@@ -37,15 +38,15 @@
    {:keys [ctx/db]
     :as ctx}]
   (let [schemas (:db/schemas db)]
-    {:actor/type :actor.type/map-widget-table
-     :schema schema
-     :k->widget (into {}
-                      (for [[k v] m]
-                        [k (value-widget/build ctx (get schemas k) k v)]))
-     :k->optional? #(mu/optional? % (schema/malli-form schema schemas))
-     :ks-sorted (map first (utils/sort-by-k-order property-k-sort-order m))
-     :opt? (seq (set/difference (mu/optional-keyset (schema/malli-form schema schemas))
-                                (set (keys m))))}))
+    (bmap-widget-table/create
+     {:schema schema
+      :k->widget (into {}
+                       (for [[k v] m]
+                         [k (value-widget/build ctx (get schemas k) k v)]))
+      :k->optional? #(mu/optional? % (schema/malli-form schema schemas))
+      :ks-sorted (map first (utils/sort-by-k-order property-k-sort-order m))
+      :opt? (seq (set/difference (mu/optional-keyset (schema/malli-form schema schemas))
+                                 (set (keys m))))})))
 
 (defn value [_ table schemas]
   (map-widget-table/get-value table schemas))

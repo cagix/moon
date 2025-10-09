@@ -6,7 +6,6 @@
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
-            [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui.window :as vis-window]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.window :as window])
@@ -79,7 +78,7 @@
         ; build for get-widget-value
         ; or find a way to find the widget from the context @ save button
         ; should be possible
-        widget (scene2d/build (schema/create schema property ctx))]
+        widget (schema/create schema property ctx)]
     (vis-window/create
      (create* {:scroll-pane-height (ui/viewport-height stage)
                :widget widget
