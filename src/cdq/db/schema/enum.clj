@@ -1,6 +1,6 @@
 (ns cdq.db.schema.enum
   (:require [clojure.edn :as edn]
-            [clojure.gdx.vis-ui.widget.vis-select-box :as select-box]
+            [clojure.vis-ui.select-box :as select-box]
             [clojure.utils :as utils]))
 
 (defn malli-form [[_ & params] _schemas]

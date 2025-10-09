@@ -1,4 +1,4 @@
-(ns clojure.gdx.vis-ui.widget.vis-select-box
+(ns clojure.vis-ui.select-box
   (:import (com.kotcrab.vis.ui.widget VisSelectBox)))
 
 (defn create [{:keys [items selected]}]

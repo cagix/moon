@@ -1,4 +1,4 @@
-(ns clojure.gdx.vis-ui
+(ns clojure.vis-ui
   (:import (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)))
 
