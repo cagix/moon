@@ -7,9 +7,6 @@
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn malli-form [_ _schemas]
-  :string)
-
 (defn create-value [_ v _db]
   v)
 

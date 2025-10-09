@@ -1,14 +1,7 @@
 (ns cdq.db.schema.animation
   (:require [cdq.graphics.textures :as textures]
-            [cdq.db.schemas :as schemas]
             [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.build.table :as table]))
-
-(defn malli-form [_ schemas]
-  (schemas/create-map-schema schemas
-                             [:animation/frames
-                              :animation/frame-duration
-                              :animation/looping?]))
 
 (defn create-value [_ v _db]
   v)

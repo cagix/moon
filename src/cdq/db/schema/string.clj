@@ -1,9 +1,6 @@
 (ns cdq.db.schema.string
   (:require [clojure.scene2d.vis-ui.text-field :as text-field]))
 
-(defn malli-form [_ _schemas]
-  :string)
-
 (defn create-value [_ v _db]
   v)
 

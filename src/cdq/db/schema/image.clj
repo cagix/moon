@@ -1,12 +1,6 @@
 (ns cdq.db.schema.image
   (:require [cdq.graphics.textures :as textures]
-            [clojure.scene2d.vis-ui.image-button :as image-button]
-            [cdq.db.schemas :as schemas]))
-
-(defn malli-form [_ schemas]
-  (schemas/create-map-schema schemas
-                             [:image/file
-                              [:image/bounds {:optional true}]]))
+            [clojure.scene2d.vis-ui.image-button :as image-button]))
 
 (defn create-value [_ v _db]
   v)

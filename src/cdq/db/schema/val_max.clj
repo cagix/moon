@@ -1,8 +1,4 @@
-(ns cdq.db.schema.val-max
-  (:require [clojure.val-max :as val-max]))
-
-(defn malli-form [_ _schemas]
-  val-max/schema)
+(ns cdq.db.schema.val-max)
 
 (defn create-value [_ v _db]
   v)

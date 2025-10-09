@@ -1,9 +1,6 @@
 (ns cdq.db.schema.boolean
   (:require [clojure.scene2d.vis-ui.check-box :as check-box]))
 
-(defn malli-form [[_ & params] _schemas]
-  :boolean)
-
 (defn create-value [_ v _db]
   v)
 

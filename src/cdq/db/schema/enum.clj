@@ -3,9 +3,6 @@
             [clojure.vis-ui.select-box :as select-box]
             [clojure.utils :as utils]))
 
-(defn malli-form [[_ & params] _schemas]
-  (apply vector :enum params))
-
 (defn create-value [_ v _db]
   v)
 

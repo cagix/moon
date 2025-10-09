@@ -4,6 +4,7 @@
             [cdq.db.schema :as schema]
             [cdq.db.schema-fn-map :as schema-fn-map]
             [cdq.db.schemas :as schemas]
+            [cdq.malli :as malli]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
@@ -43,13 +44,13 @@
 
   (validate [schemas k value]
     (-> (get schemas k)
-        (schema/malli-form schemas)
+        (malli/form schemas)
         m/schema
         (mu/validate-humanize value)))
 
   (create-map-schema [schemas ks]
     (mu/create-map-schema ks (fn [k]
-                               (schema/malli-form (get schemas k) schemas)))))
+                               (malli/form (get schemas k) schemas)))))
 
 (defrecord DB []
   db/DB

@@ -11,9 +11,6 @@
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn malli-form [[_ property-type] _schemas]
-  [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
-
 (defn create-value [_ property-id db]
   (db/build db property-id))
 
