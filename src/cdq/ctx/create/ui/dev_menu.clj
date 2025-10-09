@@ -10,6 +10,7 @@
             [clojure.scene2d :as scene2d]
             [clojure.vis-ui.label :as label]
             [cdq.world :as world]
+            [clojure.scene2d.vis-ui.menu :as menu]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Touchable)))
@@ -79,15 +80,15 @@
                                      (graphics/zoom (:ctx/graphics ctx)))
                         :icon "images/zoom.png"}]]
     {:actor/type :actor.type/table
-     :rows [[{:actor {:actor/type :actor.type/menu-bar
-                      :menus [ctx-data-viewer
-                              (open-editor db)
-                              help-info-text
-                              select-world]
-                      :update-labels (for [item update-labels]
-                                       (if (:icon item)
-                                         (update item :icon #(get (:graphics/textures graphics) %))
-                                         item))}
+     :rows [[{:actor (menu/create
+                      {:menus [ctx-data-viewer
+                               (open-editor db)
+                               help-info-text
+                               select-world]
+                       :update-labels (for [item update-labels]
+                                        (if (:icon item)
+                                          (update item :icon #(get (:graphics/textures graphics) %))
+                                          item))})
               :expand-x? true
               :fill-x? true
               :colspan 1}]
