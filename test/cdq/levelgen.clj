@@ -3,7 +3,6 @@
             [com.badlogic.gdx]
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             clojure.scene2d.builds
-            clojure.scene2d.build.actor
             clojure.scene2d.build.group
             [cdq.impl.db]
             [cdq.db :as db]

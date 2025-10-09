@@ -1,5 +1,6 @@
 (ns cdq.ctx.create.ui.message
-  (:require [cdq.ui.message :as message]
+  (:require [cdq.graphics :as graphics]
+            [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -7,7 +8,7 @@
   message/Message
   (show! [this text]
     (Actor/.setUserObject this (atom {:text text
-                                        :counter 0}))))
+                                      :counter 0}))))
 
 (defn- draw-message [state vp-width vp-height]
   (when-let [text (:text @state)]
@@ -20,16 +21,18 @@
 (def duration-seconds 0.5)
 
 (defn create [_ctx]
-  {:actor/type :actor.type/actor
-   :actor/draw (fn [this _ctx]
-                 [(draw-message (Actor/.getUserObject this)
-                                (viewport/world-width  (.getViewport (Actor/.getStage this)))
-                                (viewport/world-height (.getViewport (Actor/.getStage this))))])
-   :actor/act (fn [this delta _ctx]
-                (let [state (Actor/.getUserObject this)]
-                  (when (:text @state)
-                    (swap! state update :counter + delta)
-                    (when (>= (:counter @state) duration-seconds)
-                      (reset! state nil)))))
-   :actor/name "player-message"
-   :actor/user-object (atom nil)})
+  (doto (proxy [Actor] []
+          (draw [_batch _parent-alpha]
+            (when-let [stage (.getStage this)]
+              (graphics/draw! (:ctx/graphics (.ctx stage))
+                              [(draw-message (.getUserObject this)
+                                             (viewport/world-width  (.getViewport stage))
+                                             (viewport/world-height (.getViewport stage)))])))
+          (act [delta]
+            (let [state (.getUserObject this)]
+              (when (:text @state)
+                (swap! state update :counter + delta)
+                (when (>= (:counter @state) duration-seconds)
+                  (reset! state nil))))))
+    (.setName "player-message")
+    (.setUserObject (atom nil))))

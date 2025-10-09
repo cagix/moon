@@ -1,7 +1,8 @@
 (ns clojure.scene2d.vis-ui.menu
   (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Cell
                                                Label)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.kotcrab.vis.ui.widget Menu
@@ -10,9 +11,10 @@
                                       PopupMenu)))
 
 (defn- set-label-text-actor [label text-fn]
-  {:actor/type :actor.type/actor
-   :actor/act (fn [_this _delta ctx]
-                (Label/.setText label (text-fn ctx)))})
+  (proxy [Actor] []
+    (act [_delta]
+      (when-let [stage (.getStage this)]
+        (Label/.setText label (text-fn (.ctx stage)))))))
 
 (defn- add-upd-label!
   ([table text-fn icon]
@@ -23,12 +25,12 @@
                      :rows [[{:actor {:actor/type :actor.type/image
                                       :image/object icon}}
                              label]]})]
-     (.addActor table (scene2d/build (set-label-text-actor label text-fn)))
+     (.addActor table (set-label-text-actor label text-fn))
      (.expandX (Cell/.right (table/add! table sub-table)))))
   ([table text-fn]
    (let [label (scene2d/build {:actor/type :actor.type/label
                                :label/text ""})]
-     (.addActor table (scene2d/build (set-label-text-actor label text-fn)))
+     (.addActor table (set-label-text-actor label text-fn))
      (.expandX (Cell/.right (table/add! table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]

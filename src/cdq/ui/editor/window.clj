@@ -38,11 +38,13 @@
            property-id]}]
   (let [clicked-delete-fn (with-window-close (delete-property-fn property-id))
         clicked-save-fn   (with-window-close (update-property-fn get-widget-value))
-        act-fn (fn [actor _delta {:keys [ctx/gdx] :as ctx}]
-                 (when (gdx/key-just-pressed? gdx Input$Keys/ENTER)
-                   (clicked-save-fn actor ctx)))
-        actors [{:actor/type :actor.type/actor
-                 :actor/act act-fn}]
+        actors [(proxy [Actor] []
+                  (act [_delta]
+                    (when-let [stage (.getStage this)]
+                      (let [{:keys [ctx/gdx]
+                             :as ctx} (.ctx stage)]
+                        (when (gdx/key-just-pressed? gdx Input$Keys/ENTER)
+                          (clicked-save-fn this ctx))))))]
         save-button {:actor/type :actor.type/text-button
                      :text "Save [LIGHT_GRAY](ENTER)[]"
                      :on-clicked clicked-save-fn}

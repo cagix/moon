@@ -20,12 +20,3 @@
           :when f]
     (f actor v))
   actor)
-
-(defn create [{:keys [act draw]} opts]
-  (doto (proxy [Actor] []
-          (act [delta]
-            (act this delta)
-            (proxy-super act delta))
-          (draw [batch parent-alpha]
-            (draw this batch parent-alpha)))
-    (set-opts! opts)))
