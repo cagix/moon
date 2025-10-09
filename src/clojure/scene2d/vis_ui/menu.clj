@@ -1,6 +1,7 @@
 (ns clojure.scene2d.vis-ui.menu
   (:require [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.vis-ui.image :as image]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Cell
@@ -21,8 +22,7 @@
   ([table text-fn icon]
    (let [label (label/create "")
          sub-table (btable/create
-                    {:rows [[{:actor {:actor/type :actor.type/image
-                                      :image/object icon}}
+                    {:rows [[{:actor (image/create {:image/object icon})}
                              label]]})]
      (.addActor table (set-label-text-actor label text-fn))
      (.expandX (Cell/.right (table/add! table sub-table)))))

@@ -5,6 +5,7 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.build.table :as build-table]
             [clojure.scene2d.ui.table :as table]
@@ -47,9 +48,8 @@
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (textures/texture-region graphics (property/image property))
-               image-widget (scene2d/build
-                             {:actor/type :actor.type/image
-                              :image/object texture-region
+               image-widget (image/create
+                             {:image/object texture-region
                               :actor/user-object property-id})]
            {:actor (tooltip/add! image-widget (property/tooltip property))}
            image-widget))]

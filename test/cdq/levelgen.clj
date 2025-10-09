@@ -2,7 +2,6 @@
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
-            clojure.scene2d.builds
             clojure.scene2d.build.group
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.impl.db]

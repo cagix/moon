@@ -6,6 +6,7 @@
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d.build.table :as table]
+            [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
@@ -61,11 +62,11 @@
                             :actor/user-object cell
                             :actor/listener (clicked-cell-listener cell)
                             :group/actors [(draw-cell-rect-actor draw-cell-rect)
-                                           {:actor/type :actor.type/image
-                                            :image/object background-drawable
-                                            :actor/name "image-widget"
-                                            :actor/user-object {:background-drawable background-drawable
-                                                                :cell-size cell-size}}]}}))]
+                                           (image/create
+                                            {:image/object background-drawable
+                                             :actor/name "image-widget"
+                                             :actor/user-object {:background-drawable background-drawable
+                                                                 :cell-size cell-size}})]}}))]
     (window/create
      {:title title
       :actor/name "cdq.ui.windows.inventory"

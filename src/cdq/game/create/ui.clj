@@ -1,6 +1,5 @@
 (ns cdq.game.create.ui
-  (:require clojure.scene2d.builds
-            cdq.scene2d.build.map-widget-table
+  (:require cdq.scene2d.build.map-widget-table
             clojure.scene2d.build.group
             clojure.scene2d.build.horizontal-group
             clojure.scene2d.build.scroll-pane
