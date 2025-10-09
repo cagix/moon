@@ -1,5 +1,6 @@
 (ns cdq.db.schema.image
   (:require [cdq.graphics.textures :as textures]
+            [clojure.scene2d.vis-ui.image-button :as image-button]
             [cdq.db.schemas :as schemas]))
 
 (defn malli-form [_ schemas]
@@ -11,9 +12,9 @@
   v)
 
 (defn create [schema  image {:keys [ctx/graphics]}]
-  {:actor/type :actor.type/image-button
-   :drawable/texture-region (textures/texture-region graphics image)
-   :drawable/scale 2}
+  (image-button/create
+   {:drawable/texture-region (textures/texture-region graphics image)
+    :drawable/scale 2})
   #_(ui/image-button image
                      (fn [_actor ctx]
                        (c/add-actor! ctx (scroll-pane/choose-window (texture-rows ctx))))

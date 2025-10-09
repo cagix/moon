@@ -2,6 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
+            [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
@@ -38,11 +39,11 @@
                   tooltip
                   extra-info-text]} row]
       {:actor {:actor/type :actor.type/stack
-               :group/actors [{:actor/type :actor.type/image-button
-                               :drawable/texture-region texture-region
-                               :on-clicked on-clicked
-                               :drawable/scale image-scale
-                               :tooltip tooltip}
+               :group/actors [(image-button/create
+                               {:drawable/texture-region texture-region
+                                :on-clicked on-clicked
+                                :drawable/scale image-scale
+                                :tooltip tooltip})
                               (doto (label/create extra-info-text)
                                 (.setTouchable Touchable/disabled))]}})))
 
