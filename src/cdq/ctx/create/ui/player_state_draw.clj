@@ -1,4 +1,5 @@
 (ns cdq.ctx.create.ui.player-state-draw
+  (:require [cdq.graphics :as graphics])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def state->draw-ui-view
@@ -9,10 +10,11 @@
   (proxy [Actor] []
     (draw [_batch _parent-alpha]
       (when-let [stage (.getStage this)]
-        (let [{:keys [ctx/world]
+        (let [{:keys [ctx/graphics
+                      ctx/world]
                :as ctx} (.ctx stage)
               player-eid (:world/player-eid world)
               entity @player-eid
               state-k (:state (:entity/fsm entity))]
           (when-let [f (state->draw-ui-view state-k)]
-            (f player-eid ctx)))))))
+            (graphics/draw! graphics (f player-eid ctx))))))))
