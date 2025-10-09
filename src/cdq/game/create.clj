@@ -10,15 +10,21 @@
             [cdq.game.create.world :as create-world]
             [clojure.config :as config]))
 
+(defn pipeline [ctx steps]
+  (reduce (fn [ctx [f & params]]
+            (apply f ctx params))
+          ctx
+          steps))
+
 (defn do! []
   (let [config (config/edn-resource "config.edn")]
-    (-> {}
-        create-record/do!
-        get-gdx/do!
-        create-tx-handler/do!
-        create-db/do!
-        (create-graphics/do! (:graphics config))
-        (create-ui/do! (:ui config))
-        create-input-processor/do!
-        (create-audio/do! (:audio config))
-        (create-world/do! (:world config)))))
+    (pipeline {}
+              [[create-record/do!]
+               [get-gdx/do!]
+               [create-tx-handler/do!]
+               [create-db/do!]
+               [create-graphics/do! (:graphics config)]
+               [create-ui/do! (:ui config)]
+               [create-input-processor/do!]
+               [create-audio/do! (:audio config)]
+               [create-world/do! (:world config)]])))
