@@ -4,7 +4,8 @@
             [cdq.ui.message :as message]
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.vis-ui :as vis-ui])
+            [clojure.scene2d.vis-ui :as vis-ui]
+            [clojure.vis-ui.label :as label])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
@@ -93,8 +94,7 @@
              (scene2d/build
               {:actor/type :actor.type/window
                :title title
-               :rows [[{:actor {:actor/type :actor.type/label
-                                :label/text text}}]
+               :rows [[{:actor (label/create text)}]
                       [{:actor {:actor/type :actor.type/text-button
                                 :text button-text
                                 :on-clicked (fn [_actor _ctx]

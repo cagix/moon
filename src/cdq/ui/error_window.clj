@@ -2,7 +2,8 @@
   (:require [cdq.ui :as ui]
             [clojure.repl]
             [clojure.scene2d :as scene2d]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils]
+            [clojure.vis-ui.label :as label]))
 
 (extend-type cdq.ui.Stage
   ui/ErrorWindow
@@ -10,10 +11,9 @@
     (.addActor stage (scene2d/build
                       {:actor/type :actor.type/window
                        :title "Error"
-                       :rows [[{:actor {:actor/type :actor.type/label
-                                        :label/text (binding [*print-level* 3]
-                                                      (utils/with-err-str
-                                                        (clojure.repl/pst throwable)))}}]]
+                       :rows [[{:actor (label/create (binding [*print-level* 3]
+                                                       (utils/with-err-str
+                                                         (clojure.repl/pst throwable))))}]]
                        :modal? true
                        :close-button? true
                        :close-on-escape? true

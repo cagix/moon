@@ -1,7 +1,8 @@
 (ns cdq.ctx.create.ui.windows.entity-info
   (:require [cdq.ui :as ui]
             [cdq.world.info :as info]
-            [clojure.scene2d :as scene2d])
+            [clojure.scene2d :as scene2d]
+            [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label)))
@@ -18,8 +19,7 @@
                                                            :active-skill])
                                        world)
                             ""))
-        label (scene2d/build {:actor/type :actor.type/label
-                              :label/text ""})
+        label (label/create "")
         window (scene2d/build {:actor/type :actor.type/window
                                :title title
                                :actor/name actor-name

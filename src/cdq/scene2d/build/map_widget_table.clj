@@ -7,7 +7,8 @@
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
             [clojure.scene2d :as scene2d]
-            [clojure.scene2d.ui.table :as table])
+            [clojure.scene2d.ui.table :as table]
+            [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)))
 
@@ -51,8 +52,7 @@
                                                                            (Group/.getChildren table))))
                                              (rebuild! ctx))})
                      :left? true}
-                    {:actor {:actor/type :actor.type/label
-                             :label/text label-text}}]]}
+                    {:actor (label/create label-text)}]]}
     :right? true}
    {:actor {:actor/type :actor.type/separator-vertical}
     :pad-top 2

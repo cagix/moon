@@ -8,6 +8,7 @@
             [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.scene2d :as scene2d]
+            [clojure.vis-ui.label :as label]
             [cdq.world :as world]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
@@ -90,9 +91,8 @@
               :expand-x? true
               :fill-x? true
               :colspan 1}]
-            [{:actor {:actor/type :actor.type/label
-                      :label/text ""
-                      :actor/touchable Touchable/disabled}
+            [{:actor (doto (label/create "")
+                       (.setTouchable Touchable/disabled))
               :expand? true
               :fill-x? true
               :fill-y? true}]]

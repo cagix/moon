@@ -2,7 +2,8 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
-            [clojure.scene2d :as scene2d])
+            [clojure.scene2d :as scene2d]
+            [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
 
 (def ^:private property-type->overview-table-props
@@ -42,9 +43,8 @@
                                :on-clicked on-clicked
                                :drawable/scale image-scale
                                :tooltip tooltip}
-                              {:actor/type :actor.type/label
-                               :label/text extra-info-text
-                               :actor/touchable Touchable/disabled}]}})))
+                              (doto (label/create extra-info-text)
+                                (.setTouchable Touchable/disabled))]}})))
 
 (defn- overview-table-rows
   [db

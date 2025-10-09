@@ -1,5 +1,6 @@
 (ns cdq.ui.widget
-  (:require [clojure.scene2d :as scene2d])
+  (:require [clojure.scene2d :as scene2d]
+            [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn scroll-pane-cell [viewport-height rows]
@@ -58,8 +59,7 @@
                                                            :data v
                                                            :width 500
                                                            :height 500})))})
-    {:actor/type :actor.type/label
-     :label/text (v->text v)}))
+    (label/create (v->text v))))
 
 (defn data-viewer
   [{:keys [title
@@ -73,8 +73,7 @@
         scroll-pane-table (scene2d/build
                            {:actor/type :actor.type/table
                             :rows (for [{:keys [label actor]} rows]
-                                    [{:actor {:actor/type :actor.type/label
-                                              :label/text label}}
+                                    [{:actor (label/create label)}
                                      {:actor actor}])})
         scroll-pane-cell (let [table (scene2d/build
                                       {:actor/type :actor.type/table
