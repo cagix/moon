@@ -1,7 +1,6 @@
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
-            [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.impl.db]
             [cdq.db :as db]
@@ -15,7 +14,10 @@
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx Input$Keys)
+  (:import (com.badlogic.gdx ApplicationListener
+                             Input$Keys)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
@@ -186,18 +188,18 @@
 
 (defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (lwjgl/application
-   {
-    :title "Levelgen test"
-    :window {:width 1440 :height 900}
-    :fps 60
-    :create! (fn []
-               (reset! state (create! (com.badlogic.gdx/context))))
-    :dispose! (fn []
-                (dispose! @state))
-    :render! (fn []
-               (swap! state render!))
-    :resize! (fn [width height]
-               (resize! @state width height))
-    }
-   ))
+  (Lwjgl3Application. (reify ApplicationListener
+                        (create [_]
+                          (reset! state (create! (com.badlogic.gdx/context))))
+                        (dispose [_]
+                          (dispose! @state))
+                        (render [_]
+                          (swap! state render!))
+                        (resize [_ width height]
+                          (resize! @state width height))
+                        (pause [_])
+                        (resume [_]))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle "Levelgen Text")
+                        (.setWindowedMode 1440 900)
+                        (.setForegroundFPS 60))))
