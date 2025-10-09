@@ -3,9 +3,6 @@
             [clojure.vis-ui.select-box :as select-box]
             [clojure.utils :as utils]))
 
-(defn create-value [_ v _db]
-  v)
-
 (defn create [schema v _ctx]
   (select-box/create
    {:items (map utils/->edn-str (rest schema))

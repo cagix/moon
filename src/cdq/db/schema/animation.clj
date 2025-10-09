@@ -3,9 +3,6 @@
             [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.build.table :as table]))
 
-(defn create-value [_ v _db]
-  v)
-
 (defn create [_ animation {:keys [ctx/graphics]}]
   (table/create
    {:rows [(for [image (:animation/frames animation)]

@@ -28,7 +28,6 @@
   '#{
      dev,
 
-     com.badlogic.gdx.math.vector2
      com.badlogic.gdx.utils.align
 
      com.kotcrab,

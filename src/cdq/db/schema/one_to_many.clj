@@ -11,9 +11,6 @@
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn create-value [_ property-ids db]
-  (set (map (partial db/build db) property-ids)))
-
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
            ctx/graphics]}

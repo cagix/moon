@@ -2,60 +2,46 @@
 
 (def fn-map
   '{
-    :s/animation {cdq.db.schema/create-value cdq.db.schema.animation/create-value
-                  cdq.ui.editor.schema/create       cdq.db.schema.animation/create
+    :s/animation {cdq.ui.editor.schema/create       cdq.db.schema.animation/create
                   cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
 
-    :s/boolean {cdq.db.schema/create-value cdq.db.schema.boolean/create-value
-                cdq.ui.editor.schema/create       cdq.db.schema.boolean/create
+    :s/boolean {cdq.ui.editor.schema/create       cdq.db.schema.boolean/create
                 cdq.ui.editor.schema/value        cdq.db.schema.boolean/value}
 
-    :s/enum {cdq.db.schema/create-value cdq.db.schema.enum/create-value
-             cdq.ui.editor.schema/create       cdq.db.schema.enum/create
+    :s/enum {cdq.ui.editor.schema/create       cdq.db.schema.enum/create
              cdq.ui.editor.schema/value        cdq.db.schema.enum/value}
 
-    :s/image {cdq.db.schema/create-value cdq.db.schema.image/create-value
-              cdq.ui.editor.schema/create       cdq.db.schema.image/create
+    :s/image {cdq.ui.editor.schema/create       cdq.db.schema.image/create
               cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
 
-    :s/map {cdq.db.schema/create-value cdq.db.schema.map/create-value
-            cdq.ui.editor.schema/create       cdq.db.schema.map/create
+    :s/map {cdq.ui.editor.schema/create       cdq.db.schema.map/create
             cdq.ui.editor.schema/value        cdq.db.schema.map/value}
 
-    :s/number {cdq.db.schema/create-value cdq.db.schema.number/create-value
-               cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
+    :s/number {cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
                cdq.ui.editor.schema/value        cdq.ui.editor.widget.edn/value}
 
-    :s/one-to-many {cdq.db.schema/create-value cdq.db.schema.one-to-many/create-value
-                    cdq.ui.editor.schema/create       cdq.db.schema.one-to-many/create
+    :s/one-to-many {cdq.ui.editor.schema/create       cdq.db.schema.one-to-many/create
                     cdq.ui.editor.schema/value        cdq.db.schema.one-to-many/value}
 
-    :s/one-to-one {cdq.db.schema/create-value cdq.db.schema.one-to-one/create-value
-                   cdq.ui.editor.schema/create       cdq.db.schema.one-to-one/create
+    :s/one-to-one {cdq.ui.editor.schema/create       cdq.db.schema.one-to-one/create
                    cdq.ui.editor.schema/value        cdq.db.schema.one-to-one/value}
 
-    :s/qualified-keyword {cdq.db.schema/create-value cdq.db.schema.qualified-keyword/create-value
-                          cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
+    :s/qualified-keyword {cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
                           cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
 
-    :s/some {cdq.db.schema/create-value cdq.db.schema.some/create-value
-             cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
+    :s/some {cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
              cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
 
-    :s/sound {cdq.db.schema/create-value cdq.db.schema.sound/create-value
-              cdq.ui.editor.schema/create       cdq.db.schema.sound/create
+    :s/sound {cdq.ui.editor.schema/create       cdq.db.schema.sound/create
               cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
 
-    :s/string {cdq.db.schema/create-value cdq.db.schema.string/create-value
-               cdq.ui.editor.schema/create       cdq.db.schema.string/create
+    :s/string {cdq.ui.editor.schema/create       cdq.db.schema.string/create
                cdq.ui.editor.schema/value        cdq.db.schema.string/value}
 
-    :s/val-max {cdq.db.schema/create-value cdq.db.schema.val-max/create-value
-                cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
+    :s/val-max {cdq.ui.editor.schema/create       cdq.ui.editor.widget.edn/create
                 cdq.ui.editor.schema/value        cdq.ui.editor.widget.edn/value}
 
-    :s/vector {cdq.db.schema/create-value cdq.db.schema.vector/create-value
-               cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
+    :s/vector {cdq.ui.editor.schema/create       cdq.ui.editor.widget.default/create
                cdq.ui.editor.schema/value        cdq.ui.editor.widget.default/value}
     }
   )

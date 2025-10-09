@@ -7,9 +7,6 @@
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn create-value [_ v _db]
-  v)
-
 (declare sound-columns)
 
 (defn- rebuild! [table sound-name]

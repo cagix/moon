@@ -1,15 +1,11 @@
 (ns cdq.db.schema.map
   (:require [malli.utils :as mu]
-            [cdq.db.schemas :as schemas]
             [cdq.scene2d.build.map-widget-table :as bmap-widget-table]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.value-widget :as value-widget]
             [cdq.malli :as malli]
             [clojure.utils :as utils]
             [clojure.set :as set]))
-
-(defn create-value [_ v db]
-  (schemas/build-values (:db/schemas db) v db))
 
 (def ^:private property-k-sort-order
   [:property/id

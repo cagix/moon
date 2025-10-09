@@ -2,9 +2,6 @@
   (:require [cdq.graphics.textures :as textures]
             [clojure.scene2d.vis-ui.image-button :as image-button]))
 
-(defn create-value [_ v _db]
-  v)
-
 (defn create [schema  image {:keys [ctx/graphics]}]
   (image-button/create
    {:drawable/texture-region (textures/texture-region graphics image)
