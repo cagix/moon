@@ -2,6 +2,7 @@
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.build.table :as build-table]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -49,9 +50,7 @@
                           (sounds/play! audio sound-name))}}])
 
 (defn create [_  sound-name _ctx]
-  (let [table (scene2d/build
-               {:actor/type :actor.type/table
-                :cell-defaults {:pad 5}})]
+  (let [table (build-table/create {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (sound-columns table sound-name)
                               [{:actor {:actor/type :actor.type/text-button

@@ -1,5 +1,6 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
+            [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image-button :as image-button])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
                                             Group)
@@ -7,8 +8,8 @@
                                                ButtonGroup)))
 
 (defn create [_ctx]
-  {:actor/type :actor.type/table
-   :rows [[{:actor {:actor/type :actor.type/horizontal-group
+  (table/create
+   {:rows [[{:actor {:actor/type :actor.type/horizontal-group
                     :pad 2
                     :space 2
                     :actor/name "cdq.ui.action-bar.horizontal-group"
@@ -19,7 +20,7 @@
             :bottom? true}]]
    :actor/name "cdq.ui.action-bar"
    :cell-defaults {:pad 2}
-   :fill-parent? true})
+   :fill-parent? true}))
 
 (defn- get-data [action-bar]
   (let [group (Group/.findActor action-bar "cdq.ui.action-bar.horizontal-group")]

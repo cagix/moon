@@ -6,6 +6,7 @@
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.build.table :as build-table]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -56,9 +57,8 @@
                                (redo-rows ctx (disj property-ids id)))}})])))
 
 (defn create [[_ property-type] property-ids ctx]
-  (let [table (scene2d/build
-               {:actor/type :actor.type/table
-                :cell-defaults {:pad 5}})]
+  (let [table (build-table/create
+               {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows ctx table property-type property-ids)
     table))
 

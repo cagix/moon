@@ -8,6 +8,7 @@
             [cdq.ui.editor.window :as editor-window]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
@@ -41,19 +42,19 @@
            k
            table
            label-text]}]
-  [{:actor {:actor/type :actor.type/table
-            :cell-defaults {:pad 2}
-            :rows [[{:actor (when display-remove-component-button?
-                              {:actor/type :actor.type/text-button
-                               :text "-"
-                               :on-clicked (fn [_actor ctx]
-                                             (Actor/.remove (first (filter (fn [actor]
-                                                                             (and (Actor/.getUserObject actor)
-                                                                                  (= k ((Actor/.getUserObject actor) 0))))
-                                                                           (Group/.getChildren table))))
-                                             (rebuild! ctx))})
-                     :left? true}
-                    {:actor (label/create label-text)}]]}
+  [{:actor (btable/create
+            {:cell-defaults {:pad 2}
+             :rows [[{:actor (when display-remove-component-button?
+                               {:actor/type :actor.type/text-button
+                                :text "-"
+                                :on-clicked (fn [_actor ctx]
+                                              (Actor/.remove (first (filter (fn [actor]
+                                                                              (and (Actor/.getUserObject actor)
+                                                                                   (= k ((Actor/.getUserObject actor) 0))))
+                                                                            (Group/.getChildren table))))
+                                              (rebuild! ctx))})
+                      :left? true}
+                     {:actor (label/create label-text)}]]})
     :right? true}
    {:actor {:actor/type :actor.type/separator-vertical}
     :pad-top 2
@@ -116,9 +117,8 @@
            k->optional?
            ks-sorted
            opt?]}]
-  (let [table (scene2d/build
-               {:actor/type :actor.type/table
-                :cell-defaults {:pad 5}
+  (let [table (btable/create
+               {:cell-defaults {:pad 5}
                 :actor/name "cdq.db.schema.map.ui.widget"})
         colspan 3
         component-rows (interpose-f (horiz-sep colspan)

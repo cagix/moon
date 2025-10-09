@@ -5,6 +5,7 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
+            [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
@@ -71,26 +72,26 @@
       :actor/visible? visible?
       :pack? true
       :actor/position position
-      :rows [[{:actor {:actor/name "inventory-cell-table"
-                       :actor/type :actor.type/table
-                       :rows (concat [[nil nil
-                                       (->cell :inventory.slot/helm)
-                                       (->cell :inventory.slot/necklace)]
-                                      [nil
-                                       (->cell :inventory.slot/weapon)
-                                       (->cell :inventory.slot/chest)
-                                       (->cell :inventory.slot/cloak)
-                                       (->cell :inventory.slot/shield)]
-                                      [nil nil
-                                       (->cell :inventory.slot/leg)]
-                                      [nil
-                                       (->cell :inventory.slot/glove)
-                                       (->cell :inventory.slot/rings :position [0 0])
-                                       (->cell :inventory.slot/rings :position [1 0])
-                                       (->cell :inventory.slot/boot)]]
-                                     (for [y (range 4)]
-                                       (for [x (range 6)]
-                                         (->cell :inventory.slot/bag :position [x y]))))}
+      :rows [[{:actor (table/create
+                       {:actor/name "inventory-cell-table"
+                        :rows (concat [[nil nil
+                                        (->cell :inventory.slot/helm)
+                                        (->cell :inventory.slot/necklace)]
+                                       [nil
+                                        (->cell :inventory.slot/weapon)
+                                        (->cell :inventory.slot/chest)
+                                        (->cell :inventory.slot/cloak)
+                                        (->cell :inventory.slot/shield)]
+                                       [nil nil
+                                        (->cell :inventory.slot/leg)]
+                                       [nil
+                                        (->cell :inventory.slot/glove)
+                                        (->cell :inventory.slot/rings :position [0 0])
+                                        (->cell :inventory.slot/rings :position [1 0])
+                                        (->cell :inventory.slot/boot)]]
+                                      (for [y (range 4)]
+                                        (for [x (range 6)]
+                                          (->cell :inventory.slot/bag :position [x y]))))})
                :pad 4}]]})))
 
 (defn create
