@@ -4,11 +4,11 @@
             [clojure.gdx.scene2d.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
-(defn act! [actor delta f]
+(defn- act! [actor delta f]
   (when-let [stage (Actor/.getStage actor)]
     (f actor delta (.ctx stage))))
 
-(defn draw! [actor f]
+(defn- draw! [actor f]
   (when-let [stage (Actor/.getStage actor)]
     (graphics/draw! (:ctx/graphics (.ctx stage))
                     (f actor (.ctx stage)))))

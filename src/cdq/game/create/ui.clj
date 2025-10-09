@@ -8,7 +8,6 @@
             clojure.scene2d.build.separator-horizontal
             clojure.scene2d.build.separator-vertical
             clojure.scene2d.build.stack
-            clojure.scene2d.build.widget
             cdq.ui.actor-information
             cdq.ui.error-window
             [cdq.ui :as ui]))

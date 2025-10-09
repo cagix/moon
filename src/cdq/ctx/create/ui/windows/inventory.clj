@@ -2,28 +2,33 @@
   (:require [clojure.txs :as txs]
             [cdq.entity.state :as state]
             [cdq.entity.inventory :as inventory]
+            [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Widget)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener
                                                   TextureRegionDrawable)))
 
 (defn- draw-cell-rect-actor [draw-cell-rect]
-  {:actor/type :actor.type/widget
-   :actor/draw (fn [actor {:keys [ctx/graphics
-                                  ctx/world]}]
-                 (let [ui-mouse (:graphics/ui-mouse-position graphics)]
-                   (draw-cell-rect @(:world/player-eid world)
-                                   (Actor/.getX actor)
-                                   (Actor/.getY actor)
-                                   (let [[x y] (-> actor
-                                                   (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
-                                                   vector2/->clj)]
-                                     (Actor/.hit actor x y true))
-                                   (Actor/.getUserObject (Actor/.getParent actor)))))})
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (when-let [stage (.getStage this)]
+        (let [{:keys [ctx/graphics
+                      ctx/world]} (.ctx stage)]
+          (graphics/draw! graphics
+                          (let [ui-mouse (:graphics/ui-mouse-position graphics)]
+                            (draw-cell-rect @(:world/player-eid world)
+                                            (Actor/.getX this)
+                                            (Actor/.getY this)
+                                            (let [[x y] (-> this
+                                                            (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
+                                                            vector2/->clj)]
+                                              (Actor/.hit this x y true))
+                                            (Actor/.getUserObject (Actor/.getParent this))))))))))
 
 (defn- create-inventory-window*
   [{:keys [position
