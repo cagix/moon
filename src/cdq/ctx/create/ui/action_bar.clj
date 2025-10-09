@@ -12,11 +12,9 @@
                     :pad 2
                     :space 2
                     :actor/name "cdq.ui.action-bar.horizontal-group"
-                    :group/actors [{:actor/type :actor.type/actor
-                                    :actor/name "button-group-container"
-                                    :actor/user-object (doto (ButtonGroup.)
-                                                         (.setMaxCheckCount 1)
-                                                         (.setMinCheckCount 0))}]}
+                    :actor/user-object (doto (ButtonGroup.)
+                                         (.setMaxCheckCount 1)
+                                         (.setMinCheckCount 0))}
             :expand? true
             :bottom? true}]]
    :actor/name "cdq.ui.action-bar"
@@ -26,7 +24,7 @@
 (defn- get-data [action-bar]
   (let [group (Group/.findActor action-bar "cdq.ui.action-bar.horizontal-group")]
     {:horizontal-group group
-     :button-group (Actor/.getUserObject (Group/.findActor group "button-group-container"))}))
+     :button-group (Actor/.getUserObject group)}))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
   action-bar/ActionBar
