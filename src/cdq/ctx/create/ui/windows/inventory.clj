@@ -11,6 +11,20 @@
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener
                                                   TextureRegionDrawable)))
 
+(defn- draw-cell-rect-actor [draw-cell-rect]
+  {:actor/type :actor.type/widget
+   :actor/draw (fn [actor {:keys [ctx/graphics
+                                  ctx/world]}]
+                 (let [ui-mouse (:graphics/ui-mouse-position graphics)]
+                   (draw-cell-rect @(:world/player-eid world)
+                                   (Actor/.getX actor)
+                                   (Actor/.getY actor)
+                                   (let [[x y] (-> actor
+                                                   (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
+                                                   vector2/->clj)]
+                                     (Actor/.hit actor x y true))
+                                   (Actor/.getUserObject (Actor/.getParent actor)))))})
+
 (defn- create-inventory-window*
   [{:keys [position
            title
@@ -33,19 +47,6 @@
                                           droppable-color
                                           not-allowed-color)]
                               [:draw/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color]))])
-        draw-rect-actor (fn []
-                          {:actor/type :actor.type/widget
-                           :actor/draw (fn [actor {:keys [ctx/graphics
-                                                          ctx/world]}]
-                                         (let [ui-mouse (:graphics/ui-mouse-position graphics)]
-                                           (draw-cell-rect @(:world/player-eid world)
-                                                           (Actor/.getX actor)
-                                                           (Actor/.getY actor)
-                                                           (let [[x y] (-> actor
-                                                                           (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
-                                                                           vector2/->clj)]
-                                                             (Actor/.hit actor x y true))
-                                                           (Actor/.getUserObject (Actor/.getParent actor)))))})
         ->cell (fn [slot & {:keys [position]}]
                  (let [cell [slot (or position [0 0])]
                        background-drawable (slot->drawable slot)]
@@ -53,7 +54,7 @@
                             :actor/name "inventory-cell"
                             :actor/user-object cell
                             :actor/listener (clicked-cell-listener cell)
-                            :group/actors [(draw-rect-actor)
+                            :group/actors [(draw-cell-rect-actor draw-cell-rect)
                                            {:actor/type :actor.type/image
                                             :image/object background-drawable
                                             :actor/name "image-widget"
