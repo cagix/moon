@@ -1,5 +1,5 @@
 (ns com.badlogic.gdx
-  (:require [cdq.graphics.color :as color]
+  (:require [clojure.color :as color]
             [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
             [clojure.gdx.bitmap-font :as bitmap-font]
@@ -229,7 +229,7 @@
 
   (filled-rectangle! [this x y w h color]
     (.setColor this (color/float-bits color))
-    (.filledRectangle this (float x) (float y) (float w) (float h)) )
+    (.filledRectangle this (float x) (float y) (float w) (float h)))
 
   (line! [this [sx sy] [ex ey] color]
     (.setColor this (color/float-bits color))

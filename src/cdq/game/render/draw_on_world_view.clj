@@ -1,7 +1,7 @@
 (ns cdq.game.render.draw-on-world-view
   (:require [cdq.graphics :as graphics]
             [cdq.graphics.world-viewport :as world-viewport]
-            [cdq.graphics.color :as color]
+            [clojure.color :as color]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
             [clojure.math.geom :as geom]

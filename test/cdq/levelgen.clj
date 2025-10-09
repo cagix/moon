@@ -9,7 +9,7 @@
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [cdq.graphics.color :as color]
+            [clojure.color :as color]
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.java.io :as io]
