@@ -2,7 +2,8 @@
   (:require [cdq.ui :as ui]
             [cdq.world.info :as info]
             [clojure.scene2d :as scene2d])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor
+                                            Group)
            (com.badlogic.gdx.scenes.scene2d.ui Label)))
 
 (defn create [{:keys [ctx/stage]}]
@@ -26,9 +27,9 @@
                                :actor/position position
                                :rows [[{:actor label :expand? true}]]})]
     (Group/.addActor window
-                     (scene2d/build
-                      {:actor/type :actor.type/actor
-                       :actor/act (fn [_this _delta ctx]
-                                    (.setText label (str (set-label-text! ctx)))
-                                    (.pack window))}))
+                     (proxy [Actor] []
+                       (act [_delta]
+                         (when-let [stage (.getStage this)]
+                           (.setText label (str (set-label-text! (.ctx stage)))))
+                         (.pack window))))
     window))
