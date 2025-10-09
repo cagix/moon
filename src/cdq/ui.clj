@@ -5,6 +5,7 @@
             [clojure.gdx.viewport :as viewport]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui :as vis-ui]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (cdq.ui Stage)
@@ -95,13 +96,13 @@
              (window/create
               {:title title
                :rows [[{:actor (label/create text)}]
-                      [{:actor {:actor/type :actor.type/text-button
-                                :text button-text
-                                :on-clicked (fn [_actor _ctx]
-                                              (.remove (-> stage
-                                                           .getRoot
-                                                           (.findActor "cdq.ui.modal-window")))
-                                              (on-click))}}]]
+                      [{:actor (text-button/create
+                                {:text button-text
+                                 :on-clicked (fn [_actor _ctx]
+                                               (.remove (-> stage
+                                                            .getRoot
+                                                            (.findActor "cdq.ui.modal-window")))
+                                               (on-click))})}]]
                :actor/name "cdq.ui.modal-window"
                :modal? true
                :actor/center-position [(/ (viewport/world-width  ui-viewport) 2)

@@ -5,6 +5,7 @@
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
             [clojure.scene2d :as scene2d]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.build.table :as build-table]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
@@ -29,20 +30,20 @@
     (table/add-rows!
      table
      [[(when-not property-id
-         {:actor {:actor/type :actor.type/text-button
-                  :text "+"
-                  :on-clicked (fn [_actor {:keys [ctx/db
-                                                  ctx/graphics
-                                                  ctx/stage]}]
-                                (.addActor
-                                 stage
-                                 (editor-overview-window/create
-                                  {:db db
-                                   :graphics graphics
-                                   :property-type property-type
-                                   :clicked-id-fn (fn [actor id ctx]
-                                                    (Actor/.remove (window/find-ancestor actor))
-                                                    (redo-rows ctx id))})))}})]
+         {:actor (text-button/create
+                  {:text "+"
+                   :on-clicked (fn [_actor {:keys [ctx/db
+                                                   ctx/graphics
+                                                   ctx/stage]}]
+                                 (.addActor
+                                  stage
+                                  (editor-overview-window/create
+                                   {:db db
+                                    :graphics graphics
+                                    :property-type property-type
+                                    :clicked-id-fn (fn [actor id ctx]
+                                                     (Actor/.remove (window/find-ancestor actor))
+                                                     (redo-rows ctx id))})))})})]
       [(when property-id
          (let [property (db/get-raw db property-id)
                texture-region (textures/texture-region graphics (property/image property))
@@ -53,10 +54,10 @@
            {:actor (tooltip/add! image-widget (property/tooltip property))}
            image-widget))]
       [(when property-id
-         {:actor {:actor/type :actor.type/text-button
-                  :text "-"
-                  :on-clicked (fn [_actor ctx]
-                                (redo-rows ctx nil))}})]])))
+         {:actor (text-button/create
+                  {:text "-"
+                   :on-clicked (fn [_actor ctx]
+                                 (redo-rows ctx nil))})})]])))
 
 (defn create [[_ property-type] property-id ctx]
   (let [table (build-table/create

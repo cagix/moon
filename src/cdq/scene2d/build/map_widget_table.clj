@@ -4,6 +4,7 @@
             [cdq.db.schema :as schema]
             [cdq.db.schemas :as schemas]
             [cdq.ui.editor.value-widget :as value-widget]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
             [clojure.scene2d :as scene2d]
@@ -45,14 +46,14 @@
   [{:actor (btable/create
             {:cell-defaults {:pad 2}
              :rows [[{:actor (when display-remove-component-button?
-                               {:actor/type :actor.type/text-button
-                                :text "-"
-                                :on-clicked (fn [_actor ctx]
-                                              (Actor/.remove (first (filter (fn [actor]
-                                                                              (and (Actor/.getUserObject actor)
-                                                                                   (= k ((Actor/.getUserObject actor) 0))))
-                                                                            (Group/.getChildren table))))
-                                              (rebuild! ctx))})
+                               (text-button/create
+                                {:text "-"
+                                 :on-clicked (fn [_actor ctx]
+                                               (Actor/.remove (first (filter (fn [actor]
+                                                                               (and (Actor/.getUserObject actor)
+                                                                                    (= k ((Actor/.getUserObject actor) 0))))
+                                                                             (Group/.getChildren table))))
+                                               (rebuild! ctx))}))
                       :left? true}
                      {:actor (label/create label-text)}]]})
     :right? true}
@@ -84,18 +85,18 @@
     (table/add-rows!
      window
      (for [k remaining-ks]
-       [{:actor {:actor/type :actor.type/text-button
-                 :text (name k)
-                 :on-clicked (fn [_actor ctx]
-                               (Actor/.remove window)
-                               (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
-                                                                                                     (get schemas k)
-                                                                                                     k
-                                                                                                     (schemas/default-value schemas k))
-                                                                                 k
-                                                                                 (mu/optional? k (schema/malli-form schema schemas))
-                                                                                 map-widget-table)])
-                               (rebuild! ctx))}}]))
+       [{:actor (text-button/create
+                 {:text (name k)
+                  :on-clicked (fn [_actor ctx]
+                                (Actor/.remove window)
+                                (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
+                                                                                                      (get schemas k)
+                                                                                                      k
+                                                                                                      (schemas/default-value schemas k))
+                                                                                  k
+                                                                                  (mu/optional? k (schema/malli-form schema schemas))
+                                                                                  map-widget-table)])
+                                (rebuild! ctx))})}]))
     (.pack window)
     window))
 
@@ -131,11 +132,11 @@
     (table/add-rows!
      table
      (concat [(when opt?
-                [{:actor {:actor/type :actor.type/text-button
-                          :text "Add component"
-                          :on-clicked (fn [_actor {:keys [ctx/db
-                                                          ctx/stage]}]
-                                        (.addActor stage (add-component-window (:db/schemas db) schema table)))}
+                [{:actor (text-button/create
+                          {:text "Add component"
+                           :on-clicked (fn [_actor {:keys [ctx/db
+                                                           ctx/stage]}]
+                                         (.addActor stage (add-component-window (:db/schemas db) schema table)))})
                   :colspan colspan}])]
              [(when opt?
                 [{:actor {:actor/type :actor.type/separator-horizontal}

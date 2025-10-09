@@ -3,6 +3,7 @@
             [cdq.ui :as ui]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.build.table :as build-table]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.ui.table :as table]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -32,28 +33,28 @@
                 {:actor/type :actor.type/scroll-pane-window
                  :viewport-height (ui/viewport-width stage)
                  :rows (for [sound-name (sounds/sound-names audio)]
-                         [{:actor {:actor/type :actor.type/text-button
-                                   :text sound-name
-                                   :on-clicked (rebuild! table sound-name)}}
-                          {:actor {:actor/type :actor.type/text-button
-                                   :text "play!"
-                                   :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                                                 (sounds/play! audio sound-name))}}])}))))
+                         [{:actor (text-button/create
+                                   {:text sound-name
+                                    :on-clicked (rebuild! table sound-name)})}
+                          {:actor (text-button/create
+                                   {:text "play!"
+                                    :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                                                  (sounds/play! audio sound-name))})}])}))))
 
 (defn- sound-columns [table sound-name]
-  [{:actor {:actor/type :actor.type/text-button
-            :text sound-name
-            :on-clicked (open-select-sounds-handler table)}}
-   {:actor {:actor/type :actor.type/text-button
-            :text "play!"
-            :on-clicked (fn [_actor {:keys [ctx/audio]}]
-                          (sounds/play! audio sound-name))}}])
+  [{:actor (text-button/create
+            {:text sound-name
+             :on-clicked (open-select-sounds-handler table)})}
+   {:actor (text-button/create
+            {:text "play!"
+             :on-clicked (fn [_actor {:keys [ctx/audio]}]
+                           (sounds/play! audio sound-name))})}])
 
 (defn create [_  sound-name _ctx]
   (let [table (build-table/create {:cell-defaults {:pad 5}})]
     (table/add-rows! table [(if sound-name
                               (sound-columns table sound-name)
-                              [{:actor {:actor/type :actor.type/text-button
-                                        :text "No sound"
-                                        :on-clicked (open-select-sounds-handler table)}}])])
+                              [{:actor (text-button/create
+                                        {:text "No sound"
+                                         :on-clicked (open-select-sounds-handler table)})}])])
     table))

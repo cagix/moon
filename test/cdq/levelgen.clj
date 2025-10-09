@@ -4,6 +4,7 @@
             [com.badlogic.gdx.backends.lwjgl :as lwjgl]
             clojure.scene2d.builds
             clojure.scene2d.build.group
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.impl.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
@@ -78,12 +79,12 @@
    {:title "Edit"
     :cell-defaults {:pad 10}
     :rows (for [level-fn level-fns]
-            [{:actor {:actor/type :actor.type/text-button
-                      :text (str "Generate " level-fn)
-                      :on-clicked (fn [actor ctx]
-                                    (let [stage (Actor/.getStage actor)
-                                          new-ctx (generate-level ctx level-fn)]
-                                      (set! (.ctx stage) new-ctx)))}}])
+            [{:actor (text-button/create
+                      {:text (str "Generate " level-fn)
+                       :on-clicked (fn [actor ctx]
+                                     (let [stage (Actor/.getStage actor)
+                                           new-ctx (generate-level ctx level-fn)]
+                                       (set! (.ctx stage) new-ctx)))})}])
     :pack? true}))
 
 (defrecord Context [])

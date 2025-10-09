@@ -2,6 +2,7 @@
   (:require [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.scene2d.build.table :as table]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.vis-ui.label :as label])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -51,14 +52,14 @@
 
 (defn- v->actor [v]
   (if (map? v)
-    (scene2d/build {:actor/type :actor.type/text-button
-                    :text "Map"
-                    :on-clicked (fn [actor _ctx]
-                                  (.addActor (Actor/.getStage actor)
-                                             (data-viewer {:title "title"
-                                                           :data v
-                                                           :width 500
-                                                           :height 500})))})
+    (text-button/create
+     {:text "Map"
+      :on-clicked (fn [actor _ctx]
+                    (.addActor (Actor/.getStage actor)
+                               (data-viewer {:title "title"
+                                             :data v
+                                             :width 500
+                                             :height 500})))})
     (label/create (v->text v))))
 
 (defn data-viewer

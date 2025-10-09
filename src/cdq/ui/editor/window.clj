@@ -8,6 +8,7 @@
             [cdq.ui.widget :as widget]
             [clojure.scene2d :as scene2d]
             [clojure.scene2d.vis-ui.window :as vis-window]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.window :as window])
   (:import (com.badlogic.gdx Input$Keys)
            (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -46,12 +47,12 @@
                              :as ctx} (.ctx stage)]
                         (when (gdx/key-just-pressed? gdx Input$Keys/ENTER)
                           (clicked-save-fn this ctx))))))]
-        save-button {:actor/type :actor.type/text-button
-                     :text "Save [LIGHT_GRAY](ENTER)[]"
-                     :on-clicked clicked-save-fn}
-        delete-button {:actor/type :actor.type/text-button
-                       :text "Delete"
-                       :on-clicked clicked-delete-fn}
+        save-button (text-button/create
+                     {:text "Save [LIGHT_GRAY](ENTER)[]"
+                      :on-clicked clicked-save-fn})
+        delete-button (text-button/create
+                       {:text "Delete"
+                        :on-clicked clicked-delete-fn})
         scroll-pane-rows [[{:actor widget :colspan 2}]
                           [{:actor save-button :center? true}
                            {:actor delete-button :center? true}]]
