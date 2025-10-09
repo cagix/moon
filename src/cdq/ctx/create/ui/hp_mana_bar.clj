@@ -1,9 +1,11 @@
 (ns cdq.ctx.create.ui.hp-mana-bar
   (:require [cdq.entity.stats :as stats]
+            [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
             [clojure.val-max :as val-max]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150
@@ -44,6 +46,8 @@
                            (concat
                             (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
                             (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP"))))]
-      {:actor/type :actor.type/actor
-       :actor/draw (fn [_this ctx]
-                     (create-draws ctx))})))
+      (proxy [Actor] []
+        (draw [_batch _parent-alpha]
+          (when-let [stage (.getStage this)]
+            (graphics/draw! (:ctx/graphics (.ctx stage))
+                            (create-draws (.ctx stage)))))))))

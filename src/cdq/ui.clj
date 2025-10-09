@@ -10,8 +10,11 @@
                                             Group)))
 
 (defn- add-actors! [^Stage stage actor-fns ctx]
-  (doseq [[actor-fn & params] actor-fns]
-    (.addActor stage (scene2d/build (apply actor-fn ctx params)))))
+  (doseq [[actor-fn & params] actor-fns
+          :let [actor-or-decl (apply actor-fn ctx params)]]
+    (.addActor stage (if (instance? Actor actor-or-decl)
+                       actor-or-decl
+                       (scene2d/build actor-or-decl)))))
 
 (defn create!
   [{:keys [ctx/graphics]
