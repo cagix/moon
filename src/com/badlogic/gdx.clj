@@ -1,26 +1,21 @@
 (ns com.badlogic.gdx
   (:require [clojure.audio]
             [clojure.input]
-            [clojure.sound]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics]
-            [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
                              Graphics
                              Input)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Pixmap
                                       Texture
                                       Texture$TextureFilter
                                       OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont
-                                          SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defrecord Context [^Audio audio
@@ -105,31 +100,3 @@
     :files    Gdx/files
     :graphics Gdx/graphics
     :input    Gdx/input}))
-
-(extend-type Sound
-  clojure.sound/Sound
-  (play! [this]
-    (.play this))
-  (dispose! [this]
-    (.dispose this)))
-
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(extend-type BitmapFont
-  bitmap-font/BitmapFont
-  (draw! [font batch {:keys [scale text x y up? h-align target-width wrap?]}]
-    (let [old-scale (.scaleX (.getData font))]
-      (.setScale (.getData font) (* old-scale scale))
-      (.draw font
-             batch
-             text
-             (float x)
-             (float (+ y (if up? (text-height font text) 0)))
-             (float target-width)
-             (or h-align Align/center)
-             wrap?)
-      (.setScale (.getData font) old-scale))))
