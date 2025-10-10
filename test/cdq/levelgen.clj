@@ -1,20 +1,20 @@
 (ns cdq.levelgen
-  (:require [clojure.gdx.files.utils :as files-utils]
-            [clojure.gdx.graphics :as graphics]
-            [clojure.scene2d.vis-ui.text-button :as text-button]
-            [clojure.gdx.input :as input]
-            [cdq.impl.db]
+  (:require [cdq.impl.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
+            [clojure.color :as color]
             [clojure.edn :as edn]
-            [clojure.gdx.orthographic-camera :as camera]
+            [clojure.gdx.files.utils :as files-utils]
+            [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.input :as input]
             [clojure.gdx.maps.tiled :as tiled]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
-            [clojure.color :as color]
+            [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport]
-            [clojure.scene2d.vis-ui.window :as window]
             [clojure.java.io :as io]
-            [clojure.scene2d.vis-ui :as vis-ui])
+            [clojure.scene2d.vis-ui :as vis-ui]
+            [clojure.scene2d.vis-ui.text-button :as text-button]
+            [clojure.scene2d.vis-ui.window :as window])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx ApplicationListener
                              Gdx
@@ -189,10 +189,6 @@
   (viewport/update! world-viewport width height {:center? false}))
 
 (def state (atom nil))
-
-(require 'com.badlogic.gdx)
-; for extend-types.... give me direct possibility for tests
-; they do not need the abstractions?
 
 (defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")

@@ -7,10 +7,6 @@
             [clojure.gdx.graphics]
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.shape-drawer :as shape-drawer]
-            [clojure.gdx.math.vector2 :as vector2]
-            [clojure.gdx.math.vector3 :as vector3]
-            [clojure.gdx.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.viewport :as viewport]
             [clojure.string :as str]
             [clojure.math :as math])
   (:import (com.badlogic.gdx Audio
@@ -28,8 +24,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport FitViewport
-                                            Viewport)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defrecord Context [^Audio audio
@@ -146,25 +141,6 @@
              wrap?)
       (.setScale (.getData font) old-scale))))
 
-(extend-type Viewport
-  viewport/Viewport
-  (camera [this]
-    (.getCamera this))
-
-  (update! [viewport width height {:keys [center?]}]
-    (.update viewport width height (boolean center?)))
-
-  (world-width [this]
-    (.getWorldWidth this))
-
-  (world-height [this]
-    (.getWorldHeight this))
-
-  (unproject [viewport [x y]]
-    (-> viewport
-        (.unproject (vector2/->java x y))
-        vector2/->clj)))
-
 (extend-type ShapeDrawer
   shape-drawer/ShapeDrawer
   (arc! [this [center-x center-y] radius start-angle degree color]
@@ -212,32 +188,3 @@
              radius
              (math/to-radians start-angle)
              (math/to-radians degree))))
-
-(extend-type OrthographicCamera
-  orthographic-camera/OrthographicCamera
-  (viewport-height [camera]
-    (.viewportHeight camera))
-
-  (viewport-width [camera]
-    (.viewportWidth camera))
-
-  (position [camera]
-    (vector3/clojurize (.position camera)))
-
-  (zoom [camera]
-    (.zoom camera))
-
-  (combined [camera]
-    (.combined camera))
-
-  (set-position! [this [x y]]
-    (set! (.x (.position this)) (float x))
-    (set! (.y (.position this)) (float y))
-    (.update this))
-
-  (set-zoom! [this amount]
-    (set! (.zoom this) amount)
-    (.update this))
-
-  (frustum-bounds [this]
-    (mapv vector3/clojurize (.planePoints (.frustum this)))))
