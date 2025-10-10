@@ -55,21 +55,27 @@
    :tx/assoc (fn [_ctx eid k value]
                (swap! eid assoc k value)
                nil)
+
    :tx/assoc-in (fn [_ctx eid ks value]
                   (swap! eid assoc-in ks value)
                   nil)
+
    :tx/dissoc (fn [_ctx eid k]
                 (swap! eid dissoc k)
                 nil)
+
    :tx/update (fn [_ctx eid & params]
                 (apply swap! eid update params)
                 nil)
+
    :tx/mark-destroyed (fn [_ctx eid]
                         (swap! eid assoc :entity/destroyed? true)
                         nil)
+
    :tx/set-cooldown (fn [{:keys [ctx/world]} eid skill]
                       (swap! eid update :entity/skills skills/set-cooldown skill (:world/elapsed-time world))
                       nil)
+
    :tx/add-text-effect (fn [{:keys [ctx/world]} eid text duration]
                          [[:tx/assoc
                            eid
@@ -119,15 +125,20 @@
                          (do
                           #_(tx/stack-item ctx eid cell item))
                          [[:tx/set-item eid cell item]])))
+
    :tx/event (fn [{:keys [ctx/world]} & params]
                (apply handle-event world params))
+
    :tx/state-exit (fn [ctx eid [state-k state-v]]
                     (state/exit [state-k state-v] eid ctx))
+
    :tx/state-enter (fn [_ctx eid [state-k state-v]]
                      (state/enter [state-k state-v] eid))
+
    :tx/effect (fn [{:keys [ctx/world]} effect-ctx effects]
                 (mapcat #(effect/handle % effect-ctx world)
                         (filter #(effect/applicable? % effect-ctx) effects)))
+
    :tx/audiovisual (fn
                      [{:keys [ctx/db]} position audiovisual]
                      (let [{:keys [tx/sound
@@ -138,12 +149,14 @@
                         [:tx/spawn-effect
                          position
                          {:entity/animation (assoc animation :delete-after-stopped? true)}]]))
+
    :tx/spawn-alert (fn [{:keys [ctx/world]} position faction duration]
                      [[:tx/spawn-effect
                        position
                        {:entity/alert-friendlies-after-duration
                         {:counter (timer/create (:world/elapsed-time world) duration)
                          :faction faction}}]])
+
    :tx/spawn-line (fn [_ctx {:keys [start end duration color thick?]}]
                     [[:tx/spawn-effect
                       start
@@ -222,8 +235,11 @@
    :tx/sound (fn [{:keys [ctx/audio]} sound-name]
                (audio/play! audio sound-name)
                nil)
+
    :tx/toggle-inventory-visible toggle-inventory-visible!
+
    :tx/show-message             show-message!
+
    :tx/show-modal               show-modal!
    }
   )
