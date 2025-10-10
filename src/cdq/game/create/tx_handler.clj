@@ -1,8 +1,5 @@
 (ns cdq.game.create.tx-handler
-  (:require cdq.tx.add-skill
-            cdq.tx.set-item
-            cdq.tx.remove-item
-            cdq.world.tx.event
+  (:require cdq.world.tx.event
             cdq.world.tx.move-entity
             cdq.world.tx.spawn-entity
             [cdq.audio :as audio]
@@ -220,23 +217,17 @@
    }
   )
 
-(def ^:private reaction-txs-fn-map
-  {
-   :tx/set-item    cdq.tx.set-item/do!
-   :tx/remove-item cdq.tx.remove-item/do!
-   :tx/add-skill   cdq.tx.add-skill/do!
-   }
-  )
-
-(defn do! [ctx]
-  (extend-type (class ctx)
-    txs/TransactionHandler
-    (handle! [ctx txs]
-      (let [handled-txs (tx-handler/actions! txs-fn-map
-                                             ctx
-                                             txs)]
-        (tx-handler/actions! reaction-txs-fn-map
-                             ctx
-                             handled-txs
-                             :strict? false))))
+(defn do! [ctx reaction-txs-fn-map]
+  (let [reaction-txs-fn-map (update-vals reaction-txs-fn-map
+                                         requiring-resolve)]
+    (extend-type (class ctx)
+      txs/TransactionHandler
+      (handle! [ctx txs]
+        (let [handled-txs (tx-handler/actions! txs-fn-map
+                                               ctx
+                                               txs)]
+          (tx-handler/actions! reaction-txs-fn-map
+                               ctx
+                               handled-txs
+                               :strict? false)))))
   ctx)

@@ -1,6 +1,6 @@
 [[cdq.game.create.record/do!]
  [cdq.game.create.get-gdx/do!]
- [cdq.game.create.tx-handler/do!]
+ [cdq.game.create.tx-handler/do! #edn/resource "reaction-txs-fn-map.edn"]
  [cdq.game.create.db/do!]
  [cdq.game.create.graphics/do! #edn/resource "graphics.edn"]
  [cdq.game.create.ui/do! #edn/resource "ui.edn"]
