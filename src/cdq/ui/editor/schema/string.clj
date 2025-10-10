@@ -1,10 +1,10 @@
 (ns cdq.ui.editor.schema.string
-  (:require [clojure.scene2d.vis-ui.text-field :as text-field]))
+  (:require [cdq.ui.tooltip :as tooltip]
+            [clojure.vis-ui.text-field :as text-field]))
 
 (defn create [schema v _ctx]
-  (text-field/create
-   {:text-field/text v
-    :tooltip (str schema)}))
+  (tooltip/add! (text-field/create (str schema))
+                (str schema)))
 
 (defn value [_ widget _schemas]
   (text-field/text widget))
