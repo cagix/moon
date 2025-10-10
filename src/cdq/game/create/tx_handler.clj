@@ -1,5 +1,6 @@
 (ns cdq.game.create.tx-handler
-  (:require cdq.world.tx.spawn-entity
+  (:require cdq.world.tx.move-entity
+            cdq.world.tx.spawn-entity
             [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.effect :as effect]
@@ -9,8 +10,6 @@
             [cdq.entity.stats :as stats]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
-            [cdq.world.content-grid :as content-grid]
-            [cdq.world.grid :as grid]
             [cdq.world.info :as info]
             [clojure.math.vector2 :as v]
             [clojure.timer :as timer]
@@ -174,20 +173,10 @@
                       start
                       {:entity/line-render {:thick? thick? :end end :color color}
                        :entity/delete-after-duration duration}]])
-   :tx/move-entity (fn
-                     [{:keys [ctx/world]} eid body direction rotate-in-movement-direction?]
-                     (let [{:keys [world/content-grid
-                                   world/grid]} world]
-                       (content-grid/position-changed! content-grid eid)
-                       (grid/remove-from-touched-cells! grid eid)
-                       (grid/set-touched-cells! grid eid)
-                       (when (:body/collides? (:entity/body @eid))
-                         (grid/remove-from-occupied-cells! grid eid)
-                         (grid/set-occupied-cells! grid eid)))
-                     (swap! eid assoc-in [:entity/body :body/position] (:body/position body))
-                     (when rotate-in-movement-direction?
-                       (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
-                     nil)
+
+   :tx/move-entity (fn [{:keys [ctx/world]} & params]
+                     (apply cdq.world.tx.move-entity/do! world params))
+
    :tx/spawn-projectile (fn [_ctx
                              {:keys [position direction faction]}
                              {:keys [entity/image
