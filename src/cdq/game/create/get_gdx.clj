@@ -1,9 +1,9 @@
 (ns cdq.game.create.get-gdx
   (:require [cdq.audio]
             [cdq.input]
-            [cdq.impl.graphics])
-  (:import (com.badlogic.gdx Gdx
-                             Input)
+            [cdq.impl.graphics]
+            [clojure.gdx :as gdx])
+  (:import (com.badlogic.gdx Input)
            (com.badlogic.gdx.audio Sound)))
 
 (defn- create-audio
@@ -20,10 +20,10 @@
       (run! Sound/.dispose (vals sounds)))))
 
 (defn do! [ctx config]
-  (let [audio    Gdx/audio
-        files    Gdx/files
-        graphics Gdx/graphics
-        input    Gdx/input
+  (let [{:keys [audio
+                files
+                graphics
+                input]} (gdx/context)
         {:keys [sound-names path-format]} (:audio config)
         sound-name->file-handle (into {}
                                       (for [sound-name sound-names

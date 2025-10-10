@@ -2,11 +2,11 @@
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.graphics.textures :as textures]
+            [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.scene2d.build.stack :as stack]
             [clojure.scene2d.vis-ui.image-button :as image-button]
             [clojure.scene2d.vis-ui.window :as window]
-            [clojure.vis-ui.label :as label])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
+            [clojure.vis-ui.label :as label]))
 
 (def ^:private property-type->overview-table-props
   {:properties/audiovisuals {:columns 10
@@ -46,7 +46,7 @@
                                  :drawable/scale image-scale
                                  :tooltip tooltip})
                                (doto (label/create extra-info-text)
-                                 (.setTouchable Touchable/disabled))]})})))
+                                 (.setTouchable touchable/disabled))]})})))
 
 (defn- overview-table-rows
   [db

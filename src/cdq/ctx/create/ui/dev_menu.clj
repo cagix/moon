@@ -9,10 +9,10 @@
             [clojure.vis-ui.label :as label]
             [cdq.world :as world]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.touchable :as touchable]
             [clojure.scene2d.vis-ui.menu :as menu]
             [clojure.scene2d.build.table :as table]
-            [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
+            [clojure.utils :as utils]))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics]}
@@ -92,7 +92,7 @@
                :fill-x? true
                :colspan 1}]
              [{:actor (doto (label/create "")
-                        (.setTouchable Touchable/disabled))
+                        (actor/set-touchable! touchable/disabled))
                :expand? true
                :fill-x? true
                :fill-y? true}]]

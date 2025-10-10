@@ -5,21 +5,21 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui.widget :as widget]
             [clojure.scene2d.build.stack :as stack]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2])
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget)
-           (com.badlogic.gdx.scenes.scene2d.utils ClickListener
+  (:import (com.badlogic.gdx.scenes.scene2d.utils ClickListener
                                                   TextureRegionDrawable)))
 
 (defn- draw-cell-rect-actor [draw-cell-rect]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (when-let [stage (.getStage this)]
+  (widget/create
+    (fn [this _batch _parent-alpha]
+      (when-let [stage (actor/stage this)]
         (let [{:keys [ctx/graphics
                       ctx/world]} (.ctx stage)]
           (graphics/draw! graphics
@@ -43,7 +43,7 @@
         slot->drawable (fn [slot]
                          (doto (TextureRegionDrawable. (slot->texture-region slot))
                            (.setMinSize (float cell-size) (float cell-size))
-                           (.tint (Color. 1 1 1 0.4))))
+                           (.tint (color/create 1 1 1 0.4))))
         droppable-color   [0   0.6 0 0.8 1]
         not-allowed-color [0.6 0   0 0.8 1]
         draw-cell-rect (fn [player-entity x y mouseover? cell]

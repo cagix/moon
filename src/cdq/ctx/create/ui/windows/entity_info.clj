@@ -3,9 +3,7 @@
             [cdq.world.info :as info]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.vis-ui.window :as window]
-            [clojure.vis-ui.label :as label])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Label)))
+            [clojure.vis-ui.label :as label]))
 
 (defn create [{:keys [ctx/stage]}]
   (let [title "info"

@@ -13,6 +13,8 @@
 (defn button-just-pressed? [^Input input button]
   (.isButtonJustPressed input button))
 
-(defn mouse-position [^Input input]
-  [(.getX input)
-   (.getY input)])
+(defn x [^Input input]
+  (.getX input))
+
+(defn y [^Input input]
+  (.getY input))
