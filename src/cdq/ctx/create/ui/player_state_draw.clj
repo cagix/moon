@@ -6,15 +6,17 @@
   (update-vals {:player-item-on-cursor 'cdq.ctx.create.ui.player-state-draw.player-item-on-cursor/draws}
                requiring-resolve))
 
+(defn- handle-draws
+  [{:keys [ctx/graphics
+           ctx/world]
+    :as ctx}]
+  (let [player-eid (:world/player-eid world)
+        entity @player-eid
+        state-k (:state (:entity/fsm entity))]
+    (when-let [f (state->draw-ui-view state-k)]
+      (graphics/draw! graphics (f player-eid ctx)))))
+
 (defn create [_ctx]
   (proxy [Actor] []
     (draw [_batch _parent-alpha]
-      (when-let [stage (.getStage this)]
-        (let [{:keys [ctx/graphics
-                      ctx/world]
-               :as ctx} (.ctx stage)
-              player-eid (:world/player-eid world)
-              entity @player-eid
-              state-k (:state (:entity/fsm entity))]
-          (when-let [f (state->draw-ui-view state-k)]
-            (graphics/draw! graphics (f player-eid ctx))))))))
+      (handle-draws (.ctx (.getStage this))))))
