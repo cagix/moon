@@ -1,5 +1,8 @@
 (ns cdq.game.create.tx-handler
-  (:require cdq.world.tx.move-entity
+  (:require cdq.tx.add-skill
+            cdq.tx.set-item
+            cdq.tx.remove-item
+            cdq.world.tx.move-entity
             cdq.world.tx.spawn-entity
             [cdq.audio :as audio]
             [cdq.db :as db]
@@ -8,40 +11,13 @@
             [cdq.entity.skills :as skills]
             [cdq.entity.state :as state]
             [cdq.entity.stats :as stats]
-            [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
-            [cdq.world.info :as info]
             [clojure.math.vector2 :as v]
             [clojure.timer :as timer]
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
             [clojure.utils :as utils]
             [reduce-fsm :as fsm]))
-
-(defn- player-add-skill!
-  [{:keys [ctx/graphics
-           ctx/stage]}
-   skill]
-  (ui/add-skill! stage
-                 {:skill-id (:property/id skill)
-                  :texture-region (textures/texture-region graphics (:entity/image skill))
-                  :tooltip-text (fn [{:keys [ctx/world]}]
-                                  (info/text skill world))})
-  nil)
-
-(defn- player-set-item!
-  [{:keys [ctx/graphics
-           ctx/stage]}
-   cell item]
-  (ui/set-item! stage cell
-                {:texture-region (textures/texture-region graphics (:entity/image item))
-                 :tooltip-text (info/text item nil)})
-  nil)
-
-(defn player-remove-item! [{:keys [ctx/stage]}
-                           cell]
-  (ui/remove-item! stage cell)
-  nil)
 
 (defn toggle-inventory-visible! [{:keys [ctx/stage]}]
   (ui/toggle-inventory-visible! stage)
@@ -254,21 +230,9 @@
 
 (def ^:private reaction-txs-fn-map
   {
-
-   :tx/set-item (fn [ctx eid cell item]
-                  (when (:entity/player? @eid)
-                    (player-set-item! ctx cell item)
-                    nil))
-
-   :tx/remove-item (fn [ctx eid cell]
-                     (when (:entity/player? @eid)
-                       (player-remove-item! ctx cell)
-                       nil))
-
-   :tx/add-skill (fn [ctx eid skill]
-                   (when (:entity/player? @eid)
-                     (player-add-skill! ctx skill)
-                     nil))
+   :tx/set-item    cdq.tx.set-item/do!
+   :tx/remove-item cdq.tx.remove-item/do!
+   :tx/add-skill   cdq.tx.add-skill/do!
    }
   )
 
