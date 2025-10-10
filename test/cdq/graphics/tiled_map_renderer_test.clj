@@ -1,11 +1,10 @@
 #_(ns cdq.graphics.tiled-map-renderer-test
-  (:require [com.badlogic.gdx.maps.tiled :as tiled]
+  (:require [clojure.gdx.backends.lwjgl.application :as application]
+            [com.badlogic.gdx.maps.tiled :as tiled]
             [com.badlogic.gdx.graphics.orthographic-camera :as camera])
   (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)
            (com.badlogic.gdx.graphics Color OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (org.lwjgl.system Configuration)))
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (def screen-width 800)
 (def screen-height 600)
@@ -20,8 +19,8 @@
   Color/WHITE)
 
 #_(defn -main []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application.
+  (clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async")
+  (application/create
    (proxy [ApplicationAdapter] []
      (create []
        (def tiled-map (tmx-tiled-map tiled-map-path))

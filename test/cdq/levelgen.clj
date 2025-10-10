@@ -4,6 +4,9 @@
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]
             [clojure.edn :as edn]
+            [clojure.lwjgl.system.configuration :as lwjgl-config]
+            [clojure.gdx.backends.lwjgl.application :as application]
+            [clojure.gdx.backends.lwjgl.application.config :as app-config]
             [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
@@ -19,16 +22,13 @@
            (com.badlogic.gdx ApplicationListener
                              Gdx
                              Input$Keys)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics OrthographicCamera
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (org.lwjgl.system Configuration)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -191,8 +191,8 @@
 (def state (atom nil))
 
 (defn -main []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (Lwjgl3Application. (reify ApplicationListener
+  (lwjgl-config/set-glfw-library-name! "glfw_async")
+  (application/create (reify ApplicationListener
                         (create [_]
                           (reset! state (create!
                                          {:ctx/graphics Gdx/graphics
@@ -206,7 +206,8 @@
                           (resize! @state width height))
                         (pause [_])
                         (resume [_]))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Levelgen Text")
-                        (.setWindowedMode 1440 900)
-                        (.setForegroundFPS 60))))
+                      (app-config/create
+                       {:title "Levelgen Test"
+                        :window {:width 1440
+                                 :height 900}
+                        :fps 60})))

@@ -1,7 +1,7 @@
 [
  [clojure.gdx.graphics.colors/put! {"PRETTY_NAME" [0.84 0.8 0.52 1]}]
  [clojure.lwjgl.system.configuration/set-glfw-library-name! "glfw_async"]
- [clojure.gdx.backends.lwjgl.application/create
+ [cdq.application/create
   {
    :listener [clojure.gdx.application.listener/create
               {:state cdq.application/state
