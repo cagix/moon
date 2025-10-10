@@ -1,9 +1,8 @@
 (ns cdq.levelgen
   (:require [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.graphics :as graphics]
-            [com.badlogic.gdx]
             [clojure.scene2d.vis-ui.text-button :as text-button]
-            [clojure.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.impl.db]
             [cdq.db :as db]
             [cdq.world-fns.creature-tiles]
@@ -18,6 +17,7 @@
             [clojure.scene2d.vis-ui :as vis-ui])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx ApplicationListener
+                             Gdx
                              Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -93,17 +93,15 @@
                                        (set! (.ctx stage) new-ctx)))})}])
     :pack? true}))
 
-(defrecord Context [])
-
 (defn create!
-  [gdx]
+  [{:keys [ctx/files
+           ctx/input]
+    :as ctx}]
   (vis-ui/load! {:skin-scale :x1})
-  (let [files (:files gdx)
-        ctx (map->Context {:ctx/gdx gdx})
-        ui-viewport (FitViewport. 1440 900 (OrthographicCamera.))
+  (let [ui-viewport (FitViewport. 1440 900 (OrthographicCamera.))
         sprite-batch (SpriteBatch.)
         stage (Stage. ui-viewport sprite-batch)
-        _  (input/set-processor! gdx stage)
+        _  (input/set-processor! input stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
         ctx (assoc ctx :ctx/stage stage)
@@ -148,7 +146,7 @@
                      tiled-map
                      color-setter))
 
-(defn- camera-movement-controls! [{:keys [ctx/gdx
+(defn- camera-movement-controls! [{:keys [ctx/input
                                           ctx/camera
                                           ctx/camera-movement-speed]}]
   (let [apply-position (fn [idx f]
@@ -156,25 +154,25 @@
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (input/key-pressed? gdx Input$Keys/LEFT)  (apply-position 0 -))
-    (if (input/key-pressed? gdx Input$Keys/RIGHT) (apply-position 0 +))
-    (if (input/key-pressed? gdx Input$Keys/UP)    (apply-position 1 +))
-    (if (input/key-pressed? gdx Input$Keys/DOWN)  (apply-position 1 -))))
+    (if (input/key-pressed? input Input$Keys/LEFT)  (apply-position 0 -))
+    (if (input/key-pressed? input Input$Keys/RIGHT) (apply-position 0 +))
+    (if (input/key-pressed? input Input$Keys/UP)    (apply-position 1 +))
+    (if (input/key-pressed? input Input$Keys/DOWN)  (apply-position 1 -))))
 
-(defn- camera-zoom-controls! [{:keys [ctx/gdx
+(defn- camera-zoom-controls! [{:keys [ctx/input
                                       ctx/camera
                                       ctx/zoom-speed]}]
-  (when (input/key-pressed? gdx Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
-  (when (input/key-pressed? gdx Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
+  (when (input/key-pressed? input Input$Keys/MINUS)  (camera/inc-zoom! camera zoom-speed))
+  (when (input/key-pressed? input Input$Keys/EQUALS) (camera/inc-zoom! camera (- zoom-speed))))
 
 (defn render!
-  [{:keys [ctx/gdx
+  [{:keys [ctx/graphics
            ctx/stage]
     :as ctx}]
   (let [ctx (if-let [new-ctx (.ctx stage)]
               new-ctx
               ctx)]
-    (graphics/clear! (:graphics gdx) color/black)
+    (graphics/clear! graphics color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)
@@ -192,11 +190,18 @@
 
 (def state (atom nil))
 
+(require 'com.badlogic.gdx)
+; for extend-types.... give me direct possibility for tests
+; they do not need the abstractions?
+
 (defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
   (Lwjgl3Application. (reify ApplicationListener
                         (create [_]
-                          (reset! state (create! (com.badlogic.gdx/context))))
+                          (reset! state (create!
+                                         {:ctx/graphics Gdx/graphics
+                                          :ctx/input    Gdx/input
+                                          :ctx/files    Gdx/files})))
                         (dispose [_]
                           (dispose! @state))
                         (render [_]
