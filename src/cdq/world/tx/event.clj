@@ -2,9 +2,9 @@
   (:require [cdq.entity.state :as state]
             [reduce-fsm :as fsm]))
 
-(defn do!
+(defn do!*
   ([world eid event]
-   (do! world eid event nil))
+   (do!* world eid event nil))
   ([world eid event params]
    (let [fsm (:entity/fsm @eid)
          _ (assert fsm)
@@ -20,3 +20,6 @@
           [:tx/dissoc      eid old-state-k]
           [:tx/state-exit  eid old-state-obj]
           [:tx/state-enter eid new-state-obj]])))))
+
+(defn do! [{:keys [ctx/world]} & params]
+  (apply do!* world params))

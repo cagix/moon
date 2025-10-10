@@ -35,7 +35,7 @@
 
 (q/defrecord Entity [entity/body])
 
-(defn do!
+(defn do!*
   [{:keys [world/content-grid
            world/entity-ids
            world/grid
@@ -62,3 +62,6 @@
     (when (:body/collides? (:entity/body @eid))
       (grid/set-occupied-cells! grid eid))
     (mapcat #(after-create-component % eid world) @eid)))
+
+(defn do! [{:keys [ctx/world]} entity]
+  (do!* world entity))

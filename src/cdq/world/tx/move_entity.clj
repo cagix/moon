@@ -3,7 +3,7 @@
             [cdq.world.grid :as grid]
             [clojure.math.vector2 :as v]))
 
-(defn do!
+(defn do!*
   [{:keys [world/content-grid
            world/grid]}
    eid body direction rotate-in-movement-direction?]
@@ -17,3 +17,6 @@
   (when rotate-in-movement-direction?
     (swap! eid assoc-in [:entity/body :body/rotation-angle] (v/angle-from-vector direction)))
   nil)
+
+(defn do! [{:keys [ctx/world]} & params]
+  (apply do!* world params))

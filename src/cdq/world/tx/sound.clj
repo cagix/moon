@@ -1,0 +1,6 @@
+(ns cdq.world.tx.sound
+  (:require [cdq.audio :as audio]))
+
+(defn do! [{:keys [ctx/audio]} sound-name]
+  (audio/play! audio sound-name)
+  nil)
