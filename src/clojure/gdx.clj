@@ -4,7 +4,6 @@
   (sprite-batch [_])
   (cursor [_ file-handle [hotspot-x hotspot-y]])
   (truetype-font [_ path params])
-  (shape-drawer [_ batch texture-region])
   (texture [_ path])
   (viewport [_ world-width world-height camera])
   (delta-time [_])

@@ -211,13 +211,12 @@
                                                          (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
-        (assoc :graphics/shape-drawer (gdx/shape-drawer gdx
-                                                        batch
-                                                        (TextureRegion. shape-drawer-texture
-                                                                        1
-                                                                        0
-                                                                        1
-                                                                        1)))
+        (assoc :graphics/shape-drawer (sd/create batch
+                                                 (TextureRegion. shape-drawer-texture
+                                                                 1
+                                                                 0
+                                                                 1
+                                                                 1)))
         (assoc :graphics/textures (into {} (for [path (files-utils/search (:files gdx) texture-folder)]
                                              [path (gdx/texture gdx path)])))
         (assoc :graphics/unit-scale (atom 1)

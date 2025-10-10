@@ -1,14 +1,11 @@
 (ns com.badlogic.gdx
   (:require [clojure.audio]
-            [clojure.color :as color]
             [clojure.input]
             [clojure.sound]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics]
             [clojure.gdx.bitmap-font :as bitmap-font]
-            [clojure.gdx.shape-drawer :as shape-drawer]
-            [clojure.string :as str]
-            [clojure.math :as math])
+            [clojure.string :as str])
   (:import (com.badlogic.gdx Audio
                              Files
                              Gdx
@@ -24,8 +21,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defrecord Context [^Audio audio
                     ^Files files
@@ -60,9 +56,6 @@
       (set! (.markupEnabled (.getData font)) enable-markup?)
       (.setUseIntegerPositions font use-integer-positions?)
       font))
-
-  (shape-drawer [_ batch texture-region]
-    (ShapeDrawer. batch texture-region))
 
   (texture [_ path]
     (Texture. (.internal files path)))
@@ -140,51 +133,3 @@
              (or h-align Align/center)
              wrap?)
       (.setScale (.getData font) old-scale))))
-
-(extend-type ShapeDrawer
-  shape-drawer/ShapeDrawer
-  (arc! [this [center-x center-y] radius start-angle degree color]
-    (.setColor this (color/float-bits color))
-    (.arc this
-          center-x
-          center-y
-          radius
-          (math/to-radians start-angle)
-          (math/to-radians degree)) )
-
-  (circle! [this [x y] radius color]
-    (.setColor this (color/float-bits color))
-    (.circle this x y radius))
-
-  (ellipse! [this [x y] radius-x radius-y color]
-    (.setColor this (color/float-bits color))
-    (.ellipse this x y radius-x radius-y))
-
-  (filled-ellipse! [this [x y] radius-x radius-y color]
-    (.setColor this (color/float-bits color))
-    (.filledEllipse this x y radius-x radius-y) )
-
-  (filled-circle! [this [x y] radius color]
-    (.setColor this (color/float-bits color))
-    (.filledCircle this (float x) (float y) (float radius)))
-
-  (filled-rectangle! [this x y w h color]
-    (.setColor this (color/float-bits color))
-    (.filledRectangle this (float x) (float y) (float w) (float h)))
-
-  (line! [this [sx sy] [ex ey] color]
-    (.setColor this (color/float-bits color))
-    (.line this (float sx) (float sy) (float ex) (float ey)))
-
-  (rectangle! [this x y w h color]
-    (.setColor this (color/float-bits color))
-    (.rectangle this x y w h) )
-
-  (sector! [this [center-x center-y] radius start-angle degree color]
-    (.setColor this (color/float-bits color))
-    (.sector this
-             center-x
-             center-y
-             radius
-             (math/to-radians start-angle)
-             (math/to-radians degree))))
