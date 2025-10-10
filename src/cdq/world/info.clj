@@ -4,6 +4,11 @@
             [clojure.timer :as timer]
             [clojure.utils :as utils]))
 
+(defn stats-modifiers-info [mods]
+  (when (seq mods) ; ?
+    (str/join "\n" (keep (fn [[k ops]]
+                           (ops/info ops k)) mods))))
+
 (defmulti text (fn [object world]
                  (cond (:item/slot object)
                        :info/item
@@ -102,9 +107,7 @@
                  (str "State: " (name (:state fsm))))
 
    :stats/modifiers (fn [[_ mods] _world]
-                      (when (seq mods)
-                        (str/join "\n" (keep (fn [[k ops]]
-                                               (ops/info ops k)) mods))))
+                      (stats-modifiers-info mods))
 
    :entity/skills (fn [[_ skills] _world]
                     ; => recursive info-text leads to endless text wall
@@ -186,8 +189,9 @@
             (remove nil?
                     [(str "[PRETTY_NAME]" (:property/pretty-name item) "[]")
                      (str "[LIME]" (str/capitalize (name (:item/slot item))) "[]")
+                     ; seq because they can be empty map ?
                      (when (seq (:stats/modifiers item))
-                       (str "[CYAN]" ((:stats/modifiers info-fns) [nil (:stats/modifiers item)] nil) "[]"))])))
+                       (str "[CYAN]" (stats-modifiers-info (:stats/modifiers item)) "[]"))])))
 
 (comment
  (let [item (get (:inventory.slot/shield (:entity/inventory @(:world/player-eid (:ctx/world @cdq.application/state))))
