@@ -1,11 +1,9 @@
 (ns clojure.scene2d.build.scroll-pane
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.kotcrab.vis.ui.widget VisScrollPane)))
+  (:require [clojure.vis-ui.scroll-pane :as scroll-pane])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn create
   [{:keys [scroll-pane/actor
            actor/name]}]
-  (doto (doto (VisScrollPane. actor)
-          (.setFlickScroll false)
-          (.setFadeScrollBars false))
+  (doto (scroll-pane/create actor)
     (Actor/.setName name)))

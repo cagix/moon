@@ -1,15 +1,15 @@
 (ns clojure.scene2d.vis-ui.text-field
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d.widget :as widget])
-  (:import (com.kotcrab.vis.ui.widget VisTextField)))
+            [clojure.scene2d.widget :as widget]
+            [clojure.vis-ui.text-field :as text-field]))
 
 (defn create
   [{:keys [text-field/text]
     :as opts}]
-  (let [actor (-> (VisTextField. (str text))
+  (let [actor (-> (text-field/create text)
                   (widget/set-opts! opts))]
     (when-let [tooltip (:tooltip opts)]
       (tooltip/add! actor tooltip))
     actor))
 
-(def text VisTextField/.getText)
+(def text text-field/text)

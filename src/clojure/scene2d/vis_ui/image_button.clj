@@ -1,11 +1,11 @@
 (ns clojure.scene2d.vis-ui.image-button
   (:require [cdq.ui.tooltip :as tooltip]
-            [clojure.scene2d.ui.table :as table])
+            [clojure.scene2d.ui.table :as table]
+            [clojure.vis-ui.image-button :as image-button])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener
                                                   Drawable
-                                                  TextureRegionDrawable)
-           (com.kotcrab.vis.ui.widget VisImageButton)))
+                                                  TextureRegionDrawable)))
 
 (defn create
   [{:keys [^TextureRegion drawable/texture-region
@@ -17,7 +17,7 @@
                (.getRegionHeight texture-region)]
         drawable (doto (TextureRegionDrawable. texture-region)
                    (.setMinSize (float (* scale w)) (float (* scale h))))
-        image-button (VisImageButton. ^Drawable drawable)]
+        image-button (image-button/create drawable)]
     (when on-clicked
       (.addListener image-button (proxy [ChangeListener] []
                                    (changed [event actor]

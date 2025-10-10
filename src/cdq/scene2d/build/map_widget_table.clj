@@ -10,10 +10,10 @@
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
-            [clojure.vis-ui.label :as label])
+            [clojure.vis-ui.label :as label]
+            [clojure.vis-ui.separator :as separator])
   (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
-           (com.kotcrab.vis.ui.widget Separator)))
+                                            Group)))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -57,7 +57,7 @@
                       :left? true}
                      {:actor (label/create label-text)}]]})
     :right? true}
-   {:actor (Separator. "vertical")
+   {:actor (separator/vertical)
     :pad-top 2
     :pad-bottom 2
     :fill-y? true
@@ -102,7 +102,7 @@
 
 (defn- horiz-sep [colspan]
   (fn []
-    [{:actor (Separator. "default")
+    [{:actor (separator/horizontal)
       :pad-top 2
       :pad-bottom 2
       :colspan colspan
@@ -139,7 +139,7 @@
                                          (.addActor stage (add-component-window (:db/schemas db) schema table)))})
                   :colspan colspan}])]
              [(when opt?
-                [{:actor (Separator. "default")
+                [{:actor (separator/horizontal)
                   :pad-top 2
                   :pad-bottom 2
                   :colspan colspan

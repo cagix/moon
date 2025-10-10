@@ -1,10 +1,10 @@
 (ns clojure.scene2d.build.table
   (:require [clojure.scene2d.widget-group :as widget-group]
-            [clojure.scene2d.ui.table :as table])
+            [clojure.scene2d.ui.table :as table]
+            [clojure.vis-ui.table :as vis-table])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Cell
-                                               Table)
-           (com.kotcrab.vis.ui.widget VisTable)))
+                                               Table)))
 
 (defn- set-cell-opts! [^Cell cell opts]
   (doseq [[option arg] opts]
@@ -50,5 +50,5 @@
       (widget-group/set-opts! opts))))
 
 (defn create [opts]
-  (-> (VisTable.)
+  (-> (vis-table/create)
       (table/set-opts! opts)))

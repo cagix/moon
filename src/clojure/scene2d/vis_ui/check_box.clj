@@ -1,13 +1,13 @@
 (ns clojure.scene2d.vis-ui.check-box
+  (:require [clojure.vis-ui.check-box :as check-box])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
-           (com.kotcrab.vis.ui.widget VisCheckBox)))
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))
 
-(def checked? VisCheckBox/.isChecked)
+(def checked? check-box/checked?)
 
 (defn create
   [& {:keys [text on-clicked checked?]}]
-  (let [^Button button (VisCheckBox. (str text))]
+  (let [^Button button (check-box/create text)]
     (.setChecked button checked?)
     (.addListener button
                   (proxy [ChangeListener] []
