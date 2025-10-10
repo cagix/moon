@@ -1,6 +1,7 @@
 (ns cdq.game.create.get-gdx
   (:require [cdq.audio]
             [cdq.input]
+            [cdq.impl.graphics]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics]
             [clojure.string :as str])
@@ -97,12 +98,14 @@
         (run! Sound/.dispose (vals sounds))))))
 
 (defn do! [ctx config]
-  (assoc ctx
-         :ctx/gdx (map->Context
-                   {:files    Gdx/files
-                    :graphics Gdx/graphics})
-         :ctx/audio (create-audio (:audio config))
-         :ctx/input Gdx/input))
+  (let [gdx (map->Context
+             {:files    Gdx/files
+              :graphics Gdx/graphics})]
+    (assoc ctx
+           :ctx/gdx gdx
+           :ctx/audio (create-audio (:audio config))
+           :ctx/graphics (cdq.impl.graphics/create! gdx (:graphics config))
+           :ctx/input Gdx/input)))
 
 (extend-type Input
   cdq.input/Input

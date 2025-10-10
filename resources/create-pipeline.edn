@@ -1,10 +1,10 @@
-[[cdq.game.create.get-gdx/do! {:audio #edn/resource "audio.edn"}]
- [cdq.game.create.graphics/do! #edn/resource "graphics.edn"]
+[[cdq.game.create.get-gdx/do! {:audio #edn/resource "audio.edn"
+                               :graphics #edn/resource "graphics.edn"}]
  [cdq.game.create.record/do!]
  [cdq.game.create.tx-handler/do!
   #edn/resource "txs-fn-map.edn"
   #edn/resource "reaction-txs-fn-map.edn"]
  [cdq.game.create.db/do!]
- [cdq.game.create.ui/do! #edn/resource "ui.edn"]
+ [cdq.game.create.ui/do! #edn/resource "ui.edn"] ; needs db for actors
  [cdq.game.create.input-processor/do!]
  [cdq.game.create.world/do! #edn/resource "world.edn"]]
