@@ -8,11 +8,11 @@
             [clojure.string :as str]
             [clojure.vis-ui.label :as label]
             [cdq.world :as world]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.vis-ui.menu :as menu]
             [clojure.scene2d.build.table :as table]
             [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Touchable)))
+  (:import (com.badlogic.gdx.scenes.scene2d Touchable)))
 
 (defn create [{:keys [ctx/db
                       ctx/graphics]}
@@ -48,7 +48,7 @@
                                {:label (str "Start " world-fn)
                                 :on-click (fn [actor {:keys [ctx/stage] :as ctx}]
                                             (let [ui stage
-                                                  stage (Actor/.getStage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
+                                                  stage (actor/stage actor)]  ; get before clear, otherwise the actor does not have a stage anymore
                                               (ui/rebuild-actors! ui ctx)
                                               (world/dispose! (:ctx/world ctx))
                                               (set! (.ctx stage) ((requiring-resolve create-world) ctx world-fn))))})}

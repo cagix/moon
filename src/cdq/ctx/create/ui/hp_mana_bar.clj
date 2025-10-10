@@ -2,10 +2,10 @@
   (:require [cdq.entity.stats :as stats]
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
+            [clojure.gdx.scene2d.actor :as actor]
             [cdq.ui :as ui]
             [clojure.val-max :as val-max]
-            [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [clojure.utils :as utils]))
 
 (let [config {:rahmen-file "images/rahmen.png"
               :rahmenw 150
@@ -46,8 +46,9 @@
                            (concat
                             (render-hpmana-bar x y-hp   hpcontent-file   (stats/get-hitpoints stats) "HP")
                             (render-hpmana-bar x y-mana manacontent-file (stats/get-mana      stats) "MP"))))]
-      (proxy [Actor] []
-        (draw [_batch _parent-alpha]
-          (when-let [stage (.getStage this)]
-            (graphics/draw! (:ctx/graphics (.ctx stage))
-                            (create-draws (.ctx stage)))))))))
+      (actor/create
+       {:act (fn [_this _delta])
+        :draw (fn [actor _batch _parent-alpha]
+                (when-let [stage (actor/stage actor)]
+                  (graphics/draw! (:ctx/graphics (.ctx stage))
+                                  (create-draws (.ctx stage)))))}))))

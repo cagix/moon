@@ -6,6 +6,33 @@
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image-button :as image-button]))
 
+; An UI widget has a initial constructor (create)
+; plus one which it inherits (which calls other inherited constructors)
+; so the defmulti was quite good but you mixed it up with the 'facade'
+; so first fix the facade
+; imports
+; the 'opts' are loaded dynamically
+; there is no build? but _only_ build via actor type then later (or [k opts] ? )
+
+; * first release 'clojure.vis-ui' & 'clojure.gdx.scene2d' facades separately
+; (separate clojure.gdx libs)
+
+(comment
+ [:ui/table
+  {:table/rows [[{:cell/actor (horiz-group/create
+                               {:pad 2
+                                :space 2
+                                :actor/name "cdq.ui.action-bar.horizontal-group"
+                                :actor/user-object (button-group/create
+                                                    {:min-check-count 0
+                                                     :max-check-count 1})})
+                  :cell/expand? true
+                  :cell/bottom? true}]]
+   :actor/name "cdq.ui.action-bar"
+   :table/cell-defaults {:pad 2}
+   :widget-group/fill-parent? true}]
+ )
+
 (defn create []
   (table/create
    {:rows [[{:actor (horiz-group/create
