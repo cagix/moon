@@ -16,7 +16,9 @@
         ((requiring-resolve dispose) @state))
 
       (render [_]
-        (swap! state (requiring-resolve render)))
+        (swap! state (fn [ctx]
+                       (let [[f params] render]
+                         ((requiring-resolve f) ctx params)))))
 
       (resize [_ width height]
         ((requiring-resolve resize) @state width height))
