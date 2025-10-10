@@ -1,8 +1,8 @@
 (ns cdq.game.render.update-mouseover-eid
-  (:require [cdq.ui :as ui]
+  (:require [cdq.input :as input]
+            [cdq.ui :as ui]
             [cdq.world.grid :as grid]
             [cdq.world.raycaster :as raycaster]
-            [clojure.input :as input]
             [clojure.utils :as utils]))
 
 (defn- get-mouseover-entity

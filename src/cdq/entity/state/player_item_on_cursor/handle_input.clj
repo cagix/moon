@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor.handle-input
   (:require [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
-            [cdq.ui :as ui]
-            [clojure.input :as input])
+            [cdq.input :as input]
+            [cdq.ui :as ui])
   (:import (com.badlogic.gdx Input$Buttons)))
 
 (defn txs

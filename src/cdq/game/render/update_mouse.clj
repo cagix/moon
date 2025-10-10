@@ -1,7 +1,7 @@
 (ns cdq.game.render.update-mouse
   (:require [cdq.graphics.ui-viewport :as ui-viewport]
             [cdq.graphics.world-viewport :as world-viewport]
-            [clojure.input :as input]))
+            [cdq.input :as input]))
 
 (defn step
   [{:keys [ctx/graphics

@@ -1,8 +1,8 @@
 (ns cdq.game.render.assoc-interaction-state
   (:require [cdq.entity.body :as body]
             [cdq.entity.skills.skill :as skill]
+            [cdq.input :as input]
             [cdq.ui :as ui]
-            [clojure.input :as input]
             [clojure.math.vector2 :as v]))
 
 (defn- player-effect-ctx [mouseover-eid world-mouse-position player-eid]

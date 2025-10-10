@@ -1,7 +1,7 @@
 (ns cdq.entity.state.player-item-on-cursor.draw
   (:require [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.graphics.textures :as textures]
-            [clojure.input :as input]
+            [cdq.input :as input]
             [cdq.ui :as ui]))
 
 (defn txs

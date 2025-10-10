@@ -1,8 +1,8 @@
 (ns cdq.ui.editor.window
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
+            [cdq.input :as input]
             [cdq.ui.editor.schema :as schema]
-            [clojure.input :as input]
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]

@@ -1,5 +1,5 @@
 (ns cdq.game.create.input-processor
-  (:require [clojure.input :as input]))
+  (:require [cdq.input :as input]))
 
 (defn do!
   [{:keys [ctx/input

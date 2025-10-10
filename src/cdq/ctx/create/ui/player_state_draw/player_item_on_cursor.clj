@@ -1,8 +1,8 @@
 (ns cdq.ctx.create.ui.player-state-draw.player-item-on-cursor
   (:require [cdq.entity.state.player-item-on-cursor :as player-item-on-cursor]
             [cdq.graphics.textures :as textures]
-            [cdq.ui :as ui]
-            [clojure.input :as input]))
+            [cdq.input :as input]
+            [cdq.ui :as ui]))
 
 (defn draws
   [eid

@@ -1,6 +1,6 @@
 (ns cdq.game.create.get-gdx
   (:require [cdq.audio]
-            [clojure.input]
+            [cdq.input]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics]
             [clojure.string :as str])
@@ -105,7 +105,7 @@
          :ctx/input Gdx/input))
 
 (extend-type Input
-  clojure.input/Input
+  cdq.input/Input
   (set-processor! [this input-processor]
     (.setInputProcessor this input-processor))
 
