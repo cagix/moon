@@ -1,5 +1,4 @@
-[[cdq.game.create.get-gdx/do!]
- [cdq.game.create.audio/do! #edn/resource "audio.edn"]
+[[cdq.game.create.get-gdx/do! {:audio #edn/resource "audio.edn"}]
  [cdq.game.create.graphics/do! #edn/resource "graphics.edn"]
  [cdq.game.create.record/do!]
  [cdq.game.create.tx-handler/do!
