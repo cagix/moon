@@ -5,7 +5,6 @@
             [cdq.ui :as ui]
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.editor.window :as editor-window]
-            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.vis-ui.label :as label]
             [cdq.world :as world]
@@ -59,7 +58,7 @@
                         :icon "images/clock.png"}
                        {:label "FPS"
                         :update-fn (fn [ctx]
-                                     (gdx/frames-per-second (:ctx/gdx ctx)))
+                                     (graphics/frames-per-second (:ctx/graphics ctx)))
                         :icon "images/fps.png"}
                        {:label "Mouseover-entity id"
                         :update-fn (fn [{:keys [ctx/world]}]

@@ -1,5 +1,5 @@
 (ns cdq.game.render.update-world-time
-  (:require [clojure.gdx :as gdx]))
+  (:require [cdq.graphics :as graphics]))
 
 (defn- update-world-time* [{:keys [world/max-delta]
                            :as world}
@@ -10,9 +10,9 @@
         (update :world/elapsed-time + delta-ms))))
 
 (defn step
-  [{:keys [ctx/gdx
+  [{:keys [ctx/graphics
            ctx/world]
     :as ctx}]
   (if (:world/paused? (:ctx/world ctx))
     ctx
-    (update ctx :ctx/world update-world-time* (gdx/delta-time gdx))))
+    (update ctx :ctx/world update-world-time* (graphics/delta-time graphics))))

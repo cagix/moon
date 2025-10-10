@@ -4,7 +4,6 @@
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
-            [clojure.gdx :as gdx]
             [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -14,8 +13,14 @@
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
-                                      Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+                                      Texture
+                                      Texture$TextureFilter
+                                      OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (def ^:private draw-fns
   (update-vals '{:draw/with-line-width  cdq.graphics.draw.with-line-width/do!
@@ -99,15 +104,38 @@
       (reset! unit-scale 1))
     (.end batch)))
 
+(import '(com.badlogic.gdx Gdx))
+
+(defn create-cursor [path [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. (.internal Gdx/files path))
+        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
+
+(defn generate-font [path {:keys [size
+                                  quality-scaling
+                                  enable-markup?
+                                  use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files path))
+        font (.generateFont generator
+                            (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+                              (set! (.size params) (* size quality-scaling))
+                              (set! (.minFilter params) Texture$TextureFilter/Linear)
+                              (set! (.magFilter params) Texture$TextureFilter/Linear)
+                              params))]
+    (.setScale (.getData font) (/ quality-scaling))
+    (set! (.markupEnabled (.getData font)) enable-markup?)
+    (.setUseIntegerPositions font use-integer-positions?)
+    font))
+
 (defn create!
-  [gdx
-   {:keys [cursors
+  [{:keys [cursors
            default-font
            texture-folder
            tile-size
            ui-viewport
            world-viewport]}]
-  (let [batch (gdx/sprite-batch gdx)
+  (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
                                             (.drawPixel 0 0))
@@ -116,14 +144,13 @@
                                texture)
         world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
+        (assoc :graphics/core Gdx/graphics)
         (assoc :graphics/cursors (update-vals (:data cursors)
                                               (fn [[path hotspot]]
-                                                (gdx/cursor gdx
-                                                            (format (:path-format cursors) path)
-                                                            hotspot))))
-        (assoc :graphics/default-font (gdx/truetype-font gdx
-                                                         (:path default-font)
-                                                         (:params default-font)))
+                                                (create-cursor (format (:path-format cursors) path)
+                                                               hotspot))))
+        (assoc :graphics/default-font (generate-font (:path default-font)
+                                                     (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
         (assoc :graphics/shape-drawer (sd/create batch
@@ -132,21 +159,17 @@
                                                                  0
                                                                  1
                                                                  1)))
-        (assoc :graphics/textures (into {} (for [path (files-utils/search (:files gdx) texture-folder)]
-                                             [path (gdx/texture gdx path)])))
+        (assoc :graphics/textures (into {} (for [path (files-utils/search Gdx/files texture-folder)]
+                                             [path (Texture. (.internal Gdx/files path))])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
-        (assoc :graphics/ui-viewport (gdx/viewport gdx
-                                                   (:width  ui-viewport)
+        (assoc :graphics/ui-viewport (FitViewport. (:width  ui-viewport)
                                                    (:height ui-viewport)
-                                                   (gdx/orthographic-camera gdx)))
+                                                   (OrthographicCamera.)))
         (assoc :graphics/world-viewport (let [world-width  (* (:width  world-viewport) world-unit-scale)
                                               world-height (* (:height world-viewport) world-unit-scale)]
-                                          (gdx/viewport gdx
-                                                        world-width
+                                          (FitViewport. world-width
                                                         world-height
-                                                        (gdx/orthographic-camera gdx
-                                                                                 {:y-down? false
-                                                                                  :world-width world-width
-                                                                                  :world-height world-height})))))))
+                                                        (doto (OrthographicCamera.)
+                                                          (.setToOrtho false world-width world-height))))))))

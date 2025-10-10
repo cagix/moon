@@ -1,8 +1,8 @@
 (ns cdq.game.render.clear-screen
-  (:require [clojure.color :as color]
-            [clojure.gdx :as gdx]))
+  (:require [cdq.graphics :as graphics]
+            [clojure.color :as color]))
 
 (defn step
-  [{:keys [ctx/gdx] :as ctx}]
-  (gdx/clear! gdx color/black)
+  [{:keys [ctx/graphics] :as ctx}]
+  (graphics/clear-screen! graphics color/black)
   ctx)

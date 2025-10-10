@@ -1,7 +1,23 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.orthographic-camera :as camera]
+  (:require [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport])
   (:import (com.badlogic.gdx.utils Disposable)))
+
+(defn clear-screen! [{:keys [graphics/core]} color]
+  (graphics/clear! core color))
+
+(defn set-cursor! [{:keys [graphics/core
+                           graphics/cursors]}
+                   cursor-key]
+  (assert (contains? cursors cursor-key))
+  (.setCursor core (get cursors cursor-key)))
+
+(defn frames-per-second [{:keys [graphics/core]}]
+  (.getFramesPerSecond core))
+
+(defn delta-time [{:keys [graphics/core]}]
+  (.getDeltaTime core))
 
 (defn dispose!
   [{:keys [graphics/batch
