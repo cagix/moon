@@ -16,6 +16,3 @@
   (clear! [_ [r g b a]])
   (orthographic-camera [_]
                        [_ {:keys [y-down? world-width world-height]}]))
-
-(defprotocol Scene2d
-  (stage [_ viewport batch]))

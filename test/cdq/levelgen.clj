@@ -1,8 +1,3 @@
-; 1. more tests - I have heard they improve design
-; 2. I do not need any application level abstractions here
-; like com.badlogic.gdx
-; or vis-ui
-; and why full db, etc ?
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
             [com.badlogic.gdx]
@@ -20,13 +15,17 @@
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationListener
+  (:import (cdq.ui Stage)
+           (com.badlogic.gdx ApplicationListener
                              Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.graphics OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch
+                                          TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (org.lwjgl.system Configuration)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
@@ -98,9 +97,9 @@
   [gdx]
   (vis-ui/load! {:skin-scale :x1})
   (let [ctx (map->Context {:ctx/gdx gdx})
-        ui-viewport (gdx/viewport gdx 1440 900 (gdx/orthographic-camera gdx))
-        sprite-batch (gdx/sprite-batch gdx)
-        stage (gdx/stage gdx ui-viewport sprite-batch)
+        ui-viewport (FitViewport. 1440 900 (OrthographicCamera.))
+        sprite-batch (SpriteBatch.)
+        stage (Stage. ui-viewport sprite-batch)
         _  (input/set-processor! gdx stage)
         tile-size 48
         world-unit-scale (float (/ tile-size))
@@ -109,13 +108,10 @@
                 (assoc :ctx/db (cdq.impl.db/create)))
         world-viewport (let [world-width  (* 1440 world-unit-scale)
                              world-height (* 900  world-unit-scale)]
-                         (gdx/viewport gdx
-                                       world-width
+                         (FitViewport. world-width
                                        world-height
-                                       (gdx/orthographic-camera gdx
-                                                                {:y-down? false
-                                                                 :world-width world-width
-                                                                 :world-height world-height})))
+                                       (doto (OrthographicCamera.)
+                                         (.setToOrtho false world-width world-height))))
         ctx (assoc ctx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
