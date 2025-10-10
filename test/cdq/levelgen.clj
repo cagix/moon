@@ -1,5 +1,6 @@
 (ns cdq.levelgen
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.files.utils :as files-utils]
             [com.badlogic.gdx]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.input :as input]
@@ -20,7 +21,8 @@
                              Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics OrthographicCamera)
+           (com.badlogic.gdx.graphics OrthographicCamera
+                                      Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
@@ -96,7 +98,8 @@
 (defn create!
   [gdx]
   (vis-ui/load! {:skin-scale :x1})
-  (let [ctx (map->Context {:ctx/gdx gdx})
+  (let [files (:files gdx)
+        ctx (map->Context {:ctx/gdx gdx})
         ui-viewport (FitViewport. 1440 900 (OrthographicCamera.))
         sprite-batch (SpriteBatch.)
         stage (Stage. ui-viewport sprite-batch)
@@ -115,9 +118,10 @@
         ctx (assoc ctx
                    :ctx/world-viewport world-viewport
                    :ctx/ui-viewport ui-viewport
-                   :ctx/textures (into {} (for [path (gdx/search-files gdx {:folder "resources/"
-                                                                            :extensions #{"png" "bmp"}})]
-                                            [path (gdx/texture gdx path)]))
+                   :ctx/textures (into {} (for [path (files-utils/search files
+                                                                         {:folder "resources/"
+                                                                          :extensions #{"png" "bmp"}})]
+                                            [path (Texture. path)]))
                    :ctx/camera (viewport/camera world-viewport)
                    :ctx/color-setter (constantly [1 1 1 1])
                    :ctx/zoom-speed 0.1

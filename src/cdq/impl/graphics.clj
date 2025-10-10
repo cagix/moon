@@ -4,6 +4,7 @@
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
             [clojure.gdx :as gdx]
+            [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
@@ -217,7 +218,7 @@
                                                                         0
                                                                         1
                                                                         1)))
-        (assoc :graphics/textures (into {} (for [path (gdx/search-files gdx texture-folder)]
+        (assoc :graphics/textures (into {} (for [path (files-utils/search (:files gdx) texture-folder)]
                                              [path (gdx/texture gdx path)])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)

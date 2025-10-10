@@ -18,7 +18,6 @@
                              Graphics
                              Input)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics GL20
                                       Pixmap
                                       Texture
@@ -32,22 +31,6 @@
            (com.badlogic.gdx.utils.viewport FitViewport
                                             Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- recursively-search
-  [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
 
 (defrecord Context [^Audio audio
                     ^Files files
@@ -118,12 +101,6 @@
   (orthographic-camera[_ {:keys [y-down? world-width world-height]}]
     (doto (OrthographicCamera.)
       (.setToOrtho y-down? world-width world-height)))
-
-  gdx/Files
-  (search-files [_ {:keys [folder extensions]}]
-    (map (fn [path]
-         (str/replace-first path folder ""))
-       (recursively-search (.internal files folder) extensions)))
 
   clojure.input/Input
   (set-processor! [_ input-processor]

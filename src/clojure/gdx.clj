@@ -1,8 +1,5 @@
 (ns clojure.gdx)
 
-(defprotocol Files
-  (search-files [_ {:keys [folder extensions]}]))
-
 (defprotocol Graphics
   (sprite-batch [_])
   (cursor [_ file-handle [hotspot-x hotspot-y]])
