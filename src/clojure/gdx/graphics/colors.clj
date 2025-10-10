@@ -5,3 +5,9 @@
 (defn put! [colors]
   (doseq [[name [r g b a]] colors]
     (Colors/put name (Color. r g b a))))
+
+(comment
+ ; simpler :
+ (defn put! [name color]
+   (Colors/put name color))
+ )
