@@ -4,6 +4,7 @@
             [clojure.input]
             [clojure.sound]
             [clojure.gdx :as gdx]
+            [clojure.gdx.graphics]
             [clojure.gdx.bitmap-font :as bitmap-font]
             [clojure.gdx.shape-drawer :as shape-drawer]
             [clojure.gdx.math.vector2 :as vector2]
@@ -18,8 +19,7 @@
                              Graphics
                              Input)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics GL20
-                                      Pixmap
+           (com.badlogic.gdx.graphics Pixmap
                                       Texture
                                       Texture$TextureFilter
                                       OrthographicCamera)
@@ -84,16 +84,8 @@
   (set-cursor! [_ cursor]
     (.setCursor graphics cursor))
 
-  (clear! [_ [r g b a]]
-    (let [clear-depth? false
-          apply-antialiasing? false
-          gl20 (.getGL20 graphics)]
-      (GL20/.glClearColor gl20 r g b a)
-      (let [mask (cond-> GL20/GL_COLOR_BUFFER_BIT
-                   clear-depth? (bit-or GL20/GL_DEPTH_BUFFER_BIT)
-                   (and apply-antialiasing? (.coverageSampling (.getBufferFormat graphics)))
-                   (bit-or GL20/GL_COVERAGE_BUFFER_BIT_NV))]
-        (GL20/.glClear gl20 mask))))
+  (clear! [_ color]
+    (clojure.gdx.graphics/clear! graphics color))
 
   (orthographic-camera [_]
     (OrthographicCamera.))

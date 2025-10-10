@@ -1,6 +1,6 @@
 (ns cdq.levelgen
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.files.utils :as files-utils]
+  (:require [clojure.gdx.files.utils :as files-utils]
+            [clojure.gdx.graphics :as graphics]
             [com.badlogic.gdx]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.input :as input]
@@ -174,7 +174,7 @@
   (let [ctx (if-let [new-ctx (.ctx stage)]
               new-ctx
               ctx)]
-    (gdx/clear! gdx color/black)
+    (graphics/clear! (:graphics gdx) color/black)
     (draw-tiled-map! ctx)
     (camera-zoom-controls! ctx)
     (camera-movement-controls! ctx)
