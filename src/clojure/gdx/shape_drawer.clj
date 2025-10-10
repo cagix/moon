@@ -13,6 +13,7 @@
   (rectangle! [_ x y w h color])
   (sector! [_ [center-x center-y] radius start-angle degree color]))
 
+; => TODO THIS IS PART OF MACRO ! THE API IS MINIMAL !
 (defmacro with-line-width [shape-drawer width & exprs]
   `(let [old-line-width# (.getDefaultLineWidth ~shape-drawer)]
      (.setDefaultLineWidth ~shape-drawer (* ~width old-line-width#))
