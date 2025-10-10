@@ -1,5 +1,6 @@
 (ns cdq.impl.graphics
   (:require [cdq.graphics]
+            [cdq.graphics.textures]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
