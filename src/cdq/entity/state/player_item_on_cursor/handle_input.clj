@@ -5,9 +5,9 @@
   (:import (com.badlogic.gdx Input$Buttons)))
 
 (defn txs
-  [eid {:keys [ctx/gdx
+  [eid {:keys [ctx/input
                ctx/stage]}]
-  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position gdx))]
-    (when (and (input/button-just-pressed? gdx Input$Buttons/LEFT)
+  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))]
+    (when (and (input/button-just-pressed? input Input$Buttons/LEFT)
                (player-item-on-cursor/world-item? mouseover-actor))
       [[:tx/event eid :drop-item]])))

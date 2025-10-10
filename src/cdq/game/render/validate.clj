@@ -9,6 +9,7 @@
     [:ctx/db :some]
     [:ctx/gdx :some]
     [:ctx/graphics :some]
+    [:ctx/input :some]
     [:ctx/stage :some]
     [:ctx/actor-fns :some]
     [:ctx/world :some]]))

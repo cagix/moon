@@ -20,8 +20,7 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defrecord Context [^Files files
-                    ^Graphics graphics
-                    ^Input input]
+                    ^Graphics graphics]
   gdx/Graphics
   (sprite-batch [_]
     (SpriteBatch.))
@@ -73,22 +72,7 @@
     (doto (OrthographicCamera.)
       (.setToOrtho y-down? world-width world-height)))
 
-  clojure.input/Input
-  (set-processor! [_ input-processor]
-    (.setInputProcessor input input-processor))
-
-  (key-pressed? [_ key]
-    (.isKeyPressed input key))
-
-  (key-just-pressed? [_ key]
-    (.isKeyJustPressed input key))
-
-  (button-just-pressed? [_ button]
-    (.isButtonJustPressed input button))
-
-  (mouse-position [_]
-    [(.getX input)
-     (.getY input)]))
+  )
 
 (defn- load-sound [path]
   (.newSound Gdx/audio (.internal Gdx/files path)))
@@ -113,9 +97,27 @@
         (run! Sound/.dispose (vals sounds))))))
 
 (defn do! [ctx config]
-  (assoc ctx :ctx/gdx (map->Context
-                       {:files    Gdx/files
-                        :graphics Gdx/graphics
-                        :input    Gdx/input})
+  (assoc ctx
+         :ctx/gdx (map->Context
+                   {:files    Gdx/files
+                    :graphics Gdx/graphics})
          :ctx/audio (create-audio (:audio config))
-         ))
+         :ctx/input Gdx/input))
+
+(extend-type Input
+  clojure.input/Input
+  (set-processor! [this input-processor]
+    (.setInputProcessor this input-processor))
+
+  (key-pressed? [this key]
+    (.isKeyPressed this key))
+
+  (key-just-pressed? [this key]
+    (.isKeyJustPressed this key))
+
+  (button-just-pressed? [this button]
+    (.isButtonJustPressed this button))
+
+  (mouse-position [this]
+    [(.getX this)
+     (.getY this)]))

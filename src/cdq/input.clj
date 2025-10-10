@@ -29,15 +29,15 @@
              "rightclick on tile or entity - open debug data window"
              "Leftmouse click - use skill/drop item on cursor"]))
 
-(defn- WASD-movement-vector [gdx]
-  (let [r (when (input/key-pressed? gdx Input$Keys/D) [1  0])
-        l (when (input/key-pressed? gdx Input$Keys/A) [-1 0])
-        u (when (input/key-pressed? gdx Input$Keys/W) [0  1])
-        d (when (input/key-pressed? gdx Input$Keys/S) [0 -1])]
+(defn- WASD-movement-vector [input]
+  (let [r (when (input/key-pressed? input Input$Keys/D) [1  0])
+        l (when (input/key-pressed? input Input$Keys/A) [-1 0])
+        u (when (input/key-pressed? input Input$Keys/W) [0  1])
+        d (when (input/key-pressed? input Input$Keys/S) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
           v)))))
 
-(defn player-movement-vector [gdx]
-  (WASD-movement-vector gdx))
+(defn player-movement-vector [input]
+  (WASD-movement-vector input))

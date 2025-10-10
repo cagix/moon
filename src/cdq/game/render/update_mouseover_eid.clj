@@ -23,11 +23,11 @@
 
 (defn step
   [{:keys [ctx/graphics
-           ctx/gdx
+           ctx/input
            ctx/stage
            ctx/world]
     :as ctx}]
-  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position gdx))
+  (let [mouseover-actor (ui/mouseover-actor stage (input/mouse-position input))
         mouseover-eid (:world/mouseover-eid world)
         new-eid (if mouseover-actor
                   nil

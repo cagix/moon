@@ -46,7 +46,7 @@
 
 (defn step
   [{:keys [ctx/graphics
-           ctx/gdx
+           ctx/input
            ctx/stage
            ctx/world]
     :as ctx}]
@@ -54,4 +54,4 @@
                                                        (:graphics/world-mouse-position graphics)
                                                        (:world/mouseover-eid world)
                                                        (:world/player-eid    world)
-                                                       (ui/mouseover-actor stage (input/mouse-position gdx)))))
+                                                       (ui/mouseover-actor stage (input/mouse-position input)))))

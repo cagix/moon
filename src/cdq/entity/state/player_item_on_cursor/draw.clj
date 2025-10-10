@@ -8,9 +8,9 @@
   [{:keys [item]}
    entity
    {:keys [ctx/graphics
-           ctx/gdx
+           ctx/input
            ctx/stage]}]
-  (when (player-item-on-cursor/world-item? (ui/mouseover-actor stage (input/mouse-position gdx)))
+  (when (player-item-on-cursor/world-item? (ui/mouseover-actor stage (input/mouse-position input)))
     [[:draw/texture-region
       (textures/texture-region graphics (:entity/image item))
       (player-item-on-cursor/item-place-position (:graphics/world-mouse-position graphics)

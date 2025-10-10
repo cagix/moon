@@ -54,12 +54,12 @@
 
 (defn txs
   [player-eid
-   {:keys [ctx/gdx
+   {:keys [ctx/input
            ctx/interaction-state
            ctx/stage] :as ctx}]
-  (if-let [movement-vector (input/player-movement-vector gdx)]
+  (if-let [movement-vector (input/player-movement-vector input)]
     [[:tx/event player-eid :movement-input movement-vector]]
-    (when (clojure.input/button-just-pressed? gdx Input$Buttons/LEFT)
+    (when (clojure.input/button-just-pressed? input Input$Buttons/LEFT)
       (interaction-state->txs interaction-state
                               stage
                               player-eid))))

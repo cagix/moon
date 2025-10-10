@@ -2,8 +2,8 @@
   (:require [clojure.input :as input]))
 
 (defn do!
-  [{:keys [ctx/gdx
+  [{:keys [ctx/input
            ctx/stage]
     :as ctx}]
-  (input/set-processor! gdx stage)
+  (input/set-processor! input stage)
   ctx)

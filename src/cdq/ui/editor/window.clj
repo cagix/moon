@@ -42,9 +42,9 @@
         actors [(proxy [Actor] []
                   (act [_delta]
                     (when-let [stage (.getStage this)]
-                      (let [{:keys [ctx/gdx]
+                      (let [{:keys [ctx/input]
                              :as ctx} (.ctx stage)]
-                        (when (input/key-just-pressed? gdx Input$Keys/ENTER)
+                        (when (input/key-just-pressed? input Input$Keys/ENTER)
                           (clicked-save-fn this ctx))))))]
         save-button (text-button/create
                      {:text "Save [LIGHT_GRAY](ENTER)[]"

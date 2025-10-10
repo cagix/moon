@@ -12,12 +12,12 @@
                          :active-skill false})
 
 (defn step
-  [{:keys [ctx/gdx
+  [{:keys [ctx/input
            ctx/world]
     :as ctx}]
   (assoc-in ctx [:ctx/world :world/paused?]
             (or #_error
                 (and pausing?
                      (state->pause-game? (:state (:entity/fsm @(:world/player-eid world))))
-                     (not (or (clojure.input/key-just-pressed? gdx (:unpause-once input/controls))
-                              (clojure.input/key-pressed? gdx (:unpause-continously input/controls))))))))
+                     (not (or (clojure.input/key-just-pressed? input (:unpause-once input/controls))
+                              (clojure.input/key-pressed? input (:unpause-continously input/controls))))))))

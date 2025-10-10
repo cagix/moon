@@ -4,10 +4,10 @@
             [clojure.input :as input]))
 
 (defn step
-  [{:keys [ctx/gdx
-           ctx/graphics]
+  [{:keys [ctx/graphics
+           ctx/input]
     :as ctx}]
-  (let [mp (input/mouse-position gdx)]
+  (let [mp (input/mouse-position input)]
     (-> ctx
         (assoc-in [:ctx/graphics :graphics/world-mouse-position] (world-viewport/unproject graphics mp))
         (assoc-in [:ctx/graphics :graphics/ui-mouse-position] (ui-viewport/unproject graphics mp)))))
