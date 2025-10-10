@@ -1,4 +1,4 @@
-(ns cdq.db.schema.sound
+(ns cdq.ui.editor.schema.sound
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
             [clojure.scene2d.build.table :as build-table]

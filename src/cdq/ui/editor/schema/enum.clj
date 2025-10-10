@@ -1,4 +1,4 @@
-(ns cdq.db.schema.enum
+(ns cdq.ui.editor.schema.enum
   (:require [clojure.edn :as edn]
             [clojure.vis-ui.select-box :as select-box]
             [clojure.utils :as utils]))

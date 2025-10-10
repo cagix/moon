@@ -1,4 +1,4 @@
-(ns cdq.db.schema.image
+(ns cdq.ui.editor.schema.image
   (:require [cdq.graphics.textures :as textures]
             [clojure.scene2d.vis-ui.image-button :as image-button]))
 

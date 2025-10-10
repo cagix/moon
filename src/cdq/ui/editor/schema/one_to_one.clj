@@ -1,4 +1,4 @@
-(ns cdq.db.schema.one-to-one
+(ns cdq.ui.editor.schema.one-to-one
   (:require [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.ui.editor.overview-window :as editor-overview-window]

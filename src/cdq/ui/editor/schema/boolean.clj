@@ -1,4 +1,4 @@
-(ns cdq.db.schema.boolean
+(ns cdq.ui.editor.schema.boolean
   (:require [clojure.scene2d.vis-ui.check-box :as check-box]))
 
 (defn create [_ checked? _ctx]

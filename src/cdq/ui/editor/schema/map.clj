@@ -1,4 +1,4 @@
-(ns cdq.db.schema.map
+(ns cdq.ui.editor.schema.map
   (:require [malli.utils :as mu]
             [cdq.scene2d.build.map-widget-table :as bmap-widget-table]
             [cdq.ui.editor.map-widget-table :as map-widget-table]

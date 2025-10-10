@@ -1,4 +1,4 @@
-(ns cdq.db.schema.string
+(ns cdq.ui.editor.schema.string
   (:require [clojure.scene2d.vis-ui.text-field :as text-field]))
 
 (defn create [schema v _ctx]
