@@ -1,6 +1,9 @@
 (ns clojure.gdx.scene2d.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
+(def user-object Actor/.getUserObject)
+(def remove!     Actor/.remove)
+
 (def opts-fn-map
   {:actor/name        Actor/.setName
    :actor/user-object Actor/.setUserObject

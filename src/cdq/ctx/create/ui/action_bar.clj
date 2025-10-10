@@ -1,10 +1,10 @@
 (ns cdq.ctx.create.ui.action-bar
   (:require [cdq.ui.action-bar :as action-bar]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.build.horizontal-group :as horiz-group]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image-button :as image-button])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button
                                                ButtonGroup)))
 
@@ -26,13 +26,13 @@
 (defn- get-data [action-bar]
   (let [group (Group/.findActor action-bar "cdq.ui.action-bar.horizontal-group")]
     {:horizontal-group group
-     :button-group (Actor/.getUserObject group)}))
+     :button-group (actor/user-object group)}))
 
 (extend-type com.badlogic.gdx.scenes.scene2d.ui.Table
   action-bar/ActionBar
   (selected-skill [action-bar]
     (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-data action-bar)))]
-      (Actor/.getUserObject skill-button)))
+      (actor/user-object skill-button)))
 
   (add-skill!
     [action-bar
@@ -52,6 +52,6 @@
   (remove-skill! [action-bar skill-id]
     (let [{:keys [horizontal-group button-group]} (get-data action-bar)
           button (get horizontal-group skill-id)]
-      (Actor/.remove                     button)
+      (actor/remove! button)
       (ButtonGroup/.remove button-group ^Button button)
       nil)))
