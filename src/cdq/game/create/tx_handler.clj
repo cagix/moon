@@ -2,6 +2,7 @@
   (:require cdq.tx.add-skill
             cdq.tx.set-item
             cdq.tx.remove-item
+            cdq.world.tx.event
             cdq.world.tx.move-entity
             cdq.world.tx.spawn-entity
             [cdq.audio :as audio]
@@ -16,39 +17,7 @@
             [clojure.timer :as timer]
             [clojure.tx-handler :as tx-handler]
             [clojure.txs :as txs]
-            [clojure.utils :as utils]
-            [reduce-fsm :as fsm]))
-
-(defn toggle-inventory-visible! [{:keys [ctx/stage]}]
-  (ui/toggle-inventory-visible! stage)
-  nil)
-
-(defn show-message! [{:keys [ctx/stage]} message]
-  (ui/show-text-message! stage message)
-  nil)
-
-(defn show-modal! [{:keys [ctx/stage]} opts]
-  (ui/show-modal-window! stage (.getViewport stage) opts)
-  nil)
-
-(defn handle-event
-  ([world eid event]
-   (handle-event world eid event nil))
-  ([world eid event params]
-   (let [fsm (:entity/fsm @eid)
-         _ (assert fsm)
-         old-state-k (:state fsm)
-         new-fsm (fsm/fsm-event fsm event)
-         new-state-k (:state new-fsm)]
-     (when-not (= old-state-k new-state-k)
-       (let [old-state-obj (let [k (:state (:entity/fsm @eid))]
-                             [k (k @eid)])
-             new-state-obj [new-state-k (state/create [new-state-k params] eid world)]]
-         [[:tx/assoc       eid :entity/fsm new-fsm]
-          [:tx/assoc       eid new-state-k (new-state-obj 1)]
-          [:tx/dissoc      eid old-state-k]
-          [:tx/state-exit  eid old-state-obj]
-          [:tx/state-enter eid new-state-obj]])))))
+            [clojure.utils :as utils]))
 
 (def ^:private txs-fn-map
   {
@@ -86,6 +55,7 @@
                                  (update :counter timer/increment duration))
                              {:text text
                               :counter (timer/create (:world/elapsed-time world) duration)})]])
+
    :tx/add-skill (fn [_ctx eid {:keys [property/id] :as skill}]
                    {:pre [(not (contains? (:entity/skills @eid) id))]}
                    (swap! eid update :entity/skills assoc id skill)
@@ -127,7 +97,7 @@
                          [[:tx/set-item eid cell item]])))
 
    :tx/event (fn [{:keys [ctx/world]} & params]
-               (apply handle-event world params))
+               (apply cdq.world.tx.event/do! world params))
 
    :tx/state-exit (fn [ctx eid [state-k state-v]]
                     (state/exit [state-k state-v] eid ctx))
@@ -236,11 +206,17 @@
                (audio/play! audio sound-name)
                nil)
 
-   :tx/toggle-inventory-visible toggle-inventory-visible!
+   :tx/toggle-inventory-visible (fn [{:keys [ctx/stage]}]
+                                  (ui/toggle-inventory-visible! stage)
+                                  nil)
 
-   :tx/show-message             show-message!
+   :tx/show-message             (fn [{:keys [ctx/stage]} message]
+                                  (ui/show-text-message! stage message)
+                                  nil)
 
-   :tx/show-modal               show-modal!
+   :tx/show-modal               (fn [{:keys [ctx/stage]} opts]
+                                  (ui/show-modal-window! stage (.getViewport stage) opts)
+                                  nil)
    }
   )
 
