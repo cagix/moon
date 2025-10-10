@@ -6,17 +6,13 @@
                              Input)
            (com.badlogic.gdx.audio Sound)))
 
-(defn- load-sound [path]
-  (.newSound Gdx/audio (.internal Gdx/files path)))
-
 (defn- create-audio
-  [{:keys [sound-names path-format]}]
+  [audio files {:keys [sound-names path-format]}]
   (let [sounds (into {}
-                     (for [sound-name sound-names]
+                     (for [sound-name sound-names
+                           :let [path (format path-format sound-name)]]
                        [sound-name
-                        (->> sound-name
-                             (format path-format)
-                             load-sound)]))]
+                        (.newSound audio (.internal files path))]))]
     (reify cdq.audio/Audio
       (sound-names [_]
         (map first sounds))
@@ -29,10 +25,14 @@
         (run! Sound/.dispose (vals sounds))))))
 
 (defn do! [ctx config]
-  (assoc ctx
-         :ctx/audio (create-audio (:audio config))
-         :ctx/graphics (cdq.impl.graphics/create! (:graphics config))
-         :ctx/input Gdx/input))
+  (let [audio    Gdx/audio
+        files    Gdx/files
+        graphics Gdx/graphics
+        input    Gdx/input]
+    (assoc ctx
+           :ctx/audio (create-audio audio files (:audio config))
+           :ctx/graphics (cdq.impl.graphics/create! graphics files (:graphics config))
+           :ctx/input input)))
 
 (extend-type Input
   cdq.input/Input

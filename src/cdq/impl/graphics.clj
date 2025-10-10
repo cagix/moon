@@ -104,19 +104,17 @@
       (reset! unit-scale 1))
     (.end batch)))
 
-(import '(com.badlogic.gdx Gdx))
-
-(defn create-cursor [path [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal Gdx/files path))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+(defn create-cursor [files graphics path [hotspot-x hotspot-y]]
+  (let [pixmap (Pixmap. (.internal files path))
+        cursor (.newCursor graphics pixmap hotspot-x hotspot-y)]
     (.dispose pixmap)
     cursor))
 
-(defn generate-font [path {:keys [size
-                                  quality-scaling
-                                  enable-markup?
-                                  use-integer-positions?]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files path))
+(defn generate-font [file-handle {:keys [size
+                                         quality-scaling
+                                         enable-markup?
+                                         use-integer-positions?]}]
+  (let [generator (FreeTypeFontGenerator. file-handle)
         font (.generateFont generator
                             (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
                               (set! (.size params) (* size quality-scaling))
@@ -129,7 +127,9 @@
     font))
 
 (defn create!
-  [{:keys [cursors
+  [graphics
+   files
+   {:keys [cursors
            default-font
            texture-folder
            tile-size
@@ -144,12 +144,14 @@
                                texture)
         world-unit-scale (float (/ tile-size))]
     (-> (map->Graphics {})
-        (assoc :graphics/core Gdx/graphics)
+        (assoc :graphics/core graphics)
         (assoc :graphics/cursors (update-vals (:data cursors)
                                               (fn [[path hotspot]]
-                                                (create-cursor (format (:path-format cursors) path)
+                                                (create-cursor files
+                                                               graphics
+                                                               (format (:path-format cursors) path)
                                                                hotspot))))
-        (assoc :graphics/default-font (generate-font (:path default-font)
+        (assoc :graphics/default-font (generate-font (.internal files (:path default-font))
                                                      (:params default-font)))
         (assoc :graphics/batch batch)
         (assoc :graphics/shape-drawer-texture shape-drawer-texture)
@@ -159,8 +161,8 @@
                                                                  0
                                                                  1
                                                                  1)))
-        (assoc :graphics/textures (into {} (for [path (files-utils/search Gdx/files texture-folder)]
-                                             [path (Texture. (.internal Gdx/files path))])))
+        (assoc :graphics/textures (into {} (for [path (files-utils/search files texture-folder)]
+                                             [path (Texture. (.internal files path))])))
         (assoc :graphics/unit-scale (atom 1)
                :graphics/world-unit-scale world-unit-scale)
         (assoc :graphics/tiled-map-renderer (tm-renderer/create world-unit-scale batch))
