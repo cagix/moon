@@ -1,5 +1,6 @@
 (ns cdq.ui
   (:require cdq.ui.widget
+            [clojure.gdx.scene2d.actor :as actor]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
@@ -9,8 +10,7 @@
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label])
   (:import (cdq.ui Stage)
-           (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)))
+           (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn- add-actors! [^Stage stage actor-fns ctx]
   (doseq [[actor-fn & params] actor-fns]
@@ -33,8 +33,8 @@
 (defn dispose! []
   (vis-ui/dispose!))
 
-(defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
+(defn toggle-visible! [actor]
+  (actor/set-visible! actor (not (actor/visible? actor))))
 
 (defn- stage-find [^Stage stage k]
   (-> stage
@@ -72,7 +72,7 @@
   (-> stage
       (stage-find "cdq.ui.windows")
       (Group/.findActor "cdq.ui.windows.inventory")
-      Actor/.isVisible))
+      actor/visible?))
 
 (defn toggle-inventory-visible! [stage]
   (-> stage
@@ -144,7 +144,7 @@
 (defn close-all-windows! [stage]
   (->> (stage-find stage "cdq.ui.windows")
        Group/.getChildren
-       (run! #(Actor/.setVisible % false))))
+       (run! #(actor/set-visible! % false))))
 
 (defprotocol ActorInformation
   (actor-information [_ actor]))

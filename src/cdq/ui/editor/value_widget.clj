@@ -1,9 +1,9 @@
 (ns cdq.ui.editor.value-widget
-  (:require [cdq.ui.editor.schema :as schema])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [cdq.ui.editor.schema :as schema]))
 
 (defn build [ctx schema k v]
   (let [widget (schema/create schema v ctx)]
     ; FIXME assert no user object !
-    (Actor/.setUserObject widget [k v])
+    (actor/set-user-object! widget [k v])
     widget))

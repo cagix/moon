@@ -1,6 +1,6 @@
 (ns cdq.ctx.create.ui.player-state-draw
-  (:require [cdq.graphics :as graphics])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:require [cdq.graphics :as graphics]
+            [clojure.gdx.scene2d.actor :as actor]))
 
 (def state->draw-ui-view
   (update-vals {:player-item-on-cursor 'cdq.ctx.create.ui.player-state-draw.player-item-on-cursor/draws}
@@ -17,6 +17,7 @@
       (graphics/draw! graphics (f player-eid ctx)))))
 
 (defn create [_ctx]
-  (proxy [Actor] []
-    (draw [_batch _parent-alpha]
-      (handle-draws (.ctx (.getStage this))))))
+  (actor/create
+   {:draw (fn [this _batch _parent-alpha]
+            (handle-draws (.ctx (actor/stage this))))
+    :act (fn [this _delta])}))

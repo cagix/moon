@@ -14,6 +14,7 @@
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.viewport :as viewport]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.java.io :as io]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
@@ -26,7 +27,6 @@
                                       Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch
                                           TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
@@ -88,7 +88,7 @@
             [{:actor (text-button/create
                       {:text (str "Generate " level-fn)
                        :on-clicked (fn [actor ctx]
-                                     (let [stage (Actor/.getStage actor)
+                                     (let [stage (actor/stage actor)
                                            new-ctx (generate-level ctx level-fn)]
                                        (set! (.ctx stage) new-ctx)))})}])
     :pack? true}))

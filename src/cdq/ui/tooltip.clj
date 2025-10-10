@@ -1,14 +1,14 @@
 (ns cdq.ui.tooltip
-  (:require [clojure.vis-ui.label :as label]
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.vis-ui.label :as label]
             [clojure.vis-ui.tooltip :as tooltip])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.utils Align)))
+  (:import (com.badlogic.gdx.utils Align)))
 
 (defn add! [actor tooltip-text]
   (tooltip/create {:update-fn (fn [tooltip]
                                 (when-not (string? tooltip-text)
                                   (let [actor (tooltip/target tooltip)
-                                        ctx (when-let [stage (Actor/.getStage actor)]
+                                        ctx (when-let [stage (actor/stage actor)]
                                               (.ctx stage))]
                                     (when ctx
                                       (tooltip/set-text! tooltip (tooltip-text ctx))))))

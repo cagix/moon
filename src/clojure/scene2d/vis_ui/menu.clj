@@ -1,5 +1,6 @@
 (ns clojure.scene2d.vis-ui.menu
-  (:require [clojure.scene2d.build.table :as btable]
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.vis-ui.menu :as menu]
@@ -7,16 +8,16 @@
             [clojure.vis-ui.menu-item :as menu-item]
             [clojure.vis-ui.popup-menu :as popup-menu]
             [clojure.vis-ui.label :as label])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Cell
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Cell
                                                Label)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)))
 
 (defn- set-label-text-actor [label text-fn]
-  (proxy [Actor] []
-    (act [_delta]
-      (when-let [stage (.getStage this)]
-        (Label/.setText label (text-fn (.ctx stage)))))))
+  (actor/create
+   {:act (fn [this delta]
+           (when-let [stage (actor/stage this)]
+             (Label/.setText label (text-fn (.ctx stage)))))
+    :draw (fn [this batch parent-alpha])}))
 
 (defn- add-upd-label!
   ([table text-fn icon]

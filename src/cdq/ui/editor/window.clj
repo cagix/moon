@@ -6,20 +6,20 @@
             [clojure.throwable :as throwable]
             [cdq.ui :as ui]
             [cdq.ui.widget :as widget]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.vis-ui.window :as vis-window]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.window :as window])
-  (:import (com.badlogic.gdx Input$Keys)
-           (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx Input$Keys)))
 
 (defn- with-window-close [f]
   (fn [actor {:keys [ctx/stage]
               :as ctx}]
     (try
      (let [new-ctx (update ctx :ctx/db f)
-           stage (Actor/.getStage actor)]
+           stage (actor/stage actor)]
        (set! (.ctx stage) new-ctx))
-     (Actor/.remove (window/find-ancestor actor))
+     (actor/remove! (window/find-ancestor actor))
      (catch Throwable t
        (throwable/pretty-pst t)
        (ui/show-error-window! stage t)))))
@@ -39,13 +39,14 @@
            property-id]}]
   (let [clicked-delete-fn (with-window-close (delete-property-fn property-id))
         clicked-save-fn   (with-window-close (update-property-fn get-widget-value))
-        actors [(proxy [Actor] []
-                  (act [_delta]
-                    (when-let [stage (.getStage this)]
-                      (let [{:keys [ctx/input]
-                             :as ctx} (.ctx stage)]
-                        (when (input/key-just-pressed? input Input$Keys/ENTER)
-                          (clicked-save-fn this ctx))))))]
+        actors [(actor/create
+                 {:act (fn [this delta]
+                         (when-let [stage (actor/stage this)]
+                           (let [{:keys [ctx/input]
+                                  :as ctx} (.ctx stage)]
+                             (when (input/key-just-pressed? input Input$Keys/ENTER)
+                               (clicked-save-fn this ctx)))))
+                  :draw (fn [this batch parent-alpha])})]
         save-button (text-button/create
                      {:text "Save [LIGHT_GRAY](ENTER)[]"
                       :on-clicked clicked-save-fn})

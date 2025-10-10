@@ -7,13 +7,13 @@
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [cdq.ui.editor.map-widget-table :as map-widget-table]
             [cdq.ui.editor.window :as editor-window]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.build.table :as btable]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.vis-ui.label :as label]
             [clojure.vis-ui.separator :as separator])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor
-                                            Group)))
+  (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn- rebuild!
   [{:keys [ctx/db
@@ -27,7 +27,7 @@
                              (Group/.findActor "scroll-pane-table")
                              (Group/.findActor "cdq.db.schema.map.ui.widget"))
         property (map-widget-table/get-value map-widget-table (:db/schemas db))]
-    (Actor/.remove window)
+    (actor/remove! window)
     (.addActor stage
                (editor-window/create
                 {:ctx ctx
@@ -49,9 +49,9 @@
                                (text-button/create
                                 {:text "-"
                                  :on-clicked (fn [_actor ctx]
-                                               (Actor/.remove (first (filter (fn [actor]
-                                                                               (and (Actor/.getUserObject actor)
-                                                                                    (= k ((Actor/.getUserObject actor) 0))))
+                                               (actor/remove! (first (filter (fn [actor]
+                                                                               (and (actor/user-object actor)
+                                                                                    (= k ((actor/user-object actor) 0))))
                                                                              (Group/.getChildren table))))
                                                (rebuild! ctx))}))
                       :left? true}
@@ -88,7 +88,7 @@
        [{:actor (text-button/create
                  {:text (name k)
                   :on-clicked (fn [_actor ctx]
-                                (Actor/.remove window)
+                                (actor/remove! window)
                                 (table/add-rows! map-widget-table [(component-row (value-widget/build ctx
                                                                                                       (get schemas k)
                                                                                                       k

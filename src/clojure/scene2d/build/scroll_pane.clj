@@ -1,9 +1,9 @@
 (ns clojure.scene2d.build.scroll-pane
-  (:require [clojure.vis-ui.scroll-pane :as scroll-pane])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:require [clojure.vis-ui.scroll-pane :as scroll-pane]
+            [clojure.gdx.scene2d.actor :as actor]))
 
 (defn create
   [{:keys [scroll-pane/actor
            actor/name]}]
   (doto (scroll-pane/create actor)
-    (Actor/.setName name)))
+    (actor/set-name! name)))

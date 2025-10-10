@@ -1,22 +1,22 @@
 (ns cdq.ui.actor-information
-  (:require [cdq.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Button
+  (:require [cdq.ui :as ui]
+            [clojure.gdx.scene2d.actor :as actor])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button
                                                Label
                                                Window)))
 
 (defn- inventory-cell-with-item? [actor]
-  (and (Actor/.getParent actor)
-       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
-       (Actor/.getUserObject (Actor/.getParent actor))))
+  (and (actor/parent actor)
+       (= "inventory-cell" (actor/name (actor/parent actor)))
+       (actor/user-object (actor/parent actor))))
 
 ; FIXME does not work
 (defn- window-title-bar?
   "Returns true if the actor is a window title bar."
   [actor]
   (when (instance? Label actor)
-    (when-let [p (Actor/.getParent actor)]
-      (when-let [p (Actor/.getParent p)]
+    (when-let [p (actor/parent actor)]
+      (when-let [p (actor/parent p)]
         (and (instance? Window actor)
              (= (.getTitleLabel ^Window p) actor))))))
 
@@ -32,8 +32,8 @@
   "Returns true if the actor or its parent is a button."
   [actor]
   (or (button-class? actor)
-      (and (Actor/.getParent actor)
-           (button-class? (Actor/.getParent actor)))))
+      (and (actor/parent actor)
+           (button-class? (actor/parent actor)))))
 
 (extend-type cdq.ui.Stage
   ui/ActorInformation

@@ -5,13 +5,13 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.textures :as textures]
             [cdq.ui :as ui]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.build.stack :as stack]
             [clojure.scene2d.build.table :as table]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.window :as window]
             [clojure.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Widget)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener
                                                   TextureRegionDrawable)))
@@ -25,13 +25,13 @@
           (graphics/draw! graphics
                           (let [ui-mouse (:graphics/ui-mouse-position graphics)]
                             (draw-cell-rect @(:world/player-eid world)
-                                            (Actor/.getX this)
-                                            (Actor/.getY this)
+                                            (actor/x this)
+                                            (actor/y this)
                                             (let [[x y] (-> this
-                                                            (Actor/.stageToLocalCoordinates (vector2/->java ui-mouse))
+                                                            (actor/stage->local-coordinates (vector2/->java ui-mouse))
                                                             vector2/->clj)]
-                                              (Actor/.hit this x y true))
-                                            (Actor/.getUserObject (Actor/.getParent this))))))))))
+                                              (actor/hit this x y true))
+                                            (actor/user-object (actor/parent this))))))))))
 
 (defn- create-inventory-window*
   [{:keys [position

@@ -1,11 +1,11 @@
 (ns cdq.ui.editor.schema.sound
   (:require [cdq.audio :as sounds]
             [cdq.ui :as ui]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.build.table :as build-table]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.ui.table :as table]
-            [cdq.ui.window :as window])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [cdq.ui.window :as window]))
 
 (declare sound-columns)
 
@@ -13,10 +13,10 @@
   (fn [actor _ctx]
     (.clearChildren table)
     (table/add-rows! table [(sound-columns table sound-name)])
-    (Actor/.remove (window/find-ancestor actor))
+    (actor/remove! (window/find-ancestor actor))
     (.pack (window/find-ancestor table))
-    (let [[k _] (Actor/.getUserObject table)]
-      (Actor/.setUserObject table [k sound-name]))))
+    (let [[k _] (actor/user-object table)]
+      (actor/set-user-object! table [k sound-name]))))
 
 (defn- open-select-sounds-handler [table]
   (fn [_actor {:keys [ctx/audio

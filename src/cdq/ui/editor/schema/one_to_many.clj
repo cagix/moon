@@ -4,12 +4,12 @@
             [cdq.ui.editor.overview-window :as editor-overview-window]
             [cdq.ui.tooltip :as tooltip]
             [cdq.graphics.textures :as textures]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.scene2d.vis-ui.image :as image]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.ui.table :as table]
             [clojure.scene2d.build.table :as build-table]
-            [cdq.ui.window :as window])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [cdq.ui.window :as window]))
 
 (defn- add-one-to-many-rows
   [{:keys [ctx/db
@@ -35,7 +35,7 @@
                                   :graphics graphics
                                   :property-type property-type
                                   :clicked-id-fn (fn [actor id ctx]
-                                                   (Actor/.remove (window/find-ancestor actor))
+                                                   (actor/remove! (window/find-ancestor actor))
                                                    (redo-rows ctx (conj property-ids id)))})))})}]
       (for [property-id property-ids]
         (let [property (db/get-raw db property-id)
@@ -58,5 +58,5 @@
 
 (defn value [_  widget _schemas]
   (->> (.getChildren widget)
-       (keep Actor/.getUserObject)
+       (keep actor/user-object)
        set))
