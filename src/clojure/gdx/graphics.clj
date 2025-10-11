@@ -18,3 +18,12 @@
                  (and apply-antialiasing? (.coverageSampling (buffer-format graphics)))
                  (bit-or gl20/coverage-buffer-bit-nv))]
       (gl20/clear! gl mask))))
+
+(defn set-cursor! [^Graphics graphics cursor]
+  (.setCursor graphics cursor))
+
+(defn frames-per-second [^Graphics graphics]
+  (.getFramesPerSecond graphics))
+
+(defn delta-time [^Graphics graphics]
+  (.getDeltaTime graphics))

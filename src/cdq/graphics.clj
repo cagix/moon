@@ -11,13 +11,13 @@
                            graphics/cursors]}
                    cursor-key]
   (assert (contains? cursors cursor-key))
-  (.setCursor core (get cursors cursor-key)))
+  (graphics/set-cursor! core (get cursors cursor-key)))
 
 (defn frames-per-second [{:keys [graphics/core]}]
-  (.getFramesPerSecond core))
+  (graphics/frames-per-second core))
 
 (defn delta-time [{:keys [graphics/core]}]
-  (.getDeltaTime core))
+  (graphics/delta-time core))
 
 (defn dispose!
   [{:keys [graphics/batch
