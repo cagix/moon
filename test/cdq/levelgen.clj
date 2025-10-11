@@ -4,8 +4,8 @@
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]
             [clojure.edn :as edn]
-            [clojure.lwjgl.system.configuration :as lwjgl-config]
             [clojure.gdx :as gdx]
+            [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
             [clojure.gdx.files.utils :as files-utils]
@@ -21,14 +21,14 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.viewport :as viewport]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.utils.disposable :as disposable]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.java.io :as io]
+            [clojure.lwjgl.system.configuration :as lwjgl-config]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
-            [clojure.scene2d.vis-ui.window :as window]
-            [clojure.gdx.utils.disposable :as disposable]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport])
-  (:import (cdq.ui Stage)
-           (com.badlogic.gdx ApplicationListener)))
+            [clojure.scene2d.vis-ui.window :as window])
+  (:import (cdq.ui Stage)))
 
 (def initial-level-fn "world_fns/uf_caves.edn")
 
@@ -193,17 +193,17 @@
 
 (defn -main []
   (lwjgl-config/set-glfw-library-name! "glfw_async")
-  (application/create (reify ApplicationListener
-                        (create [_]
-                          (reset! state (create! (gdx/context))))
-                        (dispose [_]
-                          (dispose! @state))
-                        (render [_]
-                          (swap! state render!))
-                        (resize [_ width height]
-                          (resize! @state width height))
-                        (pause [_])
-                        (resume [_]))
+  (application/create (listener/create
+                       {:create (fn []
+                                  (reset! state (create! (gdx/context))))
+                        :dispose (fn []
+                                   (dispose! @state))
+                        :render (fn []
+                                  (swap! state render!))
+                        :resize (fn [width height]
+                                  (resize! @state width height))
+                        :pause (fn [])
+                        :resume (fn [])})
                       (app-config/create
                        {:title "Levelgen Test"
                         :window {:width 1440

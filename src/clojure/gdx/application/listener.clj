@@ -1,28 +1,28 @@
 (ns clojure.gdx.application.listener
   (:import (com.badlogic.gdx ApplicationListener)))
 
-(defn create [{:keys [state
-                      create
-                      dispose
-                      render
-                      resize]}]
-  (let [state @(requiring-resolve state)]
-    (reify ApplicationListener
-      (create [_]
-        (reset! state (let [[f params] create]
-                        ((requiring-resolve f) params))))
+(defn create
+  [{:keys [create
+           dispose
+           render
+           resize
+           pause
+           resume]}]
+  (reify ApplicationListener
+    (create [_]
+      (create))
 
-      (dispose [_]
-        ((requiring-resolve dispose) @state))
+    (dispose [_]
+      (dispose))
 
-      (render [_]
-        (swap! state (fn [ctx]
-                       (let [[f params] render]
-                         ((requiring-resolve f) ctx params)))))
+    (render [_]
+      (render))
 
-      (resize [_ width height]
-        ((requiring-resolve resize) @state width height))
+    (resize [_ width height]
+      (resize width height))
 
-      (pause [_])
+    (pause [_]
+      (pause))
 
-      (resume [_]))))
+    (resume [_]
+      (resume))))
