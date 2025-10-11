@@ -1,8 +1,8 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics :as graphics]
             [clojure.gdx.orthographic-camera :as camera]
-            [clojure.gdx.viewport :as viewport])
-  (:import (com.badlogic.gdx.utils Disposable)))
+            [clojure.gdx.viewport :as viewport]
+            [clojure.gdx.utils.disposable :as disposable]))
 
 (defn clear-screen! [{:keys [graphics/core]} color]
   (graphics/clear! core color))
@@ -25,11 +25,11 @@
            graphics/default-font
            graphics/shape-drawer-texture
            graphics/textures]}]
-  (Disposable/.dispose batch)
-  (run! Disposable/.dispose (vals cursors))
-  (Disposable/.dispose default-font)
-  (Disposable/.dispose shape-drawer-texture)
-  (run! Disposable/.dispose (vals textures)))
+  (disposable/dispose! batch)
+  (run! disposable/dispose! (vals cursors))
+  (disposable/dispose! default-font)
+  (disposable/dispose! shape-drawer-texture)
+  (run! disposable/dispose! (vals textures)))
 
 (defprotocol Graphics
   (draw! [_ draws]))
