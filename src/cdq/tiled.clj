@@ -1,4 +1,4 @@
-(ns cdq.tiled
+(ns cdq.tiled ; == cdq.world.tiled-map ?
   (:require [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
@@ -53,6 +53,7 @@
     (.add (tiled-map/layers tiled-map) layer))
   nil)
 
+; used in 2 world fn gen stuff
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (tiled-map/create)]
@@ -64,13 +65,7 @@
 (def copy-tile (memoize tiles/copy))
 (def static-tiled-map-tile tiles/static-tiled-map-tile)
 
-(defn map-positions
-  "Returns a sequence of all `[x y]` positions in the `tiled-map`."
-  [tiled-map]
-  (for [x (range (.get (tiled-map/properties tiled-map) "width"))
-        y (range (.get (tiled-map/properties tiled-map) "height"))]
-    [x y]))
-
+; only used @ spawn positions
 (defn positions-with-property
   "Returns a sequence of `[[x y] value]` for all tiles who have `property-key`."
   [tiled-map layer-name property-key]
@@ -78,8 +73,12 @@
          (string? layer-name)
          (string? property-key)]}
   (let [layer (.get (tiled-map/layers tiled-map) layer-name)]
-    (for [position (map-positions tiled-map)
-          :let [cell (layer/cell layer position)]
+    ; Can I pass only layer?
+    ; layer width height ?
+    (for [x (range (.get (tiled-map/properties tiled-map) "width"))
+          y (range (.get (tiled-map/properties tiled-map) "height"))
+          :let [position [x y]
+                cell (layer/cell layer position)]
           :when cell
           :let [value (.get (.getProperties (.getTile cell)) property-key)]
           :when value]
