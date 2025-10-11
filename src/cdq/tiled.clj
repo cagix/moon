@@ -7,13 +7,6 @@
                                         TiledMapTileLayer
                                         TiledMapTileLayer$Cell)))
 
-(defprotocol TMap
-  (add-layer! [tiled-map {:keys [name
-                                 visible?
-                                 properties
-                                 tiles]}]
-              "`properties` is optional. Returns nil."))
-
 (defprotocol TMapLayer
   (tile-at [_ [x y]]
            "If a cell is defined at the position, returns the tile. Otherwise returns nil.")
@@ -70,9 +63,9 @@
                          (.setTile tiled-map-tile))))
     layer))
 
-(defn- tm-add-layer!
-  "Returns nil."
-  [^TiledMap tiled-map
+(defn add-layer!
+  "`properties` is optional. Returns nil."
+  [tiled-map
    {:keys [name
            visible?
            properties
@@ -89,17 +82,12 @@
     (.add (tiled-map/layers tiled-map) layer))
   nil)
 
-(extend-type TiledMap
-  TMap
-  (add-layer! [this layer-declaration]
-    (tm-add-layer! this layer-declaration)))
-
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (tiled-map/create)]
     (properties/add! (tiled-map/properties tiled-map) properties)
     (doseq [layer layers]
-      (tm-add-layer! tiled-map layer))
+      (add-layer! tiled-map layer))
     tiled-map))
 
 (def copy-tile (memoize tiles/copy))
