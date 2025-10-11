@@ -21,9 +21,13 @@
                                  (g/world-mouse-position ctx)
                                  [modules/width modules/height])))
           (when area-level-grid
-            (str "Creature id: " (tiled/property-value (.get (tiled-map/layers this) "creatures")
-                                                       tile
-                                                       "id")))
+            (let [layer (.get (tiled-map/layers this) "creatures")]
+              (when-let [cell (layer/cell layer tile)]
+                (when-let [id (-> cell
+                                  .getTile
+                                  .getProperties
+                                  (.get "id"))]
+                  (str "Creature id: " id)))))
           (when area-level-grid
             (let [level (get area-level-grid tile)]
               (when (number? level)

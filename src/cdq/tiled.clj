@@ -5,13 +5,6 @@
             [clojure.gdx.maps.tiled.layer.cell :as cell]
             [clojure.gdx.maps.tiled.tiles :as tiles]))
 
-(defn property-value [layer position property-key]
-  (if-let [cell (layer/cell layer position)]
-    (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
-      value
-      :undefined)
-    :no-cell))
-
 (defn- create-layer
   [{:keys [width
            height
