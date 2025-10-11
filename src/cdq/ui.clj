@@ -4,10 +4,11 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.inventory :as inventory-window]
             [cdq.ui.message :as message]
-            [clojure.gdx.viewport :as viewport]
             [clojure.scene2d.vis-ui :as vis-ui]
             [clojure.scene2d.vis-ui.text-button :as text-button]
             [clojure.scene2d.vis-ui.window :as window]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.vis-ui.label :as label])
   (:import (cdq.ui Stage)
            (com.badlogic.gdx.scenes.scene2d Group)))
@@ -55,7 +56,7 @@
   (.ctx this))
 
 (defn mouseover-actor [this position]
-  (let [[x y] (viewport/unproject (.getViewport this) position)]
+  (let [[x y] (vector2/->clj (viewport/unproject (.getViewport this) (vector2/->java position)))]
     (.hit this x y true)))
 
 (defn action-bar-selected-skill [this]

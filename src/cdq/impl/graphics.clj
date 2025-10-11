@@ -9,8 +9,9 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.orthographic-camera :as camera]
-            [clojure.gdx.viewport :as viewport]
-            [clojure.gdx.shape-drawer :as sd])
+            [clojure.gdx.shape-drawer :as sd]
+            [clojure.gdx.math.vector2 :as vector2]
+            [clojure.gdx.utils.viewport :as viewport])
   (:import (com.badlogic.gdx.graphics Color
                                       Pixmap
                                       Pixmap$Format
@@ -22,6 +23,11 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils.viewport FitViewport)))
+
+(defn- unproject [viewport [x y]]
+  (-> viewport
+      (viewport/unproject (vector2/->java x y))
+      vector2/->clj))
 
 (def ^:private draw-fns
   (update-vals '{:draw/with-line-width  cdq.graphics.draw.with-line-width/do!
@@ -64,7 +70,7 @@
 
   cdq.graphics.ui-viewport/UIViewport
   (unproject [{:keys [graphics/ui-viewport]} position]
-    (viewport/unproject ui-viewport position))
+    (unproject ui-viewport position))
 
   (update! [{:keys [graphics/ui-viewport]} width height]
     (viewport/update! ui-viewport width height {:center? true}))
@@ -84,7 +90,7 @@
     (viewport/world-height world-viewport))
 
   (unproject [{:keys [graphics/world-viewport]} position]
-    (viewport/unproject world-viewport position))
+    (unproject world-viewport position))
 
   (update! [{:keys [graphics/world-viewport]} width height]
     (viewport/update! world-viewport width height {:center? false}))

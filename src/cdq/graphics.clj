@@ -1,9 +1,9 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics :as graphics]
             [clojure.gdx.orthographic-camera :as camera]
-            [clojure.gdx.viewport :as viewport]
             [clojure.gdx.utils.disposable :as disposable]
-            [clojure.gdx.utils.screen :as screen-utils]))
+            [clojure.gdx.utils.screen :as screen-utils]
+            [clojure.gdx.utils.viewport :as viewport]))
 
 (defn clear-screen! [_ color]
   (screen-utils/clear! color))

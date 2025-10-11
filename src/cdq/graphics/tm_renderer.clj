@@ -1,7 +1,7 @@
 (ns cdq.graphics.tm-renderer
   (:require [clojure.color :as color]
             [clojure.gdx.maps.tiled :as tiled]
-            [clojure.gdx.viewport :as viewport])
+            [clojure.gdx.utils.viewport :as viewport])
   (:import (cdq.graphics ColorSetter
                          TiledMapRenderer)))
 

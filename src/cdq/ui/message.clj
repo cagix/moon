@@ -1,7 +1,7 @@
 (ns cdq.ui.message
   (:require [cdq.graphics :as graphics]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.viewport :as viewport]))
+            [clojure.gdx.utils.viewport :as viewport]))
 
 (defn- draw-message [state vp-width vp-height]
   (when-let [text (:text @state)]
