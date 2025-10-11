@@ -1,5 +1,5 @@
 (ns cdq.world-fns.uf-caves
-  (:require [clojure.gdx.maps.tiled :as tiled])
+  (:require [cdq.tiled :as tiled])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn create

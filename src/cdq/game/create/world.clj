@@ -4,7 +4,7 @@
             cdq.impl.world
             [cdq.world-fns.creature-tiles]
             [clojure.edn :as edn]
-            [clojure.gdx.maps.tiled :as tiled]
+            [cdq.tiled :as tiled]
             [clojure.java.io :as io]
             [clojure.txs :as txs]))
 

@@ -1,5 +1,5 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
-  (:require [clojure.gdx.maps.tiled :as tiled]
+  (:require [cdq.tiled :as tiled]
             [clojure.grid2d :as g2d]))
 
 (defn- grid->tiled-map
