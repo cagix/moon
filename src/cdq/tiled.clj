@@ -66,14 +66,17 @@
 (def static-tiled-map-tile tiles/static-tiled-map-tile)
 
 (defn- tile-movement-property [tiled-map layer position]
-  (let [value (property-value layer position "movement")]
-    (assert (not= value :undefined)
-            (str "Value for :movement at position "
-                 position  " / mapeditor inverted position: " [(position 0)
-                                                               (- (dec (.get (tiled-map/properties tiled-map) "height"))
-                                                                  (position 1))]
-                 " and layer " (layer/name layer) " is undefined."))
-    (when-not (= :no-cell value)
+  (when-let [cell (layer/cell layer position)]
+    (let [value (-> cell
+                    .getTile
+                    .getProperties
+                    (.get "movement"))]
+      (assert value
+              (str "Value for :movement at position "
+                   position  " / mapeditor inverted position: " [(position 0)
+                                                                 (- (dec (.get (tiled-map/properties tiled-map) "height"))
+                                                                    (position 1))]
+                   " and layer " (layer/name layer) " is undefined."))
       value)))
 
 (defn- movement-property-layers [tiled-map]
