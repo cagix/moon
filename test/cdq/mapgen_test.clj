@@ -103,7 +103,7 @@
   )
 
 (comment
- (atom {:tiled-map (gdx/tmx-tiled-map modules/file)
+ (atom {:tiled-map (tmx/load-map modules/file)
         :show-movement-properties false
         :show-grid-lines false})
  )

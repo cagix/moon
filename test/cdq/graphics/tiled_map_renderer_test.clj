@@ -1,7 +1,8 @@
 #_(ns cdq.graphics.tiled-map-renderer-test
   (:require [clojure.gdx.backends.lwjgl.application :as application]
             [com.badlogic.gdx.maps.tiled :as tiled]
-            [com.badlogic.gdx.graphics.orthographic-camera :as camera])
+            [com.badlogic.gdx.graphics.orthographic-camera :as camera]
+            [clojure.gdx.maps.tiled.tmx :as tmx])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)))
@@ -23,7 +24,7 @@
   (application/create
    (proxy [ApplicationAdapter] []
      (create []
-       (def tiled-map (tmx-tiled-map tiled-map-path))
+       (def tiled-map (tmx/load-map tiled-map-path))
        (def batch (SpriteBatch.))
        (def camera (doto (OrthographicCamera.)
                      (.setToOrtho false ; y-down?

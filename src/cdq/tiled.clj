@@ -5,8 +5,7 @@
             [clojure.gdx.maps.tiled.tiles :as tiles])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
-                                        TiledMapTileLayer$Cell
-                                        TmxMapLoader)))
+                                        TiledMapTileLayer$Cell)))
 
 (defprotocol HasMapProperties
   (get-property [_ k])
@@ -118,12 +117,6 @@
 
   (add-layer! [this layer-declaration]
     (tm-add-layer! this layer-declaration)))
-
-(defn tmx-tiled-map
-  "Has to be disposed because it loads textures.
-  Loads through internal file handle."
-  [file-name]
-  (.load (TmxMapLoader.) file-name))
 
 (defn create-tiled-map [{:keys [properties
                                 layers]}]

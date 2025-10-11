@@ -1,8 +1,8 @@
 (ns cdq.world-fns.tmx
-  (:require [cdq.tiled :as tiled]))
+  (:require [clojure.gdx.maps.tiled.tmx :as tmx]))
 
 (defn create
   [{:keys [tmx-file
            start-position]}]
-  {:tiled-map (tiled/tmx-tiled-map tmx-file)
+  {:tiled-map (tmx/load-map tmx-file)
    :start-position start-position})
