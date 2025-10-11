@@ -1,5 +1,6 @@
 (ns clojure.gdx.maps.tiled
   (:require [clojure.gdx.maps.map-properties :as properties]
+            [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.gdx.maps.tiled.tiles :as tiles])
   (:import (com.badlogic.gdx.maps.tiled TiledMap
                                         TiledMapTileLayer
@@ -41,27 +42,27 @@
 (extend-type TiledMapTileLayer
   HasMapProperties
   (get-property [layer k]
-    (.get (.getProperties layer) k))
+    (.get (layer/properties layer) k))
 
   (map-properties [layer]
-    (properties/->clj (.getProperties layer)))
+    (properties/->clj (layer/properties layer)))
 
   TMapLayer
   (set-visible! [layer boolean]
-    (.setVisible layer boolean))
+    (layer/set-visible! layer boolean))
 
   (visible? [layer]
-    (.isVisible layer))
+    (layer/visible? layer))
 
   (layer-name [layer]
-    (.getName layer))
+    (layer/name layer))
 
-  (tile-at [layer [x y]]
-    (when-let [cell (.getCell layer x y)]
+  (tile-at [layer position]
+    (when-let [cell (layer/cell layer position)]
       (.getTile cell)))
 
-  (property-value [layer [x y] property-key]
-    (if-let [cell (.getCell layer x y)]
+  (property-value [layer position property-key]
+    (if-let [cell (layer/cell layer position)]
       (if-let [value (.get (.getProperties (.getTile cell)) property-key)]
         value
         :undefined)
@@ -78,14 +79,16 @@
            tiles]}]
   {:pre [(string? name)
          (boolean? visible?)]}
-  (let [layer (doto (TiledMapTileLayer. width height tilewidth tileheight)
-                (.setName name)
-                (.setVisible visible?))]
-    (.putAll (.getProperties layer) map-properties)
-    (doseq [[[x y] tiled-map-tile] tiles
+  (let [layer (doto (layer/create width height tilewidth tileheight)
+                (layer/set-name! name)
+                (layer/set-visible! visible?))]
+    (.putAll (layer/properties layer) map-properties)
+    (doseq [[position tiled-map-tile] tiles
             :when tiled-map-tile]
-      (.setCell layer x y (doto (TiledMapTileLayer$Cell.)
-                            (.setTile tiled-map-tile))))
+      (layer/set-cell! layer
+                       position
+                       (doto (TiledMapTileLayer$Cell.)
+                         (.setTile tiled-map-tile))))
     layer))
 
 (defn- tm-add-layer!
