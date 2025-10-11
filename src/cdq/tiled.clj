@@ -8,8 +8,6 @@
                                         TiledMapTileLayer$Cell)))
 
 (defprotocol TMapLayer
-  (set-visible! [layer boolean])
-  (visible? [layer])
   (property-value [layer [x y] property-key]
                   "Returns the property value of the tile at the cell in layer.
                   If there is no cell at this position in the layer returns `:no-cell`.
@@ -17,12 +15,6 @@
 
 (extend-type TiledMapTileLayer
   TMapLayer
-  (set-visible! [layer boolean]
-    (layer/set-visible! layer boolean))
-
-  (visible? [layer]
-    (layer/visible? layer))
-
   (property-value [layer position property-key]
     (if-let [cell (layer/cell layer position)]
       (if-let [value (.get (.getProperties (.getTile cell)) property-key)]

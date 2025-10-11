@@ -81,7 +81,7 @@
            ;:area-level-grid area-level-grid
            :start-position start-position)
     (show-whole-map! (viewport/camera world-viewport) tiled-map)
-    (tiled/set-visible! (.get (tiled-map/layers this) "creatures") true)))
+    (layer/set-visible! (.get (tiled-map/layers this) "creatures") true)))
 
 #_(defn ->generate-map-window [c level-id]
     (window/create {:title "Properties"
