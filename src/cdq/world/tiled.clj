@@ -1,4 +1,4 @@
-(ns cdq.tiled
+(ns cdq.world.tiled
   (:require [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
@@ -46,7 +46,6 @@
     (.add (tiled-map/layers tiled-map) layer))
   nil)
 
-; used in 2 world fn gen stuff
 (defn create-tiled-map [{:keys [properties
                                 layers]}]
   (let [tiled-map (tiled-map/create)]

@@ -1,7 +1,7 @@
 (ns cdq.world-fns.modules.finish
   (:require [cdq.world-fns.area-level-grid :as area-level-grid]
             [cdq.world-fns.creature-layer :as creature-layer]
-            [cdq.tiled :as tiled]
+            [cdq.world.tiled :as tiled]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
             [clojure.grid2d :as g2d]

@@ -1,5 +1,5 @@
 (ns cdq.world-fns.modules.convert-to-tiled-map
-  (:require [cdq.tiled :as tiled]
+  (:require [cdq.world.tiled :as tiled]
             [clojure.gdx.maps.map-properties :as properties]
             [clojure.gdx.maps.tiled :as tiled-map]
             [clojure.gdx.maps.tiled.layer :as layer]
