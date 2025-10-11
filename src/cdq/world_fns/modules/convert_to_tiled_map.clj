@@ -22,8 +22,8 @@
                             :let [local-position (get grid position)]
                             :when local-position]
                         (when (vector? local-position)
-                          (when-let [tile (tiled/tile-at layer local-position)]
-                            [position (tiled/copy-tile tile)])))})}))
+                          (when-let [cell (layer/cell layer local-position)]
+                            [position (tiled/copy-tile (.getTile cell))])))})}))
 
 (defn step
   [{:keys [scaled-grid

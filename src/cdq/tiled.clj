@@ -8,8 +8,6 @@
                                         TiledMapTileLayer$Cell)))
 
 (defprotocol TMapLayer
-  (tile-at [_ [x y]]
-           "If a cell is defined at the position, returns the tile. Otherwise returns nil.")
   (layer-name [layer])
   (set-visible! [layer boolean])
   (visible? [layer])
@@ -28,10 +26,6 @@
 
   (layer-name [layer]
     (layer/name layer))
-
-  (tile-at [layer position]
-    (when-let [cell (layer/cell layer position)]
-      (.getTile cell)))
 
   (property-value [layer position property-key]
     (if-let [cell (layer/cell layer position)]
