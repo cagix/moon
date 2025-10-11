@@ -1,10 +1,12 @@
 (ns cdq.impl.graphics
-  (:require [cdq.graphics]
+  (:require [cdq.files :as files-utils]
+            [cdq.graphics]
             [cdq.graphics.textures]
             [cdq.graphics.tiled-map-renderer]
             [cdq.graphics.ui-viewport]
             [cdq.graphics.world-viewport]
-            [clojure.gdx.files.utils :as files-utils]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.orthographic-camera :as camera]
             [clojure.gdx.maps.tiled.renderers.orthogonal :as tm-renderer]
             [clojure.gdx.viewport :as viewport]
@@ -129,12 +131,15 @@
 (defn create!
   [graphics
    files
-   {:keys [cursors
+   {:keys [colors
+           cursors
            default-font
            texture-folder
            tile-size
            ui-viewport
            world-viewport]}]
+  (doseq [[name rgba] colors]
+    (colors/put! name (color/create rgba)))
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)

@@ -1,6 +1,7 @@
 (ns cdq.levelgen
   (:require [cdq.impl.db]
             [cdq.db :as db]
+            [cdq.files :as files-utils]
             [cdq.world-fns.creature-tiles]
             [clojure.color :as color]
             [clojure.edn :as edn]
@@ -8,7 +9,6 @@
             [clojure.gdx.application.listener :as listener]
             [clojure.gdx.backends.lwjgl.application :as application]
             [clojure.gdx.backends.lwjgl.application.config :as app-config]
-            [clojure.gdx.files.utils :as files-utils]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.input :as input]
             [clojure.gdx.input.keys :as input.keys]
@@ -78,7 +78,6 @@
     (show-whole-map! ctx)
     ctx))
 
-
 (defn- edit-window []
   (window/create
    {:title "Edit"
@@ -97,6 +96,7 @@
            graphics
            input]}]
   (vis-ui/load! {:skin-scale :x1})
+  ; skin = new Skin(Gdx.files.internal("data/uiskin.json"));
   (let [ui-viewport (fit-viewport/create 1440 900 (orthographic-camera/create))
         sprite-batch (sprite-batch/create)
         stage (Stage. ui-viewport sprite-batch)
